@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.12.+'
+        classpath 'com.android.tools.build:gradle:1.0.0'
     }
 }
 apply plugin: 'android'
@@ -26,11 +26,10 @@ dependencies {
 
     compile 'com.actionbarsherlock:viewpagerindicator:2.4.1'
     compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.github.kevinsawicki:android-pusher:0.6'
     compile 'com.github.kevinsawicki:wishlist:0.9'
 
     // Event Bus
-    compile 'com.squareup:otto:1.3.4'
+    compile 'com.squareup:otto:1.3.5'
 
     // Image Loading
     compile 'com.squareup.picasso:picasso:1.1.1'
@@ -62,6 +61,7 @@ android {
         // Exclude file to avoid
         // Error: Duplicate files during packaging of APK
         exclude 'META-INF/services/javax.annotation.processing.Processor'
+        exclude 'LICENSE.txt'
     }
 
     // signingConfigs {
@@ -80,11 +80,11 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix '.debug'
-            runProguard false
+            minifyEnabled false
             // zipAlign false // this is default for debug
         }
         release {
-            // runProguard true
+            // minifyEnabled true
             // proguardFile '..\proguard.cfg'
             // signingConfig signingConfigs.release
             // zipAlign true // this is default for release

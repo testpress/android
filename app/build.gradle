@@ -1,0 +1,95 @@
+buildscript {
+    repositories {
+        maven { url 'http://repo1.maven.org/maven2' }
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.12.+'
+    }
+}
+apply plugin: 'android'
+
+repositories {
+    maven { url 'https://github.com/donnfelker/mvn-repo/raw/master/' }
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.google.code.gson:gson:2.3'
+
+    // Dependency Injection
+    compile 'com.squareup.dagger:dagger:1.0.1'
+    compile 'com.squareup.dagger:dagger-compiler:1.0.1'
+    compile 'com.jakewharton:butterknife:6.0.0'
+
+    compile 'com.actionbarsherlock:viewpagerindicator:2.4.1'
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.github.kevinsawicki:android-pusher:0.6'
+    compile 'com.github.kevinsawicki:wishlist:0.9'
+
+    // Event Bus
+    compile 'com.squareup:otto:1.3.4'
+
+    // Image Loading
+    compile 'com.squareup.picasso:picasso:1.1.1'
+
+    // HTTP
+    compile 'com.squareup.retrofit:retrofit:1.5.1'
+
+    // Android Support Libs
+    compile 'com.android.support:support-v4:21.0.0'
+    compile 'com.android.support:support-v13:20.0.0'
+
+    androidTestCompile 'junit:junit:4.11'
+    androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
+    androidTestCompile 'org.mockito:mockito-core:1.9.5'
+}
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion '20.0.0'
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 19
+        versionCode 102
+        versionName '1.0'
+    }
+
+    packagingOptions {
+        // Exclude file to avoid
+        // Error: Duplicate files during packaging of APK
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+
+    // signingConfigs {
+        // release {
+            // storeFile file(System.getenv('ANDROID_KEYSTORE_PATH'))
+            // storePassword System.getenv('ANDROID_STORE_PASS')
+            // keyAlias System.getenv('ANDROID_KEY_ALIAS')
+            // keyPassword System.getenv('ANDROID_KEY_PASS')
+        // }
+    // }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+            runProguard false
+            // zipAlign false // this is default for debug
+        }
+        release {
+            // runProguard true
+            // proguardFile '..\proguard.cfg'
+            // signingConfig signingConfigs.release
+            // zipAlign true // this is default for release
+            // testPackageName 'in.testpress.testpress.tests'
+            // testInstrumentationRunner 'android.test.InstrumentationTestRunner' // this is the default
+        }
+    }
+}

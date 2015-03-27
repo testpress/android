@@ -1,13 +1,6 @@
 package in.testpress.testpress.authenticator;
 
-import static android.R.layout.simple_dropdown_item_1line;
-import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
-import static android.accounts.AccountManager.KEY_ACCOUNT_TYPE;
-import static android.accounts.AccountManager.KEY_AUTHTOKEN;
-import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
-import static android.view.KeyEvent.ACTION_DOWN;
-import static android.view.KeyEvent.KEYCODE_ENTER;
-import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
+
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Dialog;
@@ -21,43 +14,41 @@ import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnKeyListener;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
 
-import in.testpress.testpress.Injector;
-import in.testpress.testpress.R;
-import in.testpress.testpress.R.id;
-import in.testpress.testpress.R.layout;
-import in.testpress.testpress.R.string;
-import in.testpress.testpress.core.BootstrapService;
-import in.testpress.testpress.core.Constants;
-import in.testpress.testpress.core.User;
-import in.testpress.testpress.events.UnAuthorizedErrorEvent;
-import in.testpress.testpress.ui.TextWatcherAdapter;
-import in.testpress.testpress.util.Ln;
-import in.testpress.testpress.util.SafeAsyncTask;
 import com.github.kevinsawicki.wishlist.Toaster;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import in.testpress.testpress.Injector;
+import in.testpress.testpress.R;
+import in.testpress.testpress.R.id;
+import in.testpress.testpress.R.layout;
+import in.testpress.testpress.core.AuthToken;
+import in.testpress.testpress.core.Constants;
+import in.testpress.testpress.core.TestpressService;
+import in.testpress.testpress.events.UnAuthorizedErrorEvent;
+import in.testpress.testpress.ui.TextWatcherAdapter;
+import in.testpress.testpress.util.Ln;
+import in.testpress.testpress.util.SafeAsyncTask;
 import retrofit.RetrofitError;
 
-/**
- * Activity to authenticate the user against an API (example API on Parse.com)
- */
-public class BootstrapAuthenticatorActivity extends ActionBarAccountAuthenticatorActivity {
+import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
+import static android.accounts.AccountManager.KEY_ACCOUNT_TYPE;
+import static android.accounts.AccountManager.KEY_AUTHTOKEN;
+import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
+import static android.view.KeyEvent.ACTION_DOWN;
+import static android.view.KeyEvent.KEYCODE_ENTER;
+import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 
+public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticatorActivity {
     /**
      * PARAM_CONFIRM_CREDENTIALS
      */
@@ -78,13 +69,13 @@ public class BootstrapAuthenticatorActivity extends ActionBarAccountAuthenticato
      */
     public static final String PARAM_AUTHTOKEN_TYPE = "authtokenType";
 
-
     private AccountManager accountManager;
 
-    @Inject BootstrapService bootstrapService;
+    @Inject TestpressService testpressService;
+
     @Inject Bus bus;
 
-    @InjectView(id.et_email) protected AutoCompleteTextView emailText;
+    @InjectView(id.et_username) AutoCompleteTextView usernameText;
     @InjectView(id.et_password) protected EditText passwordText;
     @InjectView(id.b_signin) protected Button signInButton;
 
@@ -100,16 +91,10 @@ public class BootstrapAuthenticatorActivity extends ActionBarAccountAuthenticato
      */
     private Boolean confirmCredentials = false;
 
-    private String email;
+    private String username;
 
     private String password;
 
-
-    /**
-     * In this instance the token is simply the sessionId returned from Parse.com. This could be a
-     * oauth token or some other type of timed token that expires/etc. We're just using the parse.com
-     * sessionId to prove the example of how to utilize a token.
-     */
     private String token;
 
     /**
@@ -126,20 +111,20 @@ public class BootstrapAuthenticatorActivity extends ActionBarAccountAuthenticato
         accountManager = AccountManager.get(this);
 
         final Intent intent = getIntent();
-        email = intent.getStringExtra(PARAM_USERNAME);
+        username = intent.getStringExtra(PARAM_USERNAME);
         authTokenType = intent.getStringExtra(PARAM_AUTHTOKEN_TYPE);
         confirmCredentials = intent.getBooleanExtra(PARAM_CONFIRM_CREDENTIALS, false);
 
-        requestNewAccount = email == null;
+        requestNewAccount = username == null;
 
         setContentView(layout.login_activity);
 
         ButterKnife.inject(this);
+//
+//        usernameText.setAdapter(new ArrayAdapter<String>(this,
+//                simple_dropdown_item_1line, userEmailAccounts()));
 
-        emailText.setAdapter(new ArrayAdapter<String>(this,
-                simple_dropdown_item_1line, userEmailAccounts()));
-
-        passwordText.setOnKeyListener(new OnKeyListener() {
+        passwordText.setOnKeyListener(new View.OnKeyListener() {
 
             public boolean onKey(final View v, final int keyCode, final KeyEvent event) {
                 if (event != null && ACTION_DOWN == event.getAction()
@@ -151,7 +136,7 @@ public class BootstrapAuthenticatorActivity extends ActionBarAccountAuthenticato
             }
         });
 
-        passwordText.setOnEditorActionListener(new OnEditorActionListener() {
+        passwordText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
             public boolean onEditorAction(final TextView v, final int actionId,
                                           final KeyEvent event) {
@@ -163,29 +148,29 @@ public class BootstrapAuthenticatorActivity extends ActionBarAccountAuthenticato
             }
         });
 
-        emailText.addTextChangedListener(watcher);
+        usernameText.addTextChangedListener(watcher);
         passwordText.addTextChangedListener(watcher);
 
         final TextView signUpText = (TextView) findViewById(id.tv_signup);
         signUpText.setMovementMethod(LinkMovementMethod.getInstance());
-        signUpText.setText(Html.fromHtml(getString(string.signup_link)));
+        signUpText.setText(Html.fromHtml(getString(R.string.signup_link)));
     }
 
-    private List<String> userEmailAccounts() {
-        final Account[] accounts = accountManager.getAccountsByType("com.google");
-        final List<String> emailAddresses = new ArrayList<String>(accounts.length);
-        for (final Account account : accounts) {
-            emailAddresses.add(account.name);
-        }
-        return emailAddresses;
-    }
+//    private List<String> userEmailAccounts() {
+//        final Account[] accounts = accountManager.getAccountsByType("com.google");
+//        final List<String> emailAddresses = new ArrayList<String>(accounts.length);
+//        for (final Account account : accounts) {
+//            emailAddresses.add(account.name);
+//        }
+//        return emailAddresses;
+//    }
+
 
     private TextWatcher validationTextWatcher() {
         return new TextWatcherAdapter() {
             public void afterTextChanged(final Editable gitDirEditText) {
                 updateUIWithValidation();
             }
-
         };
     }
 
@@ -203,7 +188,7 @@ public class BootstrapAuthenticatorActivity extends ActionBarAccountAuthenticato
     }
 
     private void updateUIWithValidation() {
-        final boolean populated = populated(emailText) && populated(passwordText);
+        final boolean populated = populated(usernameText) && populated(passwordText);
         signInButton.setEnabled(populated);
     }
 
@@ -214,7 +199,7 @@ public class BootstrapAuthenticatorActivity extends ActionBarAccountAuthenticato
     @Override
     protected Dialog onCreateDialog(int id) {
         final ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setMessage(getText(string.message_signing_in));
+        dialog.setMessage(getText(R.string.message_signing_in));
         dialog.setIndeterminate(true);
         dialog.setCancelable(true);
         dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -230,7 +215,7 @@ public class BootstrapAuthenticatorActivity extends ActionBarAccountAuthenticato
     @Subscribe
     public void onUnAuthorizedErrorEvent(UnAuthorizedErrorEvent unAuthorizedErrorEvent) {
         // Could not authorize for some reason.
-        Toaster.showLong(BootstrapAuthenticatorActivity.this, R.string.message_bad_credentials);
+        Toaster.showLong(TestpressAuthenticatorActivity.this, R.string.message_bad_credentials);
     }
 
     /**
@@ -247,7 +232,7 @@ public class BootstrapAuthenticatorActivity extends ActionBarAccountAuthenticato
         }
 
         if (requestNewAccount) {
-            email = emailText.getText().toString();
+            username = usernameText.getText().toString();
         }
 
         password = passwordText.getText().toString();
@@ -256,11 +241,8 @@ public class BootstrapAuthenticatorActivity extends ActionBarAccountAuthenticato
         authenticationTask = new SafeAsyncTask<Boolean>() {
             public Boolean call() throws Exception {
 
-                final String query = String.format("%s=%s&%s=%s",
-                        PARAM_USERNAME, email, PARAM_PASSWORD, password);
-
-                User loginResponse = bootstrapService.authenticate(email, password);
-                token = loginResponse.getSessionToken();
+                AuthToken loginResponse = testpressService.authenticate(username, password);
+                token = loginResponse.getToken();
 
                 return true;
             }
@@ -271,7 +253,7 @@ public class BootstrapAuthenticatorActivity extends ActionBarAccountAuthenticato
                 if(!(e instanceof RetrofitError)) {
                     final Throwable cause = e.getCause() != null ? e.getCause() : e;
                     if(cause != null) {
-                        Toaster.showLong(BootstrapAuthenticatorActivity.this, cause.getMessage());
+                        Toaster.showLong(TestpressAuthenticatorActivity.this, cause.getMessage());
                     }
                 }
             }
@@ -298,7 +280,7 @@ public class BootstrapAuthenticatorActivity extends ActionBarAccountAuthenticato
      * @param result
      */
     protected void finishConfirmCredentials(final boolean result) {
-        final Account account = new Account(email, Constants.Auth.BOOTSTRAP_ACCOUNT_TYPE);
+        final Account account = new Account(username, Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
         accountManager.setPassword(account, password);
 
         final Intent intent = new Intent();
@@ -316,20 +298,20 @@ public class BootstrapAuthenticatorActivity extends ActionBarAccountAuthenticato
      */
 
     protected void finishLogin() {
-        final Account account = new Account(email, Constants.Auth.BOOTSTRAP_ACCOUNT_TYPE);
+        final Account account = new Account(username, Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
 
         authToken = token;
 
         if (requestNewAccount) {
             accountManager.addAccountExplicitly(account, password, null);
-            accountManager.setAuthToken(account, Constants.Auth.BOOTSTRAP_ACCOUNT_TYPE, authToken);
+            accountManager.setAuthToken(account, Constants.Auth.TESTPRESS_ACCOUNT_TYPE, authToken);
         } else {
             accountManager.setPassword(account, password);
         }
 
         final Intent intent = new Intent();
-        intent.putExtra(KEY_ACCOUNT_NAME, email);
-        intent.putExtra(KEY_ACCOUNT_TYPE, Constants.Auth.BOOTSTRAP_ACCOUNT_TYPE);
+        intent.putExtra(KEY_ACCOUNT_NAME, username);
+        intent.putExtra(KEY_ACCOUNT_TYPE, Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
 
         if (authTokenType != null
                 && authTokenType.equals(Constants.Auth.AUTHTOKEN_TYPE)) {
@@ -372,11 +354,11 @@ public class BootstrapAuthenticatorActivity extends ActionBarAccountAuthenticato
         } else {
             Ln.d("onAuthenticationResult: failed to authenticate");
             if (requestNewAccount) {
-                Toaster.showLong(BootstrapAuthenticatorActivity.this,
-                        string.message_auth_failed_new_account);
+                Toaster.showLong(TestpressAuthenticatorActivity.this,
+                        R.string.message_auth_failed_new_account);
             } else {
-                Toaster.showLong(BootstrapAuthenticatorActivity.this,
-                        string.message_auth_failed);
+                Toaster.showLong(TestpressAuthenticatorActivity.this,
+                        R.string.message_auth_failed);
             }
         }
     }

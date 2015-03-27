@@ -4,12 +4,12 @@
 
     <item>
         <shape android:shape="rectangle" >
-            <solid android:color="@color/bootstrap_divider_top" />
+            <solid android:color="@color/testpress_divider_top" />
         </shape>
     </item>
     <item android:top="1px">
         <shape android:shape="rectangle" >
-            <solid android:color="@color/bootstrap_divider_bottom" />
+            <solid android:color="@color/testpress_divider_bottom" />
         </shape>
     </item>
 

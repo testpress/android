@@ -1,6 +1,8 @@
 package in.testpress.testpress.ui;
 
+import android.annotation.TargetApi;
 import android.app.Fragment;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -29,15 +31,16 @@ public class CarouselFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_carousel, container, false);
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         ButterKnife.inject(this, getView());
 
-        pager.setAdapter(new BootstrapPagerAdapter(getResources(), getChildFragmentManager()));
+        pager.setAdapter(new TestpressPagerAdapter(getResources(), getChildFragmentManager()));
         indicator.setViewPager(pager);
-        pager.setCurrentItem(1);
+        pager.setCurrentItem(0);
 
     }
 }

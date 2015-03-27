@@ -3,7 +3,7 @@
 package in.testpress.testpress.core;
 
 /**
- * Bootstrap constants
+ * Testpress constants
  */
 public final class Constants {
     private Constants() {}
@@ -14,28 +14,24 @@ public final class Constants {
         /**
          * Account type id
          */
-        public static final String BOOTSTRAP_ACCOUNT_TYPE = "in.testpress.testpress";
+        public static final String TESTPRESS_ACCOUNT_TYPE = "in.testpress.testpress";
 
         /**
          * Account name
          */
-        public static final String BOOTSTRAP_ACCOUNT_NAME = "testpress";
+        public static final String TESTPRESS_ACCOUNT_NAME = "testpress";
 
         /**
          * Provider id
          */
-        public static final String BOOTSTRAP_PROVIDER_AUTHORITY = "in.testpress.testpress.sync";
+        public static final String TESTPRESS_PROVIDER_AUTHORITY = "in.testpress.testpress.sync";
 
         /**
          * Auth token type
          */
-        public static final String AUTHTOKEN_TYPE = BOOTSTRAP_ACCOUNT_TYPE;
+        public static final String AUTHTOKEN_TYPE = TESTPRESS_ACCOUNT_TYPE;
     }
 
-    /**
-     * All HTTP is done through a REST style API built for demonstration purposes on Parse.com
-     * Thanks to the nice people at Parse for creating such a nice system for us to use for bootstrap!
-     */
     public static final class Http {
         private Http() {}
 
@@ -43,46 +39,44 @@ public final class Constants {
         /**
          * Base URL for all requests
          */
-        public static final String URL_BASE = "https://api.parse.com";
+        public static final String URL_BASE = "https://demo.testpress.in";
 
 
         /**
          * Authentication URL
          */
-        public static final String URL_AUTH_FRAG = "/1/login";
+        public static final String URL_AUTH_FRAG = "/api/v2/auth-token/";
         public static final String URL_AUTH = URL_BASE + URL_AUTH_FRAG;
 
         /**
          * List Users URL
          */
-        public static final String URL_USERS_FRAG =  "/1/users";
+        public static final String URL_USERS_FRAG =  "/api/v2/users/";
         public static final String URL_USERS = URL_BASE + URL_USERS_FRAG;
 
+        /**
+         * List Available Exams URL
+         */
+        public static final String URL_AVAILABLE_EXAMS_FRAG =  "/api/v2/exams/available/";
+        public static final String URL_AVAILABLE_EXAMS = URL_BASE + URL_AVAILABLE_EXAMS_FRAG;
 
         /**
-         * List News URL
+         * List Upcoming Exams URL
          */
-        public static final String URL_NEWS_FRAG = "/1/classes/News";
-        public static final String URL_NEWS = URL_BASE + URL_NEWS_FRAG;
-
+        public static final String URL_UPCOMING_EXAMS_FRAG =  "/api/v2/exams/upcoming/";
+        public static final String URL_UPCOMING_EXAMS = URL_BASE + URL_UPCOMING_EXAMS_FRAG;
 
         /**
-         * List Checkin's URL
+         * List History Exams URL
          */
-        public static final String URL_CHECKINS_FRAG = "/1/classes/Locations";
-        public static final String URL_CHECKINS = URL_BASE + URL_CHECKINS_FRAG;
+        public static final String URL_HISTORY_EXAMS_FRAG =  "/api/v2/exams/history/";
+        public static final String URL_HISTORY_EXAMS = URL_BASE + URL_HISTORY_EXAMS_FRAG;
 
         /**
          * PARAMS for auth
          */
         public static final String PARAM_USERNAME = "username";
         public static final String PARAM_PASSWORD = "password";
-
-
-        public static final String PARSE_APP_ID = "Z9mmlFHRMRfTtEjCv61vZr85Y009FfXmCYPrrWKe";
-        public static final String PARSE_REST_API_KEY = "jvk1dy1F7t04Hk2La1zeAP7fkSe8b3EQgRhgnyjg";
-        public static final String HEADER_PARSE_REST_API_KEY = "X-Parse-REST-API-Key";
-        public static final String HEADER_PARSE_APP_ID = "X-Parse-Application-Id";
         public static final String CONTENT_TYPE_JSON = "application/json";
         public static final String USERNAME = "username";
         public static final String PASSWORD = "password";
@@ -94,11 +88,6 @@ public final class Constants {
 
     public static final class Extra {
         private Extra() {}
-
-        public static final String NEWS_ITEM = "news_item";
-
-        public static final String USER = "user";
-
     }
 
     public static final class Intent {

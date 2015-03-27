@@ -21,8 +21,8 @@
     <color name="header_background_bottom">#A7A7A7</color>
     <color name="actionbar_background_start">#272727</color>
     <color name="actionbar_background_end">#1A1A1A</color>
-    <color name="bootstrap_divider_top">#000000</color>
-    <color name="bootstrap_divider_bottom">#5A5A5A</color>
+    <color name="testpress_divider_top">#000000</color>
+    <color name="testpress_divider_bottom">#5A5A5A</color>
     <color name="main_background_start">#2E2E2E</color>
     <color name="main_background_end">#2C2C2C</color>
     <color name="button_background_enabled_start">#1fb6ed</color>

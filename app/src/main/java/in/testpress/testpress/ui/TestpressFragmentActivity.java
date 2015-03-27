@@ -12,9 +12,9 @@ import butterknife.ButterKnife;
 
 
 /**
- * Base class for all Bootstrap Activities that need fragments.
+ * Base class for all Testpress Activities that need fragments.
  */
-public class BootstrapFragmentActivity extends Activity {
+public class TestpressFragmentActivity extends Activity {
 
     @Inject
     protected Bus eventBus;

@@ -13,7 +13,7 @@ import in.testpress.testpress.R;
 /**
  * Pager adapter
  */
-public class BootstrapPagerAdapter extends FragmentPagerAdapter {
+public class TestpressPagerAdapter extends FragmentPagerAdapter {
 
     private final Resources resources;
 
@@ -23,7 +23,7 @@ public class BootstrapPagerAdapter extends FragmentPagerAdapter {
      * @param resources
      * @param fragmentManager
      */
-    public BootstrapPagerAdapter(final Resources resources, final FragmentManager fragmentManager) {
+    public TestpressPagerAdapter(final Resources resources, final FragmentManager fragmentManager) {
         super(fragmentManager);
         this.resources = resources;
     }
@@ -36,22 +36,26 @@ public class BootstrapPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(final int position) {
         final Fragment result;
+        String subclass;
         switch (position) {
             case 0:
-                result = new NewsListFragment();
+                subclass = "available";
                 break;
             case 1:
-                result = new UserListFragment();
+                subclass = "upcoming";
                 break;
             case 2:
-                result = new CheckInsListFragment();
+                subclass = "history";
                 break;
             default:
-                result = null;
+                subclass = null;
                 break;
         }
-        if (result != null) {
-            result.setArguments(new Bundle()); //TODO do we need this?
+        result = new ExamsListFragment();
+        Bundle bundle = new Bundle();
+        if (subclass != null) {
+            bundle.putString("subclass", subclass);
+            result.setArguments(bundle);
         }
         return result;
     }
@@ -60,11 +64,11 @@ public class BootstrapPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(final int position) {
         switch (position) {
             case 0:
-                return resources.getString(R.string.page_news);
+                return resources.getString(R.string.page_available_exams);
             case 1:
-                return resources.getString(R.string.page_users);
+                return resources.getString(R.string.page_upcoming_exams);
             case 2:
-                return resources.getString(R.string.page_checkins);
+                return resources.getString(R.string.page_history_exams);
             default:
                 return null;
         }

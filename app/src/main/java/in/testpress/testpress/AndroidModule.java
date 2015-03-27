@@ -25,7 +25,7 @@ public class AndroidModule {
     @Provides
     @Singleton
     Context provideAppContext() {
-        return BootstrapApplication.getInstance().getApplicationContext();
+        return TestpressApplication.getInstance().getApplicationContext();
     }
 
     @Provides

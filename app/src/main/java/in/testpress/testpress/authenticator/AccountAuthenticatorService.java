@@ -12,7 +12,7 @@ import static android.accounts.AccountManager.ACTION_AUTHENTICATOR_INTENT;
  */
 public class AccountAuthenticatorService extends Service {
 
-    private static BootstrapAccountAuthenticator authenticator = null;
+    private static TestpressAccountAuthenticator authenticator = null;
 
     @Override
     public IBinder onBind(final Intent intent) {
@@ -22,9 +22,9 @@ public class AccountAuthenticatorService extends Service {
         return null;
     }
 
-    private BootstrapAccountAuthenticator getAuthenticator() {
+    private TestpressAccountAuthenticator getAuthenticator() {
         if (authenticator == null) {
-            authenticator = new BootstrapAccountAuthenticator(this);
+            authenticator = new TestpressAccountAuthenticator(this);
         }
         return authenticator;
     }

@@ -13,9 +13,9 @@ import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP;
 import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
 
 /**
- * Base activity for a Bootstrap activity which does not use fragments.
+ * Base activity for a Testpress activity which does not use fragments.
  */
-public abstract class BootstrapActivity extends Activity {
+public abstract class TestpressActivity extends Activity {
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {

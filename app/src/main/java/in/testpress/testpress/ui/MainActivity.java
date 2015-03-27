@@ -4,7 +4,6 @@ package in.testpress.testpress.ui;
 
 import android.accounts.OperationCanceledException;
 import android.app.FragmentManager;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -13,9 +12,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 
-import in.testpress.testpress.BootstrapServiceProvider;
 import in.testpress.testpress.R;
-import in.testpress.testpress.core.BootstrapService;
+import in.testpress.testpress.TestpressServiceProvider;
+import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.events.NavItemSelectedEvent;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
@@ -33,9 +32,9 @@ import butterknife.ButterKnife;
  * If you need to remove the authentication from the application please see
  * {@link in.testpress.testpress.authenticator.ApiKeyProvider#getAuthKey(android.app.Activity)}
  */
-public class MainActivity extends BootstrapFragmentActivity {
+public class MainActivity extends TestpressFragmentActivity {
 
-    @Inject protected BootstrapServiceProvider serviceProvider;
+    @Inject protected TestpressServiceProvider serviceProvider;
 
     private boolean userHasAuthenticated = false;
 
@@ -148,7 +147,7 @@ public class MainActivity extends BootstrapFragmentActivity {
 
             @Override
             public Boolean call() throws Exception {
-                final BootstrapService svc = serviceProvider.getService(MainActivity.this);
+                final TestpressService svc = serviceProvider.getService(MainActivity.this);
                 return svc != null;
             }
 
@@ -182,17 +181,9 @@ public class MainActivity extends BootstrapFragmentActivity {
             case android.R.id.home:
                 //menuDrawer.toggleMenu();
                 return true;
-            case R.id.timer:
-                navigateToTimer();
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    private void navigateToTimer() {
-        final Intent i = new Intent(this, BootstrapTimerActivity.class);
-        startActivity(i);
     }
 
     @Subscribe
@@ -204,10 +195,6 @@ public class MainActivity extends BootstrapFragmentActivity {
             case 0:
                 // Home
                 // do nothing as we're already on the home screen.
-                break;
-            case 1:
-                // Timer
-                navigateToTimer();
                 break;
         }
     }

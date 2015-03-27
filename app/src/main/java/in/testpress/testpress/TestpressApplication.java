@@ -1,22 +1,16 @@
-
-
 package in.testpress.testpress;
 
 import android.app.Application;
 import android.app.Instrumentation;
 import android.content.Context;
 
-/**
- * testpress application
- */
-public class BootstrapApplication extends Application {
-
-    private static BootstrapApplication instance;
+public class TestpressApplication extends Application {
+    private static TestpressApplication instance;
 
     /**
      * Create main application
      */
-    public BootstrapApplication() {
+    public TestpressApplication() {
     }
 
     /**
@@ -24,7 +18,7 @@ public class BootstrapApplication extends Application {
      *
      * @param context
      */
-    public BootstrapApplication(final Context context) {
+    public TestpressApplication(final Context context) {
         this();
         attachBaseContext(context);
     }
@@ -43,19 +37,17 @@ public class BootstrapApplication extends Application {
     private Object getRootModule() {
         return new RootModule();
     }
-
-
     /**
      * Create main application
      *
      * @param instrumentation
      */
-    public BootstrapApplication(final Instrumentation instrumentation) {
+    public TestpressApplication(final Instrumentation instrumentation) {
         this();
         attachBaseContext(instrumentation.getTargetContext());
     }
 
-    public static BootstrapApplication getInstance() {
+    public static TestpressApplication getInstance() {
         return instance;
     }
 }

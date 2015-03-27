@@ -4,7 +4,7 @@ import retrofit.RetrofitError;
 
 /**
  * The event that is posted when a network error event occurs.
- * TODO: Consume this event in the {@link in.testpress.testpress.ui.BootstrapActivity} and
+ * TODO: Consume this event in the {@link in.testpress.testpress.ui.TestpressActivity} and
  * show a dialog that something went wrong.
  */
 public class NetworkErrorEvent {

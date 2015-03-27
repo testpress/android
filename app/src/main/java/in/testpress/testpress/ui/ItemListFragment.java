@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ExpandableListView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -147,7 +148,7 @@ public abstract class ItemListFragment<E> extends Fragment
 
     @Override
     public void onCreateOptionsMenu(final Menu optionsMenu, final MenuInflater inflater) {
-        inflater.inflate(R.menu.bootstrap, optionsMenu);
+        inflater.inflate(R.menu.testpress, optionsMenu);
     }
 
     @Override

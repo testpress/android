@@ -137,7 +137,7 @@ public class MainActivity extends TestpressFragmentActivity {
             final FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.container, new CarouselFragment())
-                    .commit();
+                    .commitAllowingStateLoss();
         }
 
     }

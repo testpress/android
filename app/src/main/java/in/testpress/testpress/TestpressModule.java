@@ -59,10 +59,11 @@ public class TestpressModule {
 //    }
 
     @Provides
-    TestpressService provideTestpressService(RestAdapter restAdapter, AccountManager accountManager) {
-        return new TestpressService(restAdapter, accountManager);
+    TestpressService provideTestpressService(RestAdapter restAdapter) {
+        return new TestpressService(restAdapter);
     }
 
+    @Singleton
     @Provides
     TestpressServiceProvider provideTestpressServiceProvider(RestAdapter restAdapter, ApiKeyProvider apiKeyProvider) {
         return new TestpressServiceProvider(restAdapter, apiKeyProvider);

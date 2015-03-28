@@ -12,6 +12,7 @@ import retrofit.RestAdapter;
 public class TestpressServiceProvider {
     private RestAdapter restAdapter;
     private ApiKeyProvider keyProvider;
+    String authToken;
 
     public TestpressServiceProvider(RestAdapter restAdapter, ApiKeyProvider keyProvider) {
         this.restAdapter = restAdapter;
@@ -29,10 +30,12 @@ public class TestpressServiceProvider {
      */
     public TestpressService getService(final Activity activity)
             throws IOException, AccountsException {
-        // The call to keyProvider.getAuthKey(...) is what initiates the login screen. Call that now.
-        keyProvider.getAuthKey(activity);
+        if (authToken == null) {
+            // The call to keyProvider.getAuthKey(...) is what initiates the login screen. Call that now.
+            authToken = keyProvider.getAuthKey(activity);
+        }
 
         // TODO: See how that affects the testpress service.
-        return new TestpressService(restAdapter, keyProvider.getAccountManager());
+        return new TestpressService(restAdapter, authToken);
     }
 }

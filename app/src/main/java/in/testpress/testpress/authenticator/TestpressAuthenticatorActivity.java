@@ -241,8 +241,7 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
         authenticationTask = new SafeAsyncTask<Boolean>() {
             public Boolean call() throws Exception {
 
-                AuthToken loginResponse = testpressService.authenticate(username, password);
-                token = loginResponse.getToken();
+                token = testpressService.authenticate(username, password);
 
                 return true;
             }

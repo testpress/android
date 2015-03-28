@@ -24,7 +24,7 @@ import static in.testpress.testpress.core.Constants.Auth.TESTPRESS_ACCOUNT_TYPE;
 
 public class TestpressService {
     private RestAdapter restAdapter;
-    private AccountManager accountManager;
+    private String authToken;
 
     public TestpressService() {
     }
@@ -34,9 +34,13 @@ public class TestpressService {
      *
      * @param restAdapter The RestAdapter that allows HTTP Communication.
      */
-    public TestpressService(RestAdapter restAdapter, AccountManager accountManager) {
+    public TestpressService(RestAdapter restAdapter) {
         this.restAdapter = restAdapter;
-        this.accountManager = accountManager;
+    }
+
+    public TestpressService(RestAdapter restAdapter, String authToken) {
+        this.restAdapter = restAdapter;
+        this.authToken = authToken;
     }
 
     private RestAdapter getRestAdapter() {
@@ -50,22 +54,7 @@ public class TestpressService {
     private ExamService getExamsService() { return getRestAdapter().create(ExamService.class); }
 
     private String getAuthToken() {
-        final Account[] accounts = accountManager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
-        // There will be atleast one account to come to this place
-        Account account = accounts[0];
-        AccountManagerFuture<Bundle> future = accountManager.getAuthToken(account, Constants.Auth.AUTHTOKEN_TYPE, null, false, null, null);
-        try {
-            Bundle result = future.getResult();
-            //FIXME Need to fix this in server
-            return "JWT " + result.getString(KEY_AUTHTOKEN);
-        } catch (OperationCanceledException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (AuthenticatorException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return "JWT " + authToken;
     }
 
     public List<Exam> getAvailableExams() {
@@ -80,10 +69,11 @@ public class TestpressService {
         return getExamsService().getHistoryExams(getAuthToken()).getResults();
     }
 
-    public AuthToken authenticate(String username, String password) {
+    public String authenticate(String username, String password) {
         HashMap<String, String> credentials = new HashMap<String, String>();
         credentials.put("username", username);
         credentials.put("password", password);
-        return getAuthenticationService().authenticate(credentials);
+        authToken = getAuthenticationService().authenticate(credentials).getToken();
+        return authToken;
     }
 }

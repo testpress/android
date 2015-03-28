@@ -2,6 +2,8 @@ package in.testpress.testpress.ui;
 
 import android.accounts.OperationCanceledException;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
@@ -51,12 +53,7 @@ public class ExamsListFragment extends ItemListFragment<Exam> {
 
         listView.setFastScrollEnabled(true);
         listView.setDividerHeight(0);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-            }
-        });
 
     }
 
@@ -126,11 +123,31 @@ public class ExamsListFragment extends ItemListFragment<Exam> {
         return new ExamsListAdapter(getActivity().getLayoutInflater(), items, layout);
     }
 
- // public void onListItemClick(ListView l, View v, int position, long id) {
- //       Exam news = ((Exam) l.getItemAtPosition(position));
+  public void onListItemClick(ListView l, View v, int position, long id) {
+       Exam exam = ((Exam) l.getItemAtPosition(position));
+    if(subclass.equals("available")){
+      AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+      builder.setMessage(exam.getStartUrl());
+      builder.setCancelable(true);
+      builder.setPositiveButton("Start",
+              new DialogInterface.OnClickListener() {
+                  public void onClick(DialogInterface dialog, int id) {
+                      dialog.cancel();
+
+                  }
+              });
+        builder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+
+                    }
+                });
+      AlertDialog alert = builder.create();
+      alert.show();}
 
         //startActivity(new Intent(getActivity(), NewsActivity.class).putExtra(NEWS_ITEM, news));
- //  }
+   }
 
     @Override
     protected int getErrorMessage(Exception exception) {

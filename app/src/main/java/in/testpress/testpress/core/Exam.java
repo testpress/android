@@ -114,6 +114,7 @@ public class Exam {
      * The startDate
      */
     public String getStartDate() {
+        startDate = startDate.substring(0,startDate.length()-10);
         return startDate;
     }
 
@@ -132,6 +133,7 @@ public class Exam {
      * The endDate
      */
     public String getEndDate() {
+        endDate = endDate.substring(0,endDate.length()-10);
         return endDate;
     }
 

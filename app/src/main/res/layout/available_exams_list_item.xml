@@ -14,14 +14,13 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:layout_marginBottom="@dimen/margin_normal"
-            android:text="General Knowledge Exam"
             android:id="@+id/exam_title"/>
 
         <TextView
             android:id="@+id/exam_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="May. 20, 2014 to May. 1, 2019"
+
             android:textSize="@dimen/text_size_small"
             />
     </LinearLayout>
@@ -39,9 +38,8 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textSize="@dimen/text_size_large"
-                android:text="100"
                 android:textStyle="bold"
-                android:id="@+id/number_of_questions" android:textAlignment="textEnd"
+                android:id="@+id/number_of_questions"
                 android:layout_gravity="end"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -59,7 +57,6 @@
             android:id="@+id/exam_duration"
             android:textSize="@dimen/text_size_large"
             android:textAlignment="textEnd"
-            android:text="14:54:41"
             android:textStyle="bold"
             android:layout_gravity="end"/>
     </LinearLayout>

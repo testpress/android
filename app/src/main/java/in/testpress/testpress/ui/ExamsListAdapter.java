@@ -41,7 +41,7 @@ public class ExamsListAdapter extends AlternatingColorListAdapter<Exam> {
 
         setText(0, item.getTitle());
         setText(1, item.getDuration());
-        //setText(2, item.getNumberOfQuestions());
-        //setText(3, item.getStartDate());
+        setNumber(2,item.getNumberOfQuestions());
+        setText(3, item.getEndDate());
     }
 }

@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
 
@@ -50,10 +51,13 @@ public class ExamsListFragment extends ItemListFragment<Exam> {
 
         listView.setFastScrollEnabled(true);
         listView.setDividerHeight(0);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-        getListAdapter()
-                .addHeader(activity.getLayoutInflater()
-                        .inflate(R.layout.news_list_item_labels, null));
+            }
+        });
+
     }
 
     @Override
@@ -122,11 +126,11 @@ public class ExamsListFragment extends ItemListFragment<Exam> {
         return new ExamsListAdapter(getActivity().getLayoutInflater(), items, layout);
     }
 
-//    public void onListItemClick(ListView l, View v, int position, long id) {
-//        Exam news = ((Exam) l.getItemAtPosition(position));
-//
-//        startActivity(new Intent(getActivity(), NewsActivity.class).putExtra(NEWS_ITEM, news));
-//    }
+ // public void onListItemClick(ListView l, View v, int position, long id) {
+ //       Exam news = ((Exam) l.getItemAtPosition(position));
+
+        //startActivity(new Intent(getActivity(), NewsActivity.class).putExtra(NEWS_ITEM, news));
+ //  }
 
     @Override
     protected int getErrorMessage(Exception exception) {

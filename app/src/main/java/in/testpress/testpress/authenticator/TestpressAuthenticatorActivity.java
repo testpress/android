@@ -31,7 +31,7 @@ import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.R.id;
 import in.testpress.testpress.R.layout;
-import in.testpress.testpress.core.AuthToken;
+import in.testpress.testpress.models.AuthToken;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.events.UnAuthorizedErrorEvent;

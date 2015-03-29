@@ -1,4 +1,4 @@
-package in.testpress.testpress.core;
+package in.testpress.testpress.models;
 
 import java.util.HashMap;
 import java.util.Map;

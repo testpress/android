@@ -18,7 +18,7 @@ import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.authenticator.LogoutService;
-import in.testpress.testpress.core.Exam;
+import in.testpress.testpress.models.Exam;
 import in.testpress.testpress.util.Ln;
 
 import com.github.kevinsawicki.wishlist.SingleTypeAdapter;

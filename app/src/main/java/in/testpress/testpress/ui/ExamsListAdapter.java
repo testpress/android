@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListAdapter;
 
 import in.testpress.testpress.R;
-import in.testpress.testpress.core.Exam;
+import in.testpress.testpress.models.Exam;
 
 import java.util.List;
 

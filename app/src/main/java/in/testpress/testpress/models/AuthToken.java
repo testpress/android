@@ -1,8 +1,5 @@
-package in.testpress.testpress.core;
+package in.testpress.testpress.models;
 
-/**
- * Created by bharath on 21/03/15.
- */
 public class AuthToken {
     protected String token;
 

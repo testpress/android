@@ -16,6 +16,7 @@ import javax.inject.Inject;
 
 import in.testpress.testpress.authenticator.ApiKeyProvider;
 import in.testpress.testpress.ui.MainActivity;
+import in.testpress.testpress.models.Exam;
 import retrofit.RestAdapter;
 
 import static android.accounts.AccountManager.KEY_AUTHTOKEN;

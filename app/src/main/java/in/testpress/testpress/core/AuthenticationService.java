@@ -2,6 +2,7 @@ package in.testpress.testpress.core;
 
 import java.util.HashMap;
 
+import in.testpress.testpress.models.AuthToken;
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.Field;

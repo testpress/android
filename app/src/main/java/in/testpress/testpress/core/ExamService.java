@@ -1,5 +1,7 @@
 package in.testpress.testpress.core;
 
+import in.testpress.testpress.models.Exam;
+import in.testpress.testpress.models.TestpressApiResponse;
 import retrofit.http.GET;
 import retrofit.http.Header;
 

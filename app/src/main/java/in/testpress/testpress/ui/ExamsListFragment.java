@@ -124,29 +124,28 @@ public class ExamsListFragment extends ItemListFragment<Exam> {
     }
 
   public void onListItemClick(ListView l, View v, int position, long id) {
-       Exam exam = ((Exam) l.getItemAtPosition(position));
-    if(subclass.equals("available")){
-      AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-      builder.setMessage(exam.getStartUrl());
-      builder.setCancelable(true);
-      builder.setPositiveButton("Start",
-              new DialogInterface.OnClickListener() {
+      Exam exam = ((Exam) l.getItemAtPosition(position));
+      if(subclass.equals("available")){
+          AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+          builder.setMessage(exam.getStartUrl());
+          builder.setCancelable(true);
+          builder.setPositiveButton("Start",
+                  new DialogInterface.OnClickListener() {
                   public void onClick(DialogInterface dialog, int id) {
                       dialog.cancel();
 
                   }
               });
-        builder.setNegativeButton("Cancel",
-                new DialogInterface.OnClickListener() {
+          builder.setNegativeButton("Cancel",
+                  new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
 
                     }
                 });
-      AlertDialog alert = builder.create();
-      alert.show();}
-
-        //startActivity(new Intent(getActivity(), NewsActivity.class).putExtra(NEWS_ITEM, news));
+          AlertDialog alert = builder.create();
+          alert.show();
+      }
    }
 
     @Override

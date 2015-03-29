@@ -38,10 +38,9 @@ public class ExamsListAdapter extends AlternatingColorListAdapter<Exam> {
     @Override
     protected void update(final int position, final Exam item) {
         super.update(position, item);
-
         setText(0, item.getTitle());
         setText(1, item.getDuration());
-        setNumber(2,item.getNumberOfQuestions());
+        setText(2, item.getNumberOfQuestionsString());
         setText(3, item.getEndDate());
     }
 }

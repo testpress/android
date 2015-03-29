@@ -69,7 +69,7 @@ public final class Constants {
         /**
          * List History Exams URL
          */
-        public static final String URL_HISTORY_EXAMS_FRAG =  "/api/v2/exams/history/";
+        public static final String URL_HISTORY_EXAMS_FRAG =  "/api/v2/exams/available/";
         public static final String URL_HISTORY_EXAMS = URL_BASE + URL_HISTORY_EXAMS_FRAG;
 
         /**

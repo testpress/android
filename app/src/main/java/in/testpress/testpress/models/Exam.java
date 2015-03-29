@@ -133,7 +133,6 @@ public class Exam {
      * The endDate
      */
     public String getEndDate() {
-        endDate = endDate.substring(0,endDate.length()-10);
         return endDate;
     }
 
@@ -171,6 +170,10 @@ public class Exam {
      */
     public Integer getNumberOfQuestions() {
         return numberOfQuestions;
+    }
+
+    public String getNumberOfQuestionsString() {
+        return numberOfQuestions.toString();
     }
 
     /**

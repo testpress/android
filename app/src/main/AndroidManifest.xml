@@ -56,6 +56,11 @@
             -->
         </activity>
 
+        <activity
+            android:name=".ui.StartExam"
+            android:label="Instructions">
+        </activity>
+
 
     </application>
 

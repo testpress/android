@@ -1,0 +1,15 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="in.testpress.testpress.ui.view.StartExam">
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/start_exam"
+        android:id="@+id/start_exam"
+        android:layout_gravity="bottom"
+        android:background="#51A351"
+        android:textColor="#fff"
+        android:textSize="@dimen/text_size_large"/>
+</LinearLayout>

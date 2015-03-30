@@ -25,6 +25,8 @@
     <string name="avatar">Avatar</string>
     <string name="choose">Choose</string>
     <string name="start_exam">Start Exam</string>
+    <string name="next">Next</string>
+    <string name="previous">Prev</string>
 
     <!-- AuthenticatorActivity -->
     <string name="label_email_address">Email Address</string>

@@ -25,6 +25,7 @@ import in.testpress.testpress.core.UserAgentProvider;
 import in.testpress.testpress.ui.ExamsListFragment;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.NavigationDrawerFragment;
+import in.testpress.testpress.ui.StartExamActivity;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
 
@@ -40,6 +41,7 @@ import retrofit.converter.GsonConverter;
                 TestpressApplication.class,
                 TestpressAuthenticatorActivity.class,
                 MainActivity.class,
+                StartExamActivity.class,
                 NavigationDrawerFragment.class,
                 ExamsListFragment.class
         }

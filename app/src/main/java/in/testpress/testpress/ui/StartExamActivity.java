@@ -3,7 +3,6 @@ package in.testpress.testpress.ui;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.widget.Button;
@@ -12,7 +11,7 @@ import in.testpress.testpress.R;
 import in.testpress.testpress.R.id;
 
 
-public class StartExam extends FragmentActivity {
+public class StartExamActivity extends TestpressFragmentActivity {
     Button startExam,previous,next;
     ProgressDialog progress;
     private TestpressViewPager pager;

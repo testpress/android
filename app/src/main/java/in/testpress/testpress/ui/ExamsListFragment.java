@@ -126,7 +126,7 @@ public class ExamsListFragment extends ItemListFragment<Exam> {
   public void onListItemClick(ListView l, View v, int position, long id) {
       Exam exam = ((Exam) l.getItemAtPosition(position));
       if(subclass.equals("available")){
-          Intent intent = new Intent(getActivity(),StartExam.class);
+          Intent intent = new Intent(getActivity(), StartExamActivity.class);
           startActivity(intent);
 
       }

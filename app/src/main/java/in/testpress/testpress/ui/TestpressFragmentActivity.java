@@ -1,7 +1,7 @@
 package in.testpress.testpress.ui;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 
 import in.testpress.testpress.Injector;
 import com.squareup.otto.Bus;
@@ -14,7 +14,7 @@ import butterknife.ButterKnife;
 /**
  * Base class for all Testpress Activities that need fragments.
  */
-public class TestpressFragmentActivity extends Activity {
+public class TestpressFragmentActivity extends ActionBarActivity {
 
     @Inject
     protected Bus eventBus;

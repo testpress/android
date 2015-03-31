@@ -3,10 +3,10 @@
 package in.testpress.testpress.ui;
 
 import android.accounts.OperationCanceledException;
-import android.app.FragmentManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,8 +46,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
         super.onCreate(savedInstanceState);
 
@@ -74,13 +73,13 @@ public class MainActivity extends TestpressFragmentActivity {
 
                 /** Called when a drawer has settled in a completely closed state. */
                 public void onDrawerClosed(View view) {
-                    getActionBar().setTitle(title);
+                    getSupportActionBar().setTitle(title);
                     invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
                 }
 
                 /** Called when a drawer has settled in a completely open state. */
                 public void onDrawerOpened(View drawerView) {
-                    getActionBar().setTitle(drawerTitle);
+                    getSupportActionBar().setTitle(drawerTitle);
                     invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
                 }
             };
@@ -89,7 +88,7 @@ public class MainActivity extends TestpressFragmentActivity {
             drawerLayout.setDrawerListener(drawerToggle);
 
             navigationDrawerFragment = (NavigationDrawerFragment)
-                    getFragmentManager().findFragmentById(R.id.navigation_drawer);
+                    getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
 
             // Set up the drawer.
             navigationDrawerFragment.setUp(
@@ -98,8 +97,8 @@ public class MainActivity extends TestpressFragmentActivity {
         }
 
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
 
         checkAuth();
@@ -134,7 +133,7 @@ public class MainActivity extends TestpressFragmentActivity {
         if (userHasAuthenticated) {
 
             Ln.d("Foo");
-            final FragmentManager fragmentManager = getFragmentManager();
+            final FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.container, new CarouselFragment())
                     .commitAllowingStateLoss();

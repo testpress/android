@@ -111,4 +111,7 @@ public class TestpressApiResponse<T> {
         this.additionalProperties.put(name, value);
     }
 
+    public boolean hasMore() {
+        return !next.equals("null");
+    }
 }

@@ -2,8 +2,8 @@
 
 package in.testpress.testpress.ui;
 
-import android.content.AsyncTaskLoader;
 import android.content.Context;
+import android.support.v4.content.AsyncTaskLoader;
 
 /**
  * Loader which extends AsyncTaskLoaders and handles caveats as pointed out in

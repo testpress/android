@@ -1,27 +1,13 @@
 package in.testpress.testpress.core;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.accounts.AccountManagerFuture;
-import android.accounts.AuthenticatorException;
-import android.accounts.OperationCanceledException;
-import android.os.Bundle;
-
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
 
-import javax.inject.Inject;
-
-import in.testpress.testpress.authenticator.ApiKeyProvider;
-import in.testpress.testpress.ui.MainActivity;
+import in.testpress.testpress.models.UserExam;
+import in.testpress.testpress.models.Questions;
 import in.testpress.testpress.models.Exam;
 import retrofit.RestAdapter;
-
-import static android.accounts.AccountManager.KEY_AUTHTOKEN;
-import static in.testpress.testpress.core.Constants.Auth.AUTHTOKEN_TYPE;
-import static in.testpress.testpress.core.Constants.Auth.TESTPRESS_ACCOUNT_TYPE;
 
 public class TestpressService {
     private RestAdapter restAdapter;
@@ -68,6 +54,16 @@ public class TestpressService {
 
     public List<Exam> getHistoryExams() {
         return getExamsService().getHistoryExams(getAuthToken()).getResults();
+    }
+
+    public UserExam getUserExam(String id) {
+        HashMap<String, String> Id = new HashMap<String, String>();
+        Id.put("id", id);
+        return getExamsService().getUserExam(getAuthToken(), Id);
+    }
+
+    public List<Questions> getQuestions(String exam_id, String userExam_id){
+        return getExamsService().getQuestions(exam_id, userExam_id, getAuthToken()).getResults();
     }
 
     public String authenticate(String username, String password) {

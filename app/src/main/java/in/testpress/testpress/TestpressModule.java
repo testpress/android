@@ -2,7 +2,6 @@ package in.testpress.testpress;
 
 
 import android.accounts.AccountManager;
-import android.content.Context;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -14,7 +13,6 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import in.testpress.testpress.authenticator.ApiKeyProvider;
-import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.authenticator.TestpressAuthenticatorActivity;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.PostFromAnyThreadBus;
@@ -22,10 +20,11 @@ import in.testpress.testpress.core.RestAdapterRequestInterceptor;
 import in.testpress.testpress.core.RestErrorHandler;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.core.UserAgentProvider;
+import in.testpress.testpress.ui.ExamActivity;
 import in.testpress.testpress.ui.ExamsListFragment;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.NavigationDrawerFragment;
-import in.testpress.testpress.ui.StartExamActivity;
+import in.testpress.testpress.ui.UserExamFragment;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
 
@@ -41,9 +40,10 @@ import retrofit.converter.GsonConverter;
                 TestpressApplication.class,
                 TestpressAuthenticatorActivity.class,
                 MainActivity.class,
-                StartExamActivity.class,
+                ExamActivity.class,
                 NavigationDrawerFragment.class,
-                ExamsListFragment.class
+                ExamsListFragment.class,
+                UserExamFragment.class
         }
 )
 public class TestpressModule {

@@ -22,7 +22,7 @@ dependencies {
     // Dependency Injection
     compile 'com.squareup.dagger:dagger:1.0.1'
     compile 'com.squareup.dagger:dagger-compiler:1.0.1'
-    compile 'com.jakewharton:butterknife:6.0.0'
+    compile 'com.jakewharton:butterknife:6.1.0'
 
     compile 'com.actionbarsherlock:viewpagerindicator:2.4.1'
     compile 'com.nineoldandroids:library:2.4.0'

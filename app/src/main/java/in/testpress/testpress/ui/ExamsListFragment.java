@@ -2,16 +2,10 @@ package in.testpress.testpress.ui;
 
 import android.accounts.OperationCanceledException;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ExpandableListView;
 import android.widget.ListView;
 
 import in.testpress.testpress.TestpressServiceProvider;
@@ -19,11 +13,9 @@ import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.models.Exam;
-import in.testpress.testpress.util.Ln;
 
 import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -125,10 +117,11 @@ public class ExamsListFragment extends ItemListFragment<Exam> {
 
   public void onListItemClick(ListView l, View v, int position, long id) {
       Exam exam = ((Exam) l.getItemAtPosition(position));
-      if(subclass.equals("available")){
-          Intent intent = new Intent(getActivity(), StartExamActivity.class);
-          startActivity(intent);
 
+      if(subclass.equals("available")) {
+          Intent intent = new Intent(getActivity(), ExamActivity.class);
+          intent.putExtra("examId",exam.getId().toString());
+          startActivity(intent);
       }
    }
 

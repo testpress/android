@@ -73,6 +73,13 @@ public final class Constants {
         public static final String URL_HISTORY_EXAMS = URL_BASE + URL_HISTORY_EXAMS_FRAG;
 
         /**
+         * Start Exam URL
+         */
+        public static final String URL_START_EXAM_FRAG =  "/api/v2/exams/start/";
+        public static final String URL_START_EXAM = URL_BASE + URL_START_EXAM_FRAG;
+
+
+        /**
          * PARAMS for auth
          */
         public static final String PARAM_USERNAME = "username";

@@ -57,7 +57,7 @@
         </activity>
 
         <activity
-            android:name=".ui.StartExamActivity"
+            android:name=".ui.ExamActivity"
             android:label="Instructions">
         </activity>
 

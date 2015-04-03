@@ -19,7 +19,7 @@ import retrofit.RetrofitError;
 public class ExamActivity extends TestpressFragmentActivity implements LoaderManager.LoaderCallbacks<UserExam>  {
     @Inject protected TestpressServiceProvider serviceProvider;
 
-    String examId, userExamId;
+    String examId, questionsUrl;
     protected UserExam userExam = null;
     protected ProgressBar progressBar;
 
@@ -56,11 +56,10 @@ public class ExamActivity extends TestpressFragmentActivity implements LoaderMan
     public void onLoadFinished(final Loader<UserExam> loader, final UserExam userExam) {
         progressBar.setVisibility(View.INVISIBLE);
         if(userExam != null) {
-            userExamId = userExam.getUExamId().toString();
+            questionsUrl = userExam.getQuestionsUrl();
             UserExamFragment userExamFragment = new UserExamFragment();
             Bundle bundle = new Bundle();
-            bundle.putString("examId", examId);
-            bundle.putString("userExamId", userExamId);
+            bundle.putString("questionsUrl", questionsUrl);
             userExamFragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, userExamFragment).commitAllowingStateLoss();

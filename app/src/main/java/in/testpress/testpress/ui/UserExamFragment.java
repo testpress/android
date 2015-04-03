@@ -1,17 +1,22 @@
 package in.testpress.testpress.ui;
 
 import android.accounts.OperationCanceledException;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,6 +29,7 @@ import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.models.Questions;
+import in.testpress.testpress.models.TestpressApiResponse;
 
 public class UserExamFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Questions>> {
     @Inject protected TestpressServiceProvider serviceProvider;
@@ -37,15 +43,13 @@ public class UserExamFragment extends Fragment implements LoaderManager.LoaderCa
     FragmentManager startExamFragmentManager;
     ExamPagerAdapter pagerAdapter;
 
-    String examId, userExamId;
-    List<Questions> questions;
-    protected List<Questions> items = Collections.emptyList();
+    String questionsUrl;
+    List<Questions> questions = Collections.emptyList();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        examId = getArguments().getString("examId");
-        userExamId = getArguments().getString("userExamId");
+        questionsUrl = getArguments().getString("questionsUrl");
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
@@ -83,26 +87,50 @@ public class UserExamFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public Loader<List<Questions>> onCreateLoader(int id, final Bundle args) {
-        final List<Questions> initialItems = items;
-        return new ThrowableLoader<List<Questions>>(getActivity(), items) {
+        return new ThrowableLoader<List<Questions>>(getActivity(), questions) {
             @Override
             public List<Questions> loadData() throws Exception {
-                try {
-                    return serviceProvider.getService(getActivity()).getQuestions(examId, userExamId);
-                } catch (OperationCanceledException e) {
-                    return initialItems;
-                }
+                List<Questions> response = null;
+                TestpressApiResponse<Questions> apiresponse = new TestpressApiResponse<Questions>();
+                String fragment = null;
+                URL url = new URL(questionsUrl);
+                do {
+                    try {
+                        fragment = url.getFile();
+                    }
+                    catch (Exception e) {
+                        return null;
+                    }
 
+                    try {
+                        apiresponse = serviceProvider.getService(getActivity()).getQuestions(fragment);
+                        if (response != null) {
+                            response.addAll(apiresponse.getResults());
+                        } else {
+                            response = apiresponse.getResults();
+                        }
+                        String next = apiresponse.getNext();
+                        if (next != null) {
+                            url = new URL(apiresponse.getNext());
+                        }
+                    } catch (OperationCanceledException e) {
+                        return null;
+                    }
+                } while (apiresponse.getNext() != null);
+                return response;
             }
         };
     }
 
+    @Override
     public void onLoadFinished(final Loader<List<Questions>> loader, final List<Questions> items) {
+        questions = items;
         if (progress.isShowing())
             progress.hide();
-        questions=items;
-        pagerAdapter = new ExamPagerAdapter(startExamFragmentManager,questions);
+        pagerAdapter = new ExamPagerAdapter(startExamFragmentManager, questions);
+        pagerAdapter.setcount(questions.size());
         pager.setAdapter(pagerAdapter);
+        pagerAdapter.notifyDataSetChanged();
     }
 
     @Override

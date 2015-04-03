@@ -12,14 +12,18 @@ import in.testpress.testpress.models.Question;
 import in.testpress.testpress.models.Questions;
 
 public class ExamPagerAdapter extends FragmentStatePagerAdapter {
-    int PAGE_COUNT;
+    int numberOfPages = 0;
     List<Questions> questions;
     Question question;
 
     public ExamPagerAdapter(FragmentManager fragmentManager, List<Questions> questions) {
         super(fragmentManager);
         this.questions = questions;
-        PAGE_COUNT = questions.size();
+        numberOfPages = questions.size();
+    }
+
+    public void setcount(int count) {
+        this.numberOfPages = count;
     }
 
     @Override
@@ -31,8 +35,9 @@ public class ExamPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return PAGE_COUNT;
+        return numberOfPages;
     }
+
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
 

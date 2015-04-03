@@ -36,7 +36,7 @@ public class TestpressApiResponse<T> {
      * @return
      * The next
      */
-    public Object getNext() {
+    public String getNext() {
         return next;
     }
 

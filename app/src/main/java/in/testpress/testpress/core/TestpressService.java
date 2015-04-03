@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
+import in.testpress.testpress.models.TestpressApiResponse;
 import in.testpress.testpress.models.UserExam;
 import in.testpress.testpress.models.Questions;
 import in.testpress.testpress.models.Exam;
@@ -62,8 +63,9 @@ public class TestpressService {
         return getExamsService().getUserExam(getAuthToken(), Id);
     }
 
-    public List<Questions> getQuestions(String exam_id, String userExam_id){
-        return getExamsService().getQuestions(exam_id, userExam_id, getAuthToken()).getResults();
+    public TestpressApiResponse<Questions> getQuestions(String questionsUrlFrag) {
+        return getExamsService().getQuestions(questionsUrlFrag, getAuthToken());
+
     }
 
     public String authenticate(String username, String password) {

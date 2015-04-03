@@ -30,8 +30,8 @@ public class UserExamQuestionsFragment extends Fragment {
         this.answers = question.getAnswers();
     }
 
-      @InjectView(id.question) TextView Question;
-      @InjectView(id.answers) ViewGroup Answers;
+      @InjectView(id.question) TextView questionsView;
+      @InjectView(id.answers) ViewGroup answersView;
 
 
     @Override
@@ -45,14 +45,14 @@ public class UserExamQuestionsFragment extends Fragment {
         ((ActionBarActivity)getActivity()).getSupportActionBar().setTitle("Exam");
         ((ActionBarActivity)getActivity()).getSupportActionBar().setIcon(R.drawable.ic_home);
         ButterKnife.inject(this,view);
-        Question.setText(Html.fromHtml(question.getQuestionHtml()));
+        questionsView.setText(Html.fromHtml(question.getQuestionHtml()));
 
         for(int i = 0; i < question.getAnswers().size() ; i++) {
             RadioButton option = new RadioButton(getActivity());
             option.setId(i);
             option.setText(Html.fromHtml(answers.get(i).getTextHtml()));
             option.setGravity(Gravity.CENTER);
-            Answers.addView(option);
+            answersView.addView(option);
         }
         return view;
     }

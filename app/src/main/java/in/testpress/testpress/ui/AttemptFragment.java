@@ -88,6 +88,10 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @OnClick(R.id.next) void showNextQuestion() {
+        if (attemptQuestionList.isEmpty()) {
+            return;
+        }
+
         if (attemptQuestionList.get(pager.getCurrentItem()).hasChanged()) {
             try {
                 attemptQuestionList.get(pager.getCurrentItem()).saveResult(getActivity(), serviceProvider);
@@ -102,6 +106,10 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @OnItemClick(R.id.questions_list) void goToQuestion(int position) {
+        if (attemptQuestionList.isEmpty()) {
+            return;
+        }
+
         if (attemptQuestionList.get(pager.getCurrentItem()).hasChanged()) {
         }
         questionsDrawer.closeDrawers();
@@ -110,6 +118,10 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @OnClick(R.id.previous) void showPreviousQuestion() {
+        if (attemptQuestionList.isEmpty()) {
+            return;
+        }
+
         if (attemptQuestionList.get(pager.getCurrentItem()).hasChanged()) {
             try {
                attemptQuestionList.get(pager.getCurrentItem()).saveResult(getActivity(), serviceProvider);
@@ -169,8 +181,11 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onLoadFinished(final Loader<List<AttemptQuestion>> loader, final List<AttemptQuestion> items) {
         attemptQuestionList = items;
-        if (progress.isShowing())
+        if (progress.isShowing()) {
             progress.hide();
+            progress.dismiss();
+        }
+
         pagerAdapter = new ExamPagerAdapter(startExamFragmentManager, attemptQuestionList);
         pagerAdapter.setcount(attemptQuestionList.size());
         pager.setAdapter(pagerAdapter);
@@ -191,7 +206,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     SafeAsyncTask<Attempt> endExam = new SafeAsyncTask<Attempt>() {
         @Override
         public Attempt call() throws Exception {
-            return  serviceProvider.getService(getActivity()).endExam(mAttempt.getUrl() + Constants.Http.URL_END_EXAM_FRAG);
+            return  serviceProvider.getService(getActivity()).endExam(mAttempt.getUrlFrag() + Constants.Http.URL_END_EXAM_FRAG);
         }
         @Override
         protected void onPreExecute() {

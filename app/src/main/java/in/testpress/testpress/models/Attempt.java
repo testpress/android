@@ -3,6 +3,7 @@ package in.testpress.testpress.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 public class Attempt implements Parcelable {
@@ -91,6 +92,15 @@ public class Attempt implements Parcelable {
         this.url = url;
     }
 
+    public String getUrlFrag() {
+        try {
+            URL fragUrl = new URL(url);
+            return fragUrl.getFile();
+        }
+        catch (Exception e) {
+            return null;
+        }
+    }
     /**
      *
      * @return

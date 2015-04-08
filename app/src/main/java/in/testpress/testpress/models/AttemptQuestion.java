@@ -1,19 +1,74 @@
 package in.testpress.testpress.models;
 
 
+import android.app.Activity;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import in.testpress.testpress.TestpressServiceProvider;
+import in.testpress.testpress.util.SafeAsyncTask;
 
-public class Questions {
 
+public class AttemptQuestion {
     private String url;
     private Question question;
     private List<Integer> selectedAnswers = new ArrayList<Integer>();
     private Boolean review;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private List<Integer> savedAnswers = new ArrayList<Integer>();
+
+    public void saveAnswers(List<Integer> savedAnswers) {
+        this.savedAnswers = savedAnswers;
+    }
+
+    public List<Integer> getSavedAnswers() {
+        return savedAnswers;
+    }
+
+    public String saveResult(final Activity activity, final TestpressServiceProvider serviceProvider) throws Exception {
+
+        SafeAsyncTask<AttemptQuestion> postResult = new SafeAsyncTask<AttemptQuestion>() {
+            String fragment = null;
+
+            @Override
+            public AttemptQuestion call() throws Exception {
+                return serviceProvider.getService(activity).postAnswer(fragment, savedAnswers);
+            }
+
+            @Override
+            protected void onPreExecute() {
+                try {
+                    URL urlfrag = new URL(url);
+                    fragment = urlfrag.getFile();
+                }
+                catch (MalformedURLException e) {
+
+                }
+            }
+
+            @Override
+            protected void onSuccess(AttemptQuestion result) {
+            }
+
+            @Override
+            protected void onException(Exception e) {
+
+            }
+
+            @Override
+            protected void onFinally() {
+            }
+        };
+        postResult.execute();
+        return null;
+    }
+
+    public Boolean hasChanged() { return !savedAnswers.equals(selectedAnswers);}
 
     /**
      *

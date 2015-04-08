@@ -17,16 +17,31 @@
             <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/question" />
+            android:id="@+id/question"
+            android:textSize="@dimen/text_size_large"/>
 
             <RadioGroup
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/answers">
-
             </RadioGroup>
 
+            <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/answers_checkbox">
+            </LinearLayout>
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Review Later"
+                android:id="@+id/review"
+                android:layout_gravity="center_horizontal" />
+
         </LinearLayout>
+
     </ScrollView>
 
 </LinearLayout>

@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
 
 import in.testpress.testpress.TestpressServiceProvider;
@@ -120,7 +122,13 @@ public class ExamsListFragment extends ItemListFragment<Exam> {
 
       if(subclass.equals("available")) {
           Intent intent = new Intent(getActivity(), ExamActivity.class);
-          intent.putExtra("examId",exam.getId().toString());
+          intent.putExtra("exam", exam);
+          startActivity(intent);
+      }
+
+      if(subclass.equals("history")) {
+          Intent intent = new Intent(getActivity(), ReviewActivity.class);
+          intent.putExtra("exam", exam);
           startActivity(intent);
       }
    }
@@ -128,5 +136,14 @@ public class ExamsListFragment extends ItemListFragment<Exam> {
     @Override
     protected int getErrorMessage(Exception exception) {
         return R.string.error_loading_news;
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        //super.getLoaderManager().initLoader(0, null, this);
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
     }
 }

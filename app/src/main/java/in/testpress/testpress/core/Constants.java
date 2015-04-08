@@ -57,27 +57,32 @@ public final class Constants {
         /**
          * List Available Exams URL
          */
-        public static final String URL_AVAILABLE_EXAMS_FRAG =  "/api/v2/exams/available/";
+        public static final String URL_AVAILABLE_EXAMS_FRAG =  "/api/v2.1/exams/available/";
         public static final String URL_AVAILABLE_EXAMS = URL_BASE + URL_AVAILABLE_EXAMS_FRAG;
 
         /**
          * List Upcoming Exams URL
          */
-        public static final String URL_UPCOMING_EXAMS_FRAG =  "/api/v2/exams/upcoming/";
+        public static final String URL_UPCOMING_EXAMS_FRAG =  "/api/v2.1/exams/upcoming/";
         public static final String URL_UPCOMING_EXAMS = URL_BASE + URL_UPCOMING_EXAMS_FRAG;
 
         /**
          * List History Exams URL
          */
-        public static final String URL_HISTORY_EXAMS_FRAG =  "/api/v2/exams/available/";
+        public static final String URL_HISTORY_EXAMS_FRAG =  "/api/v2.1/exams/history/";
         public static final String URL_HISTORY_EXAMS = URL_BASE + URL_HISTORY_EXAMS_FRAG;
 
         /**
          * Start Exam URL
          */
-        public static final String URL_START_EXAM_FRAG =  "/api/v2/exams/start/";
+        public static final String URL_START_EXAM_FRAG =  "/api/v2.1/exams/start/";
         public static final String URL_START_EXAM = URL_BASE + URL_START_EXAM_FRAG;
 
+        /**
+         * End Exam URL
+         */
+        public static final String URL_END_EXAM_FRAG =  "end/";
+        public static final String URL_END_EXAM = URL_BASE + URL_END_EXAM_FRAG;
 
         /**
          * PARAMS for auth

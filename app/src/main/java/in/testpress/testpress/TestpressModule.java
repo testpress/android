@@ -20,11 +20,12 @@ import in.testpress.testpress.core.RestAdapterRequestInterceptor;
 import in.testpress.testpress.core.RestErrorHandler;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.core.UserAgentProvider;
+import in.testpress.testpress.ui.AttemptFragment;
 import in.testpress.testpress.ui.ExamActivity;
 import in.testpress.testpress.ui.ExamsListFragment;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.NavigationDrawerFragment;
-import in.testpress.testpress.ui.UserExamFragment;
+import in.testpress.testpress.ui.ReviewFragment;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
 
@@ -43,7 +44,8 @@ import retrofit.converter.GsonConverter;
                 ExamActivity.class,
                 NavigationDrawerFragment.class,
                 ExamsListFragment.class,
-                UserExamFragment.class
+                AttemptFragment.class,
+                ReviewFragment.class,
         }
 )
 public class TestpressModule {

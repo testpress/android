@@ -1,9 +1,14 @@
 package in.testpress.testpress.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class Exam {
+public class Exam implements Parcelable {
     private String totalMarks;
     private String url;
     private Integer id;
@@ -15,8 +20,56 @@ public class Exam {
     private Integer numberOfQuestions;
     private String negativeMarks;
     private Integer templateType;
-    private String startUrl;
+    private String attemptsUrl;
+    private List<Attempt> attempts;
     private Map<String, String> additionalProperties = new HashMap<String, String>();
+
+    // Parcelling part
+    public Exam(Parcel parcel){
+        totalMarks         = parcel.readString();
+        url                = parcel.readString();
+        id                 = parcel.readInt();
+        title              = parcel.readString();
+        description        = parcel.readString();
+        startDate          = parcel.readString();
+        endDate            = parcel.readString();
+        duration           = parcel.readString();
+        numberOfQuestions  = parcel.readInt();
+        negativeMarks      = parcel.readString();
+        templateType       = parcel.readInt();
+        attemptsUrl        = parcel.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(totalMarks);
+        parcel.writeString(url);
+        parcel.writeInt(id);
+        parcel.writeString(title);
+        parcel.writeString(description);
+        parcel.writeString(startDate);
+        parcel.writeString(endDate);
+        parcel.writeString(duration);
+        parcel.writeInt(numberOfQuestions);
+        parcel.writeString(negativeMarks);
+        parcel.writeInt(templateType);
+        parcel.writeString(attemptsUrl);
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public Exam createFromParcel(Parcel in) {
+            return new Exam(in);
+        }
+
+        public Exam[] newArray(int size) {
+            return new Exam[size];
+        }
+    };
 
     /**
      *
@@ -226,17 +279,26 @@ public class Exam {
      * @return
      * The startUrl
      */
-    public String getStartUrl() {
-        return startUrl;
+    public String getAttemptsUrl() {
+        return attemptsUrl;
     }
 
+    public String getAttemptsFrag() {
+        try {
+            URL url = new URL(attemptsUrl);
+            return url.getFile();
+        }
+        catch (Exception e) {
+            return null;
+        }
+    }
     /**
      *
      * @param startUrl
      * The start_url
      */
-    public void setStartUrl(String startUrl) {
-        this.startUrl = startUrl;
+    public void setAttemptsUrl(String startUrl) {
+        this.attemptsUrl = startUrl;
     }
 
     public Map<String, String> getAdditionalProperties() {

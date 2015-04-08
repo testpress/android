@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 
 
+import in.testpress.testpress.models.Attempt;
+import in.testpress.testpress.models.AttemptQuestion;
 import in.testpress.testpress.models.TestpressApiResponse;
-import in.testpress.testpress.models.UserExam;
-import in.testpress.testpress.models.Questions;
 import in.testpress.testpress.models.Exam;
 import retrofit.RestAdapter;
 
@@ -57,15 +57,30 @@ public class TestpressService {
         return getExamsService().getHistoryExams(getAuthToken()).getResults();
     }
 
-    public UserExam getUserExam(String id) {
-        HashMap<String, String> Id = new HashMap<String, String>();
-        Id.put("id", id);
-        return getExamsService().getUserExam(getAuthToken(), Id);
+    public Attempt createAttempt(String attemptsUrlFrag) {
+        return getExamsService().createAttempt(attemptsUrlFrag, getAuthToken());
     }
 
-    public TestpressApiResponse<Questions> getQuestions(String questionsUrlFrag) {
-        return getExamsService().getQuestions(questionsUrlFrag, getAuthToken());
+    public Attempt startAttempt(String startAttemptUrlFrag) {
+        return getExamsService().startAttempt(startAttemptUrlFrag, getAuthToken());
+    }
 
+    public TestpressApiResponse<AttemptQuestion> getQuestions(String questionsUrlFrag) {
+        return getExamsService().getQuestions(questionsUrlFrag, getAuthToken());
+    }
+
+    public AttemptQuestion postAnswer(String answerUrlFrag, List<Integer> savedAnswers) {
+        HashMap<String, List<Integer>> answer = new HashMap<String, List<Integer>>();
+        answer.put("selected_answers", savedAnswers);
+        return getExamsService().postAnswer(answerUrlFrag, getAuthToken(), answer);
+    }
+
+    public Attempt heartbeat(String heartbeatUrlFrag) {
+        return getExamsService().heartbeat(heartbeatUrlFrag, getAuthToken());
+    }
+
+    public Attempt endExam(String endExamUrlFrag) {
+        return getExamsService().endExam(endExamUrlFrag, getAuthToken());
     }
 
     public String authenticate(String username, String password) {

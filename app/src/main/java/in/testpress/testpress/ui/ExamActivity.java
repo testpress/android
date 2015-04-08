@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.view.View;
@@ -11,38 +12,42 @@ import android.widget.ProgressBar;
 
 import javax.inject.Inject;
 
+import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
-import in.testpress.testpress.models.UserExam;
+import in.testpress.testpress.models.Attempt;
+import in.testpress.testpress.models.Exam;
 import retrofit.RetrofitError;
 
-public class ExamActivity extends TestpressFragmentActivity implements LoaderManager.LoaderCallbacks<UserExam>  {
+public class ExamActivity extends FragmentActivity implements LoaderManager.LoaderCallbacks<Attempt>  {
     @Inject protected TestpressServiceProvider serviceProvider;
 
-    String examId, questionsUrl;
-    protected UserExam userExam = null;
+    protected Exam exam = null;
+    protected Attempt attempt = null;
     protected ProgressBar progressBar;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exam);
+        Injector.inject(this);
         progressBar = (ProgressBar) findViewById(R.id.pb_loading);
 
         final Intent intent = getIntent();
-        examId = intent.getStringExtra("examId");
+        Bundle data = intent.getExtras();
+        exam = data.getParcelable("exam");
 
         getSupportLoaderManager().initLoader(0, null, this);
         progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public Loader<UserExam> onCreateLoader(int id, final Bundle args) {
-        return new ThrowableLoader<UserExam>(ExamActivity.this, userExam) {
+    public Loader<Attempt> onCreateLoader(int id, final Bundle args) {
+        return new ThrowableLoader<Attempt>(ExamActivity.this, attempt) {
             @Override
-            public UserExam loadData() throws Exception {
+            public Attempt loadData() throws Exception {
                 try {
-                    return serviceProvider.getService(ExamActivity.this).getUserExam(examId);
+                    return serviceProvider.getService(ExamActivity.this).createAttempt(exam.getAttemptsFrag());
                 } catch (RetrofitError retrofitError) {
                     return null;
 
@@ -53,16 +58,15 @@ public class ExamActivity extends TestpressFragmentActivity implements LoaderMan
         };
     }
 
-    public void onLoadFinished(final Loader<UserExam> loader, final UserExam userExam) {
+    public void onLoadFinished(final Loader<Attempt> loader, final Attempt attempt) {
         progressBar.setVisibility(View.INVISIBLE);
-        if(userExam != null) {
-            questionsUrl = userExam.getQuestionsUrl();
-            UserExamFragment userExamFragment = new UserExamFragment();
+        if(attempt != null) {
+            AttemptFragment attemptFragment = new AttemptFragment();
             Bundle bundle = new Bundle();
-            bundle.putString("questionsUrl", questionsUrl);
-            userExamFragment.setArguments(bundle);
+            bundle.putParcelable("attempt", attempt);
+            attemptFragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, userExamFragment).commitAllowingStateLoss();
+                    .replace(R.id.fragment_container, attemptFragment).commitAllowingStateLoss();
         }
         else {
             AlertDialog.Builder builder = new AlertDialog.Builder(ExamActivity.this);
@@ -82,7 +86,7 @@ public class ExamActivity extends TestpressFragmentActivity implements LoaderMan
     }
 
     @Override
-    public void onLoaderReset(final Loader<UserExam> loader) {
+    public void onLoaderReset(final Loader<Attempt> loader) {
 
     }
 

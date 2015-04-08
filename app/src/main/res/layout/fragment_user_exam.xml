@@ -1,11 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/questions_drawer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_weight="0.1" android:layout_height="0dp">
+
+        <DigitalClock
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/digitalClock"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:text="End Exam"
+            android:id="@+id/end"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:text="Menu"
+            android:id="@+id/select_question"
+            android:visibility="invisible"
+            android:textSize="@dimen/text_size_small"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical" android:layout_width="match_parent"
-        android:layout_weight="0.9" android:layout_height="0dp">
+        android:layout_weight="0.8" android:layout_height="0dp">
 
         <in.testpress.testpress.ui.TestpressViewPager
             xmlns:android="http://schemas.android.com/apk/res/android"
@@ -42,7 +80,8 @@
             android:textSize="@dimen/text_size_large"
             android:layout_alignParentBottom="true"
             android:layout_alignRight="@+id/next"
-            android:layout_alignEnd="@+id/next" />
+            android:layout_alignEnd="@+id/next"
+        />
 
         <Button
             android:layout_width="wrap_content"
@@ -54,7 +93,20 @@
             android:layout_alignParentEnd="true"
             android:visibility="invisible"
             android:layout_gravity="end"
-            android:layout_alignParentBottom="true" />
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/previous"
+            android:layout_toEndOf="@+id/previous" />
+
     </RelativeLayout>
 
 </LinearLayout>
+    <ListView android:id="@+id/questions_list"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
+        android:background="#111"/>
+
+</android.support.v4.widget.DrawerLayout>

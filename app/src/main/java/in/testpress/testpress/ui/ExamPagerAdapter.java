@@ -4,19 +4,19 @@ package in.testpress.testpress.ui;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.util.Log;
 import android.view.ViewGroup;
 
 import java.util.List;
 
-import in.testpress.testpress.models.Question;
-import in.testpress.testpress.models.Questions;
+import in.testpress.testpress.models.AttemptQuestion;
 
 public class ExamPagerAdapter extends FragmentStatePagerAdapter {
     int numberOfPages = 0;
-    List<Questions> questions;
-    Question question;
+    List<AttemptQuestion> questions;
+    AttemptQuestion question;
 
-    public ExamPagerAdapter(FragmentManager fragmentManager, List<Questions> questions) {
+    public ExamPagerAdapter(FragmentManager fragmentManager, List<AttemptQuestion> questions) {
         super(fragmentManager);
         this.questions = questions;
         numberOfPages = questions.size();
@@ -28,9 +28,10 @@ public class ExamPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int arg0) {
-        question = questions.get(arg0).getQuestion();
-        UserExamQuestionsFragment userExamQuestionsFragment = new UserExamQuestionsFragment(question);
-        return userExamQuestionsFragment;
+        Log.e("PAGER", "GETTING ITEM");
+        question = questions.get(arg0);
+        AttemptQuestionsFragment attemptQuestionsFragment = new AttemptQuestionsFragment(question);
+        return attemptQuestionsFragment;
     }
 
     @Override

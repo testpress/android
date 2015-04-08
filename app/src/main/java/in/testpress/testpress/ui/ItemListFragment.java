@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ExpandableListView;
@@ -41,7 +42,7 @@ import java.util.List;
  * @param <E>
  */
 public abstract class ItemListFragment<E> extends Fragment
-        implements LoaderManager.LoaderCallbacks<List<E>> {
+        implements LoaderManager.LoaderCallbacks<List<E>>, OnScrollListener {
 
     private static final String FORCE_REFRESH = "forceRefresh";
 
@@ -225,7 +226,6 @@ public abstract class ItemListFragment<E> extends Fragment
             showList();
             return;
         }
-
         this.items = items;
         getListAdapter().getWrappedAdapter().setItems(items.toArray());
         showList();

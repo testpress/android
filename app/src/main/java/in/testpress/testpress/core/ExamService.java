@@ -40,7 +40,7 @@ public interface ExamService {
     @PUT("/{heartbeat_url}")
     Attempt heartbeat(@EncodedPath("answer_url") String heartbeatUrlFrag, @Header("Authorization") String authorization);
 
-    @POST("/{end_exam_url}")
+    @PUT("/{end_exam_url}")
     Attempt endExam(@EncodedPath("end_exam_url") String endExamUrlFrag, @Header("Authorization") String authorization);
 }
 

@@ -3,14 +3,48 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Question {
+public class Question implements Parcelable {
 
     private String questionHtml;
     private List<Answer> answers = new ArrayList<Answer>();
-    private Object subject;
+    private String subject;
     private String type;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+
+    // Parcelling part
+    public Question(Parcel parcel){
+        answers = new ArrayList<Answer>();
+        parcel.readTypedList(answers, Answer.CREATOR);
+        questionHtml = parcel.readString();
+        subject = parcel.readString();
+        type = parcel.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeTypedList(answers);
+        parcel.writeString(questionHtml);
+        parcel.writeString(subject);
+        parcel.writeString(type);
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public Question createFromParcel(Parcel parcel) {
+            return new Question(parcel);
+        }
+
+        public Question[] newArray(int size) {
+            return new Question[size];
+        }
+    };
 
     /**
      *
@@ -62,7 +96,7 @@ public class Question {
      * @param subject
      * The subject
      */
-    public void setSubject(Object subject) {
+    public void setSubject(String subject) {
         this.subject = subject;
     }
 

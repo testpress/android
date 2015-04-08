@@ -1,7 +1,10 @@
 package in.testpress.testpress.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import android.app.Activity;
+import android.util.Log;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -14,13 +17,57 @@ import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.util.SafeAsyncTask;
 
 
-public class AttemptQuestion {
+public class AttemptQuestion implements Parcelable {
     private String url;
     private Question question;
     private List<Integer> selectedAnswers = new ArrayList<Integer>();
     private Boolean review;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
     private List<Integer> savedAnswers = new ArrayList<Integer>();
+
+    AttemptQuestion() {
+        selectedAnswers = new ArrayList<Integer>();
+        savedAnswers = new ArrayList<Integer>();
+    }
+
+    // Parcelling part
+    public AttemptQuestion(Parcel parcel){
+        question = (Question) parcel.readParcelable(Question.class.getClassLoader());
+        url = parcel.readString();
+        selectedAnswers = new ArrayList<Integer>();
+        parcel.readList(selectedAnswers, List.class.getClassLoader());
+        savedAnswers = new ArrayList<Integer>();
+        parcel.readList(savedAnswers, List.class.getClassLoader());
+        review = parcel.readByte() != 0;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeParcelable(question, i);
+        parcel.writeString(url);
+        parcel.writeList(selectedAnswers);
+        parcel.writeList(savedAnswers);
+        if (review == null) {
+            parcel.writeByte((byte) (0));
+        } else {
+            parcel.writeByte((byte) (review ? 1 : 0)); //if review == true, byte == 1
+        }
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public AttemptQuestion createFromParcel(Parcel parcel) {
+            return new AttemptQuestion(parcel);
+        }
+
+        public AttemptQuestion[] newArray(int size) {
+            return new AttemptQuestion[size];
+        }
+    };
 
     public void saveAnswers(List<Integer> savedAnswers) {
         this.savedAnswers = savedAnswers;

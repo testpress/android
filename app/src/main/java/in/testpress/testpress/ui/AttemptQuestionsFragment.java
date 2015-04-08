@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,9 +44,6 @@ public class AttemptQuestionsFragment extends Fragment {
     AttemptQuestion attemptQuestion;
     String url;
     Bitmap bmp = null;
-    AttemptQuestionsFragment(AttemptQuestion attemptQuestion) {
-        this.attemptQuestion = attemptQuestion;
-    }
 
     @InjectView(id.question) TextView questionsView;
     @InjectView(id.answers) RadioGroup answersView;
@@ -55,7 +53,9 @@ public class AttemptQuestionsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.attemptQuestion = getArguments().getParcelable("question");
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 

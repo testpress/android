@@ -1,6 +1,7 @@
 package in.testpress.testpress.ui;
 
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -14,7 +15,6 @@ import in.testpress.testpress.models.AttemptQuestion;
 public class ExamPagerAdapter extends FragmentStatePagerAdapter {
     int numberOfPages = 0;
     List<AttemptQuestion> questions;
-    AttemptQuestion question;
 
     public ExamPagerAdapter(FragmentManager fragmentManager, List<AttemptQuestion> questions) {
         super(fragmentManager);
@@ -29,8 +29,10 @@ public class ExamPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int arg0) {
         Log.e("PAGER", "GETTING ITEM");
-        question = questions.get(arg0);
-        AttemptQuestionsFragment attemptQuestionsFragment = new AttemptQuestionsFragment(question);
+        AttemptQuestionsFragment attemptQuestionsFragment = new AttemptQuestionsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("question", questions.get(arg0));
+        attemptQuestionsFragment.setArguments(bundle);
         return attemptQuestionsFragment;
     }
 

@@ -42,7 +42,7 @@ import java.util.List;
  * @param <E>
  */
 public abstract class ItemListFragment<E> extends Fragment
-        implements LoaderManager.LoaderCallbacks<List<E>>, OnScrollListener {
+        implements LoaderManager.LoaderCallbacks<List<E>> {
 
     private static final String FORCE_REFRESH = "forceRefresh";
 
@@ -159,7 +159,7 @@ public abstract class ItemListFragment<E> extends Fragment
         }
         switch (item.getItemId()) {
             case id.refresh:
-                forceRefresh();
+                refreshWithProgress();
                 return true;
             case R.id.logout:
                 logout();
@@ -216,7 +216,7 @@ public abstract class ItemListFragment<E> extends Fragment
      */
     protected abstract int getErrorMessage(final Exception exception);
 
-    public void onLoadFinished(final Loader<List<E>> loader, final List<E> items) {
+    public void onLoadFinished(Loader<List<E>> loader, List<E> items) {
 
         getActivity().setProgressBarIndeterminateVisibility(false);
 

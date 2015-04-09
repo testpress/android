@@ -1,10 +1,12 @@
 package in.testpress.testpress.ui;
 
+import android.accounts.AccountsException;
 import android.accounts.OperationCanceledException;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
@@ -14,24 +16,36 @@ import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.authenticator.LogoutService;
+import in.testpress.testpress.core.ExamPager;
+import in.testpress.testpress.core.ResourcePager;
 import in.testpress.testpress.models.Exam;
 
 import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Inject;
 
-public class ExamsListFragment extends ItemListFragment<Exam> {
+public class ExamsListFragment extends PagedItemFragment<Exam> {
 
     String subclass;
+    ExamPager pager;
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected LogoutService logoutService;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         Injector.inject(this);
+        subclass = getArguments().getString("subclass");
+        try {
+            pager = new ExamPager(subclass, serviceProvider.getService(getActivity()));
+        } catch (AccountsException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -64,39 +78,8 @@ public class ExamsListFragment extends ItemListFragment<Exam> {
     }
 
     @Override
-    public Loader<List<Exam>> onCreateLoader(int id, final Bundle args) {
-        final List<Exam> initialItems = items;
-        Bundle bundle = this.getArguments();
-        if (bundle != null) {
-            subclass = bundle.getString("subclass");
-        }
-        return new ThrowableLoader<List<Exam>>(getActivity(), items) {
-
-            @Override
-            public List<Exam> loadData() throws Exception {
-                try {
-                    if (getActivity() != null && subclass != null) {
-                        if (subclass.equals("available")) {
-                            return serviceProvider.getService(getActivity()).getAvailableExams();
-                        } else if (subclass.equals("upcoming")) {
-                            return serviceProvider.getService(getActivity()).getUpcomingExams();
-                        } else if (subclass.equals("history")) {
-                            return serviceProvider.getService(getActivity()).getHistoryExams();
-                        } else {
-                            return serviceProvider.getService(getActivity()).getAvailableExams();
-                        }
-                    } else {
-                        return serviceProvider.getService(getActivity()).getAvailableExams();
-                    }
-
-                } catch (OperationCanceledException e) {
-                    Activity activity = getActivity();
-                    if (activity != null)
-                        activity.finish();
-                    return initialItems;
-                }
-            }
-        };
+    protected ResourcePager<Exam> getPager() {
+        return pager;
     }
 
     @Override
@@ -136,14 +119,5 @@ public class ExamsListFragment extends ItemListFragment<Exam> {
     @Override
     protected int getErrorMessage(Exception exception) {
         return R.string.error_loading_news;
-    }
-
-    @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        //super.getLoaderManager().initLoader(0, null, this);
-    }
-
-    @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
     }
 }

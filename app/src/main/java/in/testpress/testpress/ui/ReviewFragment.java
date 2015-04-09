@@ -17,6 +17,7 @@ import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
+import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.models.Exam;
 
 public class ReviewFragment extends ItemListFragment<Exam> {
@@ -24,16 +25,6 @@ public class ReviewFragment extends ItemListFragment<Exam> {
     @Inject
     protected TestpressServiceProvider serviceProvider;
     @Inject protected LogoutService logoutService;
-
-    @Override
-    public void onScroll(AbsListView absListView, int i, int i2, int i3) {
-
-    }
-
-    @Override
-    public void onScrollStateChanged(AbsListView absListView, int i) {
-
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,7 +53,7 @@ public class ReviewFragment extends ItemListFragment<Exam> {
             @Override
             public List<Exam> loadData() throws Exception {
                 try {
-                    return serviceProvider.getService(getActivity()).getAvailableExams();
+                    return serviceProvider.getService(getActivity()).getExams(Constants.Http.URL_AVAILABLE_EXAMS_FRAG).getResults();
                 } catch (OperationCanceledException e) {
                     Activity activity = getActivity();
                     if (activity != null)

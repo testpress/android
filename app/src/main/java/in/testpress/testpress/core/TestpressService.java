@@ -45,16 +45,8 @@ public class TestpressService {
         return "JWT " + authToken;
     }
 
-    public List<Exam> getAvailableExams() {
-        return getExamsService().getAvailableExams(getAuthToken()).getResults();
-    }
-
-    public List<Exam> getUpcomingExams() {
-        return getExamsService().getUpcomingExams(getAuthToken()).getResults();
-    }
-
-    public List<Exam> getHistoryExams() {
-        return getExamsService().getHistoryExams(getAuthToken()).getResults();
+    public TestpressApiResponse<Exam> getExams(String urlFrag) {
+        return getExamsService().getExams(urlFrag, getAuthToken());
     }
 
     public Attempt createAttempt(String attemptsUrlFrag) {

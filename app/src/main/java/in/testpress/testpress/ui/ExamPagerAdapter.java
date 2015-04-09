@@ -28,7 +28,6 @@ public class ExamPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int arg0) {
-        Log.e("PAGER", "GETTING ITEM");
         AttemptQuestionsFragment attemptQuestionsFragment = new AttemptQuestionsFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable("question", questions.get(arg0));

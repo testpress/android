@@ -7,11 +7,17 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.DrawerLayout;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -25,18 +31,22 @@ public class ExamActivity extends FragmentActivity implements LoaderManager.Load
     protected Exam exam = null;
     protected Attempt attempt = null;
     protected ProgressBar progressBar;
+    @InjectView(R.id.start_exam) Button startExam;
+
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exam);
         Injector.inject(this);
+        ButterKnife.inject(this);
         progressBar = (ProgressBar) findViewById(R.id.pb_loading);
-
         final Intent intent = getIntent();
         Bundle data = intent.getExtras();
         exam = data.getParcelable("exam");
+    }
 
+    @OnClick(R.id.start_exam) void startExam() {
         getSupportLoaderManager().initLoader(0, null, this);
         progressBar.setVisibility(View.VISIBLE);
     }
@@ -61,6 +71,10 @@ public class ExamActivity extends FragmentActivity implements LoaderManager.Load
     public void onLoadFinished(final Loader<Attempt> loader, final Attempt attempt) {
         progressBar.setVisibility(View.INVISIBLE);
         if(attempt != null) {
+            startExam.setVisibility(View.INVISIBLE);
+            ViewGroup layout = (ViewGroup) startExam.getParent();
+            if(null != layout) //for safety only  as you are doing onClick
+                layout.removeView(startExam);
             AttemptFragment attemptFragment = new AttemptFragment();
             Bundle bundle = new Bundle();
             bundle.putParcelable("attempt", attempt);

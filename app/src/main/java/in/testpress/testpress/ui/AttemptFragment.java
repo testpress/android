@@ -40,7 +40,6 @@ import in.testpress.testpress.util.SafeAsyncTask;
 public class AttemptFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<AttemptQuestion>> {
     @Inject protected TestpressServiceProvider serviceProvider;
 
-    @InjectView(R.id.start_exam) Button startExam;
     @InjectView(R.id.previous) Button previous;
     @InjectView(R.id.next) Button next;
     @InjectView(R.id.pager) TestpressViewPager pager;
@@ -50,7 +49,6 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     @InjectView(R.id.end) Button endExamButton;
 
     ProgressDialog progress;
-    FragmentManager startExamFragmentManager;
     ExamPagerAdapter pagerAdapter;
 
     Attempt mAttempt;
@@ -60,31 +58,25 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAttempt = getArguments().getParcelable("attempt");
+        getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_user_exam, container, false);
         Injector.inject(this);
         ButterKnife.inject(this, view);
         progress = new ProgressDialog(getActivity());
         questionsDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        return view;
-    }
-
-    @OnClick(R.id.start_exam) void startExam() {
-        getLoaderManager().initLoader(0, null, this);
         progress.setTitle("Loading");
         progress.setMessage("Wait while loading...");
         progress.show();
-        startExamFragmentManager = getFragmentManager();
         pager.setPagingEnabled(false);
-        startExam.setVisibility(View.INVISIBLE);
         previous.setVisibility(View.VISIBLE);
         next.setVisibility(View.VISIBLE);
         selectQuestion.setVisibility(View.VISIBLE);
         questionsDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        return view;
     }
 
     @OnClick(R.id.next) void showNextQuestion() {
@@ -186,7 +178,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
             progress.dismiss();
         }
 
-        pagerAdapter = new ExamPagerAdapter(startExamFragmentManager, attemptQuestionList);
+        pagerAdapter = new ExamPagerAdapter(getFragmentManager(), attemptQuestionList);
         pagerAdapter.setcount(attemptQuestionList.size());
         pager.setAdapter(pagerAdapter);
         pagerAdapter.notifyDataSetChanged();

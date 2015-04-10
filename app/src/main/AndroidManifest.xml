@@ -61,7 +61,7 @@
             android:name=".ui.ExamActivity"
             android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="Instructions">
+        >
         </activity>
 
         <activity

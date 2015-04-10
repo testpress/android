@@ -11,7 +11,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.IconTextView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+
 
 import javax.inject.Inject;
 
@@ -31,7 +35,13 @@ public class ExamActivity extends FragmentActivity implements LoaderManager.Load
     protected Exam exam = null;
     protected Attempt attempt = null;
     protected ProgressBar progressBar;
+    @InjectView(R.id.exam_details) LinearLayout examDetailsContainer;
     @InjectView(R.id.start_exam) Button startExam;
+    @InjectView(R.id.exam_title) TextView examTitle;
+    @InjectView(R.id.number_of_questions) TextView numberOfQuestions;
+    @InjectView(R.id.exam_duration) TextView examDuration;
+    @InjectView(R.id.mark_per_question) TextView markPerQuestion;
+    @InjectView(R.id.negative_marks) TextView negativeMarks;
 
 
     @Override
@@ -44,6 +54,15 @@ public class ExamActivity extends FragmentActivity implements LoaderManager.Load
         final Intent intent = getIntent();
         Bundle data = intent.getExtras();
         exam = data.getParcelable("exam");
+        examTitle.setText(exam.getTitle());
+        numberOfQuestions.setText("" + exam.getNumberOfQuestions());
+        examDuration.setText(exam.getDuration());
+        markPerQuestion.setText(exam.getMarkPerQuestion());
+        negativeMarks.setText(exam.getNegativeMarks());
+    }
+
+    @OnClick(R.id.exam_back_button) void goBack() {
+        super.onBackPressed();
     }
 
     @OnClick(R.id.start_exam) void startExam() {
@@ -71,7 +90,9 @@ public class ExamActivity extends FragmentActivity implements LoaderManager.Load
     public void onLoadFinished(final Loader<Attempt> loader, final Attempt attempt) {
         progressBar.setVisibility(View.INVISIBLE);
         if(attempt != null) {
-            startExam.setVisibility(View.INVISIBLE);
+
+            startExam.setVisibility(View.GONE);
+            examDetailsContainer.setVisibility(View.GONE);
             ViewGroup layout = (ViewGroup) startExam.getParent();
             if(null != layout) //for safety only  as you are doing onClick
                 layout.removeView(startExam);

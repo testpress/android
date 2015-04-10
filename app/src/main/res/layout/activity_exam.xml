@@ -8,24 +8,130 @@
         android:orientation="vertical"
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
     </LinearLayout>
     <ProgressBar
         android:id="@+id/pb_loading"
         style="@style/ListSpinner"
         android:visibility="invisible"
         android:layout_centerInParent="true" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/exam_details"
+        android:layout_marginTop="5dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+            <IconTextView
+                style="@style/examDetailHeading"
+                android:id="@+id/exam_back_button"
+                android:layout_width="70dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:gravity="center"
+                android:text="{fa-angle-left}"/>
+            <TextView
+                style="@style/examDetailHeading"
+                android:layout_width="wrap_content"
+                android:text="Aptitude Analytical Maths (NBE Template)"
+                android:id="@+id/exam_title"/>
+        </LinearLayout>
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="4dp">
+        <View
+            android:layout_width="320dp"
+            android:layout_height="1dip"
+            android:background="#cccccc" />
+    </LinearLayout>
+
+        <LinearLayout style="@style/examDetailRow">
+            <TextView
+                style="@style/examDetailSubHeading"
+                android:text="Number of Questions"/>
+            <TextView
+                style="@style/examDetailValue"
+                android:id="@+id/number_of_questions"
+                android:text="100"/>
+        </LinearLayout>
+        <LinearLayout style="@style/examDetailRow">
+            <TextView
+                style="@style/examDetailSubHeading"
+                android:text="Duration"/>
+            <TextView
+                style="@style/examDetailValue"
+                android:id="@+id/exam_duration"
+                android:text="0:30:00"/>
+        </LinearLayout>
+        <LinearLayout style="@style/examDetailRow">
+            <TextView
+                style="@style/examDetailSubHeading"
+                android:text="Mark per question"/>
+            <TextView
+                style="@style/examDetailValue"
+                android:id="@+id/mark_per_question"
+                android:text="1"/>
+        </LinearLayout>
+        <LinearLayout style="@style/examDetailRow">
+            <TextView
+                style="@style/examDetailSubHeading"
+                android:text="Negative marks"/>
+            <TextView
+                style="@style/examDetailValue"
+                android:id="@+id/negative_marks"
+                android:text="1"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp">
+            <View
+                android:layout_width="320dp"
+                android:layout_height="1dip"
+                android:background="#cccccc" />
+        </LinearLayout>
+        <LinearLayout style="@style/examDetailRow">
+            <IconTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#666666"
+                android:textSize="@dimen/text_size_xlarge"
+                android:textStyle="normal"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="{fa-thumbs-o-up}"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#666666"
+                android:textSize="@dimen/text_size_xlarge"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:textStyle="normal"
+                android:text=" All the best!"/>
+        </LinearLayout>
+    </LinearLayout>
+
+
     <Button
+        android:id="@+id/start_exam"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:text="@string/start_exam"
-        android:id="@+id/start_exam"
-        android:background="#51A351"
+        android:capitalize="characters"
+        android:textStyle="bold"
+        android:layout_alignParentBottom="true"
+        android:background="#3598db"
         android:textColor="#fff"
         android:textSize="@dimen/text_size_large"
-        android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/next"
-        android:layout_alignEnd="@+id/next"
         />
-
 </RelativeLayout>

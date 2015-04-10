@@ -49,6 +49,7 @@
     <string name="navigation_drawer_open">Drawer Open</string>
     <string name="navigation_drawer_close">Drawer Close</string>
     <string name="title_home">Home</string>
-
+    <string name="icon_heart">&#xf004;</string>
+    <string name="thumbs_o_up">&#xf087;</string>
 
 </resources>

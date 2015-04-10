@@ -19,6 +19,7 @@ public class Exam implements Parcelable {
     private String duration;
     private Integer numberOfQuestions;
     private String negativeMarks;
+    private String markPerQuestion;
     private Integer templateType;
     private String attemptsUrl;
     private List<Attempt> attempts;
@@ -36,6 +37,7 @@ public class Exam implements Parcelable {
         duration           = parcel.readString();
         numberOfQuestions  = parcel.readInt();
         negativeMarks      = parcel.readString();
+        markPerQuestion      = parcel.readString();
         templateType       = parcel.readInt();
         attemptsUrl        = parcel.readString();
     }
@@ -57,6 +59,7 @@ public class Exam implements Parcelable {
         parcel.writeString(duration);
         parcel.writeInt(numberOfQuestions);
         parcel.writeString(negativeMarks);
+        parcel.writeString(markPerQuestion);
         parcel.writeInt(templateType);
         parcel.writeString(attemptsUrl);
     }
@@ -254,6 +257,25 @@ public class Exam implements Parcelable {
      */
     public void setNegativeMarks(String negativeMarks) {
         this.negativeMarks = negativeMarks;
+    }
+
+
+    /**
+     *
+     * @return
+     * The mark per question
+     */
+    public String getMarkPerQuestion() {
+        return markPerQuestion;
+    }
+
+    /**
+     *
+     * @param markPerQuestion
+     * The mark per question
+     */
+    public void setMarkPerQuestion(String markPerQuestion) {
+        this.markPerQuestion = markPerQuestion;
     }
 
     /**

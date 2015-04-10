@@ -21,6 +21,7 @@ public class Attempt implements Parcelable {
     private String lastStartedTime;
     private String remainingTime;
     private String state;
+    private String percentile;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     // Parcelling part
@@ -39,6 +40,7 @@ public class Attempt implements Parcelable {
         lastStartedTime = parcel.readString();
         remainingTime = parcel.readString();
         state = parcel.readString();
+        percentile = parcel.readString();
     }
 
     @Override
@@ -62,6 +64,7 @@ public class Attempt implements Parcelable {
         parcel.writeString(lastStartedTime);
         parcel.writeString(remainingTime);
         parcel.writeString(state);
+        parcel.writeString(percentile);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
@@ -335,6 +338,23 @@ public class Attempt implements Parcelable {
         this.state = state;
     }
 
+    /**
+     *
+     * @return
+     * The percentile
+     */
+    public String getPercentile() {
+        return percentile;
+    }
+
+    /**
+     *
+     * @param percentile
+     * The percentile
+     */
+    public void setPercentile(String percentile) {
+        this.percentile = percentile;
+    }
     public Map<String, Object> getAdditionalProperties() {
         return this.additionalProperties;
     }

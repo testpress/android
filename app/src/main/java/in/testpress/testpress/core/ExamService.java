@@ -22,6 +22,9 @@ public interface ExamService {
     @GET("/{questions_url}")
     TestpressApiResponse<AttemptQuestion> getQuestions(@EncodedPath("questions_url") String questionsUrlFrag, @Header("Authorization") String authorization);
 
+    @GET("/{attempts_url}")
+    TestpressApiResponse<Attempt> getAttempts(@EncodedPath("attempts_url") String attemptsUrlFrag, @Header("Authorization") String authorization);
+
     @POST("/{attempts_url}")
     Attempt createAttempt(@EncodedPath("attempts_url") String attemptsUrlFrag, @Header("Authorization") String authorization);
 

@@ -69,6 +69,12 @@
             android:label="Review">
         </activity>
 
+        <activity
+            android:name=".ui.AttemptsListActivity"
+            android:label="Attempts List"
+            android:parentActivityName=".ui.MainActivity">
+        </activity>
+
     </application>
 
 </manifest>

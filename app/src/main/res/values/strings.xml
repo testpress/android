@@ -27,6 +27,8 @@
     <string name="start_exam">Start Exam</string>
     <string name="next">Next</string>
     <string name="previous">Prev</string>
+    <string name="paused">Paused</string>
+    <string name="end">End</string>
 
     <!-- AuthenticatorActivity -->
     <string name="label_email_address">Email Address</string>

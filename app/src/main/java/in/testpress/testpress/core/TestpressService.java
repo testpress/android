@@ -49,6 +49,10 @@ public class TestpressService {
         return getExamsService().getExams(urlFrag, getAuthToken());
     }
 
+    public TestpressApiResponse<Attempt> getAttempts(String urlFrag) {
+        return getExamsService().getAttempts(urlFrag, getAuthToken());
+    }
+
     public Attempt createAttempt(String attemptsUrlFrag) {
         return getExamsService().createAttempt(attemptsUrlFrag, getAuthToken());
     }

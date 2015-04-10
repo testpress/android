@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,9 +38,11 @@ public class Exam implements Parcelable {
         duration           = parcel.readString();
         numberOfQuestions  = parcel.readInt();
         negativeMarks      = parcel.readString();
-        markPerQuestion      = parcel.readString();
+        markPerQuestion    = parcel.readString();
         templateType       = parcel.readInt();
         attemptsUrl        = parcel.readString();
+        attempts = new ArrayList<Attempt>();
+        parcel.readTypedList(attempts, Attempt.CREATOR);
     }
 
     @Override
@@ -62,6 +65,7 @@ public class Exam implements Parcelable {
         parcel.writeString(markPerQuestion);
         parcel.writeInt(templateType);
         parcel.writeString(attemptsUrl);
+        parcel.writeTypedList(attempts);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
@@ -314,6 +318,16 @@ public class Exam implements Parcelable {
             return null;
         }
     }
+
+
+    public List<Attempt> getAttempts() {
+        return attempts;
+    }
+
+    public void setAttempts(List<Attempt> attempts) {
+        this.attempts = attempts;
+    }
+
     /**
      *
      * @param startUrl

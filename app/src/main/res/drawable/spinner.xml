@@ -1,20 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
-
-    <item android:drawable="@drawable/spinner_inner"/>
-    <item>
-        <rotate
-            android:fromDegrees="0"
-            android:interpolator="@android:anim/linear_interpolator"
-            android:pivotX="50%"
-            android:pivotY="50%"
-            android:toDegrees="360" >
-            <bitmap
-                android:antialias="true"
-                android:filter="true"
-                android:src="@drawable/spinner_outer" />
-        </rotate>
-    </item>
-
-</layer-list>
+<rotate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fromDegrees="0"
+    android:interpolator="@android:anim/accelerate_interpolator"
+    android:drawable="@drawable/circle_spinner"
+    android:repeatCount="infinite"
+    android:pivotX="50%"
+    android:pivotY="50%"
+    android:duration="100"
+    android:toDegrees="1080" >
+</rotate>

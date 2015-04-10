@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import in.testpress.testpress.models.Attempt;
-import in.testpress.testpress.models.AttemptQuestion;
+import in.testpress.testpress.models.AttemptItem;
 import in.testpress.testpress.models.Exam;
 import in.testpress.testpress.models.TestpressApiResponse;
 import retrofit.http.Body;
@@ -20,7 +20,7 @@ public interface ExamService {
     TestpressApiResponse<Exam> getExams(@EncodedPath("exams_url") String examsUrl, @Header("Authorization") String authorization);
 
     @GET("/{questions_url}")
-    TestpressApiResponse<AttemptQuestion> getQuestions(@EncodedPath("questions_url") String questionsUrlFrag, @Header("Authorization") String authorization);
+    TestpressApiResponse<AttemptItem> getQuestions(@EncodedPath("questions_url") String questionsUrlFrag, @Header("Authorization") String authorization);
 
     @GET("/{attempts_url}")
     TestpressApiResponse<Attempt> getAttempts(@EncodedPath("attempts_url") String attemptsUrlFrag, @Header("Authorization") String authorization);
@@ -32,7 +32,7 @@ public interface ExamService {
     Attempt startAttempt(@EncodedPath("start_attempt_url") String startAttemptUrlFrag, @Header("Authorization") String authorization);
 
     @PUT("/{answer_url}")
-    AttemptQuestion postAnswer(@EncodedPath("answer_url") String answerUrlFrag, @Header("Authorization") String authorization, @Body HashMap<String, List<Integer>> arguments);
+    AttemptItem postAnswer(@EncodedPath("answer_url") String answerUrlFrag, @Header("Authorization") String authorization, @Body HashMap<String, List<Integer>> arguments);
 
     @PUT("/{heartbeat_url}")
     Attempt heartbeat(@EncodedPath("answer_url") String heartbeatUrlFrag, @Header("Authorization") String authorization);

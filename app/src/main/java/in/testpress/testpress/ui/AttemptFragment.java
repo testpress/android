@@ -4,7 +4,6 @@ import android.accounts.OperationCanceledException;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.DrawerLayout;
@@ -33,11 +32,11 @@ import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.models.Attempt;
-import in.testpress.testpress.models.AttemptQuestion;
+import in.testpress.testpress.models.AttemptItem;
 import in.testpress.testpress.models.TestpressApiResponse;
 import in.testpress.testpress.util.SafeAsyncTask;
 
-public class AttemptFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<AttemptQuestion>> {
+public class AttemptFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<AttemptItem>> {
     @Inject protected TestpressServiceProvider serviceProvider;
 
     @InjectView(R.id.previous) Button previous;
@@ -52,7 +51,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     ExamPagerAdapter pagerAdapter;
 
     Attempt mAttempt;
-    List<AttemptQuestion> attemptQuestionList = Collections.emptyList();
+    List<AttemptItem> attemptItemList = Collections.emptyList();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,13 +79,13 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @OnClick(R.id.next) void showNextQuestion() {
-        if (attemptQuestionList.isEmpty()) {
+        if (attemptItemList.isEmpty()) {
             return;
         }
 
-        if (attemptQuestionList.get(pager.getCurrentItem()).hasChanged()) {
+        if (attemptItemList.get(pager.getCurrentItem()).hasChanged()) {
             try {
-                attemptQuestionList.get(pager.getCurrentItem()).saveResult(getActivity(), serviceProvider);
+                attemptItemList.get(pager.getCurrentItem()).saveResult(getActivity(), serviceProvider);
             }
             catch (Exception e) {
             }
@@ -98,11 +97,11 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @OnItemClick(R.id.questions_list) void goToQuestion(int position) {
-        if (attemptQuestionList.isEmpty()) {
+        if (attemptItemList.isEmpty()) {
             return;
         }
 
-        if (attemptQuestionList.get(pager.getCurrentItem()).hasChanged()) {
+        if (attemptItemList.get(pager.getCurrentItem()).hasChanged()) {
         }
         questionsDrawer.closeDrawers();
         pager.setCurrentItem(position);
@@ -110,13 +109,13 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @OnClick(R.id.previous) void showPreviousQuestion() {
-        if (attemptQuestionList.isEmpty()) {
+        if (attemptItemList.isEmpty()) {
             return;
         }
 
-        if (attemptQuestionList.get(pager.getCurrentItem()).hasChanged()) {
+        if (attemptItemList.get(pager.getCurrentItem()).hasChanged()) {
             try {
-               attemptQuestionList.get(pager.getCurrentItem()).saveResult(getActivity(), serviceProvider);
+               attemptItemList.get(pager.getCurrentItem()).saveResult(getActivity(), serviceProvider);
             }
             catch (Exception e) {
             }
@@ -134,12 +133,12 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @Override
-    public Loader<List<AttemptQuestion>> onCreateLoader(int id, final Bundle args) {
-        return new ThrowableLoader<List<AttemptQuestion>>(getActivity(), attemptQuestionList) {
+    public Loader<List<AttemptItem>> onCreateLoader(int id, final Bundle args) {
+        return new ThrowableLoader<List<AttemptItem>>(getActivity(), attemptItemList) {
             @Override
-            public List<AttemptQuestion> loadData() throws Exception {
-                List<AttemptQuestion> response = null;
-                TestpressApiResponse<AttemptQuestion> apiresponse = new TestpressApiResponse<AttemptQuestion>();
+            public List<AttemptItem> loadData() throws Exception {
+                List<AttemptItem> response = null;
+                TestpressApiResponse<AttemptItem> apiresponse = new TestpressApiResponse<AttemptItem>();
                 String fragment = null;
                 URL url = new URL(mAttempt.getQuestionsUrl());
                 do {
@@ -171,27 +170,27 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @Override
-    public void onLoadFinished(final Loader<List<AttemptQuestion>> loader, final List<AttemptQuestion> items) {
-        attemptQuestionList = items;
+    public void onLoadFinished(final Loader<List<AttemptItem>> loader, final List<AttemptItem> items) {
+        attemptItemList = items;
         if (progress.isShowing()) {
             progress.hide();
             progress.dismiss();
         }
 
-        pagerAdapter = new ExamPagerAdapter(getFragmentManager(), attemptQuestionList);
-        pagerAdapter.setcount(attemptQuestionList.size());
+        pagerAdapter = new ExamPagerAdapter(getFragmentManager(), attemptItemList);
+        pagerAdapter.setcount(attemptItemList.size());
         pager.setAdapter(pagerAdapter);
         pagerAdapter.notifyDataSetChanged();
         List<String> questionslist = new ArrayList<String>();
-        for(int i = 0 ; i < attemptQuestionList.size() ; i++) {
-            questionslist.add((i + 1) + ". " + Html.fromHtml(attemptQuestionList.get(i)
-                    .getQuestion().getQuestionHtml()).toString());
+        for(int i = 0 ; i < attemptItemList.size() ; i++) {
+            questionslist.add((i + 1) + ". " + Html.fromHtml(attemptItemList.get(i)
+                    .getAttemptQuestion().getQuestionHtml()).toString());
         }
         questionsListView.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.drawer_list_item, questionslist));
     }
 
     @Override
-    public void onLoaderReset(final Loader<List<AttemptQuestion>> loader) {
+    public void onLoaderReset(final Loader<List<AttemptItem>> loader) {
     }
 
 

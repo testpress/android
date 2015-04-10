@@ -4,14 +4,14 @@ import java.util.Map;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Answer implements Parcelable {
+public class AttemptAnswer implements Parcelable {
 
     private String textHtml;
     private Integer id;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     // Parcelling part
-    public Answer(Parcel parcel){
+    public AttemptAnswer(Parcel parcel){
         textHtml = parcel.readString();
         id = parcel.readInt();
     }
@@ -28,12 +28,12 @@ public class Answer implements Parcelable {
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        public Answer createFromParcel(Parcel parcel) {
-            return new Answer(parcel);
+        public AttemptAnswer createFromParcel(Parcel parcel) {
+            return new AttemptAnswer(parcel);
         }
 
-        public Answer[] newArray(int size) {
-            return new Answer[size];
+        public AttemptAnswer[] newArray(int size) {
+            return new AttemptAnswer[size];
         }
     };
 

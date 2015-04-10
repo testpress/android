@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,12 +35,12 @@ import in.testpress.testpress.R;
 
 import butterknife.InjectView;
 import in.testpress.testpress.R.id;
-import in.testpress.testpress.models.Answer;
+import in.testpress.testpress.models.AttemptAnswer;
+import in.testpress.testpress.models.AttemptItem;
 import in.testpress.testpress.models.AttemptQuestion;
-import in.testpress.testpress.models.Question;
 
 public class AttemptQuestionsFragment extends Fragment {
-    AttemptQuestion attemptQuestion;
+    AttemptItem attemptItem;
     String url;
     Bitmap bmp = null;
 
@@ -53,19 +52,19 @@ public class AttemptQuestionsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.attemptQuestion = getArguments().getParcelable("question");
+        this.attemptItem = getArguments().getParcelable("question");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        List<Answer> answers = attemptQuestion.getQuestion().getAnswers();
-        final Question question = attemptQuestion.getQuestion();
+        List<AttemptAnswer> attemptAnswers = attemptItem.getAttemptQuestion().getAttemptAnswers();
+        final AttemptQuestion attemptQuestion = attemptItem.getAttemptQuestion();
 
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_user_exam_questions, container, false);
         ButterKnife.inject(this,view);
 
-        Spanned htmlSpan = Html.fromHtml(question.getQuestionHtml(), new ImageGetter(), null);
+        Spanned htmlSpan = Html.fromHtml(attemptQuestion.getQuestionHtml(), new ImageGetter(), null);
 
         DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                 .cacheOnDisc(true).cacheInMemory(true)
@@ -84,14 +83,14 @@ public class AttemptQuestionsFragment extends Fragment {
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 bmp = loadedImage;
-                questionsView.setText(Html.fromHtml(question.getQuestionHtml(), new ImageGetter(), null));
+                questionsView.setText(Html.fromHtml(attemptQuestion.getQuestionHtml(), new ImageGetter(), null));
             }
         });
-        String type = attemptQuestion.getQuestion().getType();
+        String type = attemptItem.getAttemptQuestion().getType();
         switch (type) {
-            case "R": creareRadioButtonView(answers, question);
+            case "R": creareRadioButtonView(attemptAnswers, attemptQuestion);
                 break;
-            case "C": createCheckBoxView(answers, question);
+            case "C": createCheckBoxView(attemptAnswers, attemptQuestion);
                 break;
             default:break;
 
@@ -118,21 +117,21 @@ public class AttemptQuestionsFragment extends Fragment {
         }
     }
 
-    public void createCheckBoxView(List<Answer> answers, Question question) {
+    public void createCheckBoxView(List<AttemptAnswer> attemptAnswers, AttemptQuestion attemptQuestion) {
         final List<Integer> savedAnswers = new ArrayList<Integer>();
-        for(int i = 0 ; i < question.getAnswers().size() ; i++) {
+        for(int i = 0 ; i < attemptQuestion.getAttemptAnswers().size() ; i++) {
 
             final CheckBox option = new CheckBox(getActivity());
             option.setId(i);
             LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
             option.setLayoutParams(layoutParams);
-            option.setText(Html.fromHtml(answers.get(i).getTextHtml()));
+            option.setText(Html.fromHtml(attemptAnswers.get(i).getTextHtml()));
             option.setButtonDrawable(android.R.color.transparent);
             option.setPadding(25, 10, 0, 0);
-            List<Integer> selectedAnswers = attemptQuestion.getSelectedAnswers();
+            List<Integer> selectedAnswers = attemptItem.getSelectedAnswers();
 
             if(!selectedAnswers.isEmpty()) {
-                if (selectedAnswers.get(0).equals(answers.get(i).getId())) {
+                if (selectedAnswers.get(0).equals(attemptAnswers.get(i).getId())) {
                     option.setChecked(true);
                     option.setBackgroundColor(Color.parseColor("#66FF99"));
                 }
@@ -141,33 +140,33 @@ public class AttemptQuestionsFragment extends Fragment {
             option.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                    List<Answer> answers = attemptQuestion.getQuestion().getAnswers();
+                    List<AttemptAnswer> attemptAnswers = attemptItem.getAttemptQuestion().getAttemptAnswers();
                     if(checked) {
                         compoundButton.setBackgroundColor(Color.parseColor("#66FF99"));
-                        savedAnswers.add(answers.get(compoundButton.getId()).getId());
+                        savedAnswers.add(attemptAnswers.get(compoundButton.getId()).getId());
 
                     }
                     else {compoundButton.setBackgroundColor(android.R.color.transparent);
-                        savedAnswers.remove(answers.get(compoundButton.getId()).getId());}
-                    attemptQuestion.saveAnswers(savedAnswers);
+                        savedAnswers.remove(attemptAnswers.get(compoundButton.getId()).getId());}
+                    attemptItem.saveAnswers(savedAnswers);
                 }
             });
         }
     }
 
-    public void creareRadioButtonView(List<Answer> answers, Question question) {
-        for(int i = 0 ; i < question.getAnswers().size() ; i++) {
+    public void creareRadioButtonView(List<AttemptAnswer> attemptAnswers, AttemptQuestion attemptQuestion) {
+        for(int i = 0 ; i < attemptQuestion.getAttemptAnswers().size() ; i++) {
             final RadioButton option = new RadioButton(getActivity());
             option.setId(i);
             LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
             option.setLayoutParams(layoutParams);
-            option.setText(Html.fromHtml(answers.get(i).getTextHtml()));
+            option.setText(Html.fromHtml(attemptAnswers.get(i).getTextHtml()));
             option.setButtonDrawable(android.R.color.transparent);
             option.setPadding(25, 10, 0, 0);
-            List<Integer> selectedAnswers = attemptQuestion.getSelectedAnswers();
+            List<Integer> selectedAnswers = attemptItem.getSelectedAnswers();
 
             if(!selectedAnswers.isEmpty()) {
-                if (selectedAnswers.get(0).equals(answers.get(i).getId())) {
+                if (selectedAnswers.get(0).equals(attemptAnswers.get(i).getId())) {
                     option.setChecked(true);
                     option.setBackgroundColor(Color.parseColor("#66FF99"));
                 }
@@ -176,12 +175,12 @@ public class AttemptQuestionsFragment extends Fragment {
             option.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                    List<Answer> answers = attemptQuestion.getQuestion().getAnswers();
+                    List<AttemptAnswer> attemptAnswers = attemptItem.getAttemptQuestion().getAttemptAnswers();
                     if(checked) {
                         compoundButton.setBackgroundColor(Color.parseColor("#66FF99"));
                         List<Integer> savedAnswers = new ArrayList<Integer>();
-                        savedAnswers.add(answers.get(compoundButton.getId()).getId());
-                        attemptQuestion.saveAnswers(savedAnswers);
+                        savedAnswers.add(attemptAnswers.get(compoundButton.getId()).getId());
+                        attemptItem.saveAnswers(savedAnswers);
                     }
                     else compoundButton.setBackgroundColor(android.R.color.transparent);
                 }

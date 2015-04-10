@@ -1,44 +1,26 @@
 package in.testpress.testpress.models;
-
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import android.app.Activity;
-import android.util.Log;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import in.testpress.testpress.TestpressServiceProvider;
-import in.testpress.testpress.util.SafeAsyncTask;
-
+import android.os.Parcel;
+import android.os.Parcelable;
 
 public class AttemptQuestion implements Parcelable {
-    private String url;
-    private Question question;
-    private List<Integer> selectedAnswers = new ArrayList<Integer>();
-    private Boolean review;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
-    private List<Integer> savedAnswers = new ArrayList<Integer>();
 
-    AttemptQuestion() {
-        selectedAnswers = new ArrayList<Integer>();
-        savedAnswers = new ArrayList<Integer>();
-    }
+    private String questionHtml;
+    private List<AttemptAnswer> attemptAnswers = new ArrayList<AttemptAnswer>();
+    private String subject;
+    private String type;
+    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     // Parcelling part
     public AttemptQuestion(Parcel parcel){
-        question = (Question) parcel.readParcelable(Question.class.getClassLoader());
-        url = parcel.readString();
-        selectedAnswers = new ArrayList<Integer>();
-        parcel.readList(selectedAnswers, List.class.getClassLoader());
-        savedAnswers = new ArrayList<Integer>();
-        parcel.readList(savedAnswers, List.class.getClassLoader());
-        review = parcel.readByte() != 0;
+        attemptAnswers = new ArrayList<AttemptAnswer>();
+        parcel.readTypedList(attemptAnswers, AttemptAnswer.CREATOR);
+        questionHtml = parcel.readString();
+        subject = parcel.readString();
+        type = parcel.readString();
     }
 
     @Override
@@ -48,15 +30,10 @@ public class AttemptQuestion implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeParcelable(question, i);
-        parcel.writeString(url);
-        parcel.writeList(selectedAnswers);
-        parcel.writeList(savedAnswers);
-        if (review == null) {
-            parcel.writeByte((byte) (0));
-        } else {
-            parcel.writeByte((byte) (review ? 1 : 0)); //if review == true, byte == 1
-        }
+        parcel.writeTypedList(attemptAnswers);
+        parcel.writeString(questionHtml);
+        parcel.writeString(subject);
+        parcel.writeString(type);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
@@ -69,124 +46,76 @@ public class AttemptQuestion implements Parcelable {
         }
     };
 
-    public void saveAnswers(List<Integer> savedAnswers) {
-        this.savedAnswers = savedAnswers;
-    }
-
-    public List<Integer> getSavedAnswers() {
-        return savedAnswers;
-    }
-
-    public String saveResult(final Activity activity, final TestpressServiceProvider serviceProvider) throws Exception {
-
-        SafeAsyncTask<AttemptQuestion> postResult = new SafeAsyncTask<AttemptQuestion>() {
-            String fragment = null;
-
-            @Override
-            public AttemptQuestion call() throws Exception {
-                return serviceProvider.getService(activity).postAnswer(fragment, savedAnswers);
-            }
-
-            @Override
-            protected void onPreExecute() {
-                try {
-                    URL urlfrag = new URL(url);
-                    fragment = urlfrag.getFile();
-                }
-                catch (MalformedURLException e) {
-
-                }
-            }
-
-            @Override
-            protected void onSuccess(AttemptQuestion result) {
-            }
-
-            @Override
-            protected void onException(Exception e) {
-
-            }
-
-            @Override
-            protected void onFinally() {
-            }
-        };
-        postResult.execute();
-        return null;
-    }
-
-    public Boolean hasChanged() { return !savedAnswers.equals(selectedAnswers);}
-
     /**
      *
      * @return
-     * The url
+     * The questionHtml
      */
-    public String getUrl() {
-        return url;
+    public String getQuestionHtml() {
+        return questionHtml;
     }
 
     /**
      *
-     * @param url
-     * The url
+     * @param questionHtml
+     * The question_html
      */
-    public void setUrl(String url) {
-        this.url = url;
+    public void setQuestionHtml(String questionHtml) {
+        this.questionHtml = questionHtml;
     }
 
     /**
      *
      * @return
-     * The question
+     * The answers
      */
-    public Question getQuestion() {
-        return question;
+    public List<AttemptAnswer> getAttemptAnswers() {
+        return attemptAnswers;
     }
 
     /**
      *
-     * @param question
-     * The question
+     * @param attemptAnswers
+     * The answers
      */
-    public void setQuestion(Question question) {
-        this.question = question;
-    }
-
-    /**
-     *
-     * @return
-     * The selectedAnswers
-     */
-    public List<Integer> getSelectedAnswers() {
-        return selectedAnswers;
-    }
-
-    /**
-     *
-     * @param selectedAnswers
-     * The selected_answers
-     */
-    public void setSelectedAnswers(List<Integer> selectedAnswers) {
-        this.selectedAnswers = selectedAnswers;
+    public void setAttemptAnswers(List<AttemptAnswer> attemptAnswers) {
+        this.attemptAnswers = attemptAnswers;
     }
 
     /**
      *
      * @return
-     * The review
+     * The subject
      */
-    public Boolean getReview() {
-        return review;
+    public Object getSubject() {
+        return subject;
     }
 
     /**
      *
-     * @param review
-     * The review
+     * @param subject
+     * The subject
      */
-    public void setReview(Boolean review) {
-        this.review = review;
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    /**
+     *
+     * @return
+     * The type
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     *
+     * @param type
+     * The type
+     */
+    public void setType(String type) {
+        this.type = type;
     }
 
     public Map<String, Object> getAdditionalProperties() {

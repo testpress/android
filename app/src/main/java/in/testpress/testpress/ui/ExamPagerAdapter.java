@@ -5,18 +5,17 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.util.Log;
 import android.view.ViewGroup;
 
 import java.util.List;
 
-import in.testpress.testpress.models.AttemptQuestion;
+import in.testpress.testpress.models.AttemptItem;
 
 public class ExamPagerAdapter extends FragmentStatePagerAdapter {
     int numberOfPages = 0;
-    List<AttemptQuestion> questions;
+    List<AttemptItem> questions;
 
-    public ExamPagerAdapter(FragmentManager fragmentManager, List<AttemptQuestion> questions) {
+    public ExamPagerAdapter(FragmentManager fragmentManager, List<AttemptItem> questions) {
         super(fragmentManager);
         this.questions = questions;
         numberOfPages = questions.size();

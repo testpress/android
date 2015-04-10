@@ -6,7 +6,7 @@
     <color name="text_light">#999999</color>
     <color name="text_inverted">#FFFFFF</color>
     <color name="text_title">#DFDFDF</color>
-    <color name="pager_footer">#1fb6ed</color>
+    <color name="pager_footer">#3598db</color>
     <color name="pager_selected_text">#FFFFFF</color>
     <color name="pager_background">#F4F4F4</color>
     <color name="pager_background_alternate">#E7E7E7</color>
@@ -19,8 +19,8 @@
     <color name="header_background_end">#C3C3C3</color>
     <color name="header_background_top">#F9F9F9</color>
     <color name="header_background_bottom">#A7A7A7</color>
-    <color name="actionbar_background_start">#272727</color>
-    <color name="actionbar_background_end">#1A1A1A</color>
+    <color name="actionbar_background_start">#3598db</color>
+    <color name="actionbar_background_end">#3598db</color>
     <color name="testpress_divider_top">#000000</color>
     <color name="testpress_divider_bottom">#5A5A5A</color>
     <color name="main_background_start">#2E2E2E</color>

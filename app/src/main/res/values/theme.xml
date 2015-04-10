@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <resources>
+    <!-- the theme applied to the application or activity -->
+    <style name="Theme.Testpress.Dark"
+        parent="@style/Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
 
-    <style name="Theme.Testpress.Dark" parent="@style/Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:windowBackground">@color/pager_background</item>
-        <item name="android:actionBarStyle">@style/Widget.Styled.ActionBar</item>
+        <!-- Support library compatibility -->
+        <item name="actionBarStyle">@style/MyActionBar</item>
     </style>
 
-    <style name="Widget.Styled.ActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">@drawable/actionbar_background</item>
-    </style>
+    <!-- ActionBar styles -->
+    <style name="MyActionBar"
+        parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@color/actionbar_background_start</item>
 
+        <!-- Support library compatibility -->
+        <item name="background">@color/actionbar_background_start</item>
+        <item name="android:titleTextStyle">@style/TitleBarTextColor</item>
+    </style>
+    <style name="TitleBarTextColor" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">#ffffff</item>
+    </style>
 </resources>

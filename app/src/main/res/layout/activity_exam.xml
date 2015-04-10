@@ -130,7 +130,7 @@
         android:capitalize="characters"
         android:textStyle="bold"
         android:layout_alignParentBottom="true"
-        android:background="#3598db"
+        android:background="@drawable/opaque_green_button"
         android:textColor="#fff"
         android:textSize="@dimen/text_size_large"
         />

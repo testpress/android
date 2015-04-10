@@ -1,6 +1,7 @@
 package in.testpress.testpress.ui;
 
 import android.annotation.TargetApi;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import in.testpress.testpress.R;
+
+import com.astuetz.PagerSlidingTabStrip;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import butterknife.ButterKnife;
@@ -21,7 +24,7 @@ import butterknife.InjectView;
 public class CarouselFragment extends Fragment {
 
     @InjectView(R.id.tpi_header)
-    protected TitlePageIndicator indicator;
+    protected PagerSlidingTabStrip indicator;
 
     @InjectView(R.id.vp_pages)
     protected ViewPager pager;
@@ -40,6 +43,7 @@ public class CarouselFragment extends Fragment {
 
         pager.setAdapter(new TestpressPagerAdapter(getResources(), getChildFragmentManager()));
         indicator.setViewPager(pager);
+        indicator.setIndicatorColor(Color.parseColor("#3598db"));
         pager.setCurrentItem(0);
 
     }

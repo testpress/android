@@ -47,9 +47,9 @@ dependencies {
     //SlidingUp Panel
     compile 'com.sothree.slidinguppanel:library:3.0.0'
 
-    //Bootstrap buttons
-    //compile 'com.beardedhen:androidbootstrap:1.1.1'
     compile 'com.joanzapata.android:android-iconify:1.0.9'
+    compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
+
 
     androidTestCompile 'junit:junit:4.11'
     androidTestCompile 'org.hamcrest:hamcrest-library:1.3'

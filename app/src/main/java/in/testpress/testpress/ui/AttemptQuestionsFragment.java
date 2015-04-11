@@ -61,7 +61,7 @@ public class AttemptQuestionsFragment extends Fragment {
         List<AttemptAnswer> attemptAnswers = attemptItem.getAttemptQuestion().getAttemptAnswers();
         final AttemptQuestion attemptQuestion = attemptItem.getAttemptQuestion();
 
-        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_user_exam_questions, container, false);
+        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.attempt_question_fragment, container, false);
         ButterKnife.inject(this,view);
 
         Spanned htmlSpan = Html.fromHtml(attemptQuestion.getQuestionHtml(), new ImageGetter(), null);

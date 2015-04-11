@@ -62,7 +62,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_user_exam, container, false);
+        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.attempt_item_fragment, container, false);
         Injector.inject(this);
         ButterKnife.inject(this, view);
         progress = new ProgressDialog(getActivity());

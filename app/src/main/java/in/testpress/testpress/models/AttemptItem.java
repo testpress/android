@@ -18,7 +18,7 @@ import in.testpress.testpress.util.SafeAsyncTask;
 
 public class AttemptItem implements Parcelable {
     private String url;
-    private AttemptQuestion attemptQuestion;
+    private AttemptQuestion question;
     private List<Integer> selectedAnswers = new ArrayList<Integer>();
     private Boolean review;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
@@ -31,7 +31,7 @@ public class AttemptItem implements Parcelable {
 
     // Parcelling part
     public AttemptItem(Parcel parcel){
-        attemptQuestion = (AttemptQuestion) parcel.readParcelable(AttemptQuestion.class.getClassLoader());
+        question = (AttemptQuestion) parcel.readParcelable(AttemptQuestion.class.getClassLoader());
         url = parcel.readString();
         selectedAnswers = new ArrayList<Integer>();
         parcel.readList(selectedAnswers, List.class.getClassLoader());
@@ -47,7 +47,7 @@ public class AttemptItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeParcelable(attemptQuestion, i);
+        parcel.writeParcelable(question, i);
         parcel.writeString(url);
         parcel.writeList(selectedAnswers);
         parcel.writeList(savedAnswers);
@@ -140,7 +140,7 @@ public class AttemptItem implements Parcelable {
      * The question
      */
     public AttemptQuestion getAttemptQuestion() {
-        return attemptQuestion;
+        return question;
     }
 
     /**
@@ -149,7 +149,7 @@ public class AttemptItem implements Parcelable {
      * The question
      */
     public void setAttemptQuestion(AttemptQuestion attemptQuestion) {
-        this.attemptQuestion = attemptQuestion;
+        this.question = attemptQuestion;
     }
 
     /**

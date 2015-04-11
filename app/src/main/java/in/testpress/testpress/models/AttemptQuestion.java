@@ -9,15 +9,15 @@ import android.os.Parcelable;
 public class AttemptQuestion implements Parcelable {
 
     private String questionHtml;
-    private List<AttemptAnswer> attemptAnswers = new ArrayList<AttemptAnswer>();
+    private List<AttemptAnswer> answers = new ArrayList<AttemptAnswer>();
     private String subject;
     private String type;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     // Parcelling part
     public AttemptQuestion(Parcel parcel){
-        attemptAnswers = new ArrayList<AttemptAnswer>();
-        parcel.readTypedList(attemptAnswers, AttemptAnswer.CREATOR);
+        answers = new ArrayList<AttemptAnswer>();
+        parcel.readTypedList(answers, AttemptAnswer.CREATOR);
         questionHtml = parcel.readString();
         subject = parcel.readString();
         type = parcel.readString();
@@ -30,7 +30,7 @@ public class AttemptQuestion implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeTypedList(attemptAnswers);
+        parcel.writeTypedList(answers);
         parcel.writeString(questionHtml);
         parcel.writeString(subject);
         parcel.writeString(type);
@@ -70,7 +70,7 @@ public class AttemptQuestion implements Parcelable {
      * The answers
      */
     public List<AttemptAnswer> getAttemptAnswers() {
-        return attemptAnswers;
+        return answers;
     }
 
     /**
@@ -79,7 +79,7 @@ public class AttemptQuestion implements Parcelable {
      * The answers
      */
     public void setAttemptAnswers(List<AttemptAnswer> attemptAnswers) {
-        this.attemptAnswers = attemptAnswers;
+        this.answers = attemptAnswers;
     }
 
     /**

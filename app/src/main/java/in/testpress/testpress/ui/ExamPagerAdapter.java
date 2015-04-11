@@ -5,20 +5,23 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.util.Log;
 import android.view.ViewGroup;
 
+import java.util.Collections;
 import java.util.List;
 
 import in.testpress.testpress.models.AttemptItem;
 
 public class ExamPagerAdapter extends FragmentStatePagerAdapter {
     int numberOfPages = 0;
-    List<AttemptItem> questions;
+    List<AttemptItem> attemptItemList = Collections.emptyList();
 
-    public ExamPagerAdapter(FragmentManager fragmentManager, List<AttemptItem> questions) {
+
+    public ExamPagerAdapter(FragmentManager fragmentManager, List<AttemptItem> attemptItemList) {
         super(fragmentManager);
-        this.questions = questions;
-        numberOfPages = questions.size();
+        this.attemptItemList = attemptItemList;
+        numberOfPages = attemptItemList.size();
     }
 
     public void setcount(int count) {
@@ -29,7 +32,8 @@ public class ExamPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int arg0) {
         AttemptQuestionsFragment attemptQuestionsFragment = new AttemptQuestionsFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable("question", questions.get(arg0));
+        AttemptItem item = attemptItemList.get(arg0);
+        bundle.putParcelable("question", attemptItemList.get(arg0));
         attemptQuestionsFragment.setArguments(bundle);
         return attemptQuestionsFragment;
     }

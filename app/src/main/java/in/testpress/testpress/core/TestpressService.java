@@ -61,6 +61,10 @@ public class TestpressService {
         return getExamsService().startAttempt(startAttemptUrlFrag, getAuthToken());
     }
 
+    public Attempt endAttempt(String endAttemptUrlFrag) {
+        return getExamsService().endExam(endAttemptUrlFrag, getAuthToken());
+    }
+
     public TestpressApiResponse<AttemptItem> getQuestions(String questionsUrlFrag) {
         return getExamsService().getQuestions(questionsUrlFrag, getAuthToken());
     }

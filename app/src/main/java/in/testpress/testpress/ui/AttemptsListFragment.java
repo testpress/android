@@ -89,6 +89,10 @@ public class AttemptsListFragment extends PagedItemFragment<Attempt> {
         Attempt attempt = ((Attempt) l.getItemAtPosition(position));
         if (attempt.getState().equals("Running")) {
             //Show Start Exam Activity
+            Intent intent = new Intent(getActivity(), ExamActivity.class);
+            intent.putExtra("exam", exam);
+            intent.putExtra("attempt", attempt);
+            startActivity(intent);
         } else {
             Intent intent = new Intent(getActivity(), ReviewActivity.class);
             intent.putExtra("exam", exam);

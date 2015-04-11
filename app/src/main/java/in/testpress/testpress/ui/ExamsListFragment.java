@@ -120,6 +120,10 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
               Attempt attempt = exam.getAttempts().get(0);
               if (attempt.getState().equals("Running")) {
                   //Show Start Exam Activity
+                  Intent intent = new Intent(getActivity(), ExamActivity.class);
+                  intent.putExtra("exam", exam);
+                  intent.putExtra("attempt", attempt);
+                  startActivity(intent);
               } else {
                   Intent intent = new Intent(getActivity(), ReviewActivity.class);
                   intent.putExtra("exam", exam);

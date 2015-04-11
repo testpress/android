@@ -104,6 +104,15 @@ public class Attempt implements Parcelable {
             return null;
         }
     }
+
+    public String getStartUrlFrag() {
+        return getUrlFrag() + "start/";
+    }
+
+    public String getEndUrlFrag() {
+        return getUrlFrag() + "end/";
+    }
+
     /**
      *
      * @return

@@ -3,6 +3,8 @@
 package in.testpress.testpress.ui;
 
 import android.accounts.OperationCanceledException;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -16,6 +18,7 @@ import android.view.Window;
 
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
+import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.events.NavItemSelectedEvent;
 import in.testpress.testpress.util.Ln;
@@ -37,14 +40,12 @@ import butterknife.ButterKnife;
 public class MainActivity extends TestpressFragmentActivity {
 
     @Inject protected TestpressServiceProvider serviceProvider;
+    @Inject protected LogoutService logoutService;
+
 
     private boolean userHasAuthenticated = false;
 
-    private DrawerLayout drawerLayout;
-    private ActionBarDrawerToggle drawerToggle;
-    private CharSequence drawerTitle;
     private CharSequence title;
-    private NavigationDrawerFragment navigationDrawerFragment;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -60,46 +61,6 @@ public class MainActivity extends TestpressFragmentActivity {
 
         // View injection with Butterknife
         ButterKnife.inject(this);
-
-        // Set up navigation drawer
-        title = drawerTitle = getTitle();
-
-        if(!isTablet()) {
-            drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-            drawerToggle = new ActionBarDrawerToggle(
-                    this,                    /* Host activity */
-                    drawerLayout,           /* DrawerLayout object */
-                    R.drawable.ic_drawer,    /* nav drawer icon to replace 'Up' caret */
-                    R.string.navigation_drawer_open,    /* "open drawer" description */
-                    R.string.navigation_drawer_close) { /* "close drawer" description */
-
-                /** Called when a drawer has settled in a completely closed state. */
-                public void onDrawerClosed(View view) {
-                    getSupportActionBar().setTitle(title);
-                    invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-                }
-
-                /** Called when a drawer has settled in a completely open state. */
-                public void onDrawerOpened(View drawerView) {
-                    getSupportActionBar().setTitle(drawerTitle);
-                    invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-                }
-            };
-
-            // Set the drawer toggle as the DrawerListener
-            drawerLayout.setDrawerListener(drawerToggle);
-
-            navigationDrawerFragment = (NavigationDrawerFragment)
-                    getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
-
-            // Set up the drawer.
-            navigationDrawerFragment.setUp(
-                    R.id.navigation_drawer,
-                    (DrawerLayout) findViewById(R.id.drawer_layout));
-        }
-
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
 
@@ -114,22 +75,7 @@ public class MainActivity extends TestpressFragmentActivity {
     @Override
     protected void onPostCreate(final Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-
-        if(!isTablet()) {
-            // Sync the toggle state after onRestoreInstanceState has occurred.
-            drawerToggle.syncState();
-        }
     }
-
-
-    @Override
-    public void onConfigurationChanged(final Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        if(!isTablet()) {
-            drawerToggle.onConfigurationChanged(newConfig);
-        }
-    }
-
 
     private void initScreen() {
         if (userHasAuthenticated) {
@@ -178,13 +124,20 @@ public class MainActivity extends TestpressFragmentActivity {
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
 
-        if (!isTablet() && drawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
         switch (item.getItemId()) {
             case android.R.id.home:
                 //menuDrawer.toggleMenu();
+                return true;
+            case R.id.logout:
+                serviceProvider.invalidateAuthToken();
+                logoutService.logout(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Calling a refresh will force the service to look for a logged in user
+                        // and when it finds none the user will be requested to log in again.
+                        checkAuth();
+                    }
+                });
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

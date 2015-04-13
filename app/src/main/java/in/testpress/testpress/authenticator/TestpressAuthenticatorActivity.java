@@ -150,10 +150,10 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
 
         usernameText.addTextChangedListener(watcher);
         passwordText.addTextChangedListener(watcher);
-
-        final TextView signUpText = (TextView) findViewById(id.tv_signup);
-        signUpText.setMovementMethod(LinkMovementMethod.getInstance());
-        signUpText.setText(Html.fromHtml(getString(R.string.signup_link)));
+//
+//        final TextView signUpText = (TextView) findViewById(id.tv_signup);
+//        signUpText.setMovementMethod(LinkMovementMethod.getInstance());
+//        signUpText.setText(Html.fromHtml(getString(R.string.signup_link)));
     }
 
 //    private List<String> userEmailAccounts() {

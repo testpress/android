@@ -19,6 +19,9 @@ public class TestpressServiceProvider {
         this.keyProvider = keyProvider;
     }
 
+    public void invalidateAuthToken() {
+        authToken = null;
+    }
     /**
      * Get service for configured key provider
      * <p/>

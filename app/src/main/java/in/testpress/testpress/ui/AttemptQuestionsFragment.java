@@ -1,13 +1,19 @@
 package in.testpress.testpress.ui;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.text.Spannable;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +32,13 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,10 +54,12 @@ import in.testpress.testpress.models.AttemptQuestion;
 
 public class AttemptQuestionsFragment extends Fragment {
     AttemptItem attemptItem;
+    Integer index;
     String url;
     Bitmap bmp = null;
 
     @InjectView(id.question) TextView questionsView;
+    @InjectView(id.question_index) TextView questionIndex;
     @InjectView(id.answers) RadioGroup answersView;
     @InjectView(id.review) CheckBox review;
     @InjectView(id.answers_checkbox) ViewGroup answersCheckboxView;
@@ -52,7 +67,8 @@ public class AttemptQuestionsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.attemptItem = getArguments().getParcelable("question");
+        this.attemptItem = getArguments().getParcelable("attemptItem");
+        this.index = getArguments().getInt("question_index");
     }
 
     @Override
@@ -64,28 +80,34 @@ public class AttemptQuestionsFragment extends Fragment {
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.attempt_question_fragment, container, false);
         ButterKnife.inject(this,view);
 
-        Spanned htmlSpan = Html.fromHtml(attemptQuestion.getQuestionHtml(), new ImageGetter(), null);
+        Context c = getActivity().getApplicationContext();
 
-        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-                .cacheOnDisc(true).cacheInMemory(true)
-                .imageScaleType(ImageScaleType.EXACTLY)
-                .displayer(new FadeInBitmapDisplayer(300)).build();
+        questionIndex.setText(index + ".");
+        Spanned htmlSpan = Html.fromHtml(attemptQuestion.getQuestionHtml(), new URLImageParser(questionsView, c), null);
+        questionsView.setText(trim(htmlSpan, 0, htmlSpan.length()));
 
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getActivity())
-                .defaultDisplayImageOptions(defaultOptions)
-                .memoryCache(new WeakMemoryCache())
-                .discCacheSize(100 * 1024 * 1024).build();
+//        Spanned htmlSpan = Html.fromHtml(attemptQuestion.getQuestionHtml(), new ImageGetter(), null);
 
-        ImageLoader.getInstance().init(config);
-        ImageLoader imageLoader = ImageLoader.getInstance();
-
-        imageLoader.loadImage(url, new SimpleImageLoadingListener() {
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                bmp = loadedImage;
-                questionsView.setText(Html.fromHtml(attemptQuestion.getQuestionHtml(), new ImageGetter(), null));
-            }
-        });
+//        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+//                .cacheOnDisc(true).cacheInMemory(true)
+//                .imageScaleType(ImageScaleType.EXACTLY)
+//                .displayer(new FadeInBitmapDisplayer(300)).build();
+//
+//        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getActivity())
+//                .defaultDisplayImageOptions(defaultOptions)
+//                .memoryCache(new WeakMemoryCache())
+//                .discCacheSize(100 * 1024 * 1024).build();
+//
+//        ImageLoader.getInstance().init(config);
+//        ImageLoader imageLoader = ImageLoader.getInstance();
+//
+//        imageLoader.loadImage(url, new SimpleImageLoadingListener() {
+//            @Override
+//            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+//                bmp = loadedImage;
+//                questionsView.setText(Html.fromHtml(attemptQuestion.getQuestionHtml(), new ImageGetter(), null));
+//            }
+//        });
         String type = attemptItem.getAttemptQuestion().getType();
         switch (type) {
             case "R": creareRadioButtonView(attemptAnswers, attemptQuestion);
@@ -103,17 +125,97 @@ public class AttemptQuestionsFragment extends Fragment {
         else questionsView.setBackgroundColor(android.R.color.transparent);
     }
 
-    private class ImageGetter implements Html.ImageGetter {
-        Drawable d = null;
-        public Drawable getDrawable(String source) {
-            if(source != null) {
-                url = source;
-                if(bmp != null) {
-                    d = new BitmapDrawable(bmp);
-                    d.setBounds(0,0,d.getIntrinsicWidth(),d.getIntrinsicHeight());
+    public class URLImageParser implements Html.ImageGetter {
+        Context c;
+        View container;
+
+        /***
+         * Construct the URLImageParser which will execute AsyncTask and refresh the container
+         * @param t
+         * @param c
+         */
+        public URLImageParser(View t, Context c) {
+            this.c = c;
+            this.container = t;
+        }
+        public class URLDrawable extends BitmapDrawable {
+            // the drawable that you need to set, you could set the initial drawing
+            // with the loading image if you need to
+            protected Drawable drawable;
+
+            @Override
+            public void draw(Canvas canvas) {
+                // override the draw to facilitate refresh function later
+                if(drawable != null) {
+                    drawable.draw(canvas);
                 }
             }
-            return d;
+        }
+
+        public Drawable getDrawable(String source) {
+            URLDrawable urlDrawable = new URLDrawable();
+
+            // get the actual source
+            ImageGetterAsyncTask asyncTask =
+                    new ImageGetterAsyncTask( urlDrawable);
+
+            asyncTask.execute(source);
+
+            // return reference to URLDrawable where I will change with actual image from
+            // the src tag
+            return urlDrawable;
+        }
+
+        public class ImageGetterAsyncTask extends AsyncTask<String, Void, Drawable> {
+            URLDrawable urlDrawable;
+
+            public ImageGetterAsyncTask(URLDrawable d) {
+                this.urlDrawable = d;
+            }
+
+            @Override
+            protected Drawable doInBackground(String... params) {
+                String source = params[0];
+                return fetchDrawable(source);
+            }
+
+            @Override
+            protected void onPostExecute(Drawable result) {
+                // set the correct bound according to the result from HTTP call
+                urlDrawable.setBounds(0, 0, 0 + result.getIntrinsicWidth(), 0
+                        + result.getIntrinsicHeight());
+
+                // change the reference of the current drawable to the result
+                // from the HTTP call
+                urlDrawable.drawable = result;
+
+                // redraw the image by invalidating the container
+                URLImageParser.this.container.invalidate();
+            }
+
+            /***
+             * Get the Drawable from URL
+             * @param urlString
+             * @return
+             */
+            public Drawable fetchDrawable(String urlString) {
+                try {
+                    InputStream is = fetch(urlString);
+                    Drawable drawable = Drawable.createFromStream(is, "src");
+                    drawable.setBounds(0, 0, 0 + drawable.getIntrinsicWidth(), 0
+                            + drawable.getIntrinsicHeight());
+                    return drawable;
+                } catch (Exception e) {
+                    return null;
+                }
+            }
+
+            private InputStream fetch(String urlString) throws MalformedURLException, IOException {
+                DefaultHttpClient httpClient = new DefaultHttpClient();
+                HttpGet request = new HttpGet(urlString);
+                HttpResponse response = httpClient.execute(request);
+                return response.getEntity().getContent();
+            }
         }
     }
 
@@ -154,21 +256,41 @@ public class AttemptQuestionsFragment extends Fragment {
         }
     }
 
+    // http://stackoverflow.com/a/16745540/400236
+    public static CharSequence trim(CharSequence s, int start, int end) {
+        while (start < end && Character.isWhitespace(s.charAt(start))) {
+            start++;
+        }
+
+        while (end > start && Character.isWhitespace(s.charAt(end - 1))) {
+            end--;
+        }
+
+        return s.subSequence(start, end);
+    }
+
     public void creareRadioButtonView(List<AttemptAnswer> attemptAnswers, AttemptQuestion attemptQuestion) {
         for(int i = 0 ; i < attemptQuestion.getAttemptAnswers().size() ; i++) {
-            final RadioButton option = new RadioButton(getActivity());
+            LayoutInflater inflater;
+            inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            RadioButton option = (RadioButton) inflater.inflate(R.layout.attempt_radio_button_fragment ,
+                    null);
+            //final RadioButton option = new RadioButton(getActivity());
             option.setId(i);
-            LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-            option.setLayoutParams(layoutParams);
-            option.setText(Html.fromHtml(attemptAnswers.get(i).getTextHtml()));
-            option.setButtonDrawable(android.R.color.transparent);
-            option.setPadding(25, 10, 0, 0);
+            //LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+            //option.setLayoutParams(layoutParams);
+            //option.setHt
+            Spanned html = Html.fromHtml(attemptAnswers.get(i).getTextHtml());
+            option.setText(trim(html, 0, html.length()));
+            //Log.e("AttemptQuestionsFragment", Html.fromHtml(attemptAnswers.get(i).getTextHtml()));
+            //option.setButtonDrawable(android.R.color.transparent);
+            //option.setPadding(25, 10, 0, 0);
             List<Integer> selectedAnswers = attemptItem.getSelectedAnswers();
 
             if(!selectedAnswers.isEmpty()) {
                 if (selectedAnswers.get(0).equals(attemptAnswers.get(i).getId())) {
                     option.setChecked(true);
-                    option.setBackgroundColor(Color.parseColor("#66FF99"));
+                    //option.setBackgroundColor(Color.parseColor("#66FF99"));
                 }
             }
             answersView.addView(option);
@@ -177,12 +299,12 @@ public class AttemptQuestionsFragment extends Fragment {
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                     List<AttemptAnswer> attemptAnswers = attemptItem.getAttemptQuestion().getAttemptAnswers();
                     if(checked) {
-                        compoundButton.setBackgroundColor(Color.parseColor("#66FF99"));
+                        //compoundButton.setBackgroundColor(Color.parseColor("#66FF99"));
                         List<Integer> savedAnswers = new ArrayList<Integer>();
                         savedAnswers.add(attemptAnswers.get(compoundButton.getId()).getId());
                         attemptItem.saveAnswers(savedAnswers);
                     }
-                    else compoundButton.setBackgroundColor(android.R.color.transparent);
+                    //else compoundButton.setBackgroundColor(android.R.color.transparent);
                 }
             });
         }

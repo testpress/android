@@ -96,6 +96,7 @@ public class AttemptsListFragment extends PagedItemFragment<Attempt> {
         } else {
             Intent intent = new Intent(getActivity(), ReviewActivity.class);
             intent.putExtra("exam", exam);
+            intent.putExtra("attempt", attempt);
             startActivity(intent);
         }
     }

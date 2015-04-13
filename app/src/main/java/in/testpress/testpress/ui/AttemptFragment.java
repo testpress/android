@@ -2,6 +2,7 @@ package in.testpress.testpress.ui;
 
 import android.accounts.OperationCanceledException;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -15,6 +16,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -39,13 +43,12 @@ import in.testpress.testpress.util.SafeAsyncTask;
 public class AttemptFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<AttemptItem>> {
     @Inject protected TestpressServiceProvider serviceProvider;
 
-    @InjectView(R.id.previous) Button previous;
-    @InjectView(R.id.next) Button next;
+    @InjectView(R.id.previous) TextView previous;
+    @InjectView(R.id.next) TextView next;
     @InjectView(R.id.pager) TestpressViewPager pager;
-    @InjectView(R.id.select_question) Button selectQuestion;
-    @InjectView(R.id.questions_drawer) DrawerLayout questionsDrawer;
     @InjectView(R.id.questions_list) ListView questionsListView;
-    @InjectView(R.id.end) Button endExamButton;
+    @InjectView(R.id.end) TextView endExamButton;
+    @InjectView(R.id.sliding_layout) SlidingUpPanelLayout mLayout;
 
     ProgressDialog progress;
     ExamPagerAdapter pagerAdapter;
@@ -66,15 +69,13 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         Injector.inject(this);
         ButterKnife.inject(this, view);
         progress = new ProgressDialog(getActivity());
-        questionsDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         progress.setTitle("Loading");
         progress.setMessage("Wait while loading...");
         progress.show();
         pager.setPagingEnabled(false);
         previous.setVisibility(View.VISIBLE);
         next.setVisibility(View.VISIBLE);
-        selectQuestion.setVisibility(View.VISIBLE);
-        questionsDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        mLayout.setEnabled(false);
         return view;
     }
 
@@ -103,7 +104,6 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
 
         if (attemptItemList.get(pager.getCurrentItem()).hasChanged()) {
         }
-        questionsDrawer.closeDrawers();
         pager.setCurrentItem(position);
 
     }
@@ -123,9 +123,6 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
          if (pager.getCurrentItem() != 0) {
             pager.setCurrentItem(pager.getCurrentItem() - 1);
         }
-    }
-    @OnClick(R.id.select_question) void selectQuestion() {
-       questionsDrawer.openDrawer(Gravity.LEFT);
     }
 
     @OnClick(R.id.end) void endExam() {
@@ -193,6 +190,12 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     public void onLoaderReset(final Loader<List<AttemptItem>> loader) {
     }
 
+    protected void returnToHistory() {
+        Intent intent = new Intent(getActivity(), MainActivity.class);
+        intent.putExtra("currentItem", "2");
+        startActivity(intent);
+        getActivity().finish();
+    }
 
     SafeAsyncTask<Attempt> endExam = new SafeAsyncTask<Attempt>() {
         @Override
@@ -214,7 +217,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
 
         @Override
         protected void onFinally() {
-            getActivity().finish();
+            returnToHistory();
         }
     };
 }

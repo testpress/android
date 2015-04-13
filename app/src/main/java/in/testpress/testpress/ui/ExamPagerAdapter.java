@@ -33,7 +33,8 @@ public class ExamPagerAdapter extends FragmentStatePagerAdapter {
         AttemptQuestionsFragment attemptQuestionsFragment = new AttemptQuestionsFragment();
         Bundle bundle = new Bundle();
         AttemptItem item = attemptItemList.get(arg0);
-        bundle.putParcelable("question", attemptItemList.get(arg0));
+        bundle.putParcelable("attemptItem", attemptItemList.get(arg0));
+        bundle.putInt("question_index", arg0 + 1);
         attemptQuestionsFragment.setArguments(bundle);
         return attemptQuestionsFragment;
     }

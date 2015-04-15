@@ -1,18 +1,24 @@
 package in.testpress.testpress.ui;
 
 import android.accounts.OperationCanceledException;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -21,9 +27,13 @@ import android.widget.TextView;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 
@@ -48,7 +58,9 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     @InjectView(R.id.pager) TestpressViewPager pager;
     @InjectView(R.id.questions_list) ListView questionsListView;
     @InjectView(R.id.end) TextView endExamButton;
+    @InjectView(R.id.pause_exam) TextView pauseExamButton;
     @InjectView(R.id.sliding_layout) SlidingUpPanelLayout mLayout;
+    @InjectView(R.id.timer) TextView timer;
 
     ProgressDialog progress;
     ExamPagerAdapter pagerAdapter;
@@ -126,7 +138,13 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @OnClick(R.id.end) void endExam() {
-       endExam.execute();
+        final MyDialog dialog = new MyDialog(getActivity(), "end");
+        dialog.show();
+    }
+
+    @OnClick(R.id.pause_exam) void pauseExam() {
+        final MyDialog dialog = new MyDialog(getActivity(), "pause");
+        dialog.show();
     }
 
     @Override
@@ -184,6 +202,18 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
                     .getAttemptQuestion().getQuestionHtml()).toString());
         }
         questionsListView.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.drawer_list_item, questionslist));
+
+        CountDownTimer Timer = new CountDownTimer(formatMillisecond(mAttempt.getRemainingTime()), 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                final String formattedTime = formatTime(millisUntilFinished);
+                timer.setText(formattedTime);
+            }
+
+            public void onFinish() {
+                endExam.execute();
+            }
+        }.start();
     }
 
     @Override
@@ -220,4 +250,73 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
             returnToHistory();
         }
     };
+
+    public class MyDialog extends Dialog {
+        String selection;
+        public MyDialog(Context context, String selection) {
+            super(context, R.style.ActivityDialog);
+            this.selection = selection;
+        }
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+            Window window = getWindow();
+            window.setGravity(Gravity.CENTER);
+            setContentView(R.layout.dialog_layout);
+            TextView dialogMessage = (TextView) findViewById(R.id.dialog_message);
+            TextView option = (TextView) findViewById(R.id.option);
+            TextView cancel = (TextView) findViewById(R.id.cancel);
+            if(selection.equals("pause")) {
+                dialogMessage.setText(R.string.pause_message);
+                option.setText(R.string.pause);
+                option.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        returnToHistory();
+                    }
+                });
+            }
+            else {
+                dialogMessage.setText(R.string.end_message);
+                option.setText(R.string.end);
+                option.setTextColor(Color.parseColor("#d9534f"));
+                option.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        endExam.execute();
+                    }
+                });
+            }
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                   dismiss();
+                }
+            });
+        }
+    }
+
+
+    public static String formatTime(final long millis) {
+        return String.format("%02d:%02d:%02d",
+                millis / (1000 * 60 * 60),
+                (millis / (1000 * 60)) % 60,
+                (millis / 1000) % 60
+        );
+    }
+
+    public  long formatMillisecond(String inputString) {
+        Date date = null;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        try {
+            date = simpleDateFormat.parse(inputString);
+            Log.e("format", ""+date);
+        }
+        catch (ParseException e) {
+            Log.e("format error", e.toString());
+        }
+        return date.getTime();
+    }
 }

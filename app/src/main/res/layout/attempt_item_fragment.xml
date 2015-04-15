@@ -38,10 +38,10 @@
                 android:layout_centerInParent="true"
                 android:background="@android:color/darker_gray"/>
             <TextView
+                android:id="@+id/timer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="00:30:00"
-                android:visibility="invisible"
+                android:text="00:00:00"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:textAllCaps="true"

@@ -29,6 +29,9 @@
     <string name="previous">Prev</string>
     <string name="paused">Paused</string>
     <string name="end">End</string>
+    <string name="cancel">Cancel</string>
+    <string name="pause_message">Do you want to <b>Pause</b> exam?</string>
+    <string name="end_message">Do you want to <b>End</b> exam?</string>
 
     <!-- AuthenticatorActivity -->
     <string name="label_email_address">Email Address</string>

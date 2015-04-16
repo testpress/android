@@ -92,14 +92,10 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
 
     @OnClick(R.id.question_list) void openPanel() {
         if(mLayout.getPanelState().equals(PanelState.EXPANDED)) {
-            mLayout.setPanelState(PanelState.COLLAPSED);
-            previous.setVisibility(View.VISIBLE);
-            next.setVisibility(View.VISIBLE);
+            collapsePanel();
         }
         else {
-            mLayout.setPanelState(PanelState.EXPANDED);
-            previous.setVisibility(View.INVISIBLE);
-            next.setVisibility(View.INVISIBLE);
+            expandPanel();
         }
 
     }
@@ -135,9 +131,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
             }
         }
         pager.setCurrentItem(position);
-        mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-        previous.setVisibility(View.VISIBLE);
-        next.setVisibility(View.VISIBLE);
+        collapsePanel();
     }
 
     @OnClick(R.id.previous) void showPreviousQuestion() {
@@ -216,12 +210,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         pagerAdapter.setcount(attemptItemList.size());
         pager.setAdapter(pagerAdapter);
         pagerAdapter.notifyDataSetChanged();
-        List<String> questionslist = new ArrayList<String>();
-        for(int i = 0 ; i < attemptItemList.size() ; i++) {
-            questionslist.add(Html.fromHtml(attemptItemList.get(i)
-                    .getAttemptQuestion().getQuestionHtml()).toString());
-        }
-        questionsListView.setAdapter(new PanelListAdapter(getActivity().getLayoutInflater(), questionslist, R.layout.panel_list_item));
+        questionsListView.setAdapter(new PanelListAdapter(getActivity().getLayoutInflater(), attemptItemList, R.layout.panel_list_item));
         CountDownTimer Timer = new CountDownTimer(formatMillisecond(mAttempt.getRemainingTime()), 1000) {
 
             public void onTick(long millisUntilFinished) {
@@ -293,6 +282,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
                     @Override
                     public void onClick(View view) {
                         returnToHistory();
+                        dismiss();
                     }
                 });
             }
@@ -304,6 +294,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
                     @Override
                     public void onClick(View view) {
                         endExam.execute();
+                        dismiss();
                     }
                 });
             }
@@ -315,7 +306,6 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
             });
         }
     }
-
 
     public static String formatTime(final long millis) {
         return String.format("%02d:%02d:%02d",
@@ -331,11 +321,21 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {
             date = simpleDateFormat.parse(inputString);
-            Log.e("format", ""+date);
         }
         catch (ParseException e) {
-            Log.e("format error", e.toString());
         }
         return date.getTime();
+    }
+
+    public void collapsePanel() {
+        mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        previous.setVisibility(View.VISIBLE);
+        next.setVisibility(View.VISIBLE);
+    }
+
+    public void expandPanel() {
+        mLayout.setPanelState(PanelState.EXPANDED);
+        previous.setVisibility(View.INVISIBLE);
+        next.setVisibility(View.INVISIBLE);
     }
 }

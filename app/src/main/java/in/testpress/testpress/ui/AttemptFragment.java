@@ -11,17 +11,13 @@ import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -162,12 +158,12 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @OnClick(R.id.end) void endExam() {
-        final MyDialog dialog = new MyDialog(getActivity(), "end");
+        final DialogAlert dialog = new DialogAlert(getActivity(), "end");
         dialog.show();
     }
 
     @OnClick(R.id.pause_exam) void pauseExam() {
-        final MyDialog dialog = new MyDialog(getActivity(), "pause");
+        final DialogAlert dialog = new DialogAlert(getActivity(), "pause");
         dialog.show();
     }
 
@@ -274,9 +270,9 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         }
     };
 
-    public class MyDialog extends Dialog {
+    public class DialogAlert extends Dialog {
         String selection;
-        public MyDialog(Context context, String selection) {
+        public DialogAlert(Context context, String selection) {
             super(context, R.style.ActivityDialog);
             this.selection = selection;
         }

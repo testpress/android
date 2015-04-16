@@ -15,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState;
 
 import java.net.URL;
 import java.text.ParseException;
@@ -87,8 +89,23 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         pager.setPagingEnabled(false);
         previous.setVisibility(View.VISIBLE);
         next.setVisibility(View.VISIBLE);
-        mLayout.setEnabled(false);
+        mLayout.setEnabled(true);
+        mLayout.setTouchEnabled(false);
         return view;
+    }
+
+    @OnClick(R.id.question_list) void openPanel() {
+        if(mLayout.getPanelState().equals(PanelState.EXPANDED)) {
+            mLayout.setPanelState(PanelState.COLLAPSED);
+            previous.setVisibility(View.VISIBLE);
+            next.setVisibility(View.VISIBLE);
+        }
+        else {
+            mLayout.setPanelState(PanelState.EXPANDED);
+            previous.setVisibility(View.INVISIBLE);
+            next.setVisibility(View.INVISIBLE);
+        }
+
     }
 
     @OnClick(R.id.next) void showNextQuestion() {
@@ -115,9 +132,16 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         }
 
         if (attemptItemList.get(pager.getCurrentItem()).hasChanged()) {
+            try {
+                attemptItemList.get(pager.getCurrentItem()).saveResult(getActivity(), serviceProvider);
+            }
+            catch (Exception e) {
+            }
         }
         pager.setCurrentItem(position);
-
+        mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        previous.setVisibility(View.VISIBLE);
+        next.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.previous) void showPreviousQuestion() {
@@ -198,11 +222,10 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         pagerAdapter.notifyDataSetChanged();
         List<String> questionslist = new ArrayList<String>();
         for(int i = 0 ; i < attemptItemList.size() ; i++) {
-            questionslist.add((i + 1) + ". " + Html.fromHtml(attemptItemList.get(i)
+            questionslist.add(Html.fromHtml(attemptItemList.get(i)
                     .getAttemptQuestion().getQuestionHtml()).toString());
         }
-        questionsListView.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.drawer_list_item, questionslist));
-
+        questionsListView.setAdapter(new PanelListAdapter(getActivity().getLayoutInflater(), questionslist, R.layout.panel_list_item));
         CountDownTimer Timer = new CountDownTimer(formatMillisecond(mAttempt.getRemainingTime()), 1000) {
 
             public void onTick(long millisUntilFinished) {

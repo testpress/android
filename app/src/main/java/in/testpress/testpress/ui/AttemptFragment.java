@@ -11,7 +11,6 @@ import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
@@ -19,12 +18,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState;
 
 import java.net.URL;
 import java.text.ParseException;
@@ -87,8 +85,19 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         pager.setPagingEnabled(false);
         previous.setVisibility(View.VISIBLE);
         next.setVisibility(View.VISIBLE);
-        mLayout.setEnabled(false);
+        mLayout.setEnabled(true);
+        mLayout.setTouchEnabled(false);
         return view;
+    }
+
+    @OnClick(R.id.question_list) void openPanel() {
+        if(mLayout.getPanelState().equals(PanelState.EXPANDED)) {
+            collapsePanel();
+        }
+        else {
+            expandPanel();
+        }
+
     }
 
     @OnClick(R.id.next) void showNextQuestion() {
@@ -115,9 +124,14 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         }
 
         if (attemptItemList.get(pager.getCurrentItem()).hasChanged()) {
+            try {
+                attemptItemList.get(pager.getCurrentItem()).saveResult(getActivity(), serviceProvider);
+            }
+            catch (Exception e) {
+            }
         }
         pager.setCurrentItem(position);
-
+        collapsePanel();
     }
 
     @OnClick(R.id.previous) void showPreviousQuestion() {
@@ -138,12 +152,12 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @OnClick(R.id.end) void endExam() {
-        final MyDialog dialog = new MyDialog(getActivity(), "end");
+        final DialogAlert dialog = new DialogAlert(getActivity(), "end");
         dialog.show();
     }
 
     @OnClick(R.id.pause_exam) void pauseExam() {
-        final MyDialog dialog = new MyDialog(getActivity(), "pause");
+        final DialogAlert dialog = new DialogAlert(getActivity(), "pause");
         dialog.show();
     }
 
@@ -196,13 +210,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         pagerAdapter.setcount(attemptItemList.size());
         pager.setAdapter(pagerAdapter);
         pagerAdapter.notifyDataSetChanged();
-        List<String> questionslist = new ArrayList<String>();
-        for(int i = 0 ; i < attemptItemList.size() ; i++) {
-            questionslist.add((i + 1) + ". " + Html.fromHtml(attemptItemList.get(i)
-                    .getAttemptQuestion().getQuestionHtml()).toString());
-        }
-        questionsListView.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.drawer_list_item, questionslist));
-
+        questionsListView.setAdapter(new PanelListAdapter(getActivity().getLayoutInflater(), attemptItemList, R.layout.panel_list_item));
         CountDownTimer Timer = new CountDownTimer(formatMillisecond(mAttempt.getRemainingTime()), 1000) {
 
             public void onTick(long millisUntilFinished) {
@@ -251,9 +259,9 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         }
     };
 
-    public class MyDialog extends Dialog {
+    public class DialogAlert extends Dialog {
         String selection;
-        public MyDialog(Context context, String selection) {
+        public DialogAlert(Context context, String selection) {
             super(context, R.style.ActivityDialog);
             this.selection = selection;
         }
@@ -274,6 +282,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
                     @Override
                     public void onClick(View view) {
                         returnToHistory();
+                        dismiss();
                     }
                 });
             }
@@ -285,6 +294,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
                     @Override
                     public void onClick(View view) {
                         endExam.execute();
+                        dismiss();
                     }
                 });
             }
@@ -296,7 +306,6 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
             });
         }
     }
-
 
     public static String formatTime(final long millis) {
         return String.format("%02d:%02d:%02d",
@@ -312,11 +321,21 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {
             date = simpleDateFormat.parse(inputString);
-            Log.e("format", ""+date);
         }
         catch (ParseException e) {
-            Log.e("format error", e.toString());
         }
         return date.getTime();
+    }
+
+    public void collapsePanel() {
+        mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        previous.setVisibility(View.VISIBLE);
+        next.setVisibility(View.VISIBLE);
+    }
+
+    public void expandPanel() {
+        mLayout.setPanelState(PanelState.EXPANDED);
+        previous.setVisibility(View.INVISIBLE);
+        next.setVisibility(View.INVISIBLE);
     }
 }

@@ -4,10 +4,14 @@ import android.accounts.AccountsException;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
 import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
+import com.github.kevinsawicki.wishlist.Toaster;
 
 import java.io.IOException;
 import java.util.List;
@@ -50,7 +54,7 @@ public class AttemptsListFragment extends PagedItemFragment<Attempt> {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        setEmptyText(R.string.no_news);
+        setEmptyText(R.string.no_attempts);
     }
 
     @Override
@@ -61,6 +65,33 @@ public class AttemptsListFragment extends PagedItemFragment<Attempt> {
         listView.setDividerHeight(0);
 
 
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        if (!isUsable()) {
+            return false;
+        }
+        switch (item.getItemId()) {
+            case R.id.retake:
+                if (exam.getAllowRetake() == true) {
+                    Intent intent = new Intent(getActivity(), ExamActivity.class);
+                    intent.putExtra("exam", exam);
+                    startActivity(intent);
+                    return true;
+                } else {
+                    Toaster.showShort(getActivity(), "Retakes are not allowed for this exam.");
+                    return true;
+                }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(final Menu optionsMenu, final MenuInflater inflater) {
+        inflater.inflate(R.menu.attempt_actions, optionsMenu);
     }
 
     @Override
@@ -103,6 +134,6 @@ public class AttemptsListFragment extends PagedItemFragment<Attempt> {
 
     @Override
     protected int getErrorMessage(Exception exception) {
-        return R.string.error_loading_news;
+        return R.string.error_loading_attempts;
     }
 }

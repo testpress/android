@@ -53,7 +53,7 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        setEmptyText(R.string.no_news);
+        setEmptyText(R.string.no_exams);
     }
 
     @Override
@@ -136,6 +136,6 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
 
     @Override
     protected int getErrorMessage(Exception exception) {
-        return R.string.error_loading_news;
+        return R.string.error_loading_exams;
     }
 }

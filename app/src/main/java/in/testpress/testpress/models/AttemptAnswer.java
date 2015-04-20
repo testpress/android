@@ -6,9 +6,11 @@ import android.os.Parcelable;
 
 public class AttemptAnswer implements Parcelable {
 
-    private String textHtml;
-    private Integer id;
+    protected String textHtml;
+    protected Integer id;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+
+    public AttemptAnswer() {}
 
     // Parcelling part
     public AttemptAnswer(Parcel parcel){

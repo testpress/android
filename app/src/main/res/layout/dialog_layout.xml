@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="250dp"
+    android:layout_width="260dp"
     android:layout_height="wrap_content"
     android:layout_marginTop="20dp"
     android:layout_marginBottom="20dp">
@@ -13,6 +13,7 @@
          android:gravity="center"
          android:layout_centerHorizontal="true"
          android:layout_marginBottom="5dp"
+         android:textSize="16sp"
      />
     <TextView
         android:layout_width="wrap_content"
@@ -25,6 +26,7 @@
         android:layout_alignRight="@+id/dialog_message"
         android:padding="5dp"
         android:gravity="center"
+        android:textSize="16sp"
     />
     <TextView
         android:layout_width="wrap_content"
@@ -38,6 +40,7 @@
         android:layout_alignStart="@+id/dialog_message"
         android:layout_alignLeft="@+id/dialog_message"
         android:textColor="#333"
+        android:textSize="16sp"
     />
 
 </RelativeLayout>

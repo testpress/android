@@ -22,6 +22,7 @@ public class Exam implements Parcelable {
     private String negativeMarks;
     private String markPerQuestion;
     private Integer templateType;
+    private Boolean allowRetake;
     private String attemptsUrl;
     private List<Attempt> attempts;
     private Map<String, String> additionalProperties = new HashMap<String, String>();
@@ -40,6 +41,7 @@ public class Exam implements Parcelable {
         negativeMarks      = parcel.readString();
         markPerQuestion    = parcel.readString();
         templateType       = parcel.readInt();
+        allowRetake        = parcel.readByte() != 0;
         attemptsUrl        = parcel.readString();
         attempts = new ArrayList<Attempt>();
         parcel.readTypedList(attempts, Attempt.CREATOR);
@@ -64,6 +66,11 @@ public class Exam implements Parcelable {
         parcel.writeString(negativeMarks);
         parcel.writeString(markPerQuestion);
         parcel.writeInt(templateType);
+        if (allowRetake == null) {
+            parcel.writeByte((byte) (0));
+        } else {
+            parcel.writeByte((byte) (allowRetake ? 1 : 0)); //if review == true, byte == 1
+        }
         parcel.writeString(attemptsUrl);
         parcel.writeTypedList(attempts);
     }
@@ -298,6 +305,25 @@ public class Exam implements Parcelable {
      */
     public void setTemplateType(Integer templateType) {
         this.templateType = templateType;
+    }
+
+
+    /**
+     *
+     * @return
+     * Allow retake
+     */
+    public Boolean getAllowRetake() {
+        return allowRetake;
+    }
+
+    /**
+     *
+     * @param allowRetake
+     * Allow retake
+     */
+    public void setAllowRetake(Boolean allowRetake) {
+        this.allowRetake = allowRetake;
     }
 
     /**

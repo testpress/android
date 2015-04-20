@@ -251,6 +251,17 @@ public class Attempt implements Parcelable {
         return reviewUrl;
     }
 
+    public String getReviewFrag() {
+        try {
+            URL url = new URL(reviewUrl);
+            return url.getFile();
+        }
+        catch (Exception e) {
+            return null;
+        }
+    }
+
+
     /**
      *
      * @param reviewUrl

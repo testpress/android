@@ -27,6 +27,7 @@ import in.testpress.testpress.ui.ExamsListFragment;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.NavigationDrawerFragment;
 import in.testpress.testpress.ui.ReviewFragment;
+import in.testpress.testpress.ui.ReviewQuestionsFragment;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
 
@@ -48,6 +49,7 @@ import retrofit.converter.GsonConverter;
                 AttemptFragment.class,
                 ReviewFragment.class,
                 AttemptsListFragment.class,
+                ReviewQuestionsFragment.class
         }
 )
 public class TestpressModule {

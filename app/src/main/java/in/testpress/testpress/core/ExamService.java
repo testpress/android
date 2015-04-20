@@ -6,6 +6,7 @@ import java.util.List;
 import in.testpress.testpress.models.Attempt;
 import in.testpress.testpress.models.AttemptItem;
 import in.testpress.testpress.models.Exam;
+import in.testpress.testpress.models.ReviewItem;
 import in.testpress.testpress.models.TestpressApiResponse;
 import retrofit.http.Body;
 import retrofit.http.EncodedPath;
@@ -24,6 +25,9 @@ public interface ExamService {
 
     @GET("/{attempts_url}")
     TestpressApiResponse<Attempt> getAttempts(@EncodedPath("attempts_url") String attemptsUrlFrag, @Header("Authorization") String authorization);
+
+    @GET("/{review_url}")
+    TestpressApiResponse<ReviewItem> getReviewItems(@EncodedPath("review_url") String reviewUrlFrag, @Header("Authorization") String authorization);
 
     @POST("/{attempts_url}")
     Attempt createAttempt(@EncodedPath("attempts_url") String attemptsUrlFrag, @Header("Authorization") String authorization);

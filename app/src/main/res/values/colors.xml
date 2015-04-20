@@ -22,7 +22,7 @@
     <color name="actionbar_background_start">#3598db</color>
     <color name="actionbar_background_end">#3598db</color>
     <color name="testpress_divider_top">#000000</color>
-    <color name="testpress_divider_bottom">#5A5A5A</color>
+    <color name="testpress_divider_bottom">#efefef</color>
     <color name="main_background_start">#2E2E2E</color>
     <color name="main_background_end">#2C2C2C</color>
     <color name="button_background_enabled_start">#1fb6ed</color>
@@ -43,5 +43,8 @@
 
     <color name="dark_grey">#1f1f1f</color>
     <color name="navigation_drawer_item_separator">#c2c2c2</color>
+    <color name="red">#d9534f</color>
+    <color name="green">#18be99</color>
+    <color name="blue">#3598db</color>
 
 </resources>

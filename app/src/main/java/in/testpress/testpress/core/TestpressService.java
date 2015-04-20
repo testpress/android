@@ -6,6 +6,7 @@ import java.util.List;
 
 import in.testpress.testpress.models.Attempt;
 import in.testpress.testpress.models.AttemptItem;
+import in.testpress.testpress.models.ReviewItem;
 import in.testpress.testpress.models.TestpressApiResponse;
 import in.testpress.testpress.models.Exam;
 import retrofit.RestAdapter;
@@ -51,6 +52,10 @@ public class TestpressService {
 
     public TestpressApiResponse<Attempt> getAttempts(String urlFrag) {
         return getExamsService().getAttempts(urlFrag, getAuthToken());
+    }
+
+    public TestpressApiResponse<ReviewItem> getReviewItems(String urlFrag) {
+        return getExamsService().getReviewItems(urlFrag, getAuthToken());
     }
 
     public Attempt createAttempt(String attemptsUrlFrag) {

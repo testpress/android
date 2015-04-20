@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="20dp">
+    <TextView
+        android:id="@+id/option"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:textAlignment="center"
+        android:textSize="@dimen/text_size_large"
+        android:textColor="#ffffff"
+        android:background="@drawable/round_background"
+        android:text="a"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:clickable="false" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="12sp"
+        android:textColor="#333333"
+        android:layout_marginLeft="5dp"
+        android:id="@+id/answer_text"
+        android:text="Lorem ipsum dolor sit amet,  ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        android:textSize="@dimen/text_size_large"
+        android:layout_toRightOf="@+id/option"
+        android:layout_toEndOf="@+id/option"
+        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"/>
+</RelativeLayout>

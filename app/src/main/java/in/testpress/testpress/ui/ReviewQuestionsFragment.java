@@ -1,5 +1,6 @@
 package in.testpress.testpress.ui;
 
+import android.accounts.AccountsException;
 import android.accounts.OperationCanceledException;
 import android.app.Activity;
 import android.content.Intent;
@@ -7,25 +8,19 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.Loader;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.astuetz.PagerSlidingTabStrip;
 import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
 import com.github.kevinsawicki.wishlist.Toaster;
 
-import org.w3c.dom.Text;
-
+import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -36,28 +31,62 @@ import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
+import in.testpress.testpress.core.ResourcePager;
+import in.testpress.testpress.core.ReviewQuestionsPager;
 import in.testpress.testpress.models.Attempt;
 import in.testpress.testpress.models.Exam;
+import in.testpress.testpress.models.ReviewItem;
 
-public class ReviewFragment extends Fragment {
-    @InjectView(R.id.tpi_header)
-    protected PagerSlidingTabStrip indicator;
-
-    @InjectView(R.id.vp_pages)
-    protected ViewPager pager;
-
+public class ReviewQuestionsFragment extends PagedItemFragment<ReviewItem> {
     Attempt attempt;
     Exam exam;
+    String filter;
+    ReviewQuestionsPager pager;
+    @Inject protected TestpressServiceProvider serviceProvider;
+    @Inject protected LogoutService logoutService;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        Injector.inject(this);
         setHasOptionsMenu(true);
+        this.exam = getArguments().getParcelable("exam");
+        this.attempt = getArguments().getParcelable("attempt");
+        filter = getArguments().getString("filter");
+        try {
+            pager = new ReviewQuestionsPager(attempt, filter, serviceProvider.getService(getActivity()));
+        } catch (AccountsException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        super.onCreate(savedInstanceState);
     }
 
     @Override
-    public void onCreateOptionsMenu(final Menu optionsMenu, final MenuInflater inflater) {
-        inflater.inflate(R.menu.attempt_actions, optionsMenu);
+    protected void configureList(Activity activity, ListView listView) {
+        super.configureList(activity, listView);
+        listView.setFastScrollEnabled(true);
+        listView.setDividerHeight(0);
+    }
+
+    @Override
+    protected SingleTypeAdapter<ReviewItem> createAdapter(List<ReviewItem> items) {
+        return new ReviewListAdapter(R.layout.review_question, getActivity().getLayoutInflater(), items);
+    }
+
+    @Override
+    protected int getErrorMessage(Exception exception) {
+        return R.string.error_loading_questions;
+    }
+
+    @Override
+    protected LogoutService getLogoutService() {
+        return logoutService;
+    }
+
+    @Override
+    protected ResourcePager<ReviewItem> getPager() {
+        return pager;
     }
 
     @Override
@@ -80,25 +109,5 @@ public class ReviewFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.review_fragment, container, false);
-        ButterKnife.inject(this, view);
-        this.exam = getArguments().getParcelable("exam");
-        this.attempt = getArguments().getParcelable("attempt");
-        pager.setAdapter(new ReviewPagerAdapter(this, this.exam, this.attempt));
-        indicator.setViewPager(pager);
-        indicator.setIndicatorColor(Color.parseColor("#3598db"));
-        Bundle data = getArguments();
-        String currentItem = data.getString("currentItem");
-        if (currentItem != null) {
-            pager.setCurrentItem(Integer.parseInt(currentItem));
-        } else {
-            pager.setCurrentItem(0);
-
-        }
-        return view;
     }
 }

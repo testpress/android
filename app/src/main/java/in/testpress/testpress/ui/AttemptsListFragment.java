@@ -54,7 +54,7 @@ public class AttemptsListFragment extends PagedItemFragment<Attempt> {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        setEmptyText(R.string.no_news);
+        setEmptyText(R.string.no_attempts);
     }
 
     @Override
@@ -134,6 +134,6 @@ public class AttemptsListFragment extends PagedItemFragment<Attempt> {
 
     @Override
     protected int getErrorMessage(Exception exception) {
-        return R.string.error_loading_news;
+        return R.string.error_loading_attempts;
     }
 }

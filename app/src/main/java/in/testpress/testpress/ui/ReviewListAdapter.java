@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,29 +99,40 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
             params.setMargins(0, 0, 0, 20);
             answersView.addView(option);
             option.setLayoutParams(params);
+            int sdk = android.os.Build.VERSION.SDK_INT;
             if (item.getSelectedAnswers().contains(answer.getId()) == true) {
                 if (answer.getIsCorrect() == true) {
-                    optionText.setBackground(inflater.getContext().getResources().getDrawable(R.drawable.round_green_background));
+                    if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                        optionText.setBackgroundResource(R.drawable.round_green_background);
+                    } else {
+                        optionText.setBackground(inflater.getContext().getResources().getDrawable(R.drawable.round_green_background));
+                    }
                 } else {
-                    optionText.setBackground(inflater.getContext().getResources().getDrawable(R.drawable.round_red_background));
+                    if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                        optionText.setBackgroundResource(R.drawable.round_red_background);
+                    } else {
+                        optionText.setBackground(inflater.getContext().getResources().getDrawable(R.drawable.round_red_background));
+                    }
                 }
             }
             if (answer.getIsCorrect() == true) {
                 TextView correctOption = new TextView(inflater.getContext());
-                LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(60, 60);
+                int hw = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30, inflater.getContext().getResources().getDisplayMetrics());
+                LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(hw, hw);
                 textParams.setMargins(0, 0, 5, 0);
                 correctOption.setLayoutParams(textParams);
                 correctOption.setGravity(Gravity.CENTER);
-                correctOption.setTextSize(18);
+                correctOption.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
                 correctOption.setTextColor(Color.parseColor("#FFFFFF"));
-                correctOption.setBackground(inflater.getContext().getResources().getDrawable(R.drawable.round_background));
+                if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                    correctOption.setBackgroundResource(R.drawable.round_background);
+                } else {
+                    correctOption.setBackground(inflater.getContext().getResources().getDrawable(R.drawable.round_background));
+                }
                 correctOption.setTypeface(Typeface.DEFAULT_BOLD);
                 correctOption.setText("" + (char) (i + 97));
                 correctOption.setVisibility(View.VISIBLE);
                 correctAnswersView.addView(correctOption);
-                Log.e("ReviewListAdapter", "ANSWER CORRECT");
-            } else {
-                Log.e("ReviewListAdapter", "ANSWER NOT CORRECT");
             }
         }
     }

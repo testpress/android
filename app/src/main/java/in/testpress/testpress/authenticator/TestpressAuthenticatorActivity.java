@@ -3,6 +3,7 @@ package in.testpress.testpress.authenticator;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -248,6 +249,18 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
 
             @Override
             protected void onException(final Exception e) throws RuntimeException {
+                AlertDialog.Builder builder = new AlertDialog.Builder(TestpressAuthenticatorActivity.this);
+                builder.setMessage("Invalid username/password");
+                builder.setCancelable(true);
+                builder.setNeutralButton("ok",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                dialog.dismiss();
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
                 // Retrofit Errors are handled inside of the {
                 if(!(e instanceof RetrofitError)) {
                     final Throwable cause = e.getCause() != null ? e.getCause() : e;

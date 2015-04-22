@@ -63,6 +63,12 @@ public class ReviewQuestionsFragment extends PagedItemFragment<ReviewItem> {
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setEmptyText(R.string.no_questions);
+    }
+
+    @Override
     protected void configureList(Activity activity, ListView listView) {
         super.configureList(activity, listView);
         listView.setFastScrollEnabled(true);

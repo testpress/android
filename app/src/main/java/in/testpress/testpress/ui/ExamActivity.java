@@ -17,6 +17,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
@@ -158,4 +160,22 @@ public class ExamActivity extends FragmentActivity implements LoaderManager.Load
 
     }
 
+    @Override
+    public void onBackPressed() {
+        AttemptFragment attemptFragment = null;
+        try {
+             attemptFragment = (AttemptFragment) getSupportFragmentManager().getFragments().get(0);
+        }
+        catch (Exception e) {
+        }
+        if(attemptFragment != null) {
+            if (attemptFragment.mLayout.getPanelState().equals(SlidingUpPanelLayout.PanelState.EXPANDED)) {
+                attemptFragment.collapsePanel();
+            }
+            else
+                attemptFragment.pauseExam();
+        }
+        else
+            super.onBackPressed();
+    }
 }

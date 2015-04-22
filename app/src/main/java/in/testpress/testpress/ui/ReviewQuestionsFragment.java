@@ -63,6 +63,12 @@ public class ReviewQuestionsFragment extends PagedItemFragment<ReviewItem> {
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setEmptyText(R.string.no_questions);
+    }
+
+    @Override
     protected void configureList(Activity activity, ListView listView) {
         super.configureList(activity, listView);
         listView.setFastScrollEnabled(true);
@@ -87,6 +93,11 @@ public class ReviewQuestionsFragment extends PagedItemFragment<ReviewItem> {
     @Override
     protected ResourcePager<ReviewItem> getPager() {
         return pager;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(final Menu optionsMenu, final MenuInflater inflater) {
+        // Do nothing. As options menu is already inflated with retake option.
     }
 
     @Override

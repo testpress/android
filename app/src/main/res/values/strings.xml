@@ -25,6 +25,7 @@
     <string name="error_loading_questions">Loading questions failed</string>
     <string name="no_exams">No Exams</string>
     <string name="no_attempts">No Attempts</string>
+    <string name="no_questions">No Questions</string>
     <string name="avatar">Avatar</string>
     <string name="choose">Choose</string>
     <string name="start_exam">Start Exam</string>

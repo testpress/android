@@ -125,7 +125,7 @@ public abstract class ItemListFragment<E> extends Fragment
         });
         progressBar = (ProgressBar) view.findViewById(id.pb_loading);
 
-        emptyView = (TextView) view.findViewById(android.R.id.empty);
+        emptyView = (TextView) view.findViewById(id.empty);
 
         configureList(getActivity(), getListView());
     }

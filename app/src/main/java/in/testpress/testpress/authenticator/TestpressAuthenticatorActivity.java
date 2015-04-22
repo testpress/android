@@ -6,13 +6,17 @@ import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -28,6 +32,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.R.id;
@@ -130,7 +135,11 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
             public boolean onKey(final View v, final int keyCode, final KeyEvent event) {
                 if (event != null && ACTION_DOWN == event.getAction()
                         && keyCode == KEYCODE_ENTER && signInButton.isEnabled()) {
-                    handleLogin(signInButton);
+                    if(isConnectingToInternet()) {
+                        handleLogin(signInButton);
+                    }
+                    else
+
                     return true;
                 }
                 return false;
@@ -249,18 +258,7 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
 
             @Override
             protected void onException(final Exception e) throws RuntimeException {
-                AlertDialog.Builder builder = new AlertDialog.Builder(TestpressAuthenticatorActivity.this);
-                builder.setMessage("Invalid username/password");
-                builder.setCancelable(true);
-                builder.setNeutralButton("ok",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                                dialog.dismiss();
-                            }
-                        });
-                AlertDialog alert = builder.create();
-                alert.show();
+                showAlert("Invalid username/password");
                 // Retrofit Errors are handled inside of the {
                 if(!(e instanceof RetrofitError)) {
                     final Throwable cause = e.getCause() != null ? e.getCause() : e;
@@ -373,5 +371,42 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
                         R.string.message_auth_failed);
             }
         }
+    }
+
+    public boolean isConnectingToInternet() {
+        ConnectivityManager connectivity = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity != null) {
+            NetworkInfo[] info = connectivity.getAllNetworkInfo();
+            if (info != null) {
+                for (int i = 0; i < info.length; i++) {
+                    if (info[i].getState() == NetworkInfo.State.CONNECTED)
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void showAlert(String alertMessage) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(TestpressAuthenticatorActivity.this);
+        builder.setMessage(alertMessage);
+        builder.setCancelable(true);
+        builder.setNeutralButton("ok",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog alert = builder.show();
+        TextView messageView = (TextView)alert.findViewById(android.R.id.message);
+        messageView.setGravity(Gravity.CENTER);
+    }
+
+    @OnClick(id.b_signin) public void signin() {
+        if(isConnectingToInternet())
+            handleLogin(signInButton);
+        else
+            showAlert("No Internet access");
     }
 }

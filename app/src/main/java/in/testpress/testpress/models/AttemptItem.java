@@ -114,7 +114,12 @@ public class AttemptItem implements Parcelable {
         return null;
     }
 
-    public Boolean hasChanged() { return !savedAnswers.equals(selectedAnswers);}
+    public Boolean hasChanged() {
+        if(!savedAnswers.equals(selectedAnswers) && !savedAnswers.isEmpty()) {
+            return true;
+        }
+        else return false;
+    }
 
     /**
      *

@@ -36,8 +36,6 @@
     <string name="cancel">Cancel</string>
     <string name="pause_message">Do you want to <b>Pause</b> exam?</string>
     <string name="end_message">Do you want to <b>End</b> exam?</string>
-    <string name="filter">Filter</string>
-    <string name="failed_text">Failed to connect with PGDIAMS. Please enable your network connection</string>
 
     <!-- AuthenticatorActivity -->
     <string name="label_username">Username</string>

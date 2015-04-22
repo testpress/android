@@ -4,9 +4,12 @@ package in.testpress.testpress.ui;
 
 import android.accounts.OperationCanceledException;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentManager;
@@ -16,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 
+import butterknife.OnClick;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
@@ -63,8 +67,9 @@ public class MainActivity extends TestpressFragmentActivity {
         ButterKnife.inject(this);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-
-        checkAuth();
+        if(isConnectingToInternet()) {
+            checkAuth();
+        }
 
     }
 
@@ -155,5 +160,25 @@ public class MainActivity extends TestpressFragmentActivity {
                 // do nothing as we're already on the home screen.
                 break;
         }
+    }
+
+    @OnClick (R.id.retry) public void retry() {
+        if(isConnectingToInternet()) {
+            checkAuth();
+        }
+    }
+
+    public boolean isConnectingToInternet() {
+        ConnectivityManager connectivity = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity != null) {
+            NetworkInfo[] info = connectivity.getAllNetworkInfo();
+            if (info != null) {
+                for (int i = 0; i < info.length; i++) {
+                    if (info[i].getState() == NetworkInfo.State.CONNECTED)
+                        return true;
+                }
+            }
+        }
+        return false;
     }
 }

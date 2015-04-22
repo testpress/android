@@ -3,5 +3,38 @@
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/logo"
+        android:layout_marginBottom="20dp"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Retry"
+        android:id="@+id/retry"
+        android:capitalize="characters"
+        android:textStyle="bold"
+        android:background="@drawable/opaque_green_button"
+        android:textColor="#fff"
+        android:textSize="@dimen/text_size_large"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/failed_text"
+        android:gravity="center"
+        android:padding="5dp"
+        android:layout_marginBottom="70dp"
+        android:id="@+id/textView"
+        android:layout_gravity="center|bottom" />
+
+</FrameLayout>
 

@@ -96,6 +96,11 @@ public class ReviewQuestionsFragment extends PagedItemFragment<ReviewItem> {
     }
 
     @Override
+    public void onCreateOptionsMenu(final Menu optionsMenu, final MenuInflater inflater) {
+        // Do nothing. As options menu is already inflated with retake option.
+    }
+
+    @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         if (getActivity() == null) {
             return false;

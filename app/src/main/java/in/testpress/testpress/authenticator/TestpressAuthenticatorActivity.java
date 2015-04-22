@@ -135,11 +135,7 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
             public boolean onKey(final View v, final int keyCode, final KeyEvent event) {
                 if (event != null && ACTION_DOWN == event.getAction()
                         && keyCode == KEYCODE_ENTER && signInButton.isEnabled()) {
-                    if(isConnectingToInternet()) {
-                        handleLogin(signInButton);
-                    }
-                    else
-
+                    handleLogin(signInButton);
                     return true;
                 }
                 return false;

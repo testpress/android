@@ -123,11 +123,13 @@ public class AttemptQuestionsFragment extends Fragment {
         catch (Exception e) {
             attemptItem.setReview(false);
         }
+        attemptItem.saveAnswers(attemptItem.getSelectedAnswers());
+        attemptItem.setCurrentReview(attemptItem.getReview());
         return view;
     }
 
     @OnCheckedChanged(id.review) void onChecked(boolean checked) {
-        attemptItem.setReview(checked);
+        attemptItem.setCurrentReview(checked);
         if(checked)questionsView.setBackgroundColor(Color.LTGRAY);
         else questionsView.setBackgroundColor(android.R.color.transparent);
     }

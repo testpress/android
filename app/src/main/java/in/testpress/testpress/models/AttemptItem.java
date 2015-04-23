@@ -23,6 +23,7 @@ public class AttemptItem implements Parcelable {
     private Boolean review;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
     private List<Integer> savedAnswers = new ArrayList<Integer>();
+    private Integer index;
 
     AttemptItem() {
         selectedAnswers = new ArrayList<Integer>();
@@ -132,6 +133,24 @@ public class AttemptItem implements Parcelable {
      */
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    /**
+     *
+     * @return
+     * The index
+     */
+    public Integer getIndex() {
+        return index;
+    }
+
+    /**
+     *
+     * @param index
+     * The index
+     */
+    public void setIndex(Integer index) {
+        this.index = index;
     }
 
     /**

@@ -18,7 +18,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -59,6 +62,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     @InjectView(R.id.pause_exam) TextView pauseExamButton;
     @InjectView(R.id.sliding_layout) SlidingUpPanelLayout mLayout;
     @InjectView(R.id.timer) TextView timer;
+    @InjectView(R.id.filter) Spinner filter;
 
     ProgressDialog progress;
     ExamPagerAdapter pagerAdapter;
@@ -97,7 +101,37 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         else {
             expandPanel();
         }
+        String[] filters= { "All", "Answered", "Unanswered", "Marked for review" };
+        ArrayAdapter<String> adapter =new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, filters);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        filter.setAdapter(adapter);
+        filter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                switch (position) {
+                    case 0:
+                        setFilter("all");
+                        break;
+                    case 1:
+                        setFilter("answered");
+                        break;
+                    case 2:
+                        setFilter("unanswered");
+                        break;
+                    case 3:
+                        setFilter("marked");
+                        break;
+                    default:
+                       setFilter("all");
+                        break;
+                }
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     @OnClick(R.id.next) void showNextQuestion() {
@@ -130,7 +164,8 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
             catch (Exception e) {
             }
         }
-        pager.setCurrentItem(position);
+        AttemptItem item = ((AttemptItem) questionsListView.getItemAtPosition(position));
+        pager.setCurrentItem(item.getIndex() - 1);
         collapsePanel();
     }
 
@@ -210,6 +245,9 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         pagerAdapter.setcount(attemptItemList.size());
         pager.setAdapter(pagerAdapter);
         pagerAdapter.notifyDataSetChanged();
+        for (int i = 0; i<attemptItemList.size(); i++) {
+            attemptItemList.get(i).setIndex(i + 1);
+        }
         questionsListView.setAdapter(new PanelListAdapter(getActivity().getLayoutInflater(), attemptItemList, R.layout.panel_list_item));
         CountDownTimer Timer = new CountDownTimer(formatMillisecond(mAttempt.getRemainingTime()), 1000) {
 
@@ -337,5 +375,40 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         mLayout.setPanelState(PanelState.EXPANDED);
         previous.setVisibility(View.INVISIBLE);
         next.setVisibility(View.INVISIBLE);
+    }
+
+    public void setFilter (String filter) {
+        List<AttemptItem> answereditems = new ArrayList<>();
+        List<AttemptItem> unanswereditems = new ArrayList<>();
+        List<AttemptItem> markeditems = new ArrayList<>();
+        for(int i = 0; i< attemptItemList.size(); i++) {
+            try {
+                if (attemptItemList.get(i).getReview()) {
+                    markeditems.add(attemptItemList.get(i));
+                }
+            }
+            catch (Exception e) {
+            }
+
+            if(!attemptItemList.get(i).getSelectedAnswers().isEmpty() || !attemptItemList.get(i).getSavedAnswers().isEmpty()) {
+                answereditems.add(attemptItemList.get(i));
+            }
+            else
+                unanswereditems.add(attemptItemList.get(i));
+        }
+        switch (filter) {
+            case "answered":
+                questionsListView.setAdapter(new PanelListAdapter(getActivity().getLayoutInflater(), answereditems, R.layout.panel_list_item));
+                break;
+            case "unanswered":
+                questionsListView.setAdapter(new PanelListAdapter(getActivity().getLayoutInflater(), unanswereditems, R.layout.panel_list_item));
+                break;
+            case "marked":
+                questionsListView.setAdapter(new PanelListAdapter(getActivity().getLayoutInflater(), markeditems, R.layout.panel_list_item));
+                break;
+            default:
+                questionsListView.setAdapter(new PanelListAdapter(getActivity().getLayoutInflater(), attemptItemList, R.layout.panel_list_item));
+                break;
+        }
     }
 }

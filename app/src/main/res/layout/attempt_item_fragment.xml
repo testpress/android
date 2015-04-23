@@ -219,6 +219,23 @@
                 android:paddingLeft="25dp"
                 android:paddingRight="25dp"
                 android:textColor="#3598db"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ccc">
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:id="@+id/filter"
+                android:layout_gravity="end"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:padding="5dp"/>
         </RelativeLayout>
 
         <ListView android:id="@+id/questions_list"

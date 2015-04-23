@@ -74,9 +74,10 @@ public class TestpressService {
         return getExamsService().getQuestions(questionsUrlFrag, getAuthToken());
     }
 
-    public AttemptItem postAnswer(String answerUrlFrag, List<Integer> savedAnswers) {
-        HashMap<String, List<Integer>> answer = new HashMap<String, List<Integer>>();
+    public AttemptItem postAnswer(String answerUrlFrag, List<Integer> savedAnswers, Boolean review) {
+        HashMap<String, Object> answer = new HashMap<String, Object>();
         answer.put("selected_answers", savedAnswers);
+        answer.put("review", review);
         return getExamsService().postAnswer(answerUrlFrag, getAuthToken(), answer);
     }
 

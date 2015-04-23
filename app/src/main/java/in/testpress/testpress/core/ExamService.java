@@ -36,7 +36,7 @@ public interface ExamService {
     Attempt startAttempt(@EncodedPath("start_attempt_url") String startAttemptUrlFrag, @Header("Authorization") String authorization);
 
     @PUT("/{answer_url}")
-    AttemptItem postAnswer(@EncodedPath("answer_url") String answerUrlFrag, @Header("Authorization") String authorization, @Body HashMap<String, List<Integer>> arguments);
+    AttemptItem postAnswer(@EncodedPath("answer_url") String answerUrlFrag, @Header("Authorization") String authorization, @Body HashMap<String, Object> arguments);
 
     @PUT("/{heartbeat_url}")
     Attempt heartbeat(@EncodedPath("answer_url") String heartbeatUrlFrag, @Header("Authorization") String authorization);

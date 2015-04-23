@@ -84,7 +84,7 @@ public class AttemptItem implements Parcelable {
 
             @Override
             public AttemptItem call() throws Exception {
-                return serviceProvider.getService(activity).postAnswer(fragment, savedAnswers);
+                return serviceProvider.getService(activity).postAnswer(fragment, savedAnswers, review);
             }
 
             @Override

@@ -159,6 +159,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp">
 
+            <!-- Disable previous button for the first time -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -168,9 +169,9 @@
                 android:paddingRight="25dp"
                 android:textStyle="bold"
                 android:textAllCaps="true"
-                android:clickable="true"
+                android:clickable="false"
                 android:id="@+id/previous"
-                android:textColor="#3598db"/>
+                android:textColor="@color/nav_button_disabled"/>
 
             <View
                 android:layout_toRightOf="@+id/previous"

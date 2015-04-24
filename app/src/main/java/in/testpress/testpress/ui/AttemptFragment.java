@@ -11,7 +11,6 @@ import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -147,8 +146,25 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
             }
 
         }
+
+        if (next.getText().equals(getResources().getString(R.string.end))) {
+            endExamAlert();
+            return;
+        }
+
         if (pager.getCurrentItem() != pager.getChildCount()) {
             pager.setCurrentItem(pager.getCurrentItem() + 1);
+        }
+
+        int currentPosition = pager.getCurrentItem();
+        if (currentPosition > 0) {
+            previous.setClickable(true);
+            previous.setTextColor(getResources().getColor(R.color.primary));
+        }
+
+        if (currentPosition + 1 >= attemptItemList.size()) {
+            next.setTextColor(Color.parseColor("#d9534f"));
+            next.setText(R.string.end);
         }
     }
 
@@ -167,6 +183,22 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         AttemptItem item = ((AttemptItem) questionsListView.getItemAtPosition(position));
         pager.setCurrentItem(item.getIndex() - 1);
         collapsePanel();
+
+        if (position == 0) {
+            previous.setClickable(false);
+            previous.setTextColor(getResources().getColor(R.color.nav_button_disabled));
+        } else {
+            previous.setClickable(true);
+            previous.setTextColor(getResources().getColor(R.color.primary));
+        }
+
+        if ((position + 1) == attemptItemList.size()) {
+            next.setTextColor(Color.parseColor("#d9534f"));
+            next.setText(R.string.end);
+        } else {
+            next.setTextColor(getResources().getColor(R.color.primary));
+            next.setText(R.string.next);
+        }
     }
 
     @OnClick(R.id.previous) void showPreviousQuestion() {
@@ -181,12 +213,25 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
             catch (Exception e) {
             }
         }
-         if (pager.getCurrentItem() != 0) {
+
+        if (pager.getCurrentItem() != 0) {
             pager.setCurrentItem(pager.getCurrentItem() - 1);
+        }
+
+        int currentPosition = pager.getCurrentItem();
+        if (currentPosition < attemptItemList.size()) {
+            next.setTextColor(getResources().getColor(R.color.primary));
+            next.setText(R.string.next);
+        }
+
+        if (currentPosition == 0) {
+            previous.setClickable(false);
+            previous.setTextColor(getResources().getColor(R.color.nav_button_disabled));
+            return;
         }
     }
 
-    @OnClick(R.id.end) void endExam() {
+    @OnClick(R.id.end) void endExamAlert() {
         final DialogAlert dialog = new DialogAlert(getActivity(), "end");
         dialog.show();
     }
@@ -207,7 +252,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
                 URL url = new URL(mAttempt.getQuestionsUrl());
                 do {
                     try {
-                        fragment = url.getFile();
+                        fragment = url.getFile().substring(1);
                     }
                     catch (Exception e) {
                         return null;

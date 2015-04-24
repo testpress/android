@@ -46,5 +46,6 @@
     <color name="red">#d9534f</color>
     <color name="green">#18be99</color>
     <color name="blue">#3598db</color>
+    <color name="primary">#3598db</color>
 
 </resources>

@@ -92,7 +92,7 @@ public class AttemptItem implements Parcelable {
             protected void onPreExecute() {
                 try {
                     URL urlfrag = new URL(url);
-                    fragment = urlfrag.getFile();
+                    fragment = urlfrag.getFile().substring(1);
                 }
                 catch (MalformedURLException e) {
 

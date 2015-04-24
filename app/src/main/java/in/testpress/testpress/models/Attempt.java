@@ -107,7 +107,7 @@ public class Attempt implements Parcelable {
     public String getUrlFrag() {
         try {
             URL fragUrl = new URL(url);
-            return fragUrl.getFile();
+            return fragUrl.getFile().substring(1);
         }
         catch (Exception e) {
             return null;
@@ -274,7 +274,7 @@ public class Attempt implements Parcelable {
     public String getReviewFrag() {
         try {
             URL url = new URL(reviewUrl);
-            return url.getFile();
+            return url.getFile().substring(1);
         }
         catch (Exception e) {
             return null;

@@ -357,7 +357,7 @@ public class Exam implements Parcelable {
     public String getAttemptsFrag() {
         try {
             URL url = new URL(attemptsUrl);
-            return url.getFile();
+            return url.getFile().substring(1);
         }
         catch (Exception e) {
             return null;

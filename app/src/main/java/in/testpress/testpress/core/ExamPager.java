@@ -51,7 +51,7 @@ public class ExamPager extends ResourcePager<Exam> {
         } else {
             try {
                 URL full = new URL(response.getNext());
-                url = full.getFile();
+                url = full.getFile().substring(1);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
                 url = null;

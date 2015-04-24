@@ -4,8 +4,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
+
 public class Attempt implements Parcelable {
     private String url;
     private Integer id;
@@ -176,7 +182,21 @@ public class Attempt implements Parcelable {
      * The date
      */
     public String getDate() {
-        return date;
+        return formatDate(date);
+    }
+
+    public String formatDate(String inputString) {
+        Date date = null;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        try {
+            date = simpleDateFormat.parse(inputString);
+            DateFormat dateformat = DateFormat.getDateInstance();
+            return dateformat.format(date);
+        }
+        catch (ParseException e) {
+        }
+        return null;
     }
 
     /**

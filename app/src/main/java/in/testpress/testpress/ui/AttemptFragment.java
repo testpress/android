@@ -1,9 +1,11 @@
 package in.testpress.testpress.ui;
 
 import android.accounts.OperationCanceledException;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -68,6 +70,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
 
     Attempt mAttempt;
     List<AttemptItem> attemptItemList = Collections.emptyList();
+    CountDownTimer countDownTimer;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -121,7 +124,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
                         setFilter("marked");
                         break;
                     default:
-                       setFilter("all");
+                        setFilter("all");
                         break;
                 }
             }
@@ -294,7 +297,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
             attemptItemList.get(i).setIndex(i + 1);
         }
         questionsListView.setAdapter(new PanelListAdapter(getActivity().getLayoutInflater(), attemptItemList, R.layout.panel_list_item));
-        CountDownTimer Timer = new CountDownTimer(formatMillisecond(mAttempt.getRemainingTime()), 1000) {
+        countDownTimer = new CountDownTimer(formatMillisecond(mAttempt.getRemainingTime()), 1000) {
 
             public void onTick(long millisUntilFinished) {
                 final String formattedTime = formatTime(millisUntilFinished);
@@ -372,6 +375,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
                 option.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        countDownTimer.cancel();
                         returnToHistory();
                         dismiss();
                     }
@@ -384,6 +388,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
                 option.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        countDownTimer.cancel();
                         endExam.execute();
                         dismiss();
                     }

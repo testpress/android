@@ -16,6 +16,7 @@
     <string name="page_correct">Correct</string>
     <string name="page_incorrect">Incorrect</string>
     <string name="page_unanswered">Unanswered</string>
+    <string name="page_review">Marked for Review</string>
     <string name="title_column">Title</string>
     <string name="location_column">Location</string>
     <string name="user_column">User</string>

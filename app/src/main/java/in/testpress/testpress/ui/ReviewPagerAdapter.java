@@ -37,7 +37,7 @@ public class ReviewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 5;
+        return 6;
     }
 
     @Override
@@ -56,6 +56,9 @@ public class ReviewPagerAdapter extends FragmentPagerAdapter {
                 break;
             case 4:
                 filter = "unanswered";
+                break;
+            case 5:
+                filter = "review";
                 break;
             case 0:
             default:
@@ -88,6 +91,8 @@ public class ReviewPagerAdapter extends FragmentPagerAdapter {
                 return resources.getString(R.string.page_incorrect);
             case 4:
                 return resources.getString(R.string.page_unanswered);
+            case 5:
+                return resources.getString(R.string.page_review);
             default:
                 return null;
         }

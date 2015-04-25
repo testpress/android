@@ -27,6 +27,7 @@ public class Attempt implements Parcelable {
     private Integer incorrectCount;
     private String lastStartedTime;
     private String remainingTime;
+    private String timeTaken;
     private String state;
     private String percentile;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
@@ -47,6 +48,7 @@ public class Attempt implements Parcelable {
         incorrectCount = parcel.readInt();
         lastStartedTime = parcel.readString();
         remainingTime = parcel.readString();
+        timeTaken = parcel.readString();
         state = parcel.readString();
         percentile = parcel.readString();
     }
@@ -72,6 +74,7 @@ public class Attempt implements Parcelable {
         parcel.writeInt(incorrectCount);
         parcel.writeString(lastStartedTime);
         parcel.writeString(remainingTime);
+        parcel.writeString(timeTaken);
         parcel.writeString(state);
         parcel.writeString(percentile);
     }
@@ -379,6 +382,24 @@ public class Attempt implements Parcelable {
      */
     public void setRemainingTime(String remainingTime) {
         this.remainingTime = remainingTime;
+    }
+
+    /**
+     *
+     * @return
+     * Time taken
+     */
+    public String getTimeTaken() {
+        return timeTaken;
+    }
+
+    /**
+     *
+     * @param timeTaken
+     * Time Taken
+     */
+    public void setTimeTaken(String timeTaken) {
+        this.timeTaken = timeTaken;
     }
 
     /**

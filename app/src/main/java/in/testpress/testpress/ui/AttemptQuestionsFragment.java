@@ -107,7 +107,9 @@ public class AttemptQuestionsFragment extends Fragment {
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                     Drawable drawable = new BitmapDrawable(loadedImage);
                     images.put(imageUri, drawable);
-                    questionsView.setText(Html.fromHtml(attemptQuestion.getQuestionHtml(), new ImageSetter(), null));
+                    if(images.size() == url.size()) {
+                        questionsView.setText(Html.fromHtml(attemptQuestion.getQuestionHtml(), new ImageSetter(), null));
+                    }
                 }
             });
         }

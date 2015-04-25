@@ -318,6 +318,14 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         getActivity().finish();
     }
 
+    protected void showReview() {
+        Intent intent = new Intent(getActivity(), ReviewActivity.class);
+        intent.putExtra("exam", mAttempt.getExam());
+        intent.putExtra("attempt", mAttempt);
+        startActivity(intent);
+        getActivity().finish();
+    }
+
     SafeAsyncTask<Attempt> endExam = new SafeAsyncTask<Attempt>() {
         @Override
         public Attempt call() throws Exception {
@@ -338,7 +346,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
 
         @Override
         protected void onFinally() {
-            returnToHistory();
+            showReview();
         }
     };
 

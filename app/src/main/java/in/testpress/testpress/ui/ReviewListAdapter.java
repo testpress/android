@@ -1,9 +1,13 @@
 package in.testpress.testpress.ui;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
@@ -20,6 +24,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
+import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import in.testpress.testpress.R;
 import in.testpress.testpress.models.Attempt;
@@ -29,21 +40,39 @@ import in.testpress.testpress.models.ReviewAnswer;
 import in.testpress.testpress.models.ReviewItem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
 
     private LayoutInflater inflater;
+    ArrayList<String> url = new ArrayList<>();
+    HashMap<String, Drawable> images = new HashMap<>();
+    Activity activity;
+    ImageLoader imageLoader;
 
     /**
      * @param inflater
      * @param items
      */
     public ReviewListAdapter(final int layoutId, final LayoutInflater inflater,
-                             final List<ReviewItem> items) {
+                             final List<ReviewItem> items, Activity activity) {
         super(inflater, layoutId);
         this.inflater = inflater;
         setItems(items);
+        this.activity = activity;
+        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+                .cacheOnDisc(true).cacheInMemory(true)
+                .imageScaleType(ImageScaleType.EXACTLY)
+                .displayer(new FadeInBitmapDisplayer(300)).build();
+
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(activity)
+                .defaultDisplayImageOptions(defaultOptions)
+                .memoryCache(new WeakMemoryCache())
+                .discCacheSize(100 * 1024 * 1024).build();
+
+        ImageLoader.getInstance().init(config);
+        imageLoader = ImageLoader.getInstance();
     }
 
     @Override
@@ -66,8 +95,22 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
 
     @Override
     protected void update(final int position, final ReviewItem item) {
-        Spanned html = Html.fromHtml(item.getReviewQuestion().getQuestionHtml().replaceAll("\n", ""));
+        Spanned html = Html.fromHtml(item.getReviewQuestion().getQuestionHtml().replaceAll("\n", ""), new ImageGetter(), null);
         setText(0, trim(html, 0, html.length()));
+
+        for(int j = 0; j < url.size() ; j++) {
+            imageLoader.loadImage(url.get(j), new SimpleImageLoadingListener() {
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    Drawable drawable = new BitmapDrawable(loadedImage);
+                    images.put(imageUri, drawable);
+                    if(images.size() == url.size()) {
+                        setText(0, Html.fromHtml(item.getReviewQuestion().getQuestionHtml().replaceAll("\n", ""), new ImageSetter(), null));
+                    }
+                }
+            });
+        }
+
         String explanation = item.getReviewQuestion().getExplanationHtml().replaceAll("\n", "");
         if (explanation.equals("")) {
             updater.view.findViewById(R.id.explanation_heading).setVisibility(View.GONE);
@@ -134,6 +177,32 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
                 correctOption.setVisibility(View.VISIBLE);
                 correctAnswersView.addView(correctOption);
             }
+        }
+    }
+
+    private class ImageGetter implements Html.ImageGetter {
+        Drawable drawable = null;
+        public Drawable getDrawable(String source) {
+            if(source != null) {
+                url.add(source);
+            }
+            return drawable;
+        }
+    }
+
+    private class ImageSetter implements Html.ImageGetter {
+        Drawable drawable = null;
+        public Drawable getDrawable(String source) {
+            if(source != null) {
+                if(images != null) {
+                    try {
+                        drawable = images.get(source);
+                        drawable.setBounds(0,0,drawable.getIntrinsicWidth(),drawable.getIntrinsicHeight());
+                    }
+                    catch (Exception e) {}
+                }
+            }
+            return drawable;
         }
     }
 }

@@ -1,5 +1,7 @@
 package in.testpress.testpress.core;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,6 +44,8 @@ public abstract class ResourcePager<E> {
      * Are more pages available?
      */
     protected boolean hasMore;
+
+    protected boolean networkFail = false;
 
     public ResourcePager(final TestpressService service) {
         this.service = service;
@@ -86,6 +90,9 @@ public abstract class ResourcePager<E> {
      * @return resources
      */
     public List<E> getResources() {
+        if(networkFail){
+            return null;
+        }
         return new ArrayList<E>(resources.values());
     }
 
@@ -97,7 +104,7 @@ public abstract class ResourcePager<E> {
      */
     public boolean next() throws IOException {
         boolean emptyPage = false;
-
+        networkFail = false;
         try {
             for (int i = 0; i < count && hasNext(); i++) {
                 List<E> resourcePage = getItems(page, -1);
@@ -120,6 +127,7 @@ public abstract class ResourcePager<E> {
             page++;
         } catch (Exception e) {
             hasMore = false;
+            networkFail = true;
 //            throw e.getCause();
         }
         hasMore = hasNext() && !emptyPage;

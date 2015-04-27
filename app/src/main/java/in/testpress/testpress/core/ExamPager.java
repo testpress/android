@@ -59,8 +59,13 @@ public class ExamPager extends ResourcePager<Exam> {
 
         }
         if (url != null) {
-            response = service.getExams(url);
-            return response.getResults();
+            try {
+                response = service.getExams(url);
+                return response.getResults();
+            }
+            catch (Exception e) {
+                return null;
+            }
         }
         return Collections.emptyList();
     }

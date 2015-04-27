@@ -125,6 +125,10 @@ public class Attempt implements Parcelable {
         return getUrlFrag() + "end/";
     }
 
+    public String getHeartBeatUrlFrag() {
+        return getUrlFrag() + "heartbeat/";
+    }
+
     /**
      *
      * @return

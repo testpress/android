@@ -302,6 +302,9 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
             public void onTick(long millisUntilFinished) {
                 final String formattedTime = formatTime(millisUntilFinished);
                 timer.setText(formattedTime);
+                if(((millisUntilFinished / 1000) % 180) == 0) {
+                    sendHeartBeat.execute();
+                }
             }
 
             public void onFinish() {
@@ -329,6 +332,30 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         getActivity().finish();
     }
 
+    SafeAsyncTask<Attempt> sendHeartBeat = new SafeAsyncTask<Attempt>() {
+        @Override
+        public Attempt call() throws Exception {
+            return  serviceProvider.getService(getActivity()).heartbeat(mAttempt.getHeartBeatUrlFrag());
+        }
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onSuccess(Attempt result) {
+        }
+
+        @Override
+        protected void onException(Exception e) {
+
+        }
+
+        @Override
+        protected void onFinally() {
+
+        }
+    };
+
     SafeAsyncTask<Attempt> endExam = new SafeAsyncTask<Attempt>() {
         @Override
         public Attempt call() throws Exception {
@@ -349,6 +376,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
 
         @Override
         protected void onFinally() {
+            countDownTimer.cancel();
             showReview();
         }
     };
@@ -388,7 +416,6 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
                 option.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        countDownTimer.cancel();
                         endExam.execute();
                         dismiss();
                     }

@@ -1,8 +1,6 @@
 package in.testpress.testpress.ui;
 
-import android.app.ActionBar;
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -10,17 +8,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.text.Spanned;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.ExpandableListAdapter;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
@@ -33,9 +25,6 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import in.testpress.testpress.R;
-import in.testpress.testpress.models.Attempt;
-import in.testpress.testpress.models.AttemptAnswer;
-import in.testpress.testpress.models.Exam;
 import in.testpress.testpress.models.ReviewAnswer;
 import in.testpress.testpress.models.ReviewItem;
 
@@ -47,7 +36,7 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
 
     private LayoutInflater inflater;
     ArrayList<String> url = new ArrayList<>();
-    HashMap<String, Drawable> images = new HashMap<>();
+    HashMap<String, Bitmap> images = new HashMap<>();
     Activity activity;
     ImageLoader imageLoader;
 
@@ -95,30 +84,45 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
 
     @Override
     protected void update(final int position, final ReviewItem item) {
-        Spanned html = Html.fromHtml(item.getReviewQuestion().getQuestionHtml().replaceAll("\n", ""), new ImageGetter(), null);
+        Spanned html = Html.fromHtml(item.getReviewQuestion().getQuestionHtml().replaceAll("\n", ""), new ImageGetter(item), null);
         setText(0, trim(html, 0, html.length()));
 
-        for(int j = 0; j < url.size() ; j++) {
-            imageLoader.loadImage(url.get(j), new SimpleImageLoadingListener() {
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    Drawable drawable = new BitmapDrawable(loadedImage);
-                    images.put(imageUri, drawable);
-                    if(images.size() == url.size()) {
-                        setText(0, Html.fromHtml(item.getReviewQuestion().getQuestionHtml().replaceAll("\n", ""), new ImageSetter(), null));
-                    }
-                }
-            });
-        }
-
-        String explanation = item.getReviewQuestion().getExplanationHtml().replaceAll("\n", "");
+        final String explanation = item.getReviewQuestion().getExplanationHtml().replaceAll("\n", "");
         if (explanation.equals("")) {
             updater.view.findViewById(R.id.explanation_heading).setVisibility(View.GONE);
             updater.view.findViewById(R.id.explanation).setVisibility(View.GONE);
         } else {
-            html = Html.fromHtml(explanation);
+            html = Html.fromHtml(explanation, new ImageGetter(item), null);
             setText(2, trim(html, 0, html.length()));
         }
+
+        if(item.getImages().size() > 0) {
+            setText(0, Html.fromHtml(item.getReviewQuestion().getQuestionHtml().replaceAll("\n", ""), new ImageSetter(item), null));
+            setText(2, Html.fromHtml(explanation, new ImageSetter(item), null));
+        }
+        else {
+            for (int j = 0; j < item.getImageUrl().size(); j++) {
+                imageLoader.loadImage(item.getImageUrl().get(j), new SimpleImageLoadingListener() {
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        item.setImages(imageUri, loadedImage);
+                        if (item.getImages().size() == item.getImageUrl().size()) {
+                            setText(0, Html.fromHtml(item.getReviewQuestion().getQuestionHtml().replaceAll("\n", ""), new ImageSetter(item), null));
+                            setText(2, Html.fromHtml(explanation, new ImageSetter(item), null));
+                        }
+                    }
+                });
+            }
+        }
+
+//        String explanation = item.getReviewQuestion().getExplanationHtml().replaceAll("\n", "");
+//        if (explanation.equals("")) {
+//            updater.view.findViewById(R.id.explanation_heading).setVisibility(View.GONE);
+//            updater.view.findViewById(R.id.explanation).setVisibility(View.GONE);
+//        } else {
+//            html = Html.fromHtml(explanation);
+//            setText(2, trim(html, 0, html.length()));
+//        }
         ((TextView)updater.view.findViewById(R.id.question_index)).setText((position + 1) + ".");
         LinearLayout correctAnswersView = (LinearLayout)updater.view.findViewById(R.id.correct_answer);
         //Clear all children first else it keeps appending old items
@@ -182,9 +186,13 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
 
     private class ImageGetter implements Html.ImageGetter {
         Drawable drawable = null;
+        ReviewItem item;
+        ImageGetter(ReviewItem item) {
+            this.item = item;
+        }
         public Drawable getDrawable(String source) {
             if(source != null) {
-                url.add(source);
+               item.setImageUrl(source);
             }
             return drawable;
         }
@@ -192,11 +200,15 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
 
     private class ImageSetter implements Html.ImageGetter {
         Drawable drawable = null;
+        ReviewItem item;
+        ImageSetter(ReviewItem item) {
+            this.item = item;
+        }
         public Drawable getDrawable(String source) {
             if(source != null) {
                 if(images != null) {
                     try {
-                        drawable = images.get(source);
+                        drawable = new BitmapDrawable(item.getImages().get(source));
                         drawable.setBounds(0,0,drawable.getIntrinsicWidth(),drawable.getIntrinsicHeight());
                     }
                     catch (Exception e) {}

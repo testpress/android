@@ -35,10 +35,10 @@ import java.util.List;
 public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
 
     private LayoutInflater inflater;
-    ArrayList<String> url = new ArrayList<>();
-    HashMap<String, Bitmap> images = new HashMap<>();
     Activity activity;
     ImageLoader imageLoader;
+    HashMap<String, Drawable> answerImages = new HashMap<>();
+    ArrayList<String> answerImagesUrl = new ArrayList<>();
 
     /**
      * @param inflater
@@ -97,8 +97,10 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
         }
 
         if(item.getImages().size() > 0) {
-            setText(0, Html.fromHtml(item.getReviewQuestion().getQuestionHtml().replaceAll("\n", ""), new ImageSetter(item), null));
-            setText(2, Html.fromHtml(explanation, new ImageSetter(item), null));
+            Spanned htmlQuestion = Html.fromHtml(item.getReviewQuestion().getQuestionHtml().replaceAll("\n", ""), new ImageSetter(item), null);
+            Spanned htmlExplanation = Html.fromHtml(explanation, new ImageSetter(item), null);
+            setText(0, trim(htmlQuestion, 0, htmlQuestion.length()));
+            setText(2, trim(htmlExplanation, 0, htmlExplanation.length()));
         }
         else {
             for (int j = 0; j < item.getImageUrl().size(); j++) {
@@ -107,8 +109,10 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                         item.setImages(imageUri, loadedImage);
                         if (item.getImages().size() == item.getImageUrl().size()) {
-                            setText(0, Html.fromHtml(item.getReviewQuestion().getQuestionHtml().replaceAll("\n", ""), new ImageSetter(item), null));
-                            setText(2, Html.fromHtml(explanation, new ImageSetter(item), null));
+                            Spanned htmlQuestion = Html.fromHtml(item.getReviewQuestion().getQuestionHtml().replaceAll("\n", ""), new ImageSetter(item), null);
+                            Spanned htmlExplanation = Html.fromHtml(explanation, new ImageSetter(item), null);
+                            setText(0, trim(htmlQuestion, 0, htmlQuestion.length()));
+                            setText(2, trim(htmlExplanation, 0, htmlExplanation.length()));
                         }
                     }
                 });
@@ -132,13 +136,24 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
         answersView.removeAllViews();
         List<ReviewAnswer> answers = item.getReviewQuestion().getAnswers();
         for(int i = 0 ; i < answers.size() ; i++) {
-            ReviewAnswer answer = answers.get(i);
+            final ReviewAnswer answer = answers.get(i);
             View option = inflater.inflate(R.layout.review_answer, null);
-            html = Html.fromHtml(answer.getTextHtml());
-            TextView answerText = (TextView) option.findViewById(R.id.answer_text);
+            html = Html.fromHtml(answer.getTextHtml(), new AnswerImageGetter(), null);
+            final TextView answerText = (TextView) option.findViewById(R.id.answer_text);
             TextView optionText = (TextView) option.findViewById(R.id.option);
             optionText.setText("" + (char) (i + 97));
             answerText.setText(trim(html, 0, html.length()));
+            for(int j = 0; j < answerImagesUrl.size() ; j++) {
+                imageLoader.loadImage(answerImagesUrl.get(j), new SimpleImageLoadingListener() {
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        Drawable drawable = new BitmapDrawable(loadedImage);
+                        answerImages.put(imageUri, drawable);
+                        Spanned html = Html.fromHtml(answer.getTextHtml(), new AnswerImageSetter(), null);
+                        answerText.setText(trim(html, 0, html.length()));
+                    }
+                });
+            }
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
@@ -201,15 +216,42 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
     private class ImageSetter implements Html.ImageGetter {
         Drawable drawable = null;
         ReviewItem item;
+
         ImageSetter(ReviewItem item) {
             this.item = item;
         }
         public Drawable getDrawable(String source) {
             if(source != null) {
-                if(images != null) {
+                if(item.getImages() != null) {
                     try {
                         drawable = new BitmapDrawable(item.getImages().get(source));
-                        drawable.setBounds(0,0,drawable.getIntrinsicWidth(),drawable.getIntrinsicHeight());
+                        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                    }
+                    catch (Exception e) {}
+                }
+            }
+            return drawable;
+        }
+    }
+
+    private class AnswerImageGetter implements Html.ImageGetter {
+        Drawable drawable = null;
+        public Drawable getDrawable(String source) {
+            if(source != null) {
+                answerImagesUrl.add(source);
+            }
+            return drawable;
+        }
+    }
+
+    private class AnswerImageSetter implements Html.ImageGetter {
+        Drawable drawable = null;
+        public Drawable getDrawable(String source) {
+            if(source != null) {
+                if(answerImages != null) {
+                    try {
+                        drawable = answerImages.get(source);
+                        drawable.setBounds(0, 0, drawable.getIntrinsicWidth()/2, drawable.getIntrinsicHeight()/2);
                     }
                     catch (Exception e) {}
                 }

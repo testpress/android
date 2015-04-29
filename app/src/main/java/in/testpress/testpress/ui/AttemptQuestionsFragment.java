@@ -1,19 +1,14 @@
 package in.testpress.testpress.ui;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
-import android.text.Spannable;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,13 +27,6 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +46,9 @@ public class AttemptQuestionsFragment extends Fragment {
     Integer index;
     ArrayList<String> url = new ArrayList<>();
     HashMap<String, Drawable> images = new HashMap<>();
+    ImageLoader imageLoader;
+    HashMap<String, Drawable> answerImages = new HashMap<>();
+    ArrayList<String> answerImagesUrl = new ArrayList<>();
 
     @InjectView(id.question) TextView questionsView;
     @InjectView(id.question_index) TextView questionIndex;
@@ -100,7 +91,7 @@ public class AttemptQuestionsFragment extends Fragment {
                 .discCacheSize(100 * 1024 * 1024).build();
 
         ImageLoader.getInstance().init(config);
-        ImageLoader imageLoader = ImageLoader.getInstance();
+        imageLoader = ImageLoader.getInstance();
         for(int j = 0; j < url.size() ; j++) {
             imageLoader.loadImage(url.get(j), new SimpleImageLoadingListener() {
                 @Override
@@ -108,7 +99,8 @@ public class AttemptQuestionsFragment extends Fragment {
                     Drawable drawable = new BitmapDrawable(loadedImage);
                     images.put(imageUri, drawable);
                     if(images.size() == url.size()) {
-                        questionsView.setText(Html.fromHtml(attemptQuestion.getQuestionHtml(), new ImageSetter(), null));
+                        Spanned htmlSpan = Html.fromHtml(attemptQuestion.getQuestionHtml(), new ImageSetter(), null);
+                        questionsView.setText(trim(htmlSpan, 0, htmlSpan.length()));
                     }
                 }
             });
@@ -258,15 +250,27 @@ public class AttemptQuestionsFragment extends Fragment {
 //        }
 //    }
 
-    public void createCheckBoxView(List<AttemptAnswer> attemptAnswers, AttemptQuestion attemptQuestion) {
+    public void createCheckBoxView(final List<AttemptAnswer> attemptAnswers, AttemptQuestion attemptQuestion) {
         final List<Integer> savedAnswers = new ArrayList<Integer>();
         for(int i = 0 ; i < attemptQuestion.getAttemptAnswers().size() ; i++) {
-
+            final String answer  = attemptQuestion.getAttemptAnswers().get(i).getTextHtml();
             final CheckBox option = new CheckBox(getActivity());
             option.setId(i);
             LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
             option.setLayoutParams(layoutParams);
-            option.setText(Html.fromHtml(attemptAnswers.get(i).getTextHtml()));
+            Spanned html = Html.fromHtml(answer, new AnswerImageGetter(), null);
+            option.setText(trim(html, 0, html.length()));
+            for(int j = 0; j < answerImagesUrl.size() ; j++) {
+                imageLoader.loadImage(answerImagesUrl.get(j), new SimpleImageLoadingListener() {
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        Drawable drawable = new BitmapDrawable(loadedImage);
+                        answerImages.put(imageUri, drawable);
+                        Spanned html = Html.fromHtml(answer, new AnswerImageSetter(), null);
+                        option.setText(trim(html, 0, html.length()));
+                    }
+                });
+            }
             option.setButtonDrawable(android.R.color.transparent);
             option.setPadding(25, 10, 0, 0);
             List<Integer> selectedAnswers = attemptItem.getSelectedAnswers();
@@ -311,16 +315,28 @@ public class AttemptQuestionsFragment extends Fragment {
     public void creareRadioButtonView(List<AttemptAnswer> attemptAnswers, AttemptQuestion attemptQuestion) {
         for(int i = 0 ; i < attemptQuestion.getAttemptAnswers().size() ; i++) {
             LayoutInflater inflater;
+            final String answer  = attemptQuestion.getAttemptAnswers().get(i).getTextHtml();
             inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            RadioButton option = (RadioButton) inflater.inflate(R.layout.attempt_radio_button_fragment ,
+            final RadioButton option = (RadioButton) inflater.inflate(R.layout.attempt_radio_button_fragment ,
                     null);
             //final RadioButton option = new RadioButton(getActivity());
             option.setId(i);
             //LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
             //option.setLayoutParams(layoutParams);
             //option.setHt
-            Spanned html = Html.fromHtml(attemptAnswers.get(i).getTextHtml());
+            Spanned html = Html.fromHtml(attemptAnswers.get(i).getTextHtml(), new AnswerImageGetter(), null);
             option.setText(trim(html, 0, html.length()));
+            for(int j = 0; j < answerImagesUrl.size() ; j++) {
+                imageLoader.loadImage(answerImagesUrl.get(j), new SimpleImageLoadingListener() {
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        Drawable drawable = new BitmapDrawable(loadedImage);
+                        answerImages.put(imageUri, drawable);
+                        Spanned html = Html.fromHtml(answer, new AnswerImageSetter(), null);
+                        option.setText(trim(html, 0, html.length()));
+                    }
+                });
+            }
             //Log.e("AttemptQuestionsFragment", Html.fromHtml(attemptAnswers.get(i).getTextHtml()));
             //option.setButtonDrawable(android.R.color.transparent);
             //option.setPadding(25, 10, 0, 0);
@@ -346,6 +362,32 @@ public class AttemptQuestionsFragment extends Fragment {
                     //else compoundButton.setBackgroundColor(android.R.color.transparent);
                 }
             });
+        }
+    }
+
+    private class AnswerImageGetter implements Html.ImageGetter {
+        Drawable drawable = null;
+        public Drawable getDrawable(String source) {
+            if(source != null) {
+                answerImagesUrl.add(source);
+            }
+            return drawable;
+        }
+    }
+
+    private class AnswerImageSetter implements Html.ImageGetter {
+        Drawable drawable = null;
+        public Drawable getDrawable(String source) {
+            if(source != null) {
+                if(answerImages != null) {
+                    try {
+                        drawable = answerImages.get(source);
+                        drawable.setBounds(0,0,drawable.getIntrinsicWidth(),drawable.getIntrinsicHeight());
+                    }
+                    catch (Exception e) {}
+                }
+            }
+            return drawable;
         }
     }
 

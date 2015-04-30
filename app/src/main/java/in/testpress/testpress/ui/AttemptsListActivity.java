@@ -15,7 +15,6 @@ public class AttemptsListActivity extends TestpressFragmentActivity {
     public void onCreate(final Bundle savedInstanceState) {
         setContentView(R.layout.activity_review);
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
         AttemptsListFragment attemptsListFragment = new AttemptsListFragment();
         Bundle bundle = getIntent().getExtras();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

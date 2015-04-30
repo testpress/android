@@ -36,7 +36,7 @@ public class TestpressFragmentActivity extends ActionBarActivity {
         Toolbar toolbar = getActionBarToolbar();
         toolbar.setBackgroundResource(R.color.primary);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
     }
 

@@ -24,7 +24,6 @@ public class ReviewActivity extends TestpressFragmentActivity {
         setContentView(R.layout.activity_review);
         super.onCreate(savedInstanceState);
         Injector.inject(this);
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
         final Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         ReviewFragment reviewFragment = new ReviewFragment();

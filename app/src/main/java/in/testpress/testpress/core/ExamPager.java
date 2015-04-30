@@ -60,7 +60,7 @@ public class ExamPager extends ResourcePager<Exam> {
         }
         if (url != null) {
             try {
-                response = service.getExams(url);
+                response = service.getExams(url, queryParams);
                 return response.getResults();
             }
             catch (Exception e) {

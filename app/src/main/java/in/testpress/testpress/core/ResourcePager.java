@@ -41,6 +41,11 @@ public abstract class ResourcePager<E> {
     protected final Map<Object, E> resources = new LinkedHashMap<Object, E>();
 
     /**
+     * Query Params to be passed
+     */
+    protected Map<String, String> queryParams = new LinkedHashMap<String, String>();
+
+    /**
      * Are more pages available?
      */
     protected boolean hasMore;
@@ -175,5 +180,21 @@ public abstract class ResourcePager<E> {
     public abstract List<E> getItems(final int page, final int size);
 
     public abstract  boolean hasNext();
+
+    public String getQueryParams(String key) {
+        return queryParams.get(key);
+    }
+
+    public void setQueryParams(String key, String value) {
+        queryParams.put(key, value);
+    }
+
+    public void removeQueryParams(String key) {
+        queryParams.remove(key);
+    }
+
+    public void clearQueryParams() {
+        queryParams.clear();
+    }
 }
 

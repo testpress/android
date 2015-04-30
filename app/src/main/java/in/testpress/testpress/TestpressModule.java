@@ -21,6 +21,7 @@ import in.testpress.testpress.core.RestErrorHandler;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.core.UserAgentProvider;
 import in.testpress.testpress.ui.AttemptFragment;
+import in.testpress.testpress.ui.AttemptsListActivity;
 import in.testpress.testpress.ui.AttemptsListFragment;
 import in.testpress.testpress.ui.ExamActivity;
 import in.testpress.testpress.ui.ExamsListFragment;
@@ -51,7 +52,8 @@ import retrofit.converter.GsonConverter;
                 ReviewFragment.class,
                 AttemptsListFragment.class,
                 ReviewQuestionsFragment.class,
-                ReviewActivity.class
+                ReviewActivity.class,
+                AttemptsListActivity.class
         }
 )
 public class TestpressModule {

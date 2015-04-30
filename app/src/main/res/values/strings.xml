@@ -6,6 +6,7 @@
     <string name="content_column">Content</string>
     <string name="page_referrers">Referrers</string>
     <string name="refresh_action">Refresh</string>
+    <string name="filter_action">Filter</string>
     <string name="retake_action">Retake</string>
     <string name="logout_action">Logout</string>
     <string name="page_available_exams">Available</string>
@@ -61,5 +62,8 @@
     <string name="title_home">Home</string>
     <string name="icon_heart">&#xf004;</string>
     <string name="thumbs_o_up">&#xf087;</string>
+
+    <string name="all_exams">All Exams</string>
+    <string name="courses">Courses</string>
 
 </resources>

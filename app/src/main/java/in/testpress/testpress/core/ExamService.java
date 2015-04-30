@@ -2,6 +2,7 @@ package in.testpress.testpress.core;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import in.testpress.testpress.models.Attempt;
 import in.testpress.testpress.models.AttemptItem;
@@ -14,11 +15,12 @@ import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.POST;
 import retrofit.http.PUT;
+import retrofit.http.QueryMap;
 
 public interface ExamService {
 
     @GET("/{exams_url}")
-    TestpressApiResponse<Exam> getExams(@EncodedPath("exams_url") String examsUrl, @Header("Authorization") String authorization);
+    TestpressApiResponse<Exam> getExams(@EncodedPath("exams_url") String examsUrl, @QueryMap Map<String, String> options, @Header("Authorization") String authorization);
 
     @GET("/{questions_url}")
     TestpressApiResponse<AttemptItem> getQuestions(@EncodedPath("questions_url") String questionsUrlFrag, @Header("Authorization") String authorization);

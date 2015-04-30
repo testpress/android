@@ -20,6 +20,7 @@ public class Exam implements Parcelable {
     private Integer id;
     private String title;
     private String description;
+    private String course;
     private String startDate;
     private String endDate;
     private String duration;
@@ -39,6 +40,7 @@ public class Exam implements Parcelable {
         id                 = parcel.readInt();
         title              = parcel.readString();
         description        = parcel.readString();
+        course             = parcel.readString();
         startDate          = parcel.readString();
         endDate            = parcel.readString();
         duration           = parcel.readString();
@@ -64,6 +66,7 @@ public class Exam implements Parcelable {
         parcel.writeInt(id);
         parcel.writeString(title);
         parcel.writeString(description);
+        parcel.writeString(course);
         parcel.writeString(startDate);
         parcel.writeString(endDate);
         parcel.writeString(duration);
@@ -180,6 +183,23 @@ public class Exam implements Parcelable {
         this.description = description;
     }
 
+    /**
+     *
+     * @return
+     * The course
+     */
+    public String getCourse() {
+        return course;
+    }
+
+    /**
+     *
+     * @param course
+     * The course
+     */
+    public void setCourse(String course) {
+        this.course = course;
+    }
     /**
      *
      * @return

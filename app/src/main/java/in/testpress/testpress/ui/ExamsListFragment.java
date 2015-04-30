@@ -5,12 +5,26 @@ import android.accounts.OperationCanceledException;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.Loader;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.Injector;
@@ -22,9 +36,13 @@ import in.testpress.testpress.models.Attempt;
 import in.testpress.testpress.models.Exam;
 
 import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
+import com.github.kevinsawicki.wishlist.Toaster;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -32,8 +50,14 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
 
     String subclass;
     ExamPager pager;
+    //List of courses got from the api. This is used to populate the spinner.
+    ArrayList<String> courses = new ArrayList<String>();
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected LogoutService logoutService;
+
+    private ExploreSpinnerAdapter mTopLevelSpinnerAdapter;
+    private View mSpinnerContainer;
+    private Boolean mFistTimeCallback = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,6 +71,35 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
             e.printStackTrace();
         }
         super.onCreate(savedInstanceState);
+        mTopLevelSpinnerAdapter = new ExploreSpinnerAdapter(getActivity().getLayoutInflater(), getActivity().getResources(), true);
+        mTopLevelSpinnerAdapter.addItem("", getString(R.string.all_exams), false, 0);
+        mTopLevelSpinnerAdapter.addHeader(getString(R.string.courses));
+        Toolbar toolbar = ((MainActivity)(getActivity())).getActionBarToolbar();
+        mSpinnerContainer = getActivity().getLayoutInflater().inflate(R.layout.actionbar_spinner, toolbar, false);
+
+        Spinner spinner = (Spinner) mSpinnerContainer.findViewById(R.id.actionbar_spinner);
+        spinner.setAdapter(mTopLevelSpinnerAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> spinner, View view, int position, long itemId) {
+                if (!mFistTimeCallback) {
+                    mFistTimeCallback = true;
+                    return;
+                }
+                String filter = mTopLevelSpinnerAdapter.getTag(position);
+                if (filter.isEmpty()) {
+                    pager.removeQueryParams("course");
+                } else {
+                    pager.setQueryParams("course", filter);
+                }
+                refreshWithProgress();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+        mSpinnerContainer.setVisibility(View.GONE);
     }
 
     @Override
@@ -64,6 +117,58 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
         listView.setDividerHeight(0);
 
 
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<Exam>> loader, List<Exam> items) {
+        super.onLoadFinished(loader, items);
+
+        //Populate the spinner with the courses
+        List<String> coursesList = new ArrayList<String>();
+        for (final Exam exam : items) {
+            coursesList.add(exam.getCourse());
+        }
+        Set<String> uniqueCourses = new HashSet<String>(coursesList);
+        for (final String course : uniqueCourses) {
+            // Do not add the course if already present in the spinner
+            if (!courses.contains(course)) {
+                courses.add(course);
+                mTopLevelSpinnerAdapter.addItem(course, course, true, 0);
+            }
+        }
+
+        if ((mSpinnerContainer.getVisibility() == View.GONE) && !uniqueCourses.isEmpty()){
+            mSpinnerContainer.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(final boolean visible) {
+        super.setUserVisibleHint(visible);
+        if (visible && isUsable()) {
+            Toolbar toolbar = ((MainActivity)(getActivity())).getActionBarToolbar();
+            View view = toolbar.findViewById(R.id.actionbar_spinnerwrap);
+            toolbar.removeView(view);
+            toolbar.invalidate();
+            ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            toolbar.addView(mSpinnerContainer, lp);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        if (!isUsable()) {
+            return false;
+        }
+
+        switch (item.getItemId()) {
+            case R.id.filter:
+                refreshWithProgress();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

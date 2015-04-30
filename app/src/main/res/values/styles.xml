@@ -134,4 +134,14 @@
     <item name="android:windowBackground">@drawable/dialog_background</item>
     </style>
 
+    <style name="Widget.Testpress.HeaderBar.Spinner.Base" parent="Widget.AppCompat.Light.Spinner.DropDown.ActionBar">
+        <item name="android:background">?android:selectableItemBackground</item>
+        <item name="android:dropDownSelector">?android:selectableItemBackground</item>
+        <item name="android:divider">@null</item>
+        <item name="android:dividerHeight">0dp</item>
+        <item name="android:overlapAnchor">true</item>
+    </style>
+
+    <style name="Widget.Testpress.HeaderBar.Spinner" parent="Widget.Testpress.HeaderBar.Spinner.Base" />
+
 </resources>

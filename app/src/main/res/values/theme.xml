@@ -3,10 +3,14 @@
     <!-- the theme applied to the application or activity -->
     <style name="Theme.Testpress.Dark"
         parent="@style/Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <item name="windowActionBar">false</item>
 
-        <!-- Support library compatibility -->
-        <item name="actionBarStyle">@style/MyActionBar</item>
+        <item name="colorPrimary">@color/primary</item>
+        <!--<item name="colorPrimaryDark">@color/theme_primary_dark</item>-->
+        <!--<item name="colorAccent">@color/theme_accent_2</item>-->
+
+        <!--<item name="android:textColorLink">@color/theme_accent_2</item>-->
+
     </style>
 
     <!-- ActionBar styles -->

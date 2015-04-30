@@ -9,12 +9,13 @@ import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.models.Exam;
 
 
-public class AttemptsListActivity extends ActionBarActivity {
+public class AttemptsListActivity extends TestpressFragmentActivity {
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review);
+        super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
         AttemptsListFragment attemptsListFragment = new AttemptsListFragment();
         Bundle bundle = getIntent().getExtras();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

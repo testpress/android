@@ -2,6 +2,7 @@ package in.testpress.testpress.core;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 import in.testpress.testpress.models.Attempt;
@@ -46,8 +47,8 @@ public class TestpressService {
         return "JWT " + authToken;
     }
 
-    public TestpressApiResponse<Exam> getExams(String urlFrag) {
-        return getExamsService().getExams(urlFrag, getAuthToken());
+    public TestpressApiResponse<Exam> getExams(String urlFrag, Map<String, String> queryParams) {
+        return getExamsService().getExams(urlFrag, queryParams, getAuthToken());
     }
 
     public TestpressApiResponse<Attempt> getAttempts(String urlFrag) {

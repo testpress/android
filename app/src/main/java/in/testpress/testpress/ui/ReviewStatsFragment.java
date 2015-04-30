@@ -30,6 +30,7 @@ public class ReviewStatsFragment extends Fragment {
     @InjectView(R.id.total_correct) TextView totalCorrect;
     @InjectView(R.id.total_incorrect) TextView totalIncorrect;
     @InjectView(R.id.total_unanswered) TextView totalUnanswered;
+    @InjectView(R.id.time_taken) TextView timeTaken;
     @InjectView(R.id.score) TextView score;
     @InjectView(R.id.rank) TextView rank;
     @InjectView(R.id.percentile) TextView percentile;
@@ -75,6 +76,7 @@ public class ReviewStatsFragment extends Fragment {
         totalIncorrect.setText("" + attempt.getIncorrectCount());
         Integer unanswered = attempt.getTotalQuestions() - (attempt.getCorrectCount() + attempt.getIncorrectCount());
         totalUnanswered.setText("" + unanswered);
+        timeTaken.setText(attempt.getTimeTaken());
         rank.setText(attempt.getScore());
         score.setText(attempt.getScore());
         percentile.setText(attempt.getPercentile());

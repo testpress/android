@@ -4,10 +4,15 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 public class Exam implements Parcelable {
     private String totalMarks;
@@ -15,6 +20,7 @@ public class Exam implements Parcelable {
     private Integer id;
     private String title;
     private String description;
+    private String course;
     private String startDate;
     private String endDate;
     private String duration;
@@ -34,6 +40,7 @@ public class Exam implements Parcelable {
         id                 = parcel.readInt();
         title              = parcel.readString();
         description        = parcel.readString();
+        course             = parcel.readString();
         startDate          = parcel.readString();
         endDate            = parcel.readString();
         duration           = parcel.readString();
@@ -59,6 +66,7 @@ public class Exam implements Parcelable {
         parcel.writeInt(id);
         parcel.writeString(title);
         parcel.writeString(description);
+        parcel.writeString(course);
         parcel.writeString(startDate);
         parcel.writeString(endDate);
         parcel.writeString(duration);
@@ -178,6 +186,23 @@ public class Exam implements Parcelable {
     /**
      *
      * @return
+     * The course
+     */
+    public String getCourse() {
+        return course;
+    }
+
+    /**
+     *
+     * @param course
+     * The course
+     */
+    public void setCourse(String course) {
+        this.course = course;
+    }
+    /**
+     *
+     * @return
      * The startDate
      */
     public String getStartDate() {
@@ -194,13 +219,27 @@ public class Exam implements Parcelable {
         this.startDate = startDate;
     }
 
+    public String formatDate(String inputString) {
+        Date date = null;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        try {
+            date = simpleDateFormat.parse(inputString);
+            DateFormat dateformat = DateFormat.getDateInstance();
+            return dateformat.format(date);
+        }
+        catch (ParseException e) {
+        }
+        return null;
+    }
+
     /**
      *
      * @return
      * The endDate
      */
     public String getEndDate() {
-        return endDate;
+        return formatDate(endDate);
     }
 
     /**
@@ -338,7 +377,7 @@ public class Exam implements Parcelable {
     public String getAttemptsFrag() {
         try {
             URL url = new URL(attemptsUrl);
-            return url.getFile();
+            return url.getFile().substring(1);
         }
         catch (Exception e) {
             return null;

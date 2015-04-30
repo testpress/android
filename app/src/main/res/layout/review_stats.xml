@@ -1,187 +1,199 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="in.testpress.testpress.ui.ExamActivity"
-    android:orientation="vertical">
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </LinearLayout>
-    <ProgressBar
-        android:id="@+id/pb_loading"
-        style="@style/ListSpinner"
-        android:visibility="invisible"
-        android:layout_centerInParent="true" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/exam_details"
-        android:layout_marginTop="5dp">
+    android:id="@+id/scrollView">
+    <RelativeLayout android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
         <LinearLayout
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" >
-            <!--<IconTextView-->
-            <!--style="@style/examDetailHeading"-->
-            <!--android:id="@+id/exam_back_button"-->
-            <!--android:layout_width="70dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:textSize="30sp"-->
-            <!--android:gravity="center"-->
-            <!--android:text="{fa-angle-left}"/>-->
-            <TextView
-                style="@style/examDetailHeading"
-                android:layout_width="wrap_content"
-                android:text="Aptitude Analytical Maths (NBE Template)"
-                android:id="@+id/exam_title"
-                android:password="false"/>
+            android:orientation="vertical"
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
         </LinearLayout>
+        <ProgressBar
+            android:id="@+id/pb_loading"
+            style="@style/ListSpinner"
+            android:visibility="invisible"
+            android:layout_centerInParent="true" />
         <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp">
-            <View
-                android:layout_width="320dp"
-                android:layout_height="1dip"
-                android:background="#cccccc" />
-        </LinearLayout>
-        <LinearLayout style="@style/examDetailRow">
-            <TextView
-                style="@style/examDetailSubHeading"
-                android:text="Rank" />
-            <TextView
-                style="@style/examDetailValue"
-                android:id="@+id/rank"
-                android:text="1"/>
-        </LinearLayout>
-        <LinearLayout style="@style/examDetailRow">
-            <TextView
-                style="@style/examDetailSubHeading"
-                android:text="Score" />
-            <TextView
-                style="@style/examDetailValue"
-                android:id="@+id/score"
-                android:text="1"/>
-        </LinearLayout>
-        <LinearLayout style="@style/examDetailRow">
-            <TextView
-                style="@style/examDetailSubHeading"
-                android:text="Total correct"/>
-            <TextView
-                style="@style/examDetailValue"
-                android:id="@+id/total_correct"
-                android:text="100"/>
-        </LinearLayout>
-        <LinearLayout style="@style/examDetailRow">
-            <TextView
-                style="@style/examDetailSubHeading"
-                android:text="Total Incorrect" />
-            <TextView
-                style="@style/examDetailValue"
-                android:id="@+id/total_incorrect"
-                android:text="0:30:00"/>
-        </LinearLayout>
-        <LinearLayout style="@style/examDetailRow">
-            <TextView
-                style="@style/examDetailSubHeading"
-                android:text="Total Unanswered" />
-            <TextView
-                style="@style/examDetailValue"
-                android:id="@+id/total_unanswered"
-                android:text="1"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp">
-            <View
-                android:layout_width="320dp"
-                android:layout_height="1dip"
-                android:background="#cccccc" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="300dp"
-            android:layout_marginTop="10dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" >
-            <!--<IconTextView-->
-            <!--style="@style/examDetailHeading"-->
-            <!--android:id="@+id/exam_back_button"-->
-            <!--android:layout_width="70dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:textSize="30sp"-->
-            <!--android:gravity="center"-->
-            <!--android:text="{fa-angle-left}"/>-->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#333333"
-                android:textSize="@dimen/text_size_xlarge"
-                android:textStyle="normal"
-                android:text="Your percentile is" />
-            <TextView
-                style="@style/examDetailValue"
-                android:textSize="@dimen/text_size_xlarge"
-                android:layout_marginTop="0dp"
-                android:layout_marginBottom="0dp"
-                android:layout_marginLeft="5dp"
-                android:id="@+id/percentile"
-                android:text="22%"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:id="@+id/exam_details"
             android:layout_marginTop="5dp">
-            <!--<IconTextView-->
-            <!--style="@style/examDetailHeading"-->
-            <!--android:id="@+id/exam_back_button"-->
-            <!--android:layout_width="70dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:textSize="30sp"-->
-            <!--android:gravity="center"-->
-            <!--android:text="{fa-angle-left}"/>-->
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:textColor="#333333"
-                android:textSize="@dimen/text_size_small"
-                android:textStyle="normal"
-                android:text="\u2014" />
-            <TextView
-                android:layout_width="wrap_content"
+                android:layout_gravity="center" >
+                <!--<IconTextView-->
+                <!--style="@style/examDetailHeading"-->
+                <!--android:id="@+id/exam_back_button"-->
+                <!--android:layout_width="70dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:textSize="30sp"-->
+                <!--android:gravity="center"-->
+                <!--android:text="{fa-angle-left}"/>-->
+                <TextView
+                    style="@style/examDetailHeading"
+                    android:layout_width="wrap_content"
+                    android:text="Aptitude Analytical Maths (NBE Template)"
+                    android:id="@+id/exam_title"
+                    android:password="false"/>
+            </LinearLayout>
+            <LinearLayout
                 android:layout_height="wrap_content"
-                android:textColor="#333333"
-                android:textSize="@dimen/text_size_small"
-                android:textStyle="normal"
-                android:layout_marginLeft="5dp"
-                android:id="@+id/sub_percentile"
-                android:text="22%"/>
-            <TextView
                 android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp">
+                <View
+                    android:layout_width="320dp"
+                    android:layout_height="1dip"
+                    android:background="#cccccc" />
+            </LinearLayout>
+            <LinearLayout style="@style/examDetailRow">
+                <TextView
+                    style="@style/examDetailSubHeading"
+                    android:text="Rank" />
+                <TextView
+                    style="@style/examDetailValue"
+                    android:id="@+id/rank"
+                    android:text="1"/>
+            </LinearLayout>
+            <LinearLayout style="@style/examDetailRow">
+                <TextView
+                    style="@style/examDetailSubHeading"
+                    android:text="Score" />
+                <TextView
+                    style="@style/examDetailValue"
+                    android:id="@+id/score"
+                    android:text="1"/>
+            </LinearLayout>
+            <LinearLayout style="@style/examDetailRow">
+                <TextView
+                    style="@style/examDetailSubHeading"
+                    android:text="Total correct"/>
+                <TextView
+                    style="@style/examDetailValue"
+                    android:id="@+id/total_correct"
+                    android:text="100"/>
+            </LinearLayout>
+            <LinearLayout style="@style/examDetailRow">
+                <TextView
+                    style="@style/examDetailSubHeading"
+                    android:text="Total Incorrect" />
+                <TextView
+                    style="@style/examDetailValue"
+                    android:id="@+id/total_incorrect"
+                    android:text="0:30:00"/>
+            </LinearLayout>
+            <LinearLayout style="@style/examDetailRow">
+                <TextView
+                    style="@style/examDetailSubHeading"
+                    android:text="Total Unanswered" />
+                <TextView
+                    style="@style/examDetailValue"
+                    android:id="@+id/total_unanswered"
+                    android:text="1"/>
+            </LinearLayout>
+            <LinearLayout style="@style/examDetailRow">
+                <TextView
+                    style="@style/examDetailSubHeading"
+                    android:text="Time Taken" />
+                <TextView
+                    style="@style/examDetailValue"
+                    android:id="@+id/time_taken"
+                    android:text="0:28:05"/>
+            </LinearLayout>
+            <LinearLayout
                 android:layout_height="wrap_content"
-                android:textColor="#333333"
-                android:textSize="@dimen/text_size_small"
-                android:textStyle="normal"
-                android:layout_marginLeft="5dp"
-                android:text="of users scored less than your score of " />
-            <TextView
                 android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp">
+                <View
+                    android:layout_width="320dp"
+                    android:layout_height="1dip"
+                    android:background="#cccccc" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="300dp"
+                android:layout_marginTop="10dp"
                 android:layout_height="wrap_content"
-                android:textColor="#333333"
-                android:textSize="@dimen/text_size_small"
-                android:textStyle="normal"
-                android:layout_marginLeft="5dp"
-                android:id="@+id/sub_score"
-                android:text="20"/>
+                android:layout_gravity="center" >
+                <!--<IconTextView-->
+                <!--style="@style/examDetailHeading"-->
+                <!--android:id="@+id/exam_back_button"-->
+                <!--android:layout_width="70dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:textSize="30sp"-->
+                <!--android:gravity="center"-->
+                <!--android:text="{fa-angle-left}"/>-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#333333"
+                    android:textSize="@dimen/text_size_xlarge"
+                    android:textStyle="normal"
+                    android:text="Your percentile is" />
+                <TextView
+                    style="@style/examDetailValue"
+                    android:textSize="@dimen/text_size_xlarge"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/percentile"
+                    android:text="22%"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp">
+                <!--<IconTextView-->
+                <!--style="@style/examDetailHeading"-->
+                <!--android:id="@+id/exam_back_button"-->
+                <!--android:layout_width="70dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:textSize="30sp"-->
+                <!--android:gravity="center"-->
+                <!--android:text="{fa-angle-left}"/>-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#333333"
+                    android:textSize="@dimen/text_size_small"
+                    android:textStyle="normal"
+                    android:text="\u2014" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#333333"
+                    android:textSize="@dimen/text_size_small"
+                    android:textStyle="normal"
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/sub_percentile"
+                    android:text="22%"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#333333"
+                    android:textSize="@dimen/text_size_small"
+                    android:textStyle="normal"
+                    android:layout_marginLeft="5dp"
+                    android:text="of users scored less than your score of " />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#333333"
+                    android:textSize="@dimen/text_size_small"
+                    android:textStyle="normal"
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/sub_score"
+                    android:text="20"/>
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-</RelativeLayout>
+    </RelativeLayout>
+</ScrollView>

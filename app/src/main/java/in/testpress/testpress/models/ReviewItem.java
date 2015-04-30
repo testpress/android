@@ -1,5 +1,6 @@
 package in.testpress.testpress.models;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -23,6 +24,8 @@ public class ReviewItem implements Parcelable {
     private List<Integer> selectedAnswers = new ArrayList<Integer>();
     private Boolean review;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private HashMap<String, Bitmap> images = new HashMap<>();
+    private ArrayList<String> imageUrl = new ArrayList<>();
     ReviewItem() {
         selectedAnswers = new ArrayList<Integer>();
     }
@@ -64,6 +67,23 @@ public class ReviewItem implements Parcelable {
             return new ReviewItem[size];
         }
     };
+
+    public void setImages(String url, Bitmap image) {
+        this.images.put(url, image);
+    }
+
+    public HashMap<String, Bitmap> getImages() {
+        return images;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl.add(imageUrl);
+    }
+
+    public ArrayList<String> getImageUrl() {
+        return imageUrl;
+    }
+
 
     /**
      *

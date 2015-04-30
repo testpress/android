@@ -101,7 +101,7 @@
 
     <style name="examDetailHeading">
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">#3598db</item>
+        <item name="android:textColor">@color/primary</item>
         <item name="android:textSize">@dimen/text_size_xxlarge</item>
         <item name="android:textStyle">normal</item>
         <item name="android:layout_marginTop">5dp</item>
@@ -111,7 +111,7 @@
     <style name="examDetailSubHeading">
         <item name="android:layout_width">200dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">#3598db</item>
+        <item name="android:textColor">@color/primary</item>
         <item name="android:textSize">@dimen/text_size_large</item>
         <item name="android:capitalize">characters</item>
         <item name="android:textStyle">normal</item>
@@ -133,5 +133,15 @@
     <style name="ActivityDialog" parent="android:style/Theme.Dialog">
     <item name="android:windowBackground">@drawable/dialog_background</item>
     </style>
+
+    <style name="Widget.Testpress.HeaderBar.Spinner.Base" parent="Widget.AppCompat.Light.Spinner.DropDown.ActionBar">
+        <item name="android:background">?android:selectableItemBackground</item>
+        <item name="android:dropDownSelector">?android:selectableItemBackground</item>
+        <item name="android:divider">@null</item>
+        <item name="android:dividerHeight">0dp</item>
+        <item name="android:overlapAnchor">true</item>
+    </style>
+
+    <style name="Widget.Testpress.HeaderBar.Spinner" parent="Widget.Testpress.HeaderBar.Spinner.Base" />
 
 </resources>

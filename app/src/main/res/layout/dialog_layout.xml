@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/option"
-        android:textColor="#3598db"
+        android:textColor="@color/primary"
         android:textStyle="normal"
         android:layout_below="@+id/dialog_message"
         android:layout_alignEnd="@+id/dialog_message"

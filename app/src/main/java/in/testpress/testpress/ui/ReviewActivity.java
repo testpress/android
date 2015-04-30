@@ -14,16 +14,16 @@ import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.authenticator.TestpressAuthenticatorActivity;
 
 
-public class ReviewActivity extends ActionBarActivity {
+public class ReviewActivity extends TestpressFragmentActivity {
 
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected LogoutService logoutService;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
+        setContentView(R.layout.activity_review);
         super.onCreate(savedInstanceState);
         Injector.inject(this);
-        setContentView(R.layout.activity_review);
         final Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         ReviewFragment reviewFragment = new ReviewFragment();

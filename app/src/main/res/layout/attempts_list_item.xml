@@ -175,7 +175,7 @@
                 android:text="@string/paused"
                 android:textAllCaps="true"
                 android:background="@drawable/transparent_blue_button"
-                android:textColor="#3598db"
+                android:textColor="@color/primary"
                 android:textSize="@dimen/text_size_medium"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"/>

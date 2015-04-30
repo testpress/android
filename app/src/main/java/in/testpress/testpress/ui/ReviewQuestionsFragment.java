@@ -77,7 +77,7 @@ public class ReviewQuestionsFragment extends PagedItemFragment<ReviewItem> {
 
     @Override
     protected SingleTypeAdapter<ReviewItem> createAdapter(List<ReviewItem> items) {
-        return new ReviewListAdapter(R.layout.review_question, getActivity().getLayoutInflater(), items);
+        return new ReviewListAdapter(R.layout.review_question, getActivity().getLayoutInflater(), items, getActivity());
     }
 
     @Override

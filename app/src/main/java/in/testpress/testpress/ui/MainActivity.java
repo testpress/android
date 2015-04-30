@@ -3,17 +3,10 @@
 package in.testpress.testpress.ui;
 
 import android.accounts.OperationCanceledException;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
 
 import in.testpress.testpress.R;
@@ -42,7 +35,6 @@ public class MainActivity extends TestpressFragmentActivity {
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected LogoutService logoutService;
 
-
     private boolean userHasAuthenticated = false;
 
     private CharSequence title;
@@ -50,8 +42,6 @@ public class MainActivity extends TestpressFragmentActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-
-        super.onCreate(savedInstanceState);
 
         if(isTablet()) {
             setContentView(R.layout.main_activity_tablet);
@@ -61,8 +51,8 @@ public class MainActivity extends TestpressFragmentActivity {
 
         // View injection with Butterknife
         ButterKnife.inject(this);
-        getSupportActionBar().setHomeButtonEnabled(true);
 
+        super.onCreate(savedInstanceState);
 
         checkAuth();
 
@@ -70,11 +60,6 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private boolean isTablet() {
         return UIUtils.isTablet(this);
-    }
-
-    @Override
-    protected void onPostCreate(final Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
     }
 
     private void initScreen() {

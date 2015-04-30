@@ -2,6 +2,7 @@ package in.testpress.testpress.core;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 import in.testpress.testpress.models.Attempt;
@@ -46,8 +47,8 @@ public class TestpressService {
         return "JWT " + authToken;
     }
 
-    public TestpressApiResponse<Exam> getExams(String urlFrag) {
-        return getExamsService().getExams(urlFrag, getAuthToken());
+    public TestpressApiResponse<Exam> getExams(String urlFrag, Map<String, String> queryParams) {
+        return getExamsService().getExams(urlFrag, queryParams, getAuthToken());
     }
 
     public TestpressApiResponse<Attempt> getAttempts(String urlFrag) {
@@ -74,9 +75,10 @@ public class TestpressService {
         return getExamsService().getQuestions(questionsUrlFrag, getAuthToken());
     }
 
-    public AttemptItem postAnswer(String answerUrlFrag, List<Integer> savedAnswers) {
-        HashMap<String, List<Integer>> answer = new HashMap<String, List<Integer>>();
+    public AttemptItem postAnswer(String answerUrlFrag, List<Integer> savedAnswers, Boolean review) {
+        HashMap<String, Object> answer = new HashMap<String, Object>();
         answer.put("selected_answers", savedAnswers);
+        answer.put("review", review);
         return getExamsService().postAnswer(answerUrlFrag, getAuthToken(), answer);
     }
 

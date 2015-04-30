@@ -4,8 +4,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
+
 public class Attempt implements Parcelable {
     private String url;
     private Integer id;
@@ -21,6 +27,7 @@ public class Attempt implements Parcelable {
     private Integer incorrectCount;
     private String lastStartedTime;
     private String remainingTime;
+    private String timeTaken;
     private String state;
     private String percentile;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
@@ -41,6 +48,7 @@ public class Attempt implements Parcelable {
         incorrectCount = parcel.readInt();
         lastStartedTime = parcel.readString();
         remainingTime = parcel.readString();
+        timeTaken = parcel.readString();
         state = parcel.readString();
         percentile = parcel.readString();
     }
@@ -66,6 +74,7 @@ public class Attempt implements Parcelable {
         parcel.writeInt(incorrectCount);
         parcel.writeString(lastStartedTime);
         parcel.writeString(remainingTime);
+        parcel.writeString(timeTaken);
         parcel.writeString(state);
         parcel.writeString(percentile);
     }
@@ -101,7 +110,7 @@ public class Attempt implements Parcelable {
     public String getUrlFrag() {
         try {
             URL fragUrl = new URL(url);
-            return fragUrl.getFile();
+            return fragUrl.getFile().substring(1);
         }
         catch (Exception e) {
             return null;
@@ -114,6 +123,10 @@ public class Attempt implements Parcelable {
 
     public String getEndUrlFrag() {
         return getUrlFrag() + "end/";
+    }
+
+    public String getHeartBeatUrlFrag() {
+        return getUrlFrag() + "heartbeat/";
     }
 
     /**
@@ -176,7 +189,21 @@ public class Attempt implements Parcelable {
      * The date
      */
     public String getDate() {
-        return date;
+        return formatDate(date);
+    }
+
+    public String formatDate(String inputString) {
+        Date date = null;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        try {
+            date = simpleDateFormat.parse(inputString);
+            DateFormat dateformat = DateFormat.getDateInstance();
+            return dateformat.format(date);
+        }
+        catch (ParseException e) {
+        }
+        return null;
     }
 
     /**
@@ -254,7 +281,7 @@ public class Attempt implements Parcelable {
     public String getReviewFrag() {
         try {
             URL url = new URL(reviewUrl);
-            return url.getFile();
+            return url.getFile().substring(1);
         }
         catch (Exception e) {
             return null;
@@ -359,6 +386,24 @@ public class Attempt implements Parcelable {
      */
     public void setRemainingTime(String remainingTime) {
         this.remainingTime = remainingTime;
+    }
+
+    /**
+     *
+     * @return
+     * Time taken
+     */
+    public String getTimeTaken() {
+        return timeTaken;
+    }
+
+    /**
+     *
+     * @param timeTaken
+     * Time Taken
+     */
+    public void setTimeTaken(String timeTaken) {
+        this.timeTaken = timeTaken;
     }
 
     /**

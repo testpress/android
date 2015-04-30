@@ -37,7 +37,7 @@ public class PanelListAdapter extends AlternatingColorListAdapter<AttemptItem> {
     protected void update(final int position, final AttemptItem item) {
         String question = Html.fromHtml(item.getAttemptQuestion().getQuestionHtml()).toString();
         setText(0, trim(question, 0, question.length()));
-        setNumber(1, position + 1);
+        setNumber(1, item.getIndex());
     }
 
     public static CharSequence trim(CharSequence s, int start, int end) {

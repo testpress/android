@@ -12,8 +12,12 @@
         android:visibility="gone" />
 
     <ProgressBar
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:id="@+id/pb_loading"
-        style="@style/ListSpinner"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/primary"
+        android:indeterminateTintMode="src_in"
         android:layout_centerInParent="true" />
 
     <TextView

@@ -23,6 +23,8 @@ public class AttemptItem implements Parcelable {
     private Boolean review;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
     private List<Integer> savedAnswers = new ArrayList<Integer>();
+    private Integer index;
+    private Boolean currentReview;
 
     AttemptItem() {
         selectedAnswers = new ArrayList<Integer>();
@@ -83,14 +85,14 @@ public class AttemptItem implements Parcelable {
 
             @Override
             public AttemptItem call() throws Exception {
-                return serviceProvider.getService(activity).postAnswer(fragment, savedAnswers);
+                return serviceProvider.getService(activity).postAnswer(fragment, savedAnswers, currentReview);
             }
 
             @Override
             protected void onPreExecute() {
                 try {
                     URL urlfrag = new URL(url);
-                    fragment = urlfrag.getFile();
+                    fragment = urlfrag.getFile().substring(1);
                 }
                 catch (MalformedURLException e) {
 
@@ -99,6 +101,8 @@ public class AttemptItem implements Parcelable {
 
             @Override
             protected void onSuccess(AttemptItem result) {
+                review = currentReview;
+                selectedAnswers = savedAnswers;
             }
 
             @Override
@@ -114,7 +118,7 @@ public class AttemptItem implements Parcelable {
         return null;
     }
 
-    public Boolean hasChanged() { return !savedAnswers.equals(selectedAnswers);}
+    public Boolean hasChanged() { return (!savedAnswers.equals(selectedAnswers) || currentReview != review);}
 
     /**
      *
@@ -132,6 +136,24 @@ public class AttemptItem implements Parcelable {
      */
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    /**
+     *
+     * @return
+     * The index
+     */
+    public Integer getIndex() {
+        return index;
+    }
+
+    /**
+     *
+     * @param index
+     * The index
+     */
+    public void setIndex(Integer index) {
+        this.index = index;
     }
 
     /**
@@ -185,7 +207,17 @@ public class AttemptItem implements Parcelable {
      * The review
      */
     public void setReview(Boolean review) {
+        if(review != null)
         this.review = review;
+        else this.review = false;
+    }
+
+    public void setCurrentReview(Boolean currentReview) {
+        this.currentReview = currentReview;
+    }
+
+    public Boolean getCurrentReview() {
+        return currentReview;
     }
 
     public Map<String, Object> getAdditionalProperties() {

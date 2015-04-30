@@ -90,7 +90,7 @@ public class ReviewFragment extends Fragment {
         this.attempt = getArguments().getParcelable("attempt");
         pager.setAdapter(new ReviewPagerAdapter(this, this.exam, this.attempt));
         indicator.setViewPager(pager);
-        indicator.setIndicatorColor(Color.parseColor("#3598db"));
+        indicator.setIndicatorColor(getResources().getColor(R.color.primary));
         Bundle data = getArguments();
         String currentItem = data.getString("currentItem");
         if (currentItem != null) {

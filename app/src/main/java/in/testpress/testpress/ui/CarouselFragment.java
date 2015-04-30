@@ -43,7 +43,7 @@ public class CarouselFragment extends Fragment {
 
         pager.setAdapter(new TestpressPagerAdapter(getResources(), getChildFragmentManager()));
         indicator.setViewPager(pager);
-        indicator.setIndicatorColor(Color.parseColor("#3598db"));
+        indicator.setIndicatorColor(getResources().getColor(R.color.primary));
         Bundle data = getArguments();
         if (data != null) {
             pager.setCurrentItem(Integer.parseInt(data.getString("currentItem")));

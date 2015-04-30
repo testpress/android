@@ -101,7 +101,7 @@
 
     <style name="examDetailHeading">
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">#3598db</item>
+        <item name="android:textColor">@color/primary</item>
         <item name="android:textSize">@dimen/text_size_xxlarge</item>
         <item name="android:textStyle">normal</item>
         <item name="android:layout_marginTop">5dp</item>
@@ -111,7 +111,7 @@
     <style name="examDetailSubHeading">
         <item name="android:layout_width">200dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">#3598db</item>
+        <item name="android:textColor">@color/primary</item>
         <item name="android:textSize">@dimen/text_size_large</item>
         <item name="android:capitalize">characters</item>
         <item name="android:textStyle">normal</item>

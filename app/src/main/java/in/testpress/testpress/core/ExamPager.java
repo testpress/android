@@ -77,6 +77,8 @@ public class ExamPager extends ResourcePager<Exam> {
         }
 
         if (response.getNext() != null) {
+            if(queryParams != null)
+            queryParams.clear();
             return true;
         }
 

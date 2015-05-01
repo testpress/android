@@ -123,6 +123,11 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
     public void onLoadFinished(Loader<List<Exam>> loader, List<Exam> items) {
         super.onLoadFinished(loader, items);
 
+        //Return if no items are returned
+        if (items == null) {
+            return;
+        }
+
         //Populate the spinner with the courses
         List<String> coursesList = new ArrayList<String>();
         for (final Exam exam : items) {

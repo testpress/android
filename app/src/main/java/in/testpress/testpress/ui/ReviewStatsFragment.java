@@ -77,7 +77,7 @@ public class ReviewStatsFragment extends Fragment {
         Integer unanswered = attempt.getTotalQuestions() - (attempt.getCorrectCount() + attempt.getIncorrectCount());
         totalUnanswered.setText("" + unanswered);
         timeTaken.setText(attempt.getTimeTaken());
-        rank.setText(attempt.getScore());
+        rank.setText(attempt.getRank());
         score.setText(attempt.getScore());
         percentile.setText(attempt.getPercentile());
         subScore.setText(attempt.getScore());

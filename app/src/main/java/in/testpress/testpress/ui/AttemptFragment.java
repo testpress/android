@@ -359,7 +359,8 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     SafeAsyncTask<Attempt> endExam = new SafeAsyncTask<Attempt>() {
         @Override
         public Attempt call() throws Exception {
-            return  serviceProvider.getService(getActivity()).endExam(mAttempt.getUrlFrag() + Constants.Http.URL_END_EXAM_FRAG);
+            mAttempt = serviceProvider.getService(getActivity()).endExam(mAttempt.getUrlFrag() + Constants.Http.URL_END_EXAM_FRAG);
+            return mAttempt;
         }
         @Override
         protected void onPreExecute() {

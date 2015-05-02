@@ -468,7 +468,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         List<AttemptItem> markeditems = new ArrayList<>();
         for(int i = 0; i< attemptItemList.size(); i++) {
             try {
-                if (attemptItemList.get(i).getCurrentReview()) {
+                if (attemptItemList.get(i).getReview() || attemptItemList.get(i).getCurrentReview()) {
                     markeditems.add(attemptItemList.get(i));
                 }
             }

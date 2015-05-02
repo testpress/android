@@ -14,17 +14,17 @@ public final class Constants {
         /**
          * Account type id
          */
-        public static final String TESTPRESS_ACCOUNT_TYPE = "in.testpress.testpress";
+        public static final String TESTPRESS_ACCOUNT_TYPE = "in.testpress.pgdiams";
 
         /**
          * Account name
          */
-        public static final String TESTPRESS_ACCOUNT_NAME = "testpress";
+        public static final String TESTPRESS_ACCOUNT_NAME = "pgdiams";
 
         /**
          * Provider id
          */
-        public static final String TESTPRESS_PROVIDER_AUTHORITY = "in.testpress.testpress.sync";
+        public static final String TESTPRESS_PROVIDER_AUTHORITY = "in.testpress.pgdiams.sync";
 
         /**
          * Auth token type
@@ -108,7 +108,7 @@ public final class Constants {
         /**
          * Action prefix for all intents created
          */
-        public static final String INTENT_PREFIX = "in.testpress.testpress.";
+        public static final String INTENT_PREFIX = "in.testpress.pgdiams.";
 
     }
 

@@ -65,7 +65,7 @@ android {
         targetSdkVersion 22
         versionCode 102
         versionName '1.0'
-        applicationId 'in.testpress.testpress'
+        applicationId 'in.testpress.koncpt'
     }
 
     packagingOptions {

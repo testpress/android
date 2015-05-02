@@ -14,17 +14,17 @@ public final class Constants {
         /**
          * Account type id
          */
-        public static final String TESTPRESS_ACCOUNT_TYPE = "in.testpress.testpress";
+        public static final String TESTPRESS_ACCOUNT_TYPE = "in.testpress.koncpt";
 
         /**
          * Account name
          */
-        public static final String TESTPRESS_ACCOUNT_NAME = "testpress";
+        public static final String TESTPRESS_ACCOUNT_NAME = "koncpt";
 
         /**
          * Provider id
          */
-        public static final String TESTPRESS_PROVIDER_AUTHORITY = "in.testpress.testpress.sync";
+        public static final String TESTPRESS_PROVIDER_AUTHORITY = "in.testpress.koncpt.sync";
 
         /**
          * Auth token type
@@ -39,7 +39,7 @@ public final class Constants {
         /**
          * Base URL for all requests
          */
-        public static final String URL_BASE = "https://demo.testpress.in";
+        public static final String URL_BASE = "https://koncpt.testpress.in";
 
 
         /**
@@ -108,7 +108,7 @@ public final class Constants {
         /**
          * Action prefix for all intents created
          */
-        public static final String INTENT_PREFIX = "in.testpress.testpress.";
+        public static final String INTENT_PREFIX = "in.testpress.koncpt.";
 
     }
 

@@ -319,6 +319,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
 
     protected void returnToHistory() {
         Intent intent = new Intent(getActivity(), MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.putExtra("currentItem", "2");
         startActivity(intent);
         getActivity().finish();
@@ -326,6 +327,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
 
     protected void showReview() {
         Intent intent = new Intent(getActivity(), ReviewActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.putExtra("exam", mAttempt.getExam());
         intent.putExtra("attempt", mAttempt);
         startActivity(intent);

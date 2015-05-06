@@ -15,6 +15,7 @@ import dagger.Provides;
 import in.testpress.testpress.authenticator.ApiKeyProvider;
 import in.testpress.testpress.authenticator.TestpressAuthenticatorActivity;
 import in.testpress.testpress.core.Constants;
+import in.testpress.testpress.core.ExamPager;
 import in.testpress.testpress.core.PostFromAnyThreadBus;
 import in.testpress.testpress.core.RestAdapterRequestInterceptor;
 import in.testpress.testpress.core.RestErrorHandler;
@@ -53,7 +54,8 @@ import retrofit.converter.GsonConverter;
                 AttemptsListFragment.class,
                 ReviewQuestionsFragment.class,
                 ReviewActivity.class,
-                AttemptsListActivity.class
+                AttemptsListActivity.class,
+                ExamPager.class
         }
 )
 public class TestpressModule {

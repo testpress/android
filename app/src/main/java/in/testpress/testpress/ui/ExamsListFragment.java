@@ -64,7 +64,7 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
         Injector.inject(this);
         subclass = getArguments().getString("subclass");
         try {
-            pager = new ExamPager(subclass, serviceProvider.getService(getActivity()));
+            pager = new ExamPager(subclass, serviceProvider.getService(getActivity()), getActivity());
         } catch (AccountsException e) {
             e.printStackTrace();
         } catch (IOException e) {

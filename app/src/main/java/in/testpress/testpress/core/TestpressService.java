@@ -10,6 +10,7 @@ import in.testpress.testpress.models.AttemptItem;
 import in.testpress.testpress.models.ReviewItem;
 import in.testpress.testpress.models.TestpressApiResponse;
 import in.testpress.testpress.models.Exam;
+import in.testpress.testpress.models.Update;
 import retrofit.RestAdapter;
 
 public class TestpressService {
@@ -88,6 +89,10 @@ public class TestpressService {
 
     public Attempt endExam(String endExamUrlFrag) {
         return getExamsService().endExam(endExamUrlFrag, getAuthToken());
+    }
+
+    public Update checkUpdate() {
+        return getAuthenticationService().checkUpdate();
     }
 
     public String authenticate(String username, String password) {

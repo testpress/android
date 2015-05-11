@@ -3,6 +3,7 @@ package in.testpress.testpress.core;
 import java.util.HashMap;
 
 import in.testpress.testpress.models.AuthToken;
+import in.testpress.testpress.models.Update;
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.Field;
@@ -22,4 +23,7 @@ public interface AuthenticationService {
      */
     @POST(Constants.Http.URL_AUTH_FRAG)
     AuthToken authenticate(@Body HashMap<String, String> arguments);
+
+    @GET(Constants.Http.CHECK_UPDATE_URL_Frag)
+    Update checkUpdate();
 }

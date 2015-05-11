@@ -41,6 +41,11 @@ public final class Constants {
          */
         public static final String URL_BASE = "https://demo.testpress.in";
 
+        /**
+         * Check Update url
+         */
+        public static final String CHECK_UPDATE_URL_Frag = "/api/android/latest/";
+
 
         /**
          * Authentication URL

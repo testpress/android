@@ -3,9 +3,13 @@
 package in.testpress.testpress.ui;
 
 import android.accounts.OperationCanceledException;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.Window;
 
@@ -14,9 +18,11 @@ import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.events.NavItemSelectedEvent;
+import in.testpress.testpress.models.Update;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.UIUtils;
+
 import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
@@ -37,6 +43,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private boolean userHasAuthenticated = false;
 
+
     private CharSequence title;
 
     @Override
@@ -54,7 +61,8 @@ public class MainActivity extends TestpressFragmentActivity {
 
         super.onCreate(savedInstanceState);
 
-        checkAuth();
+        //checkAuth();
+        checkUpdate();
 
     }
 
@@ -102,6 +110,58 @@ public class MainActivity extends TestpressFragmentActivity {
                 super.onSuccess(hasAuthenticated);
                 userHasAuthenticated = true;
                 initScreen();
+            }
+        }.execute();
+    }
+
+    private void checkUpdate() {
+        new SafeAsyncTask<Update>() {
+            @Override
+            public Update call() throws Exception {
+                return serviceProvider.getService(MainActivity.this).checkUpdate();
+            }
+
+            @Override
+            protected void onException(final Exception e) throws RuntimeException {
+                checkAuth();
+            }
+
+            @Override
+            protected void onSuccess(final Update update) throws Exception {
+                if(update.getActive() && update.getVersionCode() > 100.00) { // should increase the version code 100.00 in every update
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setCancelable(true);
+                    if((update.getDate().compareTo(update.getUpdateBefore())) >= 0) {
+                        builder.setMessage("Update to continue");
+                        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialogInterface) {
+                                finish();
+                            }
+                        });
+                    } else {
+                        builder.setMessage("New version available");
+                        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialogInterface) {
+                                checkAuth();
+                            }
+                        });
+                    }
+
+                    builder.setNeutralButton("Update",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "in.testpress.testpress")));
+                                    //Should change "in.testpress.testpress" to "in.testpress.<App name>" for different apps
+                                    finish();
+                                }
+                            });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+
+                } else checkAuth();
             }
         }.execute();
     }

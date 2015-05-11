@@ -1,13 +1,11 @@
 package in.testpress.testpress.core;
 
-import android.accounts.AccountsException;
-import android.accounts.OperationCanceledException;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import java.io.IOException;
+import com.activeandroid.query.Select;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -18,10 +16,9 @@ import javax.inject.Inject;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
+import in.testpress.testpress.models.Attempt;
 import in.testpress.testpress.models.Exam;
 import in.testpress.testpress.models.TestpressApiResponse;
-import in.testpress.testpress.ui.MainActivity;
-import retrofit.RetrofitError;
 
 
 public class ExamPager extends ResourcePager<Exam> {
@@ -47,7 +44,7 @@ public class ExamPager extends ResourcePager<Exam> {
 
     @Override
     protected Object getId(Exam resource) {
-        return resource.getId();
+        return resource.getExamId();
     }
 
     @Override
@@ -75,8 +72,18 @@ public class ExamPager extends ResourcePager<Exam> {
         }
         if (url != null) {
             try {
+                List<Exam> examList;
                 response = service.getExams(url, queryParams);
-                return response.getResults();
+                examList = response.getResults();
+                if (subclass.equals("history")) {
+                    for (Exam exam : examList) {
+                        if(queryParams.get("course") != null) {
+                            exam.query = queryParams.get("course");
+                        }
+                        exam.save();
+                    }
+                    return getAll();
+                } else return response.getResults();
             }
             catch (Exception e) {
                 if((e.getMessage()).equals("403 FORBIDDEN")) {
@@ -89,11 +96,30 @@ public class ExamPager extends ResourcePager<Exam> {
                            activity.startActivity(intent);
                        }
                    });
+                } else {
+                    try {
+                        if (subclass.equals("history")) {
+                            List<Exam> exams = getAll();
+                            return exams;
+                        } else return null;
+                    } catch (Exception exception) {
+                        return null;
+                    }
                 }
-               else return null;
             }
         }
         return Collections.emptyList();
+    }
+
+    public List<Exam> getAll() {
+        if(queryParams.get("course")!=null) {
+        return new Select().all()
+                .from(Exam.class).where("query = ?", queryParams.get("course"))
+                .execute();
+        }
+        else  return new Select().all()
+                .from(Exam.class)
+                .execute();
     }
 
     @Override
@@ -107,7 +133,6 @@ public class ExamPager extends ResourcePager<Exam> {
             queryParams.clear();
             return true;
         }
-
         return false;
     }
 }

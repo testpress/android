@@ -4,6 +4,8 @@ import android.app.Application;
 import android.app.Instrumentation;
 import android.content.Context;
 
+import com.activeandroid.ActiveAndroid;
+
 public class TestpressApplication extends Application {
     private static TestpressApplication instance;
 
@@ -31,6 +33,7 @@ public class TestpressApplication extends Application {
 
         // Perform injection
         Injector.init(getRootModule(), this);
+        ActiveAndroid.initialize(this);
 
     }
 

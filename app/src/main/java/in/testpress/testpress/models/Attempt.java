@@ -3,6 +3,10 @@ package in.testpress.testpress.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -11,26 +15,49 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
-
-public class Attempt implements Parcelable {
+@Table(name = "Attempts")
+public class Attempt extends Model implements Parcelable {
+    @Column(name = "url")
     private String url;
+    @Column(name = "attemptId", onUpdate = Column.ForeignKeyAction.CASCADE)
     private Integer id;
-    private Exam exam;
+    @Column(name = "exam", onDelete = Column.ForeignKeyAction.CASCADE)
+    public Exam exam;
+    @Column(name = "examId", onDelete = Column.ForeignKeyAction.CASCADE)
+    public Integer examId;
+    @Column(name = "user")
     private String user;
+    @Column(name = "date")
     private String date;
+    @Column(name = "totalQuestions")
     private Integer totalQuestions;
+    @Column(name = "score")
     private String score;
+    @Column(name = "rank")
     private String rank;
+    @Column(name = "reviewUrl")
     private String reviewUrl;
+    @Column(name = "questionsUrl")
     private String questionsUrl;
+    @Column(name = "correctCount")
     private Integer correctCount;
+    @Column(name = "incorrectCount")
     private Integer incorrectCount;
+    @Column(name = "lastStartedTime")
     private String lastStartedTime;
+    @Column(name = "remainingTime")
     private String remainingTime;
+    @Column(name = "timeTaken")
     private String timeTaken;
+    @Column(name = "state")
     private String state;
+    @Column(name = "percentile")
     private String percentile;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+
+    public Attempt() {
+        super();
+    }
 
     // Parcelling part
     public Attempt(Parcel parcel){
@@ -134,7 +161,7 @@ public class Attempt implements Parcelable {
      * @return
      * The id
      */
-    public Integer getId() {
+    public Integer getAttemptId() {
         return id;
     }
 

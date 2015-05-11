@@ -221,8 +221,12 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
       }
 
       if(subclass.equals("history")) {
-          int attempts_count = exam.getAttempts().size();
-          if (attempts_count > 1) {
+          int attempts_count = 0;
+          try {
+             attempts_count = exam.getAttempts().size();
+          }
+          catch (Exception e){}
+          if (attempts_count > 1 || attempts_count==0) {
               Intent intent = new Intent(getActivity(), AttemptsListActivity.class);
               intent.putExtra("exam", exam);
               startActivity(intent);

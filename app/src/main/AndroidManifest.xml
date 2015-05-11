@@ -25,6 +25,22 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.Testpress.Dark">
 
+        <meta-data
+            android:name="AA_DB_NAME"
+            android:value="testpressDatabase.db" />
+
+        <meta-data
+            android:name="AA_DB_VERSION"
+            android:value="1" />
+
+        <meta-data
+            android:name="AA_MODELS"
+            android:value="in.testpress.testpress.models.ReviewItem,
+            in.testpress.testpress.models.ReviewQuestion, in.testpress.testpress.models.ReviewAnswer,
+            in.testpress.testpress.models.Exam, in.testpress.testpress.models.Attempt,
+            in.testpress.testpress.models.SelectedAnswer" />
+
+
         <activity
             android:name=".ui.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

@@ -49,6 +49,7 @@ import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.models.Attempt;
 import in.testpress.testpress.models.AttemptItem;
+import in.testpress.testpress.models.Exam;
 import in.testpress.testpress.models.TestpressApiResponse;
 import in.testpress.testpress.util.SafeAsyncTask;
 
@@ -69,6 +70,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     ExamPagerAdapter pagerAdapter;
 
     Attempt mAttempt;
+    Exam mExam;
     List<AttemptItem> attemptItemList = Collections.emptyList();
     CountDownTimer countDownTimer;
 
@@ -76,6 +78,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAttempt = getArguments().getParcelable("attempt");
+        mExam = getArguments().getParcelable("exam");
         getLoaderManager().initLoader(0, null, this);
     }
 
@@ -328,7 +331,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     protected void showReview() {
         Intent intent = new Intent(getActivity(), ReviewActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.putExtra("exam", mAttempt.getExam());
+        intent.putExtra("exam", mExam);
         intent.putExtra("attempt", mAttempt);
         startActivity(intent);
         getActivity().finish();

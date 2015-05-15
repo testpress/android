@@ -1,5 +1,7 @@
 package in.testpress.testpress.core;
 
+import android.util.Log;
+
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Select;
 
@@ -64,22 +66,28 @@ public class ReviewQuestionsPager extends ResourcePager<ReviewItem> {
                     for (ReviewItem reviewItem : reviewItems) {
                         reviewItem.attemptId = attempt.getAttemptId();
                         reviewItem.filter = filter;
-                        reviewItem.save();
-                        ReviewQuestion question = reviewItem.getReviewQuestion();
-                        question.reviewItem = reviewItem;
-                        question.filter = filter;
-                        question.save();
-                        SelectedAnswer selectedAnswer = new SelectedAnswer();
-                        for(Integer answer: reviewItem.getSelectedAnswers()) {
-                            selectedAnswer.selectedAnswer = answer;
-                            selectedAnswer.reviewItem = reviewItem;
-                            selectedAnswer.filter = filter;
-                            selectedAnswer.save();
-                        }
-                        for(ReviewAnswer answer : reviewItem.getReviewQuestion().getAnswers()) {
-                            answer.reviewItem = reviewItem;
-                            answer.filter = filter;
-                            answer.save();
+                        ReviewItem temp = new Select()
+                                .from(ReviewItem.class).where("ItemId = ?",reviewItem.getItemId())
+                                .where("filter = ?", filter)
+                                        .executeSingle();
+                        if(temp == null) {
+                            reviewItem.save();
+                            ReviewQuestion question = reviewItem.getReviewQuestion();
+                            question.reviewItem = reviewItem;
+                            question.filter = filter;
+                            question.save();
+                            SelectedAnswer selectedAnswer = new SelectedAnswer();
+                            for(Integer answer: reviewItem.getSelectedAnswers()) {
+                                selectedAnswer.selectedAnswer = answer;
+                                selectedAnswer.reviewItem = reviewItem;
+                                selectedAnswer.filter = filter;
+                                selectedAnswer.save();
+                            }
+                            for(ReviewAnswer answer : reviewItem.getReviewQuestion().getAnswers()) {
+                                answer.reviewItem = reviewItem;
+                                answer.filter = filter;
+                                answer.save();
+                            }
                         }
                     }
                     ActiveAndroid.setTransactionSuccessful();

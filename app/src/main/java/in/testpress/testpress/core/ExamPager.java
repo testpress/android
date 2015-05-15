@@ -77,10 +77,21 @@ public class ExamPager extends ResourcePager<Exam> {
                 examList = response.getResults();
                 if (subclass.equals("history")) {
                     for (Exam exam : examList) {
+                        Exam temp;
                         if(queryParams.get("course") != null) {
                             exam.query = queryParams.get("course");
+                            temp = new Select()
+                                    .from(Exam.class).where("examId = ?",exam.getExamId())
+                                    .where("query = ?", queryParams.get("course"))
+                                    .executeSingle();
+                        } else {
+                            temp = new Select()
+                                .from(Exam.class).where("examId = ?",exam.getExamId())
+                                .executeSingle();
                         }
-                        exam.save();
+                        if(temp == null) {
+                            exam.save();
+                        }
                     }
                     return getAll();
                 } else return response.getResults();
@@ -115,10 +126,12 @@ public class ExamPager extends ResourcePager<Exam> {
         if(queryParams.get("course")!=null) {
         return new Select().all()
                 .from(Exam.class).where("query = ?", queryParams.get("course"))
+                .orderBy("examId DESC")
                 .execute();
         }
         else  return new Select().all()
                 .from(Exam.class)
+                .orderBy("examId DESC")
                 .execute();
     }
 

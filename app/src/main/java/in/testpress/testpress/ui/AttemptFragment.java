@@ -1,11 +1,9 @@
 package in.testpress.testpress.ui;
 
 import android.accounts.OperationCanceledException;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -13,7 +11,6 @@ import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,6 +65,8 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
 
     ProgressDialog progress;
     ExamPagerAdapter pagerAdapter;
+    List<AttemptItem> filterItems = new ArrayList<>();
+    PanelListAdapter mPanelAdapter;
 
     Attempt mAttempt;
     Exam mExam;
@@ -96,6 +95,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         next.setVisibility(View.VISIBLE);
         mLayout.setEnabled(true);
         mLayout.setTouchEnabled(false);
+        mPanelAdapter = new PanelListAdapter(getActivity().getLayoutInflater(), filterItems, R.layout.panel_list_item);
         return view;
     }
 
@@ -106,6 +106,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         else {
             expandPanel();
         }
+        questionsListView.setAdapter(mPanelAdapter);
         String[] filters= { "All", "Answered", "Unanswered", "Marked for review" };
         ArrayAdapter<String> adapter =new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, filters);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -484,22 +485,24 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
             if(!attemptItemList.get(i).getSelectedAnswers().isEmpty() || !attemptItemList.get(i).getSavedAnswers().isEmpty()) {
                 answereditems.add(attemptItemList.get(i));
             }
-            else
+            else {
                 unanswereditems.add(attemptItemList.get(i));
+            }
         }
         switch (filter) {
             case "answered":
-                questionsListView.setAdapter(new PanelListAdapter(getActivity().getLayoutInflater(), answereditems, R.layout.panel_list_item));
+                filterItems = answereditems;
                 break;
             case "unanswered":
-                questionsListView.setAdapter(new PanelListAdapter(getActivity().getLayoutInflater(), unanswereditems, R.layout.panel_list_item));
+                filterItems = unanswereditems;
                 break;
             case "marked":
-                questionsListView.setAdapter(new PanelListAdapter(getActivity().getLayoutInflater(), markeditems, R.layout.panel_list_item));
+                filterItems = markeditems;
                 break;
             default:
-                questionsListView.setAdapter(new PanelListAdapter(getActivity().getLayoutInflater(), attemptItemList, R.layout.panel_list_item));
+                filterItems = attemptItemList;
                 break;
         }
+        mPanelAdapter.setItems(filterItems.toArray());
     }
 }

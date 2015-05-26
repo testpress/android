@@ -46,7 +46,9 @@ public class PanelListAdapter extends AlternatingColorListAdapter<AttemptItem> {
                 setNumber(3, item.getIndex());
                 setText(1, trim(question, 0, question.length()));
             }
-            else setAnswer(item, question);
+            else {
+                setAnswer(item, question);
+            }
         }
         catch (Exception e) {
             setAnswer(item, question);

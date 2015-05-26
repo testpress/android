@@ -24,6 +24,6 @@ public interface AuthenticationService {
     @POST(Constants.Http.URL_AUTH_FRAG)
     AuthToken authenticate(@Body HashMap<String, String> arguments);
 
-    @GET(Constants.Http.CHECK_UPDATE_URL_Frag)
-    Update checkUpdate();
+    @POST(Constants.Http.CHECK_UPDATE_URL_Frag)
+    Update checkUpdate(@Body HashMap<String, String> arguments);
 }

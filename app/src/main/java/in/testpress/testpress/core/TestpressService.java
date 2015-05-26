@@ -91,8 +91,10 @@ public class TestpressService {
         return getExamsService().endExam(endExamUrlFrag, getAuthToken());
     }
 
-    public Update checkUpdate() {
-        return getAuthenticationService().checkUpdate();
+    public Update checkUpdate(String version) {
+        HashMap<String, String> versioncode = new HashMap<String, String>();
+        versioncode.put("version_code", version);
+        return getAuthenticationService().checkUpdate(versioncode);
     }
 
     public String authenticate(String username, String password) {

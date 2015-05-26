@@ -39,6 +39,7 @@ import butterknife.ButterKnife;
 public class MainActivity extends TestpressFragmentActivity {
 
     @Inject protected TestpressServiceProvider serviceProvider;
+    @Inject protected TestpressService testpressService;
     @Inject protected LogoutService logoutService;
 
     private boolean userHasAuthenticated = false;
@@ -118,7 +119,7 @@ public class MainActivity extends TestpressFragmentActivity {
         new SafeAsyncTask<Update>() {
             @Override
             public Update call() throws Exception {
-                return serviceProvider.getService(MainActivity.this).checkUpdate();
+                return testpressService.checkUpdate("100.00");// should increase the version code 100.00 in every update
             }
 
             @Override
@@ -128,11 +129,11 @@ public class MainActivity extends TestpressFragmentActivity {
 
             @Override
             protected void onSuccess(final Update update) throws Exception {
-                if(update.getActive() && update.getVersionCode() > 100.00) { // should increase the version code 100.00 in every update
+                if(update.getUpdateRequired()) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                     builder.setCancelable(true);
-                    if((update.getDate().compareTo(update.getUpdateBefore())) >= 0) {
-                        builder.setMessage("Update to continue");
+                    if(update.getForce()) {
+                        builder.setMessage(update.getMessage());
                         builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
                             @Override
                             public void onCancel(DialogInterface dialogInterface) {
@@ -140,7 +141,7 @@ public class MainActivity extends TestpressFragmentActivity {
                             }
                         });
                     } else {
-                        builder.setMessage("New version available");
+                        builder.setMessage(update.getMessage());
                         builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
                             @Override
                             public void onCancel(DialogInterface dialogInterface) {

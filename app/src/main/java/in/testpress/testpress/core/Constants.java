@@ -44,7 +44,7 @@ public final class Constants {
         /**
          * Check Update url
          */
-        public static final String CHECK_UPDATE_URL_Frag = "/api/android/latest/";
+        public static final String CHECK_UPDATE_URL_Frag = "/api/android/check/";
 
 
         /**

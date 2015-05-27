@@ -64,7 +64,7 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
         Injector.inject(this);
         subclass = getArguments().getString("subclass");
         try {
-            pager = new ExamPager(subclass, serviceProvider.getService(getActivity()), getActivity());
+            pager = new ExamPager(subclass, serviceProvider.getService(getActivity()));
         } catch (AccountsException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -250,6 +250,20 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
 
     @Override
     protected int getErrorMessage(Exception exception) {
+        if((exception.getMessage()).equals("403 FORBIDDEN")) {
+            serviceProvider.invalidateAuthToken();
+            logoutService.logout(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = getActivity().getIntent();
+                    getActivity().finish();
+                    getActivity().startActivity(intent);
+                }
+            });
+            return R.string.authentication_failed;
+        } else {
+            setEmptyText(R.string.no_internet);
+        }
         return R.string.error_loading_exams;
     }
 }

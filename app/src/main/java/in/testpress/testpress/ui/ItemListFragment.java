@@ -231,7 +231,9 @@ public abstract class ItemListFragment<E> extends Fragment
             this.items = items;
             getListAdapter().getWrappedAdapter().setItems(items.toArray());
         }
-        else setEmptyText("No active internet connection");
+        else {
+            setEmptyText(R.string.no_internet);
+        }
         showList();
     }
 

@@ -1,6 +1,5 @@
 package in.testpress.testpress.core;
 
-import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -95,7 +94,7 @@ public abstract class ResourcePager<E> {
      * @return resources
      */
     public List<E> getResources() {
-        if(networkFail){
+        if(networkFail) {
             return null;
         }
         return new ArrayList<E>(resources.values());
@@ -133,7 +132,7 @@ public abstract class ResourcePager<E> {
         } catch (Exception e) {
             hasMore = false;
             networkFail = true;
-//            throw e.getCause();
+            throw e;
         }
         hasMore = hasNext() && !emptyPage;
         return hasMore;

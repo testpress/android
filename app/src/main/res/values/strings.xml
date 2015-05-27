@@ -38,6 +38,8 @@
     <string name="cancel">Cancel</string>
     <string name="pause_message">Do you want to <b>Pause</b> exam?</string>
     <string name="end_message">Do you want to <b>End</b> exam?</string>
+    <string name="authentication_failed">Authentication failed</string>
+    <string name="no_internet">No active internet connection</string>
 
     <!-- AuthenticatorActivity -->
     <string name="label_username">Username</string>

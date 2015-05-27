@@ -19,20 +19,19 @@ import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.models.Attempt;
 import in.testpress.testpress.models.Exam;
 import in.testpress.testpress.models.TestpressApiResponse;
+import retrofit.RetrofitError;
 
 
 public class ExamPager extends ResourcePager<Exam> {
     String subclass;
     TestpressApiResponse<Exam> response;
-    Activity activity;
 
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected LogoutService logoutService;
 
-    public ExamPager(String subclass, TestpressService service, Activity activity) {
+    public ExamPager(String subclass, TestpressService service) {
         super(service);
         this.subclass = subclass;
-        this.activity = activity;
         Injector.inject(this);
     }
 
@@ -48,7 +47,7 @@ public class ExamPager extends ResourcePager<Exam> {
     }
 
     @Override
-    public List<Exam> getItems(int page, int size) {
+    public List<Exam> getItems(int page, int size) throws RetrofitError {
         String url = null;
         if (response == null) {
             if (subclass.equals("available")) {
@@ -94,25 +93,21 @@ public class ExamPager extends ResourcePager<Exam> {
                         }
                     }
                     return getAll();
-                } else return response.getResults();
+                } else {
+                    return response.getResults();
+                }
             }
             catch (Exception e) {
                 if((e.getMessage()).equals("403 FORBIDDEN")) {
-                   serviceProvider.invalidateAuthToken();
-                   logoutService.logout(new Runnable() {
-                       @Override
-                       public void run() {
-                           Intent intent = activity.getIntent();
-                           activity.finish();
-                           activity.startActivity(intent);
-                       }
-                   });
+                    throw e;
                 } else {
                     try {
                         if (subclass.equals("history")) {
                             List<Exam> exams = getAll();
                             return exams;
-                        } else return null;
+                        } else {
+                            return null;
+                        }
                     } catch (Exception exception) {
                         return null;
                     }

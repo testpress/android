@@ -4,9 +4,9 @@ package in.testpress.testpress.ui;
 
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 
 import in.testpress.testpress.R;
 
@@ -32,11 +32,14 @@ public class TestpressPagerAdapter extends FragmentPagerAdapter {
     public int getCount() {
         return 3;
     }
-
+    
     @Override
     public Fragment getItem(final int position) {
         final Fragment result;
+        final Fragment result2;
+        boolean t = false;
         String subclass;
+        Bundle bundle;
         switch (position) {
             case 0:
                 subclass = "available";
@@ -46,18 +49,29 @@ public class TestpressPagerAdapter extends FragmentPagerAdapter {
                 break;
             case 2:
                 subclass = "history";
+                t = true;
                 break;
             default:
                 subclass = null;
                 break;
         }
-        result = new ExamsListFragment();
-        Bundle bundle = new Bundle();
-        if (subclass != null) {
-            bundle.putString("subclass", subclass);
-            result.setArguments(bundle);
+        if (t == true) {
+            result2 = new NativeListBaseFragment();
+            bundle = new Bundle();
+            if (subclass != null) {
+                bundle.putString("subclass", subclass);
+                result2.setArguments(bundle);
+            }
+            return result2;
+        } else {
+            result = new ExamsListFragment();
+            bundle = new Bundle();
+            if (subclass != null) {
+                bundle.putString("subclass", subclass);
+                result.setArguments(bundle);
+            }
+            return result;
         }
-        return result;
     }
 
     @Override

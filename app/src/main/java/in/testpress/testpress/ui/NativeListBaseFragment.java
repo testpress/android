@@ -1,7 +1,25 @@
+/*
+ * ******************************************************************************
+ *   Copyright (c) 2013-2014 Gabriele Mariotti.
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ *  *****************************************************************************
+ */
+
 package in.testpress.testpress.ui;
 
 import android.accounts.AccountsException;
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
@@ -11,10 +29,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Spinner;
-
-import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,6 +42,8 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -31,23 +51,41 @@ import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.ExamPager;
 import in.testpress.testpress.core.ResourcePager;
 import in.testpress.testpress.models.Exam;
+import it.gmariotti.cardslib.library.internal.Card;
 
-public class ExamsListFragment extends PagedItemFragment<Exam> {
+/**
+ * List base example
+ *
+ * @author Gabriele Mariotti (gabri.mariotti@gmail.com)
+ */
+public class NativeListBaseFragment extends ItemListFragmenthistory<Exam> {
 
     String subclass;
-    ExamPager pager;
-    //List of courses got from the api. This is used to populate the spinner.
     ArrayList<String> courses = new ArrayList<String>();
-    @Inject protected TestpressServiceProvider serviceProvider;
-    @Inject protected LogoutService logoutService;
+    @Inject
+    protected TestpressServiceProvider serviceProvider;
+    @Inject
+    protected LogoutService logoutService;
 
     private ExploreSpinnerAdapter mTopLevelSpinnerAdapter;
     private View mSpinnerContainer;
     private Boolean mFistTimeCallback = false;
 
+    protected ScrollView mScrollView;
+
+    protected ProgressBar progressBar;
+    protected boolean listShown;
+    protected TextView emptyView;
+    ExamPager pager;
+
+
+    Exam e;
+    ArrayList<Card> cards = new ArrayList<Card>();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Injector.inject(this);
+        ButterKnife.inject(this.getActivity());
         subclass = getArguments().getString("subclass");
         try {
             pager = new ExamPager(subclass, serviceProvider.getService(getActivity()));
@@ -60,7 +98,7 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
         mTopLevelSpinnerAdapter = new ExploreSpinnerAdapter(getActivity().getLayoutInflater(), getActivity().getResources(), true);
         mTopLevelSpinnerAdapter.addItem("", getString(R.string.all_exams), false, 0);
         mTopLevelSpinnerAdapter.addHeader(getString(R.string.courses));
-        Toolbar toolbar = ((MainActivity)(getActivity())).getActionBarToolbar();
+        Toolbar toolbar = ((MainActivity) (getActivity())).getActionBarToolbar();
         mSpinnerContainer = getActivity().getLayoutInflater().inflate(R.layout.actionbar_spinner, toolbar, false);
 
         Spinner spinner = (Spinner) mSpinnerContainer.findViewById(R.id.actionbar_spinner);
@@ -88,22 +126,51 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
         mSpinnerContainer.setVisibility(View.GONE);
     }
 
+
+
+    @Override
+    public void setUserVisibleHint(final boolean visible) {
+        super.setUserVisibleHint(visible);
+        if (visible && isUsable()) {
+            Toolbar toolbar = ((MainActivity)(getActivity())).getActionBarToolbar();
+            View view = toolbar.findViewById(R.id.actionbar_spinnerwrap);
+            toolbar.removeView(view);
+            toolbar.invalidate();
+            ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            toolbar.addView(mSpinnerContainer, lp);
+        }
+    }
+
+    @Override
+    protected int getErrorMessage(Exception exception) {
+        if ((exception.getMessage()).equals("403 FORBIDDEN")) {
+            serviceProvider.invalidateAuthToken();
+            logoutService.logout(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = getActivity().getIntent();
+                    getActivity().finish();
+                    getActivity().startActivity(intent);
+                }
+            });
+            return R.string.authentication_failed;
+        } else {
+            setEmptyText(R.string.no_internet);
+        }
+        return R.string.error_loading_exams;
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         setEmptyText(R.string.no_exams);
-    }
-
-    @Override
-    protected void configureList(Activity activity, ListView listView) {
-        super.configureList(activity, listView);
-
-        listView.setFastScrollEnabled(true);
-        listView.setDividerHeight(0);
-
 
     }
+
+
+
 
     @Override
     public void onLoadFinished(Loader<List<Exam>> loader, List<Exam> items) {
@@ -128,24 +195,11 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
             }
         }
 
-        if ((mSpinnerContainer.getVisibility() == View.GONE) && !uniqueCourses.isEmpty()){
+        if ((mSpinnerContainer.getVisibility() == View.GONE) && !uniqueCourses.isEmpty()) {
             mSpinnerContainer.setVisibility(View.VISIBLE);
         }
     }
 
-    @Override
-    public void setUserVisibleHint(final boolean visible) {
-        super.setUserVisibleHint(visible);
-        if (visible && isUsable()) {
-            Toolbar toolbar = ((MainActivity)(getActivity())).getActionBarToolbar();
-            View view = toolbar.findViewById(R.id.actionbar_spinnerwrap);
-            toolbar.removeView(view);
-            toolbar.invalidate();
-            ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            toolbar.addView(mSpinnerContainer, lp);
-        }
-    }
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
@@ -157,9 +211,24 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
             case R.id.filter:
                 refreshWithProgress();
                 return true;
+
+
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+
+    @Override
+    public void onDestroyView() {
+
+
+        super.onDestroyView();
+    }
+
+
+    protected ResourcePager<Exam> getPager() {
+        return pager;
     }
 
     @Override
@@ -167,62 +236,43 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
         return logoutService;
     }
 
-    @Override
-    public void onDestroyView() {
-        setListAdapter(null);
-
-        super.onDestroyView();
-    }
 
     @Override
-    protected ResourcePager<Exam> getPager() {
-        return pager;
-    }
+    protected List<Card> initCards() {
 
-    @Override
-    protected SingleTypeAdapter<Exam> createAdapter(List<Exam> items) {
-        int layout = R.layout.available_exams_list_item;
-        if (subclass != null) {
-            if (subclass.equals("available")) {
-                layout = R.layout.available_exams_list_item;
-            } else if (subclass.equals("upcoming")) {
-                layout = R.layout.available_exams_list_item;
-                //return serviceProvider.getService(getActivity()).getUpcomingExams();
-            }
-            else {
-                layout = R.layout.available_exams_list_item;
-            }
+        for (int i = 0; i < items.size(); i++) {
+
+            e = items.get(i);
+                CardExample card = new CardExample(getActivity(), e.getTitle(), e.getNumberOfQuestions(), e.getDuration());
+                cards.add(card);
+
         }
-        return new ExamsListAdapter(getActivity().getLayoutInflater(), items, layout);
+        return cards;
     }
 
-  public void onListItemClick(ListView l, View v, int position, long id) {
-      Exam exam = ((Exam) l.getItemAtPosition(position));
+    class CardExample extends Card {
 
-      if(subclass.equals("available")) {
-          Intent intent = new Intent(getActivity(), ExamActivity.class);
-          intent.putExtra("exam", exam);
-          startActivity(intent);
-      }
+        @InjectView(R.id.exam_title)
+        TextView examTitle;
+        @InjectView(R.id.number_of_questions)
+        TextView numberOfQuestions;
+        @InjectView(R.id.exam_duration)
+        TextView examDuration;
 
-   }
+        public CardExample(Context context, String titleHeader, int q, String d) {
+            super(context, R.layout.historycard);
+            //CardHeader header = new CardHeader(getActivity());
+         //   header.setTitle(titleHeader);
+          //  addCardHeader(header);
+            setTitle(titleHeader);
+            numberOfQuestions.setText(d);
+            examDuration.setText(d);
 
-    @Override
-    protected int getErrorMessage(Exception exception) {
-        if((exception.getMessage()).equals("403 FORBIDDEN")) {
-            serviceProvider.invalidateAuthToken();
-            logoutService.logout(new Runnable() {
-                @Override
-                public void run() {
-                    Intent intent = getActivity().getIntent();
-                    getActivity().finish();
-                    getActivity().startActivity(intent);
-                }
-            });
-            return R.string.authentication_failed;
-        } else {
-            setEmptyText(R.string.no_internet);
+
         }
-        return R.string.error_loading_exams;
+
+
     }
+
+
 }

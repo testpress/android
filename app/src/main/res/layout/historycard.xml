@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/exam_title"
+        android:textSize="24sp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
+        android:textColor="#A0C1FC"
+        android:lines="1"
+        />
+
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp">
+        >
+
+            <TextView
+                android:id="@+id/exam_date"
+                android:textColor="@color/text_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textSize="@dimen/text_size_large"
+                />
+            <TextView
+                android:id="@+id/date"
+                android:textColor="@color/text_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date"
+                android:textSize="@dimen/text_size_small"
+                android:layout_gravity="center_horizontal"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginLeft="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:textSize="@dimen/text_size_large"
+
+                android:id="@+id/number_of_questions"
+                android:textColor="@color/text_color"
+                android:layout_gravity="center_horizontal"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Questions"
+
+                android:textSize="@dimen/text_size_small"
+
+
+                android:textColor="@color/text_color"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+
+            android:layout_marginLeft="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/exam_duration"
+                android:textSize="@dimen/text_size_large"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/text_color"
+
+
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/duration"
+                android:textSize="@dimen/text_size_small"
+                android:text="Duration"
+                android:textColor="@color/text_color"
+                android:layout_gravity="center_horizontal"
+                />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/retake"
+            android:textSize="@dimen/text_size_large"
+            android:text="Retake"
+            android:textColor="@color/theme_primary_light"
+            android:layout_margin="20dp"
+            android:onClick=""/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/review"
+            android:textSize="@dimen/text_size_large"
+            android:text="Review"
+            android:textColor="@color/theme_primary_light"
+            android:layout_margin="20dp"
+            android:onClick="" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

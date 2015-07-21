@@ -51,6 +51,23 @@ dependencies {
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
 
 
+    //Core card library
+    compile 'com.github.gabrielemariotti.cards:cardslib-core:2.1.0'
+
+    //Optional for built-in cards
+    compile 'com.github.gabrielemariotti.cards:cardslib-cards:2.1.0'
+
+    //Optional for RecyclerView
+    compile 'com.github.gabrielemariotti.cards:cardslib-recyclerview:2.1.0'
+
+    //Optional for staggered grid view support
+    compile 'com.github.gabrielemariotti.cards:cardslib-extra-staggeredgrid:2.1.0'
+
+    //Optional for drag and drop support
+    compile 'com.github.gabrielemariotti.cards:cardslib-extra-dragdrop:2.1.0'
+
+
+
     androidTestCompile 'junit:junit:4.11'
     androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
     androidTestCompile 'org.mockito:mockito-core:1.9.5'
@@ -68,10 +85,10 @@ dependencies {
 
 android {
     compileSdkVersion 22
-    buildToolsVersion '20.0.0'
+    buildToolsVersion '22.0.1'
 
     defaultConfig {
-        minSdkVersion 10
+        minSdkVersion 14
         targetSdkVersion 22
         versionCode 102
         versionName '1.0'
@@ -86,12 +103,12 @@ android {
     }
 
     // signingConfigs {
-        // release {
-            // storeFile file(System.getenv('ANDROID_KEYSTORE_PATH'))
-            // storePassword System.getenv('ANDROID_STORE_PASS')
-            // keyAlias System.getenv('ANDROID_KEY_ALIAS')
-            // keyPassword System.getenv('ANDROID_KEY_PASS')
-        // }
+    // release {
+    // storeFile file(System.getenv('ANDROID_KEYSTORE_PATH'))
+    // storePassword System.getenv('ANDROID_STORE_PASS')
+    // keyAlias System.getenv('ANDROID_KEY_ALIAS')
+    // keyPassword System.getenv('ANDROID_KEY_PASS')
+    // }
     // }
 
     lintOptions {

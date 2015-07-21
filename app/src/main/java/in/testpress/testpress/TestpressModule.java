@@ -27,6 +27,7 @@ import in.testpress.testpress.ui.AttemptsListFragment;
 import in.testpress.testpress.ui.ExamActivity;
 import in.testpress.testpress.ui.ExamsListFragment;
 import in.testpress.testpress.ui.MainActivity;
+import in.testpress.testpress.ui.NativeListBaseFragment;
 import in.testpress.testpress.ui.NavigationDrawerFragment;
 import in.testpress.testpress.ui.ReviewActivity;
 import in.testpress.testpress.ui.ReviewFragment;
@@ -55,7 +56,8 @@ import retrofit.converter.GsonConverter;
                 ReviewQuestionsFragment.class,
                 ReviewActivity.class,
                 AttemptsListActivity.class,
-                ExamPager.class
+                ExamPager.class,
+                NativeListBaseFragment.class
         }
 )
 public class TestpressModule {

@@ -1,5 +1,6 @@
 package in.testpress.testpress.ui;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -8,10 +9,15 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout.LayoutParams;
@@ -100,7 +106,27 @@ public class AttemptQuestionsFragment extends Fragment {
                     images.put(imageUri, drawable);
                     if(images.size() == url.size()) {
                         Spanned htmlSpan = Html.fromHtml(attemptQuestion.getQuestionHtml(), new ImageSetter(), null);
-                        questionsView.setText(trim(htmlSpan, 0, htmlSpan.length()));
+                        String subbed = attemptQuestion.getQuestionHtml().replaceAll("< *[iI][mM][gG]", "iimmgg");
+                        String stripped =Html.fromHtml(subbed).toString();
+                        SpannableString span = new SpannableString(trim(htmlSpan, 0, htmlSpan.length()));
+                        stripped = (trim(stripped, 0, stripped.length()).toString());
+                        int tag,start=0,imageTagLength=0;
+                        for (int i = 0; i < url.size(); i++) {
+
+                            if (i > 0) {
+                                tag = stripped.indexOf(">", start);
+                                imageTagLength += (tag - start);
+                                start = stripped.indexOf("iimmgg", tag);
+                            } else {
+                                start = stripped.indexOf("iimmgg", start);
+                            }
+                            MyClickableSpan clickableSpan = new MyClickableSpan(url.get(i),images);
+                            span.setSpan(clickableSpan, start - imageTagLength , start - imageTagLength+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                        }
+                        questionsView.setText(span);
+                        questionsView.setMovementMethod(LinkMovementMethod.getInstance());
+
                     }
                 }
             });
@@ -128,6 +154,42 @@ public class AttemptQuestionsFragment extends Fragment {
 
     @OnCheckedChanged(id.review) void onChecked(boolean checked) {
         attemptItem.setCurrentReview(checked);
+    }
+
+    public class MyClickableSpan extends ClickableSpan {
+        String url;
+        HashMap<String, Drawable> hashMap;
+        MyClickableSpan(String url,HashMap<String, Drawable> hashMap){
+            this.url=url;
+            this.hashMap=hashMap;
+        }
+
+        @Override
+        public void onClick(View textView) {
+
+            final DialogAlert dialog = new DialogAlert(getActivity(),url,hashMap);
+            dialog.show();
+        }
+    }
+
+   static public class DialogAlert extends Dialog {
+        String url;
+        HashMap<String, Drawable> hashMap;
+        public DialogAlert(Context context, String selection,HashMap<String, Drawable> hashMap) {
+            super(context, R.style.ActivityDialog);
+            this.url = selection;
+            this.hashMap=hashMap;
+        }
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+            Window window = getWindow();
+            window.setGravity(Gravity.CENTER);
+            setContentView(R.layout.image_view_layout);
+            TouchImageView image=(TouchImageView)findViewById(R.id.image);
+            image.setImageDrawable(hashMap.get(url));
+        }
     }
 
     private class ImageGetter implements Html.ImageGetter {
@@ -266,8 +328,30 @@ public class AttemptQuestionsFragment extends Fragment {
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                         Drawable drawable = new BitmapDrawable(loadedImage);
                         answerImages.put(imageUri, drawable);
-                        Spanned html = Html.fromHtml(answer, new AnswerImageSetter(), null);
-                        option.setText(trim(html, 0, html.length()));
+
+                        if(images.size() == answerImagesUrl.size()) {
+                            Spanned html = Html.fromHtml(answer, new AnswerImageSetter(), null);
+                            String subbed = answer.replaceAll("< *[iI][mM][gG]", "iimmgg");
+                            String stripped =Html.fromHtml(subbed).toString();
+                            SpannableString span = new SpannableString(trim(html, 0, html.length()));
+                            stripped = (trim(stripped, 0, stripped.length()).toString());
+                            int tag, start = 0, imageTagLength = 0;
+                            for (int i = 0; i < answerImagesUrl.size(); i++) {
+
+                                if (i > 0) {
+                                    tag = stripped.indexOf(">", start);
+                                    imageTagLength += (tag - start);
+                                    start = stripped.indexOf("iimmgg",tag);
+                                } else {
+                                    start = stripped.indexOf("iimmgg", start);
+                                }
+                                MyClickableSpan clickableSpan = new MyClickableSpan(answerImagesUrl.get(i),answerImages);
+                                span.setSpan(clickableSpan, start - imageTagLength, start - imageTagLength + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                            }
+                            option.setText(span);
+                            option.setMovementMethod(LinkMovementMethod.getInstance());
+                        }
                     }
                 });
             }
@@ -289,7 +373,6 @@ public class AttemptQuestionsFragment extends Fragment {
                     if(checked) {
                         compoundButton.setBackgroundColor(Color.parseColor("#66FF99"));
                         savedAnswers.add(attemptAnswers.get(compoundButton.getId()).getId());
-
                     }
                     else {compoundButton.setBackgroundColor(android.R.color.transparent);
                         savedAnswers.remove(attemptAnswers.get(compoundButton.getId()).getId());}

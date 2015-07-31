@@ -1,17 +1,26 @@
 package in.testpress.testpress.ui;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.text.Html;
+import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ImageSpan;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -37,8 +46,9 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
     private LayoutInflater inflater;
     Activity activity;
     ImageLoader imageLoader;
-    HashMap<String, Drawable> answerImages = new HashMap<>();
-    ArrayList<String> answerImagesUrl = new ArrayList<>();
+    HashMap<String, ArrayList<String>> answerImagesUrl = new HashMap<>();
+    static HashMap<String,Bitmap> answerImages= new HashMap<>();
+    static int noOfImages=0,optionNo=0,holder=1;
 
     /**
      * @param inflater
@@ -98,9 +108,13 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
 
         if(item.getImages().size() > 0) {
             Spanned htmlQuestion = Html.fromHtml(item.getReviewQuestion().getQuestionHtml().replaceAll("\n", ""), new ImageSetter(item), null);
-            Spanned htmlExplanation = Html.fromHtml(explanation, new ImageSetter(item), null);
-            setText(0, trim(htmlQuestion, 0, htmlQuestion.length()));
-            setText(2, trim(htmlExplanation, 0, htmlExplanation.length()));
+            Spanned htmlExplanation = Html.fromHtml(explanation, new ImageSetter(item), null);;
+            setText(0, clickableText(htmlQuestion));
+            setText(2, clickableText(htmlExplanation));
+            TextView question = textView(0);
+            TextView explanationView = textView(2);
+            question.setMovementMethod(LinkMovementMethod.getInstance());
+            explanationView.setMovementMethod(LinkMovementMethod.getInstance());
         }
         else {
             for (int j = 0; j < item.getImageUrl().size(); j++) {
@@ -111,8 +125,12 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
                         if (item.getImages().size() == item.getImageUrl().size()) {
                             Spanned htmlQuestion = Html.fromHtml(item.getReviewQuestion().getQuestionHtml().replaceAll("\n", ""), new ImageSetter(item), null);
                             Spanned htmlExplanation = Html.fromHtml(explanation, new ImageSetter(item), null);
-                            setText(0, trim(htmlQuestion, 0, htmlQuestion.length()));
-                            setText(2, trim(htmlExplanation, 0, htmlExplanation.length()));
+                            setText(0, clickableText(htmlQuestion));
+                            setText(2, clickableText(htmlExplanation));
+                            TextView question = textView(0);
+                            TextView explanationView = textView(2);
+                            question.setMovementMethod(LinkMovementMethod.getInstance());
+                            explanationView.setMovementMethod(LinkMovementMethod.getInstance());
                         }
                     }
                 });
@@ -127,6 +145,7 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
 //            html = Html.fromHtml(explanation);
 //            setText(2, trim(html, 0, html.length()));
 //        }
+        noOfImages=0;optionNo = 0;
         ((TextView)updater.view.findViewById(R.id.question_index)).setText((position + 1) + ".");
         LinearLayout correctAnswersView = (LinearLayout)updater.view.findViewById(R.id.correct_answer);
         //Clear all children first else it keeps appending old items
@@ -136,23 +155,48 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
         answersView.removeAllViews();
         List<ReviewAnswer> answers = item.getReviewQuestion().getAnswers();
         for(int i = 0 ; i < answers.size() ; i++) {
+            final int questionNo=position + 1;
             final ReviewAnswer answer = answers.get(i);
             View option = inflater.inflate(R.layout.review_answer, null);
-            html = Html.fromHtml(answer.getTextHtml(), new AnswerImageGetter(), null);
+            html = Html.fromHtml(answer.getTextHtml(), new AnswerImageGetter(i), null);
             final TextView answerText = (TextView) option.findViewById(R.id.answer_text);
             TextView optionText = (TextView) option.findViewById(R.id.option);
             optionText.setText("" + (char) (i + 97));
             answerText.setText(trim(html, 0, html.length()));
-            for(int j = 0; j < answerImagesUrl.size() ; j++) {
-                imageLoader.loadImage(answerImagesUrl.get(j), new SimpleImageLoadingListener() {
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        Drawable drawable = new BitmapDrawable(loadedImage);
-                        answerImages.put(imageUri, drawable);
-                        Spanned html = Html.fromHtml(answer.getTextHtml(), new AnswerImageSetter(), null);
-                        answerText.setText(trim(html, 0, html.length()));
+            for(int j = 0; j < answerImagesUrl.get(i+"").size() ; j++) {
+                if(answerImages.containsKey(answerImagesUrl.get(i+"").get(j))){
+                    if(questionNo!=holder) {
+                        optionNo = 0;
+                        holder = questionNo;
                     }
-                });
+                    noOfImages++;
+                    if(answerImagesUrl.get(optionNo+"").size()==noOfImages){
+                        html = Html.fromHtml(answer.getTextHtml(), new AnswerImageSetter(), null);
+                        answerText.setText(clickableText(html));
+                        answerText.setMovementMethod(LinkMovementMethod.getInstance());
+                        optionNo++;
+                        noOfImages=0;
+                    }
+                }else{
+                    imageLoader.loadImage(answerImagesUrl.get(i + "").get(j), new SimpleImageLoadingListener() {
+                        @Override
+                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            answerImages.put(imageUri, loadedImage);
+                            if (questionNo != holder) {
+                                optionNo = 0;
+                                holder = questionNo;
+                            }
+                            noOfImages++;
+                            if (answerImagesUrl.get(optionNo + "").size() == noOfImages) {
+                                Spanned html = Html.fromHtml(answer.getTextHtml(), new AnswerImageSetter(), null);
+                                answerText.setText(clickableText(html));
+                                answerText.setMovementMethod(LinkMovementMethod.getInstance());
+                                optionNo++;
+                                noOfImages = 0;
+                            }
+                        }
+                    });
+                }
             }
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -199,6 +243,47 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
         }
     }
 
+    private  SpannableString clickableText(Spanned spanned){
+
+        SpannableString span = new SpannableString(trim(spanned, 0, spanned.length()));
+        ImageSpan[] spans = span.getSpans(0, span.length(), ImageSpan.class);
+        for(int i = 0; i < spans.length; i++) {
+            MyClickableSpan clickableSpan = new MyClickableSpan(spans[i].getDrawable());
+            span.setSpan(clickableSpan, span.getSpanStart(spans[i]), span.getSpanStart(spans[i])+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        return span;
+    }
+
+    public class MyClickableSpan extends ClickableSpan {
+        Drawable drawable;
+        MyClickableSpan(Drawable drawable){
+            this.drawable= drawable;
+        }
+
+        @Override
+        public void onClick(View textView) {
+            final DialogAlert dialog = new DialogAlert(activity,drawable);
+            dialog.show();
+        }
+    }
+
+    static public class DialogAlert extends Dialog {
+        Drawable drawable;
+        public DialogAlert(Context context,Drawable drawable) {
+            super(context, R.style.ActivityDialog);
+            this.drawable = drawable;
+        }
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+            setContentView(R.layout.image_view_layout);
+            TouchImageView image=(TouchImageView)findViewById(R.id.image);
+            image.setImageDrawable(drawable);
+        }
+    }
+
+
     private class ImageGetter implements Html.ImageGetter {
         Drawable drawable = null;
         ReviewItem item;
@@ -225,7 +310,11 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
                 if(item.getImages() != null) {
                     try {
                         drawable = new BitmapDrawable(item.getImages().get(source));
-                        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                        Display display = activity.getWindowManager().getDefaultDisplay();
+                        if(drawable.getIntrinsicWidth()> display.getWidth())
+                            drawable.setBounds(0, 0, drawable.getIntrinsicWidth()/2, drawable.getIntrinsicHeight()/2);
+                        else
+                            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
                     }
                     catch (Exception e) {}
                 }
@@ -236,10 +325,17 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
 
     private class AnswerImageGetter implements Html.ImageGetter {
         Drawable drawable = null;
+        int i;
+        ArrayList<String> temp=new ArrayList<>();
+        AnswerImageGetter(int i){
+            this.i=i;
+            answerImagesUrl.put(i+"",temp);
+        }
         public Drawable getDrawable(String source) {
             if(source != null) {
-                answerImagesUrl.add(source);
+                temp.add(source);
             }
+            answerImagesUrl.put(i+"",temp);
             return drawable;
         }
     }
@@ -250,8 +346,12 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
             if(source != null) {
                 if(answerImages != null) {
                     try {
-                        drawable = answerImages.get(source);
-                        drawable.setBounds(0, 0, drawable.getIntrinsicWidth()/2, drawable.getIntrinsicHeight()/2);
+                        drawable = new BitmapDrawable(answerImages.get(source));
+                        Display display = activity.getWindowManager().getDefaultDisplay();
+                        if(drawable.getIntrinsicWidth()> display.getWidth())
+                            drawable.setBounds(0, 0, drawable.getIntrinsicWidth()/2, drawable.getIntrinsicHeight()/2);
+                        else
+                            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
                     }
                     catch (Exception e) {}
                 }

@@ -142,22 +142,22 @@ public class AttemptQuestionsFragment extends Fragment {
         attemptItem.setCurrentReview(checked);
     }
 
-    public class MyClickableSpan extends ClickableSpan {
+    public class ClickableImageSpan extends ClickableSpan {
         Drawable drawable;
-        MyClickableSpan(Drawable drawable){
+        ClickableImageSpan(Drawable drawable){
             this.drawable= drawable;
         }
 
         @Override
         public void onClick(View textView) {
-            final DialogAlert dialog = new DialogAlert(getActivity(),drawable);
+            final ImageDialog dialog = new ImageDialog(getActivity(),drawable);
             dialog.show();
         }
     }
 
-   static public class DialogAlert extends Dialog {
+   static public class ImageDialog extends Dialog {
         Drawable drawable;
-        public DialogAlert(Context context,Drawable drawable) {
+        public ImageDialog(Context context,Drawable drawable) {
             super(context, R.style.ActivityDialog);
             this.drawable = drawable;
         }
@@ -190,7 +190,7 @@ public class AttemptQuestionsFragment extends Fragment {
                         drawable = images.get(source);
                         Display display = getActivity().getWindowManager().getDefaultDisplay();
                         if(drawable.getIntrinsicWidth()> display.getWidth())
-                            drawable.setBounds(0, 0, drawable.getIntrinsicWidth()/2, drawable.getIntrinsicHeight()/2);
+                            drawable.setBounds(0, 0, display.getWidth(), (display.getWidth()*drawable.getIntrinsicHeight())/drawable.getIntrinsicWidth());
                         else
                             drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
 
@@ -377,7 +377,7 @@ public class AttemptQuestionsFragment extends Fragment {
         SpannableString span = new SpannableString(trim(html, 0, html.length()));
         ImageSpan[] spans = span.getSpans(0, span.length(), ImageSpan.class);
         for(int i = 0; i < spans.length; i++) {
-             MyClickableSpan clickableSpan = new MyClickableSpan(spans[i].getDrawable());
+            ClickableImageSpan clickableSpan = new ClickableImageSpan(spans[i].getDrawable());
              span.setSpan(clickableSpan, span.getSpanStart(spans[i]), span.getSpanStart(spans[i])+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         return span;
@@ -501,7 +501,7 @@ public class AttemptQuestionsFragment extends Fragment {
                         drawable = answerImages.get(source);
                         Display display = getActivity().getWindowManager().getDefaultDisplay();
                         if(drawable.getIntrinsicWidth()> display.getWidth())
-                            drawable.setBounds(0, 0, drawable.getIntrinsicWidth()/2, drawable.getIntrinsicHeight()/2);
+                            drawable.setBounds(0, 0, display.getWidth(),(display.getWidth()*drawable.getIntrinsicHeight())/drawable.getIntrinsicWidth());
                         else
                             drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
                     }

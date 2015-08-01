@@ -1,5 +1,6 @@
 package in.testpress.testpress.ui;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -8,10 +9,16 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ImageSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.Display;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout.LayoutParams;
@@ -47,8 +54,9 @@ public class AttemptQuestionsFragment extends Fragment {
     ArrayList<String> url = new ArrayList<>();
     HashMap<String, Drawable> images = new HashMap<>();
     ImageLoader imageLoader;
-    HashMap<String, Drawable> answerImages = new HashMap<>();
-    ArrayList<String> answerImagesUrl = new ArrayList<>();
+    HashMap<String, ArrayList<String>> answerImagesUrl = new HashMap<>();
+    static HashMap<String,Drawable> answerImages= new HashMap<>();
+    static int noOfImagesLoaded =0;
 
     @InjectView(id.question) TextView questionsView;
     @InjectView(id.question_index) TextView questionIndex;
@@ -93,22 +101,29 @@ public class AttemptQuestionsFragment extends Fragment {
         ImageLoader.getInstance().init(config);
         imageLoader = ImageLoader.getInstance();
         for(int j = 0; j < url.size() ; j++) {
-            imageLoader.loadImage(url.get(j), new SimpleImageLoadingListener() {
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    Drawable drawable = new BitmapDrawable(loadedImage);
-                    images.put(imageUri, drawable);
-                    if(images.size() == url.size()) {
-                        Spanned htmlSpan = Html.fromHtml(attemptQuestion.getQuestionHtml(), new ImageSetter(), null);
-                        questionsView.setText(trim(htmlSpan, 0, htmlSpan.length()));
+            if (images.containsKey(url.get(j))) {
+                htmlSpan = Html.fromHtml(attemptQuestion.getQuestionHtml(), new ImageSetter(), null);
+                questionsView.setText(clickableText(htmlSpan));
+                questionsView.setMovementMethod(LinkMovementMethod.getInstance());
+            } else {
+                imageLoader.loadImage(url.get(j), new SimpleImageLoadingListener() {
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        Drawable drawable = new BitmapDrawable(loadedImage);
+                        images.put(imageUri, drawable);
+                        if (images.size() == url.size()) {
+                            Spanned htmlSpan = Html.fromHtml(attemptQuestion.getQuestionHtml(), new ImageSetter(), null);
+                            questionsView.setText(clickableText(htmlSpan));
+                            questionsView.setMovementMethod(LinkMovementMethod.getInstance());
+                        }
                     }
-                }
-            });
+                });
+            }
         }
 
         String type = attemptItem.getAttemptQuestion().getType();
         switch (type) {
-            case "R": creareRadioButtonView(attemptAnswers, attemptQuestion);
+            case "R": createRadioButtonView(attemptAnswers, attemptQuestion);
                 break;
             case "C": createCheckBoxView(attemptAnswers, attemptQuestion);
                 break;
@@ -130,6 +145,35 @@ public class AttemptQuestionsFragment extends Fragment {
         attemptItem.setCurrentReview(checked);
     }
 
+    public class ClickableImageSpan extends ClickableSpan {
+        Drawable drawable;
+        ClickableImageSpan(Drawable drawable){
+            this.drawable= drawable;
+        }
+
+        @Override
+        public void onClick(View textView) {
+            final ImageDialog dialog = new ImageDialog(getActivity(),drawable);
+            dialog.show();
+        }
+    }
+
+   static public class ImageDialog extends Dialog {
+        Drawable drawable;
+        public ImageDialog(Context context,Drawable drawable) {
+            super(context, R.style.ActivityDialog);
+            this.drawable = drawable;
+        }
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+            setContentView(R.layout.image_view_layout);
+            TouchImageView image=(TouchImageView)findViewById(R.id.image);
+            image.setImageDrawable(drawable);
+        }
+    }
+
     private class ImageGetter implements Html.ImageGetter {
         Drawable drawable = null;
         public Drawable getDrawable(String source) {
@@ -147,7 +191,12 @@ public class AttemptQuestionsFragment extends Fragment {
                 if(images != null) {
                     try {
                         drawable = images.get(source);
-                        drawable.setBounds(0,0,drawable.getIntrinsicWidth(),drawable.getIntrinsicHeight());
+                        Display display = getActivity().getWindowManager().getDefaultDisplay();
+                        if(drawable.getIntrinsicWidth()> display.getWidth())
+                            drawable.setBounds(0, 0, display.getWidth(), (display.getWidth()*drawable.getIntrinsicHeight())/drawable.getIntrinsicWidth());
+                        else
+                            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+
                     }
                     catch (Exception e) {}
                 }
@@ -258,18 +307,30 @@ public class AttemptQuestionsFragment extends Fragment {
             option.setId(i);
             LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
             option.setLayoutParams(layoutParams);
-            Spanned html = Html.fromHtml(answer, new AnswerImageGetter(), null);
+            Spanned html = Html.fromHtml(answer, new AnswerImageGetter(i), null);
+            final int noOfImages = answerImagesUrl.get(i + "").size();
             option.setText(trim(html, 0, html.length()));
-            for(int j = 0; j < answerImagesUrl.size() ; j++) {
-                imageLoader.loadImage(answerImagesUrl.get(j), new SimpleImageLoadingListener() {
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        Drawable drawable = new BitmapDrawable(loadedImage);
-                        answerImages.put(imageUri, drawable);
-                        Spanned html = Html.fromHtml(answer, new AnswerImageSetter(), null);
-                        option.setText(trim(html, 0, html.length()));
-                    }
-                });
+            for(int j = 0; j < noOfImages ; j++) {
+                if (answerImages.containsKey(answerImagesUrl.get(i + "").get(j))) {
+                        html = Html.fromHtml(answer, new AnswerImageSetter(), null);
+                        option.setText(clickableText(html));
+                        option.setMovementMethod(LinkMovementMethod.getInstance());
+                } else {
+                    imageLoader.loadImage(answerImagesUrl.get(i + "").get(j), new SimpleImageLoadingListener() {
+                        @Override
+                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            Drawable drawable = new BitmapDrawable(loadedImage);
+                            answerImages.put(imageUri, drawable);
+                            noOfImagesLoaded++;
+                            if (noOfImages == noOfImagesLoaded) {
+                                Spanned html = Html.fromHtml(answer, new AnswerImageSetter(), null);
+                                option.setText(clickableText(html));
+                                option.setMovementMethod(LinkMovementMethod.getInstance());
+                                noOfImagesLoaded = 0;
+                            }
+                        }
+                    });
+                }
             }
             option.setButtonDrawable(android.R.color.transparent);
             option.setPadding(25, 10, 0, 0);
@@ -299,20 +360,31 @@ public class AttemptQuestionsFragment extends Fragment {
         }
     }
 
+    private SpannableString clickableText(Spanned html){
+
+        SpannableString span = new SpannableString(trim(html, 0, html.length()));
+        ImageSpan[] spans = span.getSpans(0, span.length(), ImageSpan.class);
+        for(int i = 0; i < spans.length; i++) {
+            ClickableImageSpan clickableSpan = new ClickableImageSpan(spans[i].getDrawable());
+             span.setSpan(clickableSpan, span.getSpanStart(spans[i]), span.getSpanStart(spans[i])+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        return span;
+    }
+
     // http://stackoverflow.com/a/16745540/400236
     public static CharSequence trim(CharSequence s, int start, int end) {
         while (start < end && Character.isWhitespace(s.charAt(start))) {
             start++;
         }
 
-        while (end > start && Character.isWhitespace(s.charAt(end - 1))) {
+        while (end > start && Character.isWhitespace(s.charAt(end - 2))) {
             end--;
         }
 
         return s.subSequence(start, end);
     }
 
-    public void creareRadioButtonView(List<AttemptAnswer> attemptAnswers, AttemptQuestion attemptQuestion) {
+    public void createRadioButtonView(List<AttemptAnswer> attemptAnswers, AttemptQuestion attemptQuestion) {
         for(int i = 0 ; i < attemptQuestion.getAttemptAnswers().size() ; i++) {
             LayoutInflater inflater;
             final String answer  = attemptQuestion.getAttemptAnswers().get(i).getTextHtml();
@@ -324,18 +396,30 @@ public class AttemptQuestionsFragment extends Fragment {
             //LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
             //option.setLayoutParams(layoutParams);
             //option.setHt
-            Spanned html = Html.fromHtml(attemptAnswers.get(i).getTextHtml(), new AnswerImageGetter(), null);
+            Spanned html = Html.fromHtml(attemptAnswers.get(i).getTextHtml(), new AnswerImageGetter(i), null);
+            final int noOfImages = answerImagesUrl.get(i + "").size();
             option.setText(trim(html, 0, html.length()));
-            for(int j = 0; j < answerImagesUrl.size() ; j++) {
-                imageLoader.loadImage(answerImagesUrl.get(j), new SimpleImageLoadingListener() {
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        Drawable drawable = new BitmapDrawable(loadedImage);
-                        answerImages.put(imageUri, drawable);
-                        Spanned html = Html.fromHtml(answer, new AnswerImageSetter(), null);
-                        option.setText(trim(html, 0, html.length()));
-                    }
-                });
+            for(int j = 0; j < noOfImages ; j++) {
+                if (answerImages.containsKey(answerImagesUrl.get(i + "").get(j))) {
+                    html = Html.fromHtml(answer, new AnswerImageSetter(), null);
+                    option.setText(clickableText(html));
+                    option.setMovementMethod(LinkMovementMethod.getInstance());
+                }else{
+                    imageLoader.loadImage(answerImagesUrl.get(i + "").get(j), new SimpleImageLoadingListener() {
+                        @Override
+                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            Drawable drawable = new BitmapDrawable(loadedImage);
+                            answerImages.put(imageUri, drawable);
+                            noOfImagesLoaded++;
+                            if (noOfImages == noOfImagesLoaded) {
+                                Spanned html = Html.fromHtml(answer, new AnswerImageSetter(), null);
+                                option.setText(clickableText(html));
+                                option.setMovementMethod(LinkMovementMethod.getInstance());
+                                noOfImagesLoaded = 0;
+                            }
+                        }
+                    });
+                }
             }
             //Log.e("AttemptQuestionsFragment", Html.fromHtml(attemptAnswers.get(i).getTextHtml()));
             //option.setButtonDrawable(android.R.color.transparent);
@@ -367,10 +451,17 @@ public class AttemptQuestionsFragment extends Fragment {
 
     private class AnswerImageGetter implements Html.ImageGetter {
         Drawable drawable = null;
+        int i;
+        ArrayList<String> temp=new ArrayList<>();
+        AnswerImageGetter(int i){
+            this.i=i;
+            answerImagesUrl.put(i+"",temp);
+        }
         public Drawable getDrawable(String source) {
             if(source != null) {
-                answerImagesUrl.add(source);
+                temp.add(source);
             }
+            answerImagesUrl.put(i+"",temp);
             return drawable;
         }
     }
@@ -382,7 +473,11 @@ public class AttemptQuestionsFragment extends Fragment {
                 if(answerImages != null) {
                     try {
                         drawable = answerImages.get(source);
-                        drawable.setBounds(0,0,drawable.getIntrinsicWidth(),drawable.getIntrinsicHeight());
+                        Display display = getActivity().getWindowManager().getDefaultDisplay();
+                        if(drawable.getIntrinsicWidth()> display.getWidth())
+                            drawable.setBounds(0, 0, display.getWidth(),(display.getWidth()*drawable.getIntrinsicHeight())/drawable.getIntrinsicWidth());
+                        else
+                            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
                     }
                     catch (Exception e) {}
                 }

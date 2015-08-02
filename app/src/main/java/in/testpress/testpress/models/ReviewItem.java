@@ -5,15 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import android.app.Activity;
-import android.util.Log;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
-import com.activeandroid.query.Select;
-import com.google.gson.annotations.Expose;
-
-import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -24,36 +16,19 @@ import java.util.Map;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.util.SafeAsyncTask;
 
-@Table(name = "ReviewItem")
-public class ReviewItem extends Model implements Parcelable {
 
-    @Column(name = "ItemId", onUpdate = Column.ForeignKeyAction.SET_NULL)
+public class ReviewItem implements Parcelable {
     private Integer id;
-    @Column(name = "attemptId", onDelete = Column.ForeignKeyAction.CASCADE)
-    public Integer attemptId;
-    @Column(name = "url")
     private String url;
-    @Column(name = "question")
     private ReviewQuestion question;
-    @Column(name = "selectedAnswers")
     private List<Integer> selectedAnswers = new ArrayList<Integer>();
-    @Column(name = "review")
     private Boolean review;
-    @Column(name = "Attempts", onDelete = Column.ForeignKeyAction.CASCADE)
-    public Attempt attempt;
-    @Column(name = "filter")
-    public String filter;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
     private HashMap<String, Bitmap> images = new HashMap<>();
     private ArrayList<String> imageUrl = new ArrayList<>();
-//    ReviewItem() {
-//        selectedAnswers = new ArrayList<Integer>();
-//    }
-
-    public ReviewItem() {
-        super();
+    ReviewItem() {
+        selectedAnswers = new ArrayList<Integer>();
     }
-
 
     // Parcelling part
     public ReviewItem(Parcel parcel){
@@ -115,7 +90,7 @@ public class ReviewItem extends Model implements Parcelable {
      * @return
      * The id
      */
-    public Integer getItemId() {
+    public Integer getId() {
         return id;
     }
 
@@ -155,10 +130,6 @@ public class ReviewItem extends Model implements Parcelable {
         return question;
     }
 
-    public ReviewQuestion getReviewQuestionList() {
-        return new Select().from(ReviewQuestion.class).where("ReviewItem = ?", this.getId()).where("filter = ?", this.filter).executeSingle();
-    }
-
     /**
      *
      * @param reviewQuestion
@@ -175,18 +146,6 @@ public class ReviewItem extends Model implements Parcelable {
      */
     public List<Integer> getSelectedAnswers() {
         return selectedAnswers;
-    }
-
-    public List<Integer> getSelectedAnswerList() {
-        List<Integer> selected = new ArrayList<>();
-        List<SelectedAnswer> answers = new ArrayList<>();
-        try {
-            answers = new Select().from(SelectedAnswer.class).where("ReviewItem = ?", this.getId()).where("filter = ?", this.filter).execute();
-        } catch (Exception e){}
-        for (SelectedAnswer ans : answers) {
-            selected.add(ans.selectedAnswer);
-        }
-        return selected;
     }
 
     /**

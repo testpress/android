@@ -1,10 +1,11 @@
 package in.testpress.testpress.core;
 
+import android.accounts.AccountsException;
+import android.accounts.OperationCanceledException;
+import android.app.Activity;
 import android.util.Log;
 
-import com.activeandroid.ActiveAndroid;
-import com.activeandroid.query.Select;
-
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -32,7 +33,7 @@ public class AttemptsPager extends ResourcePager<Attempt> {
 
     @Override
     protected Object getId(Attempt resource) {
-        return resource.getAttemptId();
+        return resource.getId();
     }
 
     @Override
@@ -51,41 +52,10 @@ public class AttemptsPager extends ResourcePager<Attempt> {
 
         }
         if (url != null) {
-            try {
-                List<Attempt> attempts;
-                response = service.getAttempts(url);
-                attempts = response.getResults();
-                ActiveAndroid.beginTransaction();
-                try {
-                    for(Attempt attempt : attempts) {
-                        attempt.examId = exam.getExamId();
-                        attempt.save();
-                    }
-                    ActiveAndroid.setTransactionSuccessful();
-                }
-                finally {
-                    ActiveAndroid.endTransaction();
-                }
-                return getAll();
-            } catch (Exception e) {
-                try {
-                    List<Attempt> attempts;
-                    attempts = getAll();
-                    return attempts;
-                } catch (Exception exception) {
-                    return null;
-                }
-            }
+            response = service.getAttempts(url);
+            return response.getResults();
         }
         return Collections.emptyList();
-    }
-
-    public List<Attempt> getAll() {
-        return new Select()
-                .from(Attempt.class)
-                .where("examId = ?", exam.getExamId())
-                .orderBy("attemptId DESC")
-                .execute();
     }
 
     @Override

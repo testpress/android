@@ -1,18 +1,19 @@
 package in.testpress.testpress.core;
 
-import com.activeandroid.ActiveAndroid;
-import com.activeandroid.query.Select;
+import android.accounts.AccountsException;
+import android.accounts.OperationCanceledException;
+import android.app.Activity;
+import android.util.Log;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
 import in.testpress.testpress.models.Attempt;
-import in.testpress.testpress.models.ReviewAnswer;
+import in.testpress.testpress.models.Exam;
 import in.testpress.testpress.models.ReviewItem;
-import in.testpress.testpress.models.ReviewQuestion;
-import in.testpress.testpress.models.SelectedAnswer;
 import in.testpress.testpress.models.TestpressApiResponse;
 
 
@@ -35,7 +36,7 @@ public class ReviewQuestionsPager extends ResourcePager<ReviewItem> {
 
     @Override
     protected Object getId(ReviewItem resource) {
-        return resource.getItemId();
+        return resource.getId();
     }
 
     @Override
@@ -56,56 +57,10 @@ public class ReviewQuestionsPager extends ResourcePager<ReviewItem> {
             }
         }
         if (url != null) {
-            try {
-                response = service.getReviewItems(url);
-                List<ReviewItem> reviewItems = response.getResults();
-                ActiveAndroid.beginTransaction();
-                try {
-                    for (ReviewItem reviewItem : reviewItems) {
-                        reviewItem.attemptId = attempt.getAttemptId();
-                        reviewItem.filter = filter;
-                        reviewItem.save();
-                        ReviewQuestion question = reviewItem.getReviewQuestion();
-                        question.reviewItem = reviewItem;
-                        question.filter = filter;
-                        question.save();
-                        SelectedAnswer selectedAnswer = new SelectedAnswer();
-                        for(Integer answer: reviewItem.getSelectedAnswers()) {
-                            selectedAnswer.selectedAnswer = answer;
-                            selectedAnswer.reviewItem = reviewItem;
-                            selectedAnswer.filter = filter;
-                            selectedAnswer.save();
-                        }
-                        for(ReviewAnswer answer : reviewItem.getReviewQuestion().getAnswers()) {
-                            answer.reviewItem = reviewItem;
-                            answer.filter = filter;
-                            answer.save();
-                        }
-                    }
-                    ActiveAndroid.setTransactionSuccessful();
-                }
-                finally {
-                    ActiveAndroid.endTransaction();
-                }
-                return getAll();
-            } catch (Exception e) {
-                try {
-                    List<ReviewItem> items = getAll();
-                    return items;
-                } catch (Exception exception) {
-                    return null;
-                }
-            }
+            response = service.getReviewItems(url);
+            return response.getResults();
         }
         return Collections.emptyList();
-    }
-
-
-    public List<ReviewItem> getAll() {
-        return new Select().from(ReviewItem.class)
-                .where("attemptId = ?", attempt.getAttemptId()).where("filter = ?", filter)
-                .orderBy("attemptId DESC")
-                .execute();
     }
 
     @Override

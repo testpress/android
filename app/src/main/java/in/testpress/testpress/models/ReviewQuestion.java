@@ -1,5 +1,4 @@
 package in.testpress.testpress.models;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,30 +6,13 @@ import java.util.Map;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
-import com.activeandroid.query.Select;
+public class ReviewQuestion implements Parcelable {
 
-@Table(name = "question")
-public class ReviewQuestion extends Model implements Parcelable {
-    @Column(name = "questionHtml")
     private String questionHtml;
     private List<ReviewAnswer> answers = new ArrayList<ReviewAnswer>();
-    @Column(name = "subject")
     private String subject;
-    @Column(name = "explanationHtml")
     private String explanationHtml;
-    @Column(name = "ReviewItem", onDelete = Column.ForeignKeyAction.CASCADE, onUpdate = Column.ForeignKeyAction.CASCADE)
-    public ReviewItem reviewItem;
-    @Column(name = "filter", onDelete = Column.ForeignKeyAction.CASCADE)
-    public String filter;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
-
-    public ReviewQuestion() {
-        super();
-    }
-
 
     // Parcelling part
     public ReviewQuestion(Parcel parcel){
@@ -89,12 +71,6 @@ public class ReviewQuestion extends Model implements Parcelable {
      */
     public List<ReviewAnswer> getAnswers() {
         return answers;
-    }
-
-    public List<ReviewAnswer> getAnswersList() {
-        return new Select().all()
-                .from(ReviewAnswer.class).where("ReviewItem = ?", reviewItem.getId()).where("filter =?", this.filter)
-                .execute();
     }
 
     /**

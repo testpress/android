@@ -84,10 +84,10 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
 
     @Override
     protected void update(final int position, final ReviewItem item) {
-        Spanned html = Html.fromHtml(item.getReviewQuestionList().getQuestionHtml().replaceAll("\n", ""), new ImageGetter(item), null);
+        Spanned html = Html.fromHtml(item.getReviewQuestion().getQuestionHtml().replaceAll("\n", ""), new ImageGetter(item), null);
         setText(0, trim(html, 0, html.length()));
 
-        final String explanation = item.getReviewQuestionList().getExplanationHtml().replaceAll("\n", "");
+        final String explanation = item.getReviewQuestion().getExplanationHtml().replaceAll("\n", "");
         if (explanation.equals("")) {
             updater.view.findViewById(R.id.explanation_heading).setVisibility(View.GONE);
             updater.view.findViewById(R.id.explanation).setVisibility(View.GONE);
@@ -97,7 +97,7 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
         }
 
         if(item.getImages().size() > 0) {
-            Spanned htmlQuestion = Html.fromHtml(item.getReviewQuestionList().getQuestionHtml().replaceAll("\n", ""), new ImageSetter(item), null);
+            Spanned htmlQuestion = Html.fromHtml(item.getReviewQuestion().getQuestionHtml().replaceAll("\n", ""), new ImageSetter(item), null);
             Spanned htmlExplanation = Html.fromHtml(explanation, new ImageSetter(item), null);
             setText(0, trim(htmlQuestion, 0, htmlQuestion.length()));
             setText(2, trim(htmlExplanation, 0, htmlExplanation.length()));
@@ -109,7 +109,7 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                         item.setImages(imageUri, loadedImage);
                         if (item.getImages().size() == item.getImageUrl().size()) {
-                            Spanned htmlQuestion = Html.fromHtml(item.getReviewQuestionList().getQuestionHtml().replaceAll("\n", ""), new ImageSetter(item), null);
+                            Spanned htmlQuestion = Html.fromHtml(item.getReviewQuestion().getQuestionHtml().replaceAll("\n", ""), new ImageSetter(item), null);
                             Spanned htmlExplanation = Html.fromHtml(explanation, new ImageSetter(item), null);
                             setText(0, trim(htmlQuestion, 0, htmlQuestion.length()));
                             setText(2, trim(htmlExplanation, 0, htmlExplanation.length()));
@@ -119,7 +119,7 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
             }
         }
 
-//        String explanation = item.getReviewQuestionList().getExplanationHtml().replaceAll("\n", "");
+//        String explanation = item.getReviewQuestion().getExplanationHtml().replaceAll("\n", "");
 //        if (explanation.equals("")) {
 //            updater.view.findViewById(R.id.explanation_heading).setVisibility(View.GONE);
 //            updater.view.findViewById(R.id.explanation).setVisibility(View.GONE);
@@ -134,7 +134,7 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
         LinearLayout answersView = (LinearLayout)updater.view.findViewById(R.id.answer);
         //Clear all children first else it keeps appending old items
         answersView.removeAllViews();
-        List<ReviewAnswer> answers = item.getReviewQuestionList().getAnswersList();
+        List<ReviewAnswer> answers = item.getReviewQuestion().getAnswers();
         for(int i = 0 ; i < answers.size() ; i++) {
             final ReviewAnswer answer = answers.get(i);
             View option = inflater.inflate(R.layout.review_answer, null);
@@ -162,7 +162,7 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
             answersView.addView(option);
             option.setLayoutParams(params);
             int sdk = android.os.Build.VERSION.SDK_INT;
-            if (item.getSelectedAnswerList().contains(answer.getAnswerId()) == true) {
+            if (item.getSelectedAnswers().contains(answer.getId()) == true) {
                 if (answer.getIsCorrect() == true) {
                     if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
                         optionText.setBackgroundResource(R.drawable.round_green_background);

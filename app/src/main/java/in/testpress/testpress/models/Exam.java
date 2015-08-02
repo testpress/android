@@ -3,11 +3,6 @@ package in.testpress.testpress.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
-import com.activeandroid.query.Select;
-
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -18,50 +13,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-@Table(name = "Exams")
-public class  Exam extends Model implements Parcelable {
-    @Column(name = "totalMarks")
+
+public class Exam implements Parcelable {
     private String totalMarks;
-    @Column(name = "url")
     private String url;
-    @Column(name = "examId")
     private Integer id;
-    @Column(name = "title")
     private String title;
-    @Column(name = "description")
     private String description;
-    @Column(name = "course")
     private String course;
-    @Column(name = "startDate")
     private String startDate;
-    @Column(name = "endDate")
     private String endDate;
-    @Column(name = "duration")
     private String duration;
-    @Column(name = "numberOfQuestions")
     private Integer numberOfQuestions;
-    @Column(name = "negativeMarks")
     private String negativeMarks;
-    @Column(name = "markPerQuestion")
     private String markPerQuestion;
-    @Column(name = "templateType")
     private Integer templateType;
-    @Column(name = "allowRetake")
     private Boolean allowRetake;
-    @Column(name = "attemptsUrl")
     private String attemptsUrl;
-    @Column(name = "query")
-    public String query;
     private List<Attempt> attempts;
     private Map<String, String> additionalProperties = new HashMap<String, String>();
-
-    public Exam(){
-        super();
-    }
-    public List<Attempt> items() {
-        return getMany(Attempt.class, "exam");
-    }
-
 
     // Parcelling part
     public Exam(Parcel parcel){
@@ -164,7 +134,7 @@ public class  Exam extends Model implements Parcelable {
      * @return
      * The id
      */
-    public Integer getExamId() {
+    public Integer getId() {
         return id;
     }
 
@@ -414,11 +384,9 @@ public class  Exam extends Model implements Parcelable {
         }
     }
 
+
     public List<Attempt> getAttempts() {
-        return new Select().from(Attempt.class)
-                .where("examId = ?", this.getExamId())
-                .orderBy("attemptId DESC")
-                .execute();
+        return attempts;
     }
 
     public void setAttempts(List<Attempt> attempts) {

@@ -78,17 +78,10 @@ public class ExamPager extends ResourcePager<Exam> {
             }
             catch (Exception e) {
                 if((e.getMessage()).equals("403 FORBIDDEN")) {
-                   serviceProvider.invalidateAuthToken();
-                   logoutService.logout(new Runnable() {
-                       @Override
-                       public void run() {
-                           Intent intent = activity.getIntent();
-                           activity.finish();
-                           activity.startActivity(intent);
-                       }
-                   });
+                    throw e;
+                } else {
+                    return null;
                 }
-               else return null;
             }
         }
         return Collections.emptyList();

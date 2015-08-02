@@ -3,7 +3,6 @@ package in.testpress.testpress.core;
 import android.util.Log;
 
 import com.activeandroid.ActiveAndroid;
-import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 
 import java.net.MalformedURLException;
@@ -60,17 +59,7 @@ public class AttemptsPager extends ResourcePager<Attempt> {
                 try {
                     for(Attempt attempt : attempts) {
                         attempt.examId = exam.getExamId();
-                        Attempt temp = new Select()
-                                .from(Attempt.class).where("attemptId = ?",attempt.getAttemptId())
-                                .executeSingle();
-                        if (temp == null) {
-                            attempt.save();
-                        } else if(temp.getState().equals("Running")) {
-                            new  Delete().from(Attempt.class)
-                                   .where("attemptId = ?",attempt.getAttemptId())
-                                   .execute();
-                            attempt.save();
-                        }
+                        attempt.save();
                     }
                     ActiveAndroid.setTransactionSuccessful();
                 }

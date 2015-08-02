@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -18,7 +17,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
-import com.activeandroid.query.Select;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import javax.inject.Inject;
@@ -119,12 +117,7 @@ public class ExamActivity extends FragmentActivity implements LoaderManager.Load
         progressBar.setVisibility(View.INVISIBLE);
         if(attempt != null) {
             attempt.examId = exam.getExamId();
-            Attempt temp = new Select()
-                    .from(Attempt.class).where("attemptId = ?",attempt.getAttemptId())
-                    .executeSingle();
-            if (temp == null) {
-                attempt.save();
-            }
+            attempt.save();
             startExam.setVisibility(View.GONE);
             attemptActions.setVisibility(View.GONE);
             examDetailsContainer.setVisibility(View.GONE);

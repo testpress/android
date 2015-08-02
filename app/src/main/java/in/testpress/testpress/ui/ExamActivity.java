@@ -116,8 +116,7 @@ public class ExamActivity extends FragmentActivity implements LoaderManager.Load
     public void onLoadFinished(final Loader<Attempt> loader, final Attempt attempt) {
         progressBar.setVisibility(View.INVISIBLE);
         if(attempt != null) {
-            attempt.examId = exam.getExamId();
-            attempt.save();
+
             startExam.setVisibility(View.GONE);
             attemptActions.setVisibility(View.GONE);
             examDetailsContainer.setVisibility(View.GONE);

@@ -1,44 +1,36 @@
 package in.testpress.testpress.ui;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
-import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import in.testpress.testpress.R;
 import in.testpress.testpress.models.ReviewAnswer;
 import in.testpress.testpress.models.ReviewItem;
+import in.testpress.testpress.util.UILImageGetter;
+import in.testpress.testpress.util.ZoomableImageString;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
 
     private LayoutInflater inflater;
     Activity activity;
-    ImageLoader imageLoader;
-    HashMap<String, Drawable> answerImages = new HashMap<>();
-    ArrayList<String> answerImagesUrl = new ArrayList<>();
 
     /**
      * @param inflater
@@ -50,18 +42,6 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
         this.inflater = inflater;
         setItems(items);
         this.activity = activity;
-        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-                .cacheOnDisc(true).cacheInMemory(true)
-                .imageScaleType(ImageScaleType.EXACTLY)
-                .displayer(new FadeInBitmapDisplayer(300)).build();
-
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(activity)
-                .defaultDisplayImageOptions(defaultOptions)
-                .memoryCache(new WeakMemoryCache())
-                .discCacheSize(100 * 1024 * 1024).build();
-
-        ImageLoader.getInstance().init(config);
-        imageLoader = ImageLoader.getInstance();
     }
 
     @Override
@@ -69,64 +49,17 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
         return new int[]{R.id.question, R.id.answer, R.id.explanation };
     }
 
-    // http://stackoverflow.com/a/16745540/400236
-    public static CharSequence trim(CharSequence s, int start, int end) {
-        while (start < end && Character.isWhitespace(s.charAt(start))) {
-            start++;
-        }
-
-        while (end > start && Character.isWhitespace(s.charAt(end - 1))) {
-            end--;
-        }
-
-        return s.subSequence(start, end);
-    }
-
     @Override
     protected void update(final int position, final ReviewItem item) {
-        Spanned html = Html.fromHtml(item.getReviewQuestion().getQuestionHtml().replaceAll("\n", ""), new ImageGetter(item), null);
-        setText(0, trim(html, 0, html.length()));
+        TextView questionsView = textView(0);
+        Log.e("ReviewList", "Using new UILImageGetter " + questionsView.getHeight());
+        Log.e("ReviewList", "Measured Height " + questionsView.getMeasuredHeight());
+        Context c = this.activity.getApplicationContext();
+        Spanned html = Html.fromHtml(item.getReviewQuestion().getQuestionHtml().replaceAll("\n", ""), new UILImageGetter(questionsView, c), null);
+        ZoomableImageString zoomableImageHtml = new ZoomableImageString(activity);
+        questionsView.setText(zoomableImageHtml.convertString(html), TextView.BufferType.SPANNABLE);
+        questionsView.setMovementMethod(LinkMovementMethod.getInstance());
 
-        final String explanation = item.getReviewQuestion().getExplanationHtml().replaceAll("\n", "");
-        if (explanation.equals("")) {
-            updater.view.findViewById(R.id.explanation_heading).setVisibility(View.GONE);
-            updater.view.findViewById(R.id.explanation).setVisibility(View.GONE);
-        } else {
-            html = Html.fromHtml(explanation, new ImageGetter(item), null);
-            setText(2, trim(html, 0, html.length()));
-        }
-
-        if(item.getImages().size() > 0) {
-            Spanned htmlQuestion = Html.fromHtml(item.getReviewQuestion().getQuestionHtml().replaceAll("\n", ""), new ImageSetter(item), null);
-            Spanned htmlExplanation = Html.fromHtml(explanation, new ImageSetter(item), null);
-            setText(0, trim(htmlQuestion, 0, htmlQuestion.length()));
-            setText(2, trim(htmlExplanation, 0, htmlExplanation.length()));
-        }
-        else {
-            for (int j = 0; j < item.getImageUrl().size(); j++) {
-                imageLoader.loadImage(item.getImageUrl().get(j), new SimpleImageLoadingListener() {
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        item.setImages(imageUri, loadedImage);
-                        if (item.getImages().size() == item.getImageUrl().size()) {
-                            Spanned htmlQuestion = Html.fromHtml(item.getReviewQuestion().getQuestionHtml().replaceAll("\n", ""), new ImageSetter(item), null);
-                            Spanned htmlExplanation = Html.fromHtml(explanation, new ImageSetter(item), null);
-                            setText(0, trim(htmlQuestion, 0, htmlQuestion.length()));
-                            setText(2, trim(htmlExplanation, 0, htmlExplanation.length()));
-                        }
-                    }
-                });
-            }
-        }
-
-//        String explanation = item.getReviewQuestion().getExplanationHtml().replaceAll("\n", "");
-//        if (explanation.equals("")) {
-//            updater.view.findViewById(R.id.explanation_heading).setVisibility(View.GONE);
-//            updater.view.findViewById(R.id.explanation).setVisibility(View.GONE);
-//        } else {
-//            html = Html.fromHtml(explanation);
-//            setText(2, trim(html, 0, html.length()));
-//        }
         ((TextView)updater.view.findViewById(R.id.question_index)).setText((position + 1) + ".");
         LinearLayout correctAnswersView = (LinearLayout)updater.view.findViewById(R.id.correct_answer);
         //Clear all children first else it keeps appending old items
@@ -138,22 +71,13 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
         for(int i = 0 ; i < answers.size() ; i++) {
             final ReviewAnswer answer = answers.get(i);
             View option = inflater.inflate(R.layout.review_answer, null);
-            html = Html.fromHtml(answer.getTextHtml(), new AnswerImageGetter(), null);
-            final TextView answerText = (TextView) option.findViewById(R.id.answer_text);
-            TextView optionText = (TextView) option.findViewById(R.id.option);
-            optionText.setText("" + (char) (i + 97));
-            answerText.setText(trim(html, 0, html.length()));
-            for(int j = 0; j < answerImagesUrl.size() ; j++) {
-                imageLoader.loadImage(answerImagesUrl.get(j), new SimpleImageLoadingListener() {
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        Drawable drawable = new BitmapDrawable(loadedImage);
-                        answerImages.put(imageUri, drawable);
-                        Spanned html = Html.fromHtml(answer.getTextHtml(), new AnswerImageSetter(), null);
-                        answerText.setText(trim(html, 0, html.length()));
-                    }
-                });
-            }
+            final TextView answerTextView = (TextView) option.findViewById(R.id.answer_text);
+            html = Html.fromHtml(answer.getTextHtml(), new UILImageGetter(answerTextView, c), null);
+            ZoomableImageString zoomableImageAnswer = new ZoomableImageString(activity);
+            answerTextView.setText(zoomableImageAnswer.convertString(html), TextView.BufferType.SPANNABLE);
+            answerTextView.setMovementMethod(LinkMovementMethod.getInstance());
+            TextView optionTextView = (TextView) option.findViewById(R.id.option);
+            optionTextView.setText("" + (char) (i + 97));
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
@@ -165,15 +89,15 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
             if (item.getSelectedAnswers().contains(answer.getId()) == true) {
                 if (answer.getIsCorrect() == true) {
                     if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                        optionText.setBackgroundResource(R.drawable.round_green_background);
+                        optionTextView.setBackgroundResource(R.drawable.round_green_background);
                     } else {
-                        optionText.setBackground(inflater.getContext().getResources().getDrawable(R.drawable.round_green_background));
+                        optionTextView.setBackground(inflater.getContext().getResources().getDrawable(R.drawable.round_green_background));
                     }
                 } else {
                     if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                        optionText.setBackgroundResource(R.drawable.round_red_background);
+                        optionTextView.setBackgroundResource(R.drawable.round_red_background);
                     } else {
-                        optionText.setBackground(inflater.getContext().getResources().getDrawable(R.drawable.round_red_background));
+                        optionTextView.setBackground(inflater.getContext().getResources().getDrawable(R.drawable.round_red_background));
                     }
                 }
             }
@@ -197,66 +121,17 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
                 correctAnswersView.addView(correctOption);
             }
         }
-    }
 
-    private class ImageGetter implements Html.ImageGetter {
-        Drawable drawable = null;
-        ReviewItem item;
-        ImageGetter(ReviewItem item) {
-            this.item = item;
-        }
-        public Drawable getDrawable(String source) {
-            if(source != null) {
-               item.setImageUrl(source);
-            }
-            return drawable;
-        }
-    }
-
-    private class ImageSetter implements Html.ImageGetter {
-        Drawable drawable = null;
-        ReviewItem item;
-
-        ImageSetter(ReviewItem item) {
-            this.item = item;
-        }
-        public Drawable getDrawable(String source) {
-            if(source != null) {
-                if(item.getImages() != null) {
-                    try {
-                        drawable = new BitmapDrawable(item.getImages().get(source));
-                        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-                    }
-                    catch (Exception e) {}
-                }
-            }
-            return drawable;
-        }
-    }
-
-    private class AnswerImageGetter implements Html.ImageGetter {
-        Drawable drawable = null;
-        public Drawable getDrawable(String source) {
-            if(source != null) {
-                answerImagesUrl.add(source);
-            }
-            return drawable;
-        }
-    }
-
-    private class AnswerImageSetter implements Html.ImageGetter {
-        Drawable drawable = null;
-        public Drawable getDrawable(String source) {
-            if(source != null) {
-                if(answerImages != null) {
-                    try {
-                        drawable = answerImages.get(source);
-                        drawable.setBounds(0, 0, drawable.getIntrinsicWidth()/2, drawable.getIntrinsicHeight()/2);
-                    }
-                    catch (Exception e) {}
-                }
-            }
-            return drawable;
+        final String explanation = item.getReviewQuestion().getExplanationHtml().replaceAll("\n", "");
+        TextView explanationsView = textView(2);
+        if (explanation.equals("")) {
+            updater.view.findViewById(R.id.explanation_heading).setVisibility(View.GONE);
+            updater.view.findViewById(R.id.explanation).setVisibility(View.GONE);
+        } else {
+            html = Html.fromHtml(explanation, new UILImageGetter(explanationsView, c), null);
+            ZoomableImageString zoomableImageExplanation = new ZoomableImageString(activity);
+            explanationsView.setText(zoomableImageExplanation.convertString(html), TextView.BufferType.SPANNABLE);
+            explanationsView.setMovementMethod(LinkMovementMethod.getInstance());
         }
     }
 }

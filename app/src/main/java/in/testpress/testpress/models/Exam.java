@@ -221,14 +221,15 @@ public class Exam implements Parcelable {
 
     public String formatDate(String inputString) {
         Date date = null;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {
-            date = simpleDateFormat.parse(inputString);
-            DateFormat dateformat = DateFormat.getDateInstance();
-            return dateformat.format(date);
-        }
-        catch (ParseException e) {
+            if(inputString != null && !inputString.isEmpty()) {
+                date = simpleDateFormat.parse(inputString);
+                DateFormat dateformat = DateFormat.getDateInstance();
+                return dateformat.format(date);
+            }
+        } catch (ParseException e) {
         }
         return null;
     }

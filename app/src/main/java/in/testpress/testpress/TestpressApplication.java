@@ -4,6 +4,15 @@ import android.app.Application;
 import android.app.Instrumentation;
 import android.content.Context;
 
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+
 public class TestpressApplication extends Application {
     private static TestpressApplication instance;
 
@@ -31,7 +40,23 @@ public class TestpressApplication extends Application {
 
         // Perform injection
         Injector.init(getRootModule(), this);
+        initImageLoader(getApplicationContext());
 
+    }
+
+
+    public static void initImageLoader(Context context) {
+        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+                .cacheOnDisk(true).cacheInMemory(true)
+                .imageScaleType(ImageScaleType.EXACTLY)
+                .displayer(new FadeInBitmapDisplayer(300)).build();
+
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
+                .defaultDisplayImageOptions(defaultOptions)
+                .memoryCache(new WeakMemoryCache())
+                .diskCacheSize(500 * 1024 * 1024).build();
+
+        ImageLoader.getInstance().init(config);
     }
 
     private Object getRootModule() {

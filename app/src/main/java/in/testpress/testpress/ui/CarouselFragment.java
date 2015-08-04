@@ -45,8 +45,12 @@ public class CarouselFragment extends Fragment {
         indicator.setViewPager(pager);
         indicator.setIndicatorColor(getResources().getColor(R.color.primary));
         Bundle data = getArguments();
-        if (data != null) {
-            pager.setCurrentItem(Integer.parseInt(data.getString("currentItem")));
+        String currentItem = null;
+        if(data != null) {
+            currentItem = data.getString("currentItem");
+        }
+        if (currentItem != null) {
+            pager.setCurrentItem(Integer.parseInt(currentItem));
         } else {
             pager.setCurrentItem(0);
 

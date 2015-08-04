@@ -42,10 +42,12 @@ public class AttemptsListAdapter extends AlternatingColorListAdapter<Attempt> {
         super.update(position, item);
         if (item.getState().equals("Running")) {
             updater.view.findViewById(R.id.completed_attempt).setVisibility(View.GONE);
+            updater.view.findViewById(R.id.paused_attempt).setVisibility(View.VISIBLE);
             setText(6, item.getDate());
             setText(7, item.getRemainingTime());
         } else {
             updater.view.findViewById(R.id.paused_attempt).setVisibility(View.GONE);
+            updater.view.findViewById(R.id.completed_attempt).setVisibility(View.VISIBLE);
             setText(2, item.getDate());
             setText(3, item.getPercentile());
             setText(4, "" + item.getCorrectCount());

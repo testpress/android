@@ -1,9 +1,13 @@
 package in.testpress.testpress.ui;
 
+import android.app.ActivityManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.MenuItem;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -49,5 +53,19 @@ public class ReviewActivity extends TestpressFragmentActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        ActivityManager manager = (ActivityManager) getSystemService( ACTIVITY_SERVICE );
+        List<ActivityManager.RunningTaskInfo> taskList = manager.getRunningTasks(10);
+        if(taskList.get(0).numActivities == 1 && taskList.get(0).topActivity.getClassName().equals(this.getClass().getName())) {
+            Intent intent = new Intent(ReviewActivity.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("currentItem", "2");
+            startActivity(intent);
+            finish();
+        }
+        else super.onBackPressed();
     }
 }

@@ -127,6 +127,7 @@ public class ExamActivity extends FragmentActivity implements LoaderManager.Load
                 AttemptFragment attemptFragment = new AttemptFragment();
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("attempt", attempt);
+                bundle.putParcelable("exam", exam);
                 attemptFragment.setArguments(bundle);
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, attemptFragment).commitAllowingStateLoss();

@@ -1,5 +1,6 @@
 package in.testpress.testpress.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -7,7 +8,9 @@ import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.widget.TextView;
 
@@ -18,23 +21,23 @@ import java.io.InputStream;
 
 
 public class UILImageGetter implements Html.ImageGetter {
-    Context context;
+    Activity activity;
     TextView container;
     private int finalContainerHeight;
 
     /***
      * Construct the UILImageGetter which will execute AsyncTask and refresh the container
      * @param t
-     * @param context
+     * @param activity
      */
-    public UILImageGetter(View t, Context context) {
-        this.context = context;
+    public UILImageGetter(View t, Activity activity) {
+        this.activity = activity;
         this.container = (TextView)t;
     }
 
     @Override
     public Drawable getDrawable(String source) {
-        UrlImageDownloader urlDrawable = new UrlImageDownloader(context.getResources(), source);
+        UrlImageDownloader urlDrawable = new UrlImageDownloader(activity.getApplicationContext().getResources(), source);
         ImageLoader.getInstance().loadImage(source, new SimpleListener(urlDrawable));
         return urlDrawable;
     }
@@ -73,14 +76,17 @@ public class UILImageGetter implements Html.ImageGetter {
                         int newWidth = width;
                         int newHeight = height;
 
-                        if( width > container.getWidth() ) {
-                            newWidth = container.getWidth();
+                        DisplayMetrics displaymetrics = new DisplayMetrics();
+                        activity.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+                        int screenWidth = displaymetrics.widthPixels;
+                        if( width > screenWidth ) {
+                            newWidth = screenWidth;
                             newHeight = (newWidth * height) / width;
                         }
 
                         Log.e("UILImageGetter", "New Width " + newWidth);
                         Log.e("UILImageGetter", "New Height " + newHeight);
-                        Drawable result = new BitmapDrawable(context.getResources(), loadedImage);
+                        Drawable result = new BitmapDrawable(activity.getApplicationContext().getResources(), loadedImage);
                         result.setBounds(0, 0, newWidth, newHeight);
                         urlImageDownloader.setBounds(0, 0, newWidth, newHeight);
                         urlImageDownloader.drawable = result;

@@ -1,7 +1,6 @@
 package in.testpress.testpress.ui;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.Html;
@@ -13,7 +12,6 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -54,8 +52,7 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
         TextView questionsView = textView(0);
         Log.e("ReviewList", "Using new UILImageGetter " + questionsView.getHeight());
         Log.e("ReviewList", "Measured Height " + questionsView.getMeasuredHeight());
-        Context c = this.activity.getApplicationContext();
-        Spanned html = Html.fromHtml(item.getReviewQuestion().getQuestionHtml().replaceAll("\n", ""), new UILImageGetter(questionsView, c), null);
+        Spanned html = Html.fromHtml(item.getReviewQuestion().getQuestionHtml().replaceAll("\n", ""), new UILImageGetter(questionsView, this.activity), null);
         ZoomableImageString zoomableImageHtml = new ZoomableImageString(activity);
         questionsView.setText(zoomableImageHtml.convertString(html), TextView.BufferType.SPANNABLE);
         questionsView.setMovementMethod(LinkMovementMethod.getInstance());
@@ -72,7 +69,7 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
             final ReviewAnswer answer = answers.get(i);
             View option = inflater.inflate(R.layout.review_answer, null);
             final TextView answerTextView = (TextView) option.findViewById(R.id.answer_text);
-            html = Html.fromHtml(answer.getTextHtml(), new UILImageGetter(answerTextView, c), null);
+            html = Html.fromHtml(answer.getTextHtml(), new UILImageGetter(answerTextView, this.activity), null);
             ZoomableImageString zoomableImageAnswer = new ZoomableImageString(activity);
             answerTextView.setText(zoomableImageAnswer.convertString(html), TextView.BufferType.SPANNABLE);
             answerTextView.setMovementMethod(LinkMovementMethod.getInstance());
@@ -128,7 +125,9 @@ public class ReviewListAdapter extends SingleTypeAdapter<ReviewItem> {
             updater.view.findViewById(R.id.explanation_heading).setVisibility(View.GONE);
             updater.view.findViewById(R.id.explanation).setVisibility(View.GONE);
         } else {
-            html = Html.fromHtml(explanation, new UILImageGetter(explanationsView, c), null);
+            updater.view.findViewById(R.id.explanation_heading).setVisibility(View.VISIBLE);
+            updater.view.findViewById(R.id.explanation).setVisibility(View.VISIBLE);
+            html = Html.fromHtml(explanation, new UILImageGetter(explanationsView, this.activity), null);
             ZoomableImageString zoomableImageExplanation = new ZoomableImageString(activity);
             explanationsView.setText(zoomableImageExplanation.convertString(html), TextView.BufferType.SPANNABLE);
             explanationsView.setMovementMethod(LinkMovementMethod.getInstance());

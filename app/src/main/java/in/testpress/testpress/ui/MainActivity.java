@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.Window;
 
+import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
@@ -119,7 +120,7 @@ public class MainActivity extends TestpressFragmentActivity {
         new SafeAsyncTask<Update>() {
             @Override
             public Update call() throws Exception {
-                return testpressService.checkUpdate("100.00");// should increase the version code 100.00 in every update
+                return testpressService.checkUpdate("" + BuildConfig.VERSION_CODE);
             }
 
             @Override

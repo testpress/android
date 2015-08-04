@@ -59,11 +59,9 @@ public class AttemptQuestionsFragment extends Fragment {
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.attempt_question_fragment, container, false);
         ButterKnife.inject(this,view);
 
-        Context c = getActivity().getApplicationContext();
-
         questionIndex.setText(index + ".");
         Log.e("AttemptQuestions", "Using new UILImageGetter");
-        Spanned htmlSpan = Html.fromHtml(attemptQuestion.getQuestionHtml(), new UILImageGetter(questionsView, c), null);
+        Spanned htmlSpan = Html.fromHtml(attemptQuestion.getQuestionHtml(), new UILImageGetter(questionsView, getActivity()), null);
         Log.e("AttemptQuestions", "Clickable Text");
         ZoomableImageString zoomableImageQuestion = new ZoomableImageString(getActivity());
         questionsView.setText(zoomableImageQuestion.convertString(htmlSpan));
@@ -101,8 +99,7 @@ public class AttemptQuestionsFragment extends Fragment {
             LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
             option.setLayoutParams(layoutParams);
 
-            Context c = getActivity().getApplicationContext();
-            Spanned htmlSpan = Html.fromHtml(attemptAnswers.get(i).getTextHtml(), new UILImageGetter(option, c), null);
+            Spanned htmlSpan = Html.fromHtml(attemptAnswers.get(i).getTextHtml(), new UILImageGetter(option, getActivity()), null);
             ZoomableImageString zoomableImageOption = new ZoomableImageString(getActivity());
             option.setText(zoomableImageOption.convertString(htmlSpan));
             option.setMovementMethod(LinkMovementMethod.getInstance());
@@ -142,8 +139,7 @@ public class AttemptQuestionsFragment extends Fragment {
             final RadioButton option = (RadioButton) inflater.inflate(R.layout.attempt_radio_button_fragment ,
                     null);
             option.setId(i);
-            Context c = getActivity().getApplicationContext();
-            Spanned htmlSpan = Html.fromHtml(attemptAnswers.get(i).getTextHtml(), new UILImageGetter(option, c), null);
+            Spanned htmlSpan = Html.fromHtml(attemptAnswers.get(i).getTextHtml(), new UILImageGetter(option, getActivity()), null);
 
             ZoomableImageString zoomableImageOption = new ZoomableImageString(getActivity());
             option.setText(zoomableImageOption.convertString(htmlSpan));

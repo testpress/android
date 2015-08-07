@@ -405,4 +405,23 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
         else
             showAlert("No Internet access");
     }
+
+    @OnClick(id.b_signUp) public void signUp() {
+        if(isConnectingToInternet()) {
+            Intent intent = new Intent(TestpressAuthenticatorActivity.this, NewUserRegistrationActivity.class);
+            startActivity(intent);
+        } else {
+            showAlert("No Internet access");
+        }
+
+    }
+
+    @OnClick(id.b_verifyLayout) public void verifyLayout() {
+        if(isConnectingToInternet()) {
+            Intent intent = new Intent(TestpressAuthenticatorActivity.this, CodeVerificationActivity.class);
+            startActivity(intent);
+        } else {
+            showAlert("No Internet access");
+        }
+    }
 }

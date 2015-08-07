@@ -13,7 +13,9 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import in.testpress.testpress.authenticator.ApiKeyProvider;
+import in.testpress.testpress.authenticator.NewUserRegistrationActivity;
 import in.testpress.testpress.authenticator.TestpressAuthenticatorActivity;
+import in.testpress.testpress.authenticator.CodeVerificationActivity;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.ExamPager;
 import in.testpress.testpress.core.PostFromAnyThreadBus;
@@ -55,7 +57,10 @@ import retrofit.converter.GsonConverter;
                 ReviewQuestionsFragment.class,
                 ReviewActivity.class,
                 AttemptsListActivity.class,
-                ExamPager.class
+                ExamPager.class,
+                NewUserRegistrationActivity.class,
+                CodeVerificationActivity.class
+
         }
 )
 public class TestpressModule {

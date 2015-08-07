@@ -7,6 +7,7 @@ import java.util.Map;
 
 import in.testpress.testpress.models.Attempt;
 import in.testpress.testpress.models.AttemptItem;
+import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.ReviewItem;
 import in.testpress.testpress.models.TestpressApiResponse;
 import in.testpress.testpress.models.Exam;
@@ -103,5 +104,24 @@ public class TestpressService {
         credentials.put("password", password);
         authToken = getAuthenticationService().authenticate(credentials).getToken();
         return authToken;
+    }
+
+    public RegistrationSuccessResponse register(String username,String email, String password, String phone){
+        RegistrationSuccessResponse registrationSuccessResponseResponse;
+        HashMap<String, String> userDetails = new HashMap<String, String>();
+        userDetails.put("username", username);
+        userDetails.put("email", email);
+        userDetails.put("password", password);
+        userDetails.put("phone", phone);
+        registrationSuccessResponseResponse =getAuthenticationService().register(userDetails);
+        return registrationSuccessResponseResponse;
+    }
+    public RegistrationSuccessResponse verifyCode(String username, String code){
+        RegistrationSuccessResponse verificationResponse;
+        HashMap<String, String> codeVerificationParameters = new HashMap<String, String>();
+        codeVerificationParameters.put("username", username);
+        codeVerificationParameters.put("code", code);
+        verificationResponse=getAuthenticationService().verifyCode(codeVerificationParameters);
+        return verificationResponse;
     }
 }

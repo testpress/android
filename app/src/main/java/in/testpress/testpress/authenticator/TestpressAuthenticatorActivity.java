@@ -13,15 +13,14 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
-import android.text.method.LinkMovementMethod;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.kevinsawicki.wishlist.Toaster;
@@ -37,7 +36,6 @@ import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.R.id;
 import in.testpress.testpress.R.layout;
-import in.testpress.testpress.models.AuthToken;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.events.UnAuthorizedErrorEvent;
@@ -84,7 +82,7 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
     @InjectView(id.et_username) AutoCompleteTextView usernameText;
     @InjectView(id.et_password) protected EditText passwordText;
     @InjectView(id.b_signin) protected Button signInButton;
-
+    @InjectView(id.loginView) LinearLayout loginView;
     private final TextWatcher watcher = validationTextWatcher();
 
     private SafeAsyncTask<Boolean> authenticationTask;
@@ -97,16 +95,15 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
      */
     private Boolean confirmCredentials = false;
 
-    private String username;
-
-    private String password;
+    static public String username;
+    static public String password;
 
     private String token;
 
     /**
      * Was the original caller asking for an entirely new account?
      */
-    protected boolean requestNewAccount = false;
+    static public boolean requestNewAccount = false;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -117,15 +114,16 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
         accountManager = AccountManager.get(this);
 
         final Intent intent = getIntent();
-        username = intent.getStringExtra(PARAM_USERNAME);
         authTokenType = intent.getStringExtra(PARAM_AUTHTOKEN_TYPE);
         confirmCredentials = intent.getBooleanExtra(PARAM_CONFIRM_CREDENTIALS, false);
-
-        requestNewAccount = username == null;
-
         setContentView(layout.login_activity);
 
         ButterKnife.inject(this);
+        if(requestNewAccount) {
+            loginView.setVisibility(View.GONE);
+            showProgress();
+        }
+        login();
 //
 //        usernameText.setAdapter(new ArrayAdapter<String>(this,
 //                simple_dropdown_item_1line, userEmailAccounts()));
@@ -233,17 +231,19 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
      * @param view
      */
     public void handleLogin(final View view) {
-        if (authenticationTask != null) {
-            return;
-        }
-
+        requestNewAccount = username == null;
         if (requestNewAccount) {
             username = usernameText.getText().toString();
         }
 
         password = passwordText.getText().toString();
-        showProgress();
+        login();
+    }
 
+    public void login(){
+        if(password==null||password.isEmpty())
+            return;
+        showProgress();
         authenticationTask = new SafeAsyncTask<Boolean>() {
             public Boolean call() throws Exception {
 
@@ -272,7 +272,9 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
             @Override
             protected void onFinally() throws RuntimeException {
                 hideProgress();
-                authenticationTask = null;
+                username=null;
+                password=null;
+                requestNewAccount=false;
             }
         };
         authenticationTask.execute();
@@ -403,6 +405,23 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
         if(isConnectingToInternet())
             handleLogin(signInButton);
         else
+            showAlert("No Internet access");
+    }
+
+    @OnClick(id.b_signUp) public void signUp() {
+        if(isConnectingToInternet()) {
+            Intent intent = new Intent(TestpressAuthenticatorActivity.this, NewUserRegistrationActivity.class);
+            startActivity(intent);
+        } else
+            showAlert("No Internet access");
+
+    }
+
+    @OnClick(id.b_verifyLayout) public void verifyLayout() {
+        if(isConnectingToInternet()) {
+            Intent intent = new Intent(TestpressAuthenticatorActivity.this, CodeVerificationActivity.class);
+            startActivity(intent);
+        } else
             showAlert("No Internet access");
     }
 }

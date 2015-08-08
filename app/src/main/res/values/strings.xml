@@ -44,7 +44,17 @@
     <!-- AuthenticatorActivity -->
     <string name="label_username">Username</string>
     <string name="label_password">Password</string>
+    <string name="label_email">Email</string>
+    <string name="label_confirm_password">Confirm Password</string>
+    <string name="label_phone">Phone</string>
     <string name="label_sign_in">Sign In</string>
+    <string name="label_sign_up">Sign Up</string>
+    <string name="verify">Verify</string>
+    <string name="label_ask_code">Enter the code sent via sms</string>
+    <string name="verify_code">Verify Code</string>
+    <string name="message_verifying">Verifying…</string>
+    <string name="label_fill_all_details">*Please fill all details</string>
+    <string name="register">Register</string>
     <string name="message_signing_in">Signing in…</string>
     <string name="blank_field_warning">Please populate this field</string>
     <string name="signup_link">New to Testpress? &lt;a href=https://testpress.in>Click here&lt;/a> to learn more.</string>

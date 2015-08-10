@@ -132,9 +132,10 @@ public class ExamActivity extends FragmentActivity implements LoaderManager.Load
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, attemptFragment).commitAllowingStateLoss();
             } else {
-                //Show Start Exam Activity
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.putExtra("currentItem", "2");
+                //Show Review when end button pressed
+                Intent intent = new Intent(this.getApplicationContext(), ReviewActivity.class);
+                intent.putExtra("exam", exam);
+                intent.putExtra("attempt", attempt);
                 startActivity(intent);
                 finish();
             }

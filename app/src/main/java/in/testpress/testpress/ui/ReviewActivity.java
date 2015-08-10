@@ -57,15 +57,10 @@ public class ReviewActivity extends TestpressFragmentActivity {
 
     @Override
     public void onBackPressed() {
-        ActivityManager manager = (ActivityManager) getSystemService( ACTIVITY_SERVICE );
-        List<ActivityManager.RunningTaskInfo> taskList = manager.getRunningTasks(10);
-        if(taskList.get(0).numActivities == 1 && taskList.get(0).topActivity.getClassName().equals(this.getClass().getName())) {
+        //onBackPressed go to history
             Intent intent = new Intent(ReviewActivity.this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("currentItem", "2");
             startActivity(intent);
             finish();
-        }
-        else super.onBackPressed();
     }
 }

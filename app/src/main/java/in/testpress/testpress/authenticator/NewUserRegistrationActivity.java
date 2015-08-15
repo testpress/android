@@ -105,13 +105,13 @@ public class NewUserRegistrationActivity extends Activity {
             public void onSuccess(final Boolean authSuccess) {
                 hideProgress();
                 Intent intent = new Intent(NewUserRegistrationActivity.this, CodeVerificationActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 Bundle bundle = new Bundle();
                 bundle.putString("username", registrationSuccessResponse.getUsername());
                 bundle.putString("password", registrationSuccessResponse.getPassword());
                 intent.putExtras(bundle);
                 startActivity(intent);
                 finish();
-
             }
         }.execute();
     }

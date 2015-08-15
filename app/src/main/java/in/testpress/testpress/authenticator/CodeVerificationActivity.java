@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -19,6 +20,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.afollestad.materialdialogs.GravityEnum;
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import javax.inject.Inject;
 
@@ -54,6 +58,8 @@ public class CodeVerificationActivity extends Activity {
     private RegistrationSuccessResponse codeResponse;
     private final TextWatcher watcher = validationTextWatcher();
     private SmsReceivingEvent smsReceivingEvent;
+    private MaterialDialog progressDialog;
+    private Context context=this;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -71,7 +77,12 @@ public class CodeVerificationActivity extends Activity {
             usernameText.addTextChangedListener(watcher);
             passwordText.addTextChangedListener(watcher);
         } else {
-            showProgress(0);
+            progressDialog = new MaterialDialog.Builder(this)
+                    .title(R.string.message_receiving_code)
+                    .content(R.string.please_wait)
+                    .widgetColorRes(R.color.primary)
+                    .progress(true, 0)
+                    .show();
             welcomeText.setText("Welcome " + username);
             Timer timer = new Timer();
             smsReceivingEvent = new SmsReceivingEvent(timer);
@@ -125,54 +136,6 @@ public class CodeVerificationActivity extends Activity {
         return editText.getText().toString().trim().length() > 0;
     }
 
-    /**
-     * Hide progress dialog
-     */
-    @SuppressWarnings("deprecation")
-    protected void hideProgress(int id) {
-        dismissDialog(id);
-    }
-
-    /**
-     * Show progress dialog
-     */
-    @SuppressWarnings("deprecation")
-    protected void showProgress(int id) {
-        showDialog(id);
-    }
-
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        final ProgressDialog dialog = new ProgressDialog(this);
-        if (id == 0) {
-            dialog.setTitle(getText(R.string.message_receiving_code)); //Progress for timer
-        } else {
-            dialog.setTitle(getText(R.string.message_verifying)); //Progress title for handleCodeVerification
-        }
-        dialog.setMessage("Please Wait..");
-        dialog.setIndeterminate(true);
-        return dialog;
-    }
-
-    public void showAlert(String alertMessage) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(CodeVerificationActivity.this);
-        builder.setMessage(alertMessage);
-        builder.setCancelable(false);
-        builder.setNeutralButton("ok",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Intent intent = new Intent(CodeVerificationActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        dialog.cancel();
-                        dialog.dismiss();
-                        finish();
-                    }
-                });
-        AlertDialog alert = builder.show();
-        TextView messageView = (TextView)alert.findViewById(android.R.id.message);
-        messageView.setGravity(Gravity.CENTER);
-    }
-
     // CountDownTimer class
     public class Timer extends CountDownTimer
     {
@@ -191,7 +154,7 @@ public class CodeVerificationActivity extends Activity {
                 verificationCodeText.setText(smsReceivingEvent.code);
                 handleCodeVerification(); //verify code
             } else {
-                hideProgress(0); //user have to enter code
+                progressDialog.dismiss(); //user have to enter code
             }
         }
 
@@ -204,7 +167,11 @@ public class CodeVerificationActivity extends Activity {
 
     // verify the verification code
     private void handleCodeVerification(){
-        showProgress(1);
+        progressDialog = new MaterialDialog.Builder(this)
+                .title(R.string.message_verifying)
+                .content(R.string.please_wait)
+                .widgetColorRes(R.color.primary)
+                .progress(true, 0).show();
         new SafeAsyncTask<Boolean>() {
             public Boolean call() throws Exception {
                 codeResponse = testpressService.verifyCode(username,verificationCodeText.getText().toString().trim());
@@ -213,7 +180,7 @@ public class CodeVerificationActivity extends Activity {
 
             @Override
             protected void onException(final Exception e) throws RuntimeException {
-                hideProgress(1);
+                progressDialog.dismiss();
                 // Retrofit Errors are handled
                 if((e instanceof RetrofitError)) {
                     RegistrationErrorDetails registrationErrorDetails = (RegistrationErrorDetails)((RetrofitError) e).getBodyAs(RegistrationErrorDetails.class);
@@ -241,7 +208,21 @@ public class CodeVerificationActivity extends Activity {
 
             @Override
             protected void onException(final Exception e) throws RuntimeException {
-                showAlert("Code successfully verified\n*Invalid password login again");//call main activity, it will show login screen
+                new MaterialDialog.Builder(context)
+                        .title("Code successfully verified\n*Invalid password login again")
+                        .neutralText(R.string.ok)
+                        .neutralColorRes(R.color.primary)
+                        .buttonsGravity(GravityEnum.CENTER)
+                        .cancelable(false)
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onNeutral(MaterialDialog dialog) {
+                                Intent intent = new Intent(CodeVerificationActivity.this, MainActivity.class); //call main activity, it will show login screen
+                                startActivity(intent);
+                                finish();
+                            }
+                        })
+                        .show();
             }
 
             @Override

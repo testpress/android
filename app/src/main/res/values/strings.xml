@@ -36,8 +36,12 @@
     <string name="paused">Paused</string>
     <string name="end">End</string>
     <string name="cancel">Cancel</string>
-    <string name="pause_message">Do you want to <b>Pause</b> exam?</string>
-    <string name="end_message">Do you want to <b>End</b> exam?</string>
+    <string name="pause_message">Do you want to Pause the exam?</string>
+    <string name="pause_content">You can pause the exam &amp; resume later before end date</string>
+    <string name="end_message">Do you want to End the exam?</string>
+    <string name="loading">Loading</string>
+    <string name="please_wait">Please Wait...</string>
+    <string name="ok">OK</string>
     <string name="authentication_failed">Authentication failed</string>
     <string name="no_internet">No active internet connection</string>
 

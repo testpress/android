@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,6 +46,7 @@ public class NewUserRegistrationActivity extends Activity {
     @InjectView(id.b_register) Button registerButton;
     private final TextWatcher watcher = validationTextWatcher();
     private RegistrationSuccessResponse registrationSuccessResponse;
+    private MaterialDialog progressDialog;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -69,7 +72,12 @@ public class NewUserRegistrationActivity extends Activity {
     }
 
     void postDetails(){
-        showProgress();
+        progressDialog = new MaterialDialog.Builder(this)
+                .title(R.string.loading)
+                .content(R.string.please_wait)
+                .widgetColorRes(R.color.primary)
+                .progress(true, 0)
+                .show();
         new SafeAsyncTask<Boolean>() {
             public Boolean call() throws Exception {
                 registrationSuccessResponse = testpressService.register(usernameText.getText().toString(), emailText.getText().toString(), passwordText.getText().toString(), phoneText.getText().toString());
@@ -98,12 +106,12 @@ public class NewUserRegistrationActivity extends Activity {
                         phoneText.requestFocus();
                     }
                 }
-                hideProgress();
+                progressDialog.dismiss();
             }
 
             @Override
             public void onSuccess(final Boolean authSuccess) {
-                hideProgress();
+                progressDialog.dismiss();
                 Intent intent = new Intent(NewUserRegistrationActivity.this, CodeVerificationActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 Bundle bundle = new Bundle();
@@ -114,30 +122,6 @@ public class NewUserRegistrationActivity extends Activity {
                 finish();
             }
         }.execute();
-    }
-
-    /**
-     * Hide progress dialog
-     */
-    @SuppressWarnings("deprecation")
-    protected void hideProgress() {
-        dismissDialog(0);
-    }
-
-    /**
-     * Show progress dialog
-     */
-    @SuppressWarnings("deprecation")
-    protected void showProgress() {
-        showDialog(0);
-    }
-
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        final ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setMessage("Loading..");
-        dialog.setIndeterminate(true);
-        return dialog;
     }
 
     private TextWatcher validationTextWatcher() {

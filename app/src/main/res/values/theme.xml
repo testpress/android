@@ -8,7 +8,7 @@
         <item name="colorPrimary">@color/primary</item>
         <!--<item name="colorPrimaryDark">@color/theme_primary_dark</item>-->
         <!--<item name="colorAccent">@color/theme_accent_2</item>-->
-
+        <item name="windowNoTitle">true</item>
         <!--<item name="android:textColorLink">@color/theme_accent_2</item>-->
 
     </style>

@@ -24,6 +24,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.afollestad.materialdialogs.GravityEnum;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.kevinsawicki.wishlist.Toaster;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -90,6 +93,7 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
     private SafeAsyncTask<Boolean> authenticationTask;
     private String authToken;
     private String authTokenType;
+    private MaterialDialog progressDialog;
 
     /**
      * If set we are just checking that the user knows their credentials; this
@@ -202,22 +206,6 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
         return editText.length() > 0;
     }
 
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        final ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setMessage(getText(R.string.message_signing_in));
-        dialog.setIndeterminate(true);
-        dialog.setCancelable(true);
-        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            public void onCancel(final DialogInterface dialog) {
-                if (authenticationTask != null) {
-                    authenticationTask.cancel(true);
-                }
-            }
-        });
-        return dialog;
-    }
-
     @Subscribe
     public void onUnAuthorizedErrorEvent(UnAuthorizedErrorEvent unAuthorizedErrorEvent) {
         // Could not authorize for some reason.
@@ -242,7 +230,12 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
         }
 
         password = passwordText.getText().toString();
-        showProgress();
+        progressDialog = new MaterialDialog.Builder(this)
+                .title(R.string.message_signing_in)
+                .content(R.string.please_wait)
+                .widgetColorRes(R.color.primary)
+                .progress(true, 0)
+                .show();
 
         authenticationTask = new SafeAsyncTask<Boolean>() {
             public Boolean call() throws Exception {
@@ -271,7 +264,7 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
 
             @Override
             protected void onFinally() throws RuntimeException {
-                hideProgress();
+                progressDialog.dismiss();
                 authenticationTask = null;
             }
         };
@@ -330,22 +323,6 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
     }
 
     /**
-     * Hide progress dialog
-     */
-    @SuppressWarnings("deprecation")
-    protected void hideProgress() {
-        dismissDialog(0);
-    }
-
-    /**
-     * Show progress dialog
-     */
-    @SuppressWarnings("deprecation")
-    protected void showProgress() {
-        showDialog(0);
-    }
-
-    /**
      * Called when the authentication process completes (see attemptLogin()).
      *
      * @param result
@@ -384,19 +361,12 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
     }
 
     public void showAlert(String alertMessage) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(TestpressAuthenticatorActivity.this);
-        builder.setMessage(alertMessage);
-        builder.setCancelable(true);
-        builder.setNeutralButton("ok",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                        dialog.dismiss();
-                    }
-                });
-        AlertDialog alert = builder.show();
-        TextView messageView = (TextView)alert.findViewById(android.R.id.message);
-        messageView.setGravity(Gravity.CENTER);
+        new MaterialDialog.Builder(TestpressAuthenticatorActivity.this)
+                .content(alertMessage)
+                .neutralText(R.string.ok)
+                .neutralColorRes(R.color.primary)
+                .buttonsGravity(GravityEnum.CENTER)
+                .show();
     }
 
     @OnClick(id.b_signin) public void signin() {

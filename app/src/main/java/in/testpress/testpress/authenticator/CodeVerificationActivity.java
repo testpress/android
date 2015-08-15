@@ -6,9 +6,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -17,6 +20,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.afollestad.materialdialogs.GravityEnum;
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import javax.inject.Inject;
 
@@ -27,6 +33,7 @@ import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
+import in.testpress.testpress.events.SmsReceivingEvent;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.RegistrationErrorDetails;
 import in.testpress.testpress.ui.MainActivity;
@@ -50,6 +57,9 @@ public class CodeVerificationActivity extends Activity {
     private AccountManager accountManager;
     private RegistrationSuccessResponse codeResponse;
     private final TextWatcher watcher = validationTextWatcher();
+    private SmsReceivingEvent smsReceivingEvent;
+    private MaterialDialog progressDialog;
+    private Context context=this;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -64,11 +74,24 @@ public class CodeVerificationActivity extends Activity {
             usernameText.setVisibility(View.VISIBLE);
             passwordText.setVisibility(View.VISIBLE);
             welcomeText.setVisibility(View.GONE);
+            usernameText.addTextChangedListener(watcher);
+            passwordText.addTextChangedListener(watcher);
         } else {
+            progressDialog = new MaterialDialog.Builder(this)
+                    .title(R.string.message_receiving_code)
+                    .content(R.string.please_wait)
+                    .widgetColorRes(R.color.primary)
+                    .progress(true, 0)
+                    .show();
             welcomeText.setText("Welcome " + username);
+            Timer timer = new Timer();
+            smsReceivingEvent = new SmsReceivingEvent(timer);
+            IntentFilter filter = new IntentFilter();
+            filter.addAction("android.provider.Telephony.SMS_RECEIVED");
+            registerReceiver(smsReceivingEvent, filter); //start receiver
+            timer.start(); //start timer
         }
-        usernameText.addTextChangedListener(watcher);
-        passwordText.addTextChangedListener(watcher);
+
         verificationCodeText.addTextChangedListener(watcher);
         verificationCodeText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(final TextView v, final int actionId,
@@ -113,52 +136,42 @@ public class CodeVerificationActivity extends Activity {
         return editText.getText().toString().trim().length() > 0;
     }
 
-    /**
-     * Hide progress dialog
-     */
-    @SuppressWarnings("deprecation")
-    protected void hideProgress() {
-        dismissDialog(0);
-    }
+    // CountDownTimer class
+    public class Timer extends CountDownTimer
+    {
 
-    /**
-     * Show progress dialog
-     */
-    @SuppressWarnings("deprecation")
-    protected void showProgress() {
-        showDialog(0);
-    }
+        public Timer()
+        {
+            super(20000, 1000); //super(startTime, interval);
+        }
 
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        final ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setMessage(getText(R.string.message_verifying));
-        dialog.setIndeterminate(true);
-        return dialog;
-    }
+        @Override
+        public void onFinish()
+        {
+            //end receiver
+            unregisterReceiver(smsReceivingEvent);
+            if (smsReceivingEvent.code  != null) { //checking smsReceivingEvent get the code or not
+                verificationCodeText.setText(smsReceivingEvent.code);
+                handleCodeVerification(); //verify code
+            } else {
+                progressDialog.dismiss(); //user have to enter code
+            }
+        }
 
-    public void showAlert(String alertMessage) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(CodeVerificationActivity.this);
-        builder.setMessage(alertMessage);
-        builder.setCancelable(false);
-        builder.setNeutralButton("ok",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Intent intent = new Intent(CodeVerificationActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        dialog.cancel();
-                        dialog.dismiss();
-                        finish();
-                    }
-                });
-        AlertDialog alert = builder.show();
-        TextView messageView = (TextView)alert.findViewById(android.R.id.message);
-        messageView.setGravity(Gravity.CENTER);
+        @Override
+        public void onTick(long millisUntilFinished)
+        {
+            //empty implementation because CountDownTimer is abstract
+        }
     }
 
     // verify the verification code
     private void handleCodeVerification(){
-        showProgress();
+        progressDialog = new MaterialDialog.Builder(this)
+                .title(R.string.message_verifying)
+                .content(R.string.please_wait)
+                .widgetColorRes(R.color.primary)
+                .progress(true, 0).show();
         new SafeAsyncTask<Boolean>() {
             public Boolean call() throws Exception {
                 codeResponse = testpressService.verifyCode(username,verificationCodeText.getText().toString().trim());
@@ -167,7 +180,7 @@ public class CodeVerificationActivity extends Activity {
 
             @Override
             protected void onException(final Exception e) throws RuntimeException {
-                hideProgress();
+                progressDialog.dismiss();
                 // Retrofit Errors are handled
                 if((e instanceof RetrofitError)) {
                     RegistrationErrorDetails registrationErrorDetails = (RegistrationErrorDetails)((RetrofitError) e).getBodyAs(RegistrationErrorDetails.class);
@@ -195,7 +208,21 @@ public class CodeVerificationActivity extends Activity {
 
             @Override
             protected void onException(final Exception e) throws RuntimeException {
-                showAlert("Code successfully verified\n*Invalid password login again");//call main activity, it will show login screen
+                new MaterialDialog.Builder(context)
+                        .title("Code successfully verified\n*Invalid password login again")
+                        .neutralText(R.string.ok)
+                        .neutralColorRes(R.color.primary)
+                        .buttonsGravity(GravityEnum.CENTER)
+                        .cancelable(false)
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onNeutral(MaterialDialog dialog) {
+                                Intent intent = new Intent(CodeVerificationActivity.this, MainActivity.class); //call main activity, it will show login screen
+                                startActivity(intent);
+                                finish();
+                            }
+                        })
+                        .show();
             }
 
             @Override
@@ -206,9 +233,19 @@ public class CodeVerificationActivity extends Activity {
                 accountManager.setAuthToken(account, Constants.Auth.TESTPRESS_ACCOUNT_TYPE, authToken);
                 //call main activity, it will simply go to available exams
                 Intent intent = new Intent(CodeVerificationActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 finish();
             }
         }.execute();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(username == null) { //onBackPressed go to login screen only if username is null
+            Intent intent = new Intent(CodeVerificationActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 }

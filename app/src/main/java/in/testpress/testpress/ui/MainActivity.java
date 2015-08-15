@@ -51,17 +51,15 @@ public class MainActivity extends TestpressFragmentActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        // View injection with Butterknife
+        ButterKnife.inject(this);
+        super.onCreate(savedInstanceState);
 
         if(isTablet()) {
             setContentView(R.layout.main_activity_tablet);
         } else {
             setContentView(R.layout.main_activity);
         }
-
-        // View injection with Butterknife
-        ButterKnife.inject(this);
-
-        super.onCreate(savedInstanceState);
 
         //checkAuth();
         checkUpdate();

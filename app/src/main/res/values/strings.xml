@@ -52,7 +52,8 @@
     <string name="verify">Verify</string>
     <string name="label_ask_code">Enter the code sent via sms</string>
     <string name="verify_code">Verify Code</string>
-    <string name="message_verifying">Verifying…</string>
+    <string name="message_verifying">Verifying code</string>
+    <string name="message_receiving_code">Trying to receive code automatically</string>
     <string name="label_fill_all_details">*Please fill all details</string>
     <string name="register">Register</string>
     <string name="message_signing_in">Signing in…</string>

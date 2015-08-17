@@ -22,6 +22,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState;
 
@@ -63,10 +64,10 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     @InjectView(R.id.timer) TextView timer;
     @InjectView(R.id.filter) Spinner filter;
 
-    ProgressDialog progress;
     ExamPagerAdapter pagerAdapter;
     List<AttemptItem> filterItems = new ArrayList<>();
     PanelListAdapter mPanelAdapter;
+    MaterialDialog progressDialog;
 
     Attempt mAttempt;
     Exam mExam;
@@ -86,10 +87,12 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.attempt_item_fragment, container, false);
         Injector.inject(this);
         ButterKnife.inject(this, view);
-        progress = new ProgressDialog(getActivity());
-        progress.setTitle("Loading");
-        progress.setMessage("Wait while loading...");
-        progress.show();
+        progressDialog = new MaterialDialog.Builder(getActivity())
+                .title(R.string.loading)
+                .content(R.string.please_wait)
+                .widgetColorRes(R.color.primary)
+                .progress(true, 0)
+                .show();
         pager.setPagingEnabled(false);
         previous.setVisibility(View.VISIBLE);
         next.setVisibility(View.VISIBLE);
@@ -239,13 +242,38 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @OnClick(R.id.end) void endExamAlert() {
-        final DialogAlert dialog = new DialogAlert(getActivity(), "end");
-        dialog.show();
+        new MaterialDialog.Builder(getActivity())
+                .title(R.string.end_message)
+                .positiveText(R.string.end)
+                .negativeText(R.string.cancel)
+                .positiveColorRes(R.color.primary)
+                .negativeColorRes(R.color.primary)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        endExam.execute();
+                        returnToHistory();
+                    }
+                })
+                .show();
     }
 
     @OnClick(R.id.pause_exam) void pauseExam() {
-        final DialogAlert dialog = new DialogAlert(getActivity(), "pause");
-        dialog.show();
+        new MaterialDialog.Builder(getActivity())
+                .title(R.string.pause_message)
+                .content(R.string.pause_content)
+                .positiveText(R.string.pause)
+                .negativeText(R.string.cancel)
+                .positiveColorRes(R.color.primary)
+                .negativeColorRes(R.color.primary)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        countDownTimer.cancel();
+                        returnToHistory();
+                    }
+                })
+                .show();
     }
 
     @Override
@@ -288,9 +316,8 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onLoadFinished(final Loader<List<AttemptItem>> loader, final List<AttemptItem> items) {
         attemptItemList = items;
-        if (progress.isShowing()) {
-            progress.hide();
-            progress.dismiss();
+        if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
         }
 
         pagerAdapter = new ExamPagerAdapter(getFragmentManager(), attemptItemList);
@@ -387,55 +414,6 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
             showReview();
         }
     };
-
-    public class DialogAlert extends Dialog {
-        String selection;
-        public DialogAlert(Context context, String selection) {
-            super(context, R.style.ActivityDialog);
-            this.selection = selection;
-        }
-
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            requestWindowFeature(Window.FEATURE_NO_TITLE);
-            Window window = getWindow();
-            window.setGravity(Gravity.CENTER);
-            setContentView(R.layout.dialog_layout);
-            TextView dialogMessage = (TextView) findViewById(R.id.dialog_message);
-            TextView option = (TextView) findViewById(R.id.option);
-            TextView cancel = (TextView) findViewById(R.id.cancel);
-            if(selection.equals("pause")) {
-                dialogMessage.setText(R.string.pause_message);
-                option.setText(R.string.pause);
-                option.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        countDownTimer.cancel();
-                        returnToHistory();
-                        dismiss();
-                    }
-                });
-            }
-            else {
-                dialogMessage.setText(R.string.end_message);
-                option.setText(R.string.end);
-                option.setTextColor(Color.parseColor("#d9534f"));
-                option.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        endExam.execute();
-                        dismiss();
-                    }
-                });
-            }
-            cancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                   dismiss();
-                }
-            });
-        }
-    }
 
     public static String formatTime(final long millis) {
         return String.format("%02d:%02d:%02d",

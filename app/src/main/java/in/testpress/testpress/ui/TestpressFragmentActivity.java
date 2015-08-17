@@ -33,11 +33,6 @@ public class TestpressFragmentActivity extends ActionBarActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Injector.inject(this);
-        Toolbar toolbar = getActionBarToolbar();
-        toolbar.setBackgroundResource(R.color.primary);
-        getSupportActionBar().setDisplayShowCustomEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
     }
 
     public Toolbar getActionBarToolbar() {
@@ -55,6 +50,10 @@ public class TestpressFragmentActivity extends ActionBarActivity {
         super.setContentView(layoutResId);
 
         ButterKnife.inject(this);
+        Toolbar toolbar = getActionBarToolbar();
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
     }
 
     @Override

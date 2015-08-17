@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
@@ -25,8 +26,10 @@ public class ReviewActivity extends TestpressFragmentActivity {
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
-        setContentView(R.layout.activity_review);
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_review);
+        Toolbar toolbar = getActionBarToolbar();
+        toolbar.setTitle("Review");
         Injector.inject(this);
         final Intent intent = getIntent();
         Bundle bundle = intent.getExtras();

@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +18,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.afollestad.materialdialogs.GravityEnum;
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import javax.inject.Inject;
 
@@ -50,6 +54,8 @@ public class CodeVerificationActivity extends Activity {
     private AccountManager accountManager;
     private RegistrationSuccessResponse codeResponse;
     private final TextWatcher watcher = validationTextWatcher();
+    private MaterialDialog progressDialog;
+    private Context context=this;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -64,6 +70,7 @@ public class CodeVerificationActivity extends Activity {
             usernameText.setVisibility(View.VISIBLE);
             passwordText.setVisibility(View.VISIBLE);
             welcomeText.setVisibility(View.GONE);
+
         } else {
             welcomeText.setText("Welcome " + username);
         }
@@ -113,52 +120,13 @@ public class CodeVerificationActivity extends Activity {
         return editText.getText().toString().trim().length() > 0;
     }
 
-    /**
-     * Hide progress dialog
-     */
-    @SuppressWarnings("deprecation")
-    protected void hideProgress() {
-        dismissDialog(0);
-    }
-
-    /**
-     * Show progress dialog
-     */
-    @SuppressWarnings("deprecation")
-    protected void showProgress() {
-        showDialog(0);
-    }
-
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        final ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setMessage(getText(R.string.message_verifying));
-        dialog.setIndeterminate(true);
-        return dialog;
-    }
-
-    public void showAlert(String alertMessage) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(CodeVerificationActivity.this);
-        builder.setMessage(alertMessage);
-        builder.setCancelable(false);
-        builder.setNeutralButton("ok",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Intent intent = new Intent(CodeVerificationActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        dialog.cancel();
-                        dialog.dismiss();
-                        finish();
-                    }
-                });
-        AlertDialog alert = builder.show();
-        TextView messageView = (TextView)alert.findViewById(android.R.id.message);
-        messageView.setGravity(Gravity.CENTER);
-    }
-
     // verify the verification code
     private void handleCodeVerification(){
-        showProgress();
+        progressDialog = new MaterialDialog.Builder(this)
+                .title(R.string.message_verifying)
+                .content(R.string.please_wait)
+                .widgetColorRes(R.color.primary)
+                .progress(true, 0).show();
         new SafeAsyncTask<Boolean>() {
             public Boolean call() throws Exception {
                 codeResponse = testpressService.verifyCode(username,verificationCodeText.getText().toString().trim());
@@ -167,7 +135,7 @@ public class CodeVerificationActivity extends Activity {
 
             @Override
             protected void onException(final Exception e) throws RuntimeException {
-                hideProgress();
+                progressDialog.dismiss();
                 // Retrofit Errors are handled
                 if((e instanceof RetrofitError)) {
                     RegistrationErrorDetails registrationErrorDetails = (RegistrationErrorDetails)((RetrofitError) e).getBodyAs(RegistrationErrorDetails.class);
@@ -195,7 +163,21 @@ public class CodeVerificationActivity extends Activity {
 
             @Override
             protected void onException(final Exception e) throws RuntimeException {
-                showAlert("Code successfully verified\n*Invalid password login again");//call main activity, it will show login screen
+                new MaterialDialog.Builder(context)
+                        .title("Code successfully verified\n*Invalid password login again")
+                        .neutralText(R.string.ok)
+                        .neutralColorRes(R.color.primary)
+                        .buttonsGravity(GravityEnum.CENTER)
+                        .cancelable(false)
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onNeutral(MaterialDialog dialog) {
+                                Intent intent = new Intent(CodeVerificationActivity.this, MainActivity.class); //call main activity, it will show login screen
+                                startActivity(intent);
+                                finish();
+                            }
+                        })
+                        .show();
             }
 
             @Override
@@ -206,9 +188,19 @@ public class CodeVerificationActivity extends Activity {
                 accountManager.setAuthToken(account, Constants.Auth.TESTPRESS_ACCOUNT_TYPE, authToken);
                 //call main activity, it will simply go to available exams
                 Intent intent = new Intent(CodeVerificationActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 finish();
             }
         }.execute();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(username == null) { //onBackPressed go to login screen only if username is null
+            Intent intent = new Intent(CodeVerificationActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 }

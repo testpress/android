@@ -3,13 +3,11 @@ package in.testpress.testpress.authenticator;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -17,6 +15,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.GravityEnum;
@@ -31,6 +31,7 @@ import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
+import in.testpress.testpress.events.SmsReceivingEvent;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.RegistrationErrorDetails;
 import in.testpress.testpress.ui.MainActivity;
@@ -46,6 +47,9 @@ public class CodeVerificationActivity extends Activity {
     @InjectView(R.id.et_username) EditText usernameText;
     @InjectView(R.id.et_verificationCode) EditText verificationCodeText;
     @InjectView(R.id.b_verify) Button verifyButton;
+    @InjectView(R.id.progressbar) ProgressBar progressBar;
+    @InjectView(R.id.count) TextView countText;
+    @InjectView(R.id.sms_receiving_layout) LinearLayout smsReceivingLayout;
 
     private String username;
     private String password;
@@ -55,6 +59,8 @@ public class CodeVerificationActivity extends Activity {
     private final TextWatcher watcher = validationTextWatcher();
     private MaterialDialog progressDialog;
     private Context context=this;
+    private SmsReceivingEvent smsReceivingEvent;
+    private Timer timer;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -65,15 +71,22 @@ public class CodeVerificationActivity extends Activity {
         final Intent intent = getIntent();
         username = intent.getStringExtra("username");
         password = intent.getStringExtra("password");
+        String phoneNumber = intent.getStringExtra("phoneNumber");
         if(username == null){
             usernameText.setVisibility(View.VISIBLE);
             verificationCodeText.setVisibility(View.VISIBLE);
             verifyButton.setVisibility(View.VISIBLE);
+            smsReceivingLayout.setVisibility(View.GONE);
             usernameText.addTextChangedListener(watcher);
         } else {
-            welcomeText.setText("Welcome " + username);
+            welcomeText.setText("Waiting to automatically detect an sms sent to " + phoneNumber + "\nIf you get the verification code press Manually Verify");
+            timer = new Timer();
+            smsReceivingEvent = new SmsReceivingEvent(timer);
+            IntentFilter filter = new IntentFilter();
+            filter.addAction("android.provider.Telephony.SMS_RECEIVED");
+            registerReceiver(smsReceivingEvent, filter); //start receiver
+            timer.start(); //start timer
         }
-        usernameText.addTextChangedListener(watcher);
         verificationCodeText.addTextChangedListener(watcher);
         verificationCodeText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(final TextView v, final int actionId,
@@ -115,6 +128,39 @@ public class CodeVerificationActivity extends Activity {
 
     private boolean populated(final EditText editText) {
         return editText.getText().toString().trim().length() > 0;
+    }
+
+    // CountDownTimer class
+    public class Timer extends CountDownTimer {
+        public Timer() {
+            super(30000, 1000); //super(startTime, interval);
+        }
+
+        @Override
+        public void onFinish() {
+            countText.setText("30s");
+            progressBar.setProgress(30);
+            unregisterReceiver(smsReceivingEvent); //end receiver
+            if (smsReceivingEvent.code  != null) { //checking smsReceivingEvent get the code or not
+                verificationCodeText.setText(smsReceivingEvent.code);
+                handleCodeVerification(); //verify code
+            } else {
+                verificationCodeText.setVisibility(View.VISIBLE); //user have to enter code
+                verifyButton.setVisibility(View.VISIBLE);
+                smsReceivingLayout.setVisibility(View.GONE);
+            }
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            countText.setText((int)(millisUntilFinished / 1000) + "s");
+            progressBar.setProgress(30 - (int)(millisUntilFinished / 1000));
+        }
+    }
+
+    @OnClick(R.id.b_manually_verify) public void manuallyVerify() { //user have to enter code
+        timer.cancel();
+        timer.onFinish();
     }
 
     // verify the verification code

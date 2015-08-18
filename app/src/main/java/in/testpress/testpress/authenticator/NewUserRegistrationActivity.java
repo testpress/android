@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.regex.Matcher;
@@ -117,6 +118,7 @@ public class NewUserRegistrationActivity extends Activity {
                 Bundle bundle = new Bundle();
                 bundle.putString("username", registrationSuccessResponse.getUsername());
                 bundle.putString("password", registrationSuccessResponse.getPassword());
+                bundle.putString("phoneNumber", registrationSuccessResponse.getPhone());
                 intent.putExtras(bundle);
                 startActivity(intent);
                 finish();
@@ -187,7 +189,20 @@ public class NewUserRegistrationActivity extends Activity {
 
     @OnClick(id.b_register) public void register() {
         if(validate()) {
-            postDetails();
+        new MaterialDialog.Builder(this)
+                .title("We will verify the phone number\n\n" + phoneText.getText().toString() + "\n\nIs this OK, or would you like to edit the number")
+                .positiveText(R.string.ok)
+                .negativeText(R.string.edit)
+                .positiveColorRes(R.color.primary)
+                .negativeColorRes(R.color.primary)
+                .buttonsGravity(GravityEnum.CENTER)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        postDetails();
+                    }
+                })
+                .show();
         }
     }
 }

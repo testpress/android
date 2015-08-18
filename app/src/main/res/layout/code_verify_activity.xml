@@ -27,12 +27,6 @@
                 android:src="@drawable/logo"
                 android:layout_marginBottom="20dp"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/welcome"
-                android:textSize="20sp"/>
-
             <EditText
                 android:id="@+id/et_username"
                 style="@style/SignInEditText"
@@ -46,7 +40,8 @@
                 style="@style/SignInEditText"
                 android:inputType="number"
                 android:hint="@string/label_ask_code"
-                android:imeOptions="actionDone"/>
+                android:imeOptions="actionDone"
+                android:visibility="gone"/>
 
             <Button
                 android:id="@+id/b_verify"
@@ -61,7 +56,53 @@
                 android:textColor="#ffffff"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:enabled="false"/>
+                android:enabled="false"
+                android:visibility="gone"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/sms_receiving_layout">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/welcome"
+                    android:textSize="20sp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:id="@+id/count"
+                    android:text="30s"
+                    android:padding="10dp"
+                    android:textSize="20sp"/>
+
+                <ProgressBar
+                    android:id="@+id/progressbar"
+                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    android:max="30"
+                    android:progress="0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <Button
+                    android:id="@+id/b_manually_verify"
+                    style="@style/ShadowText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/button_background_states"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="@string/manually_verify"
+                    android:textColor="#ffffff"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_gravity="bottom"/>
+
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

@@ -44,7 +44,6 @@ public class CodeVerificationActivity extends Activity {
     @Inject TestpressService testpressService;
     @InjectView(R.id.welcome) TextView welcomeText;
     @InjectView(R.id.et_username) EditText usernameText;
-    @InjectView(R.id.et_password) EditText passwordText;
     @InjectView(R.id.et_verificationCode) EditText verificationCodeText;
     @InjectView(R.id.b_verify) Button verifyButton;
 
@@ -68,14 +67,13 @@ public class CodeVerificationActivity extends Activity {
         password = intent.getStringExtra("password");
         if(username == null){
             usernameText.setVisibility(View.VISIBLE);
-            passwordText.setVisibility(View.VISIBLE);
-            welcomeText.setVisibility(View.GONE);
-
+            verificationCodeText.setVisibility(View.VISIBLE);
+            verifyButton.setVisibility(View.VISIBLE);
+            usernameText.addTextChangedListener(watcher);
         } else {
             welcomeText.setText("Welcome " + username);
         }
         usernameText.addTextChangedListener(watcher);
-        passwordText.addTextChangedListener(watcher);
         verificationCodeText.addTextChangedListener(watcher);
         verificationCodeText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(final TextView v, final int actionId,
@@ -93,7 +91,6 @@ public class CodeVerificationActivity extends Activity {
     @OnClick(R.id.b_verify) public void verify() {
         if(username == null){
             username = usernameText.getText().toString().trim();
-            password = passwordText.getText().toString().trim();
         }
         handleCodeVerification();
     }
@@ -109,7 +106,7 @@ public class CodeVerificationActivity extends Activity {
     private void updateUIWithValidation() {
         final boolean populated;
         if(username == null) {
-            populated = populated(verificationCodeText) && populated(usernameText) && populated(passwordText);
+            populated = populated(verificationCodeText) && populated(usernameText);
         } else {
             populated = populated(verificationCodeText);
         }
@@ -148,13 +145,17 @@ public class CodeVerificationActivity extends Activity {
 
             @Override
             public void onSuccess(final Boolean authSuccess) {  //Successfully Verified
-                login();
+                if(password == null){
+                    gotoLoginScreen();
+                } else {
+                    autoLogin();
+                }
             }
         }.execute();
     }
 
     // check password & get authKey
-    private void login(){
+    private void autoLogin(){
         new SafeAsyncTask<Boolean>() {
             public Boolean call() throws Exception {
                 authToken = testpressService.authenticate(username, password);
@@ -163,21 +164,7 @@ public class CodeVerificationActivity extends Activity {
 
             @Override
             protected void onException(final Exception e) throws RuntimeException {
-                new MaterialDialog.Builder(context)
-                        .title("Code successfully verified\n*Invalid password login again")
-                        .neutralText(R.string.ok)
-                        .neutralColorRes(R.color.primary)
-                        .buttonsGravity(GravityEnum.CENTER)
-                        .cancelable(false)
-                        .callback(new MaterialDialog.ButtonCallback() {
-                            @Override
-                            public void onNeutral(MaterialDialog dialog) {
-                                Intent intent = new Intent(CodeVerificationActivity.this, MainActivity.class); //call main activity, it will show login screen
-                                startActivity(intent);
-                                finish();
-                            }
-                        })
-                        .show();
+               gotoLoginScreen();
             }
 
             @Override
@@ -193,6 +180,25 @@ public class CodeVerificationActivity extends Activity {
                 finish();
             }
         }.execute();
+    }
+
+    private void gotoLoginScreen(){
+        new MaterialDialog.Builder(context)
+                .title("Code successfully verified")
+                .content("Please login to continue")
+                .neutralText(R.string.ok)
+                .neutralColorRes(R.color.primary)
+                .buttonsGravity(GravityEnum.CENTER)
+                .cancelable(false)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onNeutral(MaterialDialog dialog) {
+                        Intent intent = new Intent(CodeVerificationActivity.this, MainActivity.class); //call main activity, it will show login screen
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .show();
     }
 
     @Override

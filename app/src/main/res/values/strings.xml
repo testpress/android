@@ -54,6 +54,7 @@
     <string name="label_phone">Phone</string>
     <string name="label_sign_in">Sign In</string>
     <string name="label_sign_up">Sign Up</string>
+    <string name="label_logging_out">Logging Out...</string>
     <string name="verify">Verify</string>
     <string name="manually_verify">Manually Verify</string>
     <string name="label_ask_code">Enter the code sent via sms</string>

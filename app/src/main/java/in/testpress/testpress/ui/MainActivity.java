@@ -24,6 +24,7 @@ import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.UIUtils;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
@@ -44,9 +45,9 @@ public class MainActivity extends TestpressFragmentActivity {
     @Inject protected LogoutService logoutService;
 
     private boolean userHasAuthenticated = false;
-
-
-    private CharSequence title;
+    private MaterialDialog progressDialog;
+    private CarouselFragment fragment;
+    private FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -60,7 +61,7 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             setContentView(R.layout.main_activity);
         }
-
+        progressDialog = new MaterialDialog.Builder(this).build();
         //checkAuth();
         checkUpdate();
 
@@ -75,7 +76,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
             final Intent intent = getIntent();
             Bundle data = intent.getExtras();
-            CarouselFragment fragment = new CarouselFragment();
+            fragment = new CarouselFragment();
             fragment.setArguments(data);
             Ln.d("Foo");
             final FragmentManager fragmentManager = getSupportFragmentManager();
@@ -92,6 +93,8 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             public Boolean call() throws Exception {
                 final TestpressService svc = serviceProvider.getService(MainActivity.this);
+                if(progressDialog.isShowing())
+                    progressDialog.dismiss();
                 return svc != null;
             }
 
@@ -174,7 +177,14 @@ public class MainActivity extends TestpressFragmentActivity {
                 //menuDrawer.toggleMenu();
                 return true;
             case R.id.logout:
+                progressDialog = new MaterialDialog.Builder(this)
+                        .title(R.string.label_logging_out)
+                        .content(R.string.please_wait)
+                        .widgetColorRes(R.color.primary)
+                        .progress(true, 0)
+                        .show();
                 serviceProvider.invalidateAuthToken();
+                getSupportFragmentManager().beginTransaction().remove(fragment).commit();
                 logoutService.logout(new Runnable() {
                     @Override
                     public void run() {

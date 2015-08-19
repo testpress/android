@@ -41,12 +41,28 @@ public final class Constants {
          */
         public static final String URL_BASE = "https://pgdiams.testpress.in";
 
+        /**
+         * Check Update url
+         */
+        public static final String CHECK_UPDATE_URL_Frag = "/api/android/check/";
+
 
         /**
          * Authentication URL
          */
         public static final String URL_AUTH_FRAG = "/api/v2/auth-token/";
         public static final String URL_AUTH = URL_BASE + URL_AUTH_FRAG;
+
+        /**
+         * New User Register URL
+         */
+        public static final String URL_REGISTER_FRAG = "/api/v2/register/";
+        public static final String URL_REGISTER = URL_BASE + URL_REGISTER_FRAG;
+        /**
+         * Code Verification URL
+         */
+        public static final String URL_VERIFY_FRAG = "/api/v2/verify/";
+        public static final String URL_VERIFY = URL_BASE + URL_VERIFY_FRAG;
 
         /**
          * List Users URL

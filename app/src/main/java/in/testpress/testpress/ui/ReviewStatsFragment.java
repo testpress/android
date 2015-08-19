@@ -16,6 +16,18 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.kevinsawicki.wishlist.Toaster;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
+
+import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -36,6 +48,7 @@ public class ReviewStatsFragment extends Fragment {
     @InjectView(R.id.percentile) TextView percentile;
     @InjectView(R.id.sub_percentile) TextView subPercentile;
     @InjectView(R.id.sub_score) TextView subScore;
+    @InjectView(R.id.chart) PieChart chart;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -82,6 +95,29 @@ public class ReviewStatsFragment extends Fragment {
         percentile.setText(attempt.getPercentile());
         subScore.setText(attempt.getScore());
         subPercentile.setText(attempt.getPercentile());
+        ArrayList<Entry> entries = new ArrayList<>();
+        entries.add(new Entry(attempt.getCorrectCount(), 0));
+        entries.add(new Entry(attempt.getIncorrectCount(), 1));
+        entries.add(new Entry(unanswered, 2));
+        PieDataSet dataset = new PieDataSet(entries, "");
+        ArrayList<String> labels = new ArrayList<String>();
+        labels.add("Correct: "+attempt.getCorrectCount());
+        labels.add("Incorrect: "+attempt.getIncorrectCount());
+        labels.add("Unanswered: "+unanswered);
+        ArrayList<Integer> colors = new ArrayList<Integer>();
+        colors.add(Color.parseColor("#46BFBD"));
+        colors.add(Color.parseColor("#F7464A"));
+        colors.add(Color.parseColor("#FDB45C"));
+        dataset.setColors(colors);
+        dataset.setSliceSpace(2f);
+        PieData data = new PieData(labels, dataset);
+        data.setDrawValues(false);
+        chart.setData(data);
+        chart.setDescription("");
+        chart.setDrawSliceText(false);
+        chart.setDrawHoleEnabled(false);
+        chart.setTouchEnabled(false);
+        chart.invalidate();
         return view;
     }
 }

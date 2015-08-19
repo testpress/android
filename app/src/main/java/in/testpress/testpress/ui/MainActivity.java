@@ -3,20 +3,27 @@
 package in.testpress.testpress.ui;
 
 import android.accounts.OperationCanceledException;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.Window;
 
+import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.events.NavItemSelectedEvent;
+import in.testpress.testpress.models.Update;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.UIUtils;
+
 import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
@@ -33,15 +40,20 @@ import butterknife.ButterKnife;
 public class MainActivity extends TestpressFragmentActivity {
 
     @Inject protected TestpressServiceProvider serviceProvider;
+    @Inject protected TestpressService testpressService;
     @Inject protected LogoutService logoutService;
 
     private boolean userHasAuthenticated = false;
+
 
     private CharSequence title;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        // View injection with Butterknife
+        ButterKnife.inject(this);
+        super.onCreate(savedInstanceState);
 
         if(isTablet()) {
             setContentView(R.layout.main_activity_tablet);
@@ -49,12 +61,8 @@ public class MainActivity extends TestpressFragmentActivity {
             setContentView(R.layout.main_activity);
         }
 
-        // View injection with Butterknife
-        ButterKnife.inject(this);
-
-        super.onCreate(savedInstanceState);
-
-        checkAuth();
+        //checkAuth();
+        checkUpdate();
 
     }
 
@@ -102,6 +110,58 @@ public class MainActivity extends TestpressFragmentActivity {
                 super.onSuccess(hasAuthenticated);
                 userHasAuthenticated = true;
                 initScreen();
+            }
+        }.execute();
+    }
+
+    private void checkUpdate() {
+        new SafeAsyncTask<Update>() {
+            @Override
+            public Update call() throws Exception {
+                return testpressService.checkUpdate("" + BuildConfig.VERSION_CODE);
+            }
+
+            @Override
+            protected void onException(final Exception e) throws RuntimeException {
+                checkAuth();
+            }
+
+            @Override
+            protected void onSuccess(final Update update) throws Exception {
+                if(update.getUpdateRequired()) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setCancelable(true);
+                    if(update.getForce()) {
+                        builder.setMessage(update.getMessage());
+                        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialogInterface) {
+                                finish();
+                            }
+                        });
+                    } else {
+                        builder.setMessage(update.getMessage());
+                        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialogInterface) {
+                                checkAuth();
+                            }
+                        });
+                    }
+
+                    builder.setNeutralButton("Update",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "in.testpress.testpress")));
+                                    //Should change "in.testpress.testpress" to "in.testpress.<App name>" for different apps
+                                    finish();
+                                }
+                            });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+
+                } else checkAuth();
             }
         }.execute();
     }

@@ -2,6 +2,8 @@
 package in.testpress.testpress.ui;
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
@@ -124,6 +126,7 @@ public abstract class ItemListFragment<E> extends Fragment
             }
         });
         progressBar = (ProgressBar) view.findViewById(id.pb_loading);
+        progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
 
         emptyView = (TextView) view.findViewById(id.empty);
 
@@ -231,7 +234,9 @@ public abstract class ItemListFragment<E> extends Fragment
             this.items = items;
             getListAdapter().getWrappedAdapter().setItems(items.toArray());
         }
-        else setEmptyText("No active internet connection");
+        else {
+            setEmptyText(R.string.no_internet);
+        }
         showList();
     }
 

@@ -1,11 +1,9 @@
 package in.testpress.testpress.ui;
 
 import android.accounts.OperationCanceledException;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -13,7 +11,6 @@ import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +22,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState;
 
@@ -49,6 +47,7 @@ import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.models.Attempt;
 import in.testpress.testpress.models.AttemptItem;
+import in.testpress.testpress.models.Exam;
 import in.testpress.testpress.models.TestpressApiResponse;
 import in.testpress.testpress.util.SafeAsyncTask;
 
@@ -65,10 +64,13 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     @InjectView(R.id.timer) TextView timer;
     @InjectView(R.id.filter) Spinner filter;
 
-    ProgressDialog progress;
     ExamPagerAdapter pagerAdapter;
+    List<AttemptItem> filterItems = new ArrayList<>();
+    PanelListAdapter mPanelAdapter;
+    MaterialDialog progressDialog;
 
     Attempt mAttempt;
+    Exam mExam;
     List<AttemptItem> attemptItemList = Collections.emptyList();
     CountDownTimer countDownTimer;
 
@@ -76,6 +78,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAttempt = getArguments().getParcelable("attempt");
+        mExam = getArguments().getParcelable("exam");
         getLoaderManager().initLoader(0, null, this);
     }
 
@@ -84,15 +87,18 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.attempt_item_fragment, container, false);
         Injector.inject(this);
         ButterKnife.inject(this, view);
-        progress = new ProgressDialog(getActivity());
-        progress.setTitle("Loading");
-        progress.setMessage("Wait while loading...");
-        progress.show();
+        progressDialog = new MaterialDialog.Builder(getActivity())
+                .title(R.string.loading)
+                .content(R.string.please_wait)
+                .widgetColorRes(R.color.primary)
+                .progress(true, 0)
+                .show();
         pager.setPagingEnabled(false);
         previous.setVisibility(View.VISIBLE);
         next.setVisibility(View.VISIBLE);
         mLayout.setEnabled(true);
         mLayout.setTouchEnabled(false);
+        mPanelAdapter = new PanelListAdapter(getActivity().getLayoutInflater(), filterItems, R.layout.panel_list_item);
         return view;
     }
 
@@ -103,6 +109,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         else {
             expandPanel();
         }
+        questionsListView.setAdapter(mPanelAdapter);
         String[] filters= { "All", "Answered", "Unanswered", "Marked for review" };
         ArrayAdapter<String> adapter =new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, filters);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -235,13 +242,38 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @OnClick(R.id.end) void endExamAlert() {
-        final DialogAlert dialog = new DialogAlert(getActivity(), "end");
-        dialog.show();
+        new MaterialDialog.Builder(getActivity())
+                .title(R.string.end_message)
+                .positiveText(R.string.end)
+                .negativeText(R.string.cancel)
+                .positiveColorRes(R.color.primary)
+                .negativeColorRes(R.color.primary)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        endExam.execute();
+                        returnToHistory();
+                    }
+                })
+                .show();
     }
 
     @OnClick(R.id.pause_exam) void pauseExam() {
-        final DialogAlert dialog = new DialogAlert(getActivity(), "pause");
-        dialog.show();
+        new MaterialDialog.Builder(getActivity())
+                .title(R.string.pause_message)
+                .content(R.string.pause_content)
+                .positiveText(R.string.pause)
+                .negativeText(R.string.cancel)
+                .positiveColorRes(R.color.primary)
+                .negativeColorRes(R.color.primary)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        countDownTimer.cancel();
+                        returnToHistory();
+                    }
+                })
+                .show();
     }
 
     @Override
@@ -284,9 +316,8 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onLoadFinished(final Loader<List<AttemptItem>> loader, final List<AttemptItem> items) {
         attemptItemList = items;
-        if (progress.isShowing()) {
-            progress.hide();
-            progress.dismiss();
+        if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
         }
 
         pagerAdapter = new ExamPagerAdapter(getFragmentManager(), attemptItemList);
@@ -319,6 +350,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
 
     protected void returnToHistory() {
         Intent intent = new Intent(getActivity(), MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.putExtra("currentItem", "2");
         startActivity(intent);
         getActivity().finish();
@@ -326,7 +358,8 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
 
     protected void showReview() {
         Intent intent = new Intent(getActivity(), ReviewActivity.class);
-        intent.putExtra("exam", mAttempt.getExam());
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra("exam", mExam);
         intent.putExtra("attempt", mAttempt);
         startActivity(intent);
         getActivity().finish();
@@ -382,55 +415,6 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         }
     };
 
-    public class DialogAlert extends Dialog {
-        String selection;
-        public DialogAlert(Context context, String selection) {
-            super(context, R.style.ActivityDialog);
-            this.selection = selection;
-        }
-
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            requestWindowFeature(Window.FEATURE_NO_TITLE);
-            Window window = getWindow();
-            window.setGravity(Gravity.CENTER);
-            setContentView(R.layout.dialog_layout);
-            TextView dialogMessage = (TextView) findViewById(R.id.dialog_message);
-            TextView option = (TextView) findViewById(R.id.option);
-            TextView cancel = (TextView) findViewById(R.id.cancel);
-            if(selection.equals("pause")) {
-                dialogMessage.setText(R.string.pause_message);
-                option.setText(R.string.pause);
-                option.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        countDownTimer.cancel();
-                        returnToHistory();
-                        dismiss();
-                    }
-                });
-            }
-            else {
-                dialogMessage.setText(R.string.end_message);
-                option.setText(R.string.end);
-                option.setTextColor(Color.parseColor("#d9534f"));
-                option.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        endExam.execute();
-                        dismiss();
-                    }
-                });
-            }
-            cancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                   dismiss();
-                }
-            });
-        }
-    }
-
     public static String formatTime(final long millis) {
         return String.format("%02d:%02d:%02d",
                 millis / (1000 * 60 * 60),
@@ -479,22 +463,24 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
             if(!attemptItemList.get(i).getSelectedAnswers().isEmpty() || !attemptItemList.get(i).getSavedAnswers().isEmpty()) {
                 answereditems.add(attemptItemList.get(i));
             }
-            else
+            else {
                 unanswereditems.add(attemptItemList.get(i));
+            }
         }
         switch (filter) {
             case "answered":
-                questionsListView.setAdapter(new PanelListAdapter(getActivity().getLayoutInflater(), answereditems, R.layout.panel_list_item));
+                filterItems = answereditems;
                 break;
             case "unanswered":
-                questionsListView.setAdapter(new PanelListAdapter(getActivity().getLayoutInflater(), unanswereditems, R.layout.panel_list_item));
+                filterItems = unanswereditems;
                 break;
             case "marked":
-                questionsListView.setAdapter(new PanelListAdapter(getActivity().getLayoutInflater(), markeditems, R.layout.panel_list_item));
+                filterItems = markeditems;
                 break;
             default:
-                questionsListView.setAdapter(new PanelListAdapter(getActivity().getLayoutInflater(), attemptItemList, R.layout.panel_list_item));
+                filterItems = attemptItemList;
                 break;
         }
+        mPanelAdapter.setItems(filterItems.toArray());
     }
 }

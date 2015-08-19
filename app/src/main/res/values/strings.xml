@@ -35,14 +35,32 @@
     <string name="previous">Prev</string>
     <string name="paused">Paused</string>
     <string name="end">End</string>
+    <string name="edit">Edit</string>
     <string name="cancel">Cancel</string>
-    <string name="pause_message">Do you want to <b>Pause</b> exam?</string>
-    <string name="end_message">Do you want to <b>End</b> exam?</string>
+    <string name="pause_message">Do you want to Pause the exam?</string>
+    <string name="pause_content">You can pause the exam &amp; resume later before end date</string>
+    <string name="end_message">Do you want to End the exam?</string>
+    <string name="loading">Loading</string>
+    <string name="please_wait">Please Wait...</string>
+    <string name="ok">OK</string>
+    <string name="authentication_failed">Authentication failed</string>
+    <string name="no_internet">No active internet connection</string>
 
     <!-- AuthenticatorActivity -->
     <string name="label_username">Username</string>
     <string name="label_password">Password</string>
+    <string name="label_email">Email</string>
+    <string name="label_confirm_password">Confirm Password</string>
+    <string name="label_phone">Phone</string>
     <string name="label_sign_in">Sign In</string>
+    <string name="label_sign_up">Sign Up</string>
+    <string name="verify">Verify</string>
+    <string name="manually_verify">Manually Verify</string>
+    <string name="label_ask_code">Enter the code sent via sms</string>
+    <string name="verify_code">Verify Code</string>
+    <string name="message_verifying">Verifying code</string>
+    <string name="label_fill_all_details">*Please fill all details</string>
+    <string name="register">Register</string>
     <string name="message_signing_in">Signing in…</string>
     <string name="blank_field_warning">Please populate this field</string>
     <string name="signup_link">New to PGDIAMS? &lt;a href=https://pgdiams.testpress.in/register/>Click here&lt;/a> to learn more.</string>

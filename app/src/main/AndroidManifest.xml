@@ -2,7 +2,7 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="in.testpress.testpress"
-    android:versionCode="104"
+    android:versionCode="105"
     android:versionName="1.1" >
 
     <uses-sdk
@@ -18,6 +18,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
 
     <application
         android:name=".TestpressApplication"
@@ -75,6 +76,18 @@
         <activity
             android:name=".ui.AttemptsListActivity"
             android:label="Attempts List"
+            android:parentActivityName=".ui.MainActivity">
+        </activity>
+
+        <activity
+            android:name=".authenticator.NewUserRegistrationActivity"
+            android:label="Register"
+            android:parentActivityName=".ui.MainActivity">
+        </activity>
+
+        <activity
+            android:name=".authenticator.CodeVerificationActivity"
+            android:label="Verify"
             android:parentActivityName=".ui.MainActivity">
         </activity>
 

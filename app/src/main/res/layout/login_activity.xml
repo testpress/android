@@ -70,6 +70,41 @@
                 android:textColor="#ffffff"
                 android:textSize="20sp"
                 android:textStyle="bold" />
+
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_marginTop="15dp">
+
+                <Button
+                    android:id="@+id/b_signUp"
+                    style="@style/ShadowText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".50"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/button_background_states"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="@string/label_sign_up"
+                    android:textColor="#ffffff"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+                <Button
+                    android:id="@+id/b_verifyLayout"
+                    style="@style/ShadowText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".50"
+                    android:background="@drawable/button_background_states"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="@string/verify_code"
+                    android:textColor="#ffffff"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

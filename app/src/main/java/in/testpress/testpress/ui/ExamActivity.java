@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.IconTextView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -36,7 +37,7 @@ public class ExamActivity extends FragmentActivity implements LoaderManager.Load
 
     protected Exam exam = null;
     protected Attempt attempt = null;
-    protected ProgressBar progressBar;
+    protected RelativeLayout progressBar;
     @InjectView(R.id.exam_details) LinearLayout examDetailsContainer;
     @InjectView(R.id.start_exam) Button startExam;
     @InjectView(R.id.end_exam) Button endExam;
@@ -47,6 +48,9 @@ public class ExamActivity extends FragmentActivity implements LoaderManager.Load
     @InjectView(R.id.mark_per_question) TextView markPerQuestion;
     @InjectView(R.id.negative_marks) TextView negativeMarks;
     @InjectView(R.id.attempt_actions) LinearLayout attemptActions;
+    @InjectView(R.id.description) LinearLayout description;
+    @InjectView(R.id.descriptionContent) TextView descriptionContent;
+    @InjectView(R.id.fragment_container) LinearLayout fragmentContainer;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -54,7 +58,7 @@ public class ExamActivity extends FragmentActivity implements LoaderManager.Load
         setContentView(R.layout.activity_exam);
         Injector.inject(this);
         ButterKnife.inject(this);
-        progressBar = (ProgressBar) findViewById(R.id.pb_loading);
+        progressBar = (RelativeLayout) findViewById(R.id.pb_loading);
         final Intent intent = getIntent();
         Bundle data = intent.getExtras();
         exam = data.getParcelable("exam");
@@ -69,6 +73,10 @@ public class ExamActivity extends FragmentActivity implements LoaderManager.Load
         examDuration.setText(exam.getDuration());
         markPerQuestion.setText(exam.getMarkPerQuestion());
         negativeMarks.setText(exam.getNegativeMarks());
+        if ((exam.getDescription() != null) && !exam.getDescription().trim().isEmpty()) {
+            description.setVisibility(View.VISIBLE);
+            descriptionContent.setText(exam.getDescription());
+        }
     }
 
     @OnClick(R.id.exam_back_button) void goBack() {
@@ -116,7 +124,7 @@ public class ExamActivity extends FragmentActivity implements LoaderManager.Load
     public void onLoadFinished(final Loader<Attempt> loader, final Attempt attempt) {
         progressBar.setVisibility(View.INVISIBLE);
         if(attempt != null) {
-
+            fragmentContainer.setVisibility(View.VISIBLE);
             startExam.setVisibility(View.GONE);
             attemptActions.setVisibility(View.GONE);
             examDetailsContainer.setVisibility(View.GONE);
@@ -132,9 +140,10 @@ public class ExamActivity extends FragmentActivity implements LoaderManager.Load
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, attemptFragment).commitAllowingStateLoss();
             } else {
-                //Show Start Exam Activity
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.putExtra("currentItem", "2");
+                //Show Review when end button pressed
+                Intent intent = new Intent(this.getApplicationContext(), ReviewActivity.class);
+                intent.putExtra("exam", exam);
+                intent.putExtra("attempt", attempt);
                 startActivity(intent);
                 finish();
             }

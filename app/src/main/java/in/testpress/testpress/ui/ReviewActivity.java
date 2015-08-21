@@ -61,9 +61,10 @@ public class ReviewActivity extends TestpressFragmentActivity {
     @Override
     public void onBackPressed() {
         //onBackPressed go to history
-            Intent intent = new Intent(ReviewActivity.this, MainActivity.class);
-            intent.putExtra("currentItem", "2");
-            startActivity(intent);
-            finish();
+        Intent intent = new Intent(ReviewActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("currentItem", "2");
+        startActivity(intent);
+        finish();
     }
 }

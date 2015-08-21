@@ -69,7 +69,7 @@ android {
     defaultConfig {
         minSdkVersion 10
         targetSdkVersion 22
-        versionCode 102
+        versionCode 105
         versionName '1.0'
         applicationId 'in.testpress.testpress'
     }

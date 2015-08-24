@@ -16,13 +16,13 @@ import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
-import in.testpress.testpress.authenticator.TestpressAuthenticatorActivity;
 
 
 public class ReviewActivity extends TestpressFragmentActivity {
 
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected LogoutService logoutService;
+    String previousActivity;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -32,6 +32,7 @@ public class ReviewActivity extends TestpressFragmentActivity {
         toolbar.setTitle("Review");
         Injector.inject(this);
         final Intent intent = getIntent();
+        previousActivity = intent.getStringExtra("previousActivity");
         Bundle bundle = intent.getExtras();
         ReviewFragment reviewFragment = new ReviewFragment();
         reviewFragment.setArguments(bundle);
@@ -60,11 +61,15 @@ public class ReviewActivity extends TestpressFragmentActivity {
 
     @Override
     public void onBackPressed() {
-        //onBackPressed go to history
-        Intent intent = new Intent(ReviewActivity.this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("currentItem", "2");
-        startActivity(intent);
-        finish();
+        if((previousActivity != null) && previousActivity.equals("ExamActivity")) {
+            //onBackPressed go to history
+            Intent intent = new Intent(ReviewActivity.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("currentItem", "2");
+            startActivity(intent);
+            finish();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

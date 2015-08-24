@@ -44,7 +44,7 @@
     <string name="please_wait">Please Wait...</string>
     <string name="ok">OK</string>
     <string name="authentication_failed">Authentication failed</string>
-    <string name="no_internet">No active internet connection</string>
+    <string name="no_internet">Please check your internet connection &amp; refresh again</string>
 
     <!-- AuthenticatorActivity -->
     <string name="label_username">Username</string>

@@ -29,6 +29,8 @@ import in.testpress.testpress.R;
 import in.testpress.testpress.R.id;
 import in.testpress.testpress.R.layout;
 import in.testpress.testpress.authenticator.LogoutService;
+import in.testpress.testpress.util.InternetConnectivityChecker;
+
 import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
 import com.github.kevinsawicki.wishlist.Toaster;
 import com.github.kevinsawicki.wishlist.ViewUtils;
@@ -81,16 +83,19 @@ public abstract class ItemListFragment<E> extends Fragment
      * Is the list currently shown?
      */
     protected boolean listShown;
+    private InternetConnectivityChecker internetConnectivityChecker;
 
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        if (!items.isEmpty()) {
-            setListShown(true, false);
+        setListShown(false);
+        InternetConnectivityChecker internetConnectivityChecker = new InternetConnectivityChecker(getActivity());
+        if(internetConnectivityChecker.isConnected()) {
+            getLoaderManager().initLoader(0, null, this);
+        } else {
+            setEmptyText(R.string.no_internet);
+            setListShown(true);
         }
-
-        getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
@@ -222,21 +227,8 @@ public abstract class ItemListFragment<E> extends Fragment
     public void onLoadFinished(Loader<List<E>> loader, List<E> items) {
 
         getActivity().setProgressBarIndeterminateVisibility(false);
-
-        final Exception exception = getException(loader);
-        if (exception != null) {
-            showError(getErrorMessage(exception));
-            showList();
-            return;
-        }
-
-        if(items != null) {
-            this.items = items;
-            getListAdapter().getWrappedAdapter().setItems(items.toArray());
-        }
-        else {
-            setEmptyText(R.string.no_internet);
-        }
+        this.items = items;
+        getListAdapter().getWrappedAdapter().setItems(items.toArray());
         showList();
     }
 
@@ -460,4 +452,5 @@ public abstract class ItemListFragment<E> extends Fragment
     protected boolean isUsable() {
         return getActivity() != null;
     }
+
 }

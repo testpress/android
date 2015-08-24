@@ -52,9 +52,8 @@ public class AttemptsListFragment extends PagedItemFragment<Attempt> {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
         setEmptyText(R.string.no_attempts);
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override

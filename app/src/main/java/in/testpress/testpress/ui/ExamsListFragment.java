@@ -104,9 +104,8 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
         setEmptyText(R.string.no_exams);
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override

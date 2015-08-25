@@ -3,7 +3,6 @@
 package in.testpress.testpress.ui;
 
 import android.accounts.OperationCanceledException;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -24,6 +23,7 @@ import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.UIUtils;
 
+import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.squareup.otto.Subscribe;
 
@@ -45,7 +45,7 @@ public class MainActivity extends TestpressFragmentActivity {
     @Inject protected LogoutService logoutService;
 
     private boolean userHasAuthenticated = false;
-    private MaterialDialog progressDialog;
+    private MaterialDialog materialDialog;
     private CarouselFragment fragment;
     private FragmentManager fragmentManager;
 
@@ -61,7 +61,7 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             setContentView(R.layout.main_activity);
         }
-        progressDialog = new MaterialDialog.Builder(this).build();
+        materialDialog = new MaterialDialog.Builder(this).build();
         //checkAuth();
         checkUpdate();
 
@@ -93,8 +93,8 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             public Boolean call() throws Exception {
                 final TestpressService svc = serviceProvider.getService(MainActivity.this);
-                if(progressDialog.isShowing())
-                    progressDialog.dismiss();
+                if(materialDialog.isShowing())
+                    materialDialog.dismiss();
                 return svc != null;
             }
 
@@ -132,38 +132,32 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             protected void onSuccess(final Update update) throws Exception {
                 if(update.getUpdateRequired()) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                    builder.setCancelable(true);
-                    if(update.getForce()) {
-                        builder.setMessage(update.getMessage());
-                        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                            @Override
-                            public void onCancel(DialogInterface dialogInterface) {
-                                finish();
-                            }
-                        });
-                    } else {
-                        builder.setMessage(update.getMessage());
-                        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                            @Override
-                            public void onCancel(DialogInterface dialogInterface) {
-                                checkAuth();
-                            }
-                        });
-                    }
-
-                    builder.setNeutralButton("Update",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
+                    materialDialog = new MaterialDialog.Builder(MainActivity.this)
+                            .cancelable(true)
+                            .content(update.getMessage())
+                            .cancelListener(new DialogInterface.OnCancelListener() {
+                                @Override
+                                public void onCancel(DialogInterface dialogInterface) {
+                                    if (update.getForce()) {
+                                        finish();
+                                    } else {
+                                        checkAuth();
+                                    }
+                                }
+                            })
+                            .neutralText("Update")
+                            .buttonsGravity(GravityEnum.CENTER)
+                            .neutralColorRes(R.color.primary)
+                            .callback(new MaterialDialog.ButtonCallback() {
+                                @Override
+                                public void onNeutral(MaterialDialog dialog) {
                                     dialog.cancel();
                                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "in.testpress.testpress")));
                                     //Should change "in.testpress.testpress" to "in.testpress.<App name>" for different apps
                                     finish();
                                 }
-                            });
-                    AlertDialog alert = builder.create();
-                    alert.show();
-
+                            })
+                            .show();
                 } else checkAuth();
             }
         }.execute();
@@ -177,7 +171,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 //menuDrawer.toggleMenu();
                 return true;
             case R.id.logout:
-                progressDialog = new MaterialDialog.Builder(this)
+                materialDialog = new MaterialDialog.Builder(this)
                         .title(R.string.label_logging_out)
                         .content(R.string.please_wait)
                         .widgetColorRes(R.color.primary)

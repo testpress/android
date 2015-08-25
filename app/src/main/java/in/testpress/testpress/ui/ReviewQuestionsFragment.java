@@ -64,8 +64,8 @@ public class ReviewQuestionsFragment extends PagedItemFragment<ReviewItem> {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
         setEmptyText(R.string.no_questions);
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override

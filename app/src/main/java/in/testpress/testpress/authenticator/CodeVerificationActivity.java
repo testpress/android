@@ -36,6 +36,7 @@ import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.RegistrationErrorDetails;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.TextWatcherAdapter;
+import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.SafeAsyncTask;
 import retrofit.RetrofitError;
 
@@ -61,6 +62,7 @@ public class CodeVerificationActivity extends Activity {
     private Context context=this;
     private SmsReceivingEvent smsReceivingEvent;
     private Timer timer;
+    private InternetConnectivityChecker internetConnectivityChecker = new InternetConnectivityChecker(this);
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -102,10 +104,14 @@ public class CodeVerificationActivity extends Activity {
     }
 
     @OnClick(R.id.b_verify) public void verify() {
-        if(username == null){
-            username = usernameText.getText().toString().trim();
+        if(internetConnectivityChecker.isConnected()) {
+            if (username == null) {
+                username = usernameText.getText().toString().trim();
+            }
+            handleCodeVerification();
+        } else {
+            internetConnectivityChecker.showAlert();
         }
-        handleCodeVerification();
     }
 
     private TextWatcher validationTextWatcher() {

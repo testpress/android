@@ -30,6 +30,7 @@ import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.models.Attempt;
 import in.testpress.testpress.models.Exam;
+import in.testpress.testpress.util.InternetConnectivityChecker;
 import retrofit.RetrofitError;
 
 public class ExamActivity extends FragmentActivity implements LoaderManager.LoaderCallbacks<Attempt>  {
@@ -38,6 +39,7 @@ public class ExamActivity extends FragmentActivity implements LoaderManager.Load
     protected Exam exam = null;
     protected Attempt attempt = null;
     protected RelativeLayout progressBar;
+    private InternetConnectivityChecker internetConnectivityChecker = new InternetConnectivityChecker(this);
     @InjectView(R.id.exam_details) LinearLayout examDetailsContainer;
     @InjectView(R.id.start_exam) Button startExam;
     @InjectView(R.id.end_exam) Button endExam;
@@ -84,18 +86,30 @@ public class ExamActivity extends FragmentActivity implements LoaderManager.Load
     }
 
     @OnClick(R.id.start_exam) void startExam() {
-        getSupportLoaderManager().initLoader(0, null, this);
-        progressBar.setVisibility(View.VISIBLE);
+        if(internetConnectivityChecker.isConnected()) {
+            getSupportLoaderManager().initLoader(0, null, this);
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            internetConnectivityChecker.showAlert();
+        }
     }
 
     @OnClick(R.id.end_exam) void endExam() {
-        getSupportLoaderManager().initLoader(2, null, this);
-        progressBar.setVisibility(View.VISIBLE);
+        if(internetConnectivityChecker.isConnected()) {
+            getSupportLoaderManager().initLoader(2, null, this);
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            internetConnectivityChecker.showAlert();
+        }
     }
 
     @OnClick(R.id.resume_exam) void resumeExam() {
-        getSupportLoaderManager().initLoader(1, null, this);
-        progressBar.setVisibility(View.VISIBLE);
+        if(internetConnectivityChecker.isConnected()) {
+            getSupportLoaderManager().initLoader(1, null, this);
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            internetConnectivityChecker.showAlert();
+        }
     }
 
     @Override
@@ -142,6 +156,7 @@ public class ExamActivity extends FragmentActivity implements LoaderManager.Load
             } else {
                 //Show Review when end button pressed
                 Intent intent = new Intent(this.getApplicationContext(), ReviewActivity.class);
+                intent.putExtra("previousActivity", "ExamActivity");
                 intent.putExtra("exam", exam);
                 intent.putExtra("attempt", attempt);
                 startActivity(intent);

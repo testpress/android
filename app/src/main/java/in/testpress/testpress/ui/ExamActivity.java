@@ -1,6 +1,5 @@
 package in.testpress.testpress.ui;
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +17,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import com.afollestad.materialdialogs.GravityEnum;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import javax.inject.Inject;
@@ -40,6 +41,7 @@ public class ExamActivity extends FragmentActivity implements LoaderManager.Load
     protected Attempt attempt = null;
     protected RelativeLayout progressBar;
     private InternetConnectivityChecker internetConnectivityChecker = new InternetConnectivityChecker(this);
+    private MaterialDialog materialDialog;
     @InjectView(R.id.exam_details) LinearLayout examDetailsContainer;
     @InjectView(R.id.start_exam) Button startExam;
     @InjectView(R.id.end_exam) Button endExam;
@@ -162,22 +164,28 @@ public class ExamActivity extends FragmentActivity implements LoaderManager.Load
                 startActivity(intent);
                 finish();
             }
-        }
-        else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(ExamActivity.this);
-            builder.setMessage("Server Error");
-            builder.setCancelable(true);
-            builder.setNeutralButton("ok",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
+        } else {
+            materialDialog = new MaterialDialog.Builder(this)
+                    .cancelable(true)
+                    .title("Server Error")
+                    .neutralText("ok")
+                    .buttonsGravity(GravityEnum.CENTER)
+                    .neutralColorRes(R.color.primary)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onNeutral(MaterialDialog dialog) {
                             dialog.cancel();
                             finish();
                         }
-                    });
-            AlertDialog alert = builder.create();
-            alert.show();
+                    })
+                    .cancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialogInterface) {
+                            finish();
+                        }
+                    })
+                    .show();
         }
-
     }
 
     @Override

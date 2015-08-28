@@ -6,7 +6,7 @@
     android:versionName="1.1" >
 
     <uses-sdk
-        android:minSdkVersion="10"
+        android:minSdkVersion="14"
         android:targetSdkVersion="22" />
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -89,6 +89,15 @@
             android:name=".authenticator.CodeVerificationActivity"
             android:label="Verify"
             android:parentActivityName=".ui.MainActivity">
+        </activity>
+
+        <activity
+            android:name=".ui.ProductsListActivity"
+            android:label="Products"
+            android:parentActivityName=".ui.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="in.testpress.testpress.ui.MainActivity" />
         </activity>
 
     </application>

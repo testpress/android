@@ -7,6 +7,7 @@ import java.util.Map;
 
 import in.testpress.testpress.models.Attempt;
 import in.testpress.testpress.models.AttemptItem;
+import in.testpress.testpress.models.Product;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.ReviewItem;
 import in.testpress.testpress.models.TestpressApiResponse;
@@ -44,6 +45,8 @@ public class TestpressService {
     }
 
     private ExamService getExamsService() { return getRestAdapter().create(ExamService.class); }
+
+    private ProductService getProductsService() { return getRestAdapter().create(ProductService.class); }
 
     private String getAuthToken() {
         return "JWT " + authToken;
@@ -123,5 +126,9 @@ public class TestpressService {
         codeVerificationParameters.put("code", code);
         verificationResponse = getAuthenticationService().verifyCode(codeVerificationParameters);
         return verificationResponse;
+    }
+
+    public TestpressApiResponse<Product> getProducts(String urlFrag, Map<String, String> queryParams) {
+        return getProductsService().getProducts(urlFrag, queryParams, getAuthToken());
     }
 }

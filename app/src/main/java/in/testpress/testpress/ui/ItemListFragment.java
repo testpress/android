@@ -2,7 +2,7 @@
 package in.testpress.testpress.ui;
 
 import android.app.Activity;
-import android.graphics.Color;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 
@@ -16,10 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ExpandableListView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -29,7 +27,9 @@ import in.testpress.testpress.R;
 import in.testpress.testpress.R.id;
 import in.testpress.testpress.R.layout;
 import in.testpress.testpress.authenticator.LogoutService;
-import in.testpress.testpress.util.InternetConnectivityChecker;
+import in.testpress.testpress.util.InternetConnectivityChecker;;
+import it.gmariotti.cardslib.library.internal.CardGridArrayAdapter;
+import it.gmariotti.cardslib.library.view.CardGridView;
 
 import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
 import com.github.kevinsawicki.wishlist.Toaster;
@@ -50,6 +50,7 @@ public abstract class ItemListFragment<E> extends Fragment
 
     private static final String FORCE_REFRESH = "forceRefresh";
 
+
     /**
      * @param args bundle passed to the loader by the LoaderManager
      * @return true if the bundle indicates a requested forced refresh of the
@@ -69,6 +70,8 @@ public abstract class ItemListFragment<E> extends Fragment
      */
     protected ListView listView;
 
+    protected CardGridView gridView;
+
     /**
      * Empty view
      */
@@ -84,6 +87,7 @@ public abstract class ItemListFragment<E> extends Fragment
      */
     protected boolean listShown;
     private InternetConnectivityChecker internetConnectivityChecker;
+    protected CardGridArrayAdapter cardArrayAdapter;
 
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
@@ -113,7 +117,7 @@ public abstract class ItemListFragment<E> extends Fragment
         emptyView = null;
         progressBar = null;
         listView = null;
-
+        gridView = null;
         super.onDestroyView();
     }
 
@@ -121,6 +125,13 @@ public abstract class ItemListFragment<E> extends Fragment
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        setElements(view);
+        progressBar = (ProgressBar) view.findViewById(id.pb_loading);
+        progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
+        emptyView = (TextView) view.findViewById(id.empty);
+    }
+
+    protected void setElements(View view){
         listView = (ListView) view.findViewById(android.R.id.list);
         listView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -130,11 +141,6 @@ public abstract class ItemListFragment<E> extends Fragment
                 onListItemClick((ListView) parent, view, position, id);
             }
         });
-        progressBar = (ProgressBar) view.findViewById(id.pb_loading);
-        progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
-
-        emptyView = (TextView) view.findViewById(id.empty);
-
         configureList(getActivity(), getListView());
     }
 
@@ -166,6 +172,9 @@ public abstract class ItemListFragment<E> extends Fragment
             return false;
         }
         switch (item.getItemId()) {
+            case id.products:
+                getProducts();
+                return true;
             case id.refresh:
                 refreshWithProgress();
                 return true;
@@ -175,6 +184,11 @@ public abstract class ItemListFragment<E> extends Fragment
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void getProducts(){
+        Intent intent = new Intent(getActivity(), ProductsListActivity.class);
+        startActivity(intent);
     }
 
     protected abstract LogoutService getLogoutService();
@@ -227,9 +241,18 @@ public abstract class ItemListFragment<E> extends Fragment
     public void onLoadFinished(Loader<List<E>> loader, List<E> items) {
 
         getActivity().setProgressBarIndeterminateVisibility(false);
+        final Exception exception = getException(loader);
+        if (exception != null) {
+            showError(getErrorMessage(exception));
+            return;
+        }
         this.items = items;
-        getListAdapter().getWrappedAdapter().setItems(items.toArray());
+        setItemsToAdapter();
         showList();
+    }
+
+    protected void setItemsToAdapter(){
+        getListAdapter().getWrappedAdapter().setItems(items.toArray());
     }
 
     /**
@@ -292,6 +315,7 @@ public abstract class ItemListFragment<E> extends Fragment
      */
     protected void refreshWithProgress() {
         items.clear();
+        cardArrayAdapter.clear();
         setListShown(false);
         refresh();
     }
@@ -332,7 +356,7 @@ public abstract class ItemListFragment<E> extends Fragment
         return this;
     }
 
-    private ItemListFragment<E> fadeIn(final View view, final boolean animate) {
+    protected ItemListFragment<E> fadeIn(final View view, final boolean animate) {
         if (view != null) {
             if (animate) {
                 view.startAnimation(AnimationUtils.loadAnimation(getActivity(),
@@ -344,12 +368,12 @@ public abstract class ItemListFragment<E> extends Fragment
         return this;
     }
 
-    private ItemListFragment<E> show(final View view) {
+    protected ItemListFragment<E> show(final View view) {
         ViewUtils.setGone(view, false);
         return this;
     }
 
-    private ItemListFragment<E> hide(final View view) {
+    protected ItemListFragment<E> hide(final View view) {
         ViewUtils.setGone(view, true);
         return this;
     }

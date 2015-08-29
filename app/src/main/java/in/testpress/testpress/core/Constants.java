@@ -71,6 +71,11 @@ public final class Constants {
         public static final String URL_USERS = URL_BASE + URL_USERS_FRAG;
 
         /**
+         * List Products Exams URL
+         */
+        public static final String URL_PRODUCTS_FRAG = "api/v2.1/products/";
+
+        /**
          * List Available Exams URL
          */
         public static final String URL_AVAILABLE_EXAMS_FRAG =  "api/v2.1/exams/available/";

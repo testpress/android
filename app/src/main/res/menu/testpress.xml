@@ -5,6 +5,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/products"
+        app:showAsAction="never"
+        android:title="Products" >
+    </item>
+
+    <item
         android:id="@+id/refresh"
         android:icon="@drawable/ic_action_refresh"
         app:showAsAction="never"

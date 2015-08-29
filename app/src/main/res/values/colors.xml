@@ -53,4 +53,6 @@
     <color name="theme_primary_light">#7986cb</color>
     <color name="list_dropdown_foreground_normal">#ff333333</color>
     <color name="body_text_2_inverse">#8affffff</color>
+
+    <color name="native_background">#ececec</color>
 </resources>

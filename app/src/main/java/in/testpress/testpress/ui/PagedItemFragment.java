@@ -36,10 +36,14 @@ public abstract class PagedItemFragment<E> extends ItemListFragment<E>
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setScroll();
+    }
 
+    protected void setScroll(){
         getListView().setOnScrollListener(this);
         getListView().setFastScrollEnabled(true);
     }
+
     @Override
     public void onScroll(AbsListView view,int firstVisibleItem,int visibleItemCount,int totalItemCount)
     {
@@ -55,6 +59,9 @@ public abstract class PagedItemFragment<E> extends ItemListFragment<E>
             return;
         if (listView != null
                 && (listView.getLastVisiblePosition() + 3) >= pager.size()) {
+            showMore();
+        } else if (gridView != null
+                && (gridView.getLastVisiblePosition() + 3) >= pager.size()) {
             showMore();
         }
     }

@@ -56,6 +56,9 @@ dependencies {
     androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
     androidTestCompile 'org.mockito:mockito-core:1.9.5'
 
+    //Core card
+    compile 'com.github.gabrielemariotti.cards:cardslib-core:2.1.0'
+
     repositories {
         maven { url "https://jitpack.io" }
     }
@@ -64,10 +67,10 @@ dependencies {
 
 android {
     compileSdkVersion 22
-    buildToolsVersion '20.0.0'
+    buildToolsVersion '22.0.1'
 
     defaultConfig {
-        minSdkVersion 10
+        minSdkVersion 14
         targetSdkVersion 22
         versionCode 105
         versionName '1.0'

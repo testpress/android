@@ -315,7 +315,6 @@ public abstract class ItemListFragment<E> extends Fragment
      */
     protected void refreshWithProgress() {
         items.clear();
-        cardArrayAdapter.clear();
         setListShown(false);
         refresh();
     }

@@ -3,7 +3,6 @@ package in.testpress.testpress.ui;
 
 import android.os.Bundle;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.widget.AbsListView;
 
 import java.io.IOException;
@@ -61,7 +60,7 @@ public abstract class PagedItemFragment<E> extends ItemListFragment<E>
                 && (listView.getLastVisiblePosition() + 3) >= pager.size()) {
             showMore();
         } else if (gridView != null
-                && (gridView.getLastVisiblePosition() + 3) >= pager.size()) {
+                && ((gridView.getLastVisiblePosition()) + 2) >= pager.size() / 2) {
             showMore();
         }
     }

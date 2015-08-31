@@ -16,6 +16,7 @@ import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -28,6 +29,7 @@ import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.ProductsPager;
 import in.testpress.testpress.core.ResourcePager;
 import in.testpress.testpress.models.Product;
+import in.testpress.testpress.util.FormatDate;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardGridArrayAdapter;
 import it.gmariotti.cardslib.library.internal.CardThumbnail;
@@ -35,14 +37,11 @@ import it.gmariotti.cardslib.library.view.CardGridView;
 
 public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
 
-    @Inject
-    protected TestpressServiceProvider serviceProvider;
-    @Inject
-    protected LogoutService logoutService;
+    @Inject protected TestpressServiceProvider serviceProvider;
+    @Inject protected LogoutService logoutService;
 
     ProductsPager pager;
     Product product;
-
     ArrayList<Card> cards = new ArrayList<Card>();
 
     @Override
@@ -96,7 +95,14 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
     }
 
     @Override
+    protected void refreshWithProgress() {
+        cardArrayAdapter.clear();
+        super.refreshWithProgress();
+    }
+
+    @Override
     protected void setScroll(){
+        gridView.setOnScrollListener(this);
         gridView.setFastScrollEnabled(true);
     }
 
@@ -108,18 +114,19 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
     }
 
     protected ArrayList<Card> initCards() {
-
         for (int i = 0; i < items.size(); i++) {
             product = items.get(i);
-            CardExample card = new CardExample(getActivity());
+            ProductCard card = new ProductCard(getActivity());
             card.mainTitle = product.getTitle();
-            card.numberOfExams = product.getExams().size() + " Exams";
-            card.date = product.getDate();
+            card.numberOfExams = product.getExamsCount();
+            card.notesCount = product.getNotesCount();
+            card.startDate = product.getStartDate();
+            card.endDate = product.getEndDate();
+            card.categories = product.getCategories();
             card.price = product.getPrice();
-            card.thumbImg = R.drawable.icon;
             CardThumbnail thumb = new CardThumbnail(getActivity());
-            if (card.thumbImg > -1) {
-                thumb.setDrawableResource(card.thumbImg);
+            if (product.getImage() != null) {
+                thumb.setUrlResource(product.getImage());
             } else {
                 thumb.setDrawableResource(R.drawable.icon);
             }
@@ -136,32 +143,42 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
         return cards;
     }
 
-    class CardExample extends Card {
+    class ProductCard extends Card {
 
         String mainTitle;
-        String numberOfExams;
-        int thumbImg;
-        String date;
+        int numberOfExams;
+        int notesCount;
+        String startDate;
+        String endDate;
+        List<String> categories;
         String price;
 
-        public CardExample(Context context) {
+        public ProductCard(Context context) {
             super(context, R.layout.grid_native_inner_content);
-
         }
 
         @Override
         public void setupInnerViewElements(ViewGroup parent, View view) {
-
+            FormatDate date = new FormatDate();
             TextView titleTextView = (TextView) parent.findViewById(R.id.title);
-            TextView contentTextView = (TextView) parent.findViewById(R.id.number_of_exams);
+            TextView examsCountTextView = (TextView) parent.findViewById(R.id.number_of_exams);
+            TextView notesCountTextView = (TextView) parent.findViewById(R.id.number_of_notes);
             TextView dateTextView = (TextView) parent.findViewById(R.id.date);
+            TextView categoriesTextView = (TextView) parent.findViewById(R.id.categories);
             TextView priceTextView = (TextView) parent.findViewById(R.id.price);
-            
             titleTextView.setText(mainTitle);
             titleTextView.setSelected(true);
-            contentTextView.setText(numberOfExams);
-            dateTextView.setText(date);
-            priceTextView.setText(price);
+            examsCountTextView.setText(numberOfExams + " Exams");
+            notesCountTextView.setText(notesCount + " Documents");
+            if(date.getDate(startDate,endDate) != null) {
+                dateTextView.setVisibility(View.VISIBLE);
+                dateTextView.setText(date.getDate(startDate, endDate));
+            } else {
+                dateTextView.setVisibility(View.GONE);
+            }
+            categoriesTextView.setText(Arrays.toString(categories.toArray()));
+            categoriesTextView.setSelected(true);
+            priceTextView.setText("₹ " + price);
         }
     }
 
@@ -169,7 +186,6 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
         if (!isUsable()) {
             return this;
         }
-
         if (shown == listShown) {
             if (shown) {
                 // List has already been shown so hide/show the empty view with
@@ -182,9 +198,7 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
             }
             return this;
         }
-
         listShown = shown;
-
         if (shown) {
             if (!items.isEmpty()) {
                 hide(progressBar).hide(emptyView).fadeIn(gridView, animate)

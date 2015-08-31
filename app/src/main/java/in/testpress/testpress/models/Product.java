@@ -1,55 +1,59 @@
 package in.testpress.testpress.models;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
 public class Product {
 
-    private String productUrl;
+    private Integer id;
+    private String url;
     private String title;
     private String slug;
-    private String description;
-    private String descriptionHtml;
-    private String created;
-    private String institute;
-    private Boolean isActive;
     private String image;
-    private String cover;
-    private String coverHtml;
-    private String paymentLink;
-    private String marketingSnippet;
     private String startDate;
     private String endDate;
-    private Boolean isPublished;
+    private List<String> categories = new ArrayList<String>();
+    private Integer examsCount;
+    private Integer notesCount;
     private String price;
-    private List<Exam> exams = new ArrayList<Exam>();
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
-
-
 
     /**
      *
      * @return
-     * The productUrl
+     * The id
      */
-    public String getProductUrl() {
-        return productUrl;
+    public Integer getId() {
+        return id;
     }
 
     /**
      *
-     * @param productUrl
-     * The product_url
+     * @param id
+     * The id
      */
-    public void setProductUrl(String productUrl) {
-        this.productUrl = productUrl;
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    /**
+     *
+     * @return
+     * The url
+     */
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     *
+     * @param url
+     * The url
+     */
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     /**
@@ -91,96 +95,6 @@ public class Product {
     /**
      *
      * @return
-     * The description
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     *
-     * @param description
-     * The description
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     *
-     * @return
-     * The descriptionHtml
-     */
-    public String getDescriptionHtml() {
-        return descriptionHtml;
-    }
-
-    /**
-     *
-     * @param descriptionHtml
-     * The description_html
-     */
-    public void setDescriptionHtml(String descriptionHtml) {
-        this.descriptionHtml = descriptionHtml;
-    }
-
-    /**
-     *
-     * @return
-     * The created
-     */
-    public String getCreated() {
-        return created;
-    }
-
-    /**
-     *
-     * @param created
-     * The created
-     */
-    public void setCreated(String created) {
-        this.created = created;
-    }
-
-    /**
-     *
-     * @return
-     * The institute
-     */
-    public String getInstitute() {
-        return institute;
-    }
-
-    /**
-     *
-     * @param institute
-     * The institute
-     */
-    public void setInstitute(String institute) {
-        this.institute = institute;
-    }
-
-    /**
-     *
-     * @return
-     * The isActive
-     */
-    public Boolean getIsActive() {
-        return isActive;
-    }
-
-    /**
-     *
-     * @param isActive
-     * The is_active
-     */
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
-    }
-
-    /**
-     *
-     * @return
      * The image
      */
     public String getImage() {
@@ -194,78 +108,6 @@ public class Product {
      */
     public void setImage(String image) {
         this.image = image;
-    }
-
-    /**
-     *
-     * @return
-     * The cover
-     */
-    public String getCover() {
-        return cover;
-    }
-
-    /**
-     *
-     * @param cover
-     * The cover
-     */
-    public void setCover(String cover) {
-        this.cover = cover;
-    }
-
-    /**
-     *
-     * @return
-     * The coverHtml
-     */
-    public String getCoverHtml() {
-        return coverHtml;
-    }
-
-    /**
-     *
-     * @param coverHtml
-     * The cover_html
-     */
-    public void setCoverHtml(String coverHtml) {
-        this.coverHtml = coverHtml;
-    }
-
-    /**
-     *
-     * @return
-     * The paymentLink
-     */
-    public String getPaymentLink() {
-        return paymentLink;
-    }
-
-    /**
-     *
-     * @param paymentLink
-     * The payment_link
-     */
-    public void setPaymentLink(String paymentLink) {
-        this.paymentLink = paymentLink;
-    }
-
-    /**
-     *
-     * @return
-     * The marketingSnippet
-     */
-    public String getMarketingSnippet() {
-        return marketingSnippet;
-    }
-
-    /**
-     *
-     * @param marketingSnippet
-     * The marketing_snippet
-     */
-    public void setMarketingSnippet(String marketingSnippet) {
-        this.marketingSnippet = marketingSnippet;
     }
 
     /**
@@ -307,19 +149,55 @@ public class Product {
     /**
      *
      * @return
-     * The isPublished
+     * The categories
      */
-    public Boolean getIsPublished() {
-        return isPublished;
+    public List<String> getCategories() {
+        return categories;
     }
 
     /**
      *
-     * @param isPublished
-     * The is_published
+     * @param categories
+     * The categories
      */
-    public void setIsPublished(Boolean isPublished) {
-        this.isPublished = isPublished;
+    public void setCategories(List<String> categories) {
+        this.categories = categories;
+    }
+
+    /**
+     *
+     * @return
+     * The examsCount
+     */
+    public Integer getExamsCount() {
+        return examsCount;
+    }
+
+    /**
+     *
+     * @param examsCount
+     * The exams_count
+     */
+    public void setExamsCount(Integer examsCount) {
+        this.examsCount = examsCount;
+    }
+
+    /**
+     *
+     * @return
+     * The notesCount
+     */
+    public Integer getNotesCount() {
+        return notesCount;
+    }
+
+    /**
+     *
+     * @param notesCount
+     * The notes_count
+     */
+    public void setNotesCount(Integer notesCount) {
+        this.notesCount = notesCount;
     }
 
     /**
@@ -328,7 +206,7 @@ public class Product {
      * The price
      */
     public String getPrice() {
-        return "₹ " + price;
+        return price;
     }
 
     /**
@@ -340,24 +218,6 @@ public class Product {
         this.price = price;
     }
 
-    /**
-     *
-     * @return
-     * The exams
-     */
-    public List<Exam> getExams() {
-        return exams;
-    }
-
-    /**
-     *
-     * @param exams
-     * The exams
-     */
-    public void setExams(List<Exam> exams) {
-        this.exams = exams;
-    }
-
     public Map<String, Object> getAdditionalProperties() {
         return this.additionalProperties;
     }
@@ -365,24 +225,4 @@ public class Product {
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
     }
-
-    public String formatDate(String inputString) {
-        Date date = null;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        try {
-            if(inputString != null && !inputString.isEmpty()) {
-                date = simpleDateFormat.parse(inputString);
-                DateFormat dateformat = DateFormat.getDateInstance();
-                return dateformat.format(date);
-            }
-        } catch (ParseException e) {
-        }
-        return null;
-    }
-
-    public String getDate(){
-        return formatDate(getStartDate()) + " to " + formatDate(getEndDate());
-    }
-
 }

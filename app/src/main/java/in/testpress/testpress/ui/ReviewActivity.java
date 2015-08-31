@@ -28,8 +28,6 @@ public class ReviewActivity extends TestpressFragmentActivity {
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review);
-        Toolbar toolbar = getActionBarToolbar();
-        toolbar.setTitle("Review");
         Injector.inject(this);
         final Intent intent = getIntent();
         previousActivity = intent.getStringExtra("previousActivity");

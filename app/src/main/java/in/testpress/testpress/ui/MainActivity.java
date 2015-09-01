@@ -2,35 +2,35 @@
 
 package in.testpress.testpress.ui;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.accounts.OperationCanceledException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
 
+import br.liveo.Model.HelpLiveo;
+import br.liveo.interfaces.OnItemClickListener;
+import br.liveo.navigationliveo.NavigationLiveo;
 import in.testpress.testpress.BuildConfig;
+import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
+import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
-import in.testpress.testpress.events.NavItemSelectedEvent;
 import in.testpress.testpress.models.Update;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
-import in.testpress.testpress.util.UIUtils;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-
 
 /**
  * Initial activity for the application.
@@ -38,7 +38,7 @@ import butterknife.ButterKnife;
  * If you need to remove the authentication from the application please see
  * {@link in.testpress.testpress.authenticator.ApiKeyProvider#getAuthKey(android.app.Activity)}
  */
-public class MainActivity extends TestpressFragmentActivity {
+public class MainActivity extends NavigationLiveo implements OnItemClickListener {
 
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected TestpressService testpressService;
@@ -47,29 +47,6 @@ public class MainActivity extends TestpressFragmentActivity {
     private boolean userHasAuthenticated = false;
     private MaterialDialog materialDialog;
     private CarouselFragment fragment;
-    private FragmentManager fragmentManager;
-
-    @Override
-    protected void onCreate(final Bundle savedInstanceState) {
-        supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        // View injection with Butterknife
-        ButterKnife.inject(this);
-        super.onCreate(savedInstanceState);
-
-        if(isTablet()) {
-            setContentView(R.layout.main_activity_tablet);
-        } else {
-            setContentView(R.layout.main_activity);
-        }
-        materialDialog = new MaterialDialog.Builder(this).build();
-        //checkAuth();
-        checkUpdate();
-
-    }
-
-    private boolean isTablet() {
-        return UIUtils.isTablet(this);
-    }
 
     private void initScreen() {
         if (userHasAuthenticated) {
@@ -112,6 +89,7 @@ public class MainActivity extends TestpressFragmentActivity {
             protected void onSuccess(final Boolean hasAuthenticated) throws Exception {
                 super.onSuccess(hasAuthenticated);
                 userHasAuthenticated = true;
+                initUser();
                 initScreen();
             }
         }.execute();
@@ -167,42 +145,74 @@ public class MainActivity extends TestpressFragmentActivity {
     public boolean onOptionsItemSelected(final MenuItem item) {
 
         switch (item.getItemId()) {
-            case android.R.id.home:
-                //menuDrawer.toggleMenu();
-                return true;
+
             case R.id.logout:
-                materialDialog = new MaterialDialog.Builder(this)
-                        .title(R.string.label_logging_out)
-                        .content(R.string.please_wait)
-                        .widgetColorRes(R.color.primary)
-                        .progress(true, 0)
-                        .show();
-                serviceProvider.invalidateAuthToken();
-                getSupportFragmentManager().beginTransaction().remove(fragment).commit();
-                logoutService.logout(new Runnable() {
-                    @Override
-                    public void run() {
-                        // Calling a refresh will force the service to look for a logged in user
-                        // and when it finds none the user will be requested to log in again.
-                        checkAuth();
-                    }
-                });
+                logout();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    @Subscribe
-    public void onNavigationItemSelected(NavItemSelectedEvent event) {
+    @Override
+    public void onInt(Bundle savedInstanceState) {
+        HelpLiveo mHelpLiveo;;
+        Injector.inject(this);
+        checkUpdate();
+        materialDialog = new MaterialDialog.Builder(this).build();
+        this.userBackground. setImageResource(R.drawable.blue);
 
-        Ln.d("Selected: %1$s", event.getItemPosition());
+        // Creating navigation items
+        mHelpLiveo = new HelpLiveo();
+        mHelpLiveo.add(getString(R.string.home), R.drawable.house_icon);
+        mHelpLiveo.add(getString(R.string.products), R.drawable.cart);
+        mHelpLiveo.add(getString(R.string.logout), R.drawable.logout);
+        with(this)
+                .startingPosition(0) //Starting position in the list
+                .addAllHelpItem(mHelpLiveo.getHelp())
+                .build();
+    }
 
-        switch(event.getItemPosition()) {
+    @Override
+    public void onItemClick(int position) {
+        switch (position) {
             case 0:
-                // Home
-                // do nothing as we're already on the home screen.
+                initScreen();
+                break;
+            case 1:
+                Intent intent = new Intent(this, ProductsListActivity.class);
+                startActivity(intent);
+                break;
+            case 2:
+                logout();
                 break;
         }
     }
+
+    void initUser(){
+        AccountManager accountManager = AccountManager.get(this);
+        Account[] accounts = accountManager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
+        this.userName.setText(accounts[0].name);
+        this.userPhoto.setImageResource(R.drawable.profile_icon);
+    }
+
+    void logout() {
+        materialDialog = new MaterialDialog.Builder(this)
+                .title(R.string.label_logging_out)
+                .content(R.string.please_wait)
+                .widgetColorRes(R.color.primary)
+                .progress(true, 0)
+                .show();
+        serviceProvider.invalidateAuthToken();
+        getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+        logoutService.logout(new Runnable() {
+            @Override
+            public void run() {
+                // Calling a refresh will force the service to look for a logged in user
+                // and when it finds none the user will be requested to log in again.
+                checkAuth();
+            }
+        });
+    }
+
 }

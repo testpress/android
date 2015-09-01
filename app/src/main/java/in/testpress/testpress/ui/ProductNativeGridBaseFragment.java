@@ -5,11 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
@@ -17,7 +22,9 @@ import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -40,8 +47,13 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected LogoutService logoutService;
 
+    ExploreSpinnerAdapter mTopLevelSpinnerAdapter;
+    View mSpinnerContainer;
+    Boolean mFistTimeCallback = false;
     ProductsPager pager;
     Product product;
+    //List of courses got from the api. This is used to populate the spinner.
+    ArrayList<String> courses = new ArrayList<String>();
     ArrayList<Card> cards = new ArrayList<Card>();
 
     @Override
@@ -56,6 +68,33 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
             e.printStackTrace();
         }
         super.onCreate(savedInstanceState);
+        mTopLevelSpinnerAdapter = new ExploreSpinnerAdapter(getActivity().getLayoutInflater(), getActivity().getResources(), true);
+        mTopLevelSpinnerAdapter.addItem("", getString(R.string.all_categories), false, 0);
+        Toolbar toolbar = ((ProductsListActivity)(getActivity())).getActionBarToolbar();
+        mSpinnerContainer = getActivity().getLayoutInflater().inflate(R.layout.actionbar_spinner, toolbar, false);
+        Spinner spinner = (Spinner) mSpinnerContainer.findViewById(R.id.actionbar_spinner);
+        spinner.setAdapter(mTopLevelSpinnerAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> spinner, View view, int position, long itemId) {
+                if (!mFistTimeCallback) {
+                    mFistTimeCallback = true;
+                    return;
+                }
+                String filter = mTopLevelSpinnerAdapter.getTag(position);
+                if (filter.isEmpty()) {
+                    pager.removeQueryParams("category");
+                } else {
+                    pager.setQueryParams("category", filter);
+                }
+                refreshWithProgress();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+        mSpinnerContainer.setVisibility(View.GONE);
     }
 
     @Override
@@ -83,6 +122,37 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
     @Override
     public void onLoadFinished(Loader<List<Product>> loader, List<Product> items) {
         super.onLoadFinished(loader, items);
+
+        //Return if no items are returned
+        if (items == null) {
+            return;
+        }
+
+        //Populate the spinner with the courses
+        List<String> coursesList = new ArrayList<String>();
+        for (final Product product : items) {
+            for (String course : product.getCategories()) {
+                coursesList.add(course);
+            }
+        }
+        Set<String> uniqueCourses = new HashSet<String>(coursesList);
+        for (final String course : uniqueCourses) {
+            // Do not add the course if already present in the spinner
+            if (!courses.contains(course)) {
+                courses.add(course);
+                mTopLevelSpinnerAdapter.addItem(course, course, true, 0);
+            }
+        }
+        if ((mSpinnerContainer.getVisibility() == View.GONE) && !uniqueCourses.isEmpty()){
+            mSpinnerContainer.setVisibility(View.VISIBLE);
+            Toolbar toolbar = ((ProductsListActivity)(getActivity())).getActionBarToolbar();
+            View view = toolbar.findViewById(R.id.actionbar_spinnerwrap);
+            toolbar.removeView(view);
+            toolbar.invalidate();
+            ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            toolbar.addView(mSpinnerContainer, lp);
+        }
     }
 
     protected ResourcePager<Product> getPager() {

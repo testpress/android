@@ -46,6 +46,8 @@
     <string name="ok">OK</string>
     <string name="authentication_failed">Authentication failed</string>
     <string name="no_internet">Please check your internet connection &amp; refresh again</string>
+    <string name="products">Products</string>
+    <string name="logout">Logout</string>
 
     <!-- AuthenticatorActivity -->
     <string name="label_username">Username</string>

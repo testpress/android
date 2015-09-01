@@ -172,9 +172,6 @@ public abstract class ItemListFragment<E> extends Fragment
             return false;
         }
         switch (item.getItemId()) {
-            case id.products:
-                getProducts();
-                return true;
             case id.refresh:
                 refreshWithProgress();
                 return true;
@@ -184,11 +181,6 @@ public abstract class ItemListFragment<E> extends Fragment
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    private void getProducts(){
-        Intent intent = new Intent(getActivity(), ProductsListActivity.class);
-        startActivity(intent);
     }
 
     protected abstract LogoutService getLogoutService();

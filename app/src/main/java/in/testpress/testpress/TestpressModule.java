@@ -31,7 +31,6 @@ import in.testpress.testpress.ui.ExamsListFragment;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.NavigationDrawerFragment;
 import in.testpress.testpress.ui.ProductNativeGridBaseFragment;
-import in.testpress.testpress.ui.ProductsListActivity;
 import in.testpress.testpress.ui.ReviewActivity;
 import in.testpress.testpress.ui.ReviewFragment;
 import in.testpress.testpress.ui.ReviewQuestionsFragment;
@@ -62,7 +61,6 @@ import retrofit.converter.GsonConverter;
                 ExamPager.class,
                 NewUserRegistrationActivity.class,
                 CodeVerificationActivity.class,
-                ProductsListActivity.class,
                 ProductNativeGridBaseFragment.class
 
         }

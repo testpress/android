@@ -91,14 +91,14 @@
             android:parentActivityName=".ui.MainActivity">
         </activity>
 
-        <activity
-            android:name=".ui.ProductsListActivity"
-            android:label="Products"
-            android:parentActivityName=".ui.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="in.testpress.testpress.ui.MainActivity" />
-        </activity>
+        <!--<activity-->
+            <!--android:name=".ui.ProductsListActivity"-->
+            <!--android:label="Products"-->
+            <!--android:parentActivityName=".ui.MainActivity">-->
+            <!--<meta-data-->
+                <!--android:name="android.support.PARENT_ACTIVITY"-->
+                <!--android:value="in.testpress.testpress.ui.MainActivity" />-->
+        <!--</activity>-->
 
     </application>
 

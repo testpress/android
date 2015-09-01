@@ -2,7 +2,6 @@
 package in.testpress.testpress.ui;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 
@@ -26,8 +25,7 @@ import android.widget.TextView;
 import in.testpress.testpress.R;
 import in.testpress.testpress.R.id;
 import in.testpress.testpress.R.layout;
-import in.testpress.testpress.authenticator.LogoutService;
-import in.testpress.testpress.util.InternetConnectivityChecker;;
+import in.testpress.testpress.util.InternetConnectivityChecker;
 import it.gmariotti.cardslib.library.internal.CardGridArrayAdapter;
 import it.gmariotti.cardslib.library.view.CardGridView;
 
@@ -49,7 +47,6 @@ public abstract class ItemListFragment<E> extends Fragment
         implements LoaderManager.LoaderCallbacks<List<E>> {
 
     private static final String FORCE_REFRESH = "forceRefresh";
-
 
     /**
      * @param args bundle passed to the loader by the LoaderManager
@@ -86,14 +83,14 @@ public abstract class ItemListFragment<E> extends Fragment
      * Is the list currently shown?
      */
     protected boolean listShown;
-    private InternetConnectivityChecker internetConnectivityChecker;
+    protected InternetConnectivityChecker internetConnectivityChecker;
     protected CardGridArrayAdapter cardArrayAdapter;
 
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setListShown(false);
-        InternetConnectivityChecker internetConnectivityChecker = new InternetConnectivityChecker(getActivity());
+        internetConnectivityChecker = new InternetConnectivityChecker(getActivity());
         if(internetConnectivityChecker.isConnected()) {
             getLoaderManager().initLoader(0, null, this);
         } else {
@@ -172,36 +169,12 @@ public abstract class ItemListFragment<E> extends Fragment
             return false;
         }
         switch (item.getItemId()) {
-            case id.products:
-                getProducts();
-                return true;
             case id.refresh:
                 refreshWithProgress();
-                return true;
-            case R.id.logout:
-                logout();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    private void getProducts(){
-        Intent intent = new Intent(getActivity(), ProductsListActivity.class);
-        startActivity(intent);
-    }
-
-    protected abstract LogoutService getLogoutService();
-
-    private void logout() {
-        getLogoutService().logout(new Runnable() {
-            @Override
-            public void run() {
-                // Calling a refresh will force the service to look for a logged in user
-                // and when it finds none the user will be requested to log in again.
-                forceRefresh();
-            }
-        });
     }
 
     /**
@@ -244,6 +217,7 @@ public abstract class ItemListFragment<E> extends Fragment
         final Exception exception = getException(loader);
         if (exception != null) {
             showError(getErrorMessage(exception));
+            showList();
             return;
         }
         this.items = items;

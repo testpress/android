@@ -8,15 +8,17 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,10 +52,16 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
     View mSpinnerContainer;
     Boolean mFistTimeCallback = false;
     ProductsPager pager;
-    Product product;
     //List of courses got from the api. This is used to populate the spinner.
     ArrayList<String> courses = new ArrayList<String>();
     ArrayList<Card> cards = new ArrayList<Card>();
+    ImageLoader imageLoader = ImageLoader.getInstance();
+    DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
+            .cacheOnDisc(true).resetViewBeforeLoading(true)
+            .showImageForEmptyUri(R.drawable.icon)
+            .imageScaleType(ImageScaleType.EXACTLY)
+            .showImageOnFail(R.drawable.icon)
+            .showImageOnLoading(R.drawable.icon).build();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,7 +77,7 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
         super.onCreate(savedInstanceState);
         mTopLevelSpinnerAdapter = new ExploreSpinnerAdapter(getActivity().getLayoutInflater(), getActivity().getResources(), true);
         mTopLevelSpinnerAdapter.addItem("", getString(R.string.all_categories), false, 0);
-        Toolbar toolbar = ((ProductsListActivity)(getActivity())).getActionBarToolbar();
+        Toolbar toolbar = ((ProductsListActivity)(getActivity())).getToolbar();
         mSpinnerContainer = getActivity().getLayoutInflater().inflate(R.layout.actionbar_spinner, toolbar, false);
         Spinner spinner = (Spinner) mSpinnerContainer.findViewById(R.id.actionbar_spinner);
         spinner.setAdapter(mTopLevelSpinnerAdapter);
@@ -113,20 +121,15 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
     }
 
     @Override
-    public void onCreateOptionsMenu(final Menu optionsMenu, final MenuInflater inflater) {
-        super.onCreateOptionsMenu(optionsMenu, inflater);
-        optionsMenu.getItem(0).setVisible(false);
-    }
-
-    @Override
     public void onLoadFinished(Loader<List<Product>> loader, List<Product> items) {
-        super.onLoadFinished(loader, items);
 
         //Return if no items are returned
-        if (items == null) {
+        if (items.isEmpty()) {
+            setEmptyText(R.string.no_products);
+            super.onLoadFinished(loader, items);
             return;
         }
-
+        super.onLoadFinished(loader, items);
         //Populate the spinner with the courses
         List<String> coursesList = new ArrayList<String>();
         for (final Product product : items) {
@@ -144,7 +147,7 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
         }
         if ((mSpinnerContainer.getVisibility() == View.GONE) && !uniqueCourses.isEmpty()){
             mSpinnerContainer.setVisibility(View.VISIBLE);
-            Toolbar toolbar = ((ProductsListActivity)(getActivity())).getActionBarToolbar();
+            Toolbar toolbar = ((ProductsListActivity)(getActivity())).getToolbar();
             View view = toolbar.findViewById(R.id.actionbar_spinnerwrap);
             toolbar.removeView(view);
             toolbar.invalidate();
@@ -159,12 +162,8 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
     }
 
     @Override
-    protected LogoutService getLogoutService() {
-        return logoutService;
-    }
-
-    @Override
     protected void refreshWithProgress() {
+        if(cardArrayAdapter != null)
         cardArrayAdapter.clear();
         super.refreshWithProgress();
     }
@@ -184,8 +183,8 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
 
     protected ArrayList<Card> initCards() {
         for (int i = 0; i < items.size(); i++) {
-            product = items.get(i);
-            final ProductCard card = new ProductCard(getActivity());
+            final Product product = items.get(i);
+            ProductCard card = new ProductCard(getActivity());
             card.mainTitle = product.getTitle();
             card.numberOfExams = product.getExamsCount();
             card.notesCount = product.getNotesCount();
@@ -193,21 +192,19 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
             card.endDate = product.getEndDate();
             card.categories = product.getCategories();
             card.price = product.getPrice();
-            card.url = product.getUrl();
-            CardThumbnail thumb = new CardThumbnail(getActivity());
-            if (product.getImage() != null) {
-                thumb.setUrlResource(product.getImage());
-            } else {
-                thumb.setDrawableResource(R.drawable.icon);
-            }
+            MyThumbnail thumb = new MyThumbnail(getActivity(), product.getImage());
+            thumb.setExternalUsage(true);
             card.addCardThumbnail(thumb);
-
             card.setOnClickListener(new Card.OnCardClickListener() {
                 @Override
                 public void onClick(Card clickedCard, View view) {
-                    Intent intent = new Intent(getActivity(), ProductDetailsActivity.class);
-                    intent.putExtra("productUrl", card.url);
-                    startActivity(intent);
+                    if(internetConnectivityChecker.isConnected()) {
+                        Intent intent = new Intent(getActivity(), ProductDetailsActivity.class);
+                        intent.putExtra("productUrl", product.getUrl());
+                        startActivity(intent);
+                    } else {
+                        internetConnectivityChecker.showAlert();
+                    }
                 }
             });
             cards.add(card);
@@ -224,7 +221,6 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
         String endDate;
         List<String> categories;
         String price;
-        String url;
 
         public ProductCard(Context context) {
             super(context, R.layout.grid_native_inner_content);
@@ -252,6 +248,21 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
             categoriesTextView.setText(Arrays.toString(categories.toArray()));
             categoriesTextView.setSelected(true);
             priceTextView.setText("₹ " + price);
+        }
+    }
+
+    class MyThumbnail extends CardThumbnail {
+        String imageUrl;
+
+        MyThumbnail(Context context,String imageUrl) {
+            super(context);
+            this.imageUrl = imageUrl;
+        }
+
+        @Override
+        public void setupInnerViewElements(ViewGroup parent, View viewImage) {
+            ImageView image = (ImageView) viewImage;
+            imageLoader.displayImage(imageUrl,image,options); //download image from url & set to imageView using universal loader
         }
     }
 
@@ -289,21 +300,13 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
 
     @Override
     protected int getErrorMessage(Exception exception) {
-        if ((exception.getMessage()).equals("403 FORBIDDEN")) {
-            serviceProvider.invalidateAuthToken();
-            logoutService.logout(new Runnable() {
-                @Override
-                public void run() {
-                    Intent intent = getActivity().getIntent();
-                    getActivity().finish();
-                    getActivity().startActivity(intent);
-                }
-            });
+        if((exception.getMessage() != null) && (exception.getMessage()).equals("403 FORBIDDEN")) {
+            serviceProvider.handleForbidden(getActivity(), serviceProvider, logoutService);
             return R.string.authentication_failed;
         } else {
             setEmptyText(R.string.no_internet);
         }
-        return R.string.error_loading_exams;
+        return R.string.error_loading_products;
     }
 
     @Override

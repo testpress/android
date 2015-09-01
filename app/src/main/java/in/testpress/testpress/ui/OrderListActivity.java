@@ -4,18 +4,14 @@ import android.os.Bundle;
 
 import in.testpress.testpress.R;
 
-public class ProductsListActivity extends NavigationDrawer {
-
-    protected ProductNativeGridBaseFragment productsListFragment;
-    protected Bundle savedInstanceState;
+public class OrderListActivity extends NavigationDrawer {
 
     @Override
     public void onInt(Bundle savedInstanceState) {
         super.onInt(savedInstanceState);
-        this.savedInstanceState=savedInstanceState;
         initUser();
         with(this)
-                .startingPosition(1) //Starting position in the list
+                .startingPosition(2) //Starting position in the list
                 .addAllHelpItem(mHelpLiveo.getHelp())
                 .backgroundList(R.color.native_background)
                 .build();
@@ -23,7 +19,7 @@ public class ProductsListActivity extends NavigationDrawer {
 
     @Override
     public void onItemClick(int position) {
-        if(position == 1) {
+        if(position == 2) {
             initScreen();
         } else {
             super.onItemClick(position);
@@ -31,9 +27,6 @@ public class ProductsListActivity extends NavigationDrawer {
     }
 
     protected void initScreen() {
-        productsListFragment=new ProductNativeGridBaseFragment();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, productsListFragment)
-                .commitAllowingStateLoss();
+
     }
 }

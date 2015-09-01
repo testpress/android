@@ -39,25 +39,6 @@ public class ReviewActivity extends TestpressFragmentActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.logout:
-                serviceProvider.invalidateAuthToken();
-                logoutService.logout(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent intent = new Intent(ReviewActivity.this, MainActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                    }
-                });
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
     public void onBackPressed() {
         if((previousActivity != null) && previousActivity.equals("ExamActivity")) {
             //onBackPressed go to history

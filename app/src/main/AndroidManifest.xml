@@ -102,11 +102,12 @@
 
         <activity
             android:name=".ui.ProductsListActivity"
-            android:label="Products"
-            android:parentActivityName=".ui.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="in.testpress.testpress.ui.MainActivity" />
+            android:label="Products">
+        </activity>
+
+        <activity
+            android:name=".ui.OrderListActivity"
+            android:label="Orders">
         </activity>
 
         <activity

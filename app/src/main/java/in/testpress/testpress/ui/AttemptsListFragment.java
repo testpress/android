@@ -33,8 +33,6 @@ public class AttemptsListFragment extends PagedItemFragment<Attempt> {
     Exam exam;
     AttemptsPager pager;
     @Inject protected TestpressServiceProvider serviceProvider;
-    @Inject protected LogoutService logoutService;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -91,11 +89,6 @@ public class AttemptsListFragment extends PagedItemFragment<Attempt> {
     @Override
     public void onCreateOptionsMenu(final Menu optionsMenu, final MenuInflater inflater) {
         inflater.inflate(R.menu.attempt_actions, optionsMenu);
-    }
-
-    @Override
-    protected LogoutService getLogoutService() {
-        return logoutService;
     }
 
     @Override

@@ -43,7 +43,6 @@ public class ReviewQuestionsFragment extends PagedItemFragment<ReviewItem> {
     String filter;
     ReviewQuestionsPager pager;
     @Inject protected TestpressServiceProvider serviceProvider;
-    @Inject protected LogoutService logoutService;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,11 +82,6 @@ public class ReviewQuestionsFragment extends PagedItemFragment<ReviewItem> {
     @Override
     protected int getErrorMessage(Exception exception) {
         return R.string.error_loading_questions;
-    }
-
-    @Override
-    protected LogoutService getLogoutService() {
-        return logoutService;
     }
 
     @Override

@@ -28,8 +28,7 @@
         android:layout_height="64dp"
         android:id="@+id/pb_loading"
         android:indeterminate="true"
-        android:layout_centerInParent="true"
-        android:visibility="gone"/>
+        android:layout_centerInParent="true"/>
 
     <TextView
         android:layout_width="wrap_content"

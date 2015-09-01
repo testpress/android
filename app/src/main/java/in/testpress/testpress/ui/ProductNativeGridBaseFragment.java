@@ -114,12 +114,6 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
     }
 
     @Override
-    public void onCreateOptionsMenu(final Menu optionsMenu, final MenuInflater inflater) {
-        super.onCreateOptionsMenu(optionsMenu, inflater);
-        optionsMenu.getItem(0).setVisible(false);
-    }
-
-    @Override
     public void onLoadFinished(Loader<List<Product>> loader, List<Product> items) {
         super.onLoadFinished(loader, items);
 

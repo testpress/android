@@ -74,7 +74,7 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
         mTopLevelSpinnerAdapter = new ExploreSpinnerAdapter(getActivity().getLayoutInflater(), getActivity().getResources(), true);
         mTopLevelSpinnerAdapter.addItem("", getString(R.string.all_exams), false, 0);
         mTopLevelSpinnerAdapter.addHeader(getString(R.string.courses));
-        Toolbar toolbar = ((MainActivity)(getActivity())).getActionBarToolbar();
+        Toolbar toolbar = ((MainActivity)(getActivity())).getToolbar();
         mSpinnerContainer = getActivity().getLayoutInflater().inflate(R.layout.actionbar_spinner, toolbar, false);
 
         Spinner spinner = (Spinner) mSpinnerContainer.findViewById(R.id.actionbar_spinner);
@@ -150,7 +150,7 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
     public void setUserVisibleHint(final boolean visible) {
         super.setUserVisibleHint(visible);
         if (visible && isUsable()) {
-            Toolbar toolbar = ((MainActivity)(getActivity())).getActionBarToolbar();
+            Toolbar toolbar = ((MainActivity)(getActivity())).getToolbar();
             View view = toolbar.findViewById(R.id.actionbar_spinnerwrap);
             toolbar.removeView(view);
             toolbar.invalidate();

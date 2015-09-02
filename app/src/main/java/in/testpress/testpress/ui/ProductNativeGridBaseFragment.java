@@ -10,7 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -186,7 +185,7 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
     protected ArrayList<Card> initCards() {
         for (int i = 0; i < items.size(); i++) {
             product = items.get(i);
-            ProductCard card = new ProductCard(getActivity());
+            final ProductCard card = new ProductCard(getActivity());
             card.mainTitle = product.getTitle();
             card.numberOfExams = product.getExamsCount();
             card.notesCount = product.getNotesCount();
@@ -194,6 +193,7 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
             card.endDate = product.getEndDate();
             card.categories = product.getCategories();
             card.price = product.getPrice();
+            card.url = product.getUrl();
             CardThumbnail thumb = new CardThumbnail(getActivity());
             if (product.getImage() != null) {
                 thumb.setUrlResource(product.getImage());
@@ -204,8 +204,10 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
 
             card.setOnClickListener(new Card.OnCardClickListener() {
                 @Override
-                public void onClick(Card card, View view) {
-
+                public void onClick(Card clickedCard, View view) {
+                    Intent intent = new Intent(getActivity(), ProductDetailsActivity.class);
+                    intent.putExtra("productUrl", card.url);
+                    startActivity(intent);
                 }
             });
             cards.add(card);
@@ -222,6 +224,7 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
         String endDate;
         List<String> categories;
         String price;
+        String url;
 
         public ProductCard(Context context) {
             super(context, R.layout.grid_native_inner_content);

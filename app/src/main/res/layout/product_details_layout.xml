@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/toolbar_actionbar"/> <!-- placeholder, empty except on L -->
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar_actionbar">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/productDetails"
+            android:paddingLeft="10dp"
+            android:paddingTop="2dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:id="@+id/thumbnail_image"
+                android:layout_gravity="center_horizontal"/>
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:text="Sample Title"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/primary"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/thumbnail_image"
+                android:padding="2dp"/>
+
+            <TextView
+                android:id="@+id/number_of_exams"
+                android:textSize="15sp"
+                android:text="0 Exams"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/title"
+                android:padding="2dp"/>
+
+            <TextView
+                android:id="@+id/number_of_notes"
+                android:textSize="15sp"
+                android:text="0 Documents"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/number_of_exams"
+                android:padding="2dp"/>
+
+            <TextView
+                android:id="@+id/date"
+                android:textSize="15sp"
+                android:text="Feb 11, 2014 to Jul 9, 2019"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_below="@id/number_of_notes"
+                android:padding="2dp"/>
+
+            <TextView
+                android:id="@+id/categories"
+                android:textSize="15sp"
+                android:text="[AIIMS, AIPGMEE, NBE, PGI]"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/date"
+                android:padding="2dp"/>
+
+            <TextView
+                android:id="@+id/price"
+                android:textSize="15sp"
+                android:text="₹ 2000.00"
+                android:textColor="@color/text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/categories"
+                android:padding="2dp"/>
+
+            <TextView
+                android:id="@+id/description_title"
+                android:textSize="15sp"
+                android:text="Description:"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="3dp"
+                android:visibility="gone"
+                android:layout_below="@id/price"/>
+
+            <TextView
+                android:id="@+id/description"
+                android:textSize="15sp"
+                android:text="Free mock crack NBE course. \n\nQuestions similar to NBE exam with picture based question"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_below="@id/description_title"/>
+
+            <TextView
+                android:id="@+id/examsTitle"
+                android:textSize="15sp"
+                android:text="Exam(s):"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="3dp"
+                android:visibility="gone"
+                android:layout_below="@id/description"/>
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/examListView"
+                android:layout_below="@id/examsTitle"/>
+
+            <TextView
+                android:id="@+id/notesTitle"
+                android:textSize="15sp"
+                android:text="Note(s):"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="3dp"
+                android:visibility="gone"
+                android:layout_below="@id/examListView"/>
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/notesListView"
+                android:layout_below="@id/notesTitle"/>
+        </RelativeLayout>
+    </ScrollView>
+
+    <ProgressBar
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:id="@+id/pb_loading"
+        android:indeterminate="true"
+        android:layout_centerInParent="true"/>
+
+</RelativeLayout>

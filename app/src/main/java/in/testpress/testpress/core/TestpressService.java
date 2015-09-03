@@ -8,6 +8,7 @@ import java.util.Map;
 import in.testpress.testpress.models.Attempt;
 import in.testpress.testpress.models.AttemptItem;
 import in.testpress.testpress.models.Product;
+import in.testpress.testpress.models.ProductDetails;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.ReviewItem;
 import in.testpress.testpress.models.TestpressApiResponse;
@@ -130,5 +131,9 @@ public class TestpressService {
 
     public TestpressApiResponse<Product> getProducts(String urlFrag, Map<String, String> queryParams) {
         return getProductsService().getProducts(urlFrag, queryParams, getAuthToken());
+    }
+
+    public ProductDetails getProductDetail(String productUrlFrag) {
+        return getProductsService().getProductDetails(productUrlFrag, getAuthToken());
     }
 }

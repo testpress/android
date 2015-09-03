@@ -45,6 +45,7 @@
                 android:textColor="@color/text_color"
                 android:layout_gravity="end"/>
             <TextView
+                android:id="@+id/questionsText"
                 android:layout_width="wrap_content"
                 android:layout_marginLeft="@dimen/margin_normal"
                 android:text="questions"

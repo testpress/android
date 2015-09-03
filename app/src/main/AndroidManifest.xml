@@ -77,24 +77,42 @@
             android:name=".ui.AttemptsListActivity"
             android:label="Attempts List"
             android:parentActivityName=".ui.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="in.testpress.testpress.ui.MainActivity" />
         </activity>
 
         <activity
             android:name=".authenticator.NewUserRegistrationActivity"
             android:label="Register"
             android:parentActivityName=".ui.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="in.testpress.testpress.ui.MainActivity" />
         </activity>
 
         <activity
             android:name=".authenticator.CodeVerificationActivity"
             android:label="Verify"
             android:parentActivityName=".ui.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="in.testpress.testpress.ui.MainActivity" />
         </activity>
 
         <activity
             android:name=".ui.ProductsListActivity"
             android:label="Products"
             android:parentActivityName=".ui.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="in.testpress.testpress.ui.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".ui.ProductDetailsActivity"
+            android:label="Product Details"
+            android:parentActivityName=".ui.ProductsListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="in.testpress.testpress.ui.MainActivity" />

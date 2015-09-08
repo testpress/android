@@ -1,36 +1,29 @@
-
-
 package in.testpress.testpress.ui;
 
 import android.accounts.OperationCanceledException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.Window;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import in.testpress.testpress.BuildConfig;
+import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.TestpressService;
-import in.testpress.testpress.events.NavItemSelectedEvent;
 import in.testpress.testpress.models.Update;
-import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.UIUtils;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-
 
 /**
  * Initial activity for the application.
@@ -44,16 +37,13 @@ public class MainActivity extends TestpressFragmentActivity {
     @Inject protected TestpressService testpressService;
     @Inject protected LogoutService logoutService;
 
+    protected RelativeLayout progressBarLayout;
     private boolean userHasAuthenticated = false;
-    private MaterialDialog materialDialog;
-    private CarouselFragment fragment;
-    private FragmentManager fragmentManager;
+    private MainMenuFragment fragment;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        // View injection with Butterknife
-        ButterKnife.inject(this);
+        Injector.inject(this);
         super.onCreate(savedInstanceState);
 
         if(isTablet()) {
@@ -61,10 +51,10 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             setContentView(R.layout.main_activity);
         }
-        materialDialog = new MaterialDialog.Builder(this).build();
-        //checkAuth();
+        progressBarLayout = (RelativeLayout) findViewById(R.id.progressbar);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.pb_loading);
+        progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
         checkUpdate();
-
     }
 
     private boolean isTablet() {
@@ -73,18 +63,12 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private void initScreen() {
         if (userHasAuthenticated) {
-
-            final Intent intent = getIntent();
-            Bundle data = intent.getExtras();
-            fragment = new CarouselFragment();
-            fragment.setArguments(data);
-            Ln.d("Foo");
-            final FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
+            fragment = new MainMenuFragment();
+            getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, fragment)
                     .commitAllowingStateLoss();
+            progressBarLayout.setVisibility(View.GONE);
         }
-
     }
 
     private void checkAuth() {
@@ -93,8 +77,6 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             public Boolean call() throws Exception {
                 final TestpressService svc = serviceProvider.getService(MainActivity.this);
-                if(materialDialog.isShowing())
-                    materialDialog.dismiss();
                 return svc != null;
             }
 
@@ -132,7 +114,7 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             protected void onSuccess(final Update update) throws Exception {
                 if(update.getUpdateRequired()) {
-                    materialDialog = new MaterialDialog.Builder(MainActivity.this)
+                    new MaterialDialog.Builder(MainActivity.this)
                             .cancelable(true)
                             .content(update.getMessage())
                             .cancelListener(new DialogInterface.OnCancelListener() {
@@ -163,46 +145,25 @@ public class MainActivity extends TestpressFragmentActivity {
         }.execute();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                //menuDrawer.toggleMenu();
-                return true;
-            case R.id.logout:
-                materialDialog = new MaterialDialog.Builder(this)
-                        .title(R.string.label_logging_out)
-                        .content(R.string.please_wait)
-                        .widgetColorRes(R.color.primary)
-                        .progress(true, 0)
-                        .show();
-                serviceProvider.invalidateAuthToken();
-                getSupportFragmentManager().beginTransaction().remove(fragment).commit();
-                logoutService.logout(new Runnable() {
-                    @Override
-                    public void run() {
-                        // Calling a refresh will force the service to look for a logged in user
-                        // and when it finds none the user will be requested to log in again.
-                        checkAuth();
-                    }
-                });
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Subscribe
-    public void onNavigationItemSelected(NavItemSelectedEvent event) {
-
-        Ln.d("Selected: %1$s", event.getItemPosition());
-
-        switch(event.getItemPosition()) {
-            case 0:
-                // Home
-                // do nothing as we're already on the home screen.
-                break;
-        }
+    public void logout() {
+        final MaterialDialog materialDialog = new MaterialDialog.Builder(this)
+                .title(R.string.label_logging_out)
+                .content(R.string.please_wait)
+                .widgetColorRes(R.color.primary)
+                .progress(true, 0)
+                .show();
+        serviceProvider.invalidateAuthToken();
+        getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+        logoutService.logout(new Runnable() {
+            @Override
+            public void run() {
+                // Calling a checkAuth will force the service to look for a logged in user
+                // and when it finds none the user will be requested to log in again.
+                Intent intent = MainActivity.this.getIntent();
+                materialDialog.dismiss();
+                MainActivity.this.finish();
+                MainActivity.this.startActivity(intent);
+            }
+        });
     }
 }

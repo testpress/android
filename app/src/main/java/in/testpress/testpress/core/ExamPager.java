@@ -1,26 +1,12 @@
 package in.testpress.testpress.core;
 
-import android.accounts.AccountsException;
-import android.accounts.OperationCanceledException;
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
-
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import in.testpress.testpress.Injector;
-import in.testpress.testpress.TestpressServiceProvider;
-import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.models.Exam;
 import in.testpress.testpress.models.TestpressApiResponse;
-import in.testpress.testpress.ui.MainActivity;
 import retrofit.RetrofitError;
 
 
@@ -28,13 +14,9 @@ public class ExamPager extends ResourcePager<Exam> {
     String subclass;
     TestpressApiResponse<Exam> response;
 
-    @Inject protected TestpressServiceProvider serviceProvider;
-    @Inject protected LogoutService logoutService;
-
     public ExamPager(String subclass, TestpressService service) {
         super(service);
         this.subclass = subclass;
-        Injector.inject(this);
     }
 
     @Override

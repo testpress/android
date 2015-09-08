@@ -27,9 +27,11 @@ import in.testpress.testpress.ui.AttemptFragment;
 import in.testpress.testpress.ui.AttemptsListActivity;
 import in.testpress.testpress.ui.AttemptsListFragment;
 import in.testpress.testpress.ui.ExamActivity;
+import in.testpress.testpress.ui.ExamsListActivity;
 import in.testpress.testpress.ui.ExamsListFragment;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.NavigationDrawerFragment;
+import in.testpress.testpress.ui.OrdersListActivity;
 import in.testpress.testpress.ui.ProductDetailsActivity;
 import in.testpress.testpress.ui.ProductNativeGridBaseFragment;
 import in.testpress.testpress.ui.ProductsListActivity;
@@ -60,12 +62,13 @@ import retrofit.converter.GsonConverter;
                 ReviewQuestionsFragment.class,
                 ReviewActivity.class,
                 AttemptsListActivity.class,
-                ExamPager.class,
                 NewUserRegistrationActivity.class,
                 CodeVerificationActivity.class,
+                ExamsListActivity.class,
                 ProductsListActivity.class,
                 ProductNativeGridBaseFragment.class,
-                ProductDetailsActivity.class
+                ProductDetailsActivity.class,
+                OrdersListActivity.class
 
         }
 )

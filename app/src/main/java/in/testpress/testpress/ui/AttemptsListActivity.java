@@ -15,7 +15,7 @@ public class AttemptsListActivity extends TestpressFragmentActivity {
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_review);
+        setContentView(R.layout.container_layout);
         AttemptsListFragment attemptsListFragment = new AttemptsListFragment();
         Bundle bundle = getIntent().getExtras();
         Toolbar toolbar = getActionBarToolbar();

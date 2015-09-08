@@ -23,6 +23,7 @@
     <string name="user_column">User</string>
     <string name="date_column">Date</string>
     <string name="error_loading_exams">Loading exams failed</string>
+    <string name="error_loading_products">Loading Products failed</string>
     <string name="error_loading_attempts">Loading attempts failed</string>
     <string name="error_loading_questions">Loading questions failed</string>
     <string name="no_exams">No Exams</string>

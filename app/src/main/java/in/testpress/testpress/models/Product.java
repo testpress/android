@@ -15,6 +15,7 @@ public class Product {
     private String startDate;
     private String endDate;
     private List<String> categories = new ArrayList<String>();
+    private List<String> types = new ArrayList<String>();
     private Integer examsCount;
     private Integer notesCount;
     private String price;
@@ -162,6 +163,24 @@ public class Product {
      */
     public void setCategories(List<String> categories) {
         this.categories = categories;
+    }
+
+    /**
+     *
+     * @return
+     * The types
+     */
+    public List<String> getTypes() {
+        return types;
+    }
+
+    /**
+     *
+     * @param types
+     * The types
+     */
+    public void setTypes(List<String> types) {
+        this.types = types;
     }
 
     /**

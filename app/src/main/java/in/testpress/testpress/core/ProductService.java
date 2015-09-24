@@ -1,14 +1,18 @@
 package in.testpress.testpress.core;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import in.testpress.testpress.models.Order;
 import in.testpress.testpress.models.Product;
 import in.testpress.testpress.models.ProductDetails;
 import in.testpress.testpress.models.TestpressApiResponse;
-
+import retrofit.http.Body;
 import retrofit.http.EncodedPath;
 import retrofit.http.GET;
 import retrofit.http.Header;
+import retrofit.http.POST;
+import retrofit.http.PUT;
 import retrofit.http.QueryMap;
 
 public interface ProductService {
@@ -19,6 +23,11 @@ public interface ProductService {
     @GET("/{product_url}")
     ProductDetails getProductDetails(@EncodedPath("product_url") String productUrlFrag, @Header("Authorization") String authorization);
 
+    @POST(Constants.Http.URL_ORDERS_FRAG)
+    Order order(@Body HashMap<String, Object> arguments, @Header("Authorization") String authorization);
+
+    @PUT(Constants.Http.URL_ORDERS_FRAG+"{order_id}"+"/confirm/")
+    Order orderConfirm(@EncodedPath("order_id") int orderId, @Body HashMap<String, Object> arguments, @Header("Authorization") String authorization);
 }
 
 

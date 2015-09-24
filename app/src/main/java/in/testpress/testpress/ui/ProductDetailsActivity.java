@@ -1,20 +1,23 @@
 package in.testpress.testpress.ui;
 
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.ProgressBar;;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.payu.india.Payu.PayuConstants;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -23,11 +26,16 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
+import in.testpress.testpress.core.Constants;
+import in.testpress.testpress.models.OrderItem;
 import in.testpress.testpress.models.ProductDetails;
 import in.testpress.testpress.util.FormatDate;
+import in.testpress.testpress.util.InternetConnectivityChecker;
+
 import retrofit.RetrofitError;
 
 public class ProductDetailsActivity extends TestpressFragmentActivity implements LoaderManager.LoaderCallbacks<ProductDetails>{
@@ -47,10 +55,12 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
     @InjectView(R.id.notesTitle) TextView notesTitleText;
     @InjectView(R.id.notesListView) ListView notesListViewText;
     @InjectView(R.id.productDetails) RelativeLayout productDetailsView;
+    @InjectView(R.id.buyButton) Button buyButton;
 
     ProgressBar progressBar;
     ProductDetails productDetails;
     String productUrl;
+    OrderItem orderItem = new OrderItem();
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -61,6 +71,7 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
         ButterKnife.inject(this);
         productUrl = getIntent().getStringExtra("productUrl");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        productDetailsView.setVisibility(View.GONE);
         progressBar = (ProgressBar) findViewById(R.id.pb_loading);
         progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
     }
@@ -88,7 +99,7 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
     }
 
     public void onLoadFinished(final Loader<ProductDetails> loader, final ProductDetails productDetails) {
-        progressBar.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.GONE);
         productDetailsView.setVisibility(View.VISIBLE);
         FormatDate date = new FormatDate();
         ImageLoader imageLoader = ImageLoader.getInstance();
@@ -100,6 +111,12 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
         //download and display image from url
         imageLoader.displayImage(productDetails.getImage(), image, options);
         titleText.setText(productDetails.getTitle());
+        try {
+            if (Float.parseFloat(productDetails.getPrice()) == 0) {
+                buyButton.setVisibility(View.GONE);
+            }
+        } catch (Exception e) {
+        }
         numberOfExamsText.setText(productDetails.getExams().size() + " Exams");
         numberOfNotesText.setText(productDetails.getNotes().size() + " Documents");
         if(date.getDate(productDetails.getStartDate(), productDetails.getEndDate()) != null) {
@@ -125,6 +142,31 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
         notesListViewText.setFocusable(false);
         notesListViewText.setAdapter(new NotesListAdapter(this.getLayoutInflater(), productDetails.getNotes(), R.layout.available_exams_list_item));
         setListViewHeightBasedOnChildren(notesListViewText);
+        orderItem.setProduct(Constants.Http.URL_BASE + "/api/v2/products/" + productDetails.getSlug() + "/"); //now using v2 instead v2.1
+        orderItem.setQuantity(1);
+        orderItem.setPrice(productDetails.getPrice());
+        this.productDetails = productDetails;
+    }
+
+    @OnClick(R.id.buyButton) public void order() {
+        InternetConnectivityChecker internetConnectivityChecker = new InternetConnectivityChecker(this);
+        if (internetConnectivityChecker.isConnected()) {
+            Intent intent = new Intent(ProductDetailsActivity.this, OrderConfirmActivity.class);
+            intent.putExtra("orderItem", orderItem);
+            intent.putExtra("RequiresShipping", productDetails.getRequiresShipping());
+            startActivityForResult(intent, PayuConstants.PAYU_REQUEST_CODE);
+        } else {
+            internetConnectivityChecker.showAlert();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PayuConstants.PAYU_REQUEST_CODE) {
+            if(resultCode == RESULT_OK) {
+                finish();
+            }
+        }
     }
 
     @Override

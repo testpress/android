@@ -55,4 +55,7 @@
     <color name="body_text_2_inverse">#8affffff</color>
 
     <color name="native_background">#ffffff</color>
+    <color name="orange_button_end">#F9783F</color>
+    <color name="orange_button_start">#FA9365</color>
+
 </resources>

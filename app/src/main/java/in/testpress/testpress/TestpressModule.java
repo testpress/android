@@ -17,7 +17,6 @@ import in.testpress.testpress.authenticator.NewUserRegistrationActivity;
 import in.testpress.testpress.authenticator.TestpressAuthenticatorActivity;
 import in.testpress.testpress.authenticator.CodeVerificationActivity;
 import in.testpress.testpress.core.Constants;
-import in.testpress.testpress.core.ExamPager;
 import in.testpress.testpress.core.PostFromAnyThreadBus;
 import in.testpress.testpress.core.RestAdapterRequestInterceptor;
 import in.testpress.testpress.core.RestErrorHandler;
@@ -31,13 +30,19 @@ import in.testpress.testpress.ui.ExamsListActivity;
 import in.testpress.testpress.ui.ExamsListFragment;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.NavigationDrawerFragment;
+import in.testpress.testpress.ui.OrderConfirmActivity;
 import in.testpress.testpress.ui.OrdersListActivity;
+import in.testpress.testpress.ui.PaymentSuccessActivity;
 import in.testpress.testpress.ui.ProductDetailsActivity;
 import in.testpress.testpress.ui.ProductNativeGridBaseFragment;
 import in.testpress.testpress.ui.ProductsListActivity;
 import in.testpress.testpress.ui.ReviewActivity;
 import in.testpress.testpress.ui.ReviewFragment;
 import in.testpress.testpress.ui.ReviewQuestionsFragment;
+import in.testpress.testpress.ui.paymentGateway.CreditDebitCardActivity;
+import in.testpress.testpress.ui.paymentGateway.NetBankingActivity;
+import in.testpress.testpress.ui.paymentGateway.PaymentModeActivity;
+import in.testpress.testpress.ui.paymentGateway.PaymentsActivity;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
 
@@ -68,7 +73,13 @@ import retrofit.converter.GsonConverter;
                 ProductsListActivity.class,
                 ProductNativeGridBaseFragment.class,
                 ProductDetailsActivity.class,
-                OrdersListActivity.class
+                OrdersListActivity.class,
+                PaymentSuccessActivity.class,
+                OrderConfirmActivity.class,
+                PaymentModeActivity.class,
+                PaymentsActivity.class,
+                CreditDebitCardActivity.class,
+                NetBankingActivity.class
 
         }
 )

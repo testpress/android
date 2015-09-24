@@ -19,6 +19,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
 
     <application
         android:name=".TestpressApplication"
@@ -118,7 +119,7 @@
             android:parentActivityName=".ui.ProductsListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="in.testpress.testpress.ui.MainActivity" />
+                android:value="in.testpress.testpress.ui.ProductsListActivity" />
         </activity>
 
         <activity
@@ -131,6 +132,40 @@
                 android:value="in.testpress.testpress.ui.MainActivity" />
         </activity>
 
+        <activity
+            android:name=".ui.PaymentSuccessActivity"
+            android:label="Summary"
+            android:configChanges="orientation|keyboardHidden|screenSize">
+        </activity>
+
+        <activity
+            android:name=".ui.OrderConfirmActivity"
+            android:label="Shipping Address"
+            android:configChanges="orientation|keyboardHidden|screenSize">
+        </activity>
+
+        <activity
+            android:name=".ui.paymentGateway.PaymentModeActivity"
+            android:label="Select Payment Mode"
+            android:configChanges="orientation|keyboard|screenSize">
+        </activity>
+
+        <activity
+            android:name=".ui.paymentGateway.CreditDebitCardActivity"
+            android:label="Enter Details"
+            android:configChanges="orientation|keyboard|screenSize">
+        </activity>
+
+        <activity
+            android:name=".ui.paymentGateway.NetBankingActivity"
+            android:label="Select Bank"
+            android:configChanges="orientation|keyboard|screenSize">
+        </activity>
+
+        <activity android:name=".ui.paymentGateway.PaymentsActivity"
+            android:configChanges="orientation|keyboard|screenSize"
+            android:windowSoftInputMode="stateAlwaysHidden">
+        </activity>
     </application>
 
 </manifest>

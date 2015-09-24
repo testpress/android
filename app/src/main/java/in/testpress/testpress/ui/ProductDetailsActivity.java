@@ -1,20 +1,23 @@
 package in.testpress.testpress.ui;
 
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.ProgressBar;;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.payu.india.Payu.PayuConstants;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -23,11 +26,14 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.models.ProductDetails;
 import in.testpress.testpress.util.FormatDate;
+import in.testpress.testpress.util.InternetConnectivityChecker;
+
 import retrofit.RetrofitError;
 
 public class ProductDetailsActivity extends TestpressFragmentActivity implements LoaderManager.LoaderCallbacks<ProductDetails>{
@@ -47,6 +53,7 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
     @InjectView(R.id.notesTitle) TextView notesTitleText;
     @InjectView(R.id.notesListView) ListView notesListViewText;
     @InjectView(R.id.productDetails) RelativeLayout productDetailsView;
+    @InjectView(R.id.buyButton) Button buyButton;
 
     ProgressBar progressBar;
     ProductDetails productDetails;
@@ -61,6 +68,7 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
         ButterKnife.inject(this);
         productUrl = getIntent().getStringExtra("productUrl");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        productDetailsView.setVisibility(View.GONE);
         progressBar = (ProgressBar) findViewById(R.id.pb_loading);
         progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
     }
@@ -88,7 +96,7 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
     }
 
     public void onLoadFinished(final Loader<ProductDetails> loader, final ProductDetails productDetails) {
-        progressBar.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.GONE);
         productDetailsView.setVisibility(View.VISIBLE);
         FormatDate date = new FormatDate();
         ImageLoader imageLoader = ImageLoader.getInstance();
@@ -100,13 +108,30 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
         //download and display image from url
         imageLoader.displayImage(productDetails.getImage(), image, options);
         titleText.setText(productDetails.getTitle());
-        numberOfExamsText.setText(productDetails.getExams().size() + " Exams");
-        numberOfNotesText.setText(productDetails.getNotes().size() + " Documents");
+        try {
+            if (Float.parseFloat(productDetails.getPrice()) == 0) {
+                buyButton.setText("Start Now - Free");
+            }
+        } catch (Exception e) {
+        }
+        if(productDetails.getExams().size() != 0) {
+            numberOfExamsText.setText(productDetails.getExams().size() + " Exams");
+            numberOfExamsText.setVisibility(View.VISIBLE);
+        } else {
+            numberOfExamsText.setVisibility(View.GONE);
+        }
+        if(productDetails.getNotes().size() != 0) {
+            numberOfNotesText.setText(productDetails.getNotes().size() + " Documents");
+            numberOfNotesText.setVisibility(View.VISIBLE);
+        } else {
+            numberOfNotesText.setVisibility(View.GONE);
+        }
         if(date.getDate(productDetails.getStartDate(), productDetails.getEndDate()) != null) {
             dateText.setVisibility(View.VISIBLE);
             dateText.setText(date.getDate(productDetails.getStartDate(), productDetails.getEndDate()));
         }
-        categoriesText.setText(Arrays.toString(productDetails.getCategories().toArray()));
+        String categories = Arrays.toString(productDetails.getCategories().toArray());
+        categoriesText.setText(categories.substring(1, categories.length()-1));
         priceText.setText("₹ " + productDetails.getPrice());
         if(!productDetails.getDescription().isEmpty()) {
             descriptionText.setText(productDetails.getDescription());
@@ -125,6 +150,27 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
         notesListViewText.setFocusable(false);
         notesListViewText.setAdapter(new NotesListAdapter(this.getLayoutInflater(), productDetails.getNotes(), R.layout.available_exams_list_item));
         setListViewHeightBasedOnChildren(notesListViewText);
+        this.productDetails = productDetails;
+    }
+
+    @OnClick(R.id.buyButton) public void order() {
+        InternetConnectivityChecker internetConnectivityChecker = new InternetConnectivityChecker(this);
+        if (internetConnectivityChecker.isConnected()) {
+            Intent intent = new Intent(ProductDetailsActivity.this, OrderConfirmActivity.class);
+            intent.putExtra("productDetails", productDetails);
+            startActivityForResult(intent, PayuConstants.PAYU_REQUEST_CODE);
+        } else {
+            internetConnectivityChecker.showAlert();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PayuConstants.PAYU_REQUEST_CODE) {
+            if(resultCode == RESULT_OK) {
+                finish();
+            }
+        }
     }
 
     @Override

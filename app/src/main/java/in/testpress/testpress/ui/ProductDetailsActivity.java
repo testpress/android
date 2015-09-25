@@ -71,7 +71,7 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
 
             @Override
             public ProductDetails loadData() throws Exception {
-                String productUrlFragment = null;
+                String productUrlFragment;
                 URL url = new URL(productUrl);
                 try {
                     productUrlFragment = url.getFile().substring(1);

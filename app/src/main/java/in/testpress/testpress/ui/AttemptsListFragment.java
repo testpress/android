@@ -21,9 +21,7 @@ import javax.inject.Inject;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
-import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.AttemptsPager;
-import in.testpress.testpress.core.ExamPager;
 import in.testpress.testpress.core.ResourcePager;
 import in.testpress.testpress.models.Attempt;
 import in.testpress.testpress.models.Exam;
@@ -33,8 +31,6 @@ public class AttemptsListFragment extends PagedItemFragment<Attempt> {
     Exam exam;
     AttemptsPager pager;
     @Inject protected TestpressServiceProvider serviceProvider;
-    @Inject protected LogoutService logoutService;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -91,11 +87,6 @@ public class AttemptsListFragment extends PagedItemFragment<Attempt> {
     @Override
     public void onCreateOptionsMenu(final Menu optionsMenu, final MenuInflater inflater) {
         inflater.inflate(R.menu.attempt_actions, optionsMenu);
-    }
-
-    @Override
-    protected LogoutService getLogoutService() {
-        return logoutService;
     }
 
     @Override

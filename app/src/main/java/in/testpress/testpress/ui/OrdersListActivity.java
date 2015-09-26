@@ -11,5 +11,8 @@ public class OrdersListActivity extends TestpressFragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.container_layout);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        OrdersListFragment ordersListFragment = new OrdersListFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, ordersListFragment).commitAllowingStateLoss();
     }
 }

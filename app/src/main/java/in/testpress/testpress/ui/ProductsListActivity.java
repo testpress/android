@@ -1,7 +1,6 @@
 package in.testpress.testpress.ui;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 
 import in.testpress.testpress.R;
 
@@ -12,7 +11,7 @@ public class ProductsListActivity extends TestpressFragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.container_layout);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ProductNativeGridBaseFragment productsListFragment = new ProductNativeGridBaseFragment();
+        ProductListFragment productsListFragment = new ProductListFragment();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, productsListFragment).commitAllowingStateLoss();
     }

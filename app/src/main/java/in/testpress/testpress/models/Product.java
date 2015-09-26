@@ -1,11 +1,14 @@
 package in.testpress.testpress.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Product {
+public class Product implements Parcelable {
 
     private Integer id;
     private String url;
@@ -15,10 +18,54 @@ public class Product {
     private String startDate;
     private String endDate;
     private List<String> categories = new ArrayList<String>();
+    private List<String> types = new ArrayList<String>();
     private Integer examsCount;
     private Integer notesCount;
     private String price;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+
+    // Parcelling part
+    public Product(Parcel parcel){
+        url        = parcel.readString();
+        title      = parcel.readString();
+        id         = parcel.readInt();
+        slug       = parcel.readString();
+        image      = parcel.readString();
+        startDate  = parcel.readString();
+        endDate    = parcel.readString();
+        price      = parcel.readString();
+        parcel.readStringList(categories);
+        parcel.readStringList(types);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(url);
+        parcel.writeString(title);
+        parcel.writeInt(id);
+        parcel.writeString(slug);
+        parcel.writeString(image);
+        parcel.writeString(startDate);
+        parcel.writeString(endDate);
+        parcel.writeString(price);
+        parcel.writeStringList(categories);
+        parcel.writeStringList(types);
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public Product createFromParcel(Parcel in) {
+            return new Product(in);
+        }
+
+        public Product[] newArray(int size) {
+            return new Product[size];
+        }
+    };
 
     /**
      *
@@ -162,6 +209,24 @@ public class Product {
      */
     public void setCategories(List<String> categories) {
         this.categories = categories;
+    }
+
+    /**
+     *
+     * @return
+     * The types
+     */
+    public List<String> getTypes() {
+        return types;
+    }
+
+    /**
+     *
+     * @param types
+     * The types
+     */
+    public void setTypes(List<String> types) {
+        this.types = types;
     }
 
     /**

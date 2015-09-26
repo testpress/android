@@ -16,13 +16,14 @@
             android:id="@+id/productDetails"
             android:paddingLeft="10dp"
             android:paddingTop="2dp"
-            android:visibility="gone">
+>
 
             <ImageView
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:id="@+id/thumbnail_image"
-                android:layout_gravity="center_horizontal"/>
+                android:src="@drawable/icon"
+                android:layout_centerHorizontal="true"/>
 
             <TextView
                 android:id="@+id/title"
@@ -33,7 +34,25 @@
                 android:textColor="@color/primary"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/thumbnail_image"
-                android:padding="2dp"/>
+                android:padding="5dp"
+                android:layout_centerHorizontal="true"/>
+
+            <Button
+                android:id="@+id/buyButton"
+                style="@style/ShadowText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="Buy"
+                android:textColor="#ffffff"
+                android:background="@drawable/buy_button_background_states"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@id/title"/>
 
             <TextView
                 android:id="@+id/number_of_exams"
@@ -41,7 +60,7 @@
                 android:text="0 Exams"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/title"
+                android:layout_below="@id/buyButton"
                 android:padding="2dp"/>
 
             <TextView
@@ -137,6 +156,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/notesListView"
                 android:layout_below="@id/notesTitle"/>
+
         </RelativeLayout>
     </ScrollView>
 

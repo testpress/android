@@ -4,15 +4,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import in.testpress.testpress.models.Attempt;
 import in.testpress.testpress.models.AttemptItem;
+import in.testpress.testpress.models.Exam;
+import in.testpress.testpress.models.Order;
+import in.testpress.testpress.models.OrderItem;
 import in.testpress.testpress.models.Product;
 import in.testpress.testpress.models.ProductDetails;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.ReviewItem;
 import in.testpress.testpress.models.TestpressApiResponse;
-import in.testpress.testpress.models.Exam;
 import in.testpress.testpress.models.Update;
 import retrofit.RestAdapter;
 
@@ -135,5 +136,27 @@ public class TestpressService {
 
     public ProductDetails getProductDetail(String productUrlFrag) {
         return getProductsService().getProductDetails(productUrlFrag, getAuthToken());
+    }
+
+    public Order order(String user, List<OrderItem> orderItems) {
+        HashMap<String, Object> orderParameters = new HashMap<String, Object>();
+        orderParameters.put("user", user);
+        orderParameters.put("order_items", orderItems);
+        return getProductsService().order(orderParameters, getAuthToken());
+    }
+
+    public Order orderConfirm(int orderId, String address, String zip, String phone, String landmark, String user, List<OrderItem> orderItems) {
+        HashMap<String, Object> orderParameters = new HashMap<String, Object>();
+        orderParameters.put("user", user);
+        orderParameters.put("order_items", orderItems);
+        orderParameters.put("shipping_address", address);
+        orderParameters.put("zip", zip);
+        orderParameters.put("phone", phone);
+        orderParameters.put("land_mark", landmark);
+        return getProductsService().orderConfirm(orderId, orderParameters, getAuthToken());
+    }
+
+    public TestpressApiResponse<Order> getOrders(String urlFrag) {
+        return getProductsService().getOrders(urlFrag, getAuthToken());
     }
 }

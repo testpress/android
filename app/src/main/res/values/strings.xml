@@ -24,12 +24,14 @@
     <string name="date_column">Date</string>
     <string name="error_loading_exams">Loading exams failed</string>
     <string name="error_loading_products">Loading Products failed</string>
+    <string name="error_loading_orders">Loading Orders failed</string>
     <string name="error_loading_attempts">Loading attempts failed</string>
     <string name="error_loading_questions">Loading questions failed</string>
     <string name="no_exams">No Exams</string>
     <string name="no_attempts">No Attempts</string>
     <string name="no_questions">No Questions</string>
     <string name="no_products">No Products</string>
+    <string name="no_orders">No Orders Yet</string>
     <string name="avatar">Avatar</string>
     <string name="choose">Choose</string>
     <string name="start_exam">Start Exam</string>
@@ -63,6 +65,7 @@
     <string name="verify_code">Verify Code</string>
     <string name="message_verifying">Verifying code</string>
     <string name="label_fill_all_details">*Please fill all details</string>
+    <string name="label_fill_required_details">*Please fill required details</string>
     <string name="register">Register</string>
     <string name="message_signing_in">Signing in…</string>
     <string name="blank_field_warning">Please populate this field</string>

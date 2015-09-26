@@ -28,6 +28,10 @@ public interface ProductService {
 
     @PUT(Constants.Http.URL_ORDERS_FRAG+"{order_id}"+"/confirm/")
     Order orderConfirm(@EncodedPath("order_id") int orderId, @Body HashMap<String, Object> arguments, @Header("Authorization") String authorization);
+
+    @GET("/{orders_url}")
+    TestpressApiResponse<Order> getOrders(@EncodedPath("orders_url") String ordersUrl, @Header("Authorization") String authorization);
+
 }
 
 

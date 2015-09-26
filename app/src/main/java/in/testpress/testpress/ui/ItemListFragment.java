@@ -27,8 +27,7 @@ import in.testpress.testpress.R.id;
 import in.testpress.testpress.R.layout;
 import in.testpress.testpress.util.InternetConnectivityChecker;
 
-import it.gmariotti.cardslib.library.internal.CardGridArrayAdapter;
-import it.gmariotti.cardslib.library.view.CardGridView;
+import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 
 import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
 import com.github.kevinsawicki.wishlist.Toaster;
@@ -68,8 +67,6 @@ public abstract class ItemListFragment<E> extends Fragment
      */
     protected ListView listView;
 
-    protected CardGridView gridView;
-
     /**
      * Empty view
      */
@@ -85,7 +82,7 @@ public abstract class ItemListFragment<E> extends Fragment
      */
     protected boolean listShown;
     protected InternetConnectivityChecker internetConnectivityChecker;
-    protected CardGridArrayAdapter cardArrayAdapter;
+    protected CardArrayAdapter cardArrayAdapter;
 
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
@@ -115,21 +112,15 @@ public abstract class ItemListFragment<E> extends Fragment
         emptyView = null;
         progressBar = null;
         listView = null;
-        gridView = null;
         super.onDestroyView();
     }
 
     @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        setElements(view);
         progressBar = (ProgressBar) view.findViewById(id.pb_loading);
         progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
         emptyView = (TextView) view.findViewById(id.empty);
-    }
-
-    protected void setElements(View view){
         listView = (ListView) view.findViewById(android.R.id.list);
         listView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -222,12 +213,8 @@ public abstract class ItemListFragment<E> extends Fragment
             return;
         }
         this.items = items;
-        setItemsToAdapter();
-        showList();
-    }
-
-    protected void setItemsToAdapter(){
         getListAdapter().getWrappedAdapter().setItems(items.toArray());
+        showList();
     }
 
     /**

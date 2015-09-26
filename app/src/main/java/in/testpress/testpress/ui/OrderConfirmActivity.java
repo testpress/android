@@ -12,8 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -22,7 +22,9 @@ import com.payu.india.Model.PayuConfig;
 import com.payu.india.Model.PayuHashes;
 import com.payu.india.Payu.PayuConstants;
 
+import in.testpress.testpress.R;
 import in.testpress.testpress.authenticator.LogoutService;
+import in.testpress.testpress.models.ProductDetails;
 import in.testpress.testpress.ui.paymentGateway.PaymentModeActivity;
 
 import java.util.ArrayList;
@@ -36,7 +38,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import in.testpress.testpress.Injector;
-import in.testpress.testpress.R;
 import in.testpress.testpress.R.id;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.core.Constants;
@@ -55,16 +56,16 @@ public class OrderConfirmActivity extends TestpressFragmentActivity {
     @InjectView(id.zip) EditText zip;
     @InjectView(id.landmark) EditText landmark;
     @InjectView(id.phone) EditText phone;
-    @InjectView(R.id.fill_all_details) TextView fillAllDetailsText;
+    @InjectView(id.fill_all_details) TextView fillAllDetailsText;
     @InjectView(id.continueButton) Button continueButton;
-    @InjectView(id.shippingDetails) LinearLayout shippingDetails;
+    @InjectView(id.pb_loading) ProgressBar progressBar;
+    @InjectView(id.shippingDetails) RelativeLayout shippingDetails;
     final TextWatcher watcher = validationTextWatcher();
-    Intent intent;
     PaymentParams paymentParams;
     PayuConfig payuConfig;
-    ProgressBar progressBar;
+    ProductDetails productDetails;
     Order order;
-    OrderItem orderItem;
+    OrderItem orderItem = new OrderItem();
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -72,13 +73,14 @@ public class OrderConfirmActivity extends TestpressFragmentActivity {
         Injector.inject(this);
         setContentView(R.layout.shipping_address);
         ButterKnife.inject(this);
+        progressBar.setVisibility(View.VISIBLE);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         shippingDetails.setVisibility(View.GONE);
-        progressBar = (ProgressBar) findViewById(R.id.pb_loading);
         progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
-        progressBar.setVisibility(View.VISIBLE);
-        orderItem = getIntent().getParcelableExtra("orderItem");
-        final boolean requiresShipping = getIntent().getBooleanExtra("RequiresShipping", false);
+        productDetails = getIntent().getParcelableExtra("productDetails");
+        orderItem.setProduct(Constants.Http.URL_BASE + "/api/v2/products/" + productDetails.getSlug() + "/"); //now using v2 instead v2.1
+        orderItem.setQuantity(1);
+        orderItem.setPrice(productDetails.getPrice());
         final List<OrderItem> orderItems = new ArrayList<>();
         orderItems.add(orderItem);
         new SafeAsyncTask<Order>() {
@@ -98,7 +100,23 @@ public class OrderConfirmActivity extends TestpressFragmentActivity {
             @Override
             protected void onSuccess(Order createdOrder) {
                 order = createdOrder;
-                if(requiresShipping) {
+                if(createdOrder.getStatus().equals("Completed")) {
+                    setResult(RESULT_OK);
+                    Intent intent;
+                    if(productDetails.getExams().size() != 0) {
+                        if(productDetails.getExams().size() > 1) {
+                            intent = new Intent(OrderConfirmActivity.this, ExamsListActivity.class);
+                        } else {
+                            intent = new Intent(OrderConfirmActivity.this, ExamActivity.class);
+                            intent.putExtra("exam", productDetails.getExams().get(0));
+                        }
+                    } else {
+                        intent = new Intent(OrderConfirmActivity.this, PaymentSuccessActivity.class);
+                        intent.putExtra("order", order);
+                    }
+                    startActivity(intent);
+                    finish();
+                } else if(productDetails.getRequiresShipping()) {
                     landmark.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                         public boolean onEditorAction(final TextView v, final int actionId,
                                                       final KeyEvent event) {
@@ -195,7 +213,7 @@ public class OrderConfirmActivity extends TestpressFragmentActivity {
 
             @Override
             protected void onSuccess(Order order) {
-                intent = new Intent(OrderConfirmActivity.this, PaymentModeActivity.class);
+                Intent intent = new Intent(OrderConfirmActivity.this, PaymentModeActivity.class);
                 paymentParams = new PaymentParams();
                 paymentParams.setKey("72G8r5");
                 paymentParams.setTxnId(order.getId().toString());

@@ -1,11 +1,14 @@
 package in.testpress.testpress.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Product {
+public class Product implements Parcelable {
 
     private Integer id;
     private String url;
@@ -20,6 +23,49 @@ public class Product {
     private Integer notesCount;
     private String price;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+
+    // Parcelling part
+    public Product(Parcel parcel){
+        url        = parcel.readString();
+        title      = parcel.readString();
+        id         = parcel.readInt();
+        slug       = parcel.readString();
+        image      = parcel.readString();
+        startDate  = parcel.readString();
+        endDate    = parcel.readString();
+        price      = parcel.readString();
+        parcel.readStringList(categories);
+        parcel.readStringList(types);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(url);
+        parcel.writeString(title);
+        parcel.writeInt(id);
+        parcel.writeString(slug);
+        parcel.writeString(image);
+        parcel.writeString(startDate);
+        parcel.writeString(endDate);
+        parcel.writeString(price);
+        parcel.writeStringList(categories);
+        parcel.writeStringList(types);
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public Product createFromParcel(Parcel in) {
+            return new Product(in);
+        }
+
+        public Product[] newArray(int size) {
+            return new Product[size];
+        }
+    };
 
     /**
      *

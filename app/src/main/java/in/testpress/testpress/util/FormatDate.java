@@ -29,4 +29,20 @@ public class FormatDate {
         }
         return null;
     }
+
+    public String formatDateTime(String inputString) {
+        Date date = null;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        try {
+            if(inputString != null && !inputString.isEmpty()) {
+                date = simpleDateFormat.parse(inputString);
+                DateFormat dateformat = DateFormat.getDateTimeInstance();
+                return dateformat.format(date);
+            }
+        } catch (ParseException e) {
+        }
+        return null;
+    }
+
 }

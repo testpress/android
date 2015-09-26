@@ -45,7 +45,6 @@ public class Order implements Parcelable {
         apikey   = parcel.readString();
         zip      = parcel.readString();
         landMark = parcel.readString();
-        orderItems = new ArrayList<OrderItem>();
         parcel.readTypedList(orderItems, OrderItem.CREATOR);
     }
 

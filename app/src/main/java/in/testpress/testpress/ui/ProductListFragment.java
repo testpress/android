@@ -1,18 +1,15 @@
 package in.testpress.testpress.ui;
 
 import android.accounts.AccountsException;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.Spinner;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
@@ -23,9 +20,7 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -39,22 +34,14 @@ import in.testpress.testpress.core.ResourcePager;
 import in.testpress.testpress.models.Product;
 import in.testpress.testpress.util.FormatDate;
 import it.gmariotti.cardslib.library.internal.Card;
-import it.gmariotti.cardslib.library.internal.CardGridArrayAdapter;
 import it.gmariotti.cardslib.library.internal.CardThumbnail;
-import it.gmariotti.cardslib.library.view.CardGridView;
 
-public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
+public class ProductListFragment extends PagedItemFragment<Product> {
 
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected LogoutService logoutService;
 
-    ExploreSpinnerAdapter mTopLevelSpinnerAdapter;
-    View mSpinnerContainer;
-    Boolean mFistTimeCallback = false;
     ProductsPager pager;
-    //List of courses got from the api. This is used to populate the spinner.
-    ArrayList<String> courses = new ArrayList<String>();
-    ArrayList<Card> cards = new ArrayList<Card>();
     ImageLoader imageLoader = ImageLoader.getInstance();
     DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
             .cacheOnDisc(true).resetViewBeforeLoading(true)
@@ -75,38 +62,6 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
             e.printStackTrace();
         }
         super.onCreate(savedInstanceState);
-        mTopLevelSpinnerAdapter = new ExploreSpinnerAdapter(getActivity().getLayoutInflater(), getActivity().getResources(), true);
-        mTopLevelSpinnerAdapter.addItem("", getString(R.string.all_categories), false, 0);
-        Toolbar toolbar = ((ProductsListActivity)(getActivity())).getActionBarToolbar();
-        mSpinnerContainer = getActivity().getLayoutInflater().inflate(R.layout.actionbar_spinner, toolbar, false);
-        Spinner spinner = (Spinner) mSpinnerContainer.findViewById(R.id.actionbar_spinner);
-        spinner.setAdapter(mTopLevelSpinnerAdapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> spinner, View view, int position, long itemId) {
-                if (!mFistTimeCallback) {
-                    mFistTimeCallback = true;
-                    return;
-                }
-                String filter = mTopLevelSpinnerAdapter.getTag(position);
-                if (filter.isEmpty()) {
-                    pager.removeQueryParams("category");
-                } else {
-                    pager.setQueryParams("category", filter);
-                }
-                refreshWithProgress();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-            }
-        });
-        mSpinnerContainer.setVisibility(View.GONE);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.grid_card_grid_view, container, false);
     }
 
     @Override
@@ -116,8 +71,20 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
     }
 
     @Override
-    protected void setElements(View view){
-        gridView = (CardGridView) view.findViewById(R.id.carddemo_grid_base1);
+    protected void configureList(Activity activity, ListView listView) {
+        super.configureList(activity, listView);
+
+        listView.setFastScrollEnabled(true);
+        listView.setDividerHeight(0);
+    }
+
+    protected ResourcePager<Product> getPager() {
+        return pager;
+    }
+
+    @Override
+    protected SingleTypeAdapter<Product> createAdapter(List<Product> items) {
+        return new ProductsListAdapter(getActivity().getLayoutInflater(), items, R.layout.product_list_inner_content);
     }
 
     @Override
@@ -130,58 +97,21 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
             return;
         }
         super.onLoadFinished(loader, items);
-        //Populate the spinner with the courses
-        List<String> coursesList = new ArrayList<String>();
-        for (final Product product : items) {
-            for (String course : product.getCategories()) {
-                coursesList.add(course);
-            }
+    }
+
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        Product product = ((Product) l.getItemAtPosition(position));
+        if(internetConnectivityChecker.isConnected()) {
+            Intent intent = new Intent(getActivity(), ProductDetailsActivity.class);
+            intent.putExtra("productUrl", product.getUrl());
+            startActivity(intent);
+        } else {
+            internetConnectivityChecker.showAlert();
         }
-        Set<String> uniqueCourses = new HashSet<String>(coursesList);
-        for (final String course : uniqueCourses) {
-            // Do not add the course if already present in the spinner
-            if (!courses.contains(course)) {
-                courses.add(course);
-                mTopLevelSpinnerAdapter.addItem(course, course, true, 0);
-            }
-        }
-        if ((mSpinnerContainer.getVisibility() == View.GONE) && !uniqueCourses.isEmpty()){
-            mSpinnerContainer.setVisibility(View.VISIBLE);
-            Toolbar toolbar = ((ProductsListActivity)(getActivity())).getActionBarToolbar();
-            View view = toolbar.findViewById(R.id.actionbar_spinnerwrap);
-            toolbar.removeView(view);
-            toolbar.invalidate();
-            ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            toolbar.addView(mSpinnerContainer, lp);
-        }
-    }
-
-    protected ResourcePager<Product> getPager() {
-        return pager;
-    }
-
-    @Override
-    protected void refreshWithProgress() {
-        if(cardArrayAdapter != null)
-        cardArrayAdapter.clear();
-        super.refreshWithProgress();
-    }
-
-    @Override
-    protected void setScroll(){
-        gridView.setOnScrollListener(this);
-        gridView.setFastScrollEnabled(true);
-    }
-
-    @Override
-    protected void setItemsToAdapter(){
-        cardArrayAdapter=new CardGridArrayAdapter(getActivity(),initCards());
-        cardArrayAdapter.setInnerViewTypeCount(1);
-        gridView.setAdapter(cardArrayAdapter);
     }
 
     protected ArrayList<Card> initCards() {
+        ArrayList<Card> cards = new ArrayList<Card>();
         for (int i = 0; i < items.size(); i++) {
             final Product product = items.get(i);
             ProductCard card = new ProductCard(getActivity());
@@ -192,7 +122,7 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
             card.endDate = product.getEndDate();
             card.categories = product.getCategories();
             card.price = product.getPrice();
-            MyThumbnail thumb = new MyThumbnail(getActivity(), product.getImage());
+            Thumbnail thumb = new Thumbnail(getActivity(), product.getImage());
             thumb.setExternalUsage(true);
             card.addCardThumbnail(thumb);
             card.setOnClickListener(new Card.OnCardClickListener() {
@@ -223,7 +153,7 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
         String price;
 
         public ProductCard(Context context) {
-            super(context, R.layout.grid_native_inner_content);
+            super(context, R.layout.product_list_inner_content);
         }
 
         @Override
@@ -237,8 +167,18 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
             TextView priceTextView = (TextView) parent.findViewById(R.id.price);
             titleTextView.setText(mainTitle);
             titleTextView.setSelected(true);
-            examsCountTextView.setText(numberOfExams + " Exams");
-            notesCountTextView.setText(notesCount + " Documents");
+            if(numberOfExams == 0) {
+                examsCountTextView.setVisibility(View.GONE);
+            } else {
+                examsCountTextView.setText(numberOfExams + " Exams");
+                examsCountTextView.setVisibility(View.VISIBLE);
+            }
+            if(notesCount == 0) {
+                notesCountTextView.setVisibility(View.GONE);
+            } else {
+                notesCountTextView.setText(notesCount + " Documents");
+                notesCountTextView.setVisibility(View.VISIBLE);
+            }
             if(date.getDate(startDate,endDate) != null) {
                 dateTextView.setVisibility(View.VISIBLE);
                 dateTextView.setText(date.getDate(startDate, endDate));
@@ -251,10 +191,10 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
         }
     }
 
-    class MyThumbnail extends CardThumbnail {
+    class Thumbnail extends CardThumbnail {
         String imageUrl;
 
-        MyThumbnail(Context context,String imageUrl) {
+        Thumbnail(Context context,String imageUrl) {
             super(context);
             this.imageUrl = imageUrl;
         }
@@ -266,38 +206,6 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
         }
     }
 
-    public ItemListFragment<Product> setListShown(final boolean shown, final boolean animate) {
-        if (!isUsable()) {
-            return this;
-        }
-        if (shown == listShown) {
-            if (shown) {
-                // List has already been shown so hide/show the empty view with
-                // no fade effect
-                if (items.isEmpty()) {
-                    hide(gridView).show(emptyView);
-                } else {
-                    hide(emptyView).show(gridView);
-                }
-            }
-            return this;
-        }
-        listShown = shown;
-        if (shown) {
-            if (!items.isEmpty()) {
-                hide(progressBar).hide(emptyView).fadeIn(gridView, animate)
-                        .show(gridView);
-            } else {
-                hide(progressBar).hide(gridView).fadeIn(emptyView, animate)
-                        .show(emptyView);
-            }
-        } else {
-            hide(gridView).hide(emptyView).fadeIn(progressBar, animate)
-                    .show(progressBar);
-        }
-        return this;
-    }
-
     @Override
     protected int getErrorMessage(Exception exception) {
         if((exception.getMessage() != null) && (exception.getMessage()).equals("403 FORBIDDEN")) {
@@ -307,10 +215,5 @@ public class ProductNativeGridBaseFragment extends PagedItemFragment<Product> {
             setEmptyText(R.string.no_internet);
         }
         return R.string.error_loading_products;
-    }
-
-    @Override
-    protected SingleTypeAdapter<Product> createAdapter(List<Product> items) {
-        return null;
     }
 }

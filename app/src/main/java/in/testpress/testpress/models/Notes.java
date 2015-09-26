@@ -1,9 +1,12 @@
 package in.testpress.testpress.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.HashMap;
 import java.util.Map;
 
-public class Notes {
+public class Notes implements Parcelable {
 
     private Integer id;
     private String url;
@@ -13,6 +16,43 @@ public class Notes {
     private String attachment;
     private String topicsUrl;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+
+    // Parcelling part
+    public Notes(Parcel parcel){
+        url         = parcel.readString();
+        title       = parcel.readString();
+        id          = parcel.readInt();
+        slug        = parcel.readString();
+        description = parcel.readString();
+        attachment  = parcel.readString();
+        topicsUrl    = parcel.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(url);
+        parcel.writeString(title);
+        parcel.writeInt(id);
+        parcel.writeString(slug);
+        parcel.writeString(description);
+        parcel.writeString(attachment);
+        parcel.writeString(topicsUrl);
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public Notes createFromParcel(Parcel in) {
+            return new Notes(in);
+        }
+
+        public Notes[] newArray(int size) {
+            return new Notes[size];
+        }
+    };
 
     /**
      *

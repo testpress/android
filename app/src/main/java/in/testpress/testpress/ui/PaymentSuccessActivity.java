@@ -63,14 +63,15 @@ public class PaymentSuccessActivity extends TestpressFragmentActivity {
 
             @Override
             protected void onSuccess(ProductDetails productDetails) {
-                if(productDetails.getTypes().contains("Exams")) {
-                    if(productDetails.getExams().size() > 1) {
+                if(productDetails.getExams().size() != 0) {
+                   if(productDetails.getExams().size() > 1) {
                         intent = new Intent(PaymentSuccessActivity.this, ExamsListActivity.class);
-                    } else {
+                   } else {
                         intent = new Intent(PaymentSuccessActivity.this, ExamActivity.class);
                         intent.putExtra("exam", productDetails.getExams().get(0));
-                    }
-                    examButton.setVisibility(View.VISIBLE);
+                   }
+                } else {
+                    examButton.setVisibility(View.GONE);
                 }
                 if(!productDetails.getTypes().contains("Books")) {
                     bookMessage.setVisibility(View.GONE);

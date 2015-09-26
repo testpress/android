@@ -30,8 +30,6 @@ import butterknife.OnClick;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
-import in.testpress.testpress.core.Constants;
-import in.testpress.testpress.models.OrderItem;
 import in.testpress.testpress.models.ProductDetails;
 import in.testpress.testpress.util.FormatDate;
 import in.testpress.testpress.util.InternetConnectivityChecker;
@@ -60,7 +58,6 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
     ProgressBar progressBar;
     ProductDetails productDetails;
     String productUrl;
-    OrderItem orderItem = new OrderItem();
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -113,17 +110,28 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
         titleText.setText(productDetails.getTitle());
         try {
             if (Float.parseFloat(productDetails.getPrice()) == 0) {
-                buyButton.setVisibility(View.GONE);
+                buyButton.setText("Start Now - Free");
             }
         } catch (Exception e) {
         }
-        numberOfExamsText.setText(productDetails.getExams().size() + " Exams");
-        numberOfNotesText.setText(productDetails.getNotes().size() + " Documents");
+        if(productDetails.getExams().size() != 0) {
+            numberOfExamsText.setText(productDetails.getExams().size() + " Exams");
+            numberOfExamsText.setVisibility(View.VISIBLE);
+        } else {
+            numberOfExamsText.setVisibility(View.GONE);
+        }
+        if(productDetails.getNotes().size() != 0) {
+            numberOfNotesText.setText(productDetails.getNotes().size() + " Documents");
+            numberOfNotesText.setVisibility(View.VISIBLE);
+        } else {
+            numberOfNotesText.setVisibility(View.GONE);
+        }
         if(date.getDate(productDetails.getStartDate(), productDetails.getEndDate()) != null) {
             dateText.setVisibility(View.VISIBLE);
             dateText.setText(date.getDate(productDetails.getStartDate(), productDetails.getEndDate()));
         }
-        categoriesText.setText(Arrays.toString(productDetails.getCategories().toArray()));
+        String categories = Arrays.toString(productDetails.getCategories().toArray());
+        categoriesText.setText(categories.substring(1, categories.length()-1));
         priceText.setText("₹ " + productDetails.getPrice());
         if(!productDetails.getDescription().isEmpty()) {
             descriptionText.setText(productDetails.getDescription());
@@ -142,9 +150,6 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
         notesListViewText.setFocusable(false);
         notesListViewText.setAdapter(new NotesListAdapter(this.getLayoutInflater(), productDetails.getNotes(), R.layout.available_exams_list_item));
         setListViewHeightBasedOnChildren(notesListViewText);
-        orderItem.setProduct(Constants.Http.URL_BASE + "/api/v2/products/" + productDetails.getSlug() + "/"); //now using v2 instead v2.1
-        orderItem.setQuantity(1);
-        orderItem.setPrice(productDetails.getPrice());
         this.productDetails = productDetails;
     }
 
@@ -152,8 +157,7 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
         InternetConnectivityChecker internetConnectivityChecker = new InternetConnectivityChecker(this);
         if (internetConnectivityChecker.isConnected()) {
             Intent intent = new Intent(ProductDetailsActivity.this, OrderConfirmActivity.class);
-            intent.putExtra("orderItem", orderItem);
-            intent.putExtra("RequiresShipping", productDetails.getRequiresShipping());
+            intent.putExtra("productDetails", productDetails);
             startActivityForResult(intent, PayuConstants.PAYU_REQUEST_CODE);
         } else {
             internetConnectivityChecker.showAlert();

@@ -155,4 +155,8 @@ public class TestpressService {
         orderParameters.put("land_mark", landmark);
         return getProductsService().orderConfirm(confirmUrlFrag, orderParameters, getAuthToken());
     }
+
+    public TestpressApiResponse<Order> getOrders(String urlFrag) {
+        return getProductsService().getOrders(urlFrag, getAuthToken());
+    }
 }

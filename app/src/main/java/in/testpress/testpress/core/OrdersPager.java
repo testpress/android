@@ -5,35 +5,36 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
+import in.testpress.testpress.models.Order;
 import in.testpress.testpress.models.Product;
 import in.testpress.testpress.models.TestpressApiResponse;
 import retrofit.RetrofitError;
 
 
-public class ProductsPager extends ResourcePager<Product> {
+public class OrdersPager extends ResourcePager<Order> {
 
-    TestpressApiResponse<Product> response;
+    TestpressApiResponse<Order> response;
 
-    public ProductsPager(TestpressService service) {
+    public OrdersPager(TestpressService service) {
         super(service);
     }
 
     @Override
-    public ResourcePager<Product> clear() {
+    public ResourcePager<Order> clear() {
         response = null;
         return super.clear();
     }
 
     @Override
-    protected Object getId(Product resource) {
+    protected Object getId(Order resource) {
         return resource.getId();
     }
 
     @Override
-    public List<Product> getItems(int page, int size) throws RetrofitError {
+    public List<Order> getItems(int page, int size) throws RetrofitError {
         String url;
         if (response == null) {
-            url = Constants.Http.URL_PRODUCTS_FRAG;
+            url = Constants.Http.URL_ORDERS_FRAG;
         } else {
             try {
                 URL full = new URL(response.getNext());
@@ -42,11 +43,10 @@ public class ProductsPager extends ResourcePager<Product> {
                 e.printStackTrace();
                 url = null;
             }
-
         }
         if (url != null) {
             try {
-                response = service.getProducts(url, queryParams);
+                response = service.getOrders(url);
                 return response.getResults();
             }
             catch (Exception e) {

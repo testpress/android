@@ -14,6 +14,7 @@ import dagger.Module;
 import dagger.Provides;
 import in.testpress.testpress.authenticator.ApiKeyProvider;
 import in.testpress.testpress.authenticator.NewUserRegistrationActivity;
+import in.testpress.testpress.authenticator.RegistrationIntentService;
 import in.testpress.testpress.authenticator.TestpressAuthenticatorActivity;
 import in.testpress.testpress.authenticator.CodeVerificationActivity;
 import in.testpress.testpress.core.Constants;
@@ -34,6 +35,7 @@ import in.testpress.testpress.ui.OrderConfirmActivity;
 import in.testpress.testpress.ui.OrdersListActivity;
 import in.testpress.testpress.ui.OrdersListFragment;
 import in.testpress.testpress.ui.PaymentSuccessActivity;
+import in.testpress.testpress.ui.PostActivity;
 import in.testpress.testpress.ui.ProductDetailsActivity;
 import in.testpress.testpress.ui.ProductListFragment;
 import in.testpress.testpress.ui.ProductsListActivity;
@@ -81,8 +83,9 @@ import retrofit.converter.GsonConverter;
                 PaymentModeActivity.class,
                 PaymentsActivity.class,
                 CreditDebitCardActivity.class,
-                NetBankingActivity.class
-
+                NetBankingActivity.class,
+                RegistrationIntentService.class,
+                PostActivity.class
         }
 )
 public class TestpressModule {

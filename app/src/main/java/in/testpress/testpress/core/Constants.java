@@ -111,6 +111,24 @@ public final class Constants {
         public static final String URL_END_EXAM = URL_BASE + URL_END_EXAM_FRAG;
 
         /**
+         * Devices Register URL
+         */
+        public static final String URL_DEVICES_REGISTER_FRAG =  "/api/v2.1/devices/register/";
+        public static final String URL_DEVICES_REGISTER = URL_BASE + URL_DEVICES_REGISTER_FRAG;
+
+        /**
+         * Devices Unregister URL
+         */
+        public static final String URL_DEVICES_UNREGISTER_FRAG =  "/api/v2.1/devices/unregister/";
+        public static final String URL_DEVICES_UNREGISTER = URL_BASE + URL_DEVICES_UNREGISTER_FRAG;
+
+        /**
+         * Posts URL
+         */
+        public static final String URL_POSTS_FRAG =  "api/v2.1/posts/";
+        public static final String URL_POSTS = URL_BASE + URL_POSTS_FRAG;
+
+        /**
          * PARAMS for auth
          */
         public static final String PARAM_USERNAME = "username";
@@ -145,6 +163,9 @@ public final class Constants {
         public static final int TIMER_NOTIFICATION_ID = 1000; // Why 1000? Why not? :)
     }
 
+    public static final String GCM_PREFERENCE_NAME = "testpress.demo";
+    public static final String GCM_PROPERTY_REG_ID = "GCMRegId";
+    public static final String SENT_TOKEN_TO_SERVER = "sentTokenToServer";
 }
 
 

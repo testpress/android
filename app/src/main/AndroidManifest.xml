@@ -116,7 +116,11 @@
 
         <activity
             android:name=".ui.PostActivity"
-            android:label="Post">
+            android:label="Article"
+            android:parentActivityName=".ui.PostsListActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="in.testpress.testpress.ui.PostsListActivity" />
         </activity>
         <activity
             android:name=".ui.AttemptsListActivity"
@@ -164,6 +168,16 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="in.testpress.testpress.ui.ProductsListActivity" />
+        </activity>
+
+        <activity
+            android:name=".ui.PostsListActivity"
+            android:label="Articles"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:parentActivityName=".ui.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="in.testpress.testpress.ui.MainActivity" />
         </activity>
 
         <activity

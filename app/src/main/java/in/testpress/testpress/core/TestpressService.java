@@ -127,6 +127,10 @@ public class TestpressService {
         return device;
     }
 
+    public TestpressApiResponse<Post> getPosts(String urlFrag, Map<String, String> queryParams) {
+        return getPostService().getPosts(urlFrag, queryParams, getAuthToken());
+    }
+
     public Post getPostDetail(String url) {
         return getPostService().getPostDetails(url, getAuthToken());
     }

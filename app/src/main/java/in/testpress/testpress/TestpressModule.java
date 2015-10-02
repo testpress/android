@@ -36,6 +36,8 @@ import in.testpress.testpress.ui.OrdersListActivity;
 import in.testpress.testpress.ui.OrdersListFragment;
 import in.testpress.testpress.ui.PaymentSuccessActivity;
 import in.testpress.testpress.ui.PostActivity;
+import in.testpress.testpress.ui.PostsListActivity;
+import in.testpress.testpress.ui.PostsListFragment;
 import in.testpress.testpress.ui.ProductDetailsActivity;
 import in.testpress.testpress.ui.ProductListFragment;
 import in.testpress.testpress.ui.ProductsListActivity;
@@ -85,7 +87,9 @@ import retrofit.converter.GsonConverter;
                 CreditDebitCardActivity.class,
                 NetBankingActivity.class,
                 RegistrationIntentService.class,
-                PostActivity.class
+                PostActivity.class,
+                PostsListActivity.class,
+                PostsListFragment.class
         }
 )
 public class TestpressModule {

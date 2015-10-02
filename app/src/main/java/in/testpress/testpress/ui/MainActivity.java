@@ -134,14 +134,12 @@ public class MainActivity extends TestpressFragmentActivity {
             protected void onException(final Exception e) throws RuntimeException {
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
                 sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
-                initScreen();
             }
 
             @Override
             protected void onSuccess(final Device device) throws Exception {
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
                 sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, true).apply();
-                initScreen();
             }
         }.execute();
 
@@ -174,6 +172,7 @@ public class MainActivity extends TestpressFragmentActivity {
                     // Start IntentService to register this application with GCM.
                     Intent intent = new Intent(MainActivity.this, RegistrationIntentService.class);
                     startService(intent);
+                    initScreen();
                 }
             }
         }.execute();
@@ -258,7 +257,6 @@ public class MainActivity extends TestpressFragmentActivity {
                     }
                 })
                 .show();
-
     }
 
     @Override
@@ -273,6 +271,9 @@ public class MainActivity extends TestpressFragmentActivity {
             }
         } else {
             setContentView(R.layout.main_activity);
+            progressBarLayout = (RelativeLayout) findViewById(R.id.progressbar);
+            ProgressBar progressBar = (ProgressBar) findViewById(R.id.pb_loading);
+            progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
             mRegistrationBroadcastReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {

@@ -6,14 +6,28 @@ import android.os.Parcelable;
 public class Post implements Parcelable {
     protected String title;
     protected String summary;
-    protected String content_html;
+    protected String contentHtml;
+    protected String url;
+    protected Category category;
+    protected Integer id;
+    protected Boolean active;
+    protected Integer institute;
+    protected String created;
+    protected String modified;
 
     public Post() {}
 
     public Post(Parcel parcel) {
-        title = parcel.readString();
-        summary = parcel.readString();
-        content_html = parcel.readString();
+        title       = parcel.readString();
+        summary     = parcel.readString();
+        contentHtml = parcel.readString();
+        url         = parcel.readString();
+        category    = parcel.readParcelable(Category.class.getClassLoader());
+        id          = parcel.readInt();
+        active      = parcel.readByte() != 0;
+        created     = parcel.readString();
+        modified    = parcel.readString();
+        institute   = parcel.readInt();
     }
 
     @Override
@@ -25,7 +39,14 @@ public class Post implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(title);
         parcel.writeString(summary);
-        parcel.writeString(content_html);
+        parcel.writeString(contentHtml);
+        parcel.writeString(url);
+        parcel.writeParcelable(category, i);
+        parcel.writeInt(id);
+        parcel.writeByte((byte) (active ? 1 : 0));
+        parcel.writeString(created);
+        parcel.writeString(modified);
+        parcel.writeInt(institute);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
@@ -38,27 +59,83 @@ public class Post implements Parcelable {
         }
     };
 
-    public void setContent_html(String content_html) {
-        this.content_html = content_html;
+    public String getUrl() {
+        return url;
     }
 
-    public void setSummary(String summary) {
-        this.summary = summary;
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public String getContent_html() {
-        return content_html;
-    }
-
     public String getSummary() {
         return summary;
     }
 
-    public String getTitle() {
-        return title;
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+    public String getContentHtml() {
+        return contentHtml;
+    }
+
+    public void setContentHtml(String contentHtml) {
+        this.contentHtml = contentHtml;
+    }
+
+    public Integer getInstitute() {
+        return institute;
+    }
+
+    public void setInstitute(Integer institute) {
+        this.institute = institute;
+    }
+
+    public String getCreated() {
+        return created;
+    }
+
+    public void setCreated(String created) {
+        this.created = created;
+    }
+
+    public String getModified() {
+        return modified;
+    }
+
+    public void setModified(String modified) {
+        this.modified = modified;
     }
 }

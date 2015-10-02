@@ -9,6 +9,8 @@ import in.testpress.testpress.models.AttemptItem;
 import in.testpress.testpress.models.Exam;
 import in.testpress.testpress.models.Order;
 import in.testpress.testpress.models.OrderItem;
+import in.testpress.testpress.models.Device;
+import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.Product;
 import in.testpress.testpress.models.ProductDetails;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
@@ -49,6 +51,10 @@ public class TestpressService {
     private ExamService getExamsService() { return getRestAdapter().create(ExamService.class); }
 
     private ProductService getProductsService() { return getRestAdapter().create(ProductService.class); }
+
+    private PostService getPostService() { return getRestAdapter().create(PostService.class); }
+
+    private DeviceService getDevicesService() { return getRestAdapter().create(DeviceService.class); }
 
     private String getAuthToken() {
         return "JWT " + authToken;
@@ -111,6 +117,24 @@ public class TestpressService {
         return authToken;
     }
 
+
+    public Device register(String registrationId, String deviceId) {
+        Device device;
+        HashMap<String, String> credentials = new HashMap<String, String>();
+        credentials.put("registration_id", registrationId);
+        credentials.put("device_id", deviceId);
+        device = getDevicesService().register(credentials, getAuthToken());
+        return device;
+    }
+
+    public TestpressApiResponse<Post> getPosts(String urlFrag, Map<String, String> queryParams) {
+        return getPostService().getPosts(urlFrag, queryParams, getAuthToken());
+    }
+
+    public Post getPostDetail(String url) {
+        return getPostService().getPostDetails(url, getAuthToken());
+    }
+
     public RegistrationSuccessResponse register(String username,String email, String password, String phone){
         RegistrationSuccessResponse registrationSuccessResponseResponse;
         HashMap<String, String> userDetails = new HashMap<String, String>();
@@ -121,6 +145,7 @@ public class TestpressService {
         registrationSuccessResponseResponse = getAuthenticationService().register(userDetails);
         return registrationSuccessResponseResponse;
     }
+
     public RegistrationSuccessResponse verifyCode(String username, String code){
         RegistrationSuccessResponse verificationResponse;
         HashMap<String, String> codeVerificationParameters = new HashMap<String, String>();

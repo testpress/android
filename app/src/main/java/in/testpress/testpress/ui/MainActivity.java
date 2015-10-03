@@ -13,40 +13,30 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.net.Uri;
-import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.MenuItem;
-import android.view.Window;
-import android.widget.ProgressBar;
 
 import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
+import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.authenticator.RegistrationIntentService;
 import in.testpress.testpress.core.TestpressService;
+import in.testpress.testpress.models.DaoSession;
+import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.models.Update;
-import in.testpress.testpress.events.NavItemSelectedEvent;
 import in.testpress.testpress.models.Device;
-import in.testpress.testpress.models.Update;
 import in.testpress.testpress.util.GCMPreference;
-import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
-import in.testpress.testpress.util.UIUtils;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.iid.InstanceID;
-import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
@@ -242,6 +232,11 @@ public class MainActivity extends TestpressFragmentActivity {
                                 .progress(true, 0)
                                 .show();
                         serviceProvider.invalidateAuthToken();
+
+                        DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
+                        PostDao postDao = daoSession.getPostDao();
+                        postDao.deleteAll();
+                        daoSession.clear();
                         getSupportFragmentManager().beginTransaction().remove(fragment).commit();
                         logoutService.logout(new Runnable() {
                             @Override
@@ -268,6 +263,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 Intent newintent = new Intent(this, PostActivity.class);
                 newintent.putExtra("url", intent.getStringExtra("url"));
                 startActivity(newintent);
+                finish();
             }
         } else {
             setContentView(R.layout.main_activity);

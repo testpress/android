@@ -65,6 +65,9 @@ dependencies {
     compile files('libs/payusdk.jar')
     compile project(':CustomBrowser-release')
 
+    //greenDao for database
+    compile 'de.greenrobot:greendao:2.0.0'
+
     repositories {
         maven { url "https://jitpack.io" }
     }

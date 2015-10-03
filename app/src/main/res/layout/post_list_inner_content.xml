@@ -55,8 +55,6 @@
             android:padding="5dp"
             android:layout_alignParentRight="true"
             android:background="@drawable/button_background_enabled"
-            android:textColor="@android:color/white"
-            android:visibility="visible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 

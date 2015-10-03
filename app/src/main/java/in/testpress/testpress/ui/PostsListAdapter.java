@@ -49,6 +49,7 @@ public class PostsListAdapter extends SingleTypeAdapter<Post> {
             } else {
                 textView.setTextColor(Color.WHITE);
             }
+            views[3].setVisibility(View.VISIBLE);
         }
         else {
             views[3].setVisibility(View.GONE);

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
 
+
 import java.io.IOException;
 import java.util.List;
 
@@ -51,7 +52,6 @@ public abstract class PagedItemFragment<E> extends ItemListFragment<E>
         // Add whatever code ixs needed to append new items to your AdapterView
         //customLoadMoreDataFromApi(page);
         // or customLoadMoreDataFromApi(totalItemsCount);
-
         if (!isUsable())
             return;
         if (!pager.hasMore()) {
@@ -100,6 +100,7 @@ public abstract class PagedItemFragment<E> extends ItemListFragment<E>
      */
     private void showMore() {
         refresh();
+
     }
 
     @Override

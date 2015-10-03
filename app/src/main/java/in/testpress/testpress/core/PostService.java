@@ -3,8 +3,6 @@ package in.testpress.testpress.core;
 import java.util.Map;
 
 import in.testpress.testpress.models.Post;
-import in.testpress.testpress.models.Product;
-import in.testpress.testpress.models.ProductDetails;
 import in.testpress.testpress.models.TestpressApiResponse;
 
 import retrofit.http.EncodedPath;

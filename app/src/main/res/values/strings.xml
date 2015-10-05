@@ -63,6 +63,7 @@
     <string name="verify_code">Verify Code</string>
     <string name="message_verifying">Verifying code</string>
     <string name="label_fill_all_details">*Please fill all details</string>
+    <string name="label_fill_required_details">*Please fill required details</string>
     <string name="register">Register</string>
     <string name="message_signing_in">Signing in…</string>
     <string name="blank_field_warning">Please populate this field</string>
@@ -87,5 +88,10 @@
     <string name="all_exams">All Exams</string>
     <string name="courses">Courses</string>
     <string name="all_categories">All Categories</string>
+    <string name="payment_completed">Payment Successfully Completed</string>
+    <string name="thanks_for_purchasing">Thank you for Purchasing</string>
+    <string name="books_message">Books will be Delivered to you shortly</string>
+    <string name="continue_purchase">Continue Purchase</string>
+    <string name="take_exam">Take Exam</string>
 
 </resources>

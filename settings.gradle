@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':CustomBrowser-release'
 // include ':integration-tests'

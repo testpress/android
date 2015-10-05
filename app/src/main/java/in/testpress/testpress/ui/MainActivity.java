@@ -146,24 +146,38 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     public void logout() {
-        final MaterialDialog materialDialog = new MaterialDialog.Builder(this)
-                .title(R.string.label_logging_out)
-                .content(R.string.please_wait)
-                .widgetColorRes(R.color.primary)
-                .progress(true, 0)
+        new MaterialDialog.Builder(this)
+                .title("Do you really want to Logout?")
+                .positiveText(R.string.ok)
+                .negativeText(R.string.cancel)
+                .positiveColorRes(R.color.primary)
+                .negativeColorRes(R.color.primary)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        dialog.dismiss();
+                        final MaterialDialog materialDialog = new MaterialDialog.Builder(MainActivity.this)
+                                .title(R.string.label_logging_out)
+                                .content(R.string.please_wait)
+                                .widgetColorRes(R.color.primary)
+                                .progress(true, 0)
+                                .show();
+                        serviceProvider.invalidateAuthToken();
+                        getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+                        logoutService.logout(new Runnable() {
+                            @Override
+                            public void run() {
+                                // Calling a checkAuth will force the service to look for a logged in user
+                                // and when it finds none the user will be requested to log in again.
+                                Intent intent = MainActivity.this.getIntent();
+                                materialDialog.dismiss();
+                                MainActivity.this.finish();
+                                MainActivity.this.startActivity(intent);
+                            }
+                        });
+                    }
+                })
                 .show();
-        serviceProvider.invalidateAuthToken();
-        getSupportFragmentManager().beginTransaction().remove(fragment).commit();
-        logoutService.logout(new Runnable() {
-            @Override
-            public void run() {
-                // Calling a checkAuth will force the service to look for a logged in user
-                // and when it finds none the user will be requested to log in again.
-                Intent intent = MainActivity.this.getIntent();
-                materialDialog.dismiss();
-                MainActivity.this.finish();
-                MainActivity.this.startActivity(intent);
-            }
-        });
+
     }
 }

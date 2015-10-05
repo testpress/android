@@ -57,5 +57,6 @@
     <color name="native_background">#ffffff</color>
     <color name="orange_button_end">#F9783F</color>
     <color name="orange_button_start">#FA9365</color>
+    <color name="list_divider">#9D9D9D</color>
 
 </resources>

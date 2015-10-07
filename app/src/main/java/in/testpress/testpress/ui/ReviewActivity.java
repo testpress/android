@@ -32,7 +32,7 @@ public class ReviewActivity extends TestpressFragmentActivity {
     public void onBackPressed() {
         if((previousActivity != null) && previousActivity.equals("ExamActivity")) {
             //onBackPressed go to history
-            Intent intent = new Intent(ReviewActivity.this, MainActivity.class);
+            Intent intent = new Intent(ReviewActivity.this, ExamsListActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("currentItem", "2");
             startActivity(intent);

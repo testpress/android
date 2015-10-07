@@ -348,7 +348,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     protected void returnToHistory() {
-        Intent intent = new Intent(getActivity(), MainActivity.class);
+        Intent intent = new Intent(getActivity(), ExamsListActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("currentItem", "2");
         startActivity(intent);

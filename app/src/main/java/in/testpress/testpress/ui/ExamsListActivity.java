@@ -12,6 +12,7 @@ public class ExamsListActivity extends TestpressFragmentActivity {
         setContentView(R.layout.container_layout);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         CarouselFragment fragment = new CarouselFragment();
+        fragment.setArguments(getIntent().getExtras());
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment).commitAllowingStateLoss();
     }

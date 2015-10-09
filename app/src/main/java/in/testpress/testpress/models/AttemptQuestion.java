@@ -11,6 +11,7 @@ public class AttemptQuestion implements Parcelable {
     private String questionHtml;
     private List<AttemptAnswer> answers = new ArrayList<AttemptAnswer>();
     private String subject;
+    private String direction;
     private String type;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -87,7 +88,7 @@ public class AttemptQuestion implements Parcelable {
      * @return
      * The subject
      */
-    public Object getSubject() {
+    public String getSubject() {
         return subject;
     }
 
@@ -116,6 +117,15 @@ public class AttemptQuestion implements Parcelable {
      */
     public void setType(String type) {
         this.type = type;
+    }
+
+
+    public String getDirection() {
+        return direction;
+    }
+
+    public void setDirection(String direction) {
+        this.direction = direction;
     }
 
     public Map<String, Object> getAdditionalProperties() {

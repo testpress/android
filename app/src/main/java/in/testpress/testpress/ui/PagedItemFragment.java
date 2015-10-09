@@ -3,11 +3,14 @@ package in.testpress.testpress.ui;
 
 import android.os.Bundle;
 import android.support.v4.content.Loader;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.AbsListView;
 
 import java.io.IOException;
 import java.util.List;
 
+import in.testpress.testpress.R;
 import in.testpress.testpress.core.ResourcePager;
 
 public abstract class PagedItemFragment<E> extends ItemListFragment<E>
@@ -24,12 +27,14 @@ public abstract class PagedItemFragment<E> extends ItemListFragment<E>
      * @return pager
      */
     protected abstract ResourcePager<E> getPager();
+    View loadingLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         pager = getPager();
+        loadingLayout = LayoutInflater.from(getActivity()).inflate(R.layout.loading_layout, null);
     }
 
     @Override
@@ -52,12 +57,19 @@ public abstract class PagedItemFragment<E> extends ItemListFragment<E>
         // or customLoadMoreDataFromApi(totalItemsCount);
         if (!isUsable())
             return;
-        if (!pager.hasMore())
+        if (!pager.hasMore()) {
+            if(getListAdapter().getFootersCount() != 0) {  //if pager reached last page remove footer if footer added already
+                getListAdapter().removeFooter(loadingLayout);
+            }
             return;
+        }
         if (getLoaderManager().hasRunningLoaders())
             return;
         if (listView != null
                 && (listView.getLastVisiblePosition() + 3) >= pager.size()) {
+            if(getListAdapter().getFootersCount() == 0) { //display loading footer if not present when loading next page
+                getListAdapter().addFooter(loadingLayout);
+            }
             showMore();
         } else if (gridView != null
                 && ((gridView.getLastVisiblePosition()) + 2) >= pager.size() / 2) {

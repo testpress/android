@@ -135,6 +135,28 @@
             android:background="#cccccc"
             android:layout_gravity="center_horizontal"/>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="2dp"
+            android:id="@+id/spinnerContainer">
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:id="@+id/subjectFilter"
+                android:layout_gravity="end"
+                android:layout_alignParentEnd="true"
+                style="@style/Widget.Testpress.HeaderBar.Spinner.Base"
+                android:layout_alignParentRight="true"
+                android:padding="5dp"/>
+        </RelativeLayout>
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:background="#cccccc"
+            android:layout_gravity="center_horizontal"/>
+
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="vertical" android:layout_width="match_parent"
             android:layout_weight="0.8" android:layout_height="0dp">

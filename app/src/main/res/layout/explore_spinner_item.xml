@@ -5,13 +5,16 @@
 
     <TextView
         android:id="@android:id/text1"
-        android:paddingLeft="@dimen/spinner_left_padding"
-        android:paddingRight="4dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:textColor="@color/body_text_2_inverse"
+        android:textColor="#ffffff"
         android:textSize="16sp"
-        android:drawablePadding="6dp"
-        android:drawableRight="@drawable/spinner_triangle_sub" />
+        android:layout_gravity="end"
+        android:gravity="center_vertical"
+        android:background="@color/primary"
+        android:drawablePadding="3dp"
+        android:drawableRight="@drawable/spinner_triangle" />
 
 </LinearLayout>

@@ -1,9 +1,6 @@
 package in.testpress.testpress.ui;
 
 import android.accounts.OperationCanceledException;
-import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -11,14 +8,13 @@ import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -30,8 +26,8 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -58,11 +54,11 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
     @InjectView(R.id.next) TextView next;
     @InjectView(R.id.pager) TestpressViewPager pager;
     @InjectView(R.id.questions_list) ListView questionsListView;
-    @InjectView(R.id.end) TextView endExamButton;
-    @InjectView(R.id.pause_exam) TextView pauseExamButton;
     @InjectView(R.id.sliding_layout) SlidingUpPanelLayout mLayout;
     @InjectView(R.id.timer) TextView timer;
     @InjectView(R.id.filter) Spinner filter;
+    @InjectView(R.id.subjectFilter) Spinner subjectFilter;
+    @InjectView(R.id.spinnerContainer) RelativeLayout spinnerContainer;
 
     ExamPagerAdapter pagerAdapter;
     List<AttemptItem> filterItems = new ArrayList<>();
@@ -71,8 +67,14 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
 
     Attempt mAttempt;
     Exam mExam;
-    List<AttemptItem> attemptItemList = Collections.emptyList();
+    List<AttemptItem> attemptItemList = new ArrayList<AttemptItem>();
     CountDownTimer countDownTimer;
+
+    ExploreSpinnerAdapter mTopLevelSpinnerAdapter;
+    Boolean mFistTimeCallback = false;
+    HashMap<String, Integer> subjects = new HashMap<>();
+    int currentOffset;
+    boolean navigationButtonPressed;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,6 +101,50 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         mLayout.setEnabled(true);
         mLayout.setTouchEnabled(false);
         mPanelAdapter = new PanelListAdapter(getActivity().getLayoutInflater(), filterItems, R.layout.panel_list_item);
+        mTopLevelSpinnerAdapter = new ExploreSpinnerAdapter(getActivity().getLayoutInflater(), getActivity().getResources(), false);
+        subjectFilter.setAdapter(mTopLevelSpinnerAdapter);
+        subjectFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> spinner, View view, int position, long itemId) {
+                if (!mFistTimeCallback) {
+                    mFistTimeCallback = true;
+                    return;
+                }
+                if (attemptItemList.get(pager.getCurrentItem()).hasChanged()) {  //save current answer if changed
+                    try {
+                        attemptItemList.get(pager.getCurrentItem()).saveResult(getActivity(), serviceProvider);
+                    } catch (Exception e) {
+                    }
+                }
+                String subject = mTopLevelSpinnerAdapter.getTag(position);
+                if (navigationButtonPressed) {         //spinner item changed by clicking next or prev button
+                    navigationButtonPressed = false;
+                } else {
+                    pager.setCurrentItem(subjects.get(subject));   //spinner item changed by changed by selecting in spinner
+                }
+                int currentPosition = pager.getCurrentItem();
+                if (currentPosition > 0) {   //setting status of prev button
+                    previous.setClickable(true);
+                    previous.setTextColor(getResources().getColor(R.color.primary));
+                } else {
+                    previous.setClickable(false);
+                    previous.setTextColor(getResources().getColor(R.color.nav_button_disabled));
+                }
+                if (currentPosition + 1 >= attemptItemList.size()) {  //setting status of next button
+                    next.setTextColor(Color.parseColor("#d9534f"));
+                    next.setText(R.string.end);
+                } else {
+                    next.setTextColor(getResources().getColor(R.color.primary));
+                    next.setText(R.string.next);
+                }
+                currentOffset = subjects.get(subject);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+        spinnerContainer.setVisibility(View.GONE);
         return view;
     }
 
@@ -166,6 +212,14 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
             pager.setCurrentItem(pager.getCurrentItem() + 1);
         }
 
+        if(mExam.getTemplateType() == 2) {  //check whether navigated to next subject if true change the spinner item
+            if (currentOffset != subjects.get(attemptItemList.get(pager.getCurrentItem()).getAttemptQuestion().getSubject())) {
+                navigationButtonPressed = true;
+                subjectFilter.setSelection(subjectFilter.getSelectedItemPosition() + 1);
+                return;
+            }
+        }
+
         int currentPosition = pager.getCurrentItem();
         if (currentPosition > 0) {
             previous.setClickable(true);
@@ -226,6 +280,14 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
 
         if (pager.getCurrentItem() != 0) {
             pager.setCurrentItem(pager.getCurrentItem() - 1);
+        }
+
+        if(mExam.getTemplateType() == 2) {  //check whether navigated to prev subject if true change the spinner item
+            if (currentOffset != subjects.get(attemptItemList.get(pager.getCurrentItem()).getAttemptQuestion().getSubject())) {
+                navigationButtonPressed = true;
+                subjectFilter.setSelection(subjectFilter.getSelectedItemPosition() - 1);
+                return;
+            }
         }
 
         int currentPosition = pager.getCurrentItem();
@@ -314,9 +376,39 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onLoadFinished(final Loader<List<AttemptItem>> loader, final List<AttemptItem> items) {
-        attemptItemList = items;
         if (progressDialog.isShowing()) {
             progressDialog.dismiss();
+        }
+
+        if(mExam.getTemplateType() == 2) {  //for IBPS templates only
+//          To Populate the spinner with the subjects
+            HashMap<String, List<AttemptItem>> subjectsWiseItems = new HashMap<>();
+            for (AttemptItem item : items) {
+                if (item.getAttemptQuestion().getSubject() == null || item.getAttemptQuestion().getSubject().isEmpty()) {  //if subject is empty subject = "Uncategorized"
+                    item.getAttemptQuestion().setSubject("Uncategorized");
+                }
+                if (subjectsWiseItems.containsKey(item.getAttemptQuestion().getSubject())) { //check subject is already added if added simply add the item it
+                    subjectsWiseItems.get(item.getAttemptQuestion().getSubject()).add(item);
+                } else {
+                    subjectsWiseItems.put(item.getAttemptQuestion().getSubject(), new ArrayList<AttemptItem>()); //else add the subject & then add item to it
+                    subjectsWiseItems.get(item.getAttemptQuestion().getSubject()).add(item);
+                }
+            }
+
+            if ((spinnerContainer.getVisibility() == View.GONE) && subjectsWiseItems.size() > 1) {  //show spinner only if #subjects > 1
+                //store each set of subject items to attemptItemList
+                for (String subject : subjectsWiseItems.keySet()) {
+                    subjects.put(subject, attemptItemList.size());   //add subjects & it starting point
+                    attemptItemList.addAll(subjectsWiseItems.get(subject));
+                    mTopLevelSpinnerAdapter.addItem(subject, subject, true, 0);
+                }
+                mTopLevelSpinnerAdapter.notifyDataSetChanged();
+                spinnerContainer.setVisibility(View.VISIBLE);
+                subjectFilter.setSelection(0); //set 1st item as default selection
+                currentOffset = 0;
+            }
+        } else {
+            attemptItemList =items;
         }
 
         pagerAdapter = new ExamPagerAdapter(getFragmentManager(), attemptItemList);

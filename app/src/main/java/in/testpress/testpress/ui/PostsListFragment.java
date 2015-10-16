@@ -19,10 +19,7 @@ import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -36,14 +33,12 @@ import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.PostsPager;
-import in.testpress.testpress.core.ResourcePager;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.PostDao;
-import in.testpress.testpress.models.Session;
-import in.testpress.testpress.models.SessionDao;
-import in.testpress.testpress.util.FormatDate;
+import in.testpress.testpress.models.DBSession;
+import in.testpress.testpress.models.DBSessionDao;
 import in.testpress.testpress.util.Ln;
-import in.testpress.testpress.util.SessionManager;
+import in.testpress.testpress.util.DBSessionManager;
 
 public class PostsListFragment extends ItemListFragment<Post>
         implements AbsListView.OnScrollListener {
@@ -52,9 +47,9 @@ public class PostsListFragment extends ItemListFragment<Post>
     @Inject protected LogoutService logoutService;
     PostsPager pager, newPager;
     PostDao postDao;
-    SessionDao sessionDao;
-    SessionManager sessionManager;
-    Session newSession, currentSession;
+    DBSessionDao sessionDao;
+    DBSessionManager dbSessionManager;
+    DBSession newSession, currentSession;
     LazyList<Post> posts;
     View headerLayout, footerLayout;
     QueryBuilder<Post> queryBuilder;
@@ -75,23 +70,23 @@ public class PostsListFragment extends ItemListFragment<Post>
         super.onCreate(savedInstanceState);
 
         postDao = ((TestpressApplication) getActivity().getApplicationContext()).getDaoSession().getPostDao();
-        sessionDao = ((TestpressApplication) getActivity().getApplicationContext()).getDaoSession().getSessionDao();
+        sessionDao = ((TestpressApplication) getActivity().getApplicationContext()).getDaoSession().getDBSessionDao();
         footerLayout = LayoutInflater.from(getActivity()).inflate(R.layout.loading_layout, null);
-        sessionManager = new SessionManager(getContext());
+        dbSessionManager = new DBSessionManager(getContext());
     }
 
     void init() {
 
         if(sessionDao.count() == 0) {
             //create first session when no DB exist
-            currentSession = sessionManager.getNewSession();
+            currentSession = dbSessionManager.getNewSession();
             getLoaderManager().initLoader(0, null, this);
 
         } else {
 
             //show posts from db
               //get the latest session
-            currentSession = sessionManager.getLatestSession();
+            currentSession = dbSessionManager.getLatestSession();
 
             //latestPost(latest session's latest post) - used while pagination if internet unavailable moving from one session to another session while scrolling
             // to display the posts of both session , if internet available there is no need of another session
@@ -99,7 +94,7 @@ public class PostsListFragment extends ItemListFragment<Post>
             latestPost = currentSession.getLatestPostReceived();
 
             //if current session is completed & has previous session then merge to it
-            sessionManager.merge(currentSession);
+            dbSessionManager.merge(currentSession);
 
             displayDataFromDB();
 
@@ -116,7 +111,7 @@ public class PostsListFragment extends ItemListFragment<Post>
                 getListAdapter().addHeader(headerLayout);
 
                 //create new session
-                newSession = sessionManager.getNewSession();
+                newSession = dbSessionManager.getNewSession();
 
                 //get another pager
                 try {
@@ -200,7 +195,7 @@ public class PostsListFragment extends ItemListFragment<Post>
             }
 
             //if items present update current session
-            sessionManager.updateSession(newSession, newPager, items);
+            dbSessionManager.updateSession(newSession, newPager, items);
 
             //modify header
             if(getListAdapter().getHeadersCount() != 0) {
@@ -228,10 +223,10 @@ public class PostsListFragment extends ItemListFragment<Post>
                     return;
                 }
 
-                if (sessionManager.getPreviousSession(currentSession) != null) {  //check whether previous session is available
+                if (dbSessionManager.getPreviousSession(currentSession) != null) {  //check whether previous session is available
 
                     //get the previous session
-                    currentSession = sessionManager.getPreviousSession(currentSession);
+                    currentSession = dbSessionManager.getPreviousSession(currentSession);
                     displayDataFromDB();
 
                 } else {  //reached end of whole data in db
@@ -241,10 +236,10 @@ public class PostsListFragment extends ItemListFragment<Post>
             }
 
             //if items present update current session
-            sessionManager.updateSession(currentSession, pager, items);
+            dbSessionManager.updateSession(currentSession, pager, items);
 
             //if current session is completed & has previous session then merge to it
-            sessionManager.merge(currentSession);
+            dbSessionManager.merge(currentSession);
 
             if(latestPost == null) { //when no db exist state have to assign latestPost
                 latestPost = currentSession.getLatestPostReceived();
@@ -325,7 +320,7 @@ public class PostsListFragment extends ItemListFragment<Post>
 
                 pager.reset();
                 pager.setQueryParams("lt", currentSession.getOldestPostReceived()); //where we left the loading previously
-                pager.setQueryParams("gt", currentSession.getLast_synced_date());   //upTo where we have
+                pager.setQueryParams("gt", currentSession.getLastSyncedDate());   //upTo where we have
                 refresh(); //restart loader
 
             } else {  //reached end of whole data in server itself

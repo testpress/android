@@ -7,28 +7,30 @@ import java.util.List;
 
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.core.PostsPager;
+import in.testpress.testpress.models.DBSession;
+import in.testpress.testpress.models.DBSessionDao;
 import in.testpress.testpress.models.Post;
-import in.testpress.testpress.models.Session;
-import in.testpress.testpress.models.SessionDao;
+import in.testpress.testpress.models.DBSession;
+import in.testpress.testpress.models.DBSessionDao;
 
-public class SessionManager {
-    SessionDao sessionDao;
+public class DBSessionManager {
+    DBSessionDao sessionDao;
 
-    public SessionManager(Context context) {
-        sessionDao = ((TestpressApplication) context.getApplicationContext()).getDaoSession().getSessionDao();
+    public DBSessionManager(Context context) {
+        sessionDao = ((TestpressApplication) context.getApplicationContext()).getDaoSession().getDBSessionDao();
     }
 
-    public Session getNewSession() {
+    public DBSession getNewSession() {
         Calendar rightNow = Calendar.getInstance();
-        Session session = new Session();
+        DBSession session = new DBSession();
         session.setCreated(rightNow.getTimeInMillis());
         if(sessionDao.count() > 0) {
-            session.setLast_synced_date(getLatestSession().getLatestPostReceived());
+            session.setLastSyncedDate(getLatestSession().getLatestPostReceived());
         }
         return session;
     }
 
-    public Session updateSession(Session session, PostsPager pager, List<Post> items) {
+    public DBSession updateSession(DBSession session, PostsPager pager, List<Post> items) {
 
         //assign Latest post received from the first post created time @ first time only
         if(session.getLatestPostReceived() == null) {
@@ -55,13 +57,13 @@ public class SessionManager {
         return session;
     }
 
-    public void merge(Session currentSession) {
+    public void merge(DBSession currentSession) {
 
         if(currentSession.getState().equals("completed")) {
             if (getPreviousSession(currentSession) != null) {     //check whether previous session available
-                Session previousSession = getPreviousSession(currentSession);
+                DBSession previousSession = getPreviousSession(currentSession);
                 currentSession.setOldestPostReceived(previousSession.getOldestPostReceived());
-                currentSession.setLast_synced_date(previousSession.getLast_synced_date());
+                currentSession.setLastSyncedDate(previousSession.getLastSyncedDate());
                 currentSession.setState(previousSession.getState());
                 sessionDao.insertOrReplace(currentSession);
                 sessionDao.deleteByKey(previousSession.getId());
@@ -69,13 +71,13 @@ public class SessionManager {
         }
     }
 
-    public Session getLatestSession() {
-        return sessionDao.queryBuilder().orderDesc(SessionDao.Properties.Id).limit(1).list().get(0);
+    public DBSession getLatestSession() {
+        return sessionDao.queryBuilder().orderDesc(DBSessionDao.Properties.Id).limit(1).list().get(0);
     }
 
-    public Session getPreviousSession(Session currentSession) {
-        if(sessionDao.queryBuilder().where(SessionDao.Properties.Id.lt(currentSession.getId())).count() > 0) {
-            return sessionDao.queryBuilder().where(SessionDao.Properties.Id.lt(currentSession.getId())).orderDesc(SessionDao.Properties.Id).limit(1).list().get(0);
+    public DBSession getPreviousSession(DBSession currentSession) {
+        if(sessionDao.queryBuilder().where(DBSessionDao.Properties.Id.lt(currentSession.getId())).count() > 0) {
+            return sessionDao.queryBuilder().where(DBSessionDao.Properties.Id.lt(currentSession.getId())).orderDesc(DBSessionDao.Properties.Id).limit(1).list().get(0);
         } else {
             return null;
         }

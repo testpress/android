@@ -15,16 +15,16 @@ public class PostsListActivity extends TestpressFragmentActivity {
         setContentView(R.layout.container_layout);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         fromPostDetail = getIntent().getBooleanExtra("parentIsNotification", false);
-        PostsListFragment ordersListFragment = new PostsListFragment();
+        PostsListFragment postsListFragment = new PostsListFragment();
         Bundle bundle = new Bundle();
         if(fromPostDetail) {
             bundle.putBoolean("parentIsNotification", true);
         } else {
             bundle.putBoolean("parentIsNotification", false);
         }
-        ordersListFragment.setArguments(bundle);
+        postsListFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, ordersListFragment).commitAllowingStateLoss();
+                .replace(R.id.fragment_container, postsListFragment).commitAllowingStateLoss();
     }
 
     @Override

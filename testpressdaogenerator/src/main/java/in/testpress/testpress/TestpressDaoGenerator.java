@@ -31,13 +31,13 @@ public class TestpressDaoGenerator {
         Property categoryId = post.addLongProperty("categoryId").getProperty();
         post.addToOne(category, categoryId);
 
-        Entity session = schema.addEntity("Session");
+        Entity session = schema.addEntity("DBSession");
         session.addIdProperty();
         session.addLongProperty("created");
         session.addStringProperty("state");
         session.addStringProperty("latestPostReceived");
         session.addStringProperty("oldestPostReceived");
-        session.addStringProperty("last_synced_date");
+        session.addStringProperty("lastSyncedDate");
 
         new DaoGenerator().generateAll(schema, "../app/src/main/java/");
     }

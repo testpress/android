@@ -16,6 +16,7 @@ import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.models.TestpressApiResponse;
+import in.testpress.testpress.util.Ln;
 import retrofit.RetrofitError;
 
 
@@ -62,24 +63,15 @@ public class PostsPager extends ResourcePager<Post> {
 
         }
         if (url != null) {
-            try {
-                response = service.getPosts(url, queryParams);
-                return response.getResults();
-            }
-            catch (Exception e) {
-                if((e.getMessage()).equals("403 FORBIDDEN")) {
-                    throw e;
-                } else {
-                    return null;
-                }
-            }
+            response = service.getPosts(url, queryParams);
+            return response.getResults();
         }
         return Collections.emptyList();
     }
 
     @Override
     public boolean next() throws IOException {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         boolean emptyPage = false;
         networkFail = false;
         try {
@@ -109,6 +101,7 @@ public class PostsPager extends ResourcePager<Post> {
 
             page++;
         } catch (ParseException e) {
+            Ln.e("ParseException " + e);
         } catch (Exception e) {
             hasMore = false;
             networkFail = true;

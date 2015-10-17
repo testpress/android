@@ -25,8 +25,6 @@ import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.PostDao;
-import in.testpress.testpress.models.Session;
-import in.testpress.testpress.models.SessionDao;
 import in.testpress.testpress.util.FormatDate;
 import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.ListTagHandler;

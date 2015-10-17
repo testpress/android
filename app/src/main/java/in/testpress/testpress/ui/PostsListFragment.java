@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -76,7 +77,6 @@ public class PostsListFragment extends ItemListFragment<Post>
     }
 
     void init() {
-
         if(sessionDao.count() == 0) {
             //create first session when no DB exist
             currentSession = dbSessionManager.getNewSession();
@@ -176,8 +176,16 @@ public class PostsListFragment extends ItemListFragment<Post>
 
     @Override
     public void onLoadFinished(Loader<List<Post>> loader, List<Post> items) {
+        Ln.e("onLoadFinished " + items.size());
 
         getActivity().setProgressBarIndeterminateVisibility(false);
+
+        final Exception exception = getException(loader);
+        if (exception != null) {
+            showError(getErrorMessage(exception));
+            showList();
+            return;
+        }
 
         //check the caller of loader using id
         if(loader.getId() == 1) { //loader called by new post checking
@@ -254,16 +262,21 @@ public class PostsListFragment extends ItemListFragment<Post>
 
     protected void displayDataFromDB() {
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        Ln.e(currentSession.getOldestPostReceived());
         try {
 
             //query posts between latest to oldest post
             //here the latest post is the latest session's latest post
             //in session we stored date in above format but to order the posts from DB, post contain another field called CreatedDate(string converted to Long)
             //so convert the string to long to query
-            queryBuilder = postDao.queryBuilder().where(PostDao.Properties.CreatedDate.between(simpleDateFormat.parse(currentSession.getOldestPostReceived()).getTime(), simpleDateFormat.parse(latestPost).getTime()));
+            queryBuilder = postDao.queryBuilder().where(
+                    PostDao.Properties.CreatedDate.between(
+                            simpleDateFormat.parse(currentSession.getOldestPostReceived()).getTime(),
+                            simpleDateFormat.parse(currentSession.getLatestPostReceived()).getTime()));
 
         } catch (ParseException e) {
+            Ln.e("QueryBuilder parseException " + e);
         }
 
         int offset;
@@ -273,16 +286,18 @@ public class PostsListFragment extends ItemListFragment<Post>
             offset = posts.size();
         }
         posts = queryBuilder.orderDesc(PostDao.Properties.CreatedDate).limit(20 + offset).listLazy();
+        Ln.e("Posts is " + posts);
+        Ln.e("Length of posts" + posts.size());
 
         //assign posts to items because showList() of super will check items.isEmpty()
         items = posts;
 
         //assign items to adapter
-        getListAdapter().getWrappedAdapter().setItems(posts);
+        getListAdapter().getWrappedAdapter().setItems(posts.toArray());
 
         //while refresh show only the top most post otherwise in some scenario(refresh from page > 1) until we touch the screen
         // onScroll will not call automatically to get the next page & loading footer will ideally display
-        Ln.e(posts.size());
+        Ln.e(posts.toArray().length);
         if(posts.size() == 20) {
             getListView().setSelection(0);
         }

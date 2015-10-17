@@ -10,14 +10,19 @@ import in.testpress.testpress.core.PostsPager;
 import in.testpress.testpress.models.DBSession;
 import in.testpress.testpress.models.DBSessionDao;
 import in.testpress.testpress.models.Post;
-import in.testpress.testpress.models.DBSession;
-import in.testpress.testpress.models.DBSessionDao;
 
 public class DBSessionManager {
     DBSessionDao sessionDao;
 
     public DBSessionManager(Context context) {
         sessionDao = ((TestpressApplication) context.getApplicationContext()).getDaoSession().getDBSessionDao();
+    }
+
+    public DBSession getSession() {
+        if(sessionDao.count() == 0) {
+            return getNewSession();
+        }
+        return getLatestSession();
     }
 
     public DBSession getNewSession() {
@@ -40,20 +45,17 @@ public class DBSessionManager {
         //update Oldest post received time from the last post created time
         session.setOldestPostReceived(items.get(items.size() - 1).getCreated());
 
+        Ln.e("Items size " + items.size());
+        Ln.e("Session oldest post received " + session.getOldestPostReceived());
+
         //update the state
         if(pager.hasMore()) {  //has next page means partial else completed
-
             session.setState("partial");
-
-            //insertOrReplace to DB
-            sessionDao.insertOrReplace(session);
-
         } else {
             session.setState("completed");
-
-            //insertOrReplace to DB
-            sessionDao.insertOrReplace(session);
         }
+        sessionDao.insertOrReplace(session);
+
         return session;
     }
 

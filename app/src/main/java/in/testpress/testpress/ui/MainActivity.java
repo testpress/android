@@ -158,11 +158,11 @@ public class MainActivity extends TestpressFragmentActivity {
             protected void onSuccess(final Boolean hasAuthenticated) throws Exception {
                 super.onSuccess(hasAuthenticated);
                 userHasAuthenticated = true;
+                initScreen();
                 if (checkPlayServices()) {
                     // Start IntentService to register this application with GCM.
                     Intent intent = new Intent(MainActivity.this, RegistrationIntentService.class);
                     startService(intent);
-                    initScreen();
                 }
             }
         }.execute();
@@ -270,6 +270,7 @@ public class MainActivity extends TestpressFragmentActivity {
             progressBarLayout = (RelativeLayout) findViewById(R.id.progressbar);
             ProgressBar progressBar = (ProgressBar) findViewById(R.id.pb_loading);
             progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
+            checkUpdate();
             mRegistrationBroadcastReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
@@ -287,8 +288,6 @@ public class MainActivity extends TestpressFragmentActivity {
 //                }
                 }
             };
-            //checkAuth();
-            checkUpdate();
         }
     }
 }

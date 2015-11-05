@@ -68,6 +68,9 @@ dependencies {
     //greenDao for database
     compile 'de.greenrobot:greendao:2.0.0'
 
+    //image cropper tool
+    compile 'com.edmodo:cropper:1.0.1'
+
     repositories {
         maven { url "https://jitpack.io" }
     }

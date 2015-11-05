@@ -2,6 +2,8 @@
 
 package in.testpress.testpress.core;
 
+import java.util.HashMap;
+
 /**
  * Testpress constants
  */
@@ -79,6 +81,12 @@ public final class Constants {
          * List Products Exams URL
          */
         public static final String URL_ORDERS_FRAG = "/api/v2/orders/";
+
+        /**
+         * Profile Details URL
+         */
+        public static final String URL_PROFILE_DETAILS_FRAG =  "/api/v2.1/me/";
+        public static final String URL_PROFILE_DETAILS = URL_BASE + URL_PROFILE_DETAILS_FRAG;
 
         /**
          * List Available Exams URL
@@ -166,6 +174,58 @@ public final class Constants {
     public static final String GCM_PREFERENCE_NAME = "testpress.demo";
     public static final String GCM_PROPERTY_REG_ID = "GCMRegId";
     public static final String SENT_TOKEN_TO_SERVER = "sentTokenToServer";
+
+    public static final HashMap<String, Integer> genderChoices;
+    static
+    {
+        genderChoices = new HashMap<String, Integer>();
+        genderChoices.put("--select--", -1);
+        genderChoices.put("Male", 1);
+        genderChoices.put("Female", 2);
+        genderChoices.put("Transgender", 3);
+    }
+
+    public static final HashMap<String, Integer> stateChoices;
+    static
+    {
+        stateChoices = new HashMap<String, Integer>();
+        stateChoices.put("--select--", -1);
+        stateChoices.put("Andaman and Nicobar Islands", 1);
+        stateChoices.put("Andhra Pradesh", 2);
+        stateChoices.put("Arunachal Pradesh", 3);
+        stateChoices.put("Assam", 4);
+        stateChoices.put("Bihar", 5);
+        stateChoices.put("Chandigarh", 6);
+        stateChoices.put("Chhattisgarh", 7);
+        stateChoices.put("Dadra and Nagar Haveli", 8);
+        stateChoices.put("Daman and Diu", 9);
+        stateChoices.put("Delhi", 10);
+        stateChoices.put("Goa", 11);
+        stateChoices.put("Gujarat", 12);
+        stateChoices.put("Haryana", 13);
+        stateChoices.put("Himachal Pradesh", 14);
+        stateChoices.put("Jammu and Kashmir", 15);
+        stateChoices.put("Jharkhand", 16);
+        stateChoices.put("Karnataka", 17);
+        stateChoices.put("Kerala", 18);
+        stateChoices.put("Lakshadweep", 19);
+        stateChoices.put("Madhya Pradesh", 20);
+        stateChoices.put("Maharashtra", 21);
+        stateChoices.put("Manipur", 22);
+        stateChoices.put("Meghalaya", 23);
+        stateChoices.put("Mizoram", 24);
+        stateChoices.put("Nagaland", 25);
+        stateChoices.put("Odisha", 26);
+        stateChoices.put("Punjab", 27);
+        stateChoices.put("Pondicherry", 28);
+        stateChoices.put("Rajasthan", 29);
+        stateChoices.put("Sikkim", 30);
+        stateChoices.put("Tamil Nadu", 31);
+        stateChoices.put("Tripura", 32);
+        stateChoices.put("Uttar Pradesh", 33);
+        stateChoices.put("Uttarakhand", 34);
+        stateChoices.put("West Bengal", 35);
+        stateChoices.put("Telengana", 36);
+        stateChoices.put("Others", 0);
+    }
 }
-
-

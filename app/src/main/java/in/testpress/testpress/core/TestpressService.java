@@ -13,6 +13,7 @@ import in.testpress.testpress.models.OrderItem;
 import in.testpress.testpress.models.Device;
 import in.testpress.testpress.models.Product;
 import in.testpress.testpress.models.ProductDetails;
+import in.testpress.testpress.models.ProfileDetails;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.ReviewItem;
 import in.testpress.testpress.models.TestpressApiResponse;
@@ -183,5 +184,44 @@ public class TestpressService {
 
     public TestpressApiResponse<Order> getOrders(String urlFrag) {
         return getProductsService().getOrders(urlFrag, getAuthToken());
+    }
+
+    public ProfileDetails getProfileDetails() {
+        return getAuthenticationService().getProfileDetails(getAuthToken());
+    }
+
+    public ProfileDetails updateUserDetails(String url, String email, String firstName, String lastName, String phone, int gender, String birthDate, String address, String city, int state, String zip) {
+        HashMap<String, Object> userParameters = new HashMap<String, Object>();
+        userParameters.put("email", email);
+        userParameters.put("first_name", firstName);
+        userParameters.put("last_name", lastName);
+        userParameters.put("phone", phone);
+        if(gender == -1) { //if option is --select-- then send ""
+            userParameters.put("gender", "");
+        } else {
+            userParameters.put("gender", gender);
+        }
+        userParameters.put("birth_date", birthDate);
+        userParameters.put("address1", address);
+        userParameters.put("city", city);
+        if(state == -1) {
+            userParameters.put("state_choices", "");
+        } else {
+            userParameters.put("state_choices", state);
+        }
+        userParameters.put("zip", zip);
+        return getAuthenticationService().updateUser(url, userParameters, getAuthToken());
+    }
+
+    public ProfileDetails updateProfileImage(String url, String image, int[] cropDetails) {
+        HashMap<String, Object> userParameters = new HashMap<String, Object>();
+        userParameters.put("photo", image);
+        if(cropDetails != null) {
+            userParameters.put("x_offset", cropDetails[0]);
+            userParameters.put("y_offset", cropDetails[1]);
+            userParameters.put("crop_width", cropDetails[2]);
+            userParameters.put("crop_height", cropDetails[3]);
+        }
+        return getAuthenticationService().updateUser(url, userParameters, getAuthToken());
     }
 }

@@ -28,6 +28,7 @@ import in.testpress.testpress.ui.AttemptsListActivity;
 import in.testpress.testpress.ui.AttemptsListAdapter;
 import in.testpress.testpress.ui.AttemptsListFragment;
 import in.testpress.testpress.ui.AvailableExamsListAdapter;
+import in.testpress.testpress.ui.CropImageActivity;
 import in.testpress.testpress.ui.ExamActivity;
 import in.testpress.testpress.ui.ExamsListActivity;
 import in.testpress.testpress.ui.ExamsListFragment;
@@ -43,6 +44,8 @@ import in.testpress.testpress.ui.PostsListFragment;
 import in.testpress.testpress.ui.ProductDetailsActivity;
 import in.testpress.testpress.ui.ProductListFragment;
 import in.testpress.testpress.ui.ProductsListActivity;
+import in.testpress.testpress.ui.ProfileDetailsActivity;
+import in.testpress.testpress.ui.ProfilePhotoActivity;
 import in.testpress.testpress.ui.ReviewActivity;
 import in.testpress.testpress.ui.ReviewFragment;
 import in.testpress.testpress.ui.ReviewQuestionsFragment;
@@ -95,7 +98,10 @@ import retrofit.converter.GsonConverter;
                 PostsListFragment.class,
                 AttemptsListAdapter.class,
                 AvailableExamsListAdapter.class,
-                ReviewStatsFragment.class
+                ReviewStatsFragment.class,
+                ProfileDetailsActivity.class,
+                ProfilePhotoActivity.class,
+                CropImageActivity.class
         }
 )
 public class TestpressModule {

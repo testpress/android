@@ -19,6 +19,7 @@ public class MainMenuFragment extends Fragment {
 //            "Store",
 //            "Orders",
             "Posts",
+            "Profile Details",
             "Logout"
     } ;
     int[] menuItemImageId = {
@@ -26,6 +27,7 @@ public class MainMenuFragment extends Fragment {
 //            R.drawable.store,
 //            R.drawable.cart,
             R.drawable.posts,
+            R.drawable.ic_profile_details,
             R.drawable.logout
     };
 
@@ -64,6 +66,10 @@ public class MainMenuFragment extends Fragment {
                         startActivity(intent);
                         break;
                     case 2:
+                        intent = new Intent(getActivity(), ProfileDetailsActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 3:
                         ((MainActivity)getActivity()).logout();
                         break;
                 }

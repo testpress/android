@@ -168,4 +168,23 @@
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
     </style>
+
+    <style name="userDetailEditText">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:autoText">false</item>
+        <item name="android:capitalize">none</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textCursorDrawable">@drawable/edit_text_cursor</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/edit_text_states</item>
+        <item name="android:imeOptions">actionNext</item>
+        <item name="android:enabled">false</item>
+    </style>
+
+    <style name="userDetailLableText">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
 </resources>

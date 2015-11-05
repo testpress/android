@@ -45,4 +45,15 @@ public class FormatDate {
         return null;
     }
 
+    public boolean isDateValid(String inputString) {
+        Date date = null;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        try {
+                date = simpleDateFormat.parse(inputString); //check format
+        } catch (ParseException e) {
+            return false;
+        }
+        return simpleDateFormat.format(date).equals(inputString); //check valid
+    }
 }

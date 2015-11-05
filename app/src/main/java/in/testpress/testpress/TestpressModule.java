@@ -26,6 +26,7 @@ import in.testpress.testpress.core.UserAgentProvider;
 import in.testpress.testpress.ui.AttemptFragment;
 import in.testpress.testpress.ui.AttemptsListActivity;
 import in.testpress.testpress.ui.AttemptsListFragment;
+import in.testpress.testpress.ui.CropImageActivity;
 import in.testpress.testpress.ui.ExamActivity;
 import in.testpress.testpress.ui.ExamsListActivity;
 import in.testpress.testpress.ui.ExamsListFragment;
@@ -41,6 +42,8 @@ import in.testpress.testpress.ui.PostsListFragment;
 import in.testpress.testpress.ui.ProductDetailsActivity;
 import in.testpress.testpress.ui.ProductListFragment;
 import in.testpress.testpress.ui.ProductsListActivity;
+import in.testpress.testpress.ui.ProfileDetailsActivity;
+import in.testpress.testpress.ui.ProfilePhotoActivity;
 import in.testpress.testpress.ui.ReviewActivity;
 import in.testpress.testpress.ui.ReviewFragment;
 import in.testpress.testpress.ui.ReviewQuestionsFragment;
@@ -89,7 +92,10 @@ import retrofit.converter.GsonConverter;
                 RegistrationIntentService.class,
                 PostActivity.class,
                 PostsListActivity.class,
-                PostsListFragment.class
+                PostsListFragment.class,
+                ProfileDetailsActivity.class,
+                ProfilePhotoActivity.class,
+                CropImageActivity.class
         }
 )
 public class TestpressModule {

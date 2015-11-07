@@ -215,7 +215,7 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
     @Override
     protected int getErrorMessage(Exception exception) {
         if((exception.getMessage() != null) && (exception.getMessage()).equals("403 FORBIDDEN")) {
-            serviceProvider.handleForbidden(getActivity(), serviceProvider, logoutService);
+            logoutService.logout(getActivity(), serviceProvider, logoutService);
             return R.string.authentication_failed;
         } else {
             setEmptyText(R.string.no_internet);

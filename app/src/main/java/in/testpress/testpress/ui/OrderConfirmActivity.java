@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -89,7 +88,7 @@ public class OrderConfirmActivity extends TestpressFragmentActivity {
                 if(accounts.length != 0) {
                     return serviceProvider.getService(OrderConfirmActivity.this).order(Constants.Http.URL_USERS + accounts[0].name + "/", orderItems);
                 } else {
-                    serviceProvider.handleForbidden(OrderConfirmActivity.this, serviceProvider, logoutService);
+                    logoutService.logout(OrderConfirmActivity.this, serviceProvider, logoutService);
                     throw new Exception("No Account exist");
                 }
             }

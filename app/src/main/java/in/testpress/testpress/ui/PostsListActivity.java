@@ -28,15 +28,6 @@ public class PostsListActivity extends TestpressFragmentActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        if(item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public void onBackPressed() {
         if(fromPostDetail) {
             Intent intent = new Intent(this, MainActivity.class);

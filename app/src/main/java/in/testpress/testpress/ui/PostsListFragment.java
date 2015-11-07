@@ -410,7 +410,7 @@ public class PostsListFragment extends Fragment implements
 
     protected int getErrorMessage(Exception exception) {
         if((exception.getMessage() != null) && (exception.getMessage()).equals("403 FORBIDDEN")) {
-            serviceProvider.handleForbidden(getActivity(), serviceProvider, logoutService);
+            logoutService.logout(getActivity(), serviceProvider, logoutService);
             return R.string.authentication_failed;
         } else if (exception.getCause() instanceof UnknownHostException) {
             emptyView.setText(R.string.no_internet);

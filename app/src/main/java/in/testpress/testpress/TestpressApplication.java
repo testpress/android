@@ -18,6 +18,8 @@ import in.testpress.testpress.models.DaoSession;
 public class TestpressApplication extends Application {
     private static TestpressApplication instance;
     public DaoSession daoSession;
+    boolean appInitiated;
+    boolean hasUserAuthenticated;
 
     /**
      * Create main application
@@ -48,11 +50,26 @@ public class TestpressApplication extends Application {
         SQLiteDatabase db = helper.getWritableDatabase();
         DaoMaster daoMaster = new DaoMaster(db);
         daoSession = daoMaster.newSession();
-
     }
 
     public DaoSession getDaoSession() {
         return daoSession;
+    }
+
+    public boolean isAppInitiated() {
+        return appInitiated;
+    }
+
+    public void setAppInitiated(boolean appInitiated) {
+        this.appInitiated = appInitiated;
+    }
+
+    public boolean hasUserAuthenticated() {
+        return hasUserAuthenticated;
+    }
+
+    public void setUserAuthenticated(boolean hasUserAuthenticated) {
+        this.hasUserAuthenticated = hasUserAuthenticated;
     }
 
     public static void initImageLoader(Context context) {

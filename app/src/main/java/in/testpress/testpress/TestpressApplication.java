@@ -3,7 +3,9 @@ package in.testpress.testpress;
 import android.app.Application;
 import android.app.Instrumentation;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.preference.PreferenceManager;
 
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -12,6 +14,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
+import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.models.DaoMaster;
 import in.testpress.testpress.models.DaoSession;
 
@@ -48,7 +51,9 @@ public class TestpressApplication extends Application {
         SQLiteDatabase db = helper.getWritableDatabase();
         DaoMaster daoMaster = new DaoMaster(db);
         daoSession = daoMaster.newSession();
-
+        //set the user is unAuthenticated yet, to check the auth in mainactivity
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.edit().putBoolean(Constants.AUTHENTICATED, false).apply();
     }
 
     public DaoSession getDaoSession() {

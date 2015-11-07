@@ -71,65 +71,50 @@
 
         <activity
             android:name=".ui.ReviewActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Review">
         </activity>
 
         <activity
             android:name=".ui.AttemptsListActivity"
             android:label="Attempts List"
-            android:parentActivityName=".ui.ExamsListActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="in.testpress.testpress.ui.MainActivity" />
+            android:configChanges="orientation|keyboardHidden|screenSize">
         </activity>
 
         <activity
             android:name=".authenticator.NewUserRegistrationActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Register">
         </activity>
 
         <activity
             android:name=".authenticator.CodeVerificationActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Verify">
         </activity>
 
         <activity
             android:name=".ui.ExamsListActivity"
             android:label="Exams"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:parentActivityName=".ui.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="in.testpress.testpress.ui.MainActivity" />
+            android:configChanges="orientation|keyboardHidden|screenSize">
         </activity>
 
         <activity
             android:name=".ui.ProductsListActivity"
             android:label="Products"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:parentActivityName=".ui.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="in.testpress.testpress.ui.MainActivity" />
+            android:configChanges="orientation|keyboardHidden|screenSize">
         </activity>
 
         <activity
             android:name=".ui.ProductDetailsActivity"
             android:label="Product Details"
-            android:parentActivityName=".ui.ProductsListActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="in.testpress.testpress.ui.ProductsListActivity" />
+            android:configChanges="orientation|keyboardHidden|screenSize">
         </activity>
 
         <activity
             android:name=".ui.OrdersListActivity"
             android:label="Orders"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:parentActivityName=".ui.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="in.testpress.testpress.ui.MainActivity" />
+            android:configChanges="orientation|keyboardHidden|screenSize">
         </activity>
 
         <activity

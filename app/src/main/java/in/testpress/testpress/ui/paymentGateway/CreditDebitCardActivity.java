@@ -127,15 +127,6 @@ public class CreditDebitCardActivity extends TestpressFragmentActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        if(item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public void onBackPressed(){
         new MaterialDialog.Builder(this)
                 .title("Do you really want to cancel the order ?")

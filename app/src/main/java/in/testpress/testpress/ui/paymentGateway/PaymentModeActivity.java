@@ -86,15 +86,6 @@ public class PaymentModeActivity extends TestpressFragmentActivity implements Pa
     }
 
     @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        if(item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public void onPaymentRelatedDetailsResponse(PayuResponse payuResponse) {
         mPayuResponse = payuResponse;
         amount.setText("₹ " + mPaymentParams.getAmount());

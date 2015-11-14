@@ -7,10 +7,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import in.testpress.testpress.TestpressApplication;
+import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.CategoryDao;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.Post;
@@ -23,22 +25,15 @@ import retrofit.RetrofitError;
 public class PostsPager extends ResourcePager<Post> {
 
     TestpressApiResponse<Post> response;
-    DaoSession daoSession;
-    PostDao postDao;
-    CategoryDao categoryDao;
 
     public PostsPager(TestpressService service, Context context) {
         super(service);
-        daoSession = ((TestpressApplication) context.getApplicationContext()).getDaoSession();
-        postDao = daoSession.getPostDao();
-        categoryDao = daoSession.getCategoryDao();
     }
 
     @Override
     public ResourcePager<Post> clear() {
         response = null;
         super.clear();
-        hasMore=false;
         return this;
     }
 
@@ -60,7 +55,6 @@ public class PostsPager extends ResourcePager<Post> {
                 e.printStackTrace();
                 url = null;
             }
-
         }
         if (url != null) {
             response = service.getPosts(url, queryParams);
@@ -76,22 +70,25 @@ public class PostsPager extends ResourcePager<Post> {
         networkFail = false;
         try {
             for (int i = 0; i < count && hasNext(); i++) {
+                Ln.e("PostsPager Getting Items");
                 List<Post> resourcePage = getItems(page, -1);
+                Ln.e("PostsPager Items Received");
                 emptyPage = resourcePage.isEmpty();
                 if (emptyPage)
                     break;
+                Ln.e("Looping through resources");
                 for (Post resource : resourcePage) {
                     resource = register(resource);
                     if (resource == null)
                         continue;
                     if(resource.category != null) {
-                        categoryDao.insertOrReplace(resource.category);
                         resource.setCategory(resource.category);
                     }
                     resource.setCreatedDate(simpleDateFormat.parse(resource.getCreated()).getTime());
                     resources.put(getId(resource), resource);
-                    postDao.insertOrReplace(resource);
                 }
+
+                Ln.e("Looping resources over");
             }
             // Set page to count value if first call after call to reset()
             if (count > 1) {
@@ -113,14 +110,10 @@ public class PostsPager extends ResourcePager<Post> {
 
     @Override
     public boolean hasNext() {
-        if (response == null) {
+        if (response == null || response.getNext() != null) {
             return true;
         }
-        if (response.getNext() != null) {
-            if(queryParams != null)
-            queryParams.clear();
-            return true;
-        }
+
         return false;
     }
 }

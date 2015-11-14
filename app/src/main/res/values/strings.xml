@@ -97,5 +97,6 @@
     <string name="books_message">Books will be Delivered to you shortly</string>
     <string name="continue_purchase">Continue Purchase</string>
     <string name="take_exam">Take Exam</string>
+    <string name="clear_posts">Clear Offline Posts</string>
 
 </resources>

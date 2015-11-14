@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInstaller;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.authenticator.RegistrationIntentService;
 import in.testpress.testpress.core.TestpressService;
+import in.testpress.testpress.models.DBSessionDao;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.models.Update;
@@ -235,7 +237,9 @@ public class MainActivity extends TestpressFragmentActivity {
 
                         DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
                         PostDao postDao = daoSession.getPostDao();
+                        DBSessionDao dbSessionDao = daoSession.getDBSessionDao();
                         postDao.deleteAll();
+                        dbSessionDao.deleteAll();
                         daoSession.clear();
                         getSupportFragmentManager().beginTransaction().remove(fragment).commit();
                         logoutService.logout(new Runnable() {

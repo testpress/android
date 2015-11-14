@@ -1,388 +1,365 @@
 package in.testpress.testpress.ui;
 
 import android.accounts.AccountsException;
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
+import com.github.kevinsawicki.wishlist.Toaster;
 
 import java.io.IOException;
-import java.text.ParseException;
+import java.net.UnknownHostException;
+import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.OnItemClick;
 import de.greenrobot.dao.query.LazyList;
-import de.greenrobot.dao.query.QueryBuilder;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.PostsPager;
+import in.testpress.testpress.models.Category;
+import in.testpress.testpress.models.CategoryDao;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.models.DBSession;
 import in.testpress.testpress.models.DBSessionDao;
-import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.DBSessionManager;
+import in.testpress.testpress.util.FormatDate;
+import in.testpress.testpress.util.Ln;
 
-public class PostsListFragment extends ItemListFragment<Post>
-        implements AbsListView.OnScrollListener {
+public class PostsListFragment extends Fragment implements
+        AbsListView.OnScrollListener, SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<List<Post>> {
 
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected LogoutService logoutService;
-    PostsPager pager, newPager;
     PostDao postDao;
-    DBSessionDao sessionDao;
-    DBSessionManager dbSessionManager;
-    DBSession newSession, currentSession;
+    CategoryDao categoryDao;
     LazyList<Post> posts;
-    View headerLayout, footerLayout;
-    QueryBuilder<Post> queryBuilder;
-    String latestPost;
+    int lastFirstVisibleItem;
+    boolean isScrollingUp;
+
+    @InjectView(android.R.id.list) ListView listView;
+    @InjectView(R.id.empty) TextView emptyView;
+    @InjectView(R.id.pb_loading) ProgressBar progressBar;
+    @InjectView(R.id.sticky) TextView mStickyView;
+    @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeLayout;
+    HeaderFooterListAdapter<PostsListAdapter> adapter;
+    PostsPager pager;
+    View loadingLayout;
+
+    // Loader for network
+    private static final int NETWORK_LOADER_ID = 0;
+
+    // Number of maximum posts which can be missed from the latest before the db will get reset
+    private static final int MISSED_POSTS_THRESHOLD = 20;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        //Get the dao handles for posts and categories
+        postDao = ((TestpressApplication) getActivity().getApplicationContext()).getDaoSession().getPostDao();
+        categoryDao = ((TestpressApplication) getActivity().getApplicationContext()).getDaoSession().getCategoryDao();
+
+        //Enable options. This will trigger onCreateOptionsMenu
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(final Menu optionsMenu, final MenuInflater inflater) {
+        Ln.e("onCreateOptionsMenu");
+        inflater.inflate(R.menu.posts_list, optionsMenu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.clear:
+                Ln.e("Clearing DB");
+                clearDB();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+                             final Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.swipe_refresh_list, null);
         Injector.inject(this);
-        ButterKnife.inject(this.getActivity());
+        ButterKnife.inject(this, view);
         try {
             pager = new PostsPager(serviceProvider.getService(getActivity()), getContext());
             pager.setQueryParams("order","-created");
+            if (postDao.count() > 0) {
+                Post latest = postDao.queryBuilder().orderDesc(PostDao.Properties.CreatedDate).list().get(0);
+                pager.setQueryParams("gt", latest.getCreated());
+                Date date = new Date(latest.getCreatedDate());
+                Format format = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
+                Ln.e("Latest post available is " + latest.getTitle()
+                        + " created on " + format.format(date) + " - " + latest.getCreated());
+            }
         } catch (AccountsException e) {
+            //TODO handle this
             e.printStackTrace();
         } catch (IOException e) {
+            //TODO handle this
             e.printStackTrace();
         }
-        super.onCreate(savedInstanceState);
-
-        postDao = ((TestpressApplication) getActivity().getApplicationContext()).getDaoSession().getPostDao();
-        sessionDao = ((TestpressApplication) getActivity().getApplicationContext()).getDaoSession().getDBSessionDao();
-        footerLayout = LayoutInflater.from(getActivity()).inflate(R.layout.loading_layout, null);
-        dbSessionManager = new DBSessionManager(getContext());
-    }
-
-    void init() {
-        if(sessionDao.count() == 0) {
-            //create first session when no DB exist
-            currentSession = dbSessionManager.getNewSession();
-            getLoaderManager().initLoader(0, null, this);
-
-        } else {
-
-            //show posts from db
-              //get the latest session
-            currentSession = dbSessionManager.getLatestSession();
-
-            //latestPost(latest session's latest post) - used while pagination if internet unavailable moving from one session to another session while scrolling
-            // to display the posts of both session , if internet available there is no need of another session
-            //because current session will load completely & merge to existing session & so on thereby only one session will display
-            latestPost = currentSession.getLatestPostReceived();
-
-            //if current session is completed & has previous session then merge to it
-            dbSessionManager.merge(currentSession);
-
-            displayDataFromDB();
-
-            //get the argument from activity if activity called by notification create new session & do network request
-            boolean parentIsNotification = getArguments().getBoolean("parentIsNotification");
-
-            //check network request is needed or not
-            Calendar rightNow = Calendar.getInstance();
-            if(parentIsNotification && (((rightNow.getTimeInMillis() - currentSession.getCreated()) / (60 * 1000)) > 1)) {  //check for new posts
-
-                //show progress in header
-                headerLayout = LayoutInflater.from(getActivity()).inflate(R.layout.loading_layout, null);
-                ((TextView) headerLayout.findViewById(R.id.loadingText)).setText("Checking for new Articles...");
-                getListAdapter().addHeader(headerLayout);
-
-                //create new session
-                newSession = dbSessionManager.getNewSession();
-
-                //get another pager
-                try {
-                    newPager = new PostsPager(serviceProvider.getService(getActivity()), getContext());
-                    newPager.setQueryParams("order","-created");
-                } catch (AccountsException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                //request post greater than latest post we have
-                newPager.setQueryParams("gt", currentSession.getLatestPostReceived());
-
-                //init loader with id 1 - this loader is used to load new posts while entering the activity
-                getLoaderManager().initLoader(1, null, this);
-
-            }
-        }
+        return view;
     }
 
     @Override
-    public Loader<List<Post>> onCreateLoader(final int id, Bundle bundle) {
-        return new ThrowableLoader<List<Post>>(getActivity(), items) {
-
-            @Override
-            public List<Post> loadData() throws IOException {
-                if(id == 0) {
-                    pager.next();
-                    return pager.getResources();
-                } else {
-                    newPager.next();
-                    return newPager.getResources();
-                }
-            }
-        };
-    }
-
-    @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-        // Don't take any action on changed
+    public void onViewCreated(final View view, final Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
+        adapter = new HeaderFooterListAdapter<PostsListAdapter>(listView, new PostsListAdapter(getActivity(), R.layout.post_list_item));
+        listView.setAdapter(adapter);
+        ColorDrawable sage = new ColorDrawable(this.getResources().getColor(R.color.list_divider));
+        listView.setDivider(sage);
+        listView.setDividerHeight(1);
+        listView.setOnScrollListener(this);
+        listView.setFastScrollEnabled(true);
+        loadingLayout = LayoutInflater.from(getActivity()).inflate(R.layout.loading_layout, null);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        setEmptyText(R.string.no_posts);
         super.onActivityCreated(savedInstanceState);
-        getListView().setOnScrollListener(this);
-        getListView().setFastScrollEnabled(true);
-        init();
+        // If the ListView is the only one child of the SwipeRefreshLayout we wouldn’t have any
+        // kind of problems, because everything works smoothly. In some cases we have not only the
+        // ListView but we have other elements. This case is a little bit more complex, because if
+        // we scroll up the items in the ListView everything works as expected, but if the scroll
+        // down the refresh process starts and the list items doesn’t scroll as we want. In this
+        // case we can use a trick, we can disable the refresh notification using setEnabled(false)
+        // and enable it again as soon as the first item in the ListView is visible.
+        // See more at: http://www.survivingwithandroid.com/2014/05/android-swiperefreshlayout-tutorial.html
+        swipeLayout.setEnabled(false);
+
+        swipeLayout.setOnRefreshListener(this);
+        swipeLayout.setColorSchemeColors(R.color.actionbar_background_start,
+                R.color.actionbar_background_start,
+                R.color.actionbar_background_start,
+                R.color.actionbar_background_start);
+//        swipeLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+//                android.R.color.holo_green_light,
+//                android.R.color.holo_orange_light,
+//                android.R.color.holo_red_light);
+        getLoaderManager().initLoader(NETWORK_LOADER_ID, null, this);
+        displayDataFromDB();
     }
 
     @Override
-    protected void configureList(Activity activity, ListView listView) {
-
-        super.configureList(activity, listView);
-        ColorDrawable sage = new ColorDrawable(this.getResources().getColor(R.color.list_divider));
-        listView.setDivider(sage);
-        listView.setDividerHeight(1);
-        getListAdapter().addFooter(footerLayout);
+    public Loader onCreateLoader(int loaderID, Bundle args) {
+        switch (loaderID) {
+            case NETWORK_LOADER_ID:
+                return new ThrowableLoader<List<Post>>(getActivity(), null) {
+                    @Override
+                    public List<Post> loadData() throws IOException {
+                        pager.next();
+                        return pager.getResources();
+                    }
+                };
+            default:
+                //An invalid id was passed
+                return null;
+        }
     }
 
     @Override
-    public void onLoadFinished(Loader<List<Post>> loader, List<Post> items) {
-        Ln.e("onLoadFinished " + items.size());
-
+    public void onLoadFinished(Loader<List<Post>> loader, List<Post> data) {
         getActivity().setProgressBarIndeterminateVisibility(false);
-
         final Exception exception = getException(loader);
         if (exception != null) {
             showError(getErrorMessage(exception));
-            showList();
+            //TODO Handle error properly
             return;
         }
 
-        //check the caller of loader using id
-        if(loader.getId() == 1) { //loader called by new post checking
-
-            if(items.isEmpty()) {
-
-                //if no posts remove header
-                if(getListAdapter().getHeadersCount() != 0) {
-                    getListAdapter().removeHeader(headerLayout);
-                }
-
-                //update session created time for next time delay
-                currentSession.setCreated(newSession.getCreated());
+        switch (loader.getId()) {
+            case NETWORK_LOADER_ID:
+                onNetworkLoadFinished(data);
+                break;
+            default:
                 return;
-            }
-
-            //if items present update current session
-            dbSessionManager.updateSession(newSession, newPager, items);
-
-            //modify header
-            if(getListAdapter().getHeadersCount() != 0) {
-                ((TextView) headerLayout.findViewById(R.id.loadingText)).setText("New Articles available click to get them");
-                ((ProgressBar) headerLayout.findViewById(R.id.progressbar)).setVisibility(View.GONE);
-                ((TextView) headerLayout.findViewById(R.id.loadingText)).setBackgroundColor(Color.RED);
-                ((TextView) headerLayout.findViewById(R.id.loadingText)).setTextColor(Color.WHITE);
-                ((TextView) headerLayout.findViewById(R.id.loadingText)).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        refreshWithProgress(); //if user click header refresh
-                    }
-                });
-            }
-
-        } else {  //loader called by pagination or when no db exist
-
-            if (items.isEmpty()) {
-
-                if(sessionDao.count() == 0) { //if no db exist
-
-                    //if no items are returned call super it will handle
-                    setEmptyText(R.string.no_posts);
-                    super.onLoadFinished(loader, items);
-                    return;
-                }
-
-                if (dbSessionManager.getPreviousSession(currentSession) != null) {  //check whether previous session is available
-
-                    //get the previous session
-                    currentSession = dbSessionManager.getPreviousSession(currentSession);
-                    displayDataFromDB();
-
-                } else {  //reached end of whole data in db
-                    getListAdapter().removeFooter(footerLayout);
-                }
-
-            }
-
-            //if items present update current session
-            dbSessionManager.updateSession(currentSession, pager, items);
-
-            //if current session is completed & has previous session then merge to it
-            dbSessionManager.merge(currentSession);
-
-            if(latestPost == null) { //when no db exist state have to assign latestPost
-                latestPost = currentSession.getLatestPostReceived();
-            }
-
-            //display items
-            displayDataFromDB();
         }
     }
 
-
-
-    protected void displayDataFromDB() {
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        Ln.e(currentSession.getOldestPostReceived());
-        try {
-
-            //query posts between latest to oldest post
-            //here the latest post is the latest session's latest post
-            //in session we stored date in above format but to order the posts from DB, post contain another field called CreatedDate(string converted to Long)
-            //so convert the string to long to query
-            queryBuilder = postDao.queryBuilder().where(
-                    PostDao.Properties.CreatedDate.between(
-                            simpleDateFormat.parse(currentSession.getOldestPostReceived()).getTime(),
-                            simpleDateFormat.parse(currentSession.getLatestPostReceived()).getTime()));
-
-        } catch (ParseException e) {
-            Ln.e("QueryBuilder parseException " + e);
+    void onNetworkLoadFinished(List<Post> items) {
+        List<Category> categories = new ArrayList<Category>();
+        for (Post item : items) {
+            categories.add(item.category);
+            item.setCategory(item.category);
         }
 
-        int offset;
-        if(posts == null) {
-            offset = 0;
+        //If no data is available in the local database, directly insert
+        //display from database
+        if ((postDao.count() == 0) || swipeLayout.isRefreshing()
+                || items.isEmpty() || isScrollingUp == false) {
+            //Remove the swipe refresh icon and the sticky notification if any
+            swipeLayout.setRefreshing(false);
+            mStickyView.setVisibility(View.GONE);
+
+            //Return if no new posts are available
+            if (items.isEmpty())
+                return;
+
+            //Insert the categories and posts to the database
+            categoryDao.insertOrReplaceInTx(categories);
+            postDao.insertOrReplaceInTx(items);
+
+            //Trigger displaying data
+            displayDataFromDB();
         } else {
-            offset = posts.size();
+            //If data is already available in the local database, then
+            //notify user about the new data to view latest data.
+            mStickyView.setVisibility(View.VISIBLE);
         }
-        posts = queryBuilder.orderDesc(PostDao.Properties.CreatedDate).limit(20 + offset).listLazy();
-        Ln.e("Posts is " + posts);
-        Ln.e("Length of posts" + posts.size());
+    }
 
-        //assign posts to items because showList() of super will check items.isEmpty()
-        items = posts;
-
-        //assign items to adapter
-        getListAdapter().getWrappedAdapter().setItems(posts.toArray());
-
-        //while refresh show only the top most post otherwise in some scenario(refresh from page > 1) until we touch the screen
-        // onScroll will not call automatically to get the next page & loading footer will ideally display
-        Ln.e(posts.toArray().length);
-        if(posts.size() == 20) {
-            getListView().setSelection(0);
-        }
-
-        //hide progress & show list
-        showList();
+    //This just notifies the adapter that new data is now available in db
+    void displayDataFromDB() {
+        Ln.e("Adapter notifyDataSetChanged displayDataFromDB");
+        adapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onScroll(AbsListView view,int firstVisibleItem,int visibleItemCount,int totalItemCount) {
+    public void onLoaderReset(Loader loader) {
+
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        if (view.getId() == listView.getId()) {
+            final int currentFirstVisibleItem = listView.getFirstVisiblePosition();
+            if (currentFirstVisibleItem > lastFirstVisibleItem) {
+                isScrollingUp = false;
+            } else if (currentFirstVisibleItem < lastFirstVisibleItem) {
+                isScrollingUp = true;
+            }
+            lastFirstVisibleItem = currentFirstVisibleItem;
+        }
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        // If the ListView is the only one child of the SwipeRefreshLayout we wouldn’t have any
+        // kind of problems, because everything works smoothly. In some cases we have not only the
+        // ListView but we have other elements. This case is a little bit more complex, because if
+        // we scroll up the items in the ListView everything works as expected, but if the scroll
+        // down the refresh process starts and the list items doesn’t scroll as we want. In this
+        // case we can use a trick, we can disable the refresh notification using setEnabled(false)
+        // and enable it again as soon as the first item in the ListView is visible.
+        // Here we override the onScrollListener of the ListView to handle the enable/disable mechanism
+        // See more at: http://www.survivingwithandroid.com/2014/05/android-swiperefreshlayout-tutorial.html
+        if (firstVisibleItem == 0) {
+            swipeLayout.setEnabled(true);
+        } else {
+            swipeLayout.setEnabled(false);
+        }
+
+        //TODO Handle pagination
+        if (getActivity() == null)
+            return;
+
+        if (!pager.hasMore()) {
+            if(adapter.getFootersCount() != 0) {  //if pager reached last page remove footer if footer added already
+                adapter.removeFooter(loadingLayout);
+            }
+            return;
+        }
 
         if (getLoaderManager().hasRunningLoaders())
             return;
 
-        if ((!items.isEmpty()) && listView != null && (listView.getLastVisiblePosition() + 3) >= posts.size()) {
-
-            if(!pager.hasMore()) {
-            //internet available means it loaded all data from server otherwise data loading from db
-
-                nextPage();
-
-            } else {
-
-                refresh(); //restart loader to load next page from server
+        if (listView != null
+                && (listView.getLastVisiblePosition() + 3) >= pager.size()) {
+            if(adapter.getFootersCount() == 0) { //display loading footer if not present when loading next page
+                adapter.addFooter(loadingLayout);
             }
+            Ln.e("Onscroll showing more");
+            getLoaderManager().restartLoader(NETWORK_LOADER_ID, null, PostsListFragment.this);
         }
     }
 
-    void nextPage() {
-
-        if(queryBuilder.count() == posts.size()) {
-        //reached end of current session -:if internet avail topmost end is reached else while loaded using db partial session reached end
-
-            if(currentSession.getState().equals("partial")) {
-
-                pager.reset();
-                pager.setQueryParams("lt", currentSession.getOldestPostReceived()); //where we left the loading previously
-                pager.setQueryParams("gt", currentSession.getLastSyncedDate());   //upTo where we have
-                refresh(); //restart loader
-
-            } else {  //reached end of whole data in server itself
-
-                getListAdapter().removeFooter(footerLayout);
+    @Override public void onRefresh() {
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                pager.clear();
+                if (postDao.count() > 0) {
+                    Post latest = postDao.queryBuilder().orderDesc(PostDao.Properties.CreatedDate).list().get(0);
+                    pager.setQueryParams("gt", latest.getCreated());
+                    Date date = new Date(latest.getCreatedDate());
+                    Format format = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
+                    Ln.e("Latest post available is " + latest.getTitle()
+                            + " created on " + format.format(date) + " - " + latest.getCreated());
+                }
+                getLoaderManager().restartLoader(NETWORK_LOADER_ID, null, PostsListFragment.this);
             }
-
-        } else {  //load next page from DB
-
-            displayDataFromDB();
-        }
+        });
     }
 
-    @Override
-    protected void refreshWithProgress() {
-
-        if(posts != null) {
-            posts.close();
+    @OnClick(R.id.sticky) public void onStickyClick() {
+        //TODO If total count of posts available is > than MISSED_POSTS_THRESHOLD then we need
+        //TODO clear the old posts in db
+        Ln.e("Sticky Clicked");
+        mStickyView.setVisibility(View.GONE);
+        List<Category> categories = new ArrayList<Category>();
+        List<Post> items = pager.getResources();
+        for (Post item : items) {
+            categories.add(item.category);
+            item.setCategory(item.category);
         }
-        pager.reset();
-        setListShown(false);
-        //remove the header if present
-        if(getListAdapter().getHeadersCount() != 0) {
-            getListAdapter().removeHeader(headerLayout);
-        }
-        init();
+        categoryDao.insertOrReplaceInTx(categories);
+        postDao.insertOrReplaceInTx(items);
+        displayDataFromDB();
     }
 
-    @Override
-    protected SingleTypeAdapter<Post> createAdapter(List<Post> items) {
-        return new PostsListAdapter(getActivity().getLayoutInflater(), items, R.layout.post_list_inner_content);
-    }
-
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        Post post = ((Post) l.getItemAtPosition(position));
+    @OnItemClick(android.R.id.list) public void onListItemClick(int position) {
+        Ln.e("Clicked " + position);
+        Post post = postDao.queryBuilder().orderDesc(PostDao.Properties.CreatedDate).listLazy().get(position);
+        Ln.e("Post at position is " + post.getTitle());
         Intent intent = new Intent(getActivity(), PostActivity.class);
         intent.putExtra("urlWithBase", post.getUrl());
         startActivity(intent);
     }
 
-    @Override
     protected int getErrorMessage(Exception exception) {
         if((exception.getMessage() != null) && (exception.getMessage()).equals("403 FORBIDDEN")) {
             serviceProvider.handleForbidden(getActivity(), serviceProvider, logoutService);
             return R.string.authentication_failed;
-        } else {
-            setEmptyText(R.string.no_internet);
+        } else if (exception.getCause() instanceof UnknownHostException) {
+            emptyView.setText(R.string.no_internet);
+            return R.string.no_internet;
         }
         return R.string.error_loading_posts;
     }
@@ -397,9 +374,31 @@ public class PostsListFragment extends ItemListFragment<Post>
 
     @Override
     public void onDestroyView() {
-        setListAdapter(null);
-
         super.onDestroyView();
+        ButterKnife.reset(this);
     }
 
+    protected Exception getException(final Loader<List<Post>> loader) {
+        if (loader instanceof ThrowableLoader) {
+            return ((ThrowableLoader<List<Post>>) loader).clearException();
+        } else {
+            return null;
+        }
+    }
+
+    protected void showError(final int message) {
+        Toaster.showLong(getActivity(), message);
+    }
+
+    void clearDB() {
+        Ln.e("ClearDB");
+        Ln.e("Query params " + pager.queryParams);
+        postDao.deleteAll();
+        Ln.e("Query params " + pager.queryParams);
+        pager.clear();
+        Ln.e("After clear " + pager.queryParams);
+        pager.removeQueryParams("gt");
+        Ln.e("After removing gt " + pager.queryParams);
+        displayDataFromDB();
+    }
 }

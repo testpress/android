@@ -39,7 +39,7 @@ public final class Constants {
         /**
          * Base URL for all requests
          */
-        public static final String URL_BASE = "http://demo.testpress.in";
+        public static final String URL_BASE = "http://192.168.0.102:8000";
 
         /**
          * Check Update url

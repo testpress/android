@@ -2,7 +2,9 @@ package in.testpress.testpress.util;
 
 import android.content.Context;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import in.testpress.testpress.TestpressApplication;
@@ -19,10 +21,30 @@ public class DBSessionManager {
     }
 
     public DBSession getSession() {
-        if(sessionDao.count() == 0) {
-            return getNewSession();
+        Ln.e("##### Session Stats #####");
+        Ln.e("Total session rows: " + sessionDao.count());
+        Ln.e("##### Session Stats #####");
+        try {
+            DBSession lastSession = getLatestSession();
+            Calendar now = Calendar.getInstance();
+            Ln.e("Time now = " + now.getTimeInMillis());
+            Ln.e("Last session time = " + lastSession.getCreated());
+            Date created = new Date(lastSession.getCreated());
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            Ln.e("Time now = " + dateFormat.format(now.getTime()));
+            Ln.e("Last session time = " + dateFormat.format(created));
+            Ln.e("Time difference = " + (now.getTimeInMillis() - lastSession.getCreated()));
+            Ln.e("Time difference in mins = " + ((now.getTimeInMillis() - lastSession.getCreated()) / (60 * 1000)));
+            if(lastSession.getState().equals("partial") &&
+                    (((now.getTimeInMillis() - lastSession.getCreated()) / (60 * 1000)) < 1)) {
+                Ln.e("Returning last session");
+                return lastSession;
+            }
+        } catch (IndexOutOfBoundsException e) {
+            Ln.e("Empty Session!");
         }
-        return getLatestSession();
+        Ln.e("Returning new session");
+        return getNewSession();
     }
 
     public DBSession getNewSession() {
@@ -42,10 +64,11 @@ public class DBSessionManager {
             session.setLatestPostReceived(items.get(0).getCreated());
         }
 
+        Ln.e("Items size " + items.size());
+
         //update Oldest post received time from the last post created time
         session.setOldestPostReceived(items.get(items.size() - 1).getCreated());
 
-        Ln.e("Items size " + items.size());
         Ln.e("Session oldest post received " + session.getOldestPostReceived());
 
         //update the state
@@ -73,7 +96,7 @@ public class DBSessionManager {
         }
     }
 
-    public DBSession getLatestSession() {
+    public DBSession getLatestSession() throws IndexOutOfBoundsException {
         return sessionDao.queryBuilder().orderDesc(DBSessionDao.Properties.Id).limit(1).list().get(0);
     }
 
@@ -84,4 +107,18 @@ public class DBSessionManager {
             return null;
         }
     }
+
+    public void printSessionInfo(DBSession session) {
+        Date created = new Date(session.getCreated());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        Ln.e("##### Session Info #####");
+        Ln.e("ID: " + session.getId());
+        Ln.e("Created: " + dateFormat.format(created));
+        Ln.e("State: " + session.getState());
+        Ln.e("Latest post received: " + session.getLatestPostReceived());
+        Ln.e("Oldest post received: " + session.getOldestPostReceived());
+        Ln.e("Last synced date: " + session.getLastSyncedDate());
+        Ln.e("##### Session Info #####");
+    }
+
 }

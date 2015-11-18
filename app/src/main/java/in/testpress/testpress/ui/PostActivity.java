@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import javax.inject.Inject;
@@ -85,6 +86,9 @@ public class PostActivity extends TestpressFragmentActivity {
             @Override
             protected void onSuccess(final Post post) throws Exception {
                 displayPost(post);
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+                post.setCreatedDate(simpleDateFormat.parse(post.getCreated()).getTime());
+                post.setCategory(post.category);
                 postDao.insertOrReplace(post);
             }
         }.execute();

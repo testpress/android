@@ -2,7 +2,6 @@ package in.testpress.testpress.ui;
 
 import android.accounts.AccountsException;
 import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.github.kevinsawicki.wishlist.Toaster;
@@ -46,12 +44,9 @@ import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.PostsPager;
 import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.CategoryDao;
+import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.PostDao;
-import in.testpress.testpress.models.DBSession;
-import in.testpress.testpress.models.DBSessionDao;
-import in.testpress.testpress.util.DBSessionManager;
-import in.testpress.testpress.util.FormatDate;
 import in.testpress.testpress.util.Ln;
 
 public class PostsListFragment extends Fragment implements
@@ -61,33 +56,37 @@ public class PostsListFragment extends Fragment implements
     @Inject protected LogoutService logoutService;
     PostDao postDao;
     CategoryDao categoryDao;
+    DaoSession daoSession;
     LazyList<Post> posts;
     int lastFirstVisibleItem;
     boolean isScrollingUp;
 
     @InjectView(android.R.id.list) ListView listView;
     @InjectView(R.id.empty) TextView emptyView;
-    @InjectView(R.id.pb_loading) ProgressBar progressBar;
     @InjectView(R.id.sticky) TextView mStickyView;
     @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeLayout;
     HeaderFooterListAdapter<PostsListAdapter> adapter;
+    PostsPager refreshPager;
     PostsPager pager;
     View loadingLayout;
 
-    // Loader for network
-    private static final int NETWORK_LOADER_ID = 0;
+    // Loader for refresh
+    private static final int REFRESH_LOADER_ID = 0;
+
+    // Loader to load bottom posts
+    private static final int POSTS_LOADER_ID = 1;
 
     // Number of maximum posts which can be missed from the latest before the db will get reset
-    private static final int MISSED_POSTS_THRESHOLD = 20;
+    private static final int MISSED_POSTS_THRESHOLD = 50;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         //Get the dao handles for posts and categories
-        postDao = ((TestpressApplication) getActivity().getApplicationContext()).getDaoSession().getPostDao();
-        categoryDao = ((TestpressApplication) getActivity().getApplicationContext()).getDaoSession().getCategoryDao();
-
+        daoSession = ((TestpressApplication) getActivity().getApplicationContext()).getDaoSession();
+        postDao = daoSession.getPostDao();
+        categoryDao = daoSession.getCategoryDao();
         //Enable options. This will trigger onCreateOptionsMenu
         setHasOptionsMenu(true);
     }
@@ -117,15 +116,24 @@ public class PostsListFragment extends Fragment implements
         Injector.inject(this);
         ButterKnife.inject(this, view);
         try {
-            pager = new PostsPager(serviceProvider.getService(getActivity()), getContext());
-            pager.setQueryParams("order","-created");
+            refreshPager = new PostsPager(serviceProvider.getService(getActivity()), getContext());
+            refreshPager.setQueryParams("order", "-created");
             if (postDao.count() > 0) {
                 Post latest = postDao.queryBuilder().orderDesc(PostDao.Properties.CreatedDate).list().get(0);
-                pager.setQueryParams("gt", latest.getCreated());
+                refreshPager.setQueryParams("gt", latest.getCreated());
+                //just for log, have to remove****
                 Date date = new Date(latest.getCreatedDate());
                 Format format = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
                 Ln.e("Latest post available is " + latest.getTitle()
                         + " created on " + format.format(date) + " - " + latest.getCreated());
+
+                List<Post> items = postDao.queryBuilder().orderDesc(PostDao.Properties.CreatedDate).listLazy();
+                for (Post p :  items)
+                    Ln.e(p.getTitle() + " " + p.getCreated() + "\n");
+            } else {
+                emptyView.setVisibility(View.VISIBLE);
+                emptyView.setText("No Articles");
+                listView.setVisibility(View.GONE);
             }
         } catch (AccountsException e) {
             //TODO handle this
@@ -140,7 +148,6 @@ public class PostsListFragment extends Fragment implements
     @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
         adapter = new HeaderFooterListAdapter<PostsListAdapter>(listView, new PostsListAdapter(getActivity(), R.layout.post_list_item));
         listView.setAdapter(adapter);
         ColorDrawable sage = new ColorDrawable(this.getResources().getColor(R.color.list_divider));
@@ -162,25 +169,36 @@ public class PostsListFragment extends Fragment implements
         // case we can use a trick, we can disable the refresh notification using setEnabled(false)
         // and enable it again as soon as the first item in the ListView is visible.
         // See more at: http://www.survivingwithandroid.com/2014/05/android-swiperefreshlayout-tutorial.html
-        swipeLayout.setEnabled(false);
+//        swipeLayout.setEnabled(false);
 
         swipeLayout.setOnRefreshListener(this);
-        swipeLayout.setColorSchemeColors(R.color.actionbar_background_start,
-                R.color.actionbar_background_start,
-                R.color.actionbar_background_start,
-                R.color.actionbar_background_start);
-//        swipeLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
-//                android.R.color.holo_green_light,
-//                android.R.color.holo_orange_light,
-//                android.R.color.holo_red_light);
-        getLoaderManager().initLoader(NETWORK_LOADER_ID, null, this);
+        swipeLayout.setColorSchemeResources(R.color.primary,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_red_dark,
+                android.R.color.holo_green_dark);
+        swipeLayout.setEnabled(true);
+        swipeLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeLayout.setRefreshing(true);
+            }
+        });
+        getLoaderManager().initLoader(REFRESH_LOADER_ID, null, this);
         displayDataFromDB();
     }
 
     @Override
-    public Loader onCreateLoader(int loaderID, Bundle args) {
+    public Loader<List<Post>> onCreateLoader(int loaderID, Bundle args) {
         switch (loaderID) {
-            case NETWORK_LOADER_ID:
+            case REFRESH_LOADER_ID:
+                return new ThrowableLoader<List<Post>>(getActivity(), null) {
+                    @Override
+                    public List<Post> loadData() throws IOException {
+                        refreshPager.next();
+                        return refreshPager.getResources();
+                    }
+                };
+            case POSTS_LOADER_ID:
                 return new ThrowableLoader<List<Post>>(getActivity(), null) {
                     @Override
                     public List<Post> loadData() throws IOException {
@@ -196,16 +214,25 @@ public class PostsListFragment extends Fragment implements
 
     @Override
     public void onLoadFinished(Loader<List<Post>> loader, List<Post> data) {
-        getActivity().setProgressBarIndeterminateVisibility(false);
         final Exception exception = getException(loader);
         if (exception != null) {
+            //Remove the swipe refresh icon and the sticky notification if any
+            swipeLayout.setRefreshing(false);
+            if (pager != null && !pager.hasMore()) {
+                if(adapter.getFootersCount() != 0) {  //if pager reached last page remove footer if footer added already
+                    adapter.removeFooter(loadingLayout);
+                }
+            }
             showError(getErrorMessage(exception));
             //TODO Handle error properly
             return;
         }
 
         switch (loader.getId()) {
-            case NETWORK_LOADER_ID:
+            case REFRESH_LOADER_ID:
+                onRefreshItemsLoaded(data);
+                break;
+            case POSTS_LOADER_ID:
                 onNetworkLoadFinished(data);
                 break;
             default:
@@ -213,35 +240,88 @@ public class PostsListFragment extends Fragment implements
         }
     }
 
-    void onNetworkLoadFinished(List<Post> items) {
-        List<Category> categories = new ArrayList<Category>();
-        for (Post item : items) {
-            categories.add(item.category);
-            item.setCategory(item.category);
-        }
-
+    void onRefreshItemsLoaded(List<Post> items) {
         //If no data is available in the local database, directly insert
         //display from database
-        if ((postDao.count() == 0) || swipeLayout.isRefreshing()
-                || items.isEmpty() || isScrollingUp == false) {
+        if ((postDao.count() == 0) || items.isEmpty()) {
+
             //Remove the swipe refresh icon and the sticky notification if any
             swipeLayout.setRefreshing(false);
             mStickyView.setVisibility(View.GONE);
 
             //Return if no new posts are available
-            if (items.isEmpty())
+            if (items.isEmpty()) {
                 return;
+            }
+            listView.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
 
             //Insert the categories and posts to the database
+            List<Category> categories = new ArrayList<Category>();
+            for (Post item : items) {
+                categories.add(item.category);
+                item.setCategory(item.category);
+            }
             categoryDao.insertOrReplaceInTx(categories);
             postDao.insertOrReplaceInTx(items);
 
             //Trigger displaying data
             displayDataFromDB();
+
+            //just for log, have to remove****
+            if (postDao.count() > 0) {
+                List<Post> dbPosts = postDao.queryBuilder().orderDesc(PostDao.Properties.CreatedDate).listLazy();
+                for (Post p :  dbPosts)
+                    Ln.e(p.getTitle() + " " + p.getCreated() + "\n");
+            }
         } else {
             //If data is already available in the local database, then
             //notify user about the new data to view latest data.
+            Ln.e(MISSED_POSTS_THRESHOLD >= refreshPager.getTotalItemsWantTOLoad());
+            Ln.e(MISSED_POSTS_THRESHOLD);
+            Ln.e(refreshPager.getTotalItemsWantTOLoad());
+            if (MISSED_POSTS_THRESHOLD >= refreshPager.getTotalItemsWantTOLoad()) {
+                Ln.e(refreshPager.hasNext());
+                if(refreshPager.hasNext()) {
+                    refreshPager.clearQueryParams();
+                    getLoaderManager().restartLoader(REFRESH_LOADER_ID, null, PostsListFragment.this);
+                    return;
+                }
+            }
             mStickyView.setVisibility(View.VISIBLE);
+            swipeLayout.setRefreshing(false);
+        }
+    }
+
+    void onNetworkLoadFinished(List<Post> items) {
+
+        if (!pager.hasMore()) {
+            if(adapter.getFootersCount() != 0) {  //if pager reached last page remove footer if footer added already
+                adapter.removeFooter(loadingLayout);
+            }
+        }
+        //Return if no new posts are available
+        if (items.isEmpty())
+            return;
+
+        //Insert the categories and posts to the database
+        List<Category> categories = new ArrayList<Category>();
+        for (Post item : items) {
+            categories.add(item.category);
+            item.setCategory(item.category);
+        }
+        categoryDao.insertOrReplaceInTx(categories);
+        postDao.insertOrReplaceInTx(items);
+
+        //Trigger displaying data
+        displayDataFromDB();
+
+        //just for log, have to remove****
+        if (postDao.count() > 0) {
+            List<Post> dbPosts = postDao.queryBuilder().orderDesc(PostDao.Properties.CreatedDate).listLazy();
+            for (Post p :  dbPosts)
+                Ln.e(p.getTitle() + " " + p.getCreated() + "\n");
+
         }
     }
 
@@ -285,47 +365,72 @@ public class PostsListFragment extends Fragment implements
         } else {
             swipeLayout.setEnabled(false);
         }
-
         //TODO Handle pagination
         if (getActivity() == null)
             return;
 
-        if (!pager.hasMore()) {
-            if(adapter.getFootersCount() != 0) {  //if pager reached last page remove footer if footer added already
-                adapter.removeFooter(loadingLayout);
-            }
-            return;
-        }
-
         if (getLoaderManager().hasRunningLoaders())
             return;
 
-        if (listView != null
-                && (listView.getLastVisiblePosition() + 3) >= pager.size()) {
-            if(adapter.getFootersCount() == 0) { //display loading footer if not present when loading next page
-                adapter.addFooter(loadingLayout);
-            }
+        if (listView != null && (postDao.count() != 0) && !isScrollingUp
+                && (listView.getLastVisiblePosition() + 3) >= postDao.count()) {
+
             Ln.e("Onscroll showing more");
-            getLoaderManager().restartLoader(NETWORK_LOADER_ID, null, PostsListFragment.this);
+
+            if (pager == null) {
+                try {
+                    pager = new PostsPager(serviceProvider.getService(getActivity()), getContext());
+                    pager.setQueryParams("order", "-created");
+                    Post lastPost = postDao.queryBuilder().orderDesc(PostDao.Properties.CreatedDate).list().get((int) postDao.count() - 1);
+                    pager.setQueryParams("lt", lastPost.getCreated());
+                    Ln.e("Latest post available is " + lastPost.getTitle() + lastPost.getCreated());
+                    if(adapter.getFootersCount() == 0) { //display loading footer if not present when loading next page
+                        adapter.addFooter(loadingLayout);
+                    }
+                } catch (AccountsException e) {
+                    //TODO handle this
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    //TODO handle this
+                    e.printStackTrace();
+                }
+            } else {
+                if (!pager.hasMore()) {
+                    if(adapter.getFootersCount() != 0) {  //if pager reached last page remove footer if footer added already
+                        adapter.removeFooter(loadingLayout);
+                    }
+                    return;
+                }
+                pager.clearQueryParams();
+            }
+            getLoaderManager().restartLoader(POSTS_LOADER_ID, null, PostsListFragment.this);
         }
     }
 
     @Override public void onRefresh() {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                pager.clear();
-                if (postDao.count() > 0) {
-                    Post latest = postDao.queryBuilder().orderDesc(PostDao.Properties.CreatedDate).list().get(0);
-                    pager.setQueryParams("gt", latest.getCreated());
-                    Date date = new Date(latest.getCreatedDate());
-                    Format format = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
-                    Ln.e("Latest post available is " + latest.getTitle()
-                            + " created on " + format.format(date) + " - " + latest.getCreated());
+        //if stickyView is visible instead check for new post call onStickyClick
+        if (mStickyView.getVisibility() == View.VISIBLE) {
+            onStickyClick();
+        } else {
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    refreshPager.clear();
+                    if (postDao.count() > 0) {
+                        Post latest = postDao.queryBuilder().orderDesc(PostDao.Properties.CreatedDate).list().get(0);
+                        refreshPager.setQueryParams("order", "-created");
+                        refreshPager.setQueryParams("gt", latest.getCreated());
+                        //just for log, have to remove****
+                        Date date = new Date(latest.getCreatedDate());
+                        Format format = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
+                        Ln.e("Latest post available is " + latest.getTitle()
+                                + " created on " + format.format(date) + " - " + latest.getCreated());
+
+                    }
+                    getLoaderManager().restartLoader(REFRESH_LOADER_ID, null, PostsListFragment.this);
                 }
-                getLoaderManager().restartLoader(NETWORK_LOADER_ID, null, PostsListFragment.this);
-            }
-        });
+            });
+        }
     }
 
     @OnClick(R.id.sticky) public void onStickyClick() {
@@ -333,8 +438,16 @@ public class PostsListFragment extends Fragment implements
         //TODO clear the old posts in db
         Ln.e("Sticky Clicked");
         mStickyView.setVisibility(View.GONE);
+        //Remove the swipe refresh icon if present
+        swipeLayout.setRefreshing(false);
+        Ln.e(MISSED_POSTS_THRESHOLD < refreshPager.getTotalItemsWantTOLoad());
+        Ln.e(MISSED_POSTS_THRESHOLD);
+        Ln.e(refreshPager.getTotalItemsWantTOLoad());
+        if (MISSED_POSTS_THRESHOLD < refreshPager.getTotalItemsWantTOLoad()) {
+            clearDB();
+        }
         List<Category> categories = new ArrayList<Category>();
-        List<Post> items = pager.getResources();
+        List<Post> items = refreshPager.getResources();
         for (Post item : items) {
             categories.add(item.category);
             item.setCategory(item.category);
@@ -342,6 +455,13 @@ public class PostsListFragment extends Fragment implements
         categoryDao.insertOrReplaceInTx(categories);
         postDao.insertOrReplaceInTx(items);
         displayDataFromDB();
+
+        //just for log, have to remove****
+        if (postDao.count() > 0) {
+            List<Post> dbPosts = postDao.queryBuilder().orderDesc(PostDao.Properties.CreatedDate).listLazy();
+            for (Post p :  dbPosts)
+                Ln.e(p.getTitle() + " " + p.getCreated() + "\n");
+        }
     }
 
     @OnItemClick(android.R.id.list) public void onListItemClick(int position) {
@@ -392,13 +512,14 @@ public class PostsListFragment extends Fragment implements
 
     void clearDB() {
         Ln.e("ClearDB");
-        Ln.e("Query params " + pager.queryParams);
         postDao.deleteAll();
-        Ln.e("Query params " + pager.queryParams);
-        pager.clear();
-        Ln.e("After clear " + pager.queryParams);
-        pager.removeQueryParams("gt");
-        Ln.e("After removing gt " + pager.queryParams);
+//        DBSessionDao dbSessionDao = daoSession.getDBSessionDao();
+//        dbSessionDao.deleteAll();
+        daoSession.clear();
+        Ln.e("Query params " + refreshPager.queryParams);
+        refreshPager.removeQueryParams("gt");
+        Ln.e("Query params " + refreshPager.queryParams);
+        pager = null;
         displayDataFromDB();
     }
 }

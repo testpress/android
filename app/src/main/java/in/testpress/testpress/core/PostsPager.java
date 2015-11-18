@@ -116,4 +116,8 @@ public class PostsPager extends ResourcePager<Post> {
 
         return false;
     }
+
+    public int getTotalItemsWantTOLoad() {
+        return response.getCount();
+    }
 }

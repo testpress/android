@@ -28,6 +28,7 @@
     <string name="error_loading_attempts">Loading attempts failed</string>
     <string name="error_loading_questions">Loading questions failed</string>
     <string name="error_loading_posts">Loading posts failed</string>
+    <string name="error_loading_content">Loading content failed</string>
     <string name="no_exams">No Exams</string>
     <string name="no_attempts">No Attempts</string>
     <string name="no_questions">No Questions</string>

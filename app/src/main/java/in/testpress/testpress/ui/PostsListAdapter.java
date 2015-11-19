@@ -69,7 +69,7 @@ public class PostsListAdapter extends BaseAdapter {
         FormatDate date = new FormatDate();
         ((TextView)convertView.findViewById(R.id.title)).setText(post.getTitle());
         ((TextView)convertView.findViewById(R.id.summary)).setText(post.getSummary());
-        ((TextView)convertView.findViewById(R.id.date)).setText(date.formatDateTime(post.getModified()));
+        ((TextView)convertView.findViewById(R.id.date)).setText(date.formatDateTime(post.getCreated()));
         TextView categoryView = (TextView)convertView.findViewById(R.id.category);
 
         if(post.getCategory() != null) {

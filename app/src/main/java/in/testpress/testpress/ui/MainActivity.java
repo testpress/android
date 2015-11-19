@@ -26,6 +26,7 @@ import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.authenticator.RegistrationIntentService;
+import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.DBSessionDao;
 import in.testpress.testpress.models.DaoSession;
@@ -59,24 +60,23 @@ public class MainActivity extends TestpressFragmentActivity {
     @Inject protected LogoutService logoutService;
 
     protected RelativeLayout progressBarLayout;
-    private boolean userHasAuthenticated = false;
+    private SharedPreferences sharedPreferences;
     private MainMenuFragment fragment;
-
+    
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         Injector.inject(this);
         super.onCreate(savedInstanceState);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         onNewIntent(getIntent());
     }
 
     private void initScreen() {
-        if (userHasAuthenticated) {
-            fragment = new MainMenuFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, fragment)
-                    .commitAllowingStateLoss();
-            progressBarLayout.setVisibility(View.GONE);
-        }
+        fragment = new MainMenuFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, fragment)
+                .commitAllowingStateLoss();
+        progressBarLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -159,12 +159,12 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             protected void onSuccess(final Boolean hasAuthenticated) throws Exception {
                 super.onSuccess(hasAuthenticated);
-                userHasAuthenticated = true;
                 if (checkPlayServices()) {
                     // Start IntentService to register this application with GCM.
                     Intent intent = new Intent(MainActivity.this, RegistrationIntentService.class);
                     startService(intent);
                     initScreen();
+                    sharedPreferences.edit().putBoolean(Constants.AUTHENTICATED, true).apply();
                 }
             }
         }.execute();
@@ -178,23 +178,16 @@ public class MainActivity extends TestpressFragmentActivity {
             }
 
             @Override
-            protected void onException(final Exception e) throws RuntimeException {
-                checkAuth();
-            }
-
-            @Override
             protected void onSuccess(final Update update) throws Exception {
                 if(update.getUpdateRequired()) {
                     new MaterialDialog.Builder(MainActivity.this)
                             .cancelable(true)
-                            .content(update.getMessage())
+                            .title(update.getMessage())
                             .cancelListener(new DialogInterface.OnCancelListener() {
                                 @Override
                                 public void onCancel(DialogInterface dialogInterface) {
                                     if (update.getForce()) {
                                         finish();
-                                    } else {
-                                        checkAuth();
                                     }
                                 }
                             })
@@ -211,7 +204,7 @@ public class MainActivity extends TestpressFragmentActivity {
                                 }
                             })
                             .show();
-                } else checkAuth();
+                }
             }
         }.execute();
     }
@@ -277,22 +270,18 @@ public class MainActivity extends TestpressFragmentActivity {
             mRegistrationBroadcastReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-//                SharedPreferences sharedPreferences =
-//                        PreferenceManager.getDefaultSharedPreferences(context);
-//                boolean sentToken = sharedPreferences
-//                        .getBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false);
-
                     registerDevice();
-                    //initScreen();
-//                if (sentToken) {
-//                    mInformationTextView.setText(getString(R.string.gcm_send_message));
-//                } else {
-//                    mInformationTextView.setText(getString(R.string.token_error_message));
-//                }
                 }
             };
-            //checkAuth();
-            checkUpdate();
+            if(sharedPreferences.getBoolean(Constants.AUTHENTICATED, false)) {
+                //mainactivity started by any other activity
+                //if user authentication checked already directly initScreen
+                initScreen();
+            } else {
+                //when user click the app icon & app is not already in paused state
+                checkAuth();
+                checkUpdate();
+            }
         }
     }
 }

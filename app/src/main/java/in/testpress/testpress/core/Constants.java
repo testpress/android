@@ -166,6 +166,7 @@ public final class Constants {
     public static final String GCM_PREFERENCE_NAME = "testpress.demo";
     public static final String GCM_PROPERTY_REG_ID = "GCMRegId";
     public static final String SENT_TOKEN_TO_SERVER = "sentTokenToServer";
+    public static final String AUTHENTICATED = "Authenticated";
 }
 
 

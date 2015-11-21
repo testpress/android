@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
@@ -296,19 +297,25 @@ public class ProfileDetailsActivity extends TestpressFragmentActivity implements
                         //crop the image
                         Intent intent = new Intent(this, CropImageActivity.class);
                         intent.putExtra("picturePath", picturePath);
-                        startActivityForResult(intent, CROP_IMAGE);
-                        //encode the image as string
-                        ByteArrayOutputStream baostream = new ByteArrayOutputStream();
-                        selectedImage.compress(Bitmap.CompressFormat.JPEG, 80, baostream);
-                        byte[] byteImage = baostream.toByteArray();
-                        // Converting Image byte array into Base64 String
-                        encodedImage = Base64.encodeToString(byteImage, Base64.DEFAULT);
+                        startActivityForResult(intent, CROP_IMAGE); 
                     }
                     break;
 
                 //handling result of cropped image
                 case CROP_IMAGE:
                     horizontalProgressBar.setVisibility(View.VISIBLE);
+                    int rotatedDegree = data.getIntExtra("rotatedDegree", 0);
+                    if(rotatedDegree != 0) {
+                        Matrix matrix = new Matrix();
+                        matrix.setRotate(rotatedDegree);
+                        selectedImage = Bitmap.createBitmap(selectedImage, 0, 0, selectedImage.getWidth(), selectedImage.getHeight(), matrix, true);
+                    }
+                    //encode the image as string
+                    ByteArrayOutputStream baostream = new ByteArrayOutputStream();
+                    selectedImage.compress(Bitmap.CompressFormat.JPEG, 80, baostream);
+                    byte[] byteImage = baostream.toByteArray();
+                    // Converting Image byte array into Base64 String
+                    encodedImage = Base64.encodeToString(byteImage, Base64.DEFAULT);
                     saveProfilePhoto(data.getIntArrayExtra("croppedImageDetails"));
                     break;
             }

@@ -104,15 +104,6 @@ public class NetBankingActivity extends TestpressFragmentActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        if(item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PayuConstants.PAYU_REQUEST_CODE) {
             if(resultCode == RESULT_OK) {

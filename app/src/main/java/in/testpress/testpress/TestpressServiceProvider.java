@@ -9,6 +9,8 @@ import java.io.IOException;
 import in.testpress.testpress.authenticator.ApiKeyProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.TestpressService;
+import in.testpress.testpress.models.DaoSession;
+import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.ui.MainActivity;
 import retrofit.RestAdapter;
 
@@ -47,6 +49,10 @@ public class TestpressServiceProvider {
 
     public void handleForbidden(final Activity activity, TestpressServiceProvider serviceProvider, LogoutService logoutService) {
         serviceProvider.invalidateAuthToken();
+        DaoSession daoSession = ((TestpressApplication) activity.getApplicationContext()).getDaoSession();
+        PostDao postDao = daoSession.getPostDao();
+        postDao.deleteAll();
+        daoSession.clear();
         logoutService.logout(new Runnable() {
             @Override
             public void run() {

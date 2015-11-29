@@ -42,7 +42,7 @@ public abstract class ResourcePager<E> {
     /**
      * Query Params to be passed
      */
-    protected Map<String, String> queryParams = new LinkedHashMap<String, String>();
+    public Map<String, String> queryParams = new LinkedHashMap<String, String>();
 
     /**
      * Are more pages available?

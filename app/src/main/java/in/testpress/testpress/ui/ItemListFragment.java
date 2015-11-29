@@ -86,12 +86,7 @@ public abstract class ItemListFragment<E> extends Fragment
         super.onActivityCreated(savedInstanceState);
         setListShown(false);
         internetConnectivityChecker = new InternetConnectivityChecker(getActivity());
-        if(internetConnectivityChecker.isConnected()) {
-            getLoaderManager().initLoader(0, null, this);
-        } else {
-            setEmptyText(R.string.no_internet);
-            setListShown(true);
-        }
+        getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
@@ -209,6 +204,7 @@ public abstract class ItemListFragment<E> extends Fragment
             showList();
             return;
         }
+
         this.items = items;
         getListAdapter().getWrappedAdapter().setItems(items.toArray());
         showList();

@@ -32,7 +32,7 @@ public class FormatDate {
 
     public String formatDateTime(String inputString) {
         Date date = null;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {
             if(inputString != null && !inputString.isEmpty()) {

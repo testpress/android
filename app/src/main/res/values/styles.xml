@@ -143,4 +143,19 @@
 
     <style name="Widget.Testpress.HeaderBar.Spinner" parent="Widget.Testpress.HeaderBar.Spinner.Base" />
 
+    <style name="Item">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">300dp</item>
+    </style>
+
+    <style name="Item.Sticky">
+        <item name="android:background">@color/text_inverted</item>
+        <item name="android:textColor">@color/text_link</item>
+        <item name="android:layout_height">100dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAppearance">?android:textAppearanceLarge</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
 </resources>

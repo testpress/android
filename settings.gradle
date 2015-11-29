@@ -1,2 +1,2 @@
-include ':app', ':CustomBrowser-release'
+include ':app', ':CustomBrowser-release', ':testpressdaogenerator'
 // include ':integration-tests'

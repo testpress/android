@@ -27,11 +27,14 @@
     <string name="error_loading_orders">Loading Orders failed</string>
     <string name="error_loading_attempts">Loading attempts failed</string>
     <string name="error_loading_questions">Loading questions failed</string>
+    <string name="error_loading_posts">Loading posts failed</string>
+    <string name="error_loading_content">Loading content failed</string>
     <string name="no_exams">No Exams</string>
     <string name="no_attempts">No Attempts</string>
     <string name="no_questions">No Questions</string>
     <string name="no_products">No Products</string>
     <string name="no_orders">No Orders Yet</string>
+    <string name="no_posts">No Posts</string>
     <string name="avatar">Avatar</string>
     <string name="choose">Choose</string>
     <string name="start_exam">Start Exam</string>
@@ -95,5 +98,6 @@
     <string name="books_message">Books will be Delivered to you shortly</string>
     <string name="continue_purchase">Continue Purchase</string>
     <string name="take_exam">Take Exam</string>
+    <string name="clear_posts">Clear Offline Posts</string>
 
 </resources>

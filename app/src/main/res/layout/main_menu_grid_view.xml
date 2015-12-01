@@ -10,6 +10,7 @@
         android:stretchMode="columnWidth"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:verticalSpacing="20dp"
         android:id="@+id/grid">
     </GridView>
 

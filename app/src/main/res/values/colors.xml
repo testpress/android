@@ -47,6 +47,7 @@
     <color name="green">#18be99</color>
     <color name="blue">#3598db</color>
     <color name="primary">#3598db</color>
+    <color name="black">#333333</color>
 
     <color name="list_dropdown_divider_color">#92a3a3a3</color>
     <color name="body_text_3">#60000000</color>

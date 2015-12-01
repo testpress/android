@@ -7,8 +7,8 @@
     <ImageView
         android:id="@+id/menuIcon"
         android:layout_gravity="center"
-        android:layout_width="88dp"
-        android:layout_height="88dp"
+        android:layout_width="66dp"
+        android:layout_height="66dp"
         android:layout_marginTop="15dp"
         android:src="@drawable/icon" />
 
@@ -17,7 +17,11 @@
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="15dp"
-        android:text="TextView" />
+        android:textSize="16dp"
+        android:textAllCaps="true"
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"
+        android:text="TextView"
+        android:textColor="@color/black"/>
 
 </LinearLayout>

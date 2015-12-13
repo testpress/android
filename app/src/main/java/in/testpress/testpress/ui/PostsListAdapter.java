@@ -7,6 +7,7 @@ import android.content.CursorLoader;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,18 +65,20 @@ public class PostsListAdapter extends BaseAdapter {
             convertView = inflater.inflate(layout, null);
         }
 
-        FormatDate date = new FormatDate();
         ((TextView)convertView.findViewById(R.id.title)).setText(post.getTitle());
         ((TextView)convertView.findViewById(R.id.summary)).setText(post.getSummary());
-        ((TextView)convertView.findViewById(R.id.date)).setText(date.formatDateTime(post.getCreated()));
+        ((TextView)convertView.findViewById(R.id.date)).setText(DateUtils.getRelativeTimeSpanString(post.getCreatedDate()));
         TextView categoryView = (TextView)convertView.findViewById(R.id.category);
+//        View borderView = convertView.findViewById(R.id.category_color_border);
 
         if(post.getCategory() != null) {
             int backgroundColor = Color.parseColor("#" + post.getCategory().getColor());
+//            borderView.setBackgroundColor(backgroundColor);
             categoryView.setText(post.getCategory().getName());
             ((GradientDrawable)categoryView.getBackground()).setColor(backgroundColor);
-            double grayScale = 1 - ( 0.299 * Color.red(backgroundColor) + 0.587 * Color.green(backgroundColor) + 0.114 * Color.blue(backgroundColor))/255;
-            if (grayScale < 0.5) {
+            double grayScale = ( 299 * Color.red(backgroundColor) + 587 * Color.green(backgroundColor) + 114 * Color.blue(backgroundColor))/1000;
+            Ln.d("Grayscale for " + post.getCategory().getColor() + " is " + grayScale);
+            if (grayScale > 139) {
                 categoryView.setTextColor(Color.BLACK);
             } else {
                 categoryView.setTextColor(Color.WHITE);

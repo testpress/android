@@ -142,9 +142,6 @@ public class PostsListFragment extends Fragment implements
         super.onViewCreated(view, savedInstanceState);
         adapter = new HeaderFooterListAdapter<PostsListAdapter>(listView, new PostsListAdapter(getActivity(), R.layout.post_list_item));
         listView.setAdapter(adapter);
-        ColorDrawable sage = new ColorDrawable(this.getResources().getColor(R.color.list_divider));
-        listView.setDivider(sage);
-        listView.setDividerHeight(1);
         listView.setOnScrollListener(this);
         listView.setFastScrollEnabled(true);
         loadingLayout = LayoutInflater.from(getActivity()).inflate(R.layout.loading_layout, null);

@@ -18,7 +18,7 @@ public class MainMenuFragment extends Fragment {
             "My Exams",
             "Store",
             "Orders",
-            "Articles",
+            "Notifications",
             "Logout"
     } ;
     int[] menuItemImageId = {

@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInstaller;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,8 +26,6 @@ import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.authenticator.RegistrationIntentService;
 import in.testpress.testpress.core.TestpressService;
-import in.testpress.testpress.models.DaoSession;
-import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.models.Update;
 import in.testpress.testpress.models.Device;
 import in.testpress.testpress.util.GCMPreference;
@@ -58,8 +55,6 @@ public class MainActivity extends TestpressFragmentActivity {
     @Inject protected LogoutService logoutService;
 
     protected RelativeLayout progressBarLayout;
-    private boolean userHasAuthenticated = false;
-    private MainMenuFragment fragment;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -69,13 +64,10 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     private void initScreen() {
-        if (userHasAuthenticated) {
-            fragment = new MainMenuFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, fragment)
-                    .commitAllowingStateLoss();
-            progressBarLayout.setVisibility(View.GONE);
-        }
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container,  new MainMenuFragment())
+                .commitAllowingStateLoss();
+        progressBarLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -158,7 +150,7 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             protected void onSuccess(final Boolean hasAuthenticated) throws Exception {
                 super.onSuccess(hasAuthenticated);
-                userHasAuthenticated = true;
+                ((TestpressApplication) getApplicationContext()).setUserAuthenticated(true);
                 if (checkPlayServices()) {
                     // Start IntentService to register this application with GCM.
                     Intent intent = new Intent(MainActivity.this, RegistrationIntentService.class);
@@ -177,23 +169,17 @@ public class MainActivity extends TestpressFragmentActivity {
             }
 
             @Override
-            protected void onException(final Exception e) throws RuntimeException {
-                checkAuth();
-            }
-
-            @Override
             protected void onSuccess(final Update update) throws Exception {
+                ((TestpressApplication) getApplicationContext()).setAppInitiated(true);
                 if(update.getUpdateRequired()) {
                     new MaterialDialog.Builder(MainActivity.this)
                             .cancelable(true)
-                            .content(update.getMessage())
+                            .title(update.getMessage())
                             .cancelListener(new DialogInterface.OnCancelListener() {
                                 @Override
                                 public void onCancel(DialogInterface dialogInterface) {
                                     if (update.getForce()) {
                                         finish();
-                                    } else {
-                                        checkAuth();
                                     }
                                 }
                             })
@@ -210,7 +196,7 @@ public class MainActivity extends TestpressFragmentActivity {
                                 }
                             })
                             .show();
-                } else checkAuth();
+                }
             }
         }.execute();
     }
@@ -226,30 +212,7 @@ public class MainActivity extends TestpressFragmentActivity {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         dialog.dismiss();
-                        final MaterialDialog materialDialog = new MaterialDialog.Builder(MainActivity.this)
-                                .title(R.string.label_logging_out)
-                                .content(R.string.please_wait)
-                                .widgetColorRes(R.color.primary)
-                                .progress(true, 0)
-                                .show();
-                        serviceProvider.invalidateAuthToken();
-
-                        DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
-                        PostDao postDao = daoSession.getPostDao();
-                        postDao.deleteAll();
-                        daoSession.clear();
-                        getSupportFragmentManager().beginTransaction().remove(fragment).commit();
-                        logoutService.logout(new Runnable() {
-                            @Override
-                            public void run() {
-                                // Calling a checkAuth will force the service to look for a logged in user
-                                // and when it finds none the user will be requested to log in again.
-                                Intent intent = MainActivity.this.getIntent();
-                                materialDialog.dismiss();
-                                MainActivity.this.finish();
-                                MainActivity.this.startActivity(intent);
-                            }
-                        });
+                        logoutService.logout(MainActivity.this, serviceProvider, logoutService);
                     }
                 })
                 .show();
@@ -259,6 +222,9 @@ public class MainActivity extends TestpressFragmentActivity {
     public void onNewIntent(Intent intent){
         Bundle extras = intent.getExtras();
         if(extras != null){
+            //if user clicked the notification posts detail activity will display
+            ((TestpressApplication) getApplicationContext()).setUserAuthenticated(true);
+            ((TestpressApplication) getApplicationContext()).setAppInitiated(true);
             if(extras.containsKey("url"))
             {
                 Intent newintent = new Intent(this, PostActivity.class);
@@ -274,22 +240,19 @@ public class MainActivity extends TestpressFragmentActivity {
             mRegistrationBroadcastReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-//                SharedPreferences sharedPreferences =
-//                        PreferenceManager.getDefaultSharedPreferences(context);
-//                boolean sentToken = sharedPreferences
-//                        .getBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false);
-
                     registerDevice();
-                    //initScreen();
-//                if (sentToken) {
-//                    mInformationTextView.setText(getString(R.string.gcm_send_message));
-//                } else {
-//                    mInformationTextView.setText(getString(R.string.token_error_message));
-//                }
                 }
             };
-            //checkAuth();
-            checkUpdate();
+            if(((TestpressApplication) getApplicationContext()).hasUserAuthenticated()) {
+                //if user authentication checked already directly initScreen(MainActivity started by any other activity)
+                initScreen();
+            } else {
+                //when user click the app icon & app is not already in paused state
+                checkAuth();
+            }
+            if(!((TestpressApplication) getApplicationContext()).isAppInitiated()) {
+                checkUpdate();
+            }
         }
     }
 }

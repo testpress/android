@@ -114,15 +114,6 @@ public class PostActivity extends TestpressFragmentActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        if(item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public void onBackPressed() {
         if(urlWithBase != null) {
             super.onBackPressed();

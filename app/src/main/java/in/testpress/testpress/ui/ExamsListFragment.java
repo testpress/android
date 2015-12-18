@@ -189,26 +189,9 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
       }
 
       if(subclass.equals("history")) {
-          int attempts_count = exam.getAttempts().size();
-          if (attempts_count > 1) {
-              Intent intent = new Intent(getActivity(), AttemptsListActivity.class);
-              intent.putExtra("exam", exam);
-              startActivity(intent);
-          } else {
-              Attempt attempt = exam.getAttempts().get(0);
-              if (attempt.getState().equals("Running")) {
-                  //Show Start Exam Activity
-                  Intent intent = new Intent(getActivity(), ExamActivity.class);
-                  intent.putExtra("exam", exam);
-                  intent.putExtra("attempt", attempt);
-                  startActivity(intent);
-              } else {
-                  Intent intent = new Intent(getActivity(), ReviewActivity.class);
-                  intent.putExtra("exam", exam);
-                  intent.putExtra("attempt", attempt);
-                  startActivity(intent);
-              }
-          }
+          Intent intent = new Intent(getActivity(), AttemptsListActivity.class);
+          intent.putExtra("exam", exam);
+          startActivity(intent);
       }
    }
 

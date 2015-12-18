@@ -73,7 +73,7 @@ public final class Constants {
         /**
          * List Products Exams URL
          */
-        public static final String URL_PRODUCTS_FRAG = "api/v2.1/products/";
+        public static final String URL_PRODUCTS_FRAG = "api/v2.2/products/";
 
         /**
          * List Products Exams URL
@@ -83,25 +83,25 @@ public final class Constants {
         /**
          * List Available Exams URL
          */
-        public static final String URL_AVAILABLE_EXAMS_FRAG =  "api/v2.1/exams/available/";
+        public static final String URL_AVAILABLE_EXAMS_FRAG =  "api/v2.2/exams/available/";
         public static final String URL_AVAILABLE_EXAMS = URL_BASE + URL_AVAILABLE_EXAMS_FRAG;
 
         /**
          * List Upcoming Exams URL
          */
-        public static final String URL_UPCOMING_EXAMS_FRAG =  "api/v2.1/exams/upcoming/";
+        public static final String URL_UPCOMING_EXAMS_FRAG =  "api/v2.2/exams/upcoming/";
         public static final String URL_UPCOMING_EXAMS = URL_BASE + URL_UPCOMING_EXAMS_FRAG;
 
         /**
          * List History Exams URL
          */
-        public static final String URL_HISTORY_EXAMS_FRAG =  "api/v2.1/exams/history/";
+        public static final String URL_HISTORY_EXAMS_FRAG =  "api/v2.2/exams/history/";
         public static final String URL_HISTORY_EXAMS = URL_BASE + URL_HISTORY_EXAMS_FRAG;
 
         /**
          * Start Exam URL
          */
-        public static final String URL_START_EXAM_FRAG =  "api/v2.1/exams/start/";
+        public static final String URL_START_EXAM_FRAG =  "api/v2.2/exams/start/";
         public static final String URL_START_EXAM = URL_BASE + URL_START_EXAM_FRAG;
 
         /**
@@ -113,19 +113,19 @@ public final class Constants {
         /**
          * Devices Register URL
          */
-        public static final String URL_DEVICES_REGISTER_FRAG =  "/api/v2.1/devices/register/";
+        public static final String URL_DEVICES_REGISTER_FRAG =  "/api/v2.2/devices/register/";
         public static final String URL_DEVICES_REGISTER = URL_BASE + URL_DEVICES_REGISTER_FRAG;
 
         /**
          * Devices Unregister URL
          */
-        public static final String URL_DEVICES_UNREGISTER_FRAG =  "/api/v2.1/devices/unregister/";
+        public static final String URL_DEVICES_UNREGISTER_FRAG =  "/api/v2.2/devices/unregister/";
         public static final String URL_DEVICES_UNREGISTER = URL_BASE + URL_DEVICES_UNREGISTER_FRAG;
 
         /**
          * Posts URL
          */
-        public static final String URL_POSTS_FRAG =  "api/v2.1/posts/";
+        public static final String URL_POSTS_FRAG =  "api/v2.2/posts/";
         public static final String URL_POSTS = URL_BASE + URL_POSTS_FRAG;
 
         /**

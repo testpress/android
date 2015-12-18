@@ -18,6 +18,7 @@ public class Exam implements Parcelable {
     private String totalMarks;
     private String url;
     private Integer id;
+    private Integer attemptsCount;
     private String title;
     private String description;
     private String course;
@@ -30,7 +31,6 @@ public class Exam implements Parcelable {
     private Integer templateType;
     private Boolean allowRetake;
     private String attemptsUrl;
-    private List<Attempt> attempts;
     private Map<String, String> additionalProperties = new HashMap<String, String>();
 
     // Parcelling part
@@ -38,6 +38,7 @@ public class Exam implements Parcelable {
         totalMarks         = parcel.readString();
         url                = parcel.readString();
         id                 = parcel.readInt();
+        attemptsCount      = parcel.readInt();
         title              = parcel.readString();
         description        = parcel.readString();
         course             = parcel.readString();
@@ -50,8 +51,6 @@ public class Exam implements Parcelable {
         templateType       = parcel.readInt();
         allowRetake        = parcel.readByte() != 0;
         attemptsUrl        = parcel.readString();
-        attempts = new ArrayList<Attempt>();
-        parcel.readTypedList(attempts, Attempt.CREATOR);
     }
 
     @Override
@@ -64,6 +63,7 @@ public class Exam implements Parcelable {
         parcel.writeString(totalMarks);
         parcel.writeString(url);
         parcel.writeInt(id);
+        parcel.writeInt(attemptsCount);
         parcel.writeString(title);
         parcel.writeString(description);
         parcel.writeString(course);
@@ -80,7 +80,6 @@ public class Exam implements Parcelable {
             parcel.writeByte((byte) (allowRetake ? 1 : 0)); //if review == true, byte == 1
         }
         parcel.writeString(attemptsUrl);
-        parcel.writeTypedList(attempts);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
@@ -145,6 +144,24 @@ public class Exam implements Parcelable {
      */
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    /**
+     *
+     * @return
+     * The attempts count
+     */
+    public Integer getAttemptsCount() {
+        return attemptsCount;
+    }
+
+    /**
+     *
+     * @param attemptsCount
+     * The attempts count
+     */
+    public void setAttemptsCount(Integer attemptsCount) {
+        this.attemptsCount = attemptsCount;
     }
 
     /**
@@ -383,15 +400,6 @@ public class Exam implements Parcelable {
         catch (Exception e) {
             return null;
         }
-    }
-
-
-    public List<Attempt> getAttempts() {
-        return attempts;
-    }
-
-    public void setAttempts(List<Attempt> attempts) {
-        this.attempts = attempts;
     }
 
     /**

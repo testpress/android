@@ -49,9 +49,6 @@ public abstract class PagedItemFragment<E> extends ItemListFragment<E>
     @Override
     public void onScroll(AbsListView view,int firstVisibleItem,int visibleItemCount, int totalItemCount)
     {
-        Ln.e("onScroll Called firstVisibleItem = " + firstVisibleItem);
-        Ln.e("onScroll Called visibleItemCount = " + visibleItemCount);
-        Ln.e("onScroll Called totalItemCount = " + totalItemCount);
         // Triggered only when new data needs to be appended to the list
         // Add whatever code ixs needed to append new items to your AdapterView
         //customLoadMoreDataFromApi(page);
@@ -66,13 +63,11 @@ public abstract class PagedItemFragment<E> extends ItemListFragment<E>
         }
         if (getLoaderManager().hasRunningLoaders())
             return;
-        Ln.e("Pager size is " + pager.size());
         if (listView != null
                 && (listView.getLastVisiblePosition() + 3) >= pager.size()) {
             if(getListAdapter().getFootersCount() == 0) { //display loading footer if not present when loading next page
                 getListAdapter().addFooter(loadingLayout);
             }
-            Ln.e("Onscroll showing more");
             showMore();
         }
     }

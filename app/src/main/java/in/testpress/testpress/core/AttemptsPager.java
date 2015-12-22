@@ -52,7 +52,7 @@ public class AttemptsPager extends ResourcePager<Attempt> {
 
         }
         if (url != null) {
-            response = service.getAttempts(url);
+            response = service.getAttempts(url, queryParams);
             return response.getResults();
         }
         return Collections.emptyList();

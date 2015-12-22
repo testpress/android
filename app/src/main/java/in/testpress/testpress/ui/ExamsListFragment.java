@@ -3,6 +3,7 @@ package in.testpress.testpress.ui;
 import android.accounts.AccountsException;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
@@ -10,9 +11,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import butterknife.OnClick;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
@@ -171,7 +174,8 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
                 layout = R.layout.available_exams_list_item;
                 //return serviceProvider.getService(getActivity()).getUpcomingExams();
             } else if (subclass.equals("history")) {
-                layout = R.layout.available_exams_list_item;
+                layout = R.layout.history_exams_list_item;
+                return new HistoryListAdapter(getActivity(), items, layout);
             } else {
                 layout = R.layout.available_exams_list_item;
             }
@@ -179,21 +183,21 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
         return new ExamsListAdapter(getActivity().getLayoutInflater(), items, layout);
     }
 
-  public void onListItemClick(ListView l, View v, int position, long id) {
-      Exam exam = ((Exam) l.getItemAtPosition(position));
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        Exam exam = ((Exam) l.getItemAtPosition(position));
 
-      if(subclass.equals("available")) {
-          Intent intent = new Intent(getActivity(), ExamActivity.class);
-          intent.putExtra("exam", exam);
-          startActivity(intent);
-      }
+        if (subclass.equals("available")) {
+            Intent intent = new Intent(getActivity(), ExamActivity.class);
+            intent.putExtra("exam", exam);
+            startActivity(intent);
+        }
 
-      if(subclass.equals("history")) {
-          Intent intent = new Intent(getActivity(), AttemptsListActivity.class);
-          intent.putExtra("exam", exam);
-          startActivity(intent);
-      }
-   }
+        if (subclass.equals("history")) {
+            Intent intent = new Intent(getActivity(), AttemptsListActivity.class);
+            intent.putExtra("exam", exam);
+            startActivity(intent);
+        }
+    }
 
     @Override
     protected int getErrorMessage(Exception exception) {

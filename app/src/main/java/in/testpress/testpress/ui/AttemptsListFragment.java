@@ -25,6 +25,7 @@ import in.testpress.testpress.core.AttemptsPager;
 import in.testpress.testpress.core.ResourcePager;
 import in.testpress.testpress.models.Attempt;
 import in.testpress.testpress.models.Exam;
+import in.testpress.testpress.util.Ln;
 
 public class AttemptsListFragment extends PagedItemFragment<Attempt> {
 
@@ -36,8 +37,12 @@ public class AttemptsListFragment extends PagedItemFragment<Attempt> {
     public void onCreate(Bundle savedInstanceState) {
         Injector.inject(this);
         exam = getArguments().getParcelable("exam");
+        String state = getArguments().getString("state");
         try {
             pager = new AttemptsPager(exam, serviceProvider.getService(getActivity()));
+            if (state != null && state.equals("paused")) {
+                pager.setQueryParams("state", "paused");
+            }
         } catch (AccountsException e) {
             e.printStackTrace();
         } catch (IOException e) {

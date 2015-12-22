@@ -64,8 +64,8 @@ public class TestpressService {
         return getExamsService().getExams(urlFrag, queryParams, getAuthToken());
     }
 
-    public TestpressApiResponse<Attempt> getAttempts(String urlFrag) {
-        return getExamsService().getAttempts(urlFrag, getAuthToken());
+    public TestpressApiResponse<Attempt> getAttempts(String urlFrag, Map<String, String> queryParams) {
+        return getExamsService().getAttempts(urlFrag, queryParams, getAuthToken());
     }
 
     public TestpressApiResponse<ReviewItem> getReviewItems(String urlFrag) {

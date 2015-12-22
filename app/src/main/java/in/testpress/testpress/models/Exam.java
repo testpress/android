@@ -19,6 +19,7 @@ public class Exam implements Parcelable {
     private String url;
     private Integer id;
     private Integer attemptsCount;
+    private Integer pausedAttemptsCount;
     private String title;
     private String description;
     private String course;
@@ -30,27 +31,30 @@ public class Exam implements Parcelable {
     private String markPerQuestion;
     private Integer templateType;
     private Boolean allowRetake;
+    private Integer maxRetakes;
     private String attemptsUrl;
     private Map<String, String> additionalProperties = new HashMap<String, String>();
 
     // Parcelling part
     public Exam(Parcel parcel){
-        totalMarks         = parcel.readString();
-        url                = parcel.readString();
-        id                 = parcel.readInt();
-        attemptsCount      = parcel.readInt();
-        title              = parcel.readString();
-        description        = parcel.readString();
-        course             = parcel.readString();
-        startDate          = parcel.readString();
-        endDate            = parcel.readString();
-        duration           = parcel.readString();
-        numberOfQuestions  = parcel.readInt();
-        negativeMarks      = parcel.readString();
-        markPerQuestion    = parcel.readString();
-        templateType       = parcel.readInt();
-        allowRetake        = parcel.readByte() != 0;
-        attemptsUrl        = parcel.readString();
+        totalMarks          = parcel.readString();
+        url                 = parcel.readString();
+        id                  = parcel.readInt();
+        attemptsCount       = parcel.readInt();
+        pausedAttemptsCount = parcel.readInt();
+        title               = parcel.readString();
+        description         = parcel.readString();
+        course              = parcel.readString();
+        startDate           = parcel.readString();
+        endDate             = parcel.readString();
+        duration            = parcel.readString();
+        numberOfQuestions   = parcel.readInt();
+        negativeMarks       = parcel.readString();
+        markPerQuestion     = parcel.readString();
+        templateType        = parcel.readInt();
+        allowRetake         = parcel.readByte() != 0;
+        maxRetakes          = parcel.readInt();
+        attemptsUrl         = parcel.readString();
     }
 
     @Override
@@ -64,6 +68,7 @@ public class Exam implements Parcelable {
         parcel.writeString(url);
         parcel.writeInt(id);
         parcel.writeInt(attemptsCount);
+        parcel.writeInt(pausedAttemptsCount);
         parcel.writeString(title);
         parcel.writeString(description);
         parcel.writeString(course);
@@ -79,6 +84,7 @@ public class Exam implements Parcelable {
         } else {
             parcel.writeByte((byte) (allowRetake ? 1 : 0)); //if review == true, byte == 1
         }
+        parcel.writeInt(maxRetakes);
         parcel.writeString(attemptsUrl);
     }
 
@@ -167,6 +173,23 @@ public class Exam implements Parcelable {
     /**
      *
      * @return
+     * Paused attempts count
+     */
+    public Integer getPausedAttemptsCount() {
+        return pausedAttemptsCount;
+    }
+
+    /**
+     *
+     * @param pausedAttemptsCount
+     * Paused attempts count
+     */
+    public void setPausedAttemptsCount(Integer pausedAttemptsCount) {
+        this.pausedAttemptsCount = pausedAttemptsCount;
+    }
+    /**
+     *
+     * @return
      * The title
      */
     public String getTitle() {
@@ -223,7 +246,6 @@ public class Exam implements Parcelable {
      * The startDate
      */
     public String getStartDate() {
-        startDate = startDate.substring(0,startDate.length()-10);
         return startDate;
     }
 
@@ -257,6 +279,14 @@ public class Exam implements Parcelable {
      * The endDate
      */
     public String getEndDate() {
+        return endDate;
+    }
+
+    public String getFormattedStartDate() {
+        return formatDate(startDate);
+    }
+
+    public String getFormattedEndDate() {
         return formatDate(endDate);
     }
 
@@ -382,6 +412,12 @@ public class Exam implements Parcelable {
     public void setAllowRetake(Boolean allowRetake) {
         this.allowRetake = allowRetake;
     }
+
+    public Integer getMaxRetakes() {
+        return maxRetakes;
+    }
+
+    public void setMaxRetakes(Integer maxRetakes) { this.maxRetakes = maxRetakes; }
 
     /**
      *

@@ -31,6 +31,8 @@
     <string name="error_loading_content">Loading content failed</string>
     <string name="no_exams">No Exams</string>
     <string name="no_attempts">No Attempts</string>
+    <string name="review">Review</string>
+    <string name="view_attempts">View Attempts</string>
     <string name="no_questions">No Questions</string>
     <string name="no_products">No Products</string>
     <string name="no_orders">No Orders Yet</string>

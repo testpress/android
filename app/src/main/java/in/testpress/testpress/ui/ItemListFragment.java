@@ -115,7 +115,6 @@ public abstract class ItemListFragment<E> extends Fragment
         emptyView = (TextView) view.findViewById(id.empty);
         listView = (ListView) view.findViewById(android.R.id.list);
         listView.setOnItemClickListener(new OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {

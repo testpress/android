@@ -30,12 +30,17 @@
     <string name="error_loading_posts">Loading posts failed</string>
     <string name="error_loading_content">Loading content failed</string>
     <string name="no_exams">No Exams</string>
+    <string name="no_exams_description">You can buy exams from the store.</string>
     <string name="no_attempts">No Attempts</string>
+    <string name="no_attempts_description">To review, start and complete your exams.</string>
     <string name="review">Review</string>
     <string name="view_attempts">View Attempts</string>
     <string name="no_questions">No Questions</string>
+    <string name="no_questions_to_review">There are no questions to review.</string>
     <string name="no_products">No Products</string>
-    <string name="no_orders">No Orders Yet</string>
+    <string name="no_products_description">There are no products to purchase right now.</string>
+    <string name="no_orders">No transactions yet</string>
+    <string name="no_orders_description">Your purchased orders will be reflected here.</string>
     <string name="no_posts">No Posts</string>
     <string name="avatar">Avatar</string>
     <string name="choose">Choose</string>
@@ -53,6 +58,7 @@
     <string name="please_wait">Please Wait...</string>
     <string name="ok">OK</string>
     <string name="authentication_failed">Authentication failed</string>
+    <string name="network_error">Network Error</string>
     <string name="no_internet">Please check your internet connection &amp; refresh again</string>
 
     <!-- AuthenticatorActivity -->

@@ -68,7 +68,9 @@ public abstract class ItemListFragment<E> extends Fragment
     /**
      * Empty view
      */
-    protected TextView emptyView;
+    protected View emptyView;
+    protected TextView emptyTitleView;
+    protected TextView emptyDescView;
 
     /**
      * Progress bar
@@ -112,7 +114,9 @@ public abstract class ItemListFragment<E> extends Fragment
         super.onViewCreated(view, savedInstanceState);
         progressBar = (ProgressBar) view.findViewById(id.pb_loading);
         progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
-        emptyView = (TextView) view.findViewById(id.empty);
+        emptyView = view.findViewById(id.empty_container);
+        emptyTitleView = (TextView) view.findViewById(id.empty_title);
+        emptyDescView = (TextView) view.findViewById(id.empty_description);
         listView = (ListView) view.findViewById(android.R.id.list);
         listView.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -386,25 +390,14 @@ public abstract class ItemListFragment<E> extends Fragment
     /**
      * Set empty text on list fragment
      *
-     * @param message
+     * @param title
      * @return this fragment
      */
-    protected ItemListFragment<E> setEmptyText(final String message) {
+    protected ItemListFragment<E> setEmptyText(final int title, final int description, final int left) {
         if (emptyView != null) {
-            emptyView.setText(message);
-        }
-        return this;
-    }
-
-    /**
-     * Set empty text on list fragment
-     *
-     * @param resId
-     * @return this fragment
-     */
-    protected ItemListFragment<E> setEmptyText(final int resId) {
-        if (emptyView != null) {
-            emptyView.setText(resId);
+            emptyTitleView.setText(title);
+            emptyTitleView.setCompoundDrawablesWithIntrinsicBounds(left, 0, 0, 0);
+            emptyDescView.setText(description);
         }
         return this;
     }

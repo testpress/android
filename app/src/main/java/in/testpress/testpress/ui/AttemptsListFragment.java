@@ -53,7 +53,7 @@ public class AttemptsListFragment extends PagedItemFragment<Attempt> {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        setEmptyText(R.string.no_attempts);
+        setEmptyText(R.string.no_attempts, R.string.no_attempts_description, R.drawable.ic_error_outline_black_18dp);
         super.onActivityCreated(savedInstanceState);
     }
 

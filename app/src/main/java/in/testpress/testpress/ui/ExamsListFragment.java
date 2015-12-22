@@ -93,7 +93,7 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        setEmptyText(R.string.no_exams);
+        setEmptyText(R.string.no_exams, R.string.no_exams_description, R.drawable.ic_error_outline_black_18dp);
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -111,9 +111,13 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
         //Return if no items are returned
         if (items.isEmpty()) {
             if(internetConnectivityChecker.isConnected()) {
-                setEmptyText(R.string.no_exams);
+                if (subclass.equals("history")) {
+                    setEmptyText(R.string.no_attempts, R.string.no_attempts_description, R.drawable.ic_error_outline_black_18dp);
+                } else {
+                    setEmptyText(R.string.no_exams, R.string.no_exams_description, R.drawable.ic_error_outline_black_18dp);
+                }
             } else {
-                setEmptyText(R.string.no_internet);
+                setEmptyText(R.string.network_error, R.string.no_internet, R.drawable.ic_error_outline_black_18dp);
             }
             super.onLoadFinished(loader, items);
             return;
@@ -205,7 +209,7 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
             serviceProvider.handleForbidden(getActivity(), serviceProvider, logoutService);
             return R.string.authentication_failed;
         } else {
-            setEmptyText(R.string.no_internet);
+            setEmptyText(R.string.network_error, R.string.no_internet, R.drawable.ic_error_outline_black_18dp);
         }
         return R.string.error_loading_exams;
     }

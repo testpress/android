@@ -45,7 +45,7 @@ public class OrdersListFragment extends PagedItemFragment<Order> {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        setEmptyText(R.string.no_orders);
+        setEmptyText(R.string.no_orders, R.string.no_orders_description, R.drawable.ic_shopping_cart_black_18dp);
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -64,7 +64,7 @@ public class OrdersListFragment extends PagedItemFragment<Order> {
 
         //Return if no items are returned
         if (items.isEmpty()) {
-            setEmptyText(R.string.no_orders);
+            setEmptyText(R.string.no_orders, R.string.no_orders_description, R.drawable.ic_shopping_cart_black_18dp);
             super.onLoadFinished(loader, items);
             return;
         }
@@ -86,7 +86,7 @@ public class OrdersListFragment extends PagedItemFragment<Order> {
             serviceProvider.handleForbidden(getActivity(), serviceProvider, logoutService);
             return R.string.authentication_failed;
         } else {
-            setEmptyText(R.string.no_internet);
+            setEmptyText(R.string.network_error, R.string.no_internet, R.drawable.ic_error_outline_black_18dp);
         }
         return R.string.error_loading_orders;
     }

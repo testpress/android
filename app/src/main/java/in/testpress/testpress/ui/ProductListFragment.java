@@ -46,7 +46,7 @@ public class ProductListFragment extends PagedItemFragment<Product> {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        setEmptyText(R.string.no_products);
+        setEmptyText(R.string.no_products, R.string.no_products_description, R.drawable.box);
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -72,7 +72,7 @@ public class ProductListFragment extends PagedItemFragment<Product> {
 
         //Return if no items are returned
         if (items.isEmpty()) {
-            setEmptyText(R.string.no_products);
+            setEmptyText(R.string.no_products, R.string.no_products_description, R.drawable.box);
             super.onLoadFinished(loader, items);
             return;
         }
@@ -96,7 +96,7 @@ public class ProductListFragment extends PagedItemFragment<Product> {
             serviceProvider.handleForbidden(getActivity(), serviceProvider, logoutService);
             return R.string.authentication_failed;
         } else {
-            setEmptyText(R.string.no_internet);
+            setEmptyText(R.string.network_error, R.string.no_internet, R.drawable.ic_error_outline_black_18dp);
         }
         return R.string.error_loading_products;
     }

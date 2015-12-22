@@ -4,6 +4,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/empty_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:visibility="gone">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:id="@+id/empty_title"
+            android:text="Network Error"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:layout_gravity="center"
+            android:drawableLeft="@drawable/ic_error_outline_black_18dp"
+            android:drawablePadding="3dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:id="@+id/empty_description"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:text="Please check your internet connection"
+            android:gravity="center"/>
+    </LinearLayout>
+
     <ListView
         android:id="@android:id/list"
         style="@style/ListView"
@@ -17,14 +47,5 @@
         android:id="@+id/pb_loading"
         android:indeterminate="true"
         android:layout_centerInParent="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:id="@+id/empty"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:visibility="gone"/>
 
 </RelativeLayout>

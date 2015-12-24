@@ -81,6 +81,10 @@ public class ExamActivity extends FragmentActivity implements LoaderManager.Load
             description.setVisibility(View.VISIBLE);
             descriptionContent.setText(exam.getDescription());
         }
+        String action = data.getString("action");
+        if (action != null && action.equals("end")) {
+            endExam();
+        }
     }
 
     @OnClick(R.id.exam_back_button) void goBack() {

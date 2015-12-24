@@ -2,28 +2,15 @@ package in.testpress.testpress.ui;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ExpandableListAdapter;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
 
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import in.testpress.testpress.R;
-import in.testpress.testpress.core.AttemptsPager;
-import in.testpress.testpress.models.Attempt;
 import in.testpress.testpress.models.Exam;
-import in.testpress.testpress.util.Ln;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class HistoryListAdapter extends SingleTypeAdapter<Exam> {
@@ -42,7 +29,7 @@ public class HistoryListAdapter extends SingleTypeAdapter<Exam> {
     protected int[] getChildViewIds() {
         return new int[]{R.id.exam_title, R.id.exam_duration, R.id.number_of_questions,
                 R.id.exam_date, R.id.attempts_count, R.id.attempts_string, R.id.retake,
-                R.id.view_attempts, R.id.resume_exam};
+                R.id.review_attempt, R.id.resume_exam};
     }
 
     @Override
@@ -50,7 +37,7 @@ public class HistoryListAdapter extends SingleTypeAdapter<Exam> {
                         final ViewGroup parent) {
         convertView = super.getView(position, convertView, parent);
         final Exam exam = getItem(position);
-        convertView.findViewById(R.id.view_attempts).setOnClickListener(new View.OnClickListener() {
+        convertView.findViewById(R.id.review_attempt).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (exam.getAttemptsCount() == 1 && exam.getPausedAttemptsCount() == 0) {

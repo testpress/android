@@ -25,6 +25,7 @@ import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.core.UserAgentProvider;
 import in.testpress.testpress.ui.AttemptFragment;
 import in.testpress.testpress.ui.AttemptsListActivity;
+import in.testpress.testpress.ui.AttemptsListAdapter;
 import in.testpress.testpress.ui.AttemptsListFragment;
 import in.testpress.testpress.ui.ExamActivity;
 import in.testpress.testpress.ui.ExamsListActivity;
@@ -89,7 +90,8 @@ import retrofit.converter.GsonConverter;
                 RegistrationIntentService.class,
                 PostActivity.class,
                 PostsListActivity.class,
-                PostsListFragment.class
+                PostsListFragment.class,
+                AttemptsListAdapter.class
         }
 )
 public class TestpressModule {

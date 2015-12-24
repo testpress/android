@@ -54,6 +54,13 @@
     <string name="pause_message">Do you want to Pause the exam?</string>
     <string name="pause_content">You can pause the exam &amp; resume later before end date</string>
     <string name="end_message">Do you want to End the exam?</string>
+    <string name="mail_pdf_confirm_title">Mail PDF</string>
+    <string name="mail_pdf_confirm">PDF will be mailed to your email address. Click OK to confirm.</string>
+    <string name="mail_pdf">Initiating PDF mail</string>
+    <string name="mail_pdf_complete">PDF Request Complete</string>
+    <string name="mail_pdf_complete_description">Your PDF request has been initiated. Please wait while your PDF is generated and mailed to you.</string>
+    <string name="mail_pdf_error">PDF Request Error</string>
+    <string name="mail_pdf_error_description">There was an error in generating your PDF.</string>
     <string name="loading">Loading...</string>
     <string name="please_wait">Please Wait...</string>
     <string name="ok">OK</string>

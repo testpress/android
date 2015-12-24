@@ -117,7 +117,7 @@
             android:background="@drawable/primary_button"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
-            android:layout_toLeftOf="@+id/view_attempts"
+            android:layout_toLeftOf="@+id/review_attempt"
             android:visibility="gone"/>
 
         <Button
@@ -131,14 +131,14 @@
             android:background="@drawable/primary_button"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
-            android:layout_toLeftOf="@+id/view_attempts"/>
+            android:layout_toLeftOf="@+id/review_attempt"/>
 
         <Button
             android:layout_height="30dp"
             android:layout_width="wrap_content"
             android:text="@string/review"
             android:visibility="visible"
-            android:id="@+id/view_attempts"
+            android:id="@+id/review_attempt"
             android:textColor="@color/white"
             android:drawableLeft="@drawable/ic_zoom_in_white_18dp"
             style="?android:attr/borderlessButtonStyle"

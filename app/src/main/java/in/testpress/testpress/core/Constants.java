@@ -108,7 +108,7 @@ public final class Constants {
          * End Exam URL
          */
         public static final String URL_END_EXAM_FRAG =  "end/";
-        public static final String URL_END_EXAM = URL_BASE + URL_END_EXAM_FRAG;
+        public static final String URL_MAIL_PDF_FRAG =  "pdf/";
 
         /**
          * Devices Register URL

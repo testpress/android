@@ -112,11 +112,15 @@
             android:text="@string/resume"
             android:id="@+id/resume_exam"
             android:textColor="@color/white"
+            android:textAllCaps="true"
             android:drawableLeft="@drawable/ic_repeat_white_18dp"
             style="?android:attr/borderlessButtonStyle"
             android:background="@drawable/primary_button"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:drawablePadding="3dp"
             android:layout_toLeftOf="@+id/review_attempt"
             android:visibility="gone"/>
 
@@ -126,11 +130,15 @@
             android:text="@string/retake_action"
             android:id="@+id/retake"
             android:textColor="@color/white"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textAllCaps="true"
             android:drawableLeft="@drawable/ic_replay_white_18dp"
             style="?android:attr/borderlessButtonStyle"
             android:background="@drawable/primary_button"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
+            android:drawablePadding="3dp"
             android:layout_toLeftOf="@+id/review_attempt"/>
 
         <Button
@@ -140,12 +148,16 @@
             android:visibility="visible"
             android:id="@+id/review_attempt"
             android:textColor="@color/white"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textAllCaps="true"
             android:drawableLeft="@drawable/ic_zoom_in_white_18dp"
             style="?android:attr/borderlessButtonStyle"
             android:background="@drawable/primary_button"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:layout_marginLeft="15dp"
+            android:drawablePadding="3dp"
             android:layout_alignParentRight="true" />
     </RelativeLayout>
     <View

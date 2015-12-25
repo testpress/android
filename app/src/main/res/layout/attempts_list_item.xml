@@ -157,9 +157,12 @@
                 android:drawableLeft="@drawable/ic_email_white_18dp"
                 style="?android:attr/borderlessButtonStyle"
                 android:background="@drawable/primary_button"
-                android:drawablePadding="5dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:drawablePadding="3dp"
+                android:textAllCaps="true"
                 android:layout_toLeftOf="@+id/review_attempt"/>
 
             <Button
@@ -175,6 +178,10 @@
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:layout_marginLeft="15dp"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:drawablePadding="3dp"
+                android:textAllCaps="true"
                 android:layout_alignParentRight="true" />
         </RelativeLayout>
     </LinearLayout>
@@ -261,9 +268,12 @@
                 android:drawableLeft="@drawable/ic_block_white_18dp"
                 style="?android:attr/borderlessButtonStyle"
                 android:background="@drawable/primary_button"
-                android:drawablePadding="5dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:drawablePadding="3dp"
+                android:textAllCaps="true"
                 android:layout_toLeftOf="@+id/resume_exam"/>
 
             <Button
@@ -279,6 +289,10 @@
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:layout_marginLeft="15dp"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:drawablePadding="3dp"
+                android:textAllCaps="true"
                 android:layout_alignParentRight="true" />
         </RelativeLayout>
     </LinearLayout>

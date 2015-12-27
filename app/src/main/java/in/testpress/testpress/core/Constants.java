@@ -12,19 +12,19 @@ public final class Constants {
         private Auth() {}
 
         /**
-         * Account type id
-         */
-        public static final String TESTPRESS_ACCOUNT_TYPE = "in.testpress.testpress";
-
-        /**
          * Account name
          */
-        public static final String TESTPRESS_ACCOUNT_NAME = "testpress";
+        public static final String TESTPRESS_ACCOUNT_NAME = "demo";
+
+        /**
+         * Account type id
+         */
+        public static final String TESTPRESS_ACCOUNT_TYPE = "in.testpress." + TESTPRESS_ACCOUNT_NAME;
 
         /**
          * Provider id
          */
-        public static final String TESTPRESS_PROVIDER_AUTHORITY = "in.testpress.testpress.sync";
+        public static final String TESTPRESS_PROVIDER_AUTHORITY = "in.testpress." + TESTPRESS_ACCOUNT_NAME + ".sync";
 
         /**
          * Auth token type
@@ -152,7 +152,7 @@ public final class Constants {
         /**
          * Action prefix for all intents created
          */
-        public static final String INTENT_PREFIX = "in.testpress.testpress.";
+        public static final String INTENT_PREFIX = "in.testpress." + Auth.TESTPRESS_ACCOUNT_NAME + ".";
 
     }
 
@@ -163,7 +163,7 @@ public final class Constants {
         public static final int TIMER_NOTIFICATION_ID = 1000; // Why 1000? Why not? :)
     }
 
-    public static final String GCM_PREFERENCE_NAME = "testpress.demo";
+    public static final String GCM_PREFERENCE_NAME = "testpress." + Auth.TESTPRESS_ACCOUNT_NAME;
     public static final String GCM_PROPERTY_REG_ID = "GCMRegId";
     public static final String SENT_TOKEN_TO_SERVER = "sentTokenToServer";
 }

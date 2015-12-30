@@ -270,7 +270,7 @@ public class Exam implements Parcelable {
             }
         } catch (ParseException e) {
         }
-        return null;
+        return "forever";
     }
 
     /**

@@ -8,6 +8,7 @@
     <string name="refresh_action">Refresh</string>
     <string name="filter_action">Filter</string>
     <string name="retake_action">Retake</string>
+    <string name="email_mcqs">Email MCQs</string>
     <string name="logout_action">Logout</string>
     <string name="page_available_exams">Available</string>
     <string name="page_upcoming_exams">Upcoming</string>

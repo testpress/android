@@ -142,13 +142,13 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
             examsTitleText.setVisibility(View.VISIBLE);
         }
         examListViewText.setFocusable(false);
-        examListViewText.setAdapter(new ExamsListAdapter(this.getLayoutInflater(), productDetails.getExams(), R.layout.available_exams_list_item));
+        examListViewText.setAdapter(new UpcomingExamsListAdapter(this.getLayoutInflater(), productDetails.getExams(), R.layout.upcoming_exams_list_item));
         setListViewHeightBasedOnChildren(examListViewText);
         if(!productDetails.getNotes().isEmpty()) {
             notesTitleText.setVisibility(View.VISIBLE);
         }
         notesListViewText.setFocusable(false);
-        notesListViewText.setAdapter(new NotesListAdapter(this.getLayoutInflater(), productDetails.getNotes(), R.layout.available_exams_list_item));
+        notesListViewText.setAdapter(new NotesListAdapter(this.getLayoutInflater(), productDetails.getNotes(), R.layout.upcoming_exams_list_item));
         setListViewHeightBasedOnChildren(notesListViewText);
         this.productDetails = productDetails;
     }

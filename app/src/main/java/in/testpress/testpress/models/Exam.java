@@ -29,6 +29,7 @@ public class Exam implements Parcelable {
     private String markPerQuestion;
     private Integer templateType;
     private Boolean allowRetake;
+    private Boolean allowPdf;
     private Integer maxRetakes;
     private String attemptsUrl;
     private Map<String, String> additionalProperties = new HashMap<String, String>();
@@ -51,6 +52,7 @@ public class Exam implements Parcelable {
         markPerQuestion     = parcel.readString();
         templateType        = parcel.readInt();
         allowRetake         = parcel.readByte() != 0;
+        allowPdf            = parcel.readByte() != 0;
         maxRetakes          = parcel.readInt();
         attemptsUrl         = parcel.readString();
     }
@@ -81,6 +83,11 @@ public class Exam implements Parcelable {
             parcel.writeByte((byte) (0));
         } else {
             parcel.writeByte((byte) (allowRetake ? 1 : 0)); //if review == true, byte == 1
+        }
+        if (allowPdf == null) {
+            parcel.writeByte((byte) (0));
+        } else {
+            parcel.writeByte((byte) (allowPdf ? 1 : 0)); //if review == true, byte == 1
         }
         parcel.writeInt(maxRetakes);
         parcel.writeString(attemptsUrl);
@@ -121,6 +128,16 @@ public class Exam implements Parcelable {
      */
     public String getUrl() {
         return url;
+    }
+
+    public String getUrlFrag() {
+        try {
+            URL fragUrl = new URL(url);
+            return fragUrl.getFile().substring(1);
+        }
+        catch (Exception e) {
+            return null;
+        }
     }
 
     /**
@@ -409,6 +426,24 @@ public class Exam implements Parcelable {
      */
     public void setAllowRetake(Boolean allowRetake) {
         this.allowRetake = allowRetake;
+    }
+
+    /**
+     *
+     * @return
+     * Allow pdf
+     */
+    public Boolean getAllowPdf() {
+        return allowPdf;
+    }
+
+    /**
+     *
+     * @param allowPdf
+     * Allow retake
+     */
+    public void setAllowPdf(Boolean allowPdf) {
+        this.allowPdf = allowPdf;
     }
 
     public Integer getMaxRetakes() {

@@ -10,14 +10,14 @@ import in.testpress.testpress.models.Exam;
 
 import java.util.List;
 
-public class ExamsListAdapter extends AlternatingColorListAdapter<Exam> {
+public class UpcomingExamsListAdapter extends AlternatingColorListAdapter<Exam> {
     /**
      * @param inflater
      * @param items
      * @param selectable
      */
-    public ExamsListAdapter(final LayoutInflater inflater, final List<Exam> items,
-                           final boolean selectable, int layout) {
+    public UpcomingExamsListAdapter(final LayoutInflater inflater, final List<Exam> items,
+                                    final boolean selectable, int layout) {
         super(layout, inflater, items, selectable);
     }
 
@@ -25,7 +25,7 @@ public class ExamsListAdapter extends AlternatingColorListAdapter<Exam> {
      * @param inflater
      * @param items
      */
-    public ExamsListAdapter(final LayoutInflater inflater, final List<Exam> items, int layout) {
+    public UpcomingExamsListAdapter(final LayoutInflater inflater, final List<Exam> items, int layout) {
         super(layout, inflater, items);
     }
 

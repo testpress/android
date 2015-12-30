@@ -166,21 +166,14 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
 
     @Override
     protected SingleTypeAdapter<Exam> createAdapter(List<Exam> items) {
-        int layout = R.layout.available_exams_list_item;
         if (subclass != null) {
-            if (subclass.equals("available")) {
-                layout = R.layout.available_exams_list_item;
-            } else if (subclass.equals("upcoming")) {
-                layout = R.layout.available_exams_list_item;
-                //return serviceProvider.getService(getActivity()).getUpcomingExams();
+            if (subclass.equals("upcoming")) {
+                return new UpcomingExamsListAdapter(getActivity().getLayoutInflater(), items, R.layout.upcoming_exams_list_item);
             } else if (subclass.equals("history")) {
-                layout = R.layout.history_exams_list_item;
-                return new HistoryListAdapter(getActivity(), items, layout);
-            } else {
-                layout = R.layout.available_exams_list_item;
+                return new HistoryListAdapter(getActivity(), items, R.layout.history_exams_list_item);
             }
         }
-        return new ExamsListAdapter(getActivity().getLayoutInflater(), items, layout);
+        return new AvailableExamsListAdapter(getActivity(), items, R.layout.available_exams_list_item);
     }
 
     public void onListItemClick(ListView l, View v, int position, long id) {

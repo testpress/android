@@ -79,12 +79,12 @@ public class PostsPager extends ResourcePager<Post> {
                 Ln.d("Looping through resources");
                 for (Post resource : resourcePage) {
                     resource = register(resource);
-                    Ln.d("Category ID " + resource.getCategoryId());
                     if (resource == null)
                         continue;
                     if(resource.category != null) {
                         resource.setCategory(resource.category);
                     }
+                    Ln.d("Category ID " + resource.getCategoryId());
                     resource.setCreatedDate(simpleDateFormat.parse(resource.getCreated()).getTime());
                     resources.put(getId(resource), resource);
                 }

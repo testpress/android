@@ -376,7 +376,12 @@ public class PostsListFragment extends Fragment implements
         //Insert the categories and posts to the database
         List<Category> categories = new ArrayList<Category>();
         for (Post post : posts) {
-            categories.add(post.category);
+            if (post.category != null) {
+                Ln.e("Post category for " + post.getTitle() + " is " + post.category.getName());
+                categories.add(post.category);
+            } else {
+                Ln.e("Post category for " + post.getTitle() + " is null");
+            }
         }
         categoryDao.insertOrReplaceInTx(categories);
         postDao.insertOrReplaceInTx(posts);

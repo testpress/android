@@ -126,8 +126,6 @@ public class PostsListFragment extends Fragment implements
         super.onViewCreated(view, savedInstanceState);
         adapter = new HeaderFooterListAdapter<PostsListAdapter>(listView, new PostsListAdapter(getActivity(), R.layout.post_list_item));
         listView.setAdapter(adapter);
-        listView.setOnScrollListener(this);
-        listView.setFastScrollEnabled(true);
         loadingLayout = LayoutInflater.from(getActivity()).inflate(R.layout.loading_layout, null);
     }
 
@@ -144,6 +142,8 @@ public class PostsListFragment extends Fragment implements
         });
         getLoaderManager().initLoader(REFRESH_LOADER_ID, null, this);
         displayDataFromDB();
+        listView.setOnScrollListener(this);
+        listView.setFastScrollEnabled(true);
     }
 
     @Override

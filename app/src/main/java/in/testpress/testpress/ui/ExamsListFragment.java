@@ -3,7 +3,6 @@ package in.testpress.testpress.ui;
 import android.accounts.AccountsException;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
@@ -11,18 +10,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 
-import butterknife.OnClick;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.ExamPager;
 import in.testpress.testpress.core.ResourcePager;
-import in.testpress.testpress.models.Attempt;
 import in.testpress.testpress.models.Exam;
 
 import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
@@ -126,7 +122,7 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
         //Populate the spinner with the courses
         List<String> coursesList = new ArrayList<String>();
         for (final Exam exam : items) {
-            coursesList.add(exam.getCourse());
+            coursesList.add(exam.getCourse_category());
         }
         Set<String> uniqueCourses = new HashSet<String>(coursesList);
         for (final String course : uniqueCourses) {

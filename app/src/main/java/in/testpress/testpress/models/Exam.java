@@ -7,10 +7,8 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -22,7 +20,7 @@ public class Exam implements Parcelable {
     private Integer pausedAttemptsCount;
     private String title;
     private String description;
-    private String course;
+    private String course_category;
     private String startDate;
     private String endDate;
     private String duration;
@@ -44,7 +42,7 @@ public class Exam implements Parcelable {
         pausedAttemptsCount = parcel.readInt();
         title               = parcel.readString();
         description         = parcel.readString();
-        course              = parcel.readString();
+        course_category = parcel.readString();
         startDate           = parcel.readString();
         endDate             = parcel.readString();
         duration            = parcel.readString();
@@ -71,7 +69,7 @@ public class Exam implements Parcelable {
         parcel.writeInt(pausedAttemptsCount);
         parcel.writeString(title);
         parcel.writeString(description);
-        parcel.writeString(course);
+        parcel.writeString(course_category);
         parcel.writeString(startDate);
         parcel.writeString(endDate);
         parcel.writeString(duration);
@@ -226,19 +224,19 @@ public class Exam implements Parcelable {
     /**
      *
      * @return
-     * The course
+     * The course_category
      */
-    public String getCourse() {
-        return course;
+    public String getCourse_category() {
+        return course_category;
     }
 
     /**
      *
-     * @param course
-     * The course
+     * @param course_category
+     * The course_category
      */
-    public void setCourse(String course) {
-        this.course = course;
+    public void setCourse_category(String course_category) {
+        this.course_category = course_category;
     }
     /**
      *

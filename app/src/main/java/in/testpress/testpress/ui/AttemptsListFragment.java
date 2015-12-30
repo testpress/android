@@ -67,33 +67,6 @@ public class AttemptsListFragment extends PagedItemFragment<Attempt> {
 
     }
 
-
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        if (!isUsable()) {
-            return false;
-        }
-        switch (item.getItemId()) {
-            case R.id.retake:
-                if (exam.getAllowRetake() == true) {
-                    Intent intent = new Intent(getActivity(), ExamActivity.class);
-                    intent.putExtra("exam", exam);
-                    startActivity(intent);
-                    return true;
-                } else {
-                    Toaster.showShort(getActivity(), "Retakes are not allowed for this exam.");
-                    return true;
-                }
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public void onCreateOptionsMenu(final Menu optionsMenu, final MenuInflater inflater) {
-        inflater.inflate(R.menu.attempt_actions, optionsMenu);
-    }
-
     @Override
     public void onDestroyView() {
         setListAdapter(null);

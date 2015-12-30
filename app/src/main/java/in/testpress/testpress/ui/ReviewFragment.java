@@ -63,33 +63,6 @@ public class ReviewFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
-    @Override
-    public void onCreateOptionsMenu(final Menu optionsMenu, final MenuInflater inflater) {
-        inflater.inflate(R.menu.attempt_actions, optionsMenu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        if (getActivity() == null) {
-            return false;
-        }
-
-        switch (item.getItemId()) {
-            case R.id.retake:
-                if (exam.getAllowRetake() == true) {
-                    Intent intent = new Intent(getActivity(), ExamActivity.class);
-                    intent.putExtra("exam", exam);
-                    startActivity(intent);
-                    return true;
-                } else {
-                    Toaster.showShort(getActivity(), "Retakes are not allowed for this exam.");
-                    return true;
-                }
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     void setViewPager(View view) {
         view.findViewById(R.id.pb_loading).setVisibility(View.GONE);
         view.findViewById(R.id.tabs_container).setVisibility(View.VISIBLE);

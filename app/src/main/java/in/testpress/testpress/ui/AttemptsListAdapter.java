@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -64,7 +65,8 @@ public class AttemptsListAdapter extends SingleTypeAdapter<Attempt> {
             }
         });
 
-        convertView.findViewById(R.id.email_pdf).setOnClickListener(new View.OnClickListener() {
+        Button emailPdf = (Button)convertView.findViewById(R.id.email_pdf);
+        emailPdf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new MaterialDialog.Builder(activity)
@@ -180,6 +182,12 @@ public class AttemptsListAdapter extends SingleTypeAdapter<Attempt> {
             setText(4, "" + item.getCorrectCount());
             setText(5, "" + item.getIncorrectCount());
             setText(6, "" + item.getScore());
+        }
+
+        if (exam.getAllowPdf() == true) {
+            emailPdf.setVisibility(View.VISIBLE);
+        } else {
+            emailPdf.setVisibility(View.GONE);
         }
 
         return convertView;

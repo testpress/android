@@ -10,7 +10,7 @@ import in.testpress.testpress.R;
 public class SplashScreenActivity extends Activity {
 
     // Splash screen timer
-    private static final int SPLASH_TIME_OUT = 1000;
+    private static final int SPLASH_TIME_OUT = 2000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

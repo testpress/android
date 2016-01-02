@@ -53,7 +53,7 @@
             android:id="@+id/b_signin"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            fbutton:buttonColor="@color/fbutton_color_pomegranate"
+            fbutton:buttonColor="@color/primary"
             fbutton:shadowEnabled="true"
             fbutton:shadowHeight="5dp"
             fbutton:cornerRadius="2dp"

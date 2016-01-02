@@ -9,6 +9,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -16,10 +17,10 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -84,7 +85,7 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
 
     @Inject Bus bus;
 
-    @InjectView(id.et_username) AutoCompleteTextView usernameText;
+    @InjectView(id.et_username) EditText usernameText;
     @InjectView(id.et_password) protected EditText passwordText;
     @InjectView(id.b_signin) protected Button signInButton;
 
@@ -148,6 +149,8 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
 
         usernameText.addTextChangedListener(watcher);
         passwordText.addTextChangedListener(watcher);
+        passwordText.setTypeface(Typeface.DEFAULT);
+        passwordText.setTransformationMethod(new PasswordTransformationMethod());
 //
 //        final TextView signUpText = (TextView) findViewById(id.tv_signup);
 //        signUpText.setMovementMethod(LinkMovementMethod.getInstance());
@@ -346,25 +349,6 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
     @OnClick(id.b_signin) public void signIn() {
         if(internetConnectivityChecker.isConnected()) {
             handleLogin(signInButton);
-        } else {
-            internetConnectivityChecker.showAlert();
-        }
-    }
-
-    @OnClick(id.b_signUp) public void signUp() {
-        if(internetConnectivityChecker.isConnected()) {
-            Intent intent = new Intent(TestpressAuthenticatorActivity.this, NewUserRegistrationActivity.class);
-            startActivity(intent);
-        } else {
-            internetConnectivityChecker.showAlert();
-        }
-
-    }
-
-    @OnClick(id.b_verifyLayout) public void verifyLayout() {
-        if(internetConnectivityChecker.isConnected()) {
-            Intent intent = new Intent(TestpressAuthenticatorActivity.this, CodeVerificationActivity.class);
-            startActivity(intent);
         } else {
             internetConnectivityChecker.showAlert();
         }

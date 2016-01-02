@@ -16,15 +16,15 @@ public class MainMenuFragment extends Fragment {
     GridView grid;
     String[] menuItemNames = {
             "My Exams",
-            "Store",
-            "Orders",
-            "Notifications",
+//            "Store",
+//            "Orders",
+            "Posts",
             "Logout"
     } ;
     int[] menuItemImageId = {
             R.drawable.exams,
-            R.drawable.store,
-            R.drawable.cart,
+//            R.drawable.store,
+//            R.drawable.cart,
             R.drawable.posts,
             R.drawable.logout
     };
@@ -51,19 +51,19 @@ public class MainMenuFragment extends Fragment {
                         intent = new Intent(getActivity(), ExamsListActivity.class);
                         startActivity(intent);
                         break;
+//                    case 1:
+//                        intent = new Intent(getActivity(), ProductsListActivity.class);
+//                        startActivity(intent);
+//                        break;
+//                    case 2:
+//                        intent = new Intent(getActivity(), OrdersListActivity.class);
+//                        startActivity(intent);
+//                        break;
                     case 1:
-                        intent = new Intent(getActivity(), ProductsListActivity.class);
-                        startActivity(intent);
-                        break;
-                    case 2:
-                        intent = new Intent(getActivity(), OrdersListActivity.class);
-                        startActivity(intent);
-                        break;
-                    case 3:
                         intent = new Intent(getActivity(), PostsListActivity.class);
                         startActivity(intent);
                         break;
-                    case 4:
+                    case 2:
                         ((MainActivity)getActivity()).logout();
                         break;
                 }

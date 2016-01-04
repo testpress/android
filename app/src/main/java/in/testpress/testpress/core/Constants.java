@@ -14,7 +14,7 @@ public final class Constants {
         /**
          * Account name
          */
-        public static final String TESTPRESS_ACCOUNT_NAME = "testpress";
+        public static final String TESTPRESS_ACCOUNT_NAME = "race";
 
         /**
          * Account type id
@@ -39,7 +39,7 @@ public final class Constants {
         /**
          * Base URL for all requests
          */
-        public static final String URL_BASE = "http://192.168.0.104:8000";
+        public static final String URL_BASE = "http://onlinetest.raceinstitute.in";
 
         /**
          * Check Update url

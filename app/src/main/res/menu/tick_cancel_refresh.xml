@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group android:visible="false"
+        android:id="@+id/editMode">
+
+        <item
+            android:id="@+id/tick"
+            android:icon="@drawable/tick"
+            app:showAsAction="always"
+            android:title="@string/ok" >
+        </item>
+
+        <item
+            android:id="@+id/cancel"
+            android:icon="@drawable/cancel"
+            app:showAsAction="always"
+            android:title="@string/cancel" >
+        </item>
+    </group>
+
+    <group android:id="@+id/viewMode">
+        <item
+            android:id="@+id/refresh"
+            android:icon="@drawable/ic_action_refresh"
+            app:showAsAction="always"
+            android:title="@string/refresh_action" >
+        </item>
+    </group>
+</menu>

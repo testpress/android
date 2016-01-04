@@ -45,6 +45,7 @@ import in.testpress.testpress.models.Attempt;
 import in.testpress.testpress.models.AttemptItem;
 import in.testpress.testpress.models.Exam;
 import in.testpress.testpress.models.TestpressApiResponse;
+import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 
 public class AttemptFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<AttemptItem>> {
@@ -162,7 +163,8 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         filter.setAdapter(adapter);
         filter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long
+                    l) {
                 switch (position) {
                     case 0:
                         setFilter("all");
@@ -386,7 +388,9 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
             for (AttemptItem item : items) {
                 if (item.getAttemptQuestion().getSubject() == null || item.getAttemptQuestion().getSubject().isEmpty()) {  //if subject is empty subject = "Uncategorized"
                     item.getAttemptQuestion().setSubject("Uncategorized");
+                    Ln.e("Setting question subject to Uncategorized");
                 }
+                Ln.e("Subject of question is " + item.getAttemptQuestion().getSubject());
                 if (subjectsWiseItems.containsKey(item.getAttemptQuestion().getSubject())) { //check subject is already added if added simply add the item it
                     subjectsWiseItems.get(item.getAttemptQuestion().getSubject()).add(item);
                 } else {
@@ -395,18 +399,20 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
                 }
             }
 
+            //store each set of subject items to attemptItemList
+            for (String subject : subjectsWiseItems.keySet()) {
+                subjects.put(subject, attemptItemList.size());   //add subjects & it starting point
+                attemptItemList.addAll(subjectsWiseItems.get(subject));
+                mTopLevelSpinnerAdapter.addItem(subject, subject, true, 0);
+            }
+
             if ((spinnerContainer.getVisibility() == View.GONE) && subjectsWiseItems.size() > 1) {  //show spinner only if #subjects > 1
-                //store each set of subject items to attemptItemList
-                for (String subject : subjectsWiseItems.keySet()) {
-                    subjects.put(subject, attemptItemList.size());   //add subjects & it starting point
-                    attemptItemList.addAll(subjectsWiseItems.get(subject));
-                    mTopLevelSpinnerAdapter.addItem(subject, subject, true, 0);
-                }
                 mTopLevelSpinnerAdapter.notifyDataSetChanged();
                 spinnerContainer.setVisibility(View.VISIBLE);
-                subjectFilter.setSelection(0); //set 1st item as default selection
-                currentOffset = 0;
             }
+
+            subjectFilter.setSelection(0); //set 1st item as default selection
+            currentOffset = 0;
         } else {
             attemptItemList =items;
         }

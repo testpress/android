@@ -5,13 +5,17 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.0'
+        classpath 'com.android.tools.build:gradle:1.3.0'
     }
 }
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 repositories {
     maven { url 'https://github.com/donnfelker/mvn-repo/raw/master/' }
+    maven {
+        url 'https://github.com/friberry/mvn-repo/raw/master/'
+    }
     mavenLocal()
     mavenCentral()
 }
@@ -23,10 +27,10 @@ dependencies {
     compile 'com.squareup.dagger:dagger:1.0.1'
     compile 'com.squareup.dagger:dagger-compiler:1.0.1'
     compile 'com.jakewharton:butterknife:6.1.0'
-
     compile 'com.actionbarsherlock:viewpagerindicator:2.4.1'
     compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.github.kevinsawicki:wishlist:0.9'
+
+    compile 'com.github.kevinsawicki:wishlist:0.9@aar'
 
     // Event Bus
     compile 'com.squareup:otto:1.3.5'
@@ -41,35 +45,50 @@ dependencies {
     compile 'com.squareup.retrofit:retrofit:1.9.0'
 
     // Android Support Libs
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:design:23.1.0'
     compile 'com.android.support:support-v4:22.0.0'
     compile 'com.android.support:appcompat-v7:22.0.0'
 
     //SlidingUp Panel
     compile 'com.sothree.slidinguppanel:library:3.0.0'
-
     compile 'com.joanzapata.android:android-iconify:1.0.9'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
 
     //Material Dialog
-    compile 'com.afollestad:material-dialogs:0.7.8.1'
+    compile('com.afollestad.material-dialogs:core:0.8.2.0@aar') {
+        transitive = true
+    }
     androidTestCompile 'junit:junit:4.11'
     androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
     androidTestCompile 'org.mockito:mockito-core:1.9.5'
+
+    //payu
+    compile files('libs/payusdk.jar')
+    compile project(':CustomBrowser-release')
+
+    //greenDao for database
+    compile 'de.greenrobot:greendao:2.0.0'
+
+    //image cropper tool
+    compile 'com.edmodo:cropper:1.0.1'
 
     repositories {
         maven { url "https://jitpack.io" }
     }
     compile 'com.github.PhilJay:MPAndroidChart:v2.1.0'
+    compile "com.google.android.gms:play-services-gcm:7.8.0"
+    compile 'info.hoang8f:fbutton:1.0.5'
 }
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion '20.0.0'
+    compileSdkVersion 23
+    buildToolsVersion '22.0.1'
 
     defaultConfig {
-        minSdkVersion 10
+        minSdkVersion 14
         targetSdkVersion 22
-        versionCode 105
+        versionCode 106
         versionName '1.0'
         applicationId 'in.testpress.pgdiams'
     }

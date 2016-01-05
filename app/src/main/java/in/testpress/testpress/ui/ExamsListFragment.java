@@ -1,30 +1,17 @@
 package in.testpress.testpress.ui;
 
 import android.accounts.AccountsException;
-import android.accounts.OperationCanceledException;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.Injector;
@@ -32,11 +19,9 @@ import in.testpress.testpress.R;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.ExamPager;
 import in.testpress.testpress.core.ResourcePager;
-import in.testpress.testpress.models.Attempt;
 import in.testpress.testpress.models.Exam;
 
 import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
-import com.github.kevinsawicki.wishlist.Toaster;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -74,7 +59,7 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
         mTopLevelSpinnerAdapter = new ExploreSpinnerAdapter(getActivity().getLayoutInflater(), getActivity().getResources(), true);
         mTopLevelSpinnerAdapter.addItem("", getString(R.string.all_exams), false, 0);
         mTopLevelSpinnerAdapter.addHeader(getString(R.string.courses));
-        Toolbar toolbar = ((MainActivity)(getActivity())).getActionBarToolbar();
+        Toolbar toolbar = ((ExamsListActivity)(getActivity())).getActionBarToolbar();
         mSpinnerContainer = getActivity().getLayoutInflater().inflate(R.layout.actionbar_spinner, toolbar, false);
 
         Spinner spinner = (Spinner) mSpinnerContainer.findViewById(R.id.actionbar_spinner);
@@ -104,9 +89,8 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+        setEmptyText(R.string.no_exams, R.string.no_exams_description, R.drawable.ic_error_outline_black_18dp);
         super.onActivityCreated(savedInstanceState);
-
-        setEmptyText(R.string.no_exams);
     }
 
     @Override
@@ -115,23 +99,30 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
 
         listView.setFastScrollEnabled(true);
         listView.setDividerHeight(0);
-
-
     }
 
     @Override
     public void onLoadFinished(Loader<List<Exam>> loader, List<Exam> items) {
-        super.onLoadFinished(loader, items);
 
         //Return if no items are returned
-        if (items == null) {
+        if (items.isEmpty()) {
+            if(internetConnectivityChecker.isConnected()) {
+                if (subclass.equals("history")) {
+                    setEmptyText(R.string.no_attempts, R.string.no_attempts_description, R.drawable.ic_error_outline_black_18dp);
+                } else {
+                    setEmptyText(R.string.no_exams, R.string.no_exams_description, R.drawable.ic_error_outline_black_18dp);
+                }
+            } else {
+                setEmptyText(R.string.network_error, R.string.no_internet, R.drawable.ic_error_outline_black_18dp);
+            }
+            super.onLoadFinished(loader, items);
             return;
         }
-
+        super.onLoadFinished(loader, items);
         //Populate the spinner with the courses
         List<String> coursesList = new ArrayList<String>();
         for (final Exam exam : items) {
-            coursesList.add(exam.getCourse());
+            coursesList.add(exam.getCourse_category());
         }
         Set<String> uniqueCourses = new HashSet<String>(coursesList);
         for (final String course : uniqueCourses) {
@@ -151,7 +142,7 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
     public void setUserVisibleHint(final boolean visible) {
         super.setUserVisibleHint(visible);
         if (visible && isUsable()) {
-            Toolbar toolbar = ((MainActivity)(getActivity())).getActionBarToolbar();
+            Toolbar toolbar = ((ExamsListActivity)(getActivity())).getActionBarToolbar();
             View view = toolbar.findViewById(R.id.actionbar_spinnerwrap);
             toolbar.removeView(view);
             toolbar.invalidate();
@@ -159,26 +150,6 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             toolbar.addView(mSpinnerContainer, lp);
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        if (!isUsable()) {
-            return false;
-        }
-
-        switch (item.getItemId()) {
-            case R.id.filter:
-                refreshWithProgress();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    protected LogoutService getLogoutService() {
-        return logoutService;
     }
 
     @Override
@@ -195,70 +166,39 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
 
     @Override
     protected SingleTypeAdapter<Exam> createAdapter(List<Exam> items) {
-        int layout = R.layout.available_exams_list_item;
         if (subclass != null) {
-            if (subclass.equals("available")) {
-                layout = R.layout.available_exams_list_item;
-            } else if (subclass.equals("upcoming")) {
-                layout = R.layout.available_exams_list_item;
-                //return serviceProvider.getService(getActivity()).getUpcomingExams();
+            if (subclass.equals("upcoming")) {
+                return new UpcomingExamsListAdapter(getActivity().getLayoutInflater(), items, R.layout.upcoming_exams_list_item);
             } else if (subclass.equals("history")) {
-                layout = R.layout.available_exams_list_item;
-            } else {
-                layout = R.layout.available_exams_list_item;
+                return new HistoryListAdapter(getActivity(), items, R.layout.history_exams_list_item);
             }
         }
-        return new ExamsListAdapter(getActivity().getLayoutInflater(), items, layout);
+        return new AvailableExamsListAdapter(getActivity(), items, R.layout.available_exams_list_item);
     }
 
-  public void onListItemClick(ListView l, View v, int position, long id) {
-      Exam exam = ((Exam) l.getItemAtPosition(position));
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        Exam exam = ((Exam) l.getItemAtPosition(position));
 
-      if(subclass.equals("available")) {
-          Intent intent = new Intent(getActivity(), ExamActivity.class);
-          intent.putExtra("exam", exam);
-          startActivity(intent);
-      }
+        if (subclass.equals("available")) {
+            Intent intent = new Intent(getActivity(), ExamActivity.class);
+            intent.putExtra("exam", exam);
+            startActivity(intent);
+        }
 
-      if(subclass.equals("history")) {
-          int attempts_count = exam.getAttempts().size();
-          if (attempts_count > 1) {
-              Intent intent = new Intent(getActivity(), AttemptsListActivity.class);
-              intent.putExtra("exam", exam);
-              startActivity(intent);
-          } else {
-              Attempt attempt = exam.getAttempts().get(0);
-              if (attempt.getState().equals("Running")) {
-                  //Show Start Exam Activity
-                  Intent intent = new Intent(getActivity(), ExamActivity.class);
-                  intent.putExtra("exam", exam);
-                  intent.putExtra("attempt", attempt);
-                  startActivity(intent);
-              } else {
-                  Intent intent = new Intent(getActivity(), ReviewActivity.class);
-                  intent.putExtra("exam", exam);
-                  intent.putExtra("attempt", attempt);
-                  startActivity(intent);
-              }
-          }
-      }
-   }
+        if (subclass.equals("history")) {
+            Intent intent = new Intent(getActivity(), AttemptsListActivity.class);
+            intent.putExtra("exam", exam);
+            startActivity(intent);
+        }
+    }
 
     @Override
     protected int getErrorMessage(Exception exception) {
-        if((exception.getMessage()).equals("403 FORBIDDEN")) {
-            serviceProvider.invalidateAuthToken();
-            logoutService.logout(new Runnable() {
-                @Override
-                public void run() {
-                    Intent intent = getActivity().getIntent();
-                    getActivity().finish();
-                    getActivity().startActivity(intent);
-                }
-            });
+        if((exception.getMessage() != null) && (exception.getMessage()).equals("403 FORBIDDEN")) {
+            serviceProvider.handleForbidden(getActivity(), serviceProvider, logoutService);
             return R.string.authentication_failed;
         } else {
-            setEmptyText(R.string.no_internet);
+            setEmptyText(R.string.network_error, R.string.no_internet, R.drawable.ic_error_outline_black_18dp);
         }
         return R.string.error_loading_exams;
     }

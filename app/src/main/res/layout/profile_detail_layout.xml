@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/toolbar_actionbar"/>
+
+    <ProgressBar
+        android:id="@+id/horizontalProgressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_below="@+id/toolbar_actionbar"
+        android:indeterminate="true" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/horizontalProgressBar">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/profileDetails"
+            android:padding="10dp">
+
+            <RelativeLayout
+                android:layout_width="170dp"
+                android:layout_height="170dp"
+                android:background="@drawable/black_border"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/imageLayout">
+                <ImageView
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:id="@+id/profilePhoto"
+                    android:cropToPadding="true"
+                    android:src="@drawable/icon"/>
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:id="@+id/editProfilePhoto"
+                    android:src="@drawable/edit_icon_white"
+                    android:padding="5dp"
+                    android:background="#80000000"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"/>
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/displayName"
+                android:layout_width="wrap_content"
+                android:text="Testpress User"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:textColor="@color/primary"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/imageLayout"
+                android:layout_marginTop="10dp"
+                android:layout_centerHorizontal="true"/>
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/editButton"
+                android:src="@drawable/edit_blue_circle"
+                android:padding="2dp"
+                android:layout_below="@id/imageLayout"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@id/displayName"/>
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/displayName"
+                android:stretchColumns="1"
+                android:shrinkColumns="1"
+                android:id="@+id/userDetails"
+                android:layout_margin="10dp">
+
+                <TableRow
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/mailIdRow">
+
+                    <TextView
+                        android:id="@+id/maillabel"
+                        style="@style/userDetailLableText"
+                        android:text="Email Id: "/>
+
+                    <EditText
+                        android:id="@+id/mailId"
+                        style="@style/userDetailEditText"
+                        android:inputType="textEmailAddress"
+                        android:nextFocusDown="@+id/firstName" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/firstNameRow"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/firstNamelabel"
+                        android:text="First Name: "
+                        style="@style/userDetailLableText"/>
+
+                    <EditText
+                        android:id="@+id/firstName"
+                        style="@style/userDetailEditText"
+                        android:inputType="textPersonName"
+                        android:enabled="true"
+                        android:nextFocusDown="@+id/lastName" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/lastNameRow"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/lastNamelabel"
+                        android:text="Last Name: "
+                        style="@style/userDetailLableText"/>
+
+                    <EditText
+                        android:id="@+id/lastName"
+                        android:textSize="16sp"
+                        android:enabled="true"
+                        android:nextFocusDown="@+id/mobileNo"
+                        style="@style/userDetailEditText" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:id="@+id/mobileNoRow"
+                    android:layout_centerHorizontal="true">
+
+                    <TextView
+                        android:id="@+id/mobileNolabel"
+                        style="@style/userDetailLableText"
+                        android:text="Mobile No.: " />
+
+                    <EditText
+                        android:id="@+id/mobileNo"
+                        style="@style/userDetailEditText"
+                        android:nextFocusDown="@+id/dateOfBirth"
+                        android:inputType="phone"/>
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/genderRow"
+                    android:layout_centerHorizontal="true">
+
+                    <TextView
+                        android:id="@+id/genderlabel"
+                        style="@style/userDetailLableText"
+                        android:text="Gender: " />
+
+                    <RelativeLayout
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/focusable_border">
+                    <Spinner
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:id="@+id/gender"
+                        android:layout_gravity="start"
+                        android:enabled="false"
+                        />
+                    </RelativeLayout>
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/dobRow"
+                    android:layout_centerHorizontal="true">
+
+                    <TextView
+                        android:id="@+id/dateOfBirthlabel"
+                        android:layout_gravity="center"
+                        android:text="Date Of Birth: "
+                        style="@style/userDetailLableText"/>
+
+                    <LinearLayout
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <EditText
+                            android:id="@+id/dateOfBirth"
+                            android:layout_width="match_parent"
+                            android:hint="YYYY-MM-DD"
+                            android:inputType="date"
+                            android:paddingRight="30dp"
+                            android:nextFocusDown="@+id/address"
+                            style="@style/userDetailEditText"/>
+
+                        <ImageButton
+                            android:id="@+id/datepicker"
+                            android:layout_marginLeft="-30dp"
+                            style="?android:buttonBarButtonStyle"
+                            android:src="@drawable/calendar"
+                            android:visibility="gone"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp" />
+
+                    </LinearLayout>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/addressRow"
+                    android:layout_centerHorizontal="true">
+
+                    <TextView
+                        android:id="@+id/addresslabel"
+                        style="@style/userDetailLableText"
+                        android:text="Address: " />
+
+                    <EditText
+                        android:id="@+id/address"
+                        android:nextFocusDown="@+id/city"
+                        style="@style/userDetailEditText"/>
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/cityRow"
+                    android:layout_centerHorizontal="true">
+
+                    <TextView
+                        android:id="@+id/citylabel"
+                        android:text="City: "
+                        style="@style/userDetailLableText"/>
+
+                    <EditText
+                        android:id="@+id/city"
+                        android:nextFocusDown="@+id/pinCode"
+                        style="@style/userDetailEditText"/>
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/stateRow"
+                    android:layout_centerHorizontal="true">
+
+                    <TextView
+                        android:id="@+id/statelabel"
+                        android:text="State: "
+                        style="@style/userDetailLableText"/>
+
+                    <RelativeLayout
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/focusable_border">
+                        <Spinner
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:id="@+id/state"
+                            android:layout_gravity="start"
+                            android:enabled="false"
+                            />
+                    </RelativeLayout>
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/pinCodeRow"
+                    android:layout_centerHorizontal="true">
+
+                    <TextView
+                        android:id="@+id/pinCodelabel"
+                        android:text="Pin Code: "
+                        style="@style/userDetailLableText"/>
+
+                    <EditText
+                        android:id="@+id/pinCode"
+                        android:maxLength="6"
+                        android:imeOptions="actionDone"
+                        android:inputType="numberDecimal"
+                        style="@style/userDetailEditText"/>
+
+                </TableRow>
+            </TableLayout>
+
+            <Button
+                android:id="@+id/saveDetails"
+                style="@style/ShadowText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/userDetails"
+                android:background="@color/green"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="save"
+                android:textColor="#ffffff"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                android:enabled="true"/>
+
+        </RelativeLayout>
+    </ScrollView>
+
+    <ProgressBar
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:id="@+id/pb_loading"
+        android:indeterminate="true"
+        android:layout_centerInParent="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:id="@+id/empty"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:visibility="gone"/>
+
+</RelativeLayout>

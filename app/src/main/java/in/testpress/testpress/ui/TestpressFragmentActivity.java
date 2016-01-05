@@ -5,9 +5,11 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 
 import in.testpress.testpress.Injector;
@@ -22,7 +24,7 @@ import in.testpress.testpress.R;
 /**
  * Base class for all Testpress Activities that need fragments.
  */
-public class TestpressFragmentActivity extends ActionBarActivity {
+public class TestpressFragmentActivity extends AppCompatActivity {
 
     @Inject
     protected Bus eventBus;
@@ -54,6 +56,15 @@ public class TestpressFragmentActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        if(item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return false;
     }
 
     @Override

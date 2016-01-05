@@ -47,10 +47,38 @@
     <color name="green">#18be99</color>
     <color name="blue">#3598db</color>
     <color name="primary">#3598db</color>
+    <color name="primary_focus">#1e6fa6</color>
+    <color name="black">#333333</color>
+    <color name="white">#ffffff</color>
 
     <color name="list_dropdown_divider_color">#92a3a3a3</color>
     <color name="body_text_3">#60000000</color>
     <color name="theme_primary_light">#7986cb</color>
     <color name="list_dropdown_foreground_normal">#ff333333</color>
     <color name="body_text_2_inverse">#8affffff</color>
+
+    <color name="native_background">#ffffff</color>
+    <color name="orange_button_end">#F9783F</color>
+    <color name="orange_button_start">#FA9365</color>
+    <color name="list_divider">#9D9D9D</color>
+    <color name="fbutton_color_turquoise">#1abc9c</color>
+    <color name="fbutton_color_green_sea">#16a085</color>
+    <color name="fbutton_color_emerald">#2ecc71</color>
+    <color name="fbutton_color_nephritis">#27ae60</color>
+    <color name="fbutton_color_peter_river">#3498db</color>
+    <color name="fbutton_color_belize_hole">#2980b9</color>
+    <color name="fbutton_color_amethyst">#9b59b6</color>
+    <color name="fbutton_color_wisteria">#8e44ad</color>
+    <color name="fbutton_color_wet_asphalt">#34495e</color>
+    <color name="fbutton_color_midnight_blue">#2c3e50</color>
+    <color name="fbutton_color_sun_flower">#f1c40f</color>
+    <color name="fbutton_color_orange">#f39c12</color>
+    <color name="fbutton_color_carrot">#e67e22</color>
+    <color name="fbutton_color_pumpkin">#d35400</color>
+    <color name="fbutton_color_alizarin">#e74c3c</color>
+    <color name="fbutton_color_pomegranate">#c0392b</color>
+    <color name="fbutton_color_clouds">#ecf0f1</color>
+    <color name="fbutton_color_silver">#bdc3c7</color>
+    <color name="fbutton_color_concrete">#95a5a6</color>
+    <color name="fbutton_color_asbestos">#7f8c8d</color>
 </resources>

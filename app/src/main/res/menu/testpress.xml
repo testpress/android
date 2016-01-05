@@ -7,15 +7,8 @@
     <item
         android:id="@+id/refresh"
         android:icon="@drawable/ic_action_refresh"
-        app:showAsAction="never"
+        app:showAsAction="always"
         android:title="@string/refresh_action" >
     </item>
-
-    <item
-        android:id="@+id/logout"
-        app:showAsAction="never"
-        android:title="@string/logout_action" >
-    </item>
-
 
 </menu>

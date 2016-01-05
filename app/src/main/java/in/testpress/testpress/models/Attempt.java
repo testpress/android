@@ -15,8 +15,6 @@ import java.util.TimeZone;
 public class Attempt implements Parcelable {
     private String url;
     private Integer id;
-    private Exam exam;
-    private String user;
     private String date;
     private Integer totalQuestions;
     private String score;
@@ -34,10 +32,8 @@ public class Attempt implements Parcelable {
 
     // Parcelling part
     public Attempt(Parcel parcel){
-        exam = (Exam) parcel.readParcelable(Exam.class.getClassLoader());
         id = parcel.readInt();
         url = parcel.readString();
-        user = parcel.readString();
         date = parcel.readString();
         totalQuestions = parcel.readInt();
         score = parcel.readString();
@@ -60,10 +56,8 @@ public class Attempt implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeParcelable(exam, i);
         parcel.writeInt(id);
         parcel.writeString(url);
-        parcel.writeString(user);
         parcel.writeString(date);
         parcel.writeInt(totalQuestions);
         parcel.writeString(score);
@@ -145,42 +139,6 @@ public class Attempt implements Parcelable {
      */
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    /**
-     *
-     * @return
-     * The exam
-     */
-    public Exam getExam() {
-        return exam;
-    }
-
-    /**
-     *
-     * @param exam
-     * The exam
-     */
-    public void setExam(Exam exam) {
-        this.exam = exam;
-    }
-
-    /**
-     *
-     * @return
-     * The user
-     */
-    public String getUser() {
-        return user;
-    }
-
-    /**
-     *
-     * @param user
-     * The user
-     */
-    public void setUser(String user) {
-        this.user = user;
     }
 
     /**

@@ -2,6 +2,8 @@
 
 package in.testpress.testpress.core;
 
+import java.util.HashMap;
+
 /**
  * Testpress constants
  */
@@ -12,19 +14,19 @@ public final class Constants {
         private Auth() {}
 
         /**
-         * Account type id
-         */
-        public static final String TESTPRESS_ACCOUNT_TYPE = "in.testpress.pgdiams";
-
-        /**
          * Account name
          */
         public static final String TESTPRESS_ACCOUNT_NAME = "pgdiams";
 
         /**
+         * Account type id
+         */
+        public static final String TESTPRESS_ACCOUNT_TYPE = "in.testpress." + TESTPRESS_ACCOUNT_NAME;
+
+        /**
          * Provider id
          */
-        public static final String TESTPRESS_PROVIDER_AUTHORITY = "in.testpress.pgdiams.sync";
+        public static final String TESTPRESS_PROVIDER_AUTHORITY = "in.testpress." + TESTPRESS_ACCOUNT_NAME + ".sync";
 
         /**
          * Auth token type
@@ -71,34 +73,70 @@ public final class Constants {
         public static final String URL_USERS = URL_BASE + URL_USERS_FRAG;
 
         /**
+         * List Products Exams URL
+         */
+        public static final String URL_PRODUCTS_FRAG = "api/v2.2/products/";
+
+        /**
+         * List Products Exams URL
+         */
+        public static final String URL_ORDERS_FRAG = "/api/v2/orders/";
+
+        /**
+         * Profile Details URL
+         */
+        public static final String URL_PROFILE_DETAILS_FRAG =  "/api/v2.1/me/";
+        public static final String URL_PROFILE_DETAILS = URL_BASE + URL_PROFILE_DETAILS_FRAG;
+
+        /**
          * List Available Exams URL
          */
-        public static final String URL_AVAILABLE_EXAMS_FRAG =  "api/v2.1/exams/available/";
+        public static final String URL_AVAILABLE_EXAMS_FRAG =  "api/v2.2/exams/available/";
         public static final String URL_AVAILABLE_EXAMS = URL_BASE + URL_AVAILABLE_EXAMS_FRAG;
 
         /**
          * List Upcoming Exams URL
          */
-        public static final String URL_UPCOMING_EXAMS_FRAG =  "api/v2.1/exams/upcoming/";
+        public static final String URL_UPCOMING_EXAMS_FRAG =  "api/v2.2/exams/upcoming/";
         public static final String URL_UPCOMING_EXAMS = URL_BASE + URL_UPCOMING_EXAMS_FRAG;
 
         /**
          * List History Exams URL
          */
-        public static final String URL_HISTORY_EXAMS_FRAG =  "api/v2.1/exams/history/";
+        public static final String URL_HISTORY_EXAMS_FRAG =  "api/v2.2/exams/history/";
         public static final String URL_HISTORY_EXAMS = URL_BASE + URL_HISTORY_EXAMS_FRAG;
 
         /**
          * Start Exam URL
          */
-        public static final String URL_START_EXAM_FRAG =  "api/v2.1/exams/start/";
+        public static final String URL_START_EXAM_FRAG =  "api/v2.2/exams/start/";
         public static final String URL_START_EXAM = URL_BASE + URL_START_EXAM_FRAG;
 
         /**
          * End Exam URL
          */
         public static final String URL_END_EXAM_FRAG =  "end/";
-        public static final String URL_END_EXAM = URL_BASE + URL_END_EXAM_FRAG;
+        public static final String URL_MAIL_PDF_FRAG =  "pdf/";
+        public static final String URL_MAIL_PDF_QUESTIONS_FRAG =  "pdf-questions/";
+
+
+        /**
+         * Devices Register URL
+         */
+        public static final String URL_DEVICES_REGISTER_FRAG =  "/api/v2.2/devices/register/";
+        public static final String URL_DEVICES_REGISTER = URL_BASE + URL_DEVICES_REGISTER_FRAG;
+
+        /**
+         * Devices Unregister URL
+         */
+        public static final String URL_DEVICES_UNREGISTER_FRAG =  "/api/v2.2/devices/unregister/";
+        public static final String URL_DEVICES_UNREGISTER = URL_BASE + URL_DEVICES_UNREGISTER_FRAG;
+
+        /**
+         * Posts URL
+         */
+        public static final String URL_POSTS_FRAG =  "api/v2.2/posts/";
+        public static final String URL_POSTS = URL_BASE + URL_POSTS_FRAG;
 
         /**
          * PARAMS for auth
@@ -124,7 +162,7 @@ public final class Constants {
         /**
          * Action prefix for all intents created
          */
-        public static final String INTENT_PREFIX = "in.testpress.pgdiams.";
+        public static final String INTENT_PREFIX = "in.testpress." + Auth.TESTPRESS_ACCOUNT_NAME + ".";
 
     }
 
@@ -135,6 +173,33 @@ public final class Constants {
         public static final int TIMER_NOTIFICATION_ID = 1000; // Why 1000? Why not? :)
     }
 
+    public static final String GCM_PREFERENCE_NAME = "testpress." + Auth.TESTPRESS_ACCOUNT_NAME;
+    public static final String GCM_PROPERTY_REG_ID = "GCMRegId";
+    public static final String SENT_TOKEN_TO_SERVER = "sentTokenToServer";
+
+    public static final HashMap<String, Integer> genderChoices;
+    static
+    {
+        genderChoices = new HashMap<String, Integer>();
+        genderChoices.put("--select--", -1);
+        genderChoices.put("Male", 1);
+        genderChoices.put("Female", 2);
+        genderChoices.put("Transgender", 3);
+    }
+
+    public static final HashMap<String, Integer> stateChoices;
+    static
+    {
+        stateChoices = new HashMap<String, Integer>();
+        String[] states = {
+                "--select--", "Others", "Andaman and Nicobar Islands", "Andhra Pradesh", "Arunachal Pradesh", "Assam",
+                "Bihar", "Chandigarh", "Chhattisgarh", "Dadra and Nagar Haveli", "Daman and Diu", "Delhi", "Goa", "Gujarat",
+                "Haryana", "Himachal Pradesh", "Jammu and Kashmir", "Jharkhand", "Karnataka", "Kerala", "Lakshadweep",
+                "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Pondicherry",
+                "Rajasthan", "Sikkim", "Tamil Nadu", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal", "Telengana"
+        };
+        for (int i = -1; i < 37; i++) {
+            stateChoices.put(states[i + 1], i);
+        }
+    }
 }
-
-

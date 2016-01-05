@@ -26,7 +26,7 @@ public interface ExamService {
     TestpressApiResponse<AttemptItem> getQuestions(@EncodedPath("questions_url") String questionsUrlFrag, @Header("Authorization") String authorization);
 
     @GET("/{attempts_url}")
-    TestpressApiResponse<Attempt> getAttempts(@EncodedPath("attempts_url") String attemptsUrlFrag, @Header("Authorization") String authorization);
+    TestpressApiResponse<Attempt> getAttempts(@EncodedPath("attempts_url") String attemptsUrlFrag, @QueryMap Map<String, String> options, @Header("Authorization") String authorization);
 
     @GET("/{review_url}")
     TestpressApiResponse<ReviewItem> getReviewItems(@EncodedPath("review_url") String reviewUrlFrag, @Header("Authorization") String authorization);
@@ -45,6 +45,9 @@ public interface ExamService {
 
     @PUT("/{end_exam_url}")
     Attempt endExam(@EncodedPath("end_exam_url") String endExamUrlFrag, @Header("Authorization") String authorization);
+
+    @PUT("/{mail_pdf_url}")
+    Void mailPdf(@EncodedPath("mail_pdf_url") String mailPdfUrlFrag, @Header("Authorization") String authorization);
 }
 
 

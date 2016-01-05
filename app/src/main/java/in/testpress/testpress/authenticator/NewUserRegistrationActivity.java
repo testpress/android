@@ -1,8 +1,6 @@
 package in.testpress.testpress.authenticator;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -31,6 +29,7 @@ import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.RegistrationErrorDetails;
 import in.testpress.testpress.ui.TextWatcherAdapter;
+import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.SafeAsyncTask;
 import retrofit.RetrofitError;
 
@@ -48,6 +47,7 @@ public class NewUserRegistrationActivity extends Activity {
     private final TextWatcher watcher = validationTextWatcher();
     private RegistrationSuccessResponse registrationSuccessResponse;
     private MaterialDialog progressDialog;
+    private InternetConnectivityChecker internetConnectivityChecker = new InternetConnectivityChecker(this);
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -199,7 +199,11 @@ public class NewUserRegistrationActivity extends Activity {
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        postDetails();
+                        if(internetConnectivityChecker.isConnected()) {
+                            postDetails();
+                        } else {
+                            internetConnectivityChecker.showAlert();
+                        }
                     }
                 })
                 .show();

@@ -1,69 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
+    android:paddingLeft="20dp" android:paddingRight="20dp"
+    android:paddingBottom="0dp" android:paddingTop="20dp"
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/completed_attempt">
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:orientation="vertical" android:layout_width="0dp"
-            android:layout_weight="0.7" android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_normal"
-            android:layout_marginBottom="@dimen/margin_normal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:textColor="@color/text_color"
-                android:layout_height="36dp"
-                android:gravity="bottom"
-                android:textSize="@dimen/text_size_large"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:layout_marginLeft="8dp"
-                android:text="21st June 2014"
-                android:layout_marginBottom="@dimen/margin_normal"
-                android:id="@+id/attempt_date"/>
 
-            <LinearLayout android:orientation="horizontal"
-                android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
+            android:textColor="@color/text_color"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:textSize="@dimen/text_size_large"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Attempted on 20 Dec 2015"
+            android:layout_marginBottom="@dimen/margin_normal"
+            android:id="@+id/attempt_date"/>
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical" android:layout_width="wrap_content" android:layout_marginTop="5dp"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_normal">
+                android:orientation="horizontal">
                 <TextView
-                    android:layout_marginLeft="8dp"
+                    android:id="@+id/score_string"
                     android:layout_width="wrap_content"
-                    android:layout_height="22dp"
-                    android:gravity="bottom"
-                    android:ellipsize="end"
+                    android:text="Your score "
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_medium"
                     android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textColor="@color/text_color"
+                    android:layout_gravity="center"/>
+                <TextView
+                    android:id="@+id/score"
+                    android:textColor="@color/text_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="20"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="5dp"
                     android:textSize="@dimen/text_size_large"
-                    android:id="@+id/percentile"
-                    android:text="40 %"
-                    android:textColor="@color/text_color"
-                    android:layout_gravity="end"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_normal"
-                    android:text="percentile"
-                    android:layout_height="20dp"
-                    android:textSize="@dimen/text_size_small"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    android:textColor="@color/text_color"
-                    android:gravity="bottom"/>
+                    />
             </LinearLayout>
-        </LinearLayout>
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:orientation="vertical" android:layout_width="0dp"
-            android:layout_weight="0.3" android:layout_height="wrap_content">
             <LinearLayout android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:layout_alignParentRight="true">
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:gravity="bottom"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:textSize="@dimen/text_size_large"
@@ -71,103 +67,178 @@
                     android:id="@+id/correct_count"
                     android:text="20"
                     android:textColor="@color/text_color"
-                    android:layout_gravity="end"/>
+                    android:layout_gravity="bottom"/>
                 <TextView
+                    android:id="@+id/correct_count_string"
                     android:layout_width="wrap_content"
                     android:layout_marginLeft="@dimen/margin_normal"
                     android:text="correct"
-                    android:layout_height="34dp"
+                    android:layout_height="wrap_content"
                     android:textSize="@dimen/text_size_small"
                     android:maxLines="1"
                     android:ellipsize="end"
                     android:textColor="@color/text_color"
-                    android:gravity="bottom"/>
+                    android:layout_gravity="bottom"/>
             </LinearLayout>
+        </RelativeLayout>
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical" android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
             <LinearLayout android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_normal"
+                android:paddingTop="5dp"
+                android:gravity="start">
+                <TextView
+                    android:id="@+id/percentile_string"
+                    android:layout_width="wrap_content"
+                    android:text="Percentile "
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_medium"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textColor="@color/text_color"/>
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="26dp"
+                    android:layout_height="wrap_content"
                     android:gravity="bottom"
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:textSize="@dimen/text_size_large"
                     android:textStyle="bold"
-                    android:id="@+id/incorrect_count"
-                    android:text="30"
-                    android:textColor="@color/text_color"
-                    android:layout_gravity="end"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_normal"
-                    android:text="incorrect"
-                    android:layout_height="24dp"
-                    android:textSize="@dimen/text_size_small"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    android:textColor="@color/text_color"
-                    android:gravity="bottom"/>
+                    android:id="@+id/percentile"
+                    android:layout_marginLeft="5dp"
+                    android:text="20"
+                    android:textColor="@color/text_color"/>
             </LinearLayout>
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/paused_attempt">
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:orientation="vertical" android:layout_width="0dp"
-            android:layout_weight="0.7" android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_normal"
-            android:layout_marginBottom="@dimen/margin_normal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:textColor="@color/text_color"
-                android:layout_height="36dp"
-                android:gravity="bottom"
-                android:textSize="@dimen/text_size_large"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:layout_marginLeft="8dp"
-                android:text="21st June 2014"
-                android:layout_marginBottom="@dimen/margin_normal"
-                android:id="@+id/paused_attempt_date"/>
-
             <LinearLayout android:orientation="horizontal"
-                android:layout_width="match_parent"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_normal">
+                android:paddingTop="5dp"
+                android:gravity="end"
+                android:layout_alignParentRight="true">
                 <TextView
-                    android:layout_marginLeft="8dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="22dp"
-                    android:gravity="bottom"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:textSize="@dimen/text_size_large"
-                    android:id="@+id/remaining_time"
-                    android:text="00:30:00"
+                    android:textStyle="bold"
+                    android:id="@+id/incorrect_count"
+                    android:text="20"
                     android:textColor="@color/text_color"
-                    android:layout_gravity="end"/>
+                    android:layout_gravity="bottom"/>
                 <TextView
+                    android:id="@+id/incorrect_string"
                     android:layout_width="wrap_content"
                     android:layout_marginLeft="@dimen/margin_normal"
-                    android:text="time remaining"
-                    android:layout_height="20dp"
+                    android:text="incorrect"
+                    android:layout_height="wrap_content"
                     android:textSize="@dimen/text_size_small"
                     android:maxLines="1"
                     android:ellipsize="end"
                     android:textColor="@color/text_color"
-                    android:gravity="bottom"/>
+                    android:layout_gravity="bottom"/>
             </LinearLayout>
-        </LinearLayout>
+        </RelativeLayout>
+
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:orientation="vertical" android:layout_width="0dp"
-            android:layout_weight="0.3" android:layout_height="match_parent">
+            android:orientation="horizontal" android:layout_width="match_parent" android:layout_marginTop="5dp"
+            android:paddingBottom="20dp" android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp">
+            <Button
+                android:layout_height="30dp"
+                android:layout_width="wrap_content"
+                android:text="Email PDF"
+                android:id="@+id/email_pdf"
+                android:textColor="@color/white"
+                android:drawableLeft="@drawable/ic_email_white_18dp"
+                style="?android:attr/borderlessButtonStyle"
+                android:background="@drawable/primary_button"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:drawablePadding="3dp"
+                android:textAllCaps="true"
+                android:layout_toLeftOf="@+id/review_attempt"/>
 
+            <Button
+                android:layout_height="30dp"
+                android:layout_width="wrap_content"
+                android:text="@string/review"
+                android:visibility="visible"
+                android:id="@+id/review_attempt"
+                android:textColor="@color/white"
+                android:drawableLeft="@drawable/ic_zoom_in_white_18dp"
+                style="?android:attr/borderlessButtonStyle"
+                android:background="@drawable/primary_button"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:layout_marginLeft="15dp"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:drawablePadding="3dp"
+                android:textAllCaps="true"
+                android:layout_alignParentRight="true" />
+        </RelativeLayout>
+    </LinearLayout>
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/paused_attempt">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:textColor="@color/text_color"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:textSize="@dimen/text_size_large"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Started on 20 Dec 2015"
+                    android:layout_marginBottom="@dimen/margin_normal"
+                    android:id="@+id/paused_attempt_date"/>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="5dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textSize="@dimen/text_size_large"
+                        android:textStyle="bold"
+                        android:id="@+id/remaining_time"
+                        android:text="00:30:00"
+                        android:textColor="@color/text_color"
+                        android:layout_gravity="bottom"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_normal"
+                        android:text="time remaining"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/text_size_small"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textColor="@color/text_color"
+                        android:layout_gravity="bottom"/>
+                </LinearLayout>
+
+            </LinearLayout>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -177,40 +248,56 @@
                 android:background="@drawable/transparent_blue_button"
                 android:textColor="@color/primary"
                 android:textSize="@dimen/text_size_medium"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"/>
-            <!--<LinearLayout android:orientation="horizontal"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content">-->
-                <!--<Button-->
-                    <!--android:background="@drawable/opaque_green_button"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="33dp"-->
-                    <!--android:textColor="#ffffff"-->
-                    <!--android:textSize="@dimen/text_size_large"-->
-                    <!--android:layout_marginTop="10dp"-->
-                    <!--android:capitalize="characters"-->
-                    <!--android:textStyle="bold"-->
-                    <!--android:textAllCaps="true"-->
-                    <!--android:text="@string/resume"/>-->
-            <!--</LinearLayout>-->
-
-            <!--<LinearLayout android:orientation="horizontal"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content">-->
-                <!--<Button-->
-                    <!--android:background="@drawable/opaque_blue_button"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="33dp"-->
-                    <!--android:textColor="#ffffff"-->
-                    <!--android:textSize="@dimen/text_size_large"-->
-                    <!--android:layout_marginTop="10dp"-->
-                    <!--android:capitalize="characters"-->
-                    <!--android:textStyle="bold"-->
-                    <!--android:textAllCaps="true"-->
-                    <!--android:text="@string/end"/>-->
-            <!--</LinearLayout>-->
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"/>
 
         </RelativeLayout>
+
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="horizontal" android:layout_width="match_parent" android:layout_marginTop="10dp"
+            android:paddingBottom="20dp" android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp">
+
+            <Button
+                android:layout_height="30dp"
+                android:layout_width="wrap_content"
+                android:text="End"
+                android:id="@+id/end"
+                android:textColor="@color/white"
+                android:drawableLeft="@drawable/ic_block_white_18dp"
+                style="?android:attr/borderlessButtonStyle"
+                android:background="@drawable/primary_button"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:drawablePadding="3dp"
+                android:textAllCaps="true"
+                android:layout_toLeftOf="@+id/resume_exam"/>
+
+            <Button
+                android:layout_height="30dp"
+                android:layout_width="wrap_content"
+                android:text="@string/resume"
+                android:visibility="visible"
+                android:id="@+id/resume_exam"
+                android:textColor="@color/white"
+                android:drawableLeft="@drawable/ic_repeat_white_18dp"
+                style="?android:attr/borderlessButtonStyle"
+                android:background="@drawable/primary_button"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:layout_marginLeft="15dp"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:drawablePadding="3dp"
+                android:textAllCaps="true"
+                android:layout_alignParentRight="true" />
+        </RelativeLayout>
     </LinearLayout>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1.5dp"
+        android:background="#c0c0c0"/>
 </LinearLayout>

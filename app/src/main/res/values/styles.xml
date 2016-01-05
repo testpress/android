@@ -82,6 +82,16 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="TextLabel" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!--hint color And Label Color in False State-->
+        <item name="android:textSize">14sp</item>
+        <!--Label color in True State And Bar Color False And True State-->
+        <!--<item name="colorAccent">@color/fbutton_color_pomegranate</item>-->
+        <item name="colorControlNormal">#c5c5c5</item>
+        <item name="colorControlActivated">@color/primary</item>
+        <item name="colorControlHighlight">@color/primary</item>
+    </style>
+
     <style name="TimerChronometer">
         <item name="android:gravity">center_horizontal</item>
         <item name="android:textSize">75sp</item>
@@ -143,4 +153,38 @@
 
     <style name="Widget.Testpress.HeaderBar.Spinner" parent="Widget.Testpress.HeaderBar.Spinner.Base" />
 
+    <style name="Item">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">300dp</item>
+    </style>
+
+    <style name="Item.Sticky">
+        <item name="android:background">@color/text_inverted</item>
+        <item name="android:textColor">@color/text_link</item>
+        <item name="android:layout_height">100dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAppearance">?android:textAppearanceLarge</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="userDetailEditText">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:autoText">false</item>
+        <item name="android:capitalize">none</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textCursorDrawable">@drawable/edit_text_cursor</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/edit_text_states</item>
+        <item name="android:imeOptions">actionNext</item>
+        <item name="android:enabled">false</item>
+    </style>
+
+    <style name="userDetailLableText">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
 </resources>

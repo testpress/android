@@ -5,7 +5,8 @@
     android:id="@+id/scrollView">
     <RelativeLayout android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="20dp">
         <LinearLayout
             android:orientation="vertical"
             android:id="@+id/fragment_container"
@@ -52,6 +53,27 @@
                     android:layout_width="320dp"
                     android:layout_height="1dip"
                     android:background="#cccccc" />
+            </LinearLayout>
+            <LinearLayout style="@style/examDetailRow" android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp" android:id="@+id/email_pdf_container">
+                <TextView
+                    style="@style/examDetailSubHeading"
+                    android:text="" />
+                <Button
+                    android:layout_height="30dp"
+                    android:layout_width="wrap_content"
+                    android:text="@string/email_pdf"
+                    android:id="@+id/email_pdf"
+                    android:textColor="@color/white"
+                    android:drawableLeft="@drawable/ic_email_white_18dp"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:background="@drawable/primary_button"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:drawablePadding="3dp"
+                    android:textAllCaps="true"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"

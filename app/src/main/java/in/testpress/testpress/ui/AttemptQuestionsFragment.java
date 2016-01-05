@@ -13,16 +13,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
 import in.testpress.testpress.R;
 
 import butterknife.InjectView;
@@ -42,6 +46,9 @@ public class AttemptQuestionsFragment extends Fragment {
     @InjectView(id.answers) RadioGroup answersView;
     @InjectView(id.review) CheckBox review;
     @InjectView(id.answers_checkbox) ViewGroup answersCheckboxView;
+    @InjectView(R.id.sliding_question) SlidingUpPanelLayout sliding_question;
+    @InjectView(R.id.direction) TextView direction;
+    @InjectView(id.directionButton) ImageView arrowButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,6 +90,38 @@ public class AttemptQuestionsFragment extends Fragment {
         }
         attemptItem.saveAnswers(attemptItem.getSelectedAnswers());
         attemptItem.setCurrentReview(attemptItem.getReview());
+        if(attemptQuestion.getDirection() == null || attemptQuestion.getDirection().isEmpty()) { //if direction is empty remove slider
+            sliding_question.setPanelHeight(0);
+        } else {
+            Spanned directionHtmlSpan = Html.fromHtml(attemptQuestion.getDirection(), new UILImageGetter(direction, getActivity()), null);
+            ZoomableImageString zoomableImageDirection = new ZoomableImageString(getActivity());
+            direction.setText(zoomableImageDirection.convertString(directionHtmlSpan));
+            direction.setMovementMethod(LinkMovementMethod.getInstance());
+        }
+        sliding_question.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+            }
+
+            @Override
+            public void onPanelCollapsed(View panel) {
+                arrowButton.setImageResource(R.drawable.double_arrow_down);
+            }
+
+            @Override
+            public void onPanelExpanded(View panel) {
+                arrowButton.setImageResource(R.drawable.double_arrow_up);
+            }
+
+            @Override
+            public void onPanelAnchored(View panel) {
+            }
+
+            @Override
+            public void onPanelHidden(View panel) {
+
+            }
+        });
         return view;
     }
 
@@ -166,6 +205,15 @@ public class AttemptQuestionsFragment extends Fragment {
                     //else compoundButton.setBackgroundColor(android.R.color.transparent);
                 }
             });
+        }
+    }
+
+    @OnClick(id.directionButton) void slide() {
+        if(sliding_question.getPanelState().equals(SlidingUpPanelLayout.PanelState.EXPANDED)) {
+            sliding_question.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        }
+        else {
+            sliding_question.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
         }
     }
 

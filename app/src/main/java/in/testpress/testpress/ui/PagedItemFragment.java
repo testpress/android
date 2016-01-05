@@ -3,13 +3,17 @@ package in.testpress.testpress.ui;
 
 import android.os.Bundle;
 import android.support.v4.content.Loader;
-import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.AbsListView;
+
 
 import java.io.IOException;
 import java.util.List;
 
+import in.testpress.testpress.R;
 import in.testpress.testpress.core.ResourcePager;
+import in.testpress.testpress.util.Ln;
 
 public abstract class PagedItemFragment<E> extends ItemListFragment<E>
         implements AbsListView.OnScrollListener {
@@ -25,23 +29,25 @@ public abstract class PagedItemFragment<E> extends ItemListFragment<E>
      * @return pager
      */
     protected abstract ResourcePager<E> getPager();
+    View loadingLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         pager = getPager();
+        loadingLayout = LayoutInflater.from(getActivity()).inflate(R.layout.loading_layout, null);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         getListView().setOnScrollListener(this);
         getListView().setFastScrollEnabled(true);
     }
+
     @Override
-    public void onScroll(AbsListView view,int firstVisibleItem,int visibleItemCount,int totalItemCount)
+    public void onScroll(AbsListView view,int firstVisibleItem,int visibleItemCount, int totalItemCount)
     {
         // Triggered only when new data needs to be appended to the list
         // Add whatever code ixs needed to append new items to your AdapterView
@@ -49,12 +55,19 @@ public abstract class PagedItemFragment<E> extends ItemListFragment<E>
         // or customLoadMoreDataFromApi(totalItemsCount);
         if (!isUsable())
             return;
-        if (!pager.hasMore())
+        if (!pager.hasMore()) {
+            if(getListAdapter().getFootersCount() != 0) {  //if pager reached last page remove footer if footer added already
+                getListAdapter().removeFooter(loadingLayout);
+            }
             return;
+        }
         if (getLoaderManager().hasRunningLoaders())
             return;
         if (listView != null
                 && (listView.getLastVisiblePosition() + 3) >= pager.size()) {
+            if(getListAdapter().getFootersCount() == 0) { //display loading footer if not present when loading next page
+                getListAdapter().addFooter(loadingLayout);
+            }
             showMore();
         }
     }
@@ -86,8 +99,9 @@ public abstract class PagedItemFragment<E> extends ItemListFragment<E>
     /**
      * Show more events while retaining the current pager state
      */
-    private void showMore() {
+    public void showMore() {
         refresh();
+
     }
 
     @Override

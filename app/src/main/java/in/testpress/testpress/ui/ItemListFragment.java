@@ -2,7 +2,6 @@
 package in.testpress.testpress.ui;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 
@@ -16,10 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ExpandableListView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -28,7 +25,8 @@ import android.widget.TextView;
 import in.testpress.testpress.R;
 import in.testpress.testpress.R.id;
 import in.testpress.testpress.R.layout;
-import in.testpress.testpress.authenticator.LogoutService;
+import in.testpress.testpress.util.InternetConnectivityChecker;
+
 import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
 import com.github.kevinsawicki.wishlist.Toaster;
 import com.github.kevinsawicki.wishlist.ViewUtils;
@@ -70,7 +68,9 @@ public abstract class ItemListFragment<E> extends Fragment
     /**
      * Empty view
      */
-    protected TextView emptyView;
+    protected View emptyView;
+    protected TextView emptyTitleView;
+    protected TextView emptyDescView;
 
     /**
      * Progress bar
@@ -81,15 +81,13 @@ public abstract class ItemListFragment<E> extends Fragment
      * Is the list currently shown?
      */
     protected boolean listShown;
+    protected InternetConnectivityChecker internetConnectivityChecker;
 
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        if (!items.isEmpty()) {
-            setListShown(true, false);
-        }
-
+        setListShown(false);
+        internetConnectivityChecker = new InternetConnectivityChecker(getActivity());
         getLoaderManager().initLoader(0, null, this);
     }
 
@@ -108,28 +106,25 @@ public abstract class ItemListFragment<E> extends Fragment
         emptyView = null;
         progressBar = null;
         listView = null;
-
         super.onDestroyView();
     }
 
     @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        progressBar = (ProgressBar) view.findViewById(id.pb_loading);
+        progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
+        emptyView = view.findViewById(id.empty_container);
+        emptyTitleView = (TextView) view.findViewById(id.empty_title);
+        emptyDescView = (TextView) view.findViewById(id.empty_description);
         listView = (ListView) view.findViewById(android.R.id.list);
         listView.setOnItemClickListener(new OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 onListItemClick((ListView) parent, view, position, id);
             }
         });
-        progressBar = (ProgressBar) view.findViewById(id.pb_loading);
-        progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
-
-        emptyView = (TextView) view.findViewById(id.empty);
-
         configureList(getActivity(), getListView());
     }
 
@@ -164,25 +159,9 @@ public abstract class ItemListFragment<E> extends Fragment
             case id.refresh:
                 refreshWithProgress();
                 return true;
-            case R.id.logout:
-                logout();
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    protected abstract LogoutService getLogoutService();
-
-    private void logout() {
-        getLogoutService().logout(new Runnable() {
-            @Override
-            public void run() {
-                // Calling a refresh will force the service to look for a logged in user
-                // and when it finds none the user will be requested to log in again.
-                forceRefresh();
-            }
-        });
     }
 
     /**
@@ -222,7 +201,6 @@ public abstract class ItemListFragment<E> extends Fragment
     public void onLoadFinished(Loader<List<E>> loader, List<E> items) {
 
         getActivity().setProgressBarIndeterminateVisibility(false);
-
         final Exception exception = getException(loader);
         if (exception != null) {
             showError(getErrorMessage(exception));
@@ -230,13 +208,8 @@ public abstract class ItemListFragment<E> extends Fragment
             return;
         }
 
-        if(items != null) {
-            this.items = items;
-            getListAdapter().getWrappedAdapter().setItems(items.toArray());
-        }
-        else {
-            setEmptyText(R.string.no_internet);
-        }
+        this.items = items;
+        getListAdapter().getWrappedAdapter().setItems(items.toArray());
         showList();
     }
 
@@ -340,7 +313,7 @@ public abstract class ItemListFragment<E> extends Fragment
         return this;
     }
 
-    private ItemListFragment<E> fadeIn(final View view, final boolean animate) {
+    protected ItemListFragment<E> fadeIn(final View view, final boolean animate) {
         if (view != null) {
             if (animate) {
                 view.startAnimation(AnimationUtils.loadAnimation(getActivity(),
@@ -352,12 +325,12 @@ public abstract class ItemListFragment<E> extends Fragment
         return this;
     }
 
-    private ItemListFragment<E> show(final View view) {
+    protected ItemListFragment<E> show(final View view) {
         ViewUtils.setGone(view, false);
         return this;
     }
 
-    private ItemListFragment<E> hide(final View view) {
+    protected ItemListFragment<E> hide(final View view) {
         ViewUtils.setGone(view, true);
         return this;
     }
@@ -417,25 +390,14 @@ public abstract class ItemListFragment<E> extends Fragment
     /**
      * Set empty text on list fragment
      *
-     * @param message
+     * @param title
      * @return this fragment
      */
-    protected ItemListFragment<E> setEmptyText(final String message) {
+    protected ItemListFragment<E> setEmptyText(final int title, final int description, final int left) {
         if (emptyView != null) {
-            emptyView.setText(message);
-        }
-        return this;
-    }
-
-    /**
-     * Set empty text on list fragment
-     *
-     * @param resId
-     * @return this fragment
-     */
-    protected ItemListFragment<E> setEmptyText(final int resId) {
-        if (emptyView != null) {
-            emptyView.setText(resId);
+            emptyTitleView.setText(title);
+            emptyTitleView.setCompoundDrawablesWithIntrinsicBounds(left, 0, 0, 0);
+            emptyDescView.setText(description);
         }
         return this;
     }
@@ -460,4 +422,5 @@ public abstract class ItemListFragment<E> extends Fragment
     protected boolean isUsable() {
         return getActivity() != null;
     }
+
 }

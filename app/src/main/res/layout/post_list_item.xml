@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="4dp"
+    android:background="#ffffff"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:orientation="vertical">
+
+    <!--<View-->
+        <!--android:id="@+id/category_color_border"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="4dp"-->
+        <!--android:background="#333333" />-->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:layout_marginBottom="5dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:text="Expected Questions: Seating Arrangements 1234 1234567890123456"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/summary"
+            android:textSize="14sp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="Six persons-A, B, C, D, E and F \u2013 are sitting in two cars namely X and Y but not necessarily in the same order. Out of six persons two are driving the cars. There are three persons in each car ad one persons must be on front seat besides the person who is driving the car. In car X, D is neither driving nor sitting on the back seat. F is sitting on the back seat in Car Y. C is on the driver\u2019s seat but not in the Car X. A is neither driving nor travelling in the Car Y. E is not on the driver\u2019s seat in any car.\r\n\r\n"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:layout_below="@id/title"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal"
+            android:layout_below="@id/summary">
+
+            <TextView
+                android:id="@+id/category"
+                android:text="Alerts"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:background="@drawable/button_background_enabled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="\u00A0 \u2014 \u00A0"/>-->
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:textSize="12sp"
+                android:text="Date: 2015-09-25 05:15:43"
+                android:layout_centerVertical="true"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>
+
+

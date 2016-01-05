@@ -9,6 +9,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -16,10 +17,10 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -44,6 +45,7 @@ import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.events.UnAuthorizedErrorEvent;
 import in.testpress.testpress.ui.TextWatcherAdapter;
+import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 import retrofit.RetrofitError;
@@ -83,7 +85,7 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
 
     @Inject Bus bus;
 
-    @InjectView(id.et_username) AutoCompleteTextView usernameText;
+    @InjectView(id.et_username) EditText usernameText;
     @InjectView(id.et_password) protected EditText passwordText;
     @InjectView(id.b_signin) protected Button signInButton;
 
@@ -93,7 +95,7 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
     private String authToken;
     private String authTokenType;
     private MaterialDialog progressDialog;
-
+    private InternetConnectivityChecker internetConnectivityChecker = new InternetConnectivityChecker(this);
     /**
      * If set we are just checking that the user knows their credentials; this
      * doesn't cause the user's password to be changed on the device.
@@ -133,24 +135,12 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
 //        usernameText.setAdapter(new ArrayAdapter<String>(this,
 //                simple_dropdown_item_1line, userEmailAccounts()));
 
-        passwordText.setOnKeyListener(new View.OnKeyListener() {
-
-            public boolean onKey(final View v, final int keyCode, final KeyEvent event) {
-                if (event != null && ACTION_DOWN == event.getAction()
-                        && keyCode == KEYCODE_ENTER && signInButton.isEnabled()) {
-                    handleLogin(signInButton);
-                    return true;
-                }
-                return false;
-            }
-        });
-
         passwordText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
             public boolean onEditorAction(final TextView v, final int actionId,
                                           final KeyEvent event) {
                 if (actionId == IME_ACTION_DONE && signInButton.isEnabled()) {
-                    handleLogin(signInButton);
+                    signIn();
                     return true;
                 }
                 return false;
@@ -159,6 +149,8 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
 
         usernameText.addTextChangedListener(watcher);
         passwordText.addTextChangedListener(watcher);
+        passwordText.setTypeface(Typeface.DEFAULT);
+        passwordText.setTransformationMethod(new PasswordTransformationMethod());
 //
 //        final TextView signUpText = (TextView) findViewById(id.tv_signup);
 //        signUpText.setMovementMethod(LinkMovementMethod.getInstance());
@@ -345,20 +337,6 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
         }
     }
 
-    public boolean isConnectingToInternet() {
-        ConnectivityManager connectivity = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivity != null) {
-            NetworkInfo[] info = connectivity.getAllNetworkInfo();
-            if (info != null) {
-                for (int i = 0; i < info.length; i++) {
-                    if (info[i].getState() == NetworkInfo.State.CONNECTED)
-                        return true;
-                }
-            }
-        }
-        return false;
-    }
-
     public void showAlert(String alertMessage) {
         new MaterialDialog.Builder(TestpressAuthenticatorActivity.this)
                 .content(alertMessage)
@@ -368,29 +346,11 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
                 .show();
     }
 
-    @OnClick(id.b_signin) public void signin() {
-        if(isConnectingToInternet())
+    @OnClick(id.b_signin) public void signIn() {
+        if(internetConnectivityChecker.isConnected()) {
             handleLogin(signInButton);
-        else
-            showAlert("No Internet access");
-    }
-
-    @OnClick(id.b_signUp) public void signUp() {
-        if(isConnectingToInternet()) {
-            Intent intent = new Intent(TestpressAuthenticatorActivity.this, NewUserRegistrationActivity.class);
-            startActivity(intent);
         } else {
-            showAlert("No Internet access");
-        }
-
-    }
-
-    @OnClick(id.b_verifyLayout) public void verifyLayout() {
-        if(isConnectingToInternet()) {
-            Intent intent = new Intent(TestpressAuthenticatorActivity.this, CodeVerificationActivity.class);
-            startActivity(intent);
-        } else {
-            showAlert("No Internet access");
+            internetConnectivityChecker.showAlert();
         }
     }
 }

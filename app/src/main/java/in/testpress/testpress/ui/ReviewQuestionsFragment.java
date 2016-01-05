@@ -1,21 +1,13 @@
 package in.testpress.testpress.ui;
 
 import android.accounts.AccountsException;
-import android.accounts.OperationCanceledException;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
 import com.github.kevinsawicki.wishlist.Toaster;
@@ -25,12 +17,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
-import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.ResourcePager;
 import in.testpress.testpress.core.ReviewQuestionsPager;
 import in.testpress.testpress.models.Attempt;
@@ -43,7 +32,6 @@ public class ReviewQuestionsFragment extends PagedItemFragment<ReviewItem> {
     String filter;
     ReviewQuestionsPager pager;
     @Inject protected TestpressServiceProvider serviceProvider;
-    @Inject protected LogoutService logoutService;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,8 +52,8 @@ public class ReviewQuestionsFragment extends PagedItemFragment<ReviewItem> {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+        setEmptyText(R.string.no_questions, R.string.no_questions_to_review, R.drawable.ic_help_outline_black_18dp);
         super.onActivityCreated(savedInstanceState);
-        setEmptyText(R.string.no_questions);
     }
 
     @Override
@@ -83,11 +71,6 @@ public class ReviewQuestionsFragment extends PagedItemFragment<ReviewItem> {
     @Override
     protected int getErrorMessage(Exception exception) {
         return R.string.error_loading_questions;
-    }
-
-    @Override
-    protected LogoutService getLogoutService() {
-        return logoutService;
     }
 
     @Override

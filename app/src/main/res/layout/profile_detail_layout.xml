@@ -6,7 +6,7 @@
     <include layout="@layout/toolbar_actionbar"/>
 
     <ProgressBar
-        android:id="@+id/horizontalProgressBar"
+        android:id="@+id/horizontal_progress_bar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -17,12 +17,12 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/horizontalProgressBar">
+        android:layout_below="@+id/horizontal_progress_bar">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/profileDetails"
+            android:id="@+id/profile_details"
             android:padding="10dp">
 
             <RelativeLayout
@@ -34,14 +34,14 @@
                 <ImageView
                     android:layout_width="150dp"
                     android:layout_height="150dp"
-                    android:id="@+id/profilePhoto"
+                    android:id="@+id/profile_photo"
                     android:cropToPadding="true"
                     android:src="@drawable/icon"/>
 
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:id="@+id/editProfilePhoto"
+                    android:id="@+id/edit_profile_photo"
                     android:src="@drawable/edit_icon_white"
                     android:padding="5dp"
                     android:background="#80000000"
@@ -50,7 +50,7 @@
             </RelativeLayout>
 
             <TextView
-                android:id="@+id/displayName"
+                android:id="@+id/display_name"
                 android:layout_width="wrap_content"
                 android:text="Testpress User"
                 android:textSize="25sp"
@@ -64,17 +64,17 @@
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:id="@+id/editButton"
+                android:id="@+id/edit"
                 android:src="@drawable/edit_blue_circle"
                 android:padding="2dp"
                 android:layout_below="@id/imageLayout"
                 android:layout_alignParentRight="true"
-                android:layout_toRightOf="@id/displayName"/>
+                android:layout_toRightOf="@id/display_name"/>
 
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/displayName"
+                android:layout_below="@+id/display_name"
                 android:stretchColumns="1"
                 android:shrinkColumns="1"
                 android:id="@+id/userDetails"
@@ -82,23 +82,23 @@
 
                 <TableRow
                     android:layout_centerHorizontal="true"
-                    android:id="@+id/mailIdRow">
+                    android:id="@+id/email_container">
 
                     <TextView
-                        android:id="@+id/maillabel"
+                        android:id="@+id/email_label"
                         style="@style/userDetailLableText"
-                        android:text="Email Id: "/>
+                        android:text="Email: "/>
 
                     <EditText
-                        android:id="@+id/mailId"
+                        android:id="@+id/email"
                         style="@style/userDetailEditText"
                         android:inputType="textEmailAddress"
-                        android:nextFocusDown="@+id/firstName" />
+                        android:nextFocusDown="@+id/first_name" />
                 </TableRow>
 
                 <TableRow
                     android:layout_centerHorizontal="true"
-                    android:id="@+id/firstNameRow"
+                    android:id="@+id/first_name_container"
                     android:visibility="gone">
 
                     <TextView
@@ -107,16 +107,16 @@
                         style="@style/userDetailLableText"/>
 
                     <EditText
-                        android:id="@+id/firstName"
+                        android:id="@+id/first_name"
                         style="@style/userDetailEditText"
                         android:inputType="textPersonName"
                         android:enabled="true"
-                        android:nextFocusDown="@+id/lastName" />
+                        android:nextFocusDown="@+id/last_name" />
                 </TableRow>
 
                 <TableRow
                     android:layout_centerHorizontal="true"
-                    android:id="@+id/lastNameRow"
+                    android:id="@+id/last_name_container"
                     android:visibility="gone">
 
                     <TextView
@@ -125,17 +125,17 @@
                         style="@style/userDetailLableText"/>
 
                     <EditText
-                        android:id="@+id/lastName"
+                        android:id="@+id/last_name"
                         android:textSize="16sp"
                         android:enabled="true"
-                        android:nextFocusDown="@+id/mobileNo"
+                        android:nextFocusDown="@+id/mobile"
                         style="@style/userDetailEditText" />
                 </TableRow>
 
                 <TableRow
                     android:layout_marginTop="5dp"
                     android:paddingBottom="5dp"
-                    android:id="@+id/mobileNoRow"
+                    android:id="@+id/mobile_container"
                     android:layout_centerHorizontal="true">
 
                     <TextView
@@ -144,15 +144,15 @@
                         android:text="Mobile No.: " />
 
                     <EditText
-                        android:id="@+id/mobileNo"
+                        android:id="@+id/mobile"
                         style="@style/userDetailEditText"
-                        android:nextFocusDown="@+id/dateOfBirth"
+                        android:nextFocusDown="@+id/date_of_birth"
                         android:inputType="phone"/>
                 </TableRow>
 
                 <TableRow
                     android:layout_marginTop="10dp"
-                    android:id="@+id/genderRow"
+                    android:id="@+id/gender_container"
                     android:layout_centerHorizontal="true">
 
                     <TextView
@@ -175,7 +175,7 @@
 
                 <TableRow
                     android:layout_marginTop="10dp"
-                    android:id="@+id/dobRow"
+                    android:id="@+id/date_of_birth_container"
                     android:layout_centerHorizontal="true">
 
                     <TextView
@@ -189,7 +189,7 @@
                         android:orientation="horizontal">
 
                         <EditText
-                            android:id="@+id/dateOfBirth"
+                            android:id="@+id/date_of_birth"
                             android:layout_width="match_parent"
                             android:hint="YYYY-MM-DD"
                             android:inputType="date"
@@ -212,7 +212,7 @@
 
                 <TableRow
                     android:layout_marginTop="10dp"
-                    android:id="@+id/addressRow"
+                    android:id="@+id/address_container"
                     android:layout_centerHorizontal="true">
 
                     <TextView
@@ -228,7 +228,7 @@
 
                 <TableRow
                     android:layout_marginTop="10dp"
-                    android:id="@+id/cityRow"
+                    android:id="@+id/city_container"
                     android:layout_centerHorizontal="true">
 
                     <TextView
@@ -238,13 +238,13 @@
 
                     <EditText
                         android:id="@+id/city"
-                        android:nextFocusDown="@+id/pinCode"
+                        android:nextFocusDown="@+id/pin_code"
                         style="@style/userDetailEditText"/>
                 </TableRow>
 
                 <TableRow
                     android:layout_marginTop="10dp"
-                    android:id="@+id/stateRow"
+                    android:id="@+id/state_container"
                     android:layout_centerHorizontal="true">
 
                     <TextView
@@ -267,7 +267,7 @@
 
                 <TableRow
                     android:layout_marginTop="10dp"
-                    android:id="@+id/pinCodeRow"
+                    android:id="@+id/pincode_container"
                     android:layout_centerHorizontal="true">
 
                     <TextView
@@ -276,7 +276,7 @@
                         style="@style/userDetailLableText"/>
 
                     <EditText
-                        android:id="@+id/pinCode"
+                        android:id="@+id/pin_code"
                         android:maxLength="6"
                         android:imeOptions="actionDone"
                         android:inputType="numberDecimal"
@@ -286,7 +286,7 @@
             </TableLayout>
 
             <Button
-                android:id="@+id/saveDetails"
+                android:id="@+id/save"
                 style="@style/ShadowText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

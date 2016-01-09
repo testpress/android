@@ -137,6 +137,7 @@ public final class Constants {
          */
         public static final String URL_POSTS_FRAG =  "api/v2.2/posts/";
         public static final String URL_POSTS = URL_BASE + URL_POSTS_FRAG;
+        public static final String URL_CATEGORIES_FRAG = URL_POSTS_FRAG + "categories/";
 
         /**
          * PARAMS for auth

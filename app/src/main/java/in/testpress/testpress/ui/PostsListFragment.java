@@ -2,6 +2,7 @@ package in.testpress.testpress.ui;
 
 import android.accounts.AccountsException;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,6 +10,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,7 +19,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.github.kevinsawicki.wishlist.Toaster;
@@ -27,7 +32,9 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -41,6 +48,7 @@ import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
+import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.PostsPager;
 import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.CategoryDao;
@@ -48,16 +56,24 @@ import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.util.Ln;
+import in.testpress.testpress.util.SafeAsyncTask;
 
 public class PostsListFragment extends Fragment implements
-        AbsListView.OnScrollListener, SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<List<Post>> {
+        AbsListView.OnScrollListener, SwipeRefreshLayout.OnRefreshListener, LoaderManager
+        .LoaderCallbacks<List<Post>> {
 
-    @Inject protected TestpressServiceProvider serviceProvider;
-    @Inject protected LogoutService logoutService;
-    @InjectView(android.R.id.list) ListView listView;
-    @InjectView(R.id.empty) TextView emptyView;
-    @InjectView(R.id.sticky) TextView mStickyView;
-    @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeLayout;
+    @Inject
+    protected TestpressServiceProvider serviceProvider;
+    @Inject
+    protected LogoutService logoutService;
+    @InjectView(android.R.id.list)
+    ListView listView;
+    @InjectView(R.id.empty)
+    TextView emptyView;
+    @InjectView(R.id.sticky)
+    TextView mStickyView;
+    @InjectView(R.id.swipe_container)
+    SwipeRefreshLayout swipeLayout;
     HeaderFooterListAdapter<PostsListAdapter> adapter;
     PostsPager refreshPager;
     PostsPager pager;
@@ -69,7 +85,9 @@ public class PostsListFragment extends Fragment implements
     int lastFirstVisibleItem;
     boolean isScrollingUp;
     boolean isUserSwiped;
-
+    private ExploreSpinnerAdapter mTopLevelSpinnerAdapter;
+    private View mSpinnerContainer;
+    private Boolean mFistTimeCallback = false;
 
     // Loader for refresh
     private static final int REFRESH_LOADER_ID = 0;
@@ -80,29 +98,68 @@ public class PostsListFragment extends Fragment implements
     // Number of maximum posts which can be missed from the latest before the db will get reset
     private static final int MISSED_POSTS_THRESHOLD = 50;
 
+    Long categoryFilter = null;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            categoryFilter = arguments.getLong("category_filter");
+        }
         //Get the dao handles for posts and categories
         daoSession = ((TestpressApplication) getActivity().getApplicationContext()).getDaoSession();
         postDao = daoSession.getPostDao();
         categoryDao = daoSession.getCategoryDao();
         //Enable options. This will trigger onCreateOptionsMenu
         setHasOptionsMenu(true);
+        Injector.inject(this);
+        mTopLevelSpinnerAdapter = new ExploreSpinnerAdapter(getActivity().getLayoutInflater(),
+                getActivity().getResources(), true);
+        mTopLevelSpinnerAdapter.addItem("", getString(R.string.all_posts), false, 0);
+        mTopLevelSpinnerAdapter.addHeader(getString(R.string.categories));
+        Toolbar toolbar = ((PostsListActivity) (getActivity())).getActionBarToolbar();
+        mSpinnerContainer = getActivity().getLayoutInflater().inflate(R.layout.actionbar_spinner,
+                toolbar, false);
+
+        Spinner spinner = (Spinner) mSpinnerContainer.findViewById(R.id.actionbar_spinner);
+        spinner.setAdapter(mTopLevelSpinnerAdapter);
+        Ln.e("Getting actiobar toolbar");
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> spinner, View view, int position, long
+                    itemId) {
+                if (!mFistTimeCallback) {
+                    mFistTimeCallback = true;
+                    return;
+                }
+                String filter = mTopLevelSpinnerAdapter.getTag(position);
+                if (filter.isEmpty()) {
+                    adapter.getWrappedAdapter().clearCategoryFilter();
+                } else {
+                    adapter.getWrappedAdapter().setCategoryFilter(Long.parseLong(filter));
+                }
+                displayDataFromDB();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+        mSpinnerContainer.setVisibility(View.VISIBLE);
     }
 
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.swipe_refresh_list, null);
-        Injector.inject(this);
         ButterKnife.inject(this, view);
         try {
             refreshPager = new PostsPager(serviceProvider.getService(getActivity()), getContext());
             refreshPager.setQueryParams("order", "-created");
             if (postDao.count() > 0) {
-                Post latest = postDao.queryBuilder().orderDesc(PostDao.Properties.CreatedDate).list().get(0);
+                Post latest = postDao.queryBuilder().orderDesc(PostDao.Properties.CreatedDate)
+                        .list().get(0);
                 refreshPager.setQueryParams("gt", latest.getCreated());
                 LogLatestPostCreatedDate(latest);
                 LogAllPosts();
@@ -124,7 +181,8 @@ public class PostsListFragment extends Fragment implements
     @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        adapter = new HeaderFooterListAdapter<PostsListAdapter>(listView, new PostsListAdapter(getActivity(), R.layout.post_list_item));
+        adapter = new HeaderFooterListAdapter<PostsListAdapter>(listView, new PostsListAdapter
+                (getActivity(), R.layout.post_list_item));
         listView.setAdapter(adapter);
         loadingLayout = LayoutInflater.from(getActivity()).inflate(R.layout.loading_layout, null);
     }
@@ -141,9 +199,47 @@ public class PostsListFragment extends Fragment implements
             }
         });
         getLoaderManager().initLoader(REFRESH_LOADER_ID, null, this);
+        fetchCategories();
+        if (categoryFilter != null) {
+            adapter.getWrappedAdapter().setCategoryFilter(categoryFilter);
+        }
         displayDataFromDB();
         listView.setOnScrollListener(this);
         listView.setFastScrollEnabled(true);
+    }
+
+    public void fetchCategories() {
+        new SafeAsyncTask<List<Category>>() {
+            @Override
+            public List<Category> call() throws Exception {
+                return serviceProvider.getService(PostsListFragment.this.getActivity())
+                        .getCategories(Constants.Http.URL_CATEGORIES_FRAG, null).getResults();
+            }
+
+            protected void onSuccess(final List<Category> categories) throws Exception {
+                Ln.e("On success");
+
+                for (final Category category : categories) {
+                    mTopLevelSpinnerAdapter.addItem("" + category.getId(), category.getName(), true,
+                            Color.parseColor("#" + category.getColor()));
+                }
+
+                if ((mSpinnerContainer.getVisibility() == View.GONE)) {
+                    Ln.e("Setting visible");
+                    mSpinnerContainer.setVisibility(View.VISIBLE);
+                }
+                mTopLevelSpinnerAdapter.notifyDataSetChanged();
+
+                Toolbar toolbar = ((PostsListActivity)(getActivity())).getActionBarToolbar();
+                View view = toolbar.findViewById(R.id.actionbar_spinnerwrap);
+                toolbar.removeView(view);
+                toolbar.invalidate();
+                ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                toolbar.addView(mSpinnerContainer, lp);
+            }
+
+        }.execute();
     }
 
     @Override
@@ -178,7 +274,8 @@ public class PostsListFragment extends Fragment implements
             //Remove the swipe refresh icon and the sticky notification if any
             swipeLayout.setRefreshing(false);
             if (pager != null && !pager.hasMore()) {
-                if(adapter.getFootersCount() != 0) {  //if pager reached last page remove footer if footer added already
+                if (adapter.getFootersCount() != 0) {  //if pager reached last page remove footer
+                    // if footer added already
                     adapter.removeFooter(loadingLayout);
                 }
             }
@@ -225,13 +322,14 @@ public class PostsListFragment extends Fragment implements
             //notify user about the new data to view latest data.
             Ln.d(MISSED_POSTS_THRESHOLD >= refreshPager.getTotalCount());
             if (MISSED_POSTS_THRESHOLD >= refreshPager.getTotalCount()) {
-                if(refreshPager.hasNext()) {
+                if (refreshPager.hasNext()) {
                     refreshPager.clearQueryParams();
-                    getLoaderManager().restartLoader(REFRESH_LOADER_ID, null, PostsListFragment.this);
+                    getLoaderManager().restartLoader(REFRESH_LOADER_ID, null, PostsListFragment
+                            .this);
                     return;
                 }
             }
-            if(isUserSwiped || (lastFirstVisibleItem == 0)) {
+            if (isUserSwiped || (lastFirstVisibleItem == 0)) {
                 displayNewPosts();
             } else {
                 mStickyView.setVisibility(View.VISIBLE);
@@ -242,14 +340,15 @@ public class PostsListFragment extends Fragment implements
     void onNetworkLoadFinished(List<Post> items) {
 
         if (!pager.hasMore()) {
-            if(adapter.getFootersCount() != 0) {  //if pager reached last page remove footer if footer added already
+            if (adapter.getFootersCount() != 0) {  //if pager reached last page remove footer if
+                // footer added already
                 adapter.removeFooter(loadingLayout);
             }
         }
         //Return if no new posts are available
         if (items.isEmpty())
             return;
-       
+
         //Insert posts to the database
         writeToDB(items);
 
@@ -282,7 +381,8 @@ public class PostsListFragment extends Fragment implements
     }
 
     @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int
+            totalItemCount) {
         // If the ListView is the only one child of the SwipeRefreshLayout we wouldn’t have any
         // kind of problems, because everything works smoothly. In some cases we have not only the
         // ListView but we have other elements. This case is a little bit more complex, because if
@@ -290,8 +390,10 @@ public class PostsListFragment extends Fragment implements
         // down the refresh process starts and the list items doesn’t scroll as we want. In this
         // case we can use a trick, we can disable the refresh notification using setEnabled(false)
         // and enable it again as soon as the first item in the ListView is visible.
-        // Here we override the onScrollListener of the ListView to handle the enable/disable mechanism
-        // See more at: http://www.survivingwithandroid.com/2014/05/android-swiperefreshlayout-tutorial.html
+        // Here we override the onScrollListener of the ListView to handle the enable/disable
+        // mechanism
+        // See more at: http://www.survivingwithandroid
+        // .com/2014/05/android-swiperefreshlayout-tutorial.html
         if (firstVisibleItem == 0) {
             swipeLayout.setEnabled(true);
         } else {
@@ -312,10 +414,12 @@ public class PostsListFragment extends Fragment implements
                 try {
                     pager = new PostsPager(serviceProvider.getService(getActivity()), getContext());
                     pager.setQueryParams("order", "-created");
-                    Post lastPost = postDao.queryBuilder().orderDesc(PostDao.Properties.CreatedDate).list().get((int) postDao.count() - 1);
+                    Post lastPost = postDao.queryBuilder().orderDesc(PostDao.Properties
+                            .CreatedDate).list().get((int) postDao.count() - 1);
                     pager.setQueryParams("lt", lastPost.getCreated());
                     Ln.d("Latest post available is " + lastPost.getTitle() + lastPost.getCreated());
-                    if(adapter.getFootersCount() == 0) { //display loading footer if not present when loading next page
+                    if (adapter.getFootersCount() == 0) { //display loading footer if not present
+                        // when loading next page
                         adapter.addFooter(loadingLayout);
                     }
                 } catch (AccountsException e) {
@@ -327,7 +431,8 @@ public class PostsListFragment extends Fragment implements
                 }
             } else {
                 if (!pager.hasMore()) {
-                    if(adapter.getFootersCount() != 0) {  //if pager reached last page remove footer if footer added already
+                    if (adapter.getFootersCount() != 0) {  //if pager reached last page remove
+                        // footer if footer added already
                         adapter.removeFooter(loadingLayout);
                     }
                     return;
@@ -338,14 +443,16 @@ public class PostsListFragment extends Fragment implements
         }
     }
 
-    @Override public void onRefresh() {
+    @Override
+    public void onRefresh() {
         new Handler().post(new Runnable() {
             @Override
             public void run() {
                 isUserSwiped = true;
                 refreshPager.clear();
                 if (postDao.count() > 0) {
-                    Post latest = postDao.queryBuilder().orderDesc(PostDao.Properties.CreatedDate).list().get(0);
+                    Post latest = postDao.queryBuilder().orderDesc(PostDao.Properties
+                            .CreatedDate).list().get(0);
                     refreshPager.setQueryParams("order", "-created");
                     refreshPager.setQueryParams("gt", latest.getCreated());
                     LogLatestPostCreatedDate(latest);
@@ -355,7 +462,8 @@ public class PostsListFragment extends Fragment implements
         });
     }
 
-    @OnClick(R.id.sticky) public void displayNewPosts() {
+    @OnClick(R.id.sticky)
+    public void displayNewPosts() {
         Ln.d("Sticky Clicked");
         mStickyView.setVisibility(View.GONE);
         //Remove the swipe refresh icon if present
@@ -367,7 +475,7 @@ public class PostsListFragment extends Fragment implements
 
         //Insert posts to the database
         writeToDB(refreshPager.getResources());
-        
+
         //Trigger displaying data
         displayDataFromDB();
     }
@@ -387,10 +495,11 @@ public class PostsListFragment extends Fragment implements
         postDao.insertOrReplaceInTx(posts);
         LogAllPosts();
     }
-    
-    @OnItemClick(android.R.id.list) public void onListItemClick(int position) {
+
+    @OnItemClick(android.R.id.list)
+    public void onListItemClick(int position) {
         Ln.d("Clicked " + position);
-        Post post = postDao.queryBuilder().orderDesc(PostDao.Properties.CreatedDate).listLazy().get(position);
+        Post post = adapter.getWrappedAdapter().getItem(position);
         Ln.d("Post at position is " + post.getTitle());
         Intent intent = new Intent(getActivity(), PostActivity.class);
         intent.putExtra("urlWithBase", post.getUrl());
@@ -398,7 +507,7 @@ public class PostsListFragment extends Fragment implements
     }
 
     protected int getErrorMessage(Exception exception) {
-        if((exception.getMessage() != null) && (exception.getMessage()).equals("403 FORBIDDEN")) {
+        if ((exception.getMessage() != null) && (exception.getMessage()).equals("403 FORBIDDEN")) {
             serviceProvider.handleForbidden(getActivity(), serviceProvider, logoutService);
             return R.string.authentication_failed;
         } else if (exception.getCause() instanceof UnknownHostException) {
@@ -409,7 +518,7 @@ public class PostsListFragment extends Fragment implements
     }
 
     @Override
-    public void onStop () {
+    public void onStop() {
         if (posts != null) {
             posts.close();
         }
@@ -444,8 +553,9 @@ public class PostsListFragment extends Fragment implements
 
     void LogAllPosts() {
         if (postDao.count() > 0) {
-            List<Post> dbPosts = postDao.queryBuilder().orderDesc(PostDao.Properties.CreatedDate).listLazy();
-            for (Post p :  dbPosts)
+            List<Post> dbPosts = postDao.queryBuilder().orderDesc(PostDao.Properties.CreatedDate)
+                    .listLazy();
+            for (Post p : dbPosts)
                 Ln.d(p.getTitle() + " " + p.getCreated() + "\n");
         }
     }
@@ -455,5 +565,20 @@ public class PostsListFragment extends Fragment implements
         Format format = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
         Ln.d("Latest post available is " + latest.getTitle()
                 + " created on " + format.format(date) + " - " + latest.getCreated());
+    }
+
+    @Override
+    public void setUserVisibleHint(final boolean visible) {
+        super.setUserVisibleHint(visible);
+        Ln.e("setUserVisibleHunt");
+        if (visible && getActivity() != null) {
+            Toolbar toolbar = ((PostsListActivity)(getActivity())).getActionBarToolbar();
+            View view = toolbar.findViewById(R.id.actionbar_spinnerwrap);
+            toolbar.removeView(view);
+            toolbar.invalidate();
+            ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            toolbar.addView(mSpinnerContainer, lp);
+        }
     }
 }

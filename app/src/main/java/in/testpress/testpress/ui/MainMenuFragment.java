@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.LinkedHashMap;
@@ -24,6 +25,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -36,7 +39,10 @@ public class MainMenuFragment extends Fragment {
 
     @Inject protected TestpressServiceProvider serviceProvider;
     GridView grid;
-    RecyclerView recyclerView;
+    @InjectView(R.id.recyclerview) RecyclerView recyclerView;
+    @InjectView(R.id.quick_links_container)
+    LinearLayout quickLinksContainer;
+
     String[] menuItemNames = {
             "My Exams",
 //            "Store",
@@ -63,7 +69,7 @@ public class MainMenuFragment extends Fragment {
     @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        recyclerView  = (RecyclerView) view.findViewById(R.id.recyclerview);
+        ButterKnife.inject(this, view);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         fetchStarredCategories();
         MainMenuGridAdapter adapter = new MainMenuGridAdapter(getActivity(), menuItemNames, menuItemImageId);
@@ -116,8 +122,13 @@ public class MainMenuFragment extends Fragment {
 
             protected void onSuccess(final List<Category> categories) throws Exception {
                 Ln.e("On success");
-                recyclerView.setAdapter(new StarredCategoryAdapter(getActivity(),
-                        categories));
+                if (categories.isEmpty() == true) {
+                    quickLinksContainer.setVisibility(View.GONE);
+                } else {
+                    quickLinksContainer.setVisibility(View.VISIBLE);
+                    recyclerView.setAdapter(new StarredCategoryAdapter(getActivity(),
+                            categories));
+                }
             }
         }.execute();
     }

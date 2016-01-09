@@ -26,6 +26,8 @@
         android:padding="15dp"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
+        android:id="@+id/quick_links_container"
+        android:visibility="gone"
         android:layout_height="wrap_content">
 
         <TextView

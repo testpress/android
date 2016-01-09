@@ -18,7 +18,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleMarginStart="48dp"
-            app:title="Bharathwaaj S"
+            app:title=""
             app:expandedTitleMarginEnd="64dp">
 
             <FrameLayout
@@ -89,7 +89,7 @@
                         android:textColor="#212121"
                         android:singleLine="true"
                         android:saveEnabled="false"
-                        android:text="testpress"
+                        android:text=""
                         android:layout_marginBottom="5dp"
                         android:enabled="false"/>
 
@@ -137,7 +137,7 @@
                         android:textColor="#212121"
                         android:singleLine="true"
                         android:saveEnabled="false"
-                        android:text="(650) 555-1234"
+                        android:text=""
                         android:layout_marginBottom="5dp"
                         android:enabled="false"/>
 
@@ -186,7 +186,7 @@
                         android:textColor="#212121"
                         android:singleLine="true"
                         android:saveEnabled="false"
-                        android:text="bharath@testpress.in"
+                        android:text=""
                         android:layout_marginBottom="5dp"
                         android:enabled="false"/>
 
@@ -234,7 +234,7 @@
                         android:textSize="@dimen/editor_form_text_size"
                         android:textColor="#212121"
                         android:saveEnabled="false"
-                        android:text="#37 Om Ganesh Nagar\n3rd Cross East\nVadavalli\nCoimbatore - 641041"
+                        android:text=""
                         android:layout_marginBottom="5dp"
                         android:enabled="false"/>
 

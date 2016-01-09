@@ -33,6 +33,7 @@ import in.testpress.testpress.ui.ExamActivity;
 import in.testpress.testpress.ui.ExamsListActivity;
 import in.testpress.testpress.ui.ExamsListFragment;
 import in.testpress.testpress.ui.MainActivity;
+import in.testpress.testpress.ui.MainMenuFragment;
 import in.testpress.testpress.ui.NavigationDrawerFragment;
 import in.testpress.testpress.ui.OrderConfirmActivity;
 import in.testpress.testpress.ui.OrdersListActivity;
@@ -101,7 +102,8 @@ import retrofit.converter.GsonConverter;
                 ReviewStatsFragment.class,
                 ProfileDetailsActivity.class,
                 ProfilePhotoActivity.class,
-                CropImageActivity.class
+                CropImageActivity.class,
+                MainMenuFragment.class
         }
 )
 public class TestpressModule {

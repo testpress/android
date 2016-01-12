@@ -16,17 +16,17 @@ public final class Constants {
         /**
          * Account name
          */
-        public static final String TESTPRESS_ACCOUNT_NAME = "testpress";
+        public static final String TESTPRESS_ACCOUNT_NAME = "iasbaba";
 
         /**
          * Account type id
          */
-        public static final String TESTPRESS_ACCOUNT_TYPE = "in.testpress." + TESTPRESS_ACCOUNT_NAME;
+        public static final String TESTPRESS_ACCOUNT_TYPE = "com." + TESTPRESS_ACCOUNT_NAME;
 
         /**
          * Provider id
          */
-        public static final String TESTPRESS_PROVIDER_AUTHORITY = "in.testpress." + TESTPRESS_ACCOUNT_NAME + ".sync";
+        public static final String TESTPRESS_PROVIDER_AUTHORITY = "com." + TESTPRESS_ACCOUNT_NAME + ".sync";
 
         /**
          * Auth token type
@@ -41,7 +41,7 @@ public final class Constants {
         /**
          * Base URL for all requests
          */
-        public static final String URL_BASE = "http://demo.testpress.in";
+        public static final String URL_BASE = "http://test.iasbaba.com";
 
         /**
          * Check Update url
@@ -163,7 +163,7 @@ public final class Constants {
         /**
          * Action prefix for all intents created
          */
-        public static final String INTENT_PREFIX = "in.testpress." + Auth.TESTPRESS_ACCOUNT_NAME + ".";
+        public static final String INTENT_PREFIX = "com." + Auth.TESTPRESS_ACCOUNT_NAME + ".";
 
     }
 

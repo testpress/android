@@ -9,8 +9,11 @@ import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -22,6 +25,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -65,35 +69,38 @@ import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 public class ProfileDetailsActivity extends TestpressFragmentActivity implements LoaderManager.LoaderCallbacks<ProfileDetails> {
 
     @Inject TestpressServiceProvider serviceProvider;
-    @InjectView(R.id.profilePhoto) ImageView profilePhoto;
-    @InjectView(R.id.editProfilePhoto) ImageView imageEditButton;
-    @InjectView(R.id.displayName) TextView displayName;
-    @InjectView(R.id.firstName) EditText firstName;
-    @InjectView(R.id.lastName) EditText lastName;
-    @InjectView(R.id.mailId) EditText mailId;
+    @InjectView(R.id.profile_photo) ImageView profilePhoto;
+    @InjectView(R.id.edit_profile_photo) ImageView imageEditButton;
+    @InjectView(R.id.display_name) TextView displayName;
+    @InjectView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbar;
+    @InjectView(R.id.first_name) EditText firstName;
+    @InjectView(R.id.last_name) EditText lastName;
+    @InjectView(R.id.email) AppCompatTextView email;
+    @InjectView(R.id.username) AppCompatTextView username;
     @InjectView(R.id.gender) Spinner gender;
-    @InjectView(R.id.address) EditText address;
-    @InjectView(R.id.mobileNo) EditText mobileNo;
-    @InjectView(R.id.dateOfBirth) EditText dateOfBirth;
+    @InjectView(R.id.address) AppCompatTextView address;
+    @InjectView(R.id.phone) AppCompatTextView phone;
+    @InjectView(R.id.date_of_birth) EditText dateOfBirth;
     @InjectView(R.id.datepicker) ImageButton datePicker;
     @InjectView(R.id.city) EditText city;
     @InjectView(R.id.state) Spinner state;
-    @InjectView(R.id.pinCode) EditText pinCode;
-    @InjectView(R.id.firstNameRow) TableRow firstNameRow;
-    @InjectView(R.id.lastNameRow) TableRow lastNameRow;
-    @InjectView(R.id.mailIdRow) TableRow mailIdRow;
-    @InjectView(R.id.genderRow) TableRow genderRow;
-    @InjectView(R.id.addressRow) TableRow addressRow;
-    @InjectView(R.id.mobileNoRow) TableRow mobileNoRow;
-    @InjectView(R.id.cityRow) TableRow cityRow;
-    @InjectView(R.id.dobRow) TableRow dobRow;
-    @InjectView(R.id.stateRow) TableRow stateRow;
-    @InjectView(R.id.pinCodeRow) TableRow pinCodeRow;
+    @InjectView(R.id.pin_code) EditText pinCode;
+    @InjectView(R.id.first_name_container) TableRow firstNameRow;
+    @InjectView(R.id.last_name_container) TableRow lastNameRow;
+    @InjectView(R.id.email_container) LinearLayout mailIdRow;
+    @InjectView(R.id.username_container) LinearLayout usernameContainer;
+    @InjectView(R.id.gender_container) TableRow genderRow;
+    @InjectView(R.id.address_container) LinearLayout addressRow;
+    @InjectView(R.id.mobile_container) TableRow mobileNoRow;
+    @InjectView(R.id.city_container) TableRow cityRow;
+    @InjectView(R.id.date_of_birth_container) TableRow dobRow;
+    @InjectView(R.id.state_container) TableRow stateRow;
+    @InjectView(R.id.pincode_container) TableRow pinCodeRow;
     @InjectView(R.id.empty) TextView emptyView;
-    @InjectView(R.id.editButton) ImageView editButton;
-    @InjectView(R.id.saveDetails) Button saveButton;
-    @InjectView(R.id.profileDetails) RelativeLayout profileDetailsView;
-    @InjectView(R.id.horizontalProgressBar) ProgressBar horizontalProgressBar;
+    @InjectView(R.id.edit) ImageView editButton;
+    @InjectView(R.id.save) Button saveButton;
+    @InjectView(R.id.profile_details) RelativeLayout profileDetailsView;
+    @InjectView(R.id.horizontal_progress_bar) ProgressBar horizontalProgressBar;
     ProgressBar progressBar;
     ProfileDetails profileDetails;
     ArrayAdapter<String> genderSpinnerAdapter;
@@ -114,6 +121,8 @@ public class ProfileDetailsActivity extends TestpressFragmentActivity implements
         setContentView(R.layout.profile_detail_layout);
         Injector.inject(this);
         ButterKnife.inject(this);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         profileDetailsView.setVisibility(View.GONE);
         progressBar = (ProgressBar) findViewById(R.id.pb_loading);
@@ -180,20 +189,24 @@ public class ProfileDetailsActivity extends TestpressFragmentActivity implements
         //download and display image from url
         imageLoader.displayImage(profileDetails.getMediumImage(), profilePhoto, options);
         menu.setGroupVisible(R.id.editMode, false);
-        menu.setGroupVisible(R.id.viewMode, true);
+        menu.setGroupVisible(R.id.viewMode, false);
         setVisibility(View.VISIBLE, new View[]{displayName, editButton});
         setVisibility(View.GONE, new View[]{firstNameRow, lastNameRow, imageEditButton, datePicker});
         displayName.setText(profileDetails.getFirstName() + " " + profileDetails.getLastName());
-        handleDetail(mailId, mailIdRow, profileDetails.getEmail());
-        handleDetail(mobileNo, mobileNoRow, profileDetails.getPhone());
+        collapsingToolbar.setTitle(profileDetails.getDisplayName());
+        handleDetail(email, mailIdRow, profileDetails.getEmail());
+        handleDetail(username, usernameContainer, profileDetails.getUsername());
+        handleDetail(phone, mobileNoRow, profileDetails.getPhone());
         handleDetail(gender, genderRow, profileDetails.getGender());
         handleDetail(dateOfBirth, dobRow, profileDetails.getBirthDate());
-        handleDetail(address, addressRow, profileDetails.getAddress1());
+        String fullAddress = profileDetails.getAddress1() + "\n" + profileDetails.getAddress2()
+                + "\n" + profileDetails.getCity() + " - " + profileDetails.getZip();
+        handleDetail(address, addressRow, fullAddress);
         handleDetail(city, cityRow, profileDetails.getCity());
         handleDetail(state, stateRow, profileDetails.getState());
         handleDetail(pinCode, pinCodeRow, profileDetails.getZip());
         saveButton.setVisibility(View.GONE);
-        setEnabled(false, new View[]{mailId, mobileNo, gender, dateOfBirth, address, city, state, pinCode});
+        setEnabled(false, new View[]{email, phone, gender, dateOfBirth, address, city, state, pinCode});
     }
 
     private void handleDetail(View widget, View viewRow, String detail) {
@@ -211,6 +224,8 @@ public class ProfileDetailsActivity extends TestpressFragmentActivity implements
                         ((Spinner) widget).setSelection(stateSpinnerAdapter.getPosition(detail));
                     }
                     break;
+                default:
+                    ((TextView)widget).setText(detail);
             }
         } else {
             viewRow.setVisibility(View.GONE);
@@ -231,13 +246,13 @@ public class ProfileDetailsActivity extends TestpressFragmentActivity implements
         }
     }
 
-    @OnClick(R.id.editButton)
+    @OnClick(R.id.edit)
     public void editProfileDetails() {
         menu.setGroupVisible(R.id.editMode, true);
         menu.setGroupVisible(R.id.viewMode, false);
         editButton.setVisibility(View.GONE);
         setVisibility(View.VISIBLE, new View[]{imageEditButton, mailIdRow, firstNameRow, lastNameRow, mobileNoRow, genderRow, dobRow, datePicker, addressRow, cityRow, stateRow, pinCodeRow, saveButton});
-        setEnabled(true, new View[]{mailId, mobileNo, gender, dateOfBirth, address, city, state, pinCode});
+        setEnabled(true, new View[]{email, phone, gender, dateOfBirth, address, city, state, pinCode});
         firstName.setText(profileDetails.getFirstName());
         lastName.setText(profileDetails.getLastName());
         if (profileDetails.getGender() == null) {
@@ -248,14 +263,14 @@ public class ProfileDetailsActivity extends TestpressFragmentActivity implements
         }
     }
 
-    @OnClick(R.id.profilePhoto)
+    @OnClick(R.id.profile_photo)
     public void displayProfilePhoto() {
         Intent intent = new Intent(this, ProfilePhotoActivity.class);
         intent.putExtra("profilePhoto", profileDetails.getPhoto());
         startActivityForResult(intent, SELECT_IMAGE);
     }
 
-    @OnClick(R.id.editProfilePhoto)
+    @OnClick(R.id.edit_profile_photo)
     public void selectImageFromMobile() {
         Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, FETCH_AND_CROP_IMAGE);
@@ -322,7 +337,7 @@ public class ProfileDetailsActivity extends TestpressFragmentActivity implements
         }
     }
 
-    @OnClick(R.id.saveDetails)
+    @OnClick(R.id.save)
     public void saveDetails() {
         if(validate()) {
             final MaterialDialog progressDialog = new MaterialDialog.Builder(this)
@@ -333,9 +348,13 @@ public class ProfileDetailsActivity extends TestpressFragmentActivity implements
                     .show();
             new SafeAsyncTask<ProfileDetails>() {
                 public ProfileDetails call() throws Exception {
-                    return serviceProvider.getService(ProfileDetailsActivity.this).updateUserDetails(profileDetails.getUrl().replace(Constants.Http.URL_BASE + "/", ""), mailId.getText().toString(),
-                            firstName.getText().toString(), lastName.getText().toString(), mobileNo.getText().toString(), Constants.genderChoices.get(gender.getSelectedItem().toString()),
-                            dateOfBirth.getText().toString(), address.getText().toString(), city.getText().toString(), Constants.stateChoices.get(state.getSelectedItem().toString()), pinCode.getText().toString());
+                    return serviceProvider.getService(ProfileDetailsActivity.this).updateUserDetails(profileDetails.getUrl().replace(Constants.Http.URL_BASE + "/", ""), email.getText().toString(),
+                            firstName.getText().toString(), lastName.getText().toString(),
+                            phone.getText().toString(), Constants.genderChoices.get(gender
+                                    .getSelectedItem().toString()),
+                            dateOfBirth.getText().toString(), address.getText().toString(), city
+                                    .getText().toString(), Constants.stateChoices.get(state
+                                    .getSelectedItem().toString()), pinCode.getText().toString());
                 }
 
                 @Override
@@ -400,26 +419,26 @@ public class ProfileDetailsActivity extends TestpressFragmentActivity implements
 
     private boolean validate() {
         //Email Validation
-        if (mailId.getText().toString().trim().length() == 0) {
-            mailId.setError("This is a required field");
-            mailId.requestFocus();
+        if (email.getText().toString().trim().length() == 0) {
+            email.setError("This is a required field");
+            email.requestFocus();
             return false;
-        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(mailId.getText().toString().trim()).matches()) {
-            mailId.setError("Please enter a valid Email address");
-            mailId.requestFocus();
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email.getText().toString().trim()).matches()) {
+            email.setError("Please enter a valid Email address");
+            email.requestFocus();
             return false;
         }
         //Phone number Validation
-        if (mobileNo.getText().toString().trim().length() == 0) {
-            mobileNo.setError("This is a required field");
-            mobileNo.requestFocus();
+        if (phone.getText().toString().trim().length() == 0) {
+            phone.setError("This is a required field");
+            phone.requestFocus();
             return false;
         } else {
             Pattern phoneNumberPattern = Pattern.compile("\\d{10}");
-            Matcher phoneNumberMatcher = phoneNumberPattern.matcher(mobileNo.getText().toString().trim());
+            Matcher phoneNumberMatcher = phoneNumberPattern.matcher(phone.getText().toString().trim());
             if (!phoneNumberMatcher.matches()) {
-                mobileNo.setError("This field may contain only 10 digit valid Mobile Numbers");
-                mobileNo.requestFocus();
+                phone.setError("This field may contain only 10 digit valid Mobile Numbers");
+                phone.requestFocus();
                 return false;
             }
         }

@@ -2,6 +2,7 @@ package in.testpress.testpress.core;
 
 import java.util.Map;
 
+import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.TestpressApiResponse;
 
@@ -17,5 +18,8 @@ public interface PostService {
 
     @GET("/{post_url}")
     Post getPostDetails(@EncodedPath("post_url") String postUrl, @Header("Authorization") String authorization);
+
+    @GET("/{categories_url}")
+    TestpressApiResponse<Category> getCategories(@EncodedPath("categories_url") String categoriesUrl, @QueryMap Map<String, String> options, @Header("Authorization") String authorization);
 
 }

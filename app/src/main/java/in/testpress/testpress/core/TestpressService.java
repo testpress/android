@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.Attempt;
 import in.testpress.testpress.models.AttemptItem;
@@ -134,6 +135,10 @@ public class TestpressService {
 
     public TestpressApiResponse<Post> getPosts(String urlFrag, Map<String, String> queryParams) {
         return getPostService().getPosts(urlFrag, queryParams, getAuthToken());
+    }
+
+    public TestpressApiResponse<Category> getCategories(String urlFrag, Map<String, String> queryParams) {
+        return getPostService().getCategories(urlFrag, queryParams, getAuthToken());
     }
 
     public Post getPostDetail(String url) {

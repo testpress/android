@@ -117,5 +117,7 @@
     <string name="continue_purchase">Continue Purchase</string>
     <string name="take_exam">Take Exam</string>
     <string name="clear_posts">Clear Offline Posts</string>
+    <string name="all_posts">All Posts</string>
+    <string name="categories">Categories</string>
 
 </resources>

@@ -23,4 +23,26 @@
     <dimen name="explore_spinner_width">200dp</dimen>
     <dimen name="spinner_left_padding">16dp</dimen>
 
+    <dimen name="detail_backdrop_height">256dp</dimen>
+    <dimen name="card_margin">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="list_item_avatar_size">40dp</dimen>
+
+    <!-- Top margin applied to mime-type icons inside the editor. This is needed to give the
+        appearance that the icons are top aligned with the text, since visible text doesn't
+        start at the very top of TextViews. -->
+    <dimen name="editor_kind_icon_top_margin">14dp</dimen>
+
+    <!-- Size of input form text inside the contact editor -->
+    <dimen name="editor_form_text_size">16sp</dimen>
+
+    <!-- Width of the delete button (X) in the raw contact editor -->
+    <dimen name="editor_delete_button_width">48dp</dimen>
+
+    <!-- Padding below every readonly editor view. This value is chosen to give 19dp of apparent
+        padding between TextView's in the readonly Raw Contact Editor. -->
+    <dimen name="editor_padding_between_read_only_editor_views">9dp</dimen>
+
+    <!-- Width of the Type-Label in the Editor -->
+    <dimen name="editor_type_label_width">150dip</dimen>
 </resources>

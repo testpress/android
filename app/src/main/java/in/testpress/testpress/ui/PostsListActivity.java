@@ -16,12 +16,7 @@ public class PostsListActivity extends TestpressFragmentActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         fromPostDetail = getIntent().getBooleanExtra("parentIsNotification", false);
         PostsListFragment postsListFragment = new PostsListFragment();
-        Bundle bundle = new Bundle();
-        if(fromPostDetail) {
-            bundle.putBoolean("parentIsNotification", true);
-        } else {
-            bundle.putBoolean("parentIsNotification", false);
-        }
+        Bundle bundle = getIntent().getExtras();
         postsListFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, postsListFragment).commitAllowingStateLoss();

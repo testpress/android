@@ -3,6 +3,7 @@ package in.testpress.testpress.authenticator;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -35,7 +36,7 @@ import retrofit.RetrofitError;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 
-public class NewUserRegistrationActivity extends Activity {
+public class NewUserRegistrationActivity extends AppCompatActivity {
     @Inject TestpressService testpressService;
     @InjectView(id.et_username) EditText usernameText;
     @InjectView(id.et_password) EditText passwordText;
@@ -190,7 +191,8 @@ public class NewUserRegistrationActivity extends Activity {
     @OnClick(id.b_register) public void register() {
         if(validate()) {
         new MaterialDialog.Builder(this)
-                .title("We will verify the phone number\n\n" + phoneText.getText().toString() + "\n\nIs this OK, or would you like to edit the number?")
+                .title("Verify phone")
+                .content("We will verify the phone number\n\n" + phoneText.getText().toString() + "\n\nIs this OK, or would you like to edit the number?")
                 .positiveText(R.string.ok)
                 .negativeText(R.string.edit)
                 .positiveColorRes(R.color.primary)

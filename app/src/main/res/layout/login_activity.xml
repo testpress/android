@@ -1,65 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:fbutton="http://schemas.android.com/apk/res-auto"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:fitsSystemWindows="true">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="56dp"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp">
-
-        <ImageView android:src="@drawable/logo"
-                   android:layout_width="wrap_content"
-                   android:layout_height="72dp"
-                   android:layout_marginBottom="24dp"
-                   android:layout_gravity="center_horizontal" />
-
-        <!-- Username Label -->
-        <android.support.design.widget.TextInputLayout
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/TextLabel"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/et_username"
+            android:id="@+id/form"
+            android:paddingTop="56dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp">
+
+            <ImageView android:src="@drawable/logo"
+                       android:layout_width="wrap_content"
+                       android:layout_height="72dp"
+                       android:layout_marginBottom="24dp"
+                       android:layout_gravity="center_horizontal" />
+
+            <!-- Username Label -->
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Username" />
-        </android.support.design.widget.TextInputLayout>
+                android:theme="@style/TextLabel"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp">
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/et_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Username" />
+            </android.support.design.widget.TextInputLayout>
 
-        <!-- Password Label -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/TextLabel"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/et_password"
+            <!-- Password Label -->
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:inputType="textPassword"
-                android:hint="Password"/>
-        </android.support.design.widget.TextInputLayout>
+                android:theme="@style/TextLabel"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp">
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/et_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:inputType="textPassword"
+                    android:hint="Password"/>
+            </android.support.design.widget.TextInputLayout>
 
-        <info.hoang8f.widget.FButton
-            android:id="@+id/b_signin"
+            <info.hoang8f.widget.FButton
+                android:id="@+id/b_signin"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                fbutton:buttonColor="@color/primary"
+                fbutton:shadowEnabled="true"
+                fbutton:shadowHeight="5dp"
+                fbutton:cornerRadius="2dp"
+                android:layout_marginTop="20dp"
+                android:text="Login"
+                android:textColor="@color/white"
+            />
+        </LinearLayout>
+
+        <View
             android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#c5c5c5"
+            android:layout_alignTop="@+id/register_actions"
+            android:layout_marginBottom="15dp"
+            android:layout_gravity="center_horizontal"/>
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            fbutton:buttonColor="@color/primary"
-            fbutton:shadowEnabled="true"
-            fbutton:shadowHeight="5dp"
-            fbutton:cornerRadius="2dp"
-            android:layout_marginTop="20dp"
-            android:text="Login"
-            android:textColor="@color/white"
-        />
-    </LinearLayout>
-</ScrollView>
+            android:id="@+id/register_actions"
+            android:orientation="horizontal"
+            android:padding="12dp"
+            android:weightSum="2"
+            android:layout_alignParentBottom="true">
+            <TextView android:id="@+id/link_signup"
+                      android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"
+                      android:textStyle="bold"
+                      android:text="Register"
+                      android:textColor="#444444"
+                      android:layout_gravity="center"
+                      android:gravity="center"
+                      android:textSize="14dip"/>
+            <View
+                android:layout_toRightOf="@+id/link_signup"
+                android:layout_width="1dp"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_centerInParent="true"
+                android:background="#c5c5c5"/>
+            <TextView android:id="@+id/resend_sms"
+                      android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:text="Resend SMS"
+                      android:textColor="#444444"
+                      android:textStyle="bold"
+                      android:layout_gravity="center"
+                      android:layout_weight="1"
+                      android:gravity="center"
+                      android:textSize="14dip"/>
+        </LinearLayout>
+
+    </RelativeLayout>

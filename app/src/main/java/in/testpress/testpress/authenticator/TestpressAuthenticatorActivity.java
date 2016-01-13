@@ -353,4 +353,23 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
             internetConnectivityChecker.showAlert();
         }
     }
+
+    @OnClick(id.link_signup) public void signUp() {
+        if(internetConnectivityChecker.isConnected()) {
+            Intent intent = new Intent(TestpressAuthenticatorActivity.this, NewUserRegistrationActivity.class);
+            startActivity(intent);
+        } else {
+            internetConnectivityChecker.showAlert();
+        }
+
+    }
+
+    @OnClick(id.resend_sms) public void resendSms() {
+        if(internetConnectivityChecker.isConnected()) {
+            Intent intent = new Intent(TestpressAuthenticatorActivity.this, CodeVerificationActivity.class);
+            startActivity(intent);
+        } else {
+            internetConnectivityChecker.showAlert();
+        }
+    }
 }

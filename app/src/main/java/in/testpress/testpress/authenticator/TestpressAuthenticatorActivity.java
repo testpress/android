@@ -364,7 +364,7 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
 
     }
 
-    @OnClick(id.resend_sms) public void resendSms() {
+    @OnClick(id.verify) public void verify() {
         if(internetConnectivityChecker.isConnected()) {
             Intent intent = new Intent(TestpressAuthenticatorActivity.this, CodeVerificationActivity.class);
             startActivity(intent);

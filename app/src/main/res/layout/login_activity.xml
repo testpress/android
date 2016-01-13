@@ -95,10 +95,10 @@
                 android:layout_centerVertical="true"
                 android:layout_centerInParent="true"
                 android:background="#c5c5c5"/>
-            <TextView android:id="@+id/resend_sms"
+            <TextView android:id="@+id/verify"
                       android:layout_width="0dp"
                       android:layout_height="wrap_content"
-                      android:text="Resend SMS"
+                      android:text="Verify Account"
                       android:textColor="#444444"
                       android:textStyle="bold"
                       android:layout_gravity="center"

@@ -66,6 +66,8 @@
     <string name="loading">Loading...</string>
     <string name="please_wait">Please Wait...</string>
     <string name="ok">OK</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
     <string name="authentication_failed">Authentication failed</string>
     <string name="network_error">Network Error</string>
     <string name="no_internet">Please check your internet connection &amp; refresh again</string>
@@ -115,5 +117,7 @@
     <string name="continue_purchase">Continue Purchase</string>
     <string name="take_exam">Take Exam</string>
     <string name="clear_posts">Clear Offline Posts</string>
+    <string name="all_posts">All Posts</string>
+    <string name="categories">Categories</string>
 
 </resources>

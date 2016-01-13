@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -42,7 +43,7 @@ import retrofit.RetrofitError;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 
-public class CodeVerificationActivity extends Activity {
+public class CodeVerificationActivity extends AppCompatActivity {
     @Inject TestpressService testpressService;
     @InjectView(R.id.welcome) TextView welcomeText;
     @InjectView(R.id.et_username) EditText usernameText;

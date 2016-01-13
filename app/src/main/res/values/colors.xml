@@ -81,4 +81,7 @@
     <color name="fbutton_color_silver">#bdc3c7</color>
     <color name="fbutton_color_concrete">#95a5a6</color>
     <color name="fbutton_color_asbestos">#7f8c8d</color>
+
+    <!-- Color of the mime-type icons inside the editor. 50% black. -->
+    <color name="editor_icon_color">#7f7f7f</color>
 </resources>

@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.TimeZone;
 
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.models.Category;
@@ -66,6 +67,8 @@ public class PostsPager extends ResourcePager<Post> {
     @Override
     public boolean next() throws IOException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
         boolean emptyPage = false;
         networkFail = false;
         try {

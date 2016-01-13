@@ -2,6 +2,8 @@
 
 package in.testpress.testpress.core;
 
+import java.util.HashMap;
+
 /**
  * Testpress constants
  */
@@ -14,17 +16,17 @@ public final class Constants {
         /**
          * Account name
          */
-        public static final String TESTPRESS_ACCOUNT_NAME = "race";
+        public static final String TESTPRESS_ACCOUNT_NAME = "raceinstitute";
 
         /**
          * Account type id
          */
-        public static final String TESTPRESS_ACCOUNT_TYPE = "in.testpress." + TESTPRESS_ACCOUNT_NAME;
+        public static final String TESTPRESS_ACCOUNT_TYPE = "in." + TESTPRESS_ACCOUNT_NAME;
 
         /**
          * Provider id
          */
-        public static final String TESTPRESS_PROVIDER_AUTHORITY = "in.testpress." + TESTPRESS_ACCOUNT_NAME + ".sync";
+        public static final String TESTPRESS_PROVIDER_AUTHORITY = "in." + TESTPRESS_ACCOUNT_NAME + ".sync";
 
         /**
          * Auth token type
@@ -81,6 +83,12 @@ public final class Constants {
         public static final String URL_ORDERS_FRAG = "/api/v2/orders/";
 
         /**
+         * Profile Details URL
+         */
+        public static final String URL_PROFILE_DETAILS_FRAG =  "/api/v2.1/me/";
+        public static final String URL_PROFILE_DETAILS = URL_BASE + URL_PROFILE_DETAILS_FRAG;
+
+        /**
          * List Available Exams URL
          */
         public static final String URL_AVAILABLE_EXAMS_FRAG =  "api/v2.2/exams/available/";
@@ -129,6 +137,7 @@ public final class Constants {
          */
         public static final String URL_POSTS_FRAG =  "api/v2.2/posts/";
         public static final String URL_POSTS = URL_BASE + URL_POSTS_FRAG;
+        public static final String URL_CATEGORIES_FRAG = URL_POSTS_FRAG + "categories/";
 
         /**
          * PARAMS for auth
@@ -154,7 +163,7 @@ public final class Constants {
         /**
          * Action prefix for all intents created
          */
-        public static final String INTENT_PREFIX = "in.testpress." + Auth.TESTPRESS_ACCOUNT_NAME + ".";
+        public static final String INTENT_PREFIX = "in." + Auth.TESTPRESS_ACCOUNT_NAME + ".";
 
     }
 
@@ -168,6 +177,30 @@ public final class Constants {
     public static final String GCM_PREFERENCE_NAME = "testpress." + Auth.TESTPRESS_ACCOUNT_NAME;
     public static final String GCM_PROPERTY_REG_ID = "GCMRegId";
     public static final String SENT_TOKEN_TO_SERVER = "sentTokenToServer";
+
+    public static final HashMap<String, Integer> genderChoices;
+    static
+    {
+        genderChoices = new HashMap<String, Integer>();
+        genderChoices.put("--select--", -1);
+        genderChoices.put("Male", 1);
+        genderChoices.put("Female", 2);
+        genderChoices.put("Transgender", 3);
+    }
+
+    public static final HashMap<String, Integer> stateChoices;
+    static
+    {
+        stateChoices = new HashMap<String, Integer>();
+        String[] states = {
+                "--select--", "Others", "Andaman and Nicobar Islands", "Andhra Pradesh", "Arunachal Pradesh", "Assam",
+                "Bihar", "Chandigarh", "Chhattisgarh", "Dadra and Nagar Haveli", "Daman and Diu", "Delhi", "Goa", "Gujarat",
+                "Haryana", "Himachal Pradesh", "Jammu and Kashmir", "Jharkhand", "Karnataka", "Kerala", "Lakshadweep",
+                "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Pondicherry",
+                "Rajasthan", "Sikkim", "Tamil Nadu", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal", "Telengana"
+        };
+        for (int i = -1; i < 37; i++) {
+            stateChoices.put(states[i + 1], i);
+        }
+    }
 }
-
-

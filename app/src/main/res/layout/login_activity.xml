@@ -65,6 +65,7 @@
 
         <View
             android:layout_width="fill_parent"
+            android:visibility="gone"
             android:layout_height="1dp"
             android:background="#c5c5c5"
             android:layout_alignTop="@+id/register_actions"
@@ -77,6 +78,7 @@
             android:orientation="horizontal"
             android:padding="12dp"
             android:weightSum="2"
+            android:visibility="gone"
             android:layout_alignParentBottom="true">
             <TextView android:id="@+id/link_signup"
                       android:layout_width="0dp"

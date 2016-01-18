@@ -76,7 +76,6 @@
             android:text="Buy Now"
             android:textAllCaps="true"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_xxlarge"
-            />
+            android:textSize="@dimen/text_size_xxlarge"/>
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

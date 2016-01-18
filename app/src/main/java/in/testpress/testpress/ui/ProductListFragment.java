@@ -55,7 +55,6 @@ public class ProductListFragment extends PagedItemFragment<Product> {
         super.configureList(activity, listView);
 
         listView.setFastScrollEnabled(true);
-        listView.setDividerHeight(0);
     }
 
     protected ResourcePager<Product> getPager() {

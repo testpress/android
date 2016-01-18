@@ -217,7 +217,8 @@ public class MainActivity extends TestpressFragmentActivity {
 
     public void logout() {
         new MaterialDialog.Builder(this)
-                .title("Do you really want to Logout?")
+                .title("Log Out")
+                .content("Are you sure you want to log out?")
                 .positiveText(R.string.ok)
                 .negativeText(R.string.cancel)
                 .positiveColorRes(R.color.primary)

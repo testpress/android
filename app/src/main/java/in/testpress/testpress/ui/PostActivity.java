@@ -9,6 +9,7 @@ import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -40,8 +41,9 @@ public class PostActivity extends TestpressFragmentActivity {
     PostDao postDao;
     Post post;
     @Inject protected TestpressServiceProvider serviceProvider;
-    @InjectView(R.id.content) TextView content;
+    @InjectView(R.id.content) WebView content;
     @InjectView(R.id.title) TextView title;
+    @InjectView(R.id.summary) TextView summary;
     @InjectView(R.id.date) TextView date;
     @InjectView(R.id.postDetails) RelativeLayout postDetails;
     @InjectView(R.id.pb_loading) ProgressBar progressBar;
@@ -85,7 +87,6 @@ public class PostActivity extends TestpressFragmentActivity {
                 } else {
                     post.setContentHtml(getResources().getString(R.string.error_loading_content));
                 }
-                content.setTextColor(Color.RED);
                 displayPost(post);
             }
 
@@ -105,12 +106,14 @@ public class PostActivity extends TestpressFragmentActivity {
         progressBar.setVisibility(View.GONE);
         getSupportActionBar().setTitle(post.getTitle());
         title.setText(post.getTitle());
+        summary.setText(post.getSummary());
         FormatDate formatter = new FormatDate();
-        date.setText(formatter.formatDateTime(post.getCreated()));
-        Spanned htmlSpan = Html.fromHtml(post.getContentHtml(), new UILImageGetter(content, PostActivity.this), new ListTagHandler());
-        ZoomableImageString zoomableImageQuestion = new ZoomableImageString(PostActivity.this);
-        content.setText(zoomableImageQuestion.convertString(htmlSpan));
-        content.setMovementMethod(LinkMovementMethod.getInstance());
+        date.setText(formatter.formatDate(post.getCreated()));
+        content.getSettings().setJavaScriptEnabled(true);
+        content.getSettings().setBuiltInZoomControls(true);
+        content.getSettings().setDisplayZoomControls(false);
+        content.getSettings().setSupportZoom(true);
+        content.loadData(post.getContentHtml(), "text/html", null);
     }
 
     @Override

@@ -9,18 +9,22 @@ import java.util.List;
 public class ProductDetails extends Product implements Parcelable {
 
     private String description;
+    private String additionalInfo;
+    private String paymentLink;
     private String institute;
     private Boolean requiresShipping;
-    private List<Exam> exams = new ArrayList<Exam>();
+    private List<RawExam> exams = new ArrayList<RawExam>();
     private List<Notes> notes = new ArrayList<Notes>();
 
     // Parcelling part
     public ProductDetails(Parcel parcel){
         super(parcel);
         description      = parcel.readString();
+        additionalInfo   = parcel.readString();
+        paymentLink      = parcel.readString();
         institute        = parcel.readString();
         requiresShipping = parcel.readByte() != 0;
-        parcel.readTypedList(exams, Exam.CREATOR);
+        parcel.readTypedList(exams, RawExam.CREATOR);
         parcel.readTypedList(notes, Notes.CREATOR);
     }
 
@@ -33,6 +37,8 @@ public class ProductDetails extends Product implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         super.writeToParcel(parcel, i);
         parcel.writeString(description);
+        parcel.writeString(additionalInfo);
+        parcel.writeString(paymentLink);
         parcel.writeString(institute);
         parcel.writeByte((byte) (requiresShipping ? 1 : 0));
         parcel.writeTypedList(exams);
@@ -65,6 +71,42 @@ public class ProductDetails extends Product implements Parcelable {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /**
+     *
+     * @return
+     * The description
+     */
+    public String getAdditionalInfo() {
+        return additionalInfo;
+    }
+
+    /**
+     *
+     * @param additionalInfo
+     * The description
+     */
+    public void setAdditionalInfo(String additionalInfo) {
+        this.additionalInfo = additionalInfo;
+    }
+
+    /**
+     *
+     * @return
+     * The description
+     */
+    public String getPaymentLink() {
+        return paymentLink;
+    }
+
+    /**
+     *
+     * @param paymentLink
+     * The description
+     */
+    public void setPaymentLink(String paymentLink) {
+        this.paymentLink = paymentLink;
     }
 
     /**
@@ -108,7 +150,7 @@ public class ProductDetails extends Product implements Parcelable {
      * @return
      * The exams
      */
-    public List<Exam> getExams() {
+    public List<RawExam> getExams() {
         return exams;
     }
 
@@ -117,7 +159,7 @@ public class ProductDetails extends Product implements Parcelable {
      * @param exams
      * The exams
      */
-    public void setExams(List<Exam> exams) {
+    public void setExams(List<RawExam> exams) {
         this.exams = exams;
     }
 

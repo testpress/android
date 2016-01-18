@@ -45,4 +45,9 @@
 
     <!-- Width of the Type-Label in the Editor -->
     <dimen name="editor_type_label_width">150dip</dimen>
+
+    <dimen name="activity_horizontal_margin">10dp</dimen>
+    <dimen name="activity_vertical_margin">10dp</dimen>
+    <dimen name="app_bar_height">250dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 </resources>

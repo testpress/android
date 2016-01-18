@@ -45,15 +45,15 @@ public class MainMenuFragment extends Fragment {
 
     String[] menuItemNames = {
             "My Exams",
-//            "Store",
+            "Store",
 //            "Orders",
             "Posts",
-            "Profile Details",
+            "Profile",
             "Logout"
     } ;
     int[] menuItemImageId = {
             R.drawable.exams,
-//            R.drawable.store,
+            R.drawable.store,
 //            R.drawable.cart,
             R.drawable.posts,
             R.drawable.ic_profile_details,
@@ -86,23 +86,23 @@ public class MainMenuFragment extends Fragment {
                         intent = new Intent(getActivity(), ExamsListActivity.class);
                         startActivity(intent);
                         break;
-//                    case 1:
-//                        intent = new Intent(getActivity(), ProductsListActivity.class);
-//                        startActivity(intent);
-//                        break;
+                    case 1:
+                        intent = new Intent(getActivity(), ProductsListActivity.class);
+                        startActivity(intent);
+                        break;
 //                    case 2:
 //                        intent = new Intent(getActivity(), OrdersListActivity.class);
 //                        startActivity(intent);
 //                        break;
-                    case 1:
+                    case 2:
                         intent = new Intent(getActivity(), PostsListActivity.class);
                         startActivity(intent);
                         break;
-                    case 2:
+                    case 3:
                         intent = new Intent(getActivity(), ProfileDetailsActivity.class);
                         startActivity(intent);
                         break;
-                    case 3:
+                    case 4:
                         ((MainActivity)getActivity()).logout();
                         break;
                 }

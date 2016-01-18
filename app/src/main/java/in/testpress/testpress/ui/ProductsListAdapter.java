@@ -13,10 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import in.testpress.testpress.R;
-import in.testpress.testpress.models.Order;
 import in.testpress.testpress.models.Product;
-import in.testpress.testpress.util.FormatDate;
-import in.testpress.testpress.util.Ln;
 
 public class ProductsListAdapter extends SingleTypeAdapter<Product> {
 
@@ -39,8 +36,8 @@ public class ProductsListAdapter extends SingleTypeAdapter<Product> {
 
     @Override
     protected int[] getChildViewIds() {
-        return new int[]{R.id.title, R.id.number_of_exams,
-                R.id.number_of_notes, R.id.date, R.id.price, R.id.categories, R.id.thumbnail_image};
+        return new int[]{R.id.title, R.id.total_exams,
+                R.id.total_notes, R.id.price, R.id.categories, R.id.thumbnail_image};
     }
 
     @Override
@@ -60,18 +57,13 @@ public class ProductsListAdapter extends SingleTypeAdapter<Product> {
             setText(2, item.getNotesCount() + " Documents");
             views[2].setVisibility(View.VISIBLE);
         }
-        FormatDate date = new FormatDate();
-        if(date.getDate(item.getStartDate(), item.getEndDate()) != null) {
-            views[3].setVisibility(View.VISIBLE);
-            setText(3, date.getDate(item.getStartDate(), item.getEndDate()));
-        } else {
-            views[3].setVisibility(View.GONE);
-        }
-        setText(4, "₹ " + item.getPrice());
+        setText(3, item.getPrice());
         String categories = Arrays.toString(item.getCategories().toArray());
-        setText(5, categories.substring(1, categories.length()-1));
-        views[5].setSelected(true);
-        imageLoader.displayImage(item.getImage(), (ImageView)views[6], options); //download image from url & set to imageView using universal loader
+        setText(4, categories.substring(1, categories.length() - 1));
+        views[4].setSelected(true);
+        if (item.getImages().length > 0) {
+            imageLoader.displayImage(item.getImages()[0].getMedium(), (ImageView)views[5], options); //download image from url & set to imageView using universal loader
+        }
     }
 
     @Override

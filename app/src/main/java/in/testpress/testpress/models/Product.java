@@ -22,6 +22,7 @@ public class Product implements Parcelable {
     private Integer examsCount;
     private Integer notesCount;
     private String price;
+    public ProductImage[] images;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     // Parcelling part
@@ -36,6 +37,7 @@ public class Product implements Parcelable {
         price      = parcel.readString();
         parcel.readStringList(categories);
         parcel.readStringList(types);
+        images = (ProductImage [])parcel.createTypedArray(ProductImage.CREATOR);
     }
 
     @Override
@@ -55,6 +57,7 @@ public class Product implements Parcelable {
         parcel.writeString(price);
         parcel.writeStringList(categories);
         parcel.writeStringList(types);
+        parcel.writeTypedArray(images, i);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
@@ -287,6 +290,9 @@ public class Product implements Parcelable {
         return this.additionalProperties;
     }
 
+    public ProductImage[] getImages() { return images; }
+
+    public void setImages(ProductImage[] images) { this.images = images; }
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
     }

@@ -16,6 +16,7 @@ import in.testpress.testpress.models.Product;
 import in.testpress.testpress.models.ProductDetails;
 import in.testpress.testpress.models.ProfileDetails;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
+import in.testpress.testpress.models.ResetPassword;
 import in.testpress.testpress.models.ReviewItem;
 import in.testpress.testpress.models.TestpressApiResponse;
 import in.testpress.testpress.models.Update;
@@ -58,6 +59,8 @@ public class TestpressService {
 
     private DeviceService getDevicesService() { return getRestAdapter().create(DeviceService.class); }
 
+    private ResetPasswordService getStatusService(){return getRestAdapter().create(ResetPasswordService.class);}
+
     private String getAuthToken() {
         return "JWT " + authToken;
     }
@@ -96,6 +99,13 @@ public class TestpressService {
         answer.put("review", review);
         return getExamsService().postAnswer(answerUrlFrag, getAuthToken(), answer);
     }
+
+    public ResetPassword getStatus(String email){
+        HashMap<String,String> emailcode = new HashMap<String,String>();
+        emailcode.put("email",email);
+        return getStatusService().status(emailcode);
+    }
+
 
     public Attempt heartbeat(String heartbeatUrlFrag) {
         return getExamsService().heartbeat(heartbeatUrlFrag, getAuthToken());

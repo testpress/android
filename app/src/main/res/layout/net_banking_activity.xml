@@ -5,11 +5,12 @@
         <include layout="@layout/toolbar_actionbar"/>
 
         <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar_actionbar">
+            xmlns:fbutton="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/toolbar_actionbar">
 
-        <LinearLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
@@ -61,20 +62,20 @@
                         android:layout_marginBottom="10dp"
                         android:background="@drawable/black_border"/>
 
-                    <Button
+                    <info.hoang8f.widget.FButton
                         android:id="@+id/button_pay_now"
-                        style="@style/ShadowText"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="10dp"
-                        android:background="@drawable/buy_button_background_states"
-                        android:gravity="center"
-                        android:padding="10dp"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        fbutton:buttonColor="@color/orange_button_end"
+                        fbutton:shadowEnabled="true"
+                        fbutton:shadowHeight="5dp"
+                        fbutton:cornerRadius="0dp"
+                        android:layout_marginTop="20dp"
                         android:text="Pay Now"
-                        android:textColor="#ffffff"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:enabled="true"/>
+                        android:textAllCaps="true"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_xxlarge"
+                        />
 
                 </LinearLayout>
 

@@ -47,7 +47,7 @@ public class MainMenuFragment extends Fragment {
             "My Exams",
             "Store",
 //            "Orders",
-            "Posts",
+            "News",
             "Profile",
             "Logout"
     } ;

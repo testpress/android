@@ -48,6 +48,12 @@ public final class Constants {
          */
         public static final String CHECK_UPDATE_URL_Frag = "/api/android/check/";
 
+        /**
+         * Reset password URl
+         *
+         */
+        public  static final String RESET_PASSWORD_URL = "/api/v2_2/password/reset/";
+
 
         /**
          * Authentication URL

@@ -12,7 +12,6 @@ import in.testpress.testpress.core.Constants;
 
 public class SmsReceivingEvent extends BroadcastReceiver {
     public String code;
-    public String appName;
     private Timer timer;
 
     public SmsReceivingEvent(Timer timer) {
@@ -23,7 +22,6 @@ public class SmsReceivingEvent extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         // Retrieves a map of extended data from the intent.
         final Bundle bundle = intent.getExtras();
-        appName = Constants.Http.URL_BASE;
         try {
             if (bundle != null) {
                 final Object[] pdusObj = (Object[]) bundle.get("pdus");
@@ -32,7 +30,7 @@ public class SmsReceivingEvent extends BroadcastReceiver {
                 if (senderNum.matches(".*TSTPRS")) { //check whether TSTPRS present in senderAddress
                     String smsContent = currentMessage.getDisplayMessageBody();
                     //get the code from smsContent
-                    code = smsContent.replaceAll(".*(?<=Thank you for registering at +"+appName +"+. Your authorization code is )([^\n]*)(?=.).*", "$1");
+                    code = smsContent.replaceAll(".*(?<=Thank you for registering at +"+Constants.Http.URL_BASE +"+. Your authorization code is )([^\n]*)(?=.).*", "$1");
                     timer.cancel();
                     timer.onFinish();
                 }

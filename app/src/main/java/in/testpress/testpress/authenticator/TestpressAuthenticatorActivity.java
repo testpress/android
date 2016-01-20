@@ -366,7 +366,7 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
 
     @OnClick(id.verify) public void verify() {
         if(internetConnectivityChecker.isConnected()) {
-            Intent intent = new Intent(TestpressAuthenticatorActivity.this, CodeVerificationActivity.class);
+            Intent intent = new Intent(TestpressAuthenticatorActivity.this, ResetPasswordVerificationActivity.class);
             startActivity(intent);
         } else {
             internetConnectivityChecker.showAlert();

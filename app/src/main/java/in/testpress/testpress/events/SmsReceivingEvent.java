@@ -13,7 +13,6 @@ import in.testpress.testpress.core.Constants;
 public class SmsReceivingEvent extends BroadcastReceiver {
     public String code;
     private Timer timer;
-
     public SmsReceivingEvent(Timer timer) {
         this.timer = timer;
     }

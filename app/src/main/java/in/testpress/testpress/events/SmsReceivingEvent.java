@@ -29,7 +29,7 @@ public class SmsReceivingEvent extends BroadcastReceiver {
                 if (senderNum.matches(".*TSTPRS")) { //check whether TSTPRS present in senderAddress
                     String smsContent = currentMessage.getDisplayMessageBody();
                     //get the code from smsContent
-                    code = smsContent.replaceAll(".*(?<=Thank you for registering at +"+Constants.Http.URL_BASE +"+. Your authorization code is )([^\n]*)(?=.).*", "$1");
+                    code = smsContent.replaceAll(".*(?<=Thank you for registering at IASbaba. Your authorization code is )([^\n]*)(?=.).*", "$1");
                     timer.cancel();
                     timer.onFinish();
                 }

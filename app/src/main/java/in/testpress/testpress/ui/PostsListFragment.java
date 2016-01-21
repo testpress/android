@@ -237,6 +237,19 @@ public class PostsListFragment extends Fragment implements
                 ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 toolbar.addView(mSpinnerContainer, lp);
+
+                if (categoryFilter != null) {
+                    Spinner spinner = (Spinner) mSpinnerContainer.findViewById(R.id.actionbar_spinner);
+                    Category c = categoryDao.queryBuilder().where(CategoryDao.Properties.Id.eq(categoryFilter)).list().get(0);
+                    int position = 0;
+                    for (; position < categories.size(); position =  position + 1) {
+                        if (c.getName().equals(categories.get(position).getName()))
+                            break;
+                    }
+                    // Add 2 to the position because the spinner has "All Posts" and "Categories"
+                    // in position 0 & 1
+                    spinner.setSelection(position + 2);
+                }
             }
 
         }.execute();
@@ -392,8 +405,8 @@ public class PostsListFragment extends Fragment implements
         // and enable it again as soon as the first item in the ListView is visible.
         // Here we override the onScrollListener of the ListView to handle the enable/disable
         // mechanism
-        // See more at: http://www.survivingwithandroid
-        // .com/2014/05/android-swiperefreshlayout-tutorial.html
+        // See more at:
+        // http://www.survivingwithandroid.com/2014/05/android-swiperefreshlayout-tutorial.html
         if (firstVisibleItem == 0) {
             swipeLayout.setEnabled(true);
         } else {
@@ -406,7 +419,7 @@ public class PostsListFragment extends Fragment implements
             return;
 
         if (listView != null && (postDao.count() != 0) && !isScrollingUp
-                && (listView.getLastVisiblePosition() + 3) >= postDao.count()) {
+                && (listView.getLastVisiblePosition() + 3) >= adapter.getWrappedAdapter().getCount()) {
 
             Ln.d("Onscroll showing more");
 

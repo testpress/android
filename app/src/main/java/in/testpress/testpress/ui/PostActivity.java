@@ -9,6 +9,7 @@ import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -109,11 +110,13 @@ public class PostActivity extends TestpressFragmentActivity {
         summary.setText(post.getSummary());
         FormatDate formatter = new FormatDate();
         date.setText(formatter.formatDate(post.getCreated()));
-        content.getSettings().setJavaScriptEnabled(true);
-        content.getSettings().setBuiltInZoomControls(true);
-        content.getSettings().setDisplayZoomControls(false);
-        content.getSettings().setSupportZoom(true);
-        content.loadData(post.getContentHtml(), "text/html", null);
+        WebSettings settings = content.getSettings();
+        settings.setDefaultTextEncodingName("utf-8");
+        settings.setJavaScriptEnabled(true);
+        settings.setBuiltInZoomControls(true);
+        settings.setDisplayZoomControls(false);
+        settings.setSupportZoom(true);
+        content.loadData(post.getContentHtml(), "text/html; charset=utf-8", null);
     }
 
     @Override

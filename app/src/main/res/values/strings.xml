@@ -82,6 +82,9 @@
     <string name="label_sign_up">Sign Up</string>
     <string name="label_logging_out">Logging Out...</string>
     <string name="verify">Verify</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="reset_success_message">We have sent you an email with a link to reset your password. Please check your email and click the link to continue.</string>
+    <string name="reset_error_message">Email address is invalid. Please enter a registered email address. </string>
     <string name="manually_verify">Manually Verify</string>
     <string name="label_ask_code">Enter the code sent via sms</string>
     <string name="verify_code">Verify Code</string>
@@ -119,5 +122,7 @@
     <string name="clear_posts">Clear Offline Posts</string>
     <string name="all_posts">All Posts</string>
     <string name="categories">Categories</string>
+    <string name="title_activity_reset_password_verification">ResetPasswordVerificationActivity
+    </string>
 
 </resources>

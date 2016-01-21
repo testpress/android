@@ -3,22 +3,12 @@ package in.testpress.testpress.authenticator;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
-import android.text.method.LinkMovementMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -40,7 +30,6 @@ import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.R.id;
 import in.testpress.testpress.R.layout;
-import in.testpress.testpress.models.AuthToken;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.events.UnAuthorizedErrorEvent;
@@ -54,8 +43,6 @@ import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
 import static android.accounts.AccountManager.KEY_ACCOUNT_TYPE;
 import static android.accounts.AccountManager.KEY_AUTHTOKEN;
 import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
-import static android.view.KeyEvent.ACTION_DOWN;
-import static android.view.KeyEvent.KEYCODE_ENTER;
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 
 public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticatorActivity {
@@ -364,9 +351,9 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
 
     }
 
-    @OnClick(id.verify) public void verify() {
+    @OnClick(id.reset_password) public void verify() {
         if(internetConnectivityChecker.isConnected()) {
-            Intent intent = new Intent(TestpressAuthenticatorActivity.this, CodeVerificationActivity.class);
+            Intent intent = new Intent(TestpressAuthenticatorActivity.this, ResetPasswordActivity.class);
             startActivity(intent);
         } else {
             internetConnectivityChecker.showAlert();

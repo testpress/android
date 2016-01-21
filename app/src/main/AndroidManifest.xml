@@ -22,8 +22,8 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
 
-    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name=".TestpressApplication"
@@ -196,7 +196,7 @@
             android:configChanges="orientation|keyboard|screenSize"
             android:label="Crop Image"></activity>
         <activity
-            android:name=".authenticator.ResetPasswordVerificationActivity"
+            android:name=".authenticator.ResetPasswordActivity"
             android:label="@string/title_activity_reset_password_verification"></activity>
     </application>
 

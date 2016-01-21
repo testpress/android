@@ -12,5 +12,5 @@ import retrofit.http.POST;
  */
 public interface ResetPasswordService {
     @POST(Constants.Http.RESET_PASSWORD_URL)
-    ResetPassword status(@Body HashMap<String, String> arguments);
+    ResetPassword resetPassword(@Body HashMap<String, String> arguments);
 }

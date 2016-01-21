@@ -15,7 +15,7 @@ import dagger.Provides;
 import in.testpress.testpress.authenticator.ApiKeyProvider;
 import in.testpress.testpress.authenticator.NewUserRegistrationActivity;
 import in.testpress.testpress.authenticator.RegistrationIntentService;
-import in.testpress.testpress.authenticator.ResetPasswordVerificationActivity;
+import in.testpress.testpress.authenticator.ResetPasswordActivity;
 import in.testpress.testpress.authenticator.TestpressAuthenticatorActivity;
 import in.testpress.testpress.authenticator.CodeVerificationActivity;
 import in.testpress.testpress.core.Constants;
@@ -105,7 +105,7 @@ import retrofit.converter.GsonConverter;
                 ProfilePhotoActivity.class,
                 CropImageActivity.class,
                 MainMenuFragment.class,
-                ResetPasswordVerificationActivity.class
+                ResetPasswordActivity.class
         }
 )
 public class TestpressModule {

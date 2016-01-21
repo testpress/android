@@ -59,7 +59,7 @@ public class TestpressService {
 
     private DeviceService getDevicesService() { return getRestAdapter().create(DeviceService.class); }
 
-    private ResetPasswordService getStatusService(){return getRestAdapter().create(ResetPasswordService.class);}
+    private ResetPasswordService getResetPasswordService(){return getRestAdapter().create(ResetPasswordService.class);}
 
     private String getAuthToken() {
         return "JWT " + authToken;
@@ -100,10 +100,10 @@ public class TestpressService {
         return getExamsService().postAnswer(answerUrlFrag, getAuthToken(), answer);
     }
 
-    public ResetPassword getStatus(String email){
+    public ResetPassword resetPassword(String email){
         HashMap<String,String> emailcode = new HashMap<String,String>();
         emailcode.put("email",email);
-        return getStatusService().status(emailcode);
+        return getResetPasswordService().resetPassword(emailcode);
     }
 
 

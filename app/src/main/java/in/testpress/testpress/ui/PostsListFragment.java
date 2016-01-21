@@ -392,8 +392,8 @@ public class PostsListFragment extends Fragment implements
         // and enable it again as soon as the first item in the ListView is visible.
         // Here we override the onScrollListener of the ListView to handle the enable/disable
         // mechanism
-        // See more at: http://www.survivingwithandroid
-        // .com/2014/05/android-swiperefreshlayout-tutorial.html
+        // See more at:
+        // http://www.survivingwithandroid.com/2014/05/android-swiperefreshlayout-tutorial.html
         if (firstVisibleItem == 0) {
             swipeLayout.setEnabled(true);
         } else {
@@ -406,7 +406,7 @@ public class PostsListFragment extends Fragment implements
             return;
 
         if (listView != null && (postDao.count() != 0) && !isScrollingUp
-                && (listView.getLastVisiblePosition() + 3) >= postDao.count()) {
+                && (listView.getLastVisiblePosition() + 3) >= adapter.getWrappedAdapter().getCount()) {
 
             Ln.d("Onscroll showing more");
 

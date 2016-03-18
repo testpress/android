@@ -2,11 +2,19 @@ language: android
 #- echo yes | android update sdk -a -t tools,platform-tools,extra-android-support,extra-android-m2repository,android-19,build-tools-19.1.0,extra-google-google_play_services,extra-google-m2repository --force --no-ui
 android:
    components:
+   # latest version of the tools
    - tools
    - platform-tools
-   - android-19
-   - build-tools-20.0.0
-   - extra
+
+   # build tools version
+   - build-tools-22.0.1
+
+   # The SDK Version
+   - android-23
+
+   # Additional components
+   - extra-google-m2repository
+   - extra-android-m2repository
 jdk: oraclejdk7
 
 before_install:

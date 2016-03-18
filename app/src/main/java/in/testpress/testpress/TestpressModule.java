@@ -16,7 +16,7 @@ import in.testpress.testpress.authenticator.ApiKeyProvider;
 import in.testpress.testpress.authenticator.NewUserRegistrationActivity;
 import in.testpress.testpress.authenticator.RegistrationIntentService;
 import in.testpress.testpress.authenticator.ResetPasswordActivity;
-import in.testpress.testpress.authenticator.TestpressAuthenticatorActivity;
+import in.testpress.testpress.authenticator.LoginActivity;
 import in.testpress.testpress.authenticator.CodeVerificationActivity;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.PostFromAnyThreadBus;
@@ -69,7 +69,7 @@ import retrofit.converter.GsonConverter;
 
         injects = {
                 TestpressApplication.class,
-                TestpressAuthenticatorActivity.class,
+                LoginActivity.class,
                 MainActivity.class,
                 ExamActivity.class,
                 NavigationDrawerFragment.class,

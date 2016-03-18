@@ -95,7 +95,7 @@
             android:exported="false"></service>
 
         <activity
-            android:name=".authenticator.TestpressAuthenticatorActivity"
+            android:name=".authenticator.LoginActivity"
             android:excludeFromRecents="true">
 
             <!--

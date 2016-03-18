@@ -118,9 +118,6 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         setContentView(layout.login_activity);
 
         ButterKnife.inject(this);
-//
-//        usernameText.setAdapter(new ArrayAdapter<String>(this,
-//                simple_dropdown_item_1line, userEmailAccounts()));
 
         passwordText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
@@ -138,21 +135,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         passwordText.addTextChangedListener(watcher);
         passwordText.setTypeface(Typeface.DEFAULT);
         passwordText.setTransformationMethod(new PasswordTransformationMethod());
-//
-//        final TextView signUpText = (TextView) findViewById(id.tv_signup);
-//        signUpText.setMovementMethod(LinkMovementMethod.getInstance());
-//        signUpText.setText(Html.fromHtml(getString(R.string.signup_link)));
     }
-
-//    private List<String> userEmailAccounts() {
-//        final Account[] accounts = accountManager.getAccountsByType("com.google");
-//        final List<String> emailAddresses = new ArrayList<String>(accounts.length);
-//        for (final Account account : accounts) {
-//            emailAddresses.add(account.name);
-//        }
-//        return emailAddresses;
-//    }
-
 
     private TextWatcher validationTextWatcher() {
         return new TextWatcherAdapter() {

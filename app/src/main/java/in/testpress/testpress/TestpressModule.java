@@ -13,7 +13,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import in.testpress.testpress.authenticator.ApiKeyProvider;
-import in.testpress.testpress.authenticator.NewUserRegistrationActivity;
+import in.testpress.testpress.authenticator.RegisterActivity;
 import in.testpress.testpress.authenticator.RegistrationIntentService;
 import in.testpress.testpress.authenticator.ResetPasswordActivity;
 import in.testpress.testpress.authenticator.LoginActivity;
@@ -80,7 +80,7 @@ import retrofit.converter.GsonConverter;
                 ReviewQuestionsFragment.class,
                 ReviewActivity.class,
                 AttemptsListActivity.class,
-                NewUserRegistrationActivity.class,
+                RegisterActivity.class,
                 CodeVerificationActivity.class,
                 ExamsListActivity.class,
                 ProductsListActivity.class,

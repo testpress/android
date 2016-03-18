@@ -343,7 +343,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
     @OnClick(id.link_signup) public void signUp() {
         if(internetConnectivityChecker.isConnected()) {
-            Intent intent = new Intent(LoginActivity.this, NewUserRegistrationActivity.class);
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
         } else {
             internetConnectivityChecker.showAlert();

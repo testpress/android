@@ -1,6 +1,5 @@
 package in.testpress.testpress.authenticator;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -36,7 +35,7 @@ import retrofit.RetrofitError;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 
-public class NewUserRegistrationActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
     @Inject TestpressService testpressService;
     @InjectView(id.et_username) EditText usernameText;
     @InjectView(id.et_password) EditText passwordText;
@@ -54,7 +53,7 @@ public class NewUserRegistrationActivity extends AppCompatActivity {
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         Injector.inject(this);
-        setContentView(R.layout.new_user_register_activity);
+        setContentView(R.layout.register_activity);
         ButterKnife.inject(this);
         confirmPasswordText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(final TextView v, final int actionId,
@@ -114,7 +113,7 @@ public class NewUserRegistrationActivity extends AppCompatActivity {
             @Override
             public void onSuccess(final Boolean authSuccess) {
                 progressDialog.dismiss();
-                Intent intent = new Intent(NewUserRegistrationActivity.this, CodeVerificationActivity.class);
+                Intent intent = new Intent(RegisterActivity.this, CodeVerificationActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 Bundle bundle = new Bundle();
                 bundle.putString("username", registrationSuccessResponse.getUsername());

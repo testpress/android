@@ -124,7 +124,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Attempts List"></activity>
         <activity
-            android:name=".authenticator.NewUserRegistrationActivity"
+            android:name=".authenticator.RegisterActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Register"></activity>
         <activity

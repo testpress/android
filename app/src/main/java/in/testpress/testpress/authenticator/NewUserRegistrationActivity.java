@@ -152,16 +152,16 @@ public class NewUserRegistrationActivity extends AppCompatActivity {
 
     private boolean validate(){
            //Username verification
-           Pattern userNamePattern = Pattern.compile("[A-Za-z0-9@.+-_]*");
+           Pattern userNamePattern = Pattern.compile("[a-z0-9]*");
            Matcher userNameMatcher = userNamePattern.matcher(usernameText.getText().toString().trim());
            if(!userNameMatcher.matches()) {
-               usernameText.setError("This field may contain only letters, numbers and @/./+/-/_ characters.");
+               usernameText.setError("This field can contain only lowercase alphabets and numbers.");
                usernameText.requestFocus();
                return false;
            }
            //Email verification
            if(!android.util.Patterns.EMAIL_ADDRESS.matcher(emailText.getText().toString().trim()).matches()) {
-               emailText.setError("Please enter a valid Email address");
+               emailText.setError("Please enter a valid email address");
                emailText.requestFocus();
                return false;
            }
@@ -169,19 +169,19 @@ public class NewUserRegistrationActivity extends AppCompatActivity {
            Pattern phoneNumberPattern = Pattern.compile("[789]\\d{9}");
            Matcher phoneNumberMatcher = phoneNumberPattern.matcher(phoneText.getText().toString().trim());
            if(!phoneNumberMatcher.matches()) {
-               phoneText.setError("This field may contain only 10 digit valid Mobile Numbers");
+               phoneText.setError("Please enter 10 digit valid mobile number");
                phoneText.requestFocus();
                return false;
            }
            //Password verification
            if(passwordText.getText().toString().trim().length()<6){
-               passwordText.setError("This field may contain atleast 6 digit");
+               passwordText.setError("Password should contain at least 6 digits");
                passwordText.requestFocus();
                return false;
            }
            //ConfirmPassword verification
            if(!passwordText.getText().toString().equals(confirmPasswordText.getText().toString().trim())){
-               confirmPasswordText.setError("Password Not Matching");
+               confirmPasswordText.setError("Passwords not matching");
                confirmPasswordText.requestFocus();
                return false;
            }

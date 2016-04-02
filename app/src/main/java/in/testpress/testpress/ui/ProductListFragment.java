@@ -28,8 +28,6 @@ public class ProductListFragment extends PagedItemFragment<Product> {
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected LogoutService logoutService;
 
-    ProductsPager pager;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Injector.inject(this);

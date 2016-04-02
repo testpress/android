@@ -34,7 +34,6 @@ import javax.inject.Inject;
 public class ExamsListFragment extends PagedItemFragment<Exam> {
 
     String subclass;
-    ExamPager pager;
     //List of courses got from the api. This is used to populate the spinner.
     ArrayList<String> courses = new ArrayList<String>();
     @Inject protected TestpressServiceProvider serviceProvider;

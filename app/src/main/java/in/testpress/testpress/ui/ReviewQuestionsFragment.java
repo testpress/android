@@ -30,7 +30,6 @@ public class ReviewQuestionsFragment extends PagedItemFragment<ReviewItem> {
     Attempt attempt;
     Exam exam;
     String filter;
-    ReviewQuestionsPager pager;
     @Inject protected TestpressServiceProvider serviceProvider;
 
     @Override

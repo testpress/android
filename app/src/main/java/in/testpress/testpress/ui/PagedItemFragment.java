@@ -82,15 +82,18 @@ public abstract class PagedItemFragment<E> extends ItemListFragment<E>
 
             @Override
             public List<E> loadData() throws IOException {
-                getPager().next();
-                return getPager().getResources();
+                if (pager == null) {
+                    pager = getPager();
+                }
+                pager.next();
+                return pager.getResources();
             }
         };
     }
 
     @Override
     protected void forceRefresh() {
-        pager.clear();
+        getPager().clear();
 
         super.forceRefresh();
     }
@@ -105,7 +108,7 @@ public abstract class PagedItemFragment<E> extends ItemListFragment<E>
 
     @Override
     protected void refreshWithProgress() {
-        pager.reset();
+        getPager().reset();
         pager = getPager();
 
         super.refreshWithProgress();

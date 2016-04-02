@@ -40,13 +40,6 @@ public class ReviewQuestionsFragment extends PagedItemFragment<ReviewItem> {
         this.exam = getArguments().getParcelable("exam");
         this.attempt = getArguments().getParcelable("attempt");
         filter = getArguments().getString("filter");
-        try {
-            pager = new ReviewQuestionsPager(attempt, filter, serviceProvider.getService(getActivity()));
-        } catch (AccountsException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         super.onCreate(savedInstanceState);
     }
 
@@ -75,6 +68,15 @@ public class ReviewQuestionsFragment extends PagedItemFragment<ReviewItem> {
 
     @Override
     protected ResourcePager<ReviewItem> getPager() {
+        if (pager == null) {
+            try {
+                pager = new ReviewQuestionsPager(attempt, filter, serviceProvider.getService(getActivity()));
+            } catch (AccountsException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return pager;
     }
 

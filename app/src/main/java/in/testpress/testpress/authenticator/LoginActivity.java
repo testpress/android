@@ -45,7 +45,7 @@ import static android.accounts.AccountManager.KEY_AUTHTOKEN;
 import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 
-public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticatorActivity {
+public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     /**
      * PARAM_CONFIRM_CREDENTIALS
      */
@@ -118,9 +118,6 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
         setContentView(layout.login_activity);
 
         ButterKnife.inject(this);
-//
-//        usernameText.setAdapter(new ArrayAdapter<String>(this,
-//                simple_dropdown_item_1line, userEmailAccounts()));
 
         passwordText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
@@ -138,21 +135,7 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
         passwordText.addTextChangedListener(watcher);
         passwordText.setTypeface(Typeface.DEFAULT);
         passwordText.setTransformationMethod(new PasswordTransformationMethod());
-//
-//        final TextView signUpText = (TextView) findViewById(id.tv_signup);
-//        signUpText.setMovementMethod(LinkMovementMethod.getInstance());
-//        signUpText.setText(Html.fromHtml(getString(R.string.signup_link)));
     }
-
-//    private List<String> userEmailAccounts() {
-//        final Account[] accounts = accountManager.getAccountsByType("com.google");
-//        final List<String> emailAddresses = new ArrayList<String>(accounts.length);
-//        for (final Account account : accounts) {
-//            emailAddresses.add(account.name);
-//        }
-//        return emailAddresses;
-//    }
-
 
     private TextWatcher validationTextWatcher() {
         return new TextWatcherAdapter() {
@@ -187,7 +170,7 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
     @Subscribe
     public void onUnAuthorizedErrorEvent(UnAuthorizedErrorEvent unAuthorizedErrorEvent) {
         // Could not authorize for some reason.
-        Toaster.showLong(TestpressAuthenticatorActivity.this, R.string.message_bad_credentials);
+        Toaster.showLong(LoginActivity.this, R.string.message_bad_credentials);
     }
 
     /**
@@ -230,7 +213,7 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
                 if(!(e instanceof RetrofitError)) {
                     final Throwable cause = e.getCause() != null ? e.getCause() : e;
                     if(cause != null) {
-                        Toaster.showLong(TestpressAuthenticatorActivity.this, cause.getMessage());
+                        Toaster.showLong(LoginActivity.this, cause.getMessage());
                     }
                 }
             }
@@ -315,17 +298,17 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
         } else {
             Ln.d("onAuthenticationResult: failed to authenticate");
             if (requestNewAccount) {
-                Toaster.showLong(TestpressAuthenticatorActivity.this,
+                Toaster.showLong(LoginActivity.this,
                         R.string.message_auth_failed_new_account);
             } else {
-                Toaster.showLong(TestpressAuthenticatorActivity.this,
+                Toaster.showLong(LoginActivity.this,
                         R.string.message_auth_failed);
             }
         }
     }
 
     public void showAlert(String alertMessage) {
-        new MaterialDialog.Builder(TestpressAuthenticatorActivity.this)
+        new MaterialDialog.Builder(LoginActivity.this)
                 .content(alertMessage)
                 .neutralText(R.string.ok)
                 .neutralColorRes(R.color.primary)
@@ -343,7 +326,7 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
 
     @OnClick(id.link_signup) public void signUp() {
         if(internetConnectivityChecker.isConnected()) {
-            Intent intent = new Intent(TestpressAuthenticatorActivity.this, NewUserRegistrationActivity.class);
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
         } else {
             internetConnectivityChecker.showAlert();
@@ -353,7 +336,7 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
 
     @OnClick(id.reset_password) public void verify() {
         if(internetConnectivityChecker.isConnected()) {
-            Intent intent = new Intent(TestpressAuthenticatorActivity.this, ResetPasswordActivity.class);
+            Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
             startActivity(intent);
         } else {
             internetConnectivityChecker.showAlert();

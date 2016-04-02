@@ -33,13 +33,6 @@ public class OrdersListFragment extends PagedItemFragment<Order> {
     public void onCreate(Bundle savedInstanceState) {
         Injector.inject(this);
         ButterKnife.inject(this.getActivity());
-        try {
-            pager = new OrdersPager(serviceProvider.getService(getActivity()));
-        } catch (AccountsException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         super.onCreate(savedInstanceState);
     }
 
@@ -72,6 +65,15 @@ public class OrdersListFragment extends PagedItemFragment<Order> {
     }
 
     protected ResourcePager<Order> getPager() {
+        if (pager == null) {
+            try {
+                pager = new OrdersPager(serviceProvider.getService(getActivity()));
+            } catch (AccountsException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return pager;
     }
 

@@ -48,13 +48,6 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
     public void onCreate(Bundle savedInstanceState) {
         Injector.inject(this);
         subclass = getArguments().getString("subclass");
-        try {
-            pager = new ExamPager(subclass, serviceProvider.getService(getActivity()));
-        } catch (AccountsException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         super.onCreate(savedInstanceState);
         mTopLevelSpinnerAdapter = new ExploreSpinnerAdapter(getActivity().getLayoutInflater(), getActivity().getResources(), true);
         mTopLevelSpinnerAdapter.addItem("", getString(R.string.all_exams), false, 0);
@@ -73,9 +66,9 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
                 }
                 String filter = mTopLevelSpinnerAdapter.getTag(position);
                 if (filter.isEmpty()) {
-                    pager.removeQueryParams("course");
+                    getPager().removeQueryParams("course");
                 } else {
-                    pager.setQueryParams("course", filter);
+                    getPager().setQueryParams("course", filter);
                 }
                 refreshWithProgress();
             }
@@ -89,7 +82,8 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        setEmptyText(R.string.no_exams, R.string.no_exams_description, R.drawable.ic_error_outline_black_18dp);
+        setEmptyText(R.string.no_exams, R.string.no_exams_description, R.drawable
+                .ic_error_outline_black_18dp);
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -161,6 +155,16 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
 
     @Override
     protected ResourcePager<Exam> getPager() {
+        if (pager == null) {
+            try {
+                pager = new ExamPager(subclass, serviceProvider.getService(getActivity()));
+            } catch (AccountsException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
         return pager;
     }
 

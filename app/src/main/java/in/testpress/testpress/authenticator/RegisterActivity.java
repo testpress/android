@@ -114,12 +114,11 @@ public class RegisterActivity extends AppCompatActivity {
             public void onSuccess(final Boolean authSuccess) {
                 progressDialog.dismiss();
                 Intent intent = new Intent(RegisterActivity.this, CodeVerificationActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                Bundle bundle = new Bundle();
-                bundle.putString("username", registrationSuccessResponse.getUsername());
-                bundle.putString("password", registrationSuccessResponse.getPassword());
-                bundle.putString("phoneNumber", registrationSuccessResponse.getPhone());
-                intent.putExtras(bundle);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.putExtra("username", registrationSuccessResponse.getUsername());
+                intent.putExtra("password", registrationSuccessResponse.getPassword());
+                intent.putExtra("phoneNumber", registrationSuccessResponse.getPhone());
+                intent.putExtras(getIntent().getExtras());
                 startActivity(intent);
                 finish();
             }

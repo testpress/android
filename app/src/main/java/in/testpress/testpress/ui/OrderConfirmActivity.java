@@ -252,6 +252,7 @@ public class OrderConfirmActivity extends TestpressFragmentActivity {
             if(resultCode == RESULT_OK) {
                 Intent intent = new Intent(OrderConfirmActivity.this, PaymentSuccessActivity.class);
                 intent.putExtra("order", order);
+                intent.putExtras(getIntent().getExtras());
                 startActivity(intent);
                 setResult(resultCode, data);
                 finish();
@@ -273,9 +274,15 @@ public class OrderConfirmActivity extends TestpressFragmentActivity {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         dialog.dismiss();
-                        Intent intent = new Intent();
-                        intent.putExtra("result", "Transaction canceled due to back pressed!");
-                        setResult(RESULT_CANCELED, intent);
+                        if (getIntent().getBooleanExtra("isDeepLink", false)) {
+                            Intent intent = new Intent(OrderConfirmActivity.this, ProductDetailsActivity.class);
+                            intent.putExtras(getIntent().getExtras());
+                            startActivity(intent);
+                        } else {
+                            Intent intent = new Intent();
+                            intent.putExtra("result", "Transaction canceled due to back pressed!");
+                            setResult(RESULT_CANCELED, intent);
+                        }
                         finish();
                     }
                 })

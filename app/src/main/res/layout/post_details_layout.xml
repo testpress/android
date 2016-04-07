@@ -80,15 +80,15 @@
                       android:layout_below="@id/summary_separator"
                 />
 
-            <!--<TextView-->
-                <!--android:id="@+id/content"-->
-                <!--android:textSize="16sp"-->
-                <!--android:paddingTop="10dp"-->
-                <!--android:textColor="@android:color/black"-->
-                <!--android:text="Six persons-A, B, C, D, E and F \u2013 are sitting in two cars namely X and Y but not necessarily in the same order. Out of six persons two are driving the cars. There are three persons in each car ad one persons must be on front seat besides the person who is driving the car. In car X, D is neither driving nor sitting on the back seat. F is sitting on the back seat in Car Y. C is on the driver\u2019s seat but not in the Car X. A is neither driving nor travelling in the Car Y. E is not on the driver\u2019s seat in any car.\r\n\r\n"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_below="@id/date"/>-->
+            <TextView
+                android:id="@+id/empty_view"
+                android:visibility="gone"
+                android:textSize="16sp"
+                android:paddingTop="10dp"
+                android:textColor="@android:color/black"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/summary_separator"/>
 
         </RelativeLayout>
     </ScrollView>

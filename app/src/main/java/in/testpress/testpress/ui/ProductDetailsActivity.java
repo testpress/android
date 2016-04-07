@@ -1,5 +1,7 @@
 package in.testpress.testpress.ui;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -37,7 +39,9 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
-import in.testpress.testpress.TestpressServiceProvider;
+import in.testpress.testpress.authenticator.LoginActivity;
+import in.testpress.testpress.core.Constants;
+import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.Exam;
 import in.testpress.testpress.models.ProductDetails;
 import in.testpress.testpress.models.RawExam;
@@ -51,7 +55,7 @@ import retrofit.RetrofitError;
 
 public class ProductDetailsActivity extends TestpressFragmentActivity implements LoaderManager.LoaderCallbacks<ProductDetails>{
 
-    @Inject TestpressServiceProvider serviceProvider;
+    @Inject protected TestpressService testpressService;
     @InjectView(R.id.thumbnail_image) ImageView image;
     @InjectView(R.id.title) TextView titleText;
     @InjectView(R.id.total_exams_container) View totalExamsContainer;
@@ -77,11 +81,15 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportLoaderManager().initLoader(0, null, this);
         setContentView(R.layout.product_details_layout);
         Injector.inject(this);
         ButterKnife.inject(this);
-        productUrl = getIntent().getStringExtra("productUrl");
+        if (getIntent().getStringExtra("productUrl") != null) {
+            productUrl = getIntent().getStringExtra("productUrl");
+        } else if (getIntent().getParcelableExtra("productDetails") != null) {
+            productUrl = ((ProductDetails) getIntent().getParcelableExtra("productDetails")).getUrl();
+        }
+        getSupportLoaderManager().initLoader(0, null, this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         productDetailsView.setVisibility(View.GONE);
         progressBar = (ProgressBar) findViewById(R.id.pb_loading);
@@ -102,7 +110,7 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
                     return null;
                 }
                 try {
-                    return serviceProvider.getService(ProductDetailsActivity.this).getProductDetail(productUrlFragment);
+                    return testpressService.getProductDetail(productUrlFragment);
                 } catch (RetrofitError retrofitError) {
                     return null;
                 }
@@ -239,9 +247,18 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
     @OnClick(R.id.buy_button) public void order() {
         Ln.e("Buy Button Clicked");
         if (this.productDetails.getPaymentLink().isEmpty()) {
-            Intent intent = new Intent(ProductDetailsActivity.this, OrderConfirmActivity.class);
-            intent.putExtra("productDetails", productDetails);
-            startActivityForResult(intent, PayuConstants.PAYU_REQUEST_CODE);
+            AccountManager manager = (AccountManager) getSystemService(Context.ACCOUNT_SERVICE);
+            Account[] account = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
+            if (account.length > 0) {
+                Intent intent = new Intent(ProductDetailsActivity.this, OrderConfirmActivity.class);
+                intent.putExtra("productDetails", productDetails);
+                startActivityForResult(intent, PayuConstants.PAYU_REQUEST_CODE);
+            } else {
+                Intent intent = new Intent(this, LoginActivity.class);
+                intent.putExtra("deeplinkTo", "payment");
+                intent.putExtra("productDetails", productDetails);
+                startActivity(intent);
+            }
         } else {
             Uri uri = Uri.parse(this.productDetails.getPaymentLink()); // missing 'http://' will cause crashed
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
@@ -255,6 +272,19 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
             if(resultCode == RESULT_OK) {
                 finish();
             }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(getIntent().getBooleanExtra("isDeepLink", false)) {
+            Intent intent = new Intent(this, ProductsListActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtras(getIntent().getExtras());
+            startActivity(intent);
+            finish();
+        } else {
+            super.onBackPressed();
         }
     }
 

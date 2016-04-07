@@ -1,5 +1,7 @@
 package in.testpress.testpress.ui;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -30,19 +32,24 @@ import butterknife.InjectView;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
+import in.testpress.testpress.authenticator.LoginActivity;
 import in.testpress.testpress.core.Constants;
+import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.Category;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 
 public class MainMenuFragment extends Fragment {
 
+    @Inject protected TestpressService testpressService;
     @Inject protected TestpressServiceProvider serviceProvider;
     GridView grid;
     @InjectView(R.id.recyclerview) RecyclerView recyclerView;
     @InjectView(R.id.quick_links_container)
     LinearLayout quickLinksContainer;
+    Account[] account;
 
+    //Menu for authorized users
     String[] menuItemNames = {
             "My Exams",
             "Store",
@@ -60,6 +67,18 @@ public class MainMenuFragment extends Fragment {
             R.drawable.logout
     };
 
+    //Menu for unauthorized users
+    String[] menuNames = {
+            "Store",
+            "Posts",
+            "Login"
+    } ;
+    int[] menuImageId = {
+            R.drawable.store,
+            R.drawable.posts,
+            R.drawable.login
+    };
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Injector.inject(this);
@@ -72,7 +91,14 @@ public class MainMenuFragment extends Fragment {
         ButterKnife.inject(this, view);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         fetchStarredCategories();
-        MainMenuGridAdapter adapter = new MainMenuGridAdapter(getActivity(), menuItemNames, menuItemImageId);
+        AccountManager manager = (AccountManager) getActivity().getSystemService(Context.ACCOUNT_SERVICE);
+        account = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
+        MainMenuGridAdapter adapter;
+        if (account.length > 0) {
+            adapter = new MainMenuGridAdapter(getActivity(), menuItemNames, menuItemImageId);
+        } else {
+            adapter = new MainMenuGridAdapter(getActivity(), menuNames, menuImageId);
+        }
         grid=(GridView)view.findViewById(R.id.grid);
         grid.setAdapter(adapter);
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -80,31 +106,50 @@ public class MainMenuFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
+
                 Intent intent;
-                switch (position) {
-                    case 0:
-                        intent = new Intent(getActivity(), ExamsListActivity.class);
-                        startActivity(intent);
-                        break;
-                    case 1:
-                        intent = new Intent(getActivity(), ProductsListActivity.class);
-                        startActivity(intent);
-                        break;
+                if (account.length > 0) {
+                    switch (position) {
+                        case 0:
+                            intent = new Intent(getActivity(), ExamsListActivity.class);
+                            startActivity(intent);
+                            break;
+                        case 1:
+                            intent = new Intent(getActivity(), ProductsListActivity.class);
+                            startActivity(intent);
+                            break;
 //                    case 2:
 //                        intent = new Intent(getActivity(), OrdersListActivity.class);
 //                        startActivity(intent);
 //                        break;
-                    case 2:
-                        intent = new Intent(getActivity(), PostsListActivity.class);
-                        startActivity(intent);
-                        break;
-                    case 3:
-                        intent = new Intent(getActivity(), ProfileDetailsActivity.class);
-                        startActivity(intent);
-                        break;
-                    case 4:
-                        ((MainActivity)getActivity()).logout();
-                        break;
+                        case 2:
+                            intent = new Intent(getActivity(), PostsListActivity.class);
+                            intent.putExtra("userAuthenticated", true);
+                            startActivity(intent);
+                            break;
+                        case 3:
+                            intent = new Intent(getActivity(), ProfileDetailsActivity.class);
+                            startActivity(intent);
+                            break;
+                        case 4:
+                            ((MainActivity) getActivity()).logout();
+                            break;
+                    }
+                } else {
+                    switch (position) {
+                        case 0:
+                            intent = new Intent(getActivity(), ProductsListActivity.class);
+                            break;
+                        case 1:
+                            intent = new Intent(getActivity(), PostsListActivity.class);
+                            intent.putExtra("userAuthenticated", false);
+                            break;
+                        default:
+                            intent = new Intent(getActivity(), LoginActivity.class);
+                            intent.putExtra("deeplinkTo", "home");
+                            break;
+                    }
+                    startActivity(intent);
                 }
             }
         });
@@ -116,8 +161,13 @@ public class MainMenuFragment extends Fragment {
             public List<Category> call() throws Exception {
                 Map<String, String> queryParams = new LinkedHashMap<String, String>();
                 queryParams.put("starred", "true");
-                return serviceProvider.getService(MainMenuFragment.this.getActivity())
-                        .getCategories(Constants.Http.URL_CATEGORIES_FRAG, queryParams).getResults();
+                if (account.length > 0) {
+                    return serviceProvider.getService(getActivity())
+                            .getCategories(Constants.Http.URL_CATEGORIES_FRAG, queryParams).getResults();
+                } else {
+                    return testpressService
+                            .getCategories(Constants.Http.URL_CATEGORIES_FRAG, queryParams).getResults();
+                }
             }
 
             protected void onSuccess(final List<Category> categories) throws Exception {

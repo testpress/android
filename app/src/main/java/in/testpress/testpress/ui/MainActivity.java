@@ -1,6 +1,7 @@
 package in.testpress.testpress.ui;
 
-import android.accounts.OperationCanceledException;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,7 +15,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -26,6 +26,7 @@ import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.authenticator.RegistrationIntentService;
+import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.PostDao;
@@ -69,13 +70,19 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     private void initScreen() {
-        if (userHasAuthenticated) {
-            fragment = new MainMenuFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, fragment)
-                    .commitAllowingStateLoss();
-            progressBarLayout.setVisibility(View.GONE);
+        SharedPreferences prefs = getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
+        if (!prefs.getBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false)) {
+            if (checkPlayServices()) {
+                // Start IntentService to register this application with GCM.
+                Intent intent = new Intent(MainActivity.this, RegistrationIntentService.class);
+                startService(intent);
+            }
         }
+        fragment = new MainMenuFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, fragment)
+                .commitAllowingStateLoss();
+        progressBarLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -113,58 +120,22 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     private void registerDevice() {
-
         new SafeAsyncTask<Device>() {
             @Override
             public Device call() throws Exception {
                 String token = GCMPreference.getRegistrationId(MainActivity.this.getApplicationContext());
-                return serviceProvider.getService(MainActivity.this).register(token, Settings.Secure.ANDROID_ID);
-            }
-
-            @Override
-            protected void onException(final Exception e) throws RuntimeException {
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-                sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
+                AccountManager manager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
+                Account[] account = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
+                if (account.length > 0) {
+                    testpressService = serviceProvider.getService(MainActivity.this);
+                }
+                return testpressService.register(token, Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
             }
 
             @Override
             protected void onSuccess(final Device device) throws Exception {
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                SharedPreferences sharedPreferences = getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
                 sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, true).apply();
-            }
-        }.execute();
-
-    }
-
-    private void checkAuth() {
-        new SafeAsyncTask<Boolean>() {
-
-            @Override
-            public Boolean call() throws Exception {
-                final TestpressService svc = serviceProvider.getService(MainActivity.this);
-                return svc != null;
-            }
-
-            @Override
-            protected void onException(final Exception e) throws RuntimeException {
-                super.onException(e);
-                if (e instanceof OperationCanceledException) {
-                    // User cancelled the authentication process (back button, etc).
-                    // Since auth could not take place, lets finish this activity.
-                    finish();
-                }
-            }
-
-            @Override
-            protected void onSuccess(final Boolean hasAuthenticated) throws Exception {
-                super.onSuccess(hasAuthenticated);
-                userHasAuthenticated = true;
-                if (checkPlayServices()) {
-                    // Start IntentService to register this application with GCM.
-                    Intent intent = new Intent(MainActivity.this, RegistrationIntentService.class);
-                    startService(intent);
-                    initScreen();
-                }
             }
         }.execute();
     }
@@ -178,7 +149,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
             @Override
             protected void onException(final Exception e) throws RuntimeException {
-                checkAuth();
+                initScreen();
             }
 
             @Override
@@ -193,7 +164,7 @@ public class MainActivity extends TestpressFragmentActivity {
                                     if (update.getForce()) {
                                         finish();
                                     } else {
-                                        checkAuth();
+                                        initScreen();
                                     }
                                 }
                             })
@@ -210,7 +181,9 @@ public class MainActivity extends TestpressFragmentActivity {
                                 }
                             })
                             .show();
-                } else checkAuth();
+                } else {
+                    initScreen();
+                }
             }
         }.execute();
     }
@@ -275,21 +248,9 @@ public class MainActivity extends TestpressFragmentActivity {
             mRegistrationBroadcastReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-//                SharedPreferences sharedPreferences =
-//                        PreferenceManager.getDefaultSharedPreferences(context);
-//                boolean sentToken = sharedPreferences
-//                        .getBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false);
-
                     registerDevice();
-                    //initScreen();
-//                if (sentToken) {
-//                    mInformationTextView.setText(getString(R.string.gcm_send_message));
-//                } else {
-//                    mInformationTextView.setText(getString(R.string.token_error_message));
-//                }
                 }
             };
-            //checkAuth();
             checkUpdate();
         }
     }

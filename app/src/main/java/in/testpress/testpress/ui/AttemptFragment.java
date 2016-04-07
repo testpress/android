@@ -458,6 +458,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         intent.putExtra("previousActivity", "ExamActivity");
         intent.putExtra("exam", mExam);
         intent.putExtra("attempt", mAttempt);
+        intent.putExtra("isDeepLink", getArguments().getBoolean("isDeepLink", false));
         startActivity(intent);
         getActivity().finish();
     }

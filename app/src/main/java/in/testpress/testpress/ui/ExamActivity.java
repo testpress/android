@@ -88,7 +88,7 @@ public class ExamActivity extends FragmentActivity implements LoaderManager.Load
     }
 
     @OnClick(R.id.exam_back_button) void goBack() {
-        super.onBackPressed();
+        onBackPressed();
     }
 
     @OnClick(R.id.start_exam) void startExam() {
@@ -156,6 +156,7 @@ public class ExamActivity extends FragmentActivity implements LoaderManager.Load
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("attempt", attempt);
                 bundle.putParcelable("exam", exam);
+                bundle.putBoolean("isDeepLink", getIntent().getBooleanExtra("isDeepLink", false));
                 attemptFragment.setArguments(bundle);
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, attemptFragment).commitAllowingStateLoss();
@@ -212,7 +213,15 @@ public class ExamActivity extends FragmentActivity implements LoaderManager.Load
             else
                 attemptFragment.pauseExam();
         }
-        else
+        else if(getIntent().getBooleanExtra("isDeepLink", false) &&
+                getIntent().getStringExtra("deeplinkTo").equals("payment")) {
+            Intent intent = new Intent(this, ProductsListActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtras(getIntent().getExtras());
+            startActivity(intent);
+            finish();
+        } else {
             super.onBackPressed();
+        }
     }
 }

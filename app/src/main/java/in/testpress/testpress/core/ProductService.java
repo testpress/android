@@ -18,10 +18,10 @@ import retrofit.http.QueryMap;
 public interface ProductService {
 
     @GET("/{products_url}")
-    TestpressApiResponse<Product> getProducts(@EncodedPath("products_url") String productsUrl, @QueryMap Map<String, String> options, @Header("Authorization") String authorization);
+    TestpressApiResponse<Product> getProducts(@EncodedPath("products_url") String productsUrl, @QueryMap Map<String, String> options);
 
     @GET("/{product_url}")
-    ProductDetails getProductDetails(@EncodedPath("product_url") String productUrlFrag, @Header("Authorization") String authorization);
+    ProductDetails getProductDetails(@EncodedPath("product_url") String productUrlFrag);
 
     @POST(Constants.Http.URL_ORDERS_FRAG)
     Order order(@Body HashMap<String, Object> arguments, @Header("Authorization") String authorization);

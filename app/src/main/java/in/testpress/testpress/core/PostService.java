@@ -17,7 +17,7 @@ public interface PostService {
     TestpressApiResponse<Post> getPosts(@EncodedPath("posts_url") String postUrl, @QueryMap Map<String, String> options, @Header("Authorization") String authorization);
 
     @GET("/{post_url}")
-    Post getPostDetails(@EncodedPath("post_url") String postUrl, @Header("Authorization") String authorization);
+    Post getPostDetails(@EncodedPath("post_url") String postUrl);
 
     @GET("/{categories_url}")
     TestpressApiResponse<Category> getCategories(@EncodedPath("categories_url") String categoriesUrl, @QueryMap Map<String, String> options, @Header("Authorization") String authorization);

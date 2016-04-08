@@ -125,4 +125,9 @@
     <string name="title_activity_reset_password_verification">ResetPasswordVerificationActivity
     </string>
 
+    <string name="erd_title">Rate this app</string>
+    <string name="erd_message">If you enjoy using this app, would you mind taking a moment to rate it? It won\'t take more than a minute. Thank you for your support!</string>
+    <string name="erd_no_thanks">Never</string>
+    <string name="erd_remind_me_later">Later</string>
+    <string name="erd_rate_now">Rate now</string>
 </resources>

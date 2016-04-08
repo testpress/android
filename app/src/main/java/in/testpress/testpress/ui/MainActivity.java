@@ -37,6 +37,7 @@ import in.testpress.testpress.util.SafeAsyncTask;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.github.fernandodev.easyratingdialog.library.EasyRatingDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
@@ -61,11 +62,13 @@ public class MainActivity extends TestpressFragmentActivity {
     protected RelativeLayout progressBarLayout;
     private boolean userHasAuthenticated = false;
     private MainMenuFragment fragment;
+    EasyRatingDialog easyRatingDialog;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         Injector.inject(this);
         super.onCreate(savedInstanceState);
+        easyRatingDialog = new EasyRatingDialog(this);
         onNewIntent(getIntent());
     }
 
@@ -78,6 +81,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 startService(intent);
             }
         }
+        easyRatingDialog.showIfNeeded();
         fragment = new MainMenuFragment();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, fragment)
@@ -253,5 +257,11 @@ public class MainActivity extends TestpressFragmentActivity {
             };
             checkUpdate();
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        easyRatingDialog.onStart();
     }
 }

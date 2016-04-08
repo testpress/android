@@ -74,6 +74,10 @@ dependencies {
     //image cropper tool
     compile 'com.edmodo:cropper:1.0.1'
 
+    //rate app dialog
+    compile('com.github.fernandodev.easyratingdialog:easyratingdialog:1.1.0') {
+        exclude module: 'material-dialogs'
+    }
     repositories {
         maven { url "https://jitpack.io" }
     }

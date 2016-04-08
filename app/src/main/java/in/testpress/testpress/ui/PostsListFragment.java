@@ -172,6 +172,7 @@ public class PostsListFragment extends Fragment implements
         adapter = new HeaderFooterListAdapter<PostsListAdapter>(listView, new PostsListAdapter
                 (getActivity(), R.layout.post_list_item));
         listView.setAdapter(adapter);
+        listView.setDividerHeight(0);
         loadingLayout = LayoutInflater.from(getActivity()).inflate(R.layout.loading_layout, null);
     }
 

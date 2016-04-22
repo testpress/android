@@ -2,12 +2,14 @@ package in.testpress.testpress.ui;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -56,6 +58,8 @@ public class MainMenuFragment extends Fragment {
 //            "Orders",
             "Posts",
             "Profile",
+            "Share",
+            "Rate Us",
             "Logout"
     } ;
     int[] menuItemImageId = {
@@ -64,6 +68,8 @@ public class MainMenuFragment extends Fragment {
 //            R.drawable.cart,
             R.drawable.posts,
             R.drawable.ic_profile_details,
+            R.drawable.share,
+            R.drawable.heart,
             R.drawable.logout
     };
 
@@ -71,11 +77,15 @@ public class MainMenuFragment extends Fragment {
     String[] menuNames = {
             "Store",
             "Posts",
+            "Share",
+            "Rate Us",
             "Login"
     } ;
     int[] menuImageId = {
             R.drawable.store,
             R.drawable.posts,
+            R.drawable.share,
+            R.drawable.heart,
             R.drawable.login
     };
 
@@ -132,6 +142,14 @@ public class MainMenuFragment extends Fragment {
                             startActivity(intent);
                             break;
                         case 4:
+                            //Share
+                            shareApp();
+                            break;
+                        case 5:
+                            //Rate
+                            rateApp();
+                            break;
+                        case 6:
                             ((MainActivity) getActivity()).logout();
                             break;
                     }
@@ -139,20 +157,49 @@ public class MainMenuFragment extends Fragment {
                     switch (position) {
                         case 0:
                             intent = new Intent(getActivity(), ProductsListActivity.class);
+                            startActivity(intent);
                             break;
                         case 1:
                             intent = new Intent(getActivity(), PostsListActivity.class);
                             intent.putExtra("userAuthenticated", false);
+                            startActivity(intent);
+                            break;
+                        case 2:
+                            //Share
+                            shareApp();
+                            break;
+                        case 3:
+                            //Rate
+                            rateApp();
                             break;
                         default:
                             intent = new Intent(getActivity(), LoginActivity.class);
                             intent.putExtra("deeplinkTo", "home");
+                            startActivity(intent);
                             break;
                     }
-                    startActivity(intent);
                 }
             }
         });
+    }
+
+    void shareApp() {
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("text/plain");
+        share.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.share_message) + getActivity().getPackageName());
+        startActivity(Intent.createChooser(share, "Share with"));
+    }
+
+    void rateApp() {
+        Uri uri = Uri.parse("market://details?id=" + getActivity().getPackageName());
+        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+        goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        try {
+            startActivity(goToMarket);
+        } catch (ActivityNotFoundException e) {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("https://play.google.com/store/apps/details?id=" + getActivity().getPackageName())));
+        }
     }
 
     public void fetchStarredCategories() {

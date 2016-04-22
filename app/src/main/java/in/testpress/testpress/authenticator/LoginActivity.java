@@ -3,9 +3,12 @@ package in.testpress.testpress.authenticator;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
@@ -30,10 +33,19 @@ import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.R.id;
 import in.testpress.testpress.R.layout;
+import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.events.UnAuthorizedErrorEvent;
+import in.testpress.testpress.models.DaoSession;
+import in.testpress.testpress.models.Device;
+import in.testpress.testpress.models.PostDao;
+import in.testpress.testpress.ui.ExamsListActivity;
+import in.testpress.testpress.ui.MainActivity;
+import in.testpress.testpress.ui.OrderConfirmActivity;
+import in.testpress.testpress.ui.ProductsListActivity;
 import in.testpress.testpress.ui.TextWatcherAdapter;
+import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
@@ -258,6 +270,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
      */
 
     protected void finishLogin() {
+        registerDevice();
         final Account account = new Account(username, Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
 
         authToken = token;
@@ -268,19 +281,54 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         } else {
             accountManager.setPassword(account, password);
         }
+        DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
+        PostDao postDao = daoSession.getPostDao();
+        postDao.deleteAll();
+        daoSession.clear();
+        if (getIntent().getStringExtra("deeplinkTo") != null) {
+            Intent intent;
+            switch (getIntent().getStringExtra("deeplinkTo")) {
+                case "payment":
+                    intent = new Intent(this, OrderConfirmActivity.class);
+                    intent.putExtra("isDeepLink", true);
+                    intent.putExtras(getIntent().getExtras());
+                    break;
+                default:
+                    intent = new Intent(this, MainActivity.class);
+                    break;
+            }
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        } else {
+            final Intent intent = new Intent();
+            intent.putExtra(KEY_ACCOUNT_NAME, username);
+            intent.putExtra(KEY_ACCOUNT_TYPE, Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
 
-        final Intent intent = new Intent();
-        intent.putExtra(KEY_ACCOUNT_NAME, username);
-        intent.putExtra(KEY_ACCOUNT_TYPE, Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
-
-        if (authTokenType != null
-                && authTokenType.equals(Constants.Auth.AUTHTOKEN_TYPE)) {
-            intent.putExtra(KEY_AUTHTOKEN, authToken);
+            if (authTokenType != null
+                    && authTokenType.equals(Constants.Auth.AUTHTOKEN_TYPE)) {
+                intent.putExtra(KEY_AUTHTOKEN, authToken);
+            }
+            setAccountAuthenticatorResult(intent.getExtras());
+            setResult(RESULT_OK, intent);
         }
-
-        setAccountAuthenticatorResult(intent.getExtras());
-        setResult(RESULT_OK, intent);
         finish();
+    }
+
+    private void registerDevice() {
+        final SharedPreferences sharedPreferences = getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
+        sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
+        new SafeAsyncTask<Device>() {
+            @Override
+            public Device call() throws Exception {
+                String token = GCMPreference.getRegistrationId(getApplicationContext());
+                return testpressService.register(token, Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+            }
+
+            @Override
+            protected void onSuccess(final Device device) throws Exception {
+                sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, true).apply();
+            }
+        }.execute();
     }
 
     /**
@@ -327,6 +375,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     @OnClick(id.link_signup) public void signUp() {
         if(internetConnectivityChecker.isConnected()) {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            intent.putExtras(getIntent().getExtras());
             startActivity(intent);
         } else {
             internetConnectivityChecker.showAlert();

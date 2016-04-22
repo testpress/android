@@ -53,51 +53,51 @@ public class PaymentSuccessActivity extends TestpressFragmentActivity {
         amount.setText("Amount: ₹ " + order.getAmount());
         final List<OrderItem> orderItems = order.getOrderItems();
         paymentDetailsView.setVisibility(View.GONE);
-        new SafeAsyncTask<ProductDetails>() {
+        ProductDetails productDetails = getIntent().getParcelableExtra("productDetails");
+        if(productDetails.getExams().size() != 0) {
+           if(productDetails.getExams().size() > 1) {
+                intent = new Intent(this, ExamsListActivity.class);
+           } else {
+                intent = new Intent(this, ExamActivity.class);
+                intent.putExtra("exam", productDetails.getExams().get(0));
+           }
+        } else {
+            examButton.setVisibility(View.GONE);
+        }
+        if(!productDetails.getTypes().contains("Books")) {
+            bookMessage.setVisibility(View.GONE);
+        }
+        furtherDetails.setText("Further Details check your mail\n("+order.getEmail()+")");
 
-            @Override
-            public ProductDetails call() throws Exception {
-                String s[] = orderItems.get(0).getProduct().split("/");
-                return serviceProvider.getService(PaymentSuccessActivity.this).getProductDetail(Constants.Http.URL_PRODUCTS_FRAG+s[6]+"/");
-            }
-
-            @Override
-            protected void onSuccess(ProductDetails productDetails) {
-                if(productDetails.getExams().size() != 0) {
-                   if(productDetails.getExams().size() > 1) {
-                        intent = new Intent(PaymentSuccessActivity.this, ExamsListActivity.class);
-                   } else {
-                        intent = new Intent(PaymentSuccessActivity.this, ExamActivity.class);
-                        intent.putExtra("exam", productDetails.getExams().get(0));
-                   }
-                } else {
-                    examButton.setVisibility(View.GONE);
-                }
-                if(!productDetails.getTypes().contains("Books")) {
-                    bookMessage.setVisibility(View.GONE);
-                }
-                furtherDetails.setText("Further Details check your mail\n("+order.getEmail()+")");
-            }
-
-            @Override
-            protected void onException(Exception e) {
-                Ln.e(e);
-            }
-
-            @Override
-            protected void onFinally() {
-                progressBar.setVisibility(View.GONE);
-                paymentDetailsView.setVisibility(View.VISIBLE);
-            }
-        }.execute();
+        progressBar.setVisibility(View.GONE);
+        paymentDetailsView.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.examButton) public void gotoExams() {
+        intent.putExtras(getIntent().getExtras());
         startActivity(intent);
         finish();
     }
 
     @OnClick(R.id.continueButton) public void continuePurchase() {
+        if (getIntent().getBooleanExtra("isDeepLink", false)) {
+            Intent intent = new Intent(this, ProductsListActivity.class);
+            intent.putExtras(getIntent().getExtras());
+            startActivity(intent);
+        }
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(getIntent().getBooleanExtra("isDeepLink", false)) {
+            Intent intent = new Intent(this, ProductsListActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtras(getIntent().getExtras());
+            startActivity(intent);
+            finish();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

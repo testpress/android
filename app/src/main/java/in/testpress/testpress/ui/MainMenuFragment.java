@@ -82,7 +82,7 @@ public class MainMenuFragment extends Fragment {
             "Login"
     } ;
     int[] menuImageId = {
-            R.drawable.store,
+//            R.drawable.store,
             R.drawable.posts,
             R.drawable.share,
             R.drawable.heart,

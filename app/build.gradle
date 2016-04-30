@@ -57,7 +57,7 @@ dependencies {
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
 
     //Material Dialog
-    compile('com.afollestad.material-dialogs:core:0.8.2.0@aar') {
+    compile('com.afollestad.material-dialogs:core:0.8.5.8@aar') {
         transitive = true
     }
     androidTestCompile 'junit:junit:4.11'

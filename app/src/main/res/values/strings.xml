@@ -71,6 +71,7 @@
     <string name="authentication_failed">Authentication failed</string>
     <string name="network_error">Network Error</string>
     <string name="no_internet">Please check your internet connection &amp; refresh again</string>
+    <string name="try_after_sometime">Please try after sometime</string>
 
     <!-- AuthenticatorActivity -->
     <string name="label_username">Username</string>
@@ -126,4 +127,11 @@
     </string>
 
     <string name="share_message">Good app to prepare for IAS. Get it at https://play.google.com/store/apps/details?id=</string>
+
+    <string name="search">Search</string>
+    <string name="search_hint">Search...</string>
+    <string name="tap_to_retry">Tap to retry</string>
+    <string name="no_results_found">Sorry, No results found</string>
+    <string name="try_with_other_keyword">Please try with some other keywords</string>
+    <string name="speech_recognition_not_supported">Opps! Your device doesn\'t support Speech to Text</string>
 </resources>

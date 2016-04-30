@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import in.testpress.testpress.models.Category;
+import in.testpress.testpress.models.ExamCategory;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.Attempt;
 import in.testpress.testpress.models.AttemptItem;
@@ -67,6 +68,10 @@ public class TestpressService {
 
     public TestpressApiResponse<Exam> getExams(String urlFrag, Map<String, String> queryParams) {
         return getExamsService().getExams(urlFrag, queryParams, getAuthToken());
+    }
+
+    public TestpressApiResponse<ExamCategory> getExamsCourses() {
+        return getExamsService().getExamsCourses(getAuthToken());
     }
 
     public TestpressApiResponse<Attempt> getAttempts(String urlFrag, Map<String, String> queryParams) {

@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -20,14 +23,16 @@ import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.ExamPager;
 import in.testpress.testpress.core.ResourcePager;
 import in.testpress.testpress.models.Exam;
+import in.testpress.testpress.models.ExamCategory;
+import in.testpress.testpress.util.SafeAsyncTask;
 
 import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
+import com.github.kevinsawicki.wishlist.Toaster;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -41,7 +46,9 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
 
     private ExploreSpinnerAdapter mTopLevelSpinnerAdapter;
     private View mSpinnerContainer;
+    Spinner spinner;
     private Boolean mFistTimeCallback = false;
+    int selectedCategoryPosition = -1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,32 +58,47 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
         mTopLevelSpinnerAdapter = new ExploreSpinnerAdapter(getActivity().getLayoutInflater(), getActivity().getResources(), true);
         mTopLevelSpinnerAdapter.addItem("", getString(R.string.all_exams), false, 0);
         mTopLevelSpinnerAdapter.addHeader(getString(R.string.courses));
+
         Toolbar toolbar = ((ExamsListActivity)(getActivity())).getActionBarToolbar();
         mSpinnerContainer = getActivity().getLayoutInflater().inflate(R.layout.actionbar_spinner, toolbar, false);
 
-        Spinner spinner = (Spinner) mSpinnerContainer.findViewById(R.id.actionbar_spinner);
+        spinner = (Spinner) mSpinnerContainer.findViewById(R.id.actionbar_spinner);
+        ArrayList<ExamCategory> categoryList = getArguments().getParcelableArrayList("categoryList");
+        if (categoryList != null && !categoryList.isEmpty()) {
+            for (ExamCategory category : categoryList) {
+                mTopLevelSpinnerAdapter.addItem(category.getName(), category.getName(), true, 0);
+            }
+            selectedCategoryPosition = 0;
+        } else {
+            mSpinnerContainer.setVisibility(View.GONE);
+        }
         spinner.setAdapter(mTopLevelSpinnerAdapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> spinner, View view, int position, long itemId) {
                 if (!mFistTimeCallback) {
                     mFistTimeCallback = true;
-                    return;
+                } else if ((selectedCategoryPosition != position)) { //omit callback if position is already selected position
+                    selectedCategoryPosition = position;
+                    String filter = mTopLevelSpinnerAdapter.getTag(position);
+                    if (filter.isEmpty()) {
+                        getPager().removeQueryParams("course");
+                    } else {
+                        getPager().setQueryParams("course", filter);
+                    }
+                    ExamsListFragment.super.refreshWithProgress();
                 }
-                String filter = mTopLevelSpinnerAdapter.getTag(position);
-                if (filter.isEmpty()) {
-                    getPager().removeQueryParams("course");
-                } else {
-                    getPager().setQueryParams("course", filter);
-                }
-                refreshWithProgress();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
-        mSpinnerContainer.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(final Menu optionsMenu, final MenuInflater inflater) {
+        inflater.inflate(R.menu.refresh_search, optionsMenu);
     }
 
     @Override
@@ -92,6 +114,46 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
 
         listView.setFastScrollEnabled(true);
         listView.setDividerHeight(0);
+    }
+
+    void loadExamCategories() {
+        new SafeAsyncTask<List<ExamCategory>>() {
+            public List<ExamCategory> call() throws Exception {
+                return serviceProvider.getService(getActivity()).getExamsCourses().getResults();
+            }
+
+            @Override
+            protected void onException(final Exception exception) throws RuntimeException {
+                if (exception.getCause() instanceof UnknownHostException) {
+                    Toaster.showShort(getActivity(), getResources().getString(R.string.no_internet));
+                } else {
+                    Toaster.showShort(getActivity(), exception.getMessage());
+                }
+            }
+
+            @Override
+            public void onSuccess(final List<ExamCategory> categoryList) {
+                mTopLevelSpinnerAdapter.clear();
+                if (categoryList != null && !categoryList.isEmpty()) {
+                    mTopLevelSpinnerAdapter.addItem("", getString(R.string.all_exams), false, 0);
+                    mTopLevelSpinnerAdapter.addHeader(getString(R.string.courses));
+                    for (ExamCategory category : categoryList) {
+                        mTopLevelSpinnerAdapter.addItem(category.getName(), category.getName(), true, 0);
+                    }
+                    if (selectedCategoryPosition == -1) {
+                        selectedCategoryPosition = 0;
+                        mTopLevelSpinnerAdapter.notifyDataSetChanged();
+                    } else {
+                        mTopLevelSpinnerAdapter.notifyDataSetChanged();
+                        spinner.setSelection(mTopLevelSpinnerAdapter.getItemPosition(spinner.getSelectedItem().toString()));
+                    }
+                } else {
+                    mSpinnerContainer.setVisibility(View.GONE);
+                    mTopLevelSpinnerAdapter.notifyDataSetChanged();
+                }
+            }
+
+        }.execute();
     }
 
     @Override
@@ -112,23 +174,6 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
             return;
         }
         super.onLoadFinished(loader, items);
-        //Populate the spinner with the courses
-        List<String> coursesList = new ArrayList<String>();
-        for (final Exam exam : items) {
-            coursesList.add(exam.getCourse_category());
-        }
-        Set<String> uniqueCourses = new HashSet<String>(coursesList);
-        for (final String course : uniqueCourses) {
-            // Do not add the course if already present in the spinner
-            if (!courses.contains(course)) {
-                courses.add(course);
-                mTopLevelSpinnerAdapter.addItem(course, course, true, 0);
-            }
-        }
-
-        if ((mSpinnerContainer.getVisibility() == View.GONE) && !uniqueCourses.isEmpty()){
-            mSpinnerContainer.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override
@@ -143,6 +188,12 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             toolbar.addView(mSpinnerContainer, lp);
         }
+    }
+
+    @Override
+    protected void refreshWithProgress() {
+        super.refreshWithProgress();
+        loadExamCategories();
     }
 
     @Override
@@ -192,6 +243,19 @@ public class ExamsListFragment extends PagedItemFragment<Exam> {
             Intent intent = new Intent(getActivity(), AttemptsListActivity.class);
             intent.putExtra("exam", exam);
             startActivity(intent);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.search:
+                Intent intent = new Intent(getActivity(), SearchActivity.class);
+                intent.putExtra("subclass", subclass);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

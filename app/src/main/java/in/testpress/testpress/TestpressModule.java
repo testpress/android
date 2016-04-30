@@ -13,9 +13,10 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import in.testpress.testpress.authenticator.ApiKeyProvider;
-import in.testpress.testpress.authenticator.NewUserRegistrationActivity;
+import in.testpress.testpress.authenticator.RegisterActivity;
 import in.testpress.testpress.authenticator.RegistrationIntentService;
-import in.testpress.testpress.authenticator.TestpressAuthenticatorActivity;
+import in.testpress.testpress.authenticator.ResetPasswordActivity;
+import in.testpress.testpress.authenticator.LoginActivity;
 import in.testpress.testpress.authenticator.CodeVerificationActivity;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.PostFromAnyThreadBus;
@@ -51,6 +52,7 @@ import in.testpress.testpress.ui.ReviewActivity;
 import in.testpress.testpress.ui.ReviewFragment;
 import in.testpress.testpress.ui.ReviewQuestionsFragment;
 import in.testpress.testpress.ui.ReviewStatsFragment;
+import in.testpress.testpress.ui.SearchActivity;
 import in.testpress.testpress.ui.paymentGateway.CreditDebitCardActivity;
 import in.testpress.testpress.ui.paymentGateway.NetBankingActivity;
 import in.testpress.testpress.ui.paymentGateway.PaymentModeActivity;
@@ -68,7 +70,7 @@ import retrofit.converter.GsonConverter;
 
         injects = {
                 TestpressApplication.class,
-                TestpressAuthenticatorActivity.class,
+                LoginActivity.class,
                 MainActivity.class,
                 ExamActivity.class,
                 NavigationDrawerFragment.class,
@@ -79,7 +81,7 @@ import retrofit.converter.GsonConverter;
                 ReviewQuestionsFragment.class,
                 ReviewActivity.class,
                 AttemptsListActivity.class,
-                NewUserRegistrationActivity.class,
+                RegisterActivity.class,
                 CodeVerificationActivity.class,
                 ExamsListActivity.class,
                 ProductsListActivity.class,
@@ -103,7 +105,9 @@ import retrofit.converter.GsonConverter;
                 ProfileDetailsActivity.class,
                 ProfilePhotoActivity.class,
                 CropImageActivity.class,
-                MainMenuFragment.class
+                MainMenuFragment.class,
+                ResetPasswordActivity.class,
+                SearchActivity.class
         }
 )
 public class TestpressModule {

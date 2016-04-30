@@ -3,22 +3,15 @@ package in.testpress.testpress.authenticator;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
-import android.text.method.LinkMovementMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -40,11 +33,19 @@ import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.R.id;
 import in.testpress.testpress.R.layout;
-import in.testpress.testpress.models.AuthToken;
+import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.events.UnAuthorizedErrorEvent;
+import in.testpress.testpress.models.DaoSession;
+import in.testpress.testpress.models.Device;
+import in.testpress.testpress.models.PostDao;
+import in.testpress.testpress.ui.ExamsListActivity;
+import in.testpress.testpress.ui.MainActivity;
+import in.testpress.testpress.ui.OrderConfirmActivity;
+import in.testpress.testpress.ui.ProductsListActivity;
 import in.testpress.testpress.ui.TextWatcherAdapter;
+import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
@@ -54,11 +55,9 @@ import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
 import static android.accounts.AccountManager.KEY_ACCOUNT_TYPE;
 import static android.accounts.AccountManager.KEY_AUTHTOKEN;
 import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
-import static android.view.KeyEvent.ACTION_DOWN;
-import static android.view.KeyEvent.KEYCODE_ENTER;
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 
-public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticatorActivity {
+public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     /**
      * PARAM_CONFIRM_CREDENTIALS
      */
@@ -131,9 +130,6 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
         setContentView(layout.login_activity);
 
         ButterKnife.inject(this);
-//
-//        usernameText.setAdapter(new ArrayAdapter<String>(this,
-//                simple_dropdown_item_1line, userEmailAccounts()));
 
         passwordText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
@@ -151,21 +147,7 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
         passwordText.addTextChangedListener(watcher);
         passwordText.setTypeface(Typeface.DEFAULT);
         passwordText.setTransformationMethod(new PasswordTransformationMethod());
-//
-//        final TextView signUpText = (TextView) findViewById(id.tv_signup);
-//        signUpText.setMovementMethod(LinkMovementMethod.getInstance());
-//        signUpText.setText(Html.fromHtml(getString(R.string.signup_link)));
     }
-
-//    private List<String> userEmailAccounts() {
-//        final Account[] accounts = accountManager.getAccountsByType("com.google");
-//        final List<String> emailAddresses = new ArrayList<String>(accounts.length);
-//        for (final Account account : accounts) {
-//            emailAddresses.add(account.name);
-//        }
-//        return emailAddresses;
-//    }
-
 
     private TextWatcher validationTextWatcher() {
         return new TextWatcherAdapter() {
@@ -200,7 +182,7 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
     @Subscribe
     public void onUnAuthorizedErrorEvent(UnAuthorizedErrorEvent unAuthorizedErrorEvent) {
         // Could not authorize for some reason.
-        Toaster.showLong(TestpressAuthenticatorActivity.this, R.string.message_bad_credentials);
+        Toaster.showLong(LoginActivity.this, R.string.message_bad_credentials);
     }
 
     /**
@@ -243,7 +225,7 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
                 if(!(e instanceof RetrofitError)) {
                     final Throwable cause = e.getCause() != null ? e.getCause() : e;
                     if(cause != null) {
-                        Toaster.showLong(TestpressAuthenticatorActivity.this, cause.getMessage());
+                        Toaster.showLong(LoginActivity.this, cause.getMessage());
                     }
                 }
             }
@@ -288,6 +270,7 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
      */
 
     protected void finishLogin() {
+        registerDevice();
         final Account account = new Account(username, Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
 
         authToken = token;
@@ -298,19 +281,54 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
         } else {
             accountManager.setPassword(account, password);
         }
+        DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
+        PostDao postDao = daoSession.getPostDao();
+        postDao.deleteAll();
+        daoSession.clear();
+        if (getIntent().getStringExtra("deeplinkTo") != null) {
+            Intent intent;
+            switch (getIntent().getStringExtra("deeplinkTo")) {
+                case "payment":
+                    intent = new Intent(this, OrderConfirmActivity.class);
+                    intent.putExtra("isDeepLink", true);
+                    intent.putExtras(getIntent().getExtras());
+                    break;
+                default:
+                    intent = new Intent(this, MainActivity.class);
+                    break;
+            }
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        } else {
+            final Intent intent = new Intent();
+            intent.putExtra(KEY_ACCOUNT_NAME, username);
+            intent.putExtra(KEY_ACCOUNT_TYPE, Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
 
-        final Intent intent = new Intent();
-        intent.putExtra(KEY_ACCOUNT_NAME, username);
-        intent.putExtra(KEY_ACCOUNT_TYPE, Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
-
-        if (authTokenType != null
-                && authTokenType.equals(Constants.Auth.AUTHTOKEN_TYPE)) {
-            intent.putExtra(KEY_AUTHTOKEN, authToken);
+            if (authTokenType != null
+                    && authTokenType.equals(Constants.Auth.AUTHTOKEN_TYPE)) {
+                intent.putExtra(KEY_AUTHTOKEN, authToken);
+            }
+            setAccountAuthenticatorResult(intent.getExtras());
+            setResult(RESULT_OK, intent);
         }
-
-        setAccountAuthenticatorResult(intent.getExtras());
-        setResult(RESULT_OK, intent);
         finish();
+    }
+
+    private void registerDevice() {
+        final SharedPreferences sharedPreferences = getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
+        sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
+        new SafeAsyncTask<Device>() {
+            @Override
+            public Device call() throws Exception {
+                String token = GCMPreference.getRegistrationId(getApplicationContext());
+                return testpressService.register(token, Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+            }
+
+            @Override
+            protected void onSuccess(final Device device) throws Exception {
+                sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, true).apply();
+            }
+        }.execute();
     }
 
     /**
@@ -328,17 +346,17 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
         } else {
             Ln.d("onAuthenticationResult: failed to authenticate");
             if (requestNewAccount) {
-                Toaster.showLong(TestpressAuthenticatorActivity.this,
+                Toaster.showLong(LoginActivity.this,
                         R.string.message_auth_failed_new_account);
             } else {
-                Toaster.showLong(TestpressAuthenticatorActivity.this,
+                Toaster.showLong(LoginActivity.this,
                         R.string.message_auth_failed);
             }
         }
     }
 
     public void showAlert(String alertMessage) {
-        new MaterialDialog.Builder(TestpressAuthenticatorActivity.this)
+        new MaterialDialog.Builder(LoginActivity.this)
                 .content(alertMessage)
                 .neutralText(R.string.ok)
                 .neutralColorRes(R.color.primary)
@@ -356,7 +374,8 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
 
     @OnClick(id.link_signup) public void signUp() {
         if(internetConnectivityChecker.isConnected()) {
-            Intent intent = new Intent(TestpressAuthenticatorActivity.this, NewUserRegistrationActivity.class);
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            intent.putExtras(getIntent().getExtras());
             startActivity(intent);
         } else {
             internetConnectivityChecker.showAlert();
@@ -364,9 +383,9 @@ public class TestpressAuthenticatorActivity extends ActionBarAccountAuthenticato
 
     }
 
-    @OnClick(id.verify) public void verify() {
+    @OnClick(id.reset_password) public void verify() {
         if(internetConnectivityChecker.isConnected()) {
-            Intent intent = new Intent(TestpressAuthenticatorActivity.this, CodeVerificationActivity.class);
+            Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
             startActivity(intent);
         } else {
             internetConnectivityChecker.showAlert();

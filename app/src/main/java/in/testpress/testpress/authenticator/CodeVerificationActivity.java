@@ -6,8 +6,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -30,13 +32,21 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
+import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.events.SmsReceivingEvent;
+import in.testpress.testpress.models.DaoSession;
+import in.testpress.testpress.models.Device;
+import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.RegistrationErrorDetails;
+import in.testpress.testpress.ui.ExamsListActivity;
 import in.testpress.testpress.ui.MainActivity;
+import in.testpress.testpress.ui.OrderConfirmActivity;
+import in.testpress.testpress.ui.ProductsListActivity;
 import in.testpress.testpress.ui.TextWatcherAdapter;
+import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.SafeAsyncTask;
 import retrofit.RetrofitError;
@@ -226,11 +236,41 @@ public class CodeVerificationActivity extends AppCompatActivity {
                 final Account account = new Account(username, Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
                 accountManager.addAccountExplicitly(account, password, null);
                 accountManager.setAuthToken(account, Constants.Auth.TESTPRESS_ACCOUNT_TYPE, authToken);
-                //call main activity, it will simply go to available exams
-                Intent intent = new Intent(CodeVerificationActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                registerDevice();
+                DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
+                PostDao postDao = daoSession.getPostDao();
+                postDao.deleteAll();
+                daoSession.clear();
+                Intent intent;
+                switch (getIntent().getExtras().getString("deeplinkTo", "")) {
+                    case "payment":
+                        intent = new Intent(CodeVerificationActivity.this, OrderConfirmActivity.class);
+                        intent.putExtra("isDeepLink", true);
+                        intent.putExtras(getIntent().getExtras());
+                        break;
+                    default:
+                        intent = new Intent(CodeVerificationActivity.this, MainActivity.class);
+                        break;
+                }
                 startActivity(intent);
                 finish();
+            }
+        }.execute();
+    }
+
+    private void registerDevice() {
+        final SharedPreferences sharedPreferences = getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
+        sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
+        new SafeAsyncTask<Device>() {
+            @Override
+            public Device call() throws Exception {
+                String token = GCMPreference.getRegistrationId(getApplicationContext());
+                return testpressService.register(token, Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+            }
+
+            @Override
+            protected void onSuccess(final Device device) throws Exception {
+                sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, true).apply();
             }
         }.execute();
     }

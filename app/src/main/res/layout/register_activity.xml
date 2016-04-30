@@ -28,6 +28,8 @@
             android:layout_marginBottom="8dp">
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/et_username"
+                android:maxLines="1"
+                android:singleLine="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionNext"
@@ -44,6 +46,8 @@
             android:layout_marginBottom="8dp">
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/et_email"
+                android:maxLines="1"
+                android:singleLine="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionNext"
@@ -65,7 +69,9 @@
                 android:layout_height="wrap_content"
                 android:imeOptions="actionNext"
                 android:nextFocusDown="@+id/et_password"
-                android:inputType="textEmailAddress"
+                android:inputType="number"
+                android:maxLines="1"
+                android:singleLine="true"
                 android:hint="@string/label_phone" />
         </android.support.design.widget.TextInputLayout>
 
@@ -83,6 +89,8 @@
                 android:fontFamily="sans-serif"
                 android:inputType="textPassword"
                 android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:singleLine="true"
                 android:nextFocusDown="@+id/et_password_confirm"
                 android:hint="@string/label_password"/>
         </android.support.design.widget.TextInputLayout>
@@ -101,6 +109,8 @@
                 android:fontFamily="sans-serif"
                 android:inputType="textPassword"
                 android:imeOptions="actionDone"
+                android:maxLines="1"
+                android:singleLine="true"
                 android:hint="Confirm password"/>
         </android.support.design.widget.TextInputLayout>
 

@@ -30,24 +30,12 @@ import in.testpress.testpress.util.Ln;
 public class AttemptsListFragment extends PagedItemFragment<Attempt> {
 
     Exam exam;
-    AttemptsPager pager;
     @Inject protected TestpressServiceProvider serviceProvider;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Injector.inject(this);
         exam = getArguments().getParcelable("exam");
-        String state = getArguments().getString("state");
-        try {
-            pager = new AttemptsPager(exam, serviceProvider.getService(getActivity()));
-            if (state != null && state.equals("paused")) {
-                pager.setQueryParams("state", "paused");
-            }
-        } catch (AccountsException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         super.onCreate(savedInstanceState);
     }
 
@@ -76,6 +64,19 @@ public class AttemptsListFragment extends PagedItemFragment<Attempt> {
 
     @Override
     protected ResourcePager<Attempt> getPager() {
+        if (pager == null) {
+            String state = getArguments().getString("state");
+            try {
+                pager = new AttemptsPager(exam, serviceProvider.getService(getActivity()));
+                if (state != null && state.equals("paused")) {
+                    pager.setQueryParams("state", "paused");
+                }
+            } catch (AccountsException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return pager;
     }
 

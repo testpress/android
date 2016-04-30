@@ -9,6 +9,8 @@ import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,8 +25,8 @@ import butterknife.InjectView;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
-import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.core.Constants;
+import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.util.FormatDate;
@@ -39,10 +41,12 @@ public class PostActivity extends TestpressFragmentActivity {
     String urlWithBase;
     PostDao postDao;
     Post post;
-    @Inject protected TestpressServiceProvider serviceProvider;
-    @InjectView(R.id.content) TextView content;
+    @Inject protected TestpressService testpressService;
+    @InjectView(R.id.content) WebView content;
     @InjectView(R.id.title) TextView title;
+    @InjectView(R.id.summary) TextView summary;
     @InjectView(R.id.date) TextView date;
+    @InjectView(R.id.empty_view) TextView emptyView;
     @InjectView(R.id.postDetails) RelativeLayout postDetails;
     @InjectView(R.id.pb_loading) ProgressBar progressBar;
 
@@ -75,17 +79,18 @@ public class PostActivity extends TestpressFragmentActivity {
         new SafeAsyncTask<Post>() {
             @Override
             public Post call() throws Exception {
-                return serviceProvider.getService(PostActivity.this).getPostDetail(url);
+                return testpressService.getPostDetail(url);
             }
 
             @Override
             protected void onException(final Exception e) throws RuntimeException {
                 if (e.getCause() instanceof UnknownHostException) {
-                    post.setContentHtml(getResources().getString(R.string.no_internet));
+                    emptyView.setText(getResources().getString(R.string.no_internet));
                 } else {
-                    post.setContentHtml(getResources().getString(R.string.error_loading_content));
+                    emptyView.setText(getResources().getString(R.string.error_loading_content));
                 }
-                content.setTextColor(Color.RED);
+                content.setVisibility(View.GONE);
+                emptyView.setVisibility(View.VISIBLE);
                 displayPost(post);
             }
 
@@ -105,12 +110,20 @@ public class PostActivity extends TestpressFragmentActivity {
         progressBar.setVisibility(View.GONE);
         getSupportActionBar().setTitle(post.getTitle());
         title.setText(post.getTitle());
+        summary.setText(post.getSummary());
         FormatDate formatter = new FormatDate();
-        date.setText(formatter.formatDateTime(post.getCreated()));
-        Spanned htmlSpan = Html.fromHtml(post.getContentHtml(), new UILImageGetter(content, PostActivity.this), new ListTagHandler());
-        ZoomableImageString zoomableImageQuestion = new ZoomableImageString(PostActivity.this);
-        content.setText(zoomableImageQuestion.convertString(htmlSpan));
-        content.setMovementMethod(LinkMovementMethod.getInstance());
+        date.setText(formatter.formatDate(post.getCreated()));
+        if (post.getContentHtml() != null) {
+            WebSettings settings = content.getSettings();
+            settings.setDefaultTextEncodingName("utf-8");
+            settings.setJavaScriptEnabled(true);
+            settings.setBuiltInZoomControls(true);
+            settings.setDisplayZoomControls(false);
+            settings.setSupportZoom(true);
+            content.loadData(post.getContentHtml(), "text/html; charset=utf-8", null);
+        } else {
+            content.setVisibility(View.GONE);
+        }
     }
 
     @Override

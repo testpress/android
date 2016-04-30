@@ -35,7 +35,6 @@ public abstract class PagedItemFragment<E> extends ItemListFragment<E>
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        pager = getPager();
         loadingLayout = LayoutInflater.from(getActivity()).inflate(R.layout.loading_layout, null);
     }
 
@@ -55,7 +54,7 @@ public abstract class PagedItemFragment<E> extends ItemListFragment<E>
         // or customLoadMoreDataFromApi(totalItemsCount);
         if (!isUsable())
             return;
-        if (!pager.hasMore()) {
+        if (pager != null && !pager.hasMore()) {
             if(getListAdapter().getFootersCount() != 0) {  //if pager reached last page remove footer if footer added already
                 getListAdapter().removeFooter(loadingLayout);
             }
@@ -63,7 +62,7 @@ public abstract class PagedItemFragment<E> extends ItemListFragment<E>
         }
         if (getLoaderManager().hasRunningLoaders())
             return;
-        if (listView != null
+        if (listView != null && pager != null
                 && (listView.getLastVisiblePosition() + 3) >= pager.size()) {
             if(getListAdapter().getFootersCount() == 0) { //display loading footer if not present when loading next page
                 getListAdapter().addFooter(loadingLayout);
@@ -83,8 +82,8 @@ public abstract class PagedItemFragment<E> extends ItemListFragment<E>
 
             @Override
             public List<E> loadData() throws IOException {
-                pager.next();
-                return pager.getResources();
+                getPager().next();
+                return getPager().getResources();
             }
         };
     }
@@ -106,7 +105,7 @@ public abstract class PagedItemFragment<E> extends ItemListFragment<E>
 
     @Override
     protected void refreshWithProgress() {
-        pager.reset();
+        getPager().reset();
         pager = getPager();
 
         super.refreshWithProgress();

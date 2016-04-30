@@ -1,6 +1,9 @@
 package in.testpress.testpress.ui;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.accounts.AccountsException;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -50,6 +53,7 @@ import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.PostsPager;
+import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.CategoryDao;
 import in.testpress.testpress.models.DaoSession;
@@ -62,6 +66,7 @@ public class PostsListFragment extends Fragment implements
         AbsListView.OnScrollListener, SwipeRefreshLayout.OnRefreshListener, LoaderManager
         .LoaderCallbacks<List<Post>> {
 
+    @Inject protected TestpressService testpressService;
     @Inject
     protected TestpressServiceProvider serviceProvider;
     @Inject
@@ -103,9 +108,8 @@ public class PostsListFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            categoryFilter = arguments.getLong("category_filter");
+        if (getArguments().getLong("category_filter") != 0) {
+            categoryFilter = getArguments().getLong("category_filter");
         }
         //Get the dao handles for posts and categories
         daoSession = ((TestpressApplication) getActivity().getApplicationContext()).getDaoSession();
@@ -154,26 +158,10 @@ public class PostsListFragment extends Fragment implements
                              final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.swipe_refresh_list, null);
         ButterKnife.inject(this, view);
-        try {
-            refreshPager = new PostsPager(serviceProvider.getService(getActivity()), getContext());
-            refreshPager.setQueryParams("order", "-created");
-            if (postDao.count() > 0) {
-                Post latest = postDao.queryBuilder().orderDesc(PostDao.Properties.CreatedDate)
-                        .list().get(0);
-                refreshPager.setQueryParams("gt", latest.getCreated());
-                LogLatestPostCreatedDate(latest);
-                LogAllPosts();
-            } else {
-                emptyView.setVisibility(View.VISIBLE);
-                emptyView.setText("No Articles");
-                listView.setVisibility(View.GONE);
-            }
-        } catch (AccountsException e) {
-            //TODO handle this
-            e.printStackTrace();
-        } catch (IOException e) {
-            //TODO handle this
-            e.printStackTrace();
+        if (postDao.count() == 0) {
+            emptyView.setVisibility(View.VISIBLE);
+            emptyView.setText("No Articles");
+            listView.setVisibility(View.GONE);
         }
         return view;
     }
@@ -184,6 +172,7 @@ public class PostsListFragment extends Fragment implements
         adapter = new HeaderFooterListAdapter<PostsListAdapter>(listView, new PostsListAdapter
                 (getActivity(), R.layout.post_list_item));
         listView.setAdapter(adapter);
+        listView.setDividerHeight(0);
         loadingLayout = LayoutInflater.from(getActivity()).inflate(R.layout.loading_layout, null);
     }
 
@@ -212,7 +201,16 @@ public class PostsListFragment extends Fragment implements
         new SafeAsyncTask<List<Category>>() {
             @Override
             public List<Category> call() throws Exception {
-                return serviceProvider.getService(PostsListFragment.this.getActivity())
+                AccountManager manager = (AccountManager) getActivity().getSystemService(Context.ACCOUNT_SERVICE);
+                final Account[] account = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
+                if (account.length > 0) {
+                    try {
+                        testpressService = serviceProvider.getService(getActivity());
+                    } catch (AccountsException e) {
+                    } catch (IOException e) {
+                    }
+                }
+                return testpressService
                         .getCategories(Constants.Http.URL_CATEGORIES_FRAG, null).getResults();
             }
 
@@ -237,6 +235,19 @@ public class PostsListFragment extends Fragment implements
                 ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 toolbar.addView(mSpinnerContainer, lp);
+
+                if (categoryFilter != null) {
+                    Spinner spinner = (Spinner) mSpinnerContainer.findViewById(R.id.actionbar_spinner);
+                    Category c = categoryDao.queryBuilder().where(CategoryDao.Properties.Id.eq(categoryFilter)).list().get(0);
+                    int position = 0;
+                    for (; position < categories.size(); position =  position + 1) {
+                        if (c.getName().equals(categories.get(position).getName()))
+                            break;
+                    }
+                    // Add 2 to the position because the spinner has "All Posts" and "Categories"
+                    // in position 0 & 1
+                    spinner.setSelection(position + 2);
+                }
             }
 
         }.execute();
@@ -249,6 +260,9 @@ public class PostsListFragment extends Fragment implements
                 return new ThrowableLoader<List<Post>>(getActivity(), null) {
                     @Override
                     public List<Post> loadData() throws IOException {
+                        if (refreshPager == null) {
+                            initPager();
+                        }
                         refreshPager.next();
                         return refreshPager.getResources();
                     }
@@ -264,6 +278,29 @@ public class PostsListFragment extends Fragment implements
             default:
                 //An invalid id was passed
                 return null;
+        }
+    }
+
+    void initPager() {
+        if (refreshPager == null) {
+            AccountManager manager = (AccountManager) getActivity().getSystemService(Context.ACCOUNT_SERVICE);
+            final Account[] account = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
+            if (account.length > 0) {
+                try {
+                    testpressService = serviceProvider.getService(getActivity());
+                } catch (AccountsException e) {
+                } catch (IOException e) {
+                }
+            }
+            refreshPager = new PostsPager(testpressService, getContext());
+            refreshPager.setQueryParams("order", "-created");
+            if (postDao.count() > 0) {
+                Post latest = postDao.queryBuilder().orderDesc(PostDao.Properties.CreatedDate)
+                        .list().get(0);
+                refreshPager.setQueryParams("gt", latest.getCreated());
+                LogLatestPostCreatedDate(latest);
+                LogAllPosts();
+            }
         }
     }
 
@@ -392,8 +429,8 @@ public class PostsListFragment extends Fragment implements
         // and enable it again as soon as the first item in the ListView is visible.
         // Here we override the onScrollListener of the ListView to handle the enable/disable
         // mechanism
-        // See more at: http://www.survivingwithandroid
-        // .com/2014/05/android-swiperefreshlayout-tutorial.html
+        // See more at:
+        // http://www.survivingwithandroid.com/2014/05/android-swiperefreshlayout-tutorial.html
         if (firstVisibleItem == 0) {
             swipeLayout.setEnabled(true);
         } else {
@@ -406,28 +443,20 @@ public class PostsListFragment extends Fragment implements
             return;
 
         if (listView != null && (postDao.count() != 0) && !isScrollingUp
-                && (listView.getLastVisiblePosition() + 3) >= postDao.count()) {
+                && (listView.getLastVisiblePosition() + 3) >= adapter.getWrappedAdapter().getCount()) {
 
             Ln.d("Onscroll showing more");
 
             if (pager == null) {
-                try {
-                    pager = new PostsPager(serviceProvider.getService(getActivity()), getContext());
-                    pager.setQueryParams("order", "-created");
-                    Post lastPost = postDao.queryBuilder().orderDesc(PostDao.Properties
-                            .CreatedDate).list().get((int) postDao.count() - 1);
-                    pager.setQueryParams("lt", lastPost.getCreated());
-                    Ln.d("Latest post available is " + lastPost.getTitle() + lastPost.getCreated());
-                    if (adapter.getFootersCount() == 0) { //display loading footer if not present
-                        // when loading next page
-                        adapter.addFooter(loadingLayout);
-                    }
-                } catch (AccountsException e) {
-                    //TODO handle this
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    //TODO handle this
-                    e.printStackTrace();
+                pager = new PostsPager(testpressService, getContext());
+                pager.setQueryParams("order", "-created");
+                Post lastPost = postDao.queryBuilder().orderDesc(PostDao.Properties
+                        .CreatedDate).list().get((int) postDao.count() - 1);
+                pager.setQueryParams("lt", lastPost.getCreated());
+                Ln.d("Latest post available is " + lastPost.getTitle() + lastPost.getCreated());
+                if (adapter.getFootersCount() == 0) { //display loading footer if not present
+                    // when loading next page
+                    adapter.addFooter(loadingLayout);
                 }
             } else {
                 if (!pager.hasMore()) {
@@ -507,10 +536,7 @@ public class PostsListFragment extends Fragment implements
     }
 
     protected int getErrorMessage(Exception exception) {
-        if ((exception.getMessage() != null) && (exception.getMessage()).equals("403 FORBIDDEN")) {
-            serviceProvider.handleForbidden(getActivity(), serviceProvider, logoutService);
-            return R.string.authentication_failed;
-        } else if (exception.getCause() instanceof UnknownHostException) {
+        if (exception.getCause() instanceof UnknownHostException) {
             emptyView.setText(R.string.no_internet);
             return R.string.no_internet;
         }

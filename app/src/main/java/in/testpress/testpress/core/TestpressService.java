@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import in.testpress.testpress.models.Category;
+import in.testpress.testpress.models.ExamCategory;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.Attempt;
 import in.testpress.testpress.models.AttemptItem;
@@ -16,6 +17,7 @@ import in.testpress.testpress.models.Product;
 import in.testpress.testpress.models.ProductDetails;
 import in.testpress.testpress.models.ProfileDetails;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
+import in.testpress.testpress.models.ResetPassword;
 import in.testpress.testpress.models.ReviewItem;
 import in.testpress.testpress.models.TestpressApiResponse;
 import in.testpress.testpress.models.Update;
@@ -58,12 +60,18 @@ public class TestpressService {
 
     private DeviceService getDevicesService() { return getRestAdapter().create(DeviceService.class); }
 
+    private ResetPasswordService getResetPasswordService(){return getRestAdapter().create(ResetPasswordService.class);}
+
     private String getAuthToken() {
         return "JWT " + authToken;
     }
 
     public TestpressApiResponse<Exam> getExams(String urlFrag, Map<String, String> queryParams) {
         return getExamsService().getExams(urlFrag, queryParams, getAuthToken());
+    }
+
+    public TestpressApiResponse<ExamCategory> getExamsCourses() {
+        return getExamsService().getExamsCourses(getAuthToken());
     }
 
     public TestpressApiResponse<Attempt> getAttempts(String urlFrag, Map<String, String> queryParams) {
@@ -97,6 +105,13 @@ public class TestpressService {
         return getExamsService().postAnswer(answerUrlFrag, getAuthToken(), answer);
     }
 
+    public ResetPassword resetPassword(String email){
+        HashMap<String,String> emailcode = new HashMap<String,String>();
+        emailcode.put("email",email);
+        return getResetPasswordService().resetPassword(emailcode);
+    }
+
+
     public Attempt heartbeat(String heartbeatUrlFrag) {
         return getExamsService().heartbeat(heartbeatUrlFrag, getAuthToken());
     }
@@ -125,24 +140,34 @@ public class TestpressService {
 
 
     public Device register(String registrationId, String deviceId) {
-        Device device;
         HashMap<String, String> credentials = new HashMap<String, String>();
         credentials.put("registration_id", registrationId);
         credentials.put("device_id", deviceId);
-        device = getDevicesService().register(credentials, getAuthToken());
-        return device;
+        if (authToken == null) {
+            return getDevicesService().register(credentials, null);
+        } else {
+            return getDevicesService().register(credentials, getAuthToken());
+        }
     }
 
     public TestpressApiResponse<Post> getPosts(String urlFrag, Map<String, String> queryParams) {
-        return getPostService().getPosts(urlFrag, queryParams, getAuthToken());
+        if (authToken == null) {
+            return getPostService().getPosts(urlFrag, queryParams, null);
+        } else {
+            return getPostService().getPosts(urlFrag, queryParams, getAuthToken());
+        }
     }
 
     public TestpressApiResponse<Category> getCategories(String urlFrag, Map<String, String> queryParams) {
-        return getPostService().getCategories(urlFrag, queryParams, getAuthToken());
+        if (authToken == null) {
+            return getPostService().getCategories(urlFrag, queryParams, null);
+        } else {
+            return getPostService().getCategories(urlFrag, queryParams, getAuthToken());
+        }
     }
 
     public Post getPostDetail(String url) {
-        return getPostService().getPostDetails(url, getAuthToken());
+        return getPostService().getPostDetails(url);
     }
 
     public RegistrationSuccessResponse register(String username,String email, String password, String phone){
@@ -166,11 +191,11 @@ public class TestpressService {
     }
 
     public TestpressApiResponse<Product> getProducts(String urlFrag, Map<String, String> queryParams) {
-        return getProductsService().getProducts(urlFrag, queryParams, getAuthToken());
+        return getProductsService().getProducts(urlFrag, queryParams);
     }
 
     public ProductDetails getProductDetail(String productUrlFrag) {
-        return getProductsService().getProductDetails(productUrlFrag, getAuthToken());
+        return getProductsService().getProductDetails(productUrlFrag);
     }
 
     public Order order(String user, List<OrderItem> orderItems) {

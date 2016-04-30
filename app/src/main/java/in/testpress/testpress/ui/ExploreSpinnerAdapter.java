@@ -67,6 +67,15 @@ class ExploreSpinnerAdapter extends BaseAdapter {
         return -1;
     }
 
+    public int getItemPositionFromTag(String tag) {
+        for (ExploreSpinnerItem item : mItems) {
+            if (item.tag.equals(tag)) {
+                return mItems.indexOf(item);
+            }
+        }
+        return -1;
+    }
+
     @Override
     public int getCount() {
         return mItems.size();

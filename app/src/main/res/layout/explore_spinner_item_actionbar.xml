@@ -13,6 +13,8 @@
         android:textSize="@dimen/text_size_large"
         android:textStyle="normal"
         android:fontFamily="sans-serif"
+        android:maxLines="2"
+        android:ellipsize="end"
         android:drawablePadding="4dp"
         android:drawableRight="@drawable/spinner_triangle" />
 

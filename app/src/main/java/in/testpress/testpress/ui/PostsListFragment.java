@@ -158,11 +158,6 @@ public class PostsListFragment extends Fragment implements
                              final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.swipe_refresh_list, null);
         ButterKnife.inject(this, view);
-        if (postDao.count() == 0) {
-            emptyView.setVisibility(View.VISIBLE);
-            emptyView.setText("No Articles");
-            listView.setVisibility(View.GONE);
-        }
         return view;
     }
 
@@ -309,6 +304,10 @@ public class PostsListFragment extends Fragment implements
                 }
             }
             showError(getErrorMessage(exception));
+            if (adapter.getCount() == 0) {
+                emptyView.setText(getErrorMessage(exception));
+            }
+            displayDataFromDB();
             return;
         }
 
@@ -389,6 +388,14 @@ public class PostsListFragment extends Fragment implements
     void displayDataFromDB() {
         Ln.d("Adapter notifyDataSetChanged displayDataFromDB");
         adapter.notifyDataSetChanged();
+        if (adapter.getCount() == 0) {
+            emptyView.setVisibility(View.VISIBLE);
+            emptyView.setText("No Articles");
+            listView.setVisibility(View.GONE);
+        } else {
+            listView.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+        }
     }
 
     @Override

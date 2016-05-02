@@ -158,11 +158,6 @@ public class PostsListFragment extends Fragment implements
                              final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.swipe_refresh_list, null);
         ButterKnife.inject(this, view);
-        if (postDao.count() == 0) {
-            emptyView.setVisibility(View.VISIBLE);
-            emptyView.setText("No Articles");
-            listView.setVisibility(View.GONE);
-        }
         return view;
     }
 
@@ -228,6 +223,11 @@ public class PostsListFragment extends Fragment implements
                 }
                 mTopLevelSpinnerAdapter.notifyDataSetChanged();
 
+                if (categoryFilter != null) {
+                    Spinner spinner = (Spinner) mSpinnerContainer.findViewById(R.id.actionbar_spinner);
+                    spinner.setSelection(mTopLevelSpinnerAdapter.getItemPositionFromTag(categoryFilter.toString()));
+                }
+
                 Toolbar toolbar = ((PostsListActivity)(getActivity())).getActionBarToolbar();
                 View view = toolbar.findViewById(R.id.actionbar_spinnerwrap);
                 toolbar.removeView(view);
@@ -235,19 +235,6 @@ public class PostsListFragment extends Fragment implements
                 ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 toolbar.addView(mSpinnerContainer, lp);
-
-                if (categoryFilter != null) {
-                    Spinner spinner = (Spinner) mSpinnerContainer.findViewById(R.id.actionbar_spinner);
-                    Category c = categoryDao.queryBuilder().where(CategoryDao.Properties.Id.eq(categoryFilter)).list().get(0);
-                    int position = 0;
-                    for (; position < categories.size(); position =  position + 1) {
-                        if (c.getName().equals(categories.get(position).getName()))
-                            break;
-                    }
-                    // Add 2 to the position because the spinner has "All Posts" and "Categories"
-                    // in position 0 & 1
-                    spinner.setSelection(position + 2);
-                }
             }
 
         }.execute();
@@ -317,6 +304,10 @@ public class PostsListFragment extends Fragment implements
                 }
             }
             showError(getErrorMessage(exception));
+            if (adapter.getCount() == 0) {
+                emptyView.setText(getErrorMessage(exception));
+            }
+            displayDataFromDB();
             return;
         }
 
@@ -397,6 +388,14 @@ public class PostsListFragment extends Fragment implements
     void displayDataFromDB() {
         Ln.d("Adapter notifyDataSetChanged displayDataFromDB");
         adapter.notifyDataSetChanged();
+        if (adapter.getCount() == 0) {
+            emptyView.setVisibility(View.VISIBLE);
+            emptyView.setText("No Articles");
+            listView.setVisibility(View.GONE);
+        } else {
+            listView.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -442,7 +441,8 @@ public class PostsListFragment extends Fragment implements
         if (getLoaderManager().hasRunningLoaders())
             return;
 
-        if (listView != null && (postDao.count() != 0) && !isScrollingUp
+        if (listView != null && (postDao.count() != 0) &&
+                !isScrollingUp && adapter.getWrappedAdapter().getCount() > 3
                 && (listView.getLastVisiblePosition() + 3) >= adapter.getWrappedAdapter().getCount()) {
 
             Ln.d("Onscroll showing more");

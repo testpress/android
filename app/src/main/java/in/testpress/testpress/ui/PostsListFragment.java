@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -61,6 +62,7 @@ import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
+import info.hoang8f.widget.FButton;
 
 public class PostsListFragment extends Fragment implements
         AbsListView.OnScrollListener, SwipeRefreshLayout.OnRefreshListener, LoaderManager
@@ -73,12 +75,14 @@ public class PostsListFragment extends Fragment implements
     protected LogoutService logoutService;
     @InjectView(android.R.id.list)
     ListView listView;
-    @InjectView(R.id.empty)
-    TextView emptyView;
     @InjectView(R.id.sticky)
     TextView mStickyView;
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout swipeLayout;
+    @InjectView(R.id.empty_container) LinearLayout emptyView;
+    @InjectView(R.id.empty_title) TextView emptyTitleView;
+    @InjectView(R.id.empty_description) TextView emptyDescView;
+    @InjectView(R.id.retry_button) FButton retryButton;
     HeaderFooterListAdapter<PostsListAdapter> adapter;
     PostsPager refreshPager;
     PostsPager pager;
@@ -303,11 +307,8 @@ public class PostsListFragment extends Fragment implements
                     adapter.removeFooter(loadingLayout);
                 }
             }
-            showError(getErrorMessage(exception));
-            if (adapter.getCount() == 0) {
-                emptyView.setText(getErrorMessage(exception));
-            }
             displayDataFromDB();
+            showError(getErrorMessage(exception));
             return;
         }
 
@@ -389,9 +390,8 @@ public class PostsListFragment extends Fragment implements
         Ln.d("Adapter notifyDataSetChanged displayDataFromDB");
         adapter.notifyDataSetChanged();
         if (adapter.getCount() == 0) {
-            emptyView.setVisibility(View.VISIBLE);
-            emptyView.setText("No Articles");
-            listView.setVisibility(View.GONE);
+            setEmptyText(R.string.no_posts, R.string.no_posts_description, R.drawable.ic_error_outline_black_18dp);
+            retryButton.setVisibility(View.GONE);
         } else {
             listView.setVisibility(View.VISIBLE);
             emptyView.setVisibility(View.GONE);
@@ -477,6 +477,7 @@ public class PostsListFragment extends Fragment implements
         new Handler().post(new Runnable() {
             @Override
             public void run() {
+                mStickyView.setVisibility(View.GONE);
                 isUserSwiped = true;
                 refreshPager.clear();
                 if (postDao.count() > 0) {
@@ -537,10 +538,16 @@ public class PostsListFragment extends Fragment implements
 
     protected int getErrorMessage(Exception exception) {
         if (exception.getCause() instanceof UnknownHostException) {
-            emptyView.setText(R.string.no_internet);
+            if (adapter.getCount() == 0) {
+                setEmptyText(R.string.network_error, R.string.no_internet,R.drawable.ic_error_outline_black_18dp);
+            }
             return R.string.no_internet;
+        } else {
+            if (adapter.getCount() == 0) {
+                setEmptyText(R.string.error_loading_posts, R.string.try_after_sometime, R.drawable.ic_error_outline_black_18dp);
+            }
+            return R.string.error_loading_posts;
         }
-        return R.string.error_loading_posts;
     }
 
     @Override
@@ -555,6 +562,27 @@ public class PostsListFragment extends Fragment implements
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
+    }
+
+    @OnClick(R.id.retry_button)
+    protected void refreshWithProgress() {
+        emptyView.setVisibility(View.GONE);
+        swipeLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeLayout.setRefreshing(true);
+            }
+        });
+        onRefresh();
+    }
+
+    protected void setEmptyText(final int title, final int description, final int left) {
+        emptyView.setVisibility(View.VISIBLE);
+        emptyTitleView.setText(title);
+        emptyTitleView.setCompoundDrawablesWithIntrinsicBounds(left, 0, 0, 0);
+        emptyDescView.setText(description);
+        listView.setVisibility(View.GONE);
+        retryButton.setVisibility(View.VISIBLE);
     }
 
     protected Exception getException(final Loader<List<Post>> loader) {

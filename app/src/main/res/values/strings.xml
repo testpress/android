@@ -43,7 +43,7 @@
     <string name="no_products_description">There are no products to purchase right now.</string>
     <string name="no_orders">No transactions yet</string>
     <string name="no_orders_description">Your purchased orders will be reflected here.</string>
-    <string name="no_posts">No Posts</string>
+    <string name="no_posts">No Articles</string>
     <string name="avatar">Avatar</string>
     <string name="choose">Choose</string>
     <string name="start_exam">Start Exam</string>
@@ -134,4 +134,6 @@
     <string name="no_results_found">Sorry, No results found</string>
     <string name="try_with_other_keyword">Please try with some other keywords</string>
     <string name="speech_recognition_not_supported">Opps! Your device doesn\'t support Speech to Text</string>
+
+    <string name="no_posts_description">There are no posts right now.</string>
 </resources>

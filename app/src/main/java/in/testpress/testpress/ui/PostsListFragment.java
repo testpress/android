@@ -141,6 +141,9 @@ public class PostsListFragment extends Fragment implements
                     mFistTimeCallback = true;
                     return;
                 }
+                if (adapter.getFootersCount() != 0) { // Remove loading footer if added already
+                    adapter.removeFooter(loadingLayout);
+                }
                 String filter = mTopLevelSpinnerAdapter.getTag(position);
                 if (filter.isEmpty()) {
                     adapter.getWrappedAdapter().clearCategoryFilter();

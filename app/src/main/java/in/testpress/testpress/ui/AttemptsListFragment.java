@@ -30,7 +30,6 @@ import in.testpress.testpress.util.Ln;
 public class AttemptsListFragment extends PagedItemFragment<Attempt> {
 
     Exam exam;
-    AttemptsPager pager;
     @Inject protected TestpressServiceProvider serviceProvider;
 
     @Override

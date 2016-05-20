@@ -52,6 +52,7 @@ import in.testpress.testpress.ui.ReviewActivity;
 import in.testpress.testpress.ui.ReviewFragment;
 import in.testpress.testpress.ui.ReviewQuestionsFragment;
 import in.testpress.testpress.ui.ReviewStatsFragment;
+import in.testpress.testpress.ui.SearchActivity;
 import in.testpress.testpress.ui.paymentGateway.CreditDebitCardActivity;
 import in.testpress.testpress.ui.paymentGateway.NetBankingActivity;
 import in.testpress.testpress.ui.paymentGateway.PaymentModeActivity;
@@ -105,7 +106,8 @@ import retrofit.converter.GsonConverter;
                 ProfilePhotoActivity.class,
                 CropImageActivity.class,
                 MainMenuFragment.class,
-                ResetPasswordActivity.class
+                ResetPasswordActivity.class,
+                SearchActivity.class
         }
 )
 public class TestpressModule {

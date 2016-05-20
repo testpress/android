@@ -27,7 +27,6 @@ public class OrdersListFragment extends PagedItemFragment<Order> {
 
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected LogoutService logoutService;
-    OrdersPager pager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

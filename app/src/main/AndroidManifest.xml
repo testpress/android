@@ -195,6 +195,11 @@
         <activity
             android:name=".authenticator.ResetPasswordActivity"
             android:label="@string/title_activity_reset_password_verification"></activity>
+
+        <activity
+            android:name=".ui.SearchActivity"
+            android:configChanges="orientation|keyboard|screenSize"/>
+
     </application>
 
 </manifest>

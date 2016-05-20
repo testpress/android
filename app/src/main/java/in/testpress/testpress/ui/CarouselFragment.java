@@ -40,17 +40,13 @@ public class CarouselFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         ButterKnife.inject(this, getView());
-
-        pager.setAdapter(new TestpressPagerAdapter(getResources(), getChildFragmentManager()));
+        Bundle data = getArguments();
+        pager.setAdapter(new TestpressPagerAdapter(getResources(), getChildFragmentManager(), data));
+        pager.setOffscreenPageLimit(3);
         indicator.setViewPager(pager);
         indicator.setIndicatorColor(getResources().getColor(R.color.primary));
-        Bundle data = getArguments();
-        String currentItem = null;
-        if(data != null) {
-            currentItem = data.getString("currentItem");
-        }
-        if (currentItem != null) {
-            pager.setCurrentItem(Integer.parseInt(currentItem));
+        if (data.getString("currentItem") != null) {
+            pager.setCurrentItem(Integer.parseInt(data.getString("currentItem")));
         } else {
             pager.setCurrentItem(0);
 

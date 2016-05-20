@@ -95,22 +95,16 @@ public final class Constants {
         public static final String URL_PROFILE_DETAILS = URL_BASE + URL_PROFILE_DETAILS_FRAG;
 
         /**
-         * List Available Exams URL
+         * List Exams URL
          */
-        public static final String URL_AVAILABLE_EXAMS_FRAG =  "api/v2.2/exams/available/";
-        public static final String URL_AVAILABLE_EXAMS = URL_BASE + URL_AVAILABLE_EXAMS_FRAG;
+        public static final String URL_EXAMS_FRAG =  "api/v2.2/exams/";
+        public static final String URL_EXAMS = URL_BASE + URL_EXAMS_FRAG;
 
         /**
-         * List Upcoming Exams URL
+         * Exams Categories URL
          */
-        public static final String URL_UPCOMING_EXAMS_FRAG =  "api/v2.2/exams/upcoming/";
-        public static final String URL_UPCOMING_EXAMS = URL_BASE + URL_UPCOMING_EXAMS_FRAG;
-
-        /**
-         * List History Exams URL
-         */
-        public static final String URL_HISTORY_EXAMS_FRAG =  "api/v2.2/exams/history/";
-        public static final String URL_HISTORY_EXAMS = URL_BASE + URL_HISTORY_EXAMS_FRAG;
+        public static final String URL_EXAMS_CATEGORY_FRAG =  "/api/v2.2/users/courses/";
+        public static final String URL_EXAMS_CATEGORY = URL_BASE + URL_EXAMS_CATEGORY_FRAG;
 
         /**
          * Start Exam URL
@@ -155,7 +149,11 @@ public final class Constants {
         public static final String PASSWORD = "password";
         public static final String SESSION_TOKEN = "sessionToken";
 
-
+        /**
+         * Query Params
+         */
+        public static final String SEARCH_QUERY = "q";
+        public static final String STATE = "state";
     }
 
 
@@ -180,7 +178,7 @@ public final class Constants {
         public static final int TIMER_NOTIFICATION_ID = 1000; // Why 1000? Why not? :)
     }
 
-    public static final String GCM_PREFERENCE_NAME = "testpress." + Auth.TESTPRESS_ACCOUNT_NAME;
+    public static final String GCM_PREFERENCE_NAME = "testpress." + Auth.TESTPRESS_ACCOUNT_NAME + ".GCM";
     public static final String GCM_PROPERTY_REG_ID = "GCMRegId";
     public static final String SENT_TOKEN_TO_SERVER = "sentTokenToServer";
 

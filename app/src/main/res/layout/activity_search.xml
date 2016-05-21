@@ -70,6 +70,7 @@
             <android.support.v7.widget.CardView
                 android:id="@+id/result_list_card"
                 style="@style/CardViewNormal"
+                android:visibility="gone"
                 card_view:cardBackgroundColor="@android:color/white"
                 card_view:cardPreventCornerOverlap="false"
                 card_view:cardUseCompatPadding="true"

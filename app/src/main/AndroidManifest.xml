@@ -143,6 +143,12 @@
             android:name=".ui.ProductDetailsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Product Details"></activity>
+
+        <activity
+            android:name=".ui.DocumentsListActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Documents"/>
+
         <activity
             android:name=".ui.PostsListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.ExamCategory;
+import in.testpress.testpress.models.Notes;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.Attempt;
 import in.testpress.testpress.models.AttemptItem;
@@ -55,6 +56,8 @@ public class TestpressService {
     private ExamService getExamsService() { return getRestAdapter().create(ExamService.class); }
 
     private ProductService getProductsService() { return getRestAdapter().create(ProductService.class); }
+
+    private DocumentsService getDocumentsService() { return getRestAdapter().create(DocumentsService.class); }
 
     private PostService getPostService() { return getRestAdapter().create(PostService.class); }
 
@@ -196,6 +199,14 @@ public class TestpressService {
 
     public ProductDetails getProductDetail(String productUrlFrag) {
         return getProductsService().getProductDetails(productUrlFrag);
+    }
+
+    public TestpressApiResponse<Notes> getDocumentsList(String urlFrag, Map<String, String> queryParams) {
+        return getDocumentsService().getDocumentsList(urlFrag, queryParams, getAuthToken());
+    }
+
+    public Notes getDownloadUrl(String slug) {
+        return getDocumentsService().getDownloadUrl(slug, getAuthToken());
     }
 
     public Order order(String user, List<OrderItem> orderItems) {

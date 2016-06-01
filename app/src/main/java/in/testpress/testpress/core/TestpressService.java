@@ -153,11 +153,11 @@ public class TestpressService {
         }
     }
 
-    public TestpressApiResponse<Post> getPosts(String urlFrag, Map<String, String> queryParams) {
+    public TestpressApiResponse<Post> getPosts(String urlFrag, Map<String, String> queryParams, String latestModifiedDate) {
         if (authToken == null) {
-            return getPostService().getPosts(urlFrag, queryParams, null);
+            return getPostService().getPosts(urlFrag, queryParams, null, latestModifiedDate);
         } else {
-            return getPostService().getPosts(urlFrag, queryParams, getAuthToken());
+            return getPostService().getPosts(urlFrag, queryParams, getAuthToken(), latestModifiedDate);
         }
     }
 

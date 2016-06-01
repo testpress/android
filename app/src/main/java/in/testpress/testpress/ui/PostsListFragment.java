@@ -6,7 +6,6 @@ import android.accounts.AccountsException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -16,9 +15,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -36,9 +32,7 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -218,7 +212,7 @@ public class PostsListFragment extends Fragment implements
 
             protected void onSuccess(final List<Category> categories) throws Exception {
                 Ln.e("On success");
-
+                categoryDao.insertOrReplaceInTx(categories);
                 for (final Category category : categories) {
                     mTopLevelSpinnerAdapter.addItem("" + category.getId(), category.getName(), true,
                             Color.parseColor("#" + category.getColor()));
@@ -286,13 +280,13 @@ public class PostsListFragment extends Fragment implements
                 } catch (IOException e) {
                 }
             }
-            refreshPager = new PostsPager(testpressService, getContext());
-            refreshPager.setQueryParams("order", "-created");
+            refreshPager = new PostsPager(testpressService, postDao);
+            refreshPager.setQueryParams("order", "-published_date");
             if (postDao.count() > 0) {
-                Post latest = postDao.queryBuilder().orderDesc(PostDao.Properties.CreatedDate)
+                Post latest = postDao.queryBuilder().orderDesc(PostDao.Properties.ModifiedDate)
                         .list().get(0);
-                refreshPager.setQueryParams("gt", latest.getCreated());
-                LogLatestPostCreatedDate(latest);
+                refreshPager.setLatestModifiedDate(latest.getModified());
+                LogLatestPostModifiedDate(latest);
                 LogAllPosts();
             }
         }
@@ -451,12 +445,13 @@ public class PostsListFragment extends Fragment implements
             Ln.d("Onscroll showing more");
 
             if (pager == null) {
-                pager = new PostsPager(testpressService, getContext());
-                pager.setQueryParams("order", "-created");
+                pager = new PostsPager(testpressService, null);
+                pager.setQueryParams("order", "-published_date");
                 Post lastPost = postDao.queryBuilder().orderDesc(PostDao.Properties
-                        .CreatedDate).list().get((int) postDao.count() - 1);
-                pager.setQueryParams("lt", lastPost.getCreated());
-                Ln.d("Latest post available is " + lastPost.getTitle() + lastPost.getCreated());
+                        .Published).list().get((int) postDao.count() - 1);
+                pager.setQueryParams("until", lastPost.getPublishedDate());
+                pager.setLatestModifiedDate(null);
+                Ln.d("Most old Published post available is " + lastPost.getTitle() + lastPost.getPublishedDate());
                 if (adapter.getFootersCount() == 0) { //display loading footer if not present
                     // when loading next page
                     adapter.addFooter(loadingLayout);
@@ -480,15 +475,16 @@ public class PostsListFragment extends Fragment implements
         new Handler().post(new Runnable() {
             @Override
             public void run() {
+                swipeLayout.setRefreshing(true);
                 mStickyView.setVisibility(View.GONE);
                 isUserSwiped = true;
                 refreshPager.clear();
+                refreshPager.setQueryParams("order", "-published_date");
                 if (postDao.count() > 0) {
                     Post latest = postDao.queryBuilder().orderDesc(PostDao.Properties
-                            .CreatedDate).list().get(0);
-                    refreshPager.setQueryParams("order", "-created");
-                    refreshPager.setQueryParams("gt", latest.getCreated());
-                    LogLatestPostCreatedDate(latest);
+                            .ModifiedDate).list().get(0);
+                    refreshPager.setLatestModifiedDate(latest.getModified());
+                    LogLatestPostModifiedDate(latest);
                 }
                 getLoaderManager().restartLoader(REFRESH_LOADER_ID, null, PostsListFragment.this);
             }
@@ -504,11 +500,11 @@ public class PostsListFragment extends Fragment implements
         Ln.d(MISSED_POSTS_THRESHOLD < refreshPager.getTotalCount());
         if (MISSED_POSTS_THRESHOLD < refreshPager.getTotalCount()) {
             clearDB();
+            onRefresh();
+        } else {
+            //Insert posts to the database
+            writeToDB(refreshPager.getResources());
         }
-
-        //Insert posts to the database
-        writeToDB(refreshPager.getResources());
-
         //Trigger displaying data
         displayDataFromDB();
     }
@@ -603,25 +599,25 @@ public class PostsListFragment extends Fragment implements
     void clearDB() {
         Ln.d("ClearDB");
         postDao.deleteAll();
-        refreshPager.removeQueryParams("gt");
+        refreshPager.removeQueryParams("since");
         pager = null;
         displayDataFromDB();
     }
 
     void LogAllPosts() {
         if (postDao.count() > 0) {
-            List<Post> dbPosts = postDao.queryBuilder().orderDesc(PostDao.Properties.CreatedDate)
+            List<Post> dbPosts = postDao.queryBuilder().orderDesc(PostDao.Properties.Published)
                     .listLazy();
             for (Post p : dbPosts)
-                Ln.d(p.getTitle() + " " + p.getCreated() + "\n");
+                Ln.d(p.getTitle() + " " + p.getPublishedDate() + "\n");
         }
     }
 
-    void LogLatestPostCreatedDate(Post latest) {
-        Date date = new Date(latest.getCreatedDate());
-        Format format = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
+    void LogLatestPostModifiedDate(Post latest) {
+        Date date = new Date(latest.getModifiedDate());
+        Format format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         Ln.d("Latest post available is " + latest.getTitle()
-                + " created on " + format.format(date) + " - " + latest.getCreated());
+                + " modified on " + format.format(date) + " - " + latest.getModifiedDate());
     }
 
     @Override

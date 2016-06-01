@@ -1,12 +1,9 @@
 package in.testpress.testpress.ui;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
+import android.text.format.DateUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
@@ -27,13 +24,11 @@ import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
+import in.testpress.testpress.models.CategoryDao;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.util.FormatDate;
-import in.testpress.testpress.util.ListTagHandler;
 import in.testpress.testpress.util.SafeAsyncTask;
-import in.testpress.testpress.util.UILImageGetter;
-import in.testpress.testpress.util.ZoomableImageString;
 
 public class PostActivity extends TestpressFragmentActivity {
 
@@ -84,6 +79,7 @@ public class PostActivity extends TestpressFragmentActivity {
 
             @Override
             protected void onException(final Exception e) throws RuntimeException {
+                e.printStackTrace();
                 if (e.getCause() instanceof UnknownHostException) {
                     emptyView.setText(getResources().getString(R.string.no_internet));
                 } else {
@@ -96,11 +92,19 @@ public class PostActivity extends TestpressFragmentActivity {
 
             @Override
             protected void onSuccess(final Post post) throws Exception {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                post.setPublished(simpleDateFormat.parse(post.getPublishedDate()).getTime());
+                if (postDao.queryBuilder().where(PostDao.Properties.Id.eq(post.getId())).count() != 0) {
+                    post.setModifiedDate(simpleDateFormat.parse(post.getModified()).getTime());
+                    if (post.category != null) {
+                        post.setCategory(post.category);
+                        CategoryDao categoryDao = ((TestpressApplication) getApplicationContext())
+                                .getDaoSession().getCategoryDao();
+                        categoryDao.insertOrReplace(post.category);
+                    }
+                    postDao.insertOrReplace(post);
+                }
                 displayPost(post);
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-                post.setCreatedDate(simpleDateFormat.parse(post.getCreated()).getTime());
-                post.setCategory(post.category);
-                postDao.insertOrReplace(post);
             }
         }.execute();
     }
@@ -112,7 +116,7 @@ public class PostActivity extends TestpressFragmentActivity {
         title.setText(post.getTitle());
         summary.setText(post.getSummary());
         FormatDate formatter = new FormatDate();
-        date.setText(formatter.formatDate(post.getCreated()));
+        date.setText(DateUtils.getRelativeTimeSpanString(post.getPublished()));
         if (post.getContentHtml() != null) {
             WebSettings settings = content.getSettings();
             settings.setDefaultTextEncodingName("utf-8");

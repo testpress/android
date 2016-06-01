@@ -33,11 +33,13 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
+import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LoginActivity;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.Category;
+import in.testpress.testpress.models.CategoryDao;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 
@@ -225,10 +227,13 @@ public class MainMenuFragment extends Fragment {
 
             protected void onSuccess(final List<Category> categories) throws Exception {
                 Ln.e("On success");
-                if (categories.isEmpty() == true) {
+                if (categories.isEmpty()) {
                     quickLinksContainer.setVisibility(View.GONE);
                 } else {
                     quickLinksContainer.setVisibility(View.VISIBLE);
+                    CategoryDao categoryDao = ((TestpressApplication) getActivity()
+                            .getApplicationContext()).getDaoSession().getCategoryDao();
+                    categoryDao.insertOrReplaceInTx(categories);
                     recyclerView.setAdapter(new StarredCategoryAdapter(getActivity(),
                             categories));
                 }

@@ -16,11 +16,12 @@ public class TestpressDaoGenerator {
         post.addStringProperty("summary");
         post.addStringProperty("contentHtml");
         post.addStringProperty("url");
-        post.addStringProperty("created");
-        post.addLongProperty("createdDate");
+        post.addStringProperty("publishedDate");
+        post.addLongProperty("published");
         post.addStringProperty("modified");
         post.addIntProperty("institute");
-        post.addBooleanProperty("active");
+        post.addBooleanProperty("is_active");
+        post.addLongProperty("modifiedDate");
 
         Entity category = schema.addEntity("Category");
         category.addLongProperty("id").primaryKey();

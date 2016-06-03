@@ -14,7 +14,6 @@ import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.util.Ln;
-import in.testpress.testpress.util.ShareUtil;
 
 public class PostsListAdapter extends BaseAdapter {
 
@@ -92,12 +91,6 @@ public class PostsListAdapter extends BaseAdapter {
         } else {
             categoryView.setVisibility(View.GONE);
         }
-        convertView.findViewById(R.id.share_post).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ShareUtil.shareUrl(activity, post.getTitle(), post.getShort_web_url());
-            }
-        });
         return convertView;
     }
 }

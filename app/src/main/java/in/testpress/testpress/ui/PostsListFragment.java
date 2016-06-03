@@ -386,13 +386,6 @@ public class PostsListFragment extends Fragment implements
     void displayDataFromDB() {
         Ln.d("Adapter notifyDataSetChanged displayDataFromDB");
         adapter.notifyDataSetChanged();
-        if (adapter.getCount() == 0) {
-            setEmptyText(R.string.no_posts, R.string.no_posts_description, R.drawable.ic_error_outline_black_18dp);
-            retryButton.setVisibility(View.GONE);
-        } else {
-            listView.setVisibility(View.VISIBLE);
-            emptyView.setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -438,9 +431,8 @@ public class PostsListFragment extends Fragment implements
         if (getLoaderManager().hasRunningLoaders())
             return;
 
-        if (listView != null && (postDao.count() != 0) &&
-                !isScrollingUp && adapter.getWrappedAdapter().getCount() > 3
-                && (listView.getLastVisiblePosition() + 3) >= adapter.getWrappedAdapter().getCount()) {
+        if (listView != null && (postDao.count() != 0) && !isScrollingUp &&
+                (listView.getLastVisiblePosition() + 3) >= adapter.getWrappedAdapter().getCount()) {
 
             Ln.d("Onscroll showing more");
 
@@ -461,6 +453,10 @@ public class PostsListFragment extends Fragment implements
                     if (adapter.getFootersCount() != 0) {  //if pager reached last page remove
                         // footer if footer added already
                         adapter.removeFooter(loadingLayout);
+                    }
+                    if (adapter.getCount() == 0) {
+                        setEmptyText(R.string.no_posts, R.string.no_posts_description, R.drawable.ic_error_outline_black_18dp);
+                        retryButton.setVisibility(View.GONE);
                     }
                     return;
                 }
@@ -531,7 +527,7 @@ public class PostsListFragment extends Fragment implements
         Post post = adapter.getWrappedAdapter().getItem(position);
         Ln.d("Post at position is " + post.getTitle());
         Intent intent = new Intent(getActivity(), PostActivity.class);
-        intent.putExtra("urlWithBase", post.getUrl());
+        intent.putExtra("shortWebUrl", post.getShort_web_url());
         startActivity(intent);
     }
 

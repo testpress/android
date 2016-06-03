@@ -20,6 +20,9 @@ public class Post {
     private Integer institute;
     private Boolean is_active;
     private Long modifiedDate;
+    private String short_web_url;
+    private String short_url;
+    private String web_url;
     private Long categoryId;
 
     /** Used to resolve relations */
@@ -39,7 +42,7 @@ public class Post {
         this.id = id;
     }
 
-    public Post(Long id, String title, String summary, String contentHtml, String url, String publishedDate, Long published, String modified, Integer institute, Boolean is_active, Long modifiedDate, Long categoryId) {
+    public Post(Long id, String title, String summary, String contentHtml, String url, String publishedDate, Long published, String modified, Integer institute, Boolean is_active, Long modifiedDate, String short_web_url, String short_url, String web_url, Long categoryId) {
         this.id = id;
         this.title = title;
         this.summary = summary;
@@ -51,6 +54,9 @@ public class Post {
         this.institute = institute;
         this.is_active = is_active;
         this.modifiedDate = modifiedDate;
+        this.short_web_url = short_web_url;
+        this.short_url = short_url;
+        this.web_url = web_url;
         this.categoryId = categoryId;
     }
 
@@ -146,6 +152,30 @@ public class Post {
 
     public void setModifiedDate(Long modifiedDate) {
         this.modifiedDate = modifiedDate;
+    }
+
+    public String getShort_web_url() {
+        return short_web_url;
+    }
+
+    public void setShort_web_url(String short_web_url) {
+        this.short_web_url = short_web_url;
+    }
+
+    public String getShort_url() {
+        return short_url;
+    }
+
+    public void setShort_url(String short_url) {
+        this.short_url = short_url;
+    }
+
+    public String getWeb_url() {
+        return web_url;
+    }
+
+    public void setWeb_url(String web_url) {
+        this.web_url = web_url;
     }
 
     public Long getCategoryId() {

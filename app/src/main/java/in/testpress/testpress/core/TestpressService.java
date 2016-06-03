@@ -169,8 +169,12 @@ public class TestpressService {
         }
     }
 
-    public Post getPostDetail(String url) {
-        return getPostService().getPostDetails(url);
+    public Post getPostDetail(String url, Map<String, Boolean> queryParams) {
+        if (authToken == null) {
+            return getPostService().getPostDetails(url, queryParams, null);
+        } else {
+            return getPostService().getPostDetails(url, queryParams, getAuthToken());
+        }
     }
 
     public RegistrationSuccessResponse register(String username,String email, String password, String phone){

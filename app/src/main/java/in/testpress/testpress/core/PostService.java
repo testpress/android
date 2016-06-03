@@ -21,8 +21,8 @@ public interface PostService {
             @Header("If-Modified-Since") String latestModifiedDate
     );
 
-    @GET("/{post_url}")
-    Post getPostDetails(@EncodedPath("post_url") String postUrl);
+    @GET("/" + Constants.Http.URL_POSTS_FRAG + "{post_url}")
+    Post getPostDetails(@EncodedPath("post_url") String postUrl, @QueryMap Map<String, Boolean> options, @Header("Authorization") String authorization);
 
     @GET("/{categories_url}")
     TestpressApiResponse<Category> getCategories(@EncodedPath("categories_url") String categoriesUrl, @QueryMap Map<String, String> options, @Header("Authorization") String authorization);

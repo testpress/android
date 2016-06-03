@@ -13,7 +13,10 @@
         card_view:cardPreventCornerOverlap="false"
         card_view:cardUseCompatPadding="true"
         card_view:cardElevation="4dp"
-        card_view:contentPadding="15dp"
+        card_view:contentPaddingTop="5dp"
+        card_view:contentPaddingRight="4dp"
+        card_view:contentPaddingLeft="15dp"
+        card_view:contentPaddingBottom="15dp"
         card_view:cardCornerRadius="2dp">
 
     <LinearLayout
@@ -21,18 +24,18 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="14dp"
-                android:layout_height="14dp"
+                android:id="@+id/calendar_icon"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
                 android:layout_marginRight="3dp"
                 android:tint="#aaa"
-                android:layout_gravity="center_vertical"
+                android:layout_centerVertical="true"
                 android:src="@drawable/ic_event_black_18dp"/>
 
             <TextView
@@ -41,14 +44,27 @@
                 android:textStyle="bold"
                 android:textColor="#aaa"
                 android:text="2015-09-25"
+                android:textSize="12sp"
+                android:layout_toRightOf="@id/calendar_icon"
+                android:layout_centerVertical="true"
                 android:layout_height="wrap_content" />
 
-        </LinearLayout>
+            <ImageView
+                android:id="@+id/share_post"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:padding="7dp"
+                android:tint="#aaa"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/share_outline"/>
+
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
-            android:textSize="18sp"
+            android:paddingRight="10dp"
+            android:textSize="16sp"
             android:textColor="@color/black"
             android:maxLines="2"
             android:ellipsize="end"
@@ -61,10 +77,11 @@
         <TextView
             android:id="@+id/category"
             android:text="Alerts"
-            android:paddingLeft="7dp"
-            android:paddingRight="7dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
             android:paddingTop="2dp"
             android:paddingBottom="2dp"
+            android:textSize="12sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 

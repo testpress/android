@@ -37,7 +37,10 @@ public class PostDao extends AbstractDao<Post, Long> {
         public final static Property Institute = new Property(8, Integer.class, "institute", false, "INSTITUTE");
         public final static Property Is_active = new Property(9, Boolean.class, "is_active", false, "IS_ACTIVE");
         public final static Property ModifiedDate = new Property(10, Long.class, "modifiedDate", false, "MODIFIED_DATE");
-        public final static Property CategoryId = new Property(11, Long.class, "categoryId", false, "CATEGORY_ID");
+        public final static Property Short_web_url = new Property(11, String.class, "short_web_url", false, "SHORT_WEB_URL");
+        public final static Property Short_url = new Property(12, String.class, "short_url", false, "SHORT_URL");
+        public final static Property Web_url = new Property(13, String.class, "web_url", false, "WEB_URL");
+        public final static Property CategoryId = new Property(14, Long.class, "categoryId", false, "CATEGORY_ID");
     };
 
     private DaoSession daoSession;
@@ -67,7 +70,10 @@ public class PostDao extends AbstractDao<Post, Long> {
                 "\"INSTITUTE\" INTEGER," + // 8: institute
                 "\"IS_ACTIVE\" INTEGER," + // 9: is_active
                 "\"MODIFIED_DATE\" INTEGER," + // 10: modifiedDate
-                "\"CATEGORY_ID\" INTEGER);"); // 11: categoryId
+                "\"SHORT_WEB_URL\" TEXT," + // 11: short_web_url
+                "\"SHORT_URL\" TEXT," + // 12: short_url
+                "\"WEB_URL\" TEXT," + // 13: web_url
+                "\"CATEGORY_ID\" INTEGER);"); // 14: categoryId
     }
 
     /** Drops the underlying database table. */
@@ -136,9 +142,24 @@ public class PostDao extends AbstractDao<Post, Long> {
             stmt.bindLong(11, modifiedDate);
         }
  
+        String short_web_url = entity.getShort_web_url();
+        if (short_web_url != null) {
+            stmt.bindString(12, short_web_url);
+        }
+ 
+        String short_url = entity.getShort_url();
+        if (short_url != null) {
+            stmt.bindString(13, short_url);
+        }
+ 
+        String web_url = entity.getWeb_url();
+        if (web_url != null) {
+            stmt.bindString(14, web_url);
+        }
+ 
         Long categoryId = entity.getCategoryId();
         if (categoryId != null) {
-            stmt.bindLong(12, categoryId);
+            stmt.bindLong(15, categoryId);
         }
     }
 
@@ -169,7 +190,10 @@ public class PostDao extends AbstractDao<Post, Long> {
             cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // institute
             cursor.isNull(offset + 9) ? null : cursor.getShort(offset + 9) != 0, // is_active
             cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10), // modifiedDate
-            cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11) // categoryId
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // short_web_url
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // short_url
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // web_url
+            cursor.isNull(offset + 14) ? null : cursor.getLong(offset + 14) // categoryId
         );
         return entity;
     }
@@ -188,7 +212,10 @@ public class PostDao extends AbstractDao<Post, Long> {
         entity.setInstitute(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
         entity.setIs_active(cursor.isNull(offset + 9) ? null : cursor.getShort(offset + 9) != 0);
         entity.setModifiedDate(cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10));
-        entity.setCategoryId(cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11));
+        entity.setShort_web_url(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setShort_url(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setWeb_url(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setCategoryId(cursor.isNull(offset + 14) ? null : cursor.getLong(offset + 14));
      }
     
     /** @inheritdoc */

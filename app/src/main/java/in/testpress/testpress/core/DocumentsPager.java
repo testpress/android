@@ -34,7 +34,7 @@ public class DocumentsPager extends ResourcePager<Notes> {
         String url;
         if (response == null) {
             url = Constants.Http.URL_DOCUMENTS_FRAG;
-            queryParams.put("type", "file");
+            queryParams.put("type", "attachment");
         } else {
             queryParams.clear();
             try {
@@ -60,15 +60,6 @@ public class DocumentsPager extends ResourcePager<Notes> {
             }
         }
         return Collections.emptyList();
-    }
-
-    @Override
-    protected Notes register(Notes notes) {
-        if (notes.getAttachment().isEmpty()) {
-            return null;
-        } else {
-            return notes;
-        }
     }
 
     @Override

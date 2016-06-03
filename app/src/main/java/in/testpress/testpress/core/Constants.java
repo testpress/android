@@ -86,7 +86,7 @@ public final class Constants {
         /**
          * List Documents URL
          */
-        public static final String URL_DOCUMENTS_FRAG = "api/v2.1/notes/";
+        public static final String URL_DOCUMENTS_FRAG = "api/v2.2/notes/";
 
         /**
          * List Products Exams URL

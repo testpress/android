@@ -16,6 +16,7 @@ import in.testpress.testpress.R;
 public class TestpressPagerAdapter extends FragmentPagerAdapter {
 
     private final Resources resources;
+    Bundle bundle;
 
     /**
      * Create pager adapter
@@ -23,9 +24,10 @@ public class TestpressPagerAdapter extends FragmentPagerAdapter {
      * @param resources
      * @param fragmentManager
      */
-    public TestpressPagerAdapter(final Resources resources, final FragmentManager fragmentManager) {
+    public TestpressPagerAdapter(final Resources resources, final FragmentManager fragmentManager, Bundle bundle) {
         super(fragmentManager);
         this.resources = resources;
+        this.bundle = bundle;
     }
 
     @Override
@@ -52,7 +54,12 @@ public class TestpressPagerAdapter extends FragmentPagerAdapter {
                 break;
         }
         result = new ExamsListFragment();
-        Bundle bundle = new Bundle();
+        Bundle bundle;
+        if (this.bundle == null) {
+            bundle = new Bundle();
+        } else {
+            bundle = new Bundle(this.bundle);
+        }
         if (subclass != null) {
             bundle.putString("subclass", subclass);
             result.setArguments(bundle);

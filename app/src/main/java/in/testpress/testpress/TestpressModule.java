@@ -30,6 +30,8 @@ import in.testpress.testpress.ui.AttemptsListAdapter;
 import in.testpress.testpress.ui.AttemptsListFragment;
 import in.testpress.testpress.ui.AvailableExamsListAdapter;
 import in.testpress.testpress.ui.CropImageActivity;
+import in.testpress.testpress.ui.DocumentsListActivity;
+import in.testpress.testpress.ui.DocumentsListFragment;
 import in.testpress.testpress.ui.ExamActivity;
 import in.testpress.testpress.ui.ExamsListActivity;
 import in.testpress.testpress.ui.ExamsListFragment;
@@ -52,6 +54,7 @@ import in.testpress.testpress.ui.ReviewActivity;
 import in.testpress.testpress.ui.ReviewFragment;
 import in.testpress.testpress.ui.ReviewQuestionsFragment;
 import in.testpress.testpress.ui.ReviewStatsFragment;
+import in.testpress.testpress.ui.SearchActivity;
 import in.testpress.testpress.ui.paymentGateway.CreditDebitCardActivity;
 import in.testpress.testpress.ui.paymentGateway.NetBankingActivity;
 import in.testpress.testpress.ui.paymentGateway.PaymentModeActivity;
@@ -105,7 +108,10 @@ import retrofit.converter.GsonConverter;
                 ProfilePhotoActivity.class,
                 CropImageActivity.class,
                 MainMenuFragment.class,
-                ResetPasswordActivity.class
+                ResetPasswordActivity.class,
+                SearchActivity.class,
+                DocumentsListActivity.class,
+                DocumentsListFragment.class
         }
 )
 public class TestpressModule {

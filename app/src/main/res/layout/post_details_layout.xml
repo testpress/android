@@ -81,10 +81,11 @@
                 />
 
             <TextView
-                android:id="@+id/empty_view"
+                android:id="@+id/content_empty_view"
                 android:visibility="gone"
                 android:textSize="16sp"
                 android:paddingTop="10dp"
+                android:gravity="center_horizontal"
                 android:textColor="@android:color/black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -93,11 +94,17 @@
         </RelativeLayout>
     </ScrollView>
 
-    <ProgressBar
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+    <include layout="@layout/empty_view"/>
+
+    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/pb_loading"
+        android:tint="@color/primary"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:indeterminate="true"
-        android:layout_centerInParent="true"/>
+        app:mpb_progressStyle="circular"
+        android:layout_centerInParent="true"
+        style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal" />
 
 </RelativeLayout>

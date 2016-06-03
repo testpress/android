@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import in.testpress.testpress.models.Category;
+import in.testpress.testpress.models.ExamCategory;
+import in.testpress.testpress.models.Notes;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.Attempt;
 import in.testpress.testpress.models.AttemptItem;
@@ -55,6 +57,8 @@ public class TestpressService {
 
     private ProductService getProductsService() { return getRestAdapter().create(ProductService.class); }
 
+    private DocumentsService getDocumentsService() { return getRestAdapter().create(DocumentsService.class); }
+
     private PostService getPostService() { return getRestAdapter().create(PostService.class); }
 
     private DeviceService getDevicesService() { return getRestAdapter().create(DeviceService.class); }
@@ -67,6 +71,10 @@ public class TestpressService {
 
     public TestpressApiResponse<Exam> getExams(String urlFrag, Map<String, String> queryParams) {
         return getExamsService().getExams(urlFrag, queryParams, getAuthToken());
+    }
+
+    public TestpressApiResponse<ExamCategory> getExamsCourses() {
+        return getExamsService().getExamsCourses(getAuthToken());
     }
 
     public TestpressApiResponse<Attempt> getAttempts(String urlFrag, Map<String, String> queryParams) {
@@ -145,11 +153,11 @@ public class TestpressService {
         }
     }
 
-    public TestpressApiResponse<Post> getPosts(String urlFrag, Map<String, String> queryParams) {
+    public TestpressApiResponse<Post> getPosts(String urlFrag, Map<String, String> queryParams, String latestModifiedDate) {
         if (authToken == null) {
-            return getPostService().getPosts(urlFrag, queryParams, null);
+            return getPostService().getPosts(urlFrag, queryParams, null, latestModifiedDate);
         } else {
-            return getPostService().getPosts(urlFrag, queryParams, getAuthToken());
+            return getPostService().getPosts(urlFrag, queryParams, getAuthToken(), latestModifiedDate);
         }
     }
 
@@ -161,8 +169,12 @@ public class TestpressService {
         }
     }
 
-    public Post getPostDetail(String url) {
-        return getPostService().getPostDetails(url);
+    public Post getPostDetail(String url, Map<String, Boolean> queryParams) {
+        if (authToken == null) {
+            return getPostService().getPostDetails(url, queryParams, null);
+        } else {
+            return getPostService().getPostDetails(url, queryParams, getAuthToken());
+        }
     }
 
     public RegistrationSuccessResponse register(String username,String email, String password, String phone){
@@ -191,6 +203,14 @@ public class TestpressService {
 
     public ProductDetails getProductDetail(String productUrlFrag) {
         return getProductsService().getProductDetails(productUrlFrag);
+    }
+
+    public TestpressApiResponse<Notes> getDocumentsList(String urlFrag, Map<String, String> queryParams) {
+        return getDocumentsService().getDocumentsList(urlFrag, queryParams, getAuthToken());
+    }
+
+    public Notes getDownloadUrl(String slug) {
+        return getDocumentsService().getDownloadUrl(slug, getAuthToken());
     }
 
     public Order order(String user, List<OrderItem> orderItems) {

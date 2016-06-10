@@ -14,6 +14,7 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -177,12 +178,8 @@ public class PostsListFragment extends Fragment implements
         super.onActivityCreated(savedInstanceState);
         swipeLayout.setOnRefreshListener(this);
         swipeLayout.setColorSchemeResources(R.color.primary);
-        swipeLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                swipeLayout.setRefreshing(true);
-            }
-        });
+        swipeLayout.measure(View.MEASURED_SIZE_MASK,View.MEASURED_HEIGHT_STATE_SHIFT);
+        swipeLayout.setRefreshing(true);
         getLoaderManager().initLoader(REFRESH_LOADER_ID, null, this);
         fetchCategories();
         if (categoryFilter != null) {

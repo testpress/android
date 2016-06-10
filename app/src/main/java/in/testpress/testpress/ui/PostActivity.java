@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 
@@ -123,6 +124,7 @@ public class PostActivity extends DeepLinkHandlerActivity {
             @Override
             protected void onSuccess(final Post post) throws Exception {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
                 post.setPublished(simpleDateFormat.parse(post.getPublishedDate()).getTime());
                 if (postDao.queryBuilder().where(PostDao.Properties.Id.eq(post.getId())).count() != 0) {
                     post.setModifiedDate(simpleDateFormat.parse(post.getModified()).getTime());

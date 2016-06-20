@@ -10,6 +10,8 @@ import android.content.pm.PackageInstaller;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -155,32 +157,45 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             protected void onSuccess(final Update update) throws Exception {
                 if(update.getUpdateRequired()) {
-                    new MaterialDialog.Builder(MainActivity.this)
-                            .cancelable(true)
-                            .content(update.getMessage())
-                            .cancelListener(new DialogInterface.OnCancelListener() {
-                                @Override
-                                public void onCancel(DialogInterface dialogInterface) {
-                                    if (update.getForce()) {
+                    if (update.getForce()) {
+                        new MaterialDialog.Builder(MainActivity.this)
+                                .cancelable(true)
+                                .content(update.getMessage())
+                                .cancelListener(new DialogInterface.OnCancelListener() {
+                                    @Override
+                                    public void onCancel(DialogInterface dialogInterface) {
                                         finish();
-                                    } else {
-                                        initScreen();
                                     }
-                                }
-                            })
-                            .neutralText("Update")
-                            .buttonsGravity(GravityEnum.CENTER)
-                            .neutralColorRes(R.color.primary)
-                            .callback(new MaterialDialog.ButtonCallback() {
-                                @Override
-                                public void onNeutral(MaterialDialog dialog) {
-                                    dialog.cancel();
-                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "in.testpress.testpress")));
-                                    //Should change "in.testpress.testpress" to "in.testpress.<App name>" for different apps
-                                    finish();
-                                }
-                            })
-                            .show();
+                                })
+                                .neutralText("Update")
+                                .buttonsGravity(GravityEnum.CENTER)
+                                .neutralColorRes(R.color.primary)
+                                .callback(new MaterialDialog.ButtonCallback() {
+                                    @Override
+                                    public void onNeutral(MaterialDialog dialog) {
+                                        dialog.cancel();
+                                        startActivity(new Intent(Intent.ACTION_VIEW,
+                                                Uri.parse("market://details?id=" + getPackageName())));
+                                        finish();
+                                    }
+                                })
+                                .show();
+                    } else {
+                        initScreen();
+                        final CoordinatorLayout coordinatorLayout =
+                                (CoordinatorLayout) findViewById(R.id.coordinator_layout);
+                        Snackbar snackbar = Snackbar
+                                .make(coordinatorLayout, "New update is available", Snackbar.LENGTH_INDEFINITE)
+                                .setAction("UPDATE", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        startActivity(new Intent(Intent.ACTION_VIEW,
+                                                Uri.parse("market://details?id=" + getPackageName())));
+                                        finish();
+                                    }
+                                });
+                        snackbar.show();
+                    }
                 } else {
                     initScreen();
                 }

@@ -154,8 +154,10 @@ public class PostActivity extends DeepLinkHandlerActivity {
             settings.setDefaultTextEncodingName("utf-8");
             settings.setJavaScriptEnabled(true);
             settings.setBuiltInZoomControls(true);
-            settings.setDisplayZoomControls(false);
+            settings.setDisplayZoomControls(true);
             settings.setSupportZoom(true);
+            settings.setUseWideViewPort(true);
+            settings.setLoadWithOverviewMode(true);
             content.loadData(post.getContentHtml(), "text/html; charset=utf-8", null);
         } else {
             content.setVisibility(View.GONE);

@@ -236,7 +236,7 @@ public class CodeVerificationActivity extends AppCompatActivity {
                 final Account account = new Account(username, Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
                 accountManager.addAccountExplicitly(account, password, null);
                 accountManager.setAuthToken(account, Constants.Auth.TESTPRESS_ACCOUNT_TYPE, authToken);
-                registerDevice();
+                updateDevice();
                 DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
                 PostDao postDao = daoSession.getPostDao();
                 postDao.deleteAll();
@@ -258,7 +258,7 @@ public class CodeVerificationActivity extends AppCompatActivity {
         }.execute();
     }
 
-    private void registerDevice() {
+    private void updateDevice() {
         final SharedPreferences sharedPreferences = getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
         sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
         new SafeAsyncTask<Device>() {
@@ -266,6 +266,11 @@ public class CodeVerificationActivity extends AppCompatActivity {
             public Device call() throws Exception {
                 String token = GCMPreference.getRegistrationId(getApplicationContext());
                 return testpressService.register(token, Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+            }
+
+            @Override
+            protected void onException(Exception e) throws RuntimeException {
+                sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
             }
 
             @Override

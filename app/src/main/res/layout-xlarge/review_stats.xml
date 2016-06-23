@@ -1,0 +1,251 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/scrollView">
+    <RelativeLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp">
+        <LinearLayout
+            android:orientation="vertical"
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </LinearLayout>
+        <ProgressBar
+            android:id="@+id/pb_loading"
+            style="@style/ProgressSpinner"
+            android:visibility="gone"
+            android:layout_centerInParent="true" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/exam_details"
+            android:layout_marginTop="5dp">
+
+            <TextView
+                style="@style/examDetailHeading"
+                android:layout_width="match_parent"
+                android:text="Aptitude Analytical Maths (NBE Template)"
+                android:gravity="center_horizontal"
+                android:id="@+id/exam_title" />
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="15dp">
+                <View
+                    android:layout_width="320dp"
+                    android:layout_height="1dip"
+                    android:background="#cccccc" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp">
+
+                        <com.github.mikephil.charting.charts.PieChart
+                            android:id="@+id/chart"
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center_horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="250dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="start"
+                        android:id="@+id/email_pdf_container">
+
+                        <Button
+                            android:layout_height="30dp"
+                            android:layout_width="wrap_content"
+                            android:text="@string/email_pdf"
+                            android:id="@+id/email_pdf"
+                            android:textColor="@color/white"
+                            android:drawableLeft="@drawable/ic_email_white_18dp"
+                            style="?android:attr/borderlessButtonStyle"
+                            android:background="@drawable/primary_button"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:drawablePadding="3dp"
+                            android:textAllCaps="true"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="90dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout style="@style/examDetailRow">
+                        <TextView
+                            style="@style/examDetailSubHeading"
+                            android:text="Rank" />
+                        <TextView
+                            style="@style/examDetailValue"
+                            android:id="@+id/rank"
+                            android:text="1"/>
+                    </LinearLayout>
+                    <LinearLayout style="@style/examDetailRow">
+                        <TextView
+                            style="@style/examDetailSubHeading"
+                            android:text="Score" />
+                        <TextView
+                            style="@style/examDetailValue"
+                            android:id="@+id/score"
+                            android:text="1"/>
+                    </LinearLayout>
+                    <LinearLayout style="@style/examDetailRow">
+                        <TextView
+                            style="@style/examDetailSubHeading"
+                            android:text="Total correct"/>
+                        <TextView
+                            style="@style/examDetailValue"
+                            android:id="@+id/total_correct"
+                            android:text="100"/>
+                    </LinearLayout>
+                    <LinearLayout style="@style/examDetailRow">
+                        <TextView
+                            style="@style/examDetailSubHeading"
+                            android:text="Total Incorrect" />
+                        <TextView
+                            style="@style/examDetailValue"
+                            android:id="@+id/total_incorrect"
+                            android:text="0:30:00"/>
+                    </LinearLayout>
+                    <LinearLayout style="@style/examDetailRow">
+                        <TextView
+                            style="@style/examDetailSubHeading"
+                            android:text="Total Unanswered" />
+                        <TextView
+                            style="@style/examDetailValue"
+                            android:id="@+id/total_unanswered"
+                            android:text="1"/>
+                    </LinearLayout>
+                    <LinearLayout style="@style/examDetailRow">
+                        <TextView
+                            style="@style/examDetailSubHeading"
+                            android:text="Time Taken" />
+                        <TextView
+                            style="@style/examDetailValue"
+                            android:id="@+id/time_taken"
+                            android:text="0:28:05"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp">
+                        <View
+                            android:layout_width="320dp"
+                            android:layout_height="1dip"
+                            android:background="#cccccc" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#333333"
+                            android:textSize="@dimen/text_size_xlarge"
+                            android:textStyle="normal"
+                            android:text="Your percentile is" />
+                        <TextView
+                            style="@style/examDetailValue"
+                            android:layout_width="wrap_content"
+                            android:textSize="@dimen/text_size_xlarge"
+                            android:layout_marginTop="0dp"
+                            android:layout_marginBottom="0dp"
+                            android:layout_marginLeft="5dp"
+                            android:id="@+id/percentile"
+                            android:text="22%"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="5dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#333333"
+                            android:textSize="@dimen/text_size_small"
+                            android:textStyle="normal"
+                            android:text="\u2014" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#333333"
+                            android:textSize="@dimen/text_size_small"
+                            android:textStyle="normal"
+                            android:layout_marginLeft="5dp"
+                            android:id="@+id/sub_percentile"
+                            android:text="22%"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#333333"
+                            android:textSize="@dimen/text_size_small"
+                            android:textStyle="normal"
+                            android:layout_marginLeft="5dp"
+                            android:text="of users scored less than your score of " />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#333333"
+                            android:textSize="@dimen/text_size_small"
+                            android:textStyle="normal"
+                            android:layout_marginLeft="5dp"
+                            android:id="@+id/sub_score"
+                            android:text="20"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </RelativeLayout>
+</ScrollView>

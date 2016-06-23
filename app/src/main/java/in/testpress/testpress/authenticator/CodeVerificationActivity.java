@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.Settings;
@@ -74,6 +75,7 @@ public class CodeVerificationActivity extends AppCompatActivity {
     private SmsReceivingEvent smsReceivingEvent;
     private Timer timer;
     private InternetConnectivityChecker internetConnectivityChecker = new InternetConnectivityChecker(this);
+    private PackageManager packageManager;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -95,10 +97,15 @@ public class CodeVerificationActivity extends AppCompatActivity {
             welcomeText.setText("Waiting to automatically detect an sms sent to " + phoneNumber + "\nIf you get the verification code press Manually Verify");
             timer = new Timer();
             smsReceivingEvent = new SmsReceivingEvent(timer);
-            IntentFilter filter = new IntentFilter();
-            filter.addAction("android.provider.Telephony.SMS_RECEIVED");
-            registerReceiver(smsReceivingEvent, filter); //start receiver
-            timer.start(); //start timer
+            packageManager = getBaseContext().getPackageManager();
+            if (packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
+                IntentFilter filter = new IntentFilter();
+                filter.addAction("android.provider.Telephony.SMS_RECEIVED");
+                registerReceiver(smsReceivingEvent, filter); //start receiver
+                timer.start(); // Start timer
+            } else {
+                timer.onFinish();
+            }
         }
         verificationCodeText.addTextChangedListener(watcher);
         verificationCodeText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -157,7 +164,9 @@ public class CodeVerificationActivity extends AppCompatActivity {
         public void onFinish() {
             countText.setText("30s");
             progressBar.setProgress(30);
-            unregisterReceiver(smsReceivingEvent); //end receiver
+            if (packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
+                unregisterReceiver(smsReceivingEvent); //end receiver
+            }
             if (smsReceivingEvent.code  != null) { //checking smsReceivingEvent get the code or not
                 verificationCodeText.setText(smsReceivingEvent.code);
                 handleCodeVerification(); //verify code

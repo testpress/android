@@ -139,6 +139,8 @@ public class PostsListFragment extends Fragment implements
                 if (adapter.getFootersCount() != 0) { // Remove loading footer if added already
                     adapter.removeFooter(loadingLayout);
                 }
+                listView.setVisibility(View.VISIBLE);
+                emptyView.setVisibility(View.GONE);
                 String filter = mTopLevelSpinnerAdapter.getTag(position);
                 if (filter.isEmpty()) {
                     adapter.getWrappedAdapter().clearCategoryFilter();
@@ -330,6 +332,10 @@ public class PostsListFragment extends Fragment implements
 
             //Return if no new posts are available
             if (items.isEmpty()) {
+                if (postDao.count() == 0) {
+                    setEmptyText(R.string.no_posts, R.string.no_posts_description, R.drawable.ic_error_outline_black_18dp);
+                    retryButton.setVisibility(View.GONE);
+                }
                 return;
             }
             listView.setVisibility(View.VISIBLE);
@@ -383,6 +389,11 @@ public class PostsListFragment extends Fragment implements
     void displayDataFromDB() {
         Ln.d("Adapter notifyDataSetChanged displayDataFromDB");
         adapter.notifyDataSetChanged();
+
+        if (postDao.count() == 0 || (pager != null && !pager.hasMore() && adapter.getCount() == 0)) {
+            setEmptyText(R.string.no_posts, R.string.no_posts_description, R.drawable.ic_error_outline_black_18dp);
+            retryButton.setVisibility(View.GONE);
+        }
     }
 
     @Override

@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                android:orientation="vertical" android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <include layout="@layout/toolbar_actionbar"/> <!-- placeholder, empty except on L -->
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#ffffff"
         android:layout_below="@+id/toolbar_actionbar">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/postDetails"
             android:padding="20dp">
 
@@ -20,38 +21,90 @@
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:text="Expected Questions: Seating Arrangements"
-                android:textSize="20sp"
+                android:textSize="30sp"
+                android:gravity="center"
+                android:layout_centerHorizontal="true"
+                android:textStyle="bold"
                 android:textColor="@android:color/black"
                 android:layout_height="wrap_content"/>
 
             <TextView
                 android:id="@+id/date"
-                android:textSize="15sp"
-                android:text="Feb 11, 2014 to Jul 9, 2019"
+                android:textSize="13sp"
+                android:text="Feb 11, 2014"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text"
+                android:textColor="@color/text_light"
                 android:layout_below="@id/title"
+                android:gravity="center"
                 android:paddingTop="10dp"/>
 
+            <View
+                android:id="@+id/title_separator"
+                android:layout_width="100dp"
+                android:layout_height="1dp"
+                android:layout_below="@+id/date"
+                android:layout_marginTop="20dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="20dp"
+                android:background="#c0c0c0"/>
+
+
             <TextView
-                android:id="@+id/content"
-                android:textSize="16sp"
-                android:paddingTop="10dp"
-                android:textColor="@android:color/black"
-                android:text="Six persons-A, B, C, D, E and F \u2013 are sitting in two cars namely X and Y but not necessarily in the same order. Out of six persons two are driving the cars. There are three persons in each car ad one persons must be on front seat besides the person who is driving the car. In car X, D is neither driving nor sitting on the back seat. F is sitting on the back seat in Car Y. C is on the driver\u2019s seat but not in the Car X. A is neither driving nor travelling in the Car Y. E is not on the driver\u2019s seat in any car.\r\n\r\n"
+                android:id="@+id/summary"
+                android:textSize="15sp"
+                android:textStyle="italic"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/date"/>
+                android:textColor="@color/text_light"
+                android:layout_below="@id/title_separator"
+                android:gravity="center"
+                android:lineSpacingExtra="5dp"
+                android:paddingTop="10dp"/>
+
+            <View
+                android:id="@+id/summary_separator"
+                android:layout_width="100dp"
+                android:layout_height="1dp"
+                android:layout_below="@+id/summary"
+                android:layout_marginTop="20dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="20dp"
+                android:background="#c0c0c0"/>
+
+            <WebView  xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:id="@+id/content"
+                      android:paddingTop="10dp"
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:layout_below="@id/summary_separator"
+                />
+
+            <TextView
+                android:id="@+id/content_empty_view"
+                android:visibility="gone"
+                android:textSize="16sp"
+                android:paddingTop="10dp"
+                android:gravity="center_horizontal"
+                android:textColor="@android:color/black"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/summary_separator"/>
 
         </RelativeLayout>
     </ScrollView>
 
-    <ProgressBar
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+    <include layout="@layout/empty_view"/>
+
+    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/pb_loading"
+        android:tint="@color/primary"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:indeterminate="true"
-        android:layout_centerInParent="true"/>
+        app:mpb_progressStyle="circular"
+        android:layout_centerInParent="true"
+        style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal" />
 
 </RelativeLayout>

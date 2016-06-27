@@ -18,7 +18,7 @@ import static android.accounts.AccountManager.KEY_ACCOUNT_TYPE;
 import static android.accounts.AccountManager.KEY_AUTHTOKEN;
 import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
 import static android.accounts.AccountManager.KEY_INTENT;
-import static in.testpress.testpress.authenticator.TestpressAuthenticatorActivity.PARAM_AUTHTOKEN_TYPE;
+import static in.testpress.testpress.authenticator.LoginActivity.PARAM_AUTHTOKEN_TYPE;
 
 
 public class TestpressAccountAuthenticator extends AbstractAccountAuthenticator {
@@ -66,7 +66,7 @@ public class TestpressAccountAuthenticator extends AbstractAccountAuthenticator 
                              final String authTokenType, final String[] requiredFeatures,
                              final Bundle options) throws NetworkErrorException {
         //TODO Restrict to one account
-        final Intent intent = new Intent(context, TestpressAuthenticatorActivity.class);
+        final Intent intent = new Intent(context, LoginActivity.class);
         intent.putExtra(PARAM_AUTHTOKEN_TYPE, authTokenType);
         intent.putExtra(KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
 

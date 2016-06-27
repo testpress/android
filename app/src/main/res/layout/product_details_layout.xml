@@ -1,165 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 xmlns:fbutton="http://schemas.android.com/apk/res-auto"
+                                                 android:id="@+id/main_content"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent">
 
-    <include layout="@layout/toolbar_actionbar"/> <!-- placeholder, empty except on L -->
-
-    <ScrollView
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar_actionbar">
+        android:layout_height="300dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <RelativeLayout
+        <!--<android.support.design.widget.CollapsingToolbarLayout-->
+            <!--android:id="@+id/collapsing_toolbar"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--app:layout_scrollFlags="scroll|exitUntilCollapsed"-->
+            <!--app:contentScrim="?attr/colorPrimary"-->
+            <!--app:expandedTitleMarginStart="48dp"-->
+            <!--app:title="  "-->
+            <!--app:expandedTitleTextAppearance="@android:color/transparent"-->
+            <!--app:collapsedTitleTextAppearance="@android:color/transparent"-->
+            <!--app:expandedTitleMarginEnd="64dp">-->
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/productDetails"
-            android:paddingLeft="10dp"
-            android:paddingTop="2dp"
->
-
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:contentScrim="@android:color/transparent"
+            app:title="  "
+            app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
             <ImageView
-                android:layout_width="150dp"
-                android:layout_height="150dp"
                 android:id="@+id/thumbnail_image"
-                android:src="@drawable/icon"
-                android:layout_centerHorizontal="true"/>
-
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:text="Sample Title"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/primary"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/thumbnail_image"
-                android:padding="5dp"
-                android:layout_centerHorizontal="true"/>
-
-            <Button
-                android:id="@+id/buyButton"
-                style="@style/ShadowText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="Buy"
-                android:textColor="#ffffff"
-                android:background="@drawable/buy_button_background_states"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_below="@id/title"/>
+                android:scaleType="centerCrop"
+                app:layout_collapseMode="parallax" />
 
-            <TextView
-                android:id="@+id/number_of_exams"
-                android:textSize="15sp"
-                android:text="0 Exams"
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_actionbar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/buyButton"
-                android:padding="2dp"/>
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="parallax"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                android:background="@android:color/transparent"/>
 
-            <TextView
-                android:id="@+id/number_of_notes"
-                android:textSize="15sp"
-                android:text="0 Documents"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/number_of_exams"
-                android:padding="2dp"/>
+        </android.support.design.widget.CollapsingToolbarLayout>
 
-            <TextView
-                android:id="@+id/date"
-                android:textSize="15sp"
-                android:text="Feb 11, 2014 to Jul 9, 2019"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_below="@id/number_of_notes"
-                android:padding="2dp"/>
-
-            <TextView
-                android:id="@+id/categories"
-                android:textSize="15sp"
-                android:text="[AIIMS, AIPGMEE, NBE, PGI]"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/date"
-                android:padding="2dp"/>
-
-            <TextView
-                android:id="@+id/price"
-                android:textSize="15sp"
-                android:text="₹ 2000.00"
-                android:textColor="@color/text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/categories"
-                android:padding="2dp"/>
-
-            <TextView
-                android:id="@+id/description_title"
-                android:textSize="15sp"
-                android:text="Description:"
-                android:textStyle="bold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="3dp"
-                android:visibility="gone"
-                android:layout_below="@id/price"/>
-
-            <TextView
-                android:id="@+id/description"
-                android:textSize="15sp"
-                android:text="Free mock crack NBE course. \n\nQuestions similar to NBE exam with picture based question"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_below="@id/description_title"/>
-
-            <TextView
-                android:id="@+id/examsTitle"
-                android:textSize="15sp"
-                android:text="Exam(s):"
-                android:textStyle="bold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="3dp"
-                android:visibility="gone"
-                android:layout_below="@id/description"/>
-
-            <ListView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/examListView"
-                android:layout_below="@id/examsTitle"/>
-
-            <TextView
-                android:id="@+id/notesTitle"
-                android:textSize="15sp"
-                android:text="Note(s):"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="3dp"
-                android:visibility="gone"
-                android:layout_below="@id/examListView"/>
-
-            <ListView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/notesListView"
-                android:layout_below="@id/notesTitle"/>
-
-        </RelativeLayout>
-    </ScrollView>
-
+    </android.support.design.widget.AppBarLayout>
+    <include layout="@layout/product_details_content_scrolling" />
     <ProgressBar
         android:layout_width="64dp"
         android:layout_height="64dp"
@@ -167,4 +59,24 @@
         android:indeterminate="true"
         android:layout_centerInParent="true"/>
 
-</RelativeLayout>
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:gravity="bottom"
+        android:layout_height="fill_parent">
+
+        <info.hoang8f.widget.FButton
+            android:id="@+id/buy_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            fbutton:buttonColor="@color/fbutton_color_carrot"
+            fbutton:shadowEnabled="true"
+            fbutton:shadowHeight="5dp"
+            fbutton:cornerRadius="0dp"
+            android:layout_marginTop="20dp"
+            android:text="Buy Now"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_xxlarge"
+            />
+    </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

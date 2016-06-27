@@ -34,15 +34,8 @@ public class ExamPager extends ResourcePager<Exam> {
     public List<Exam> getItems(int page, int size) throws RetrofitError {
         String url = null;
         if (response == null) {
-            if (subclass.equals("available")) {
-                url = Constants.Http.URL_AVAILABLE_EXAMS_FRAG;
-            } else if (subclass.equals("upcoming")) {
-                url = Constants.Http.URL_UPCOMING_EXAMS_FRAG;
-            } else if (subclass.equals("history")) {
-                url = Constants.Http.URL_HISTORY_EXAMS_FRAG;
-            } else {
-                url = Constants.Http.URL_AVAILABLE_EXAMS_FRAG;
-            }
+            url = Constants.Http.URL_EXAMS_FRAG;
+            queryParams.put(Constants.Http.STATE, subclass);
         } else {
             try {
                 URL full = new URL(response.getNext());
@@ -59,11 +52,7 @@ public class ExamPager extends ResourcePager<Exam> {
                 return response.getResults();
             }
             catch (Exception e) {
-                if((e.getMessage()).equals("403 FORBIDDEN")) {
-                    throw e;
-                } else {
-                    return null;
-                }
+                throw e;
             }
         }
         return Collections.emptyList();

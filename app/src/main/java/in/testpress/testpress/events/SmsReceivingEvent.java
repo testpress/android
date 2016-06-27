@@ -6,12 +6,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 
+import in.testpress.testpress.R;
 import in.testpress.testpress.authenticator.CodeVerificationActivity.Timer;
+import in.testpress.testpress.core.Constants;
 
 public class SmsReceivingEvent extends BroadcastReceiver {
     public String code;
     private Timer timer;
-
     public SmsReceivingEvent(Timer timer) {
         this.timer = timer;
     }
@@ -28,7 +29,7 @@ public class SmsReceivingEvent extends BroadcastReceiver {
                 if (senderNum.matches(".*TSTPRS")) { //check whether TSTPRS present in senderAddress
                     String smsContent = currentMessage.getDisplayMessageBody();
                     //get the code from smsContent
-                    code = smsContent.replaceAll(".*(?<=Thank you for registering at Testpress.in. Your authorization code is )([^\n]*)(?=.).*", "$1");
+                    code = smsContent.replaceAll(".*(?<=Thank you for registering at +"+Constants.Http.URL_BASE +"+. Your authorization code is )([^\n]*)(?=.).*", "$1");
                     timer.cancel();
                     timer.onFinish();
                 }

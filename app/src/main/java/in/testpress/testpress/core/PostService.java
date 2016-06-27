@@ -14,10 +14,15 @@ import retrofit.http.QueryMap;
 public interface PostService {
 
     @GET("/{posts_url}")
-    TestpressApiResponse<Post> getPosts(@EncodedPath("posts_url") String postUrl, @QueryMap Map<String, String> options, @Header("Authorization") String authorization);
+    TestpressApiResponse<Post> getPosts(
+            @EncodedPath("posts_url") String postUrl,
+            @QueryMap Map<String, String> options,
+            @Header("Authorization") String authorization,
+            @Header("If-Modified-Since") String latestModifiedDate
+    );
 
-    @GET("/{post_url}")
-    Post getPostDetails(@EncodedPath("post_url") String postUrl, @Header("Authorization") String authorization);
+    @GET("/" + Constants.Http.URL_POSTS_FRAG + "{post_url}")
+    Post getPostDetails(@EncodedPath("post_url") String postUrl, @QueryMap Map<String, Boolean> options, @Header("Authorization") String authorization);
 
     @GET("/{categories_url}")
     TestpressApiResponse<Category> getCategories(@EncodedPath("categories_url") String categoriesUrl, @QueryMap Map<String, String> options, @Header("Authorization") String authorization);

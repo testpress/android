@@ -15,7 +15,7 @@
         </LinearLayout>
         <ProgressBar
             android:id="@+id/pb_loading"
-            style="@style/ListSpinner"
+            style="@style/ProgressSpinner"
             android:visibility="invisible"
             android:layout_centerInParent="true" />
         <LinearLayout

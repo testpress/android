@@ -7,6 +7,7 @@ import java.util.Map;
 import in.testpress.testpress.models.Attempt;
 import in.testpress.testpress.models.AttemptItem;
 import in.testpress.testpress.models.Exam;
+import in.testpress.testpress.models.ExamCategory;
 import in.testpress.testpress.models.ReviewItem;
 import in.testpress.testpress.models.TestpressApiResponse;
 import retrofit.http.Body;
@@ -21,6 +22,9 @@ public interface ExamService {
 
     @GET("/{exams_url}")
     TestpressApiResponse<Exam> getExams(@EncodedPath("exams_url") String examsUrl, @QueryMap Map<String, String> options, @Header("Authorization") String authorization);
+
+    @GET(Constants.Http.URL_EXAMS_CATEGORY_FRAG)
+    TestpressApiResponse<ExamCategory> getExamsCourses(@Header("Authorization") String authorization);
 
     @GET("/{questions_url}")
     TestpressApiResponse<AttemptItem> getQuestions(@EncodedPath("questions_url") String questionsUrlFrag, @Header("Authorization") String authorization);

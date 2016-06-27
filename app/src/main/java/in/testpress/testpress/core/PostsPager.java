@@ -1,21 +1,14 @@
 package in.testpress.testpress.core;
 
-import android.content.Context;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.TimeZone;
 
-import in.testpress.testpress.TestpressApplication;
-import in.testpress.testpress.models.Category;
-import in.testpress.testpress.models.CategoryDao;
-import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.models.TestpressApiResponse;
@@ -26,9 +19,14 @@ import retrofit.RetrofitError;
 public class PostsPager extends ResourcePager<Post> {
 
     TestpressApiResponse<Post> response;
+    String latestModifiedDate;
+    SimpleDateFormat simpleDateFormat;
+    PostDao postDao;
 
-    public PostsPager(TestpressService service, Context context) {
+    public PostsPager(TestpressService service, PostDao postDao) {
         super(service);
+        simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        this.postDao = postDao;
     }
 
     @Override
@@ -58,7 +56,7 @@ public class PostsPager extends ResourcePager<Post> {
             }
         }
         if (url != null) {
-            response = service.getPosts(url, queryParams);
+            response = service.getPosts(url, queryParams, latestModifiedDate);
             return response.getResults();
         }
         return Collections.emptyList();
@@ -66,7 +64,6 @@ public class PostsPager extends ResourcePager<Post> {
 
     @Override
     public boolean next() throws IOException {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         boolean emptyPage = false;
@@ -88,7 +85,8 @@ public class PostsPager extends ResourcePager<Post> {
                         resource.setCategory(resource.category);
                     }
                     Ln.d("Category ID " + resource.getCategoryId());
-                    resource.setCreatedDate(simpleDateFormat.parse(resource.getCreated()).getTime());
+                    resource.setPublished(simpleDateFormat.parse(resource.getPublishedDate()).getTime());
+                    resource.setModifiedDate(simpleDateFormat.parse(resource.getModified()).getTime());
                     resources.put(getId(resource), resource);
                 }
                 Ln.d("Looping resources over");
@@ -112,6 +110,24 @@ public class PostsPager extends ResourcePager<Post> {
     }
 
     @Override
+    protected Post register(Post post){
+        try {
+            // Omit the post if its published date less then the lowest published date in db
+            if ((postDao != null) && (postDao.count() != 0) && (simpleDateFormat.parse(
+                    post.getPublishedDate()).getTime() < postDao.queryBuilder().orderDesc(
+                    PostDao.Properties.Published).list().get((int) postDao.count() - 1)
+                    .getPublished())) {
+
+                return null;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return post;
+    }
+
+    @Override
     public boolean hasNext() {
         if (response == null || response.getNext() != null) {
             return true;
@@ -123,5 +139,7 @@ public class PostsPager extends ResourcePager<Post> {
         return response.getCount();
     }
 
-
+    public void setLatestModifiedDate(String latestModifiedDate) {
+        this.latestModifiedDate = latestModifiedDate;
+    }
 }

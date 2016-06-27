@@ -9,8 +9,8 @@
     <ImageView
         android:id="@+id/menuIcon"
         android:layout_gravity="center"
-        android:layout_width="66dp"
-        android:layout_height="66dp"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
         android:layout_marginTop="15dp"
         android:src="@drawable/icon" />
 
@@ -19,7 +19,9 @@
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16dp"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textAllCaps="true"
         android:layout_marginTop="10dp"
         android:text="TextView"
         android:textColor="@color/black"/>

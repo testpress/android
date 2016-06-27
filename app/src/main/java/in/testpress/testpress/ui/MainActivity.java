@@ -1,20 +1,21 @@
 package in.testpress.testpress.ui;
 
-import android.accounts.OperationCanceledException;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInstaller;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -26,6 +27,7 @@ import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.authenticator.RegistrationIntentService;
+import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.PostDao;
@@ -60,6 +62,7 @@ public class MainActivity extends TestpressFragmentActivity {
     protected RelativeLayout progressBarLayout;
     private boolean userHasAuthenticated = false;
     private MainMenuFragment fragment;
+    private SharedPreferences gcmPreferences;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -69,13 +72,19 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     private void initScreen() {
-        if (userHasAuthenticated) {
-            fragment = new MainMenuFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, fragment)
-                    .commitAllowingStateLoss();
-            progressBarLayout.setVisibility(View.GONE);
+        gcmPreferences = getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
+        if (!gcmPreferences.getBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false)) {
+            if (checkPlayServices()) {
+                // Start IntentService to register this application with GCM.
+                Intent intent = new Intent(MainActivity.this, RegistrationIntentService.class);
+                startService(intent);
+            }
         }
+        fragment = new MainMenuFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, fragment)
+                .commitAllowingStateLoss();
+        progressBarLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -113,58 +122,44 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     private void registerDevice() {
-
         new SafeAsyncTask<Device>() {
             @Override
             public Device call() throws Exception {
                 String token = GCMPreference.getRegistrationId(MainActivity.this.getApplicationContext());
-                return serviceProvider.getService(MainActivity.this).register(token, Settings.Secure.ANDROID_ID);
+                AccountManager manager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
+                Account[] account = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
+                if (account.length > 0) {
+                    testpressService = serviceProvider.getService(MainActivity.this);
+                }
+                return testpressService.register(token, Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
             }
 
             @Override
-            protected void onException(final Exception e) throws RuntimeException {
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-                sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
+            protected void onException(Exception e) throws RuntimeException {
             }
 
             @Override
             protected void onSuccess(final Device device) throws Exception {
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-                sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, true).apply();
+                gcmPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, true).apply();
             }
         }.execute();
-
     }
 
-    private void checkAuth() {
-        new SafeAsyncTask<Boolean>() {
-
+    private void updateDevice() {
+        new SafeAsyncTask<Device>() {
             @Override
-            public Boolean call() throws Exception {
-                final TestpressService svc = serviceProvider.getService(MainActivity.this);
-                return svc != null;
+            public Device call() throws Exception {
+                String token = GCMPreference.getRegistrationId(MainActivity.this.getApplicationContext());
+                return testpressService.register(token, Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
             }
 
             @Override
-            protected void onException(final Exception e) throws RuntimeException {
-                super.onException(e);
-                if (e instanceof OperationCanceledException) {
-                    // User cancelled the authentication process (back button, etc).
-                    // Since auth could not take place, lets finish this activity.
-                    finish();
-                }
+            protected void onException(Exception e) throws RuntimeException {
             }
 
             @Override
-            protected void onSuccess(final Boolean hasAuthenticated) throws Exception {
-                super.onSuccess(hasAuthenticated);
-                userHasAuthenticated = true;
-                if (checkPlayServices()) {
-                    // Start IntentService to register this application with GCM.
-                    Intent intent = new Intent(MainActivity.this, RegistrationIntentService.class);
-                    startService(intent);
-                    initScreen();
-                }
+            protected void onSuccess(final Device device) throws Exception {
+                gcmPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, true).apply();
             }
         }.execute();
     }
@@ -178,39 +173,54 @@ public class MainActivity extends TestpressFragmentActivity {
 
             @Override
             protected void onException(final Exception e) throws RuntimeException {
-                checkAuth();
+                initScreen();
             }
 
             @Override
             protected void onSuccess(final Update update) throws Exception {
                 if(update.getUpdateRequired()) {
-                    new MaterialDialog.Builder(MainActivity.this)
-                            .cancelable(true)
-                            .content(update.getMessage())
-                            .cancelListener(new DialogInterface.OnCancelListener() {
-                                @Override
-                                public void onCancel(DialogInterface dialogInterface) {
-                                    if (update.getForce()) {
+                    if (update.getForce()) {
+                        new MaterialDialog.Builder(MainActivity.this)
+                                .cancelable(true)
+                                .content(update.getMessage())
+                                .cancelListener(new DialogInterface.OnCancelListener() {
+                                    @Override
+                                    public void onCancel(DialogInterface dialogInterface) {
                                         finish();
-                                    } else {
-                                        checkAuth();
                                     }
-                                }
-                            })
-                            .neutralText("Update")
-                            .buttonsGravity(GravityEnum.CENTER)
-                            .neutralColorRes(R.color.primary)
-                            .callback(new MaterialDialog.ButtonCallback() {
-                                @Override
-                                public void onNeutral(MaterialDialog dialog) {
-                                    dialog.cancel();
-                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "in.testpress.testpress")));
-                                    //Should change "in.testpress.testpress" to "in.testpress.<App name>" for different apps
-                                    finish();
-                                }
-                            })
-                            .show();
-                } else checkAuth();
+                                })
+                                .neutralText("Update")
+                                .buttonsGravity(GravityEnum.CENTER)
+                                .neutralColorRes(R.color.primary)
+                                .callback(new MaterialDialog.ButtonCallback() {
+                                    @Override
+                                    public void onNeutral(MaterialDialog dialog) {
+                                        dialog.cancel();
+                                        startActivity(new Intent(Intent.ACTION_VIEW,
+                                                Uri.parse("market://details?id=" + getPackageName())));
+                                        finish();
+                                    }
+                                })
+                                .show();
+                    } else {
+                        initScreen();
+                        final CoordinatorLayout coordinatorLayout =
+                                (CoordinatorLayout) findViewById(R.id.coordinator_layout);
+                        Snackbar snackbar = Snackbar
+                                .make(coordinatorLayout, "New update is available", Snackbar.LENGTH_INDEFINITE)
+                                .setAction("UPDATE", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        startActivity(new Intent(Intent.ACTION_VIEW,
+                                                Uri.parse("market://details?id=" + getPackageName())));
+                                        finish();
+                                    }
+                                });
+                        snackbar.show();
+                    }
+                } else {
+                    initScreen();
+                }
             }
         }.execute();
     }
@@ -233,8 +243,10 @@ public class MainActivity extends TestpressFragmentActivity {
                                 .widgetColorRes(R.color.primary)
                                 .progress(true, 0)
                                 .show();
+                        testpressService.invalidateAuthToken();
                         serviceProvider.invalidateAuthToken();
-
+                        gcmPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
+                        updateDevice();
                         DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
                         PostDao postDao = daoSession.getPostDao();
                         postDao.deleteAll();
@@ -275,21 +287,9 @@ public class MainActivity extends TestpressFragmentActivity {
             mRegistrationBroadcastReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-//                SharedPreferences sharedPreferences =
-//                        PreferenceManager.getDefaultSharedPreferences(context);
-//                boolean sentToken = sharedPreferences
-//                        .getBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false);
-
                     registerDevice();
-                    //initScreen();
-//                if (sentToken) {
-//                    mInformationTextView.setText(getString(R.string.gcm_send_message));
-//                } else {
-//                    mInformationTextView.setText(getString(R.string.token_error_message));
-//                }
                 }
             };
-            //checkAuth();
             checkUpdate();
         }
     }

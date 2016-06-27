@@ -31,12 +31,16 @@ public class PostDao extends AbstractDao<Post, Long> {
         public final static Property Summary = new Property(2, String.class, "summary", false, "SUMMARY");
         public final static Property ContentHtml = new Property(3, String.class, "contentHtml", false, "CONTENT_HTML");
         public final static Property Url = new Property(4, String.class, "url", false, "URL");
-        public final static Property Created = new Property(5, String.class, "created", false, "CREATED");
-        public final static Property CreatedDate = new Property(6, Long.class, "createdDate", false, "CREATED_DATE");
+        public final static Property PublishedDate = new Property(5, String.class, "publishedDate", false, "PUBLISHED_DATE");
+        public final static Property Published = new Property(6, Long.class, "published", false, "PUBLISHED");
         public final static Property Modified = new Property(7, String.class, "modified", false, "MODIFIED");
         public final static Property Institute = new Property(8, Integer.class, "institute", false, "INSTITUTE");
-        public final static Property Active = new Property(9, Boolean.class, "active", false, "ACTIVE");
-        public final static Property CategoryId = new Property(10, Long.class, "categoryId", false, "CATEGORY_ID");
+        public final static Property Is_active = new Property(9, Boolean.class, "is_active", false, "IS_ACTIVE");
+        public final static Property ModifiedDate = new Property(10, Long.class, "modifiedDate", false, "MODIFIED_DATE");
+        public final static Property Short_web_url = new Property(11, String.class, "short_web_url", false, "SHORT_WEB_URL");
+        public final static Property Short_url = new Property(12, String.class, "short_url", false, "SHORT_URL");
+        public final static Property Web_url = new Property(13, String.class, "web_url", false, "WEB_URL");
+        public final static Property CategoryId = new Property(14, Long.class, "categoryId", false, "CATEGORY_ID");
     };
 
     private DaoSession daoSession;
@@ -60,12 +64,16 @@ public class PostDao extends AbstractDao<Post, Long> {
                 "\"SUMMARY\" TEXT," + // 2: summary
                 "\"CONTENT_HTML\" TEXT," + // 3: contentHtml
                 "\"URL\" TEXT," + // 4: url
-                "\"CREATED\" TEXT," + // 5: created
-                "\"CREATED_DATE\" INTEGER," + // 6: createdDate
+                "\"PUBLISHED_DATE\" TEXT," + // 5: publishedDate
+                "\"PUBLISHED\" INTEGER," + // 6: published
                 "\"MODIFIED\" TEXT," + // 7: modified
                 "\"INSTITUTE\" INTEGER," + // 8: institute
-                "\"ACTIVE\" INTEGER," + // 9: active
-                "\"CATEGORY_ID\" INTEGER);"); // 10: categoryId
+                "\"IS_ACTIVE\" INTEGER," + // 9: is_active
+                "\"MODIFIED_DATE\" INTEGER," + // 10: modifiedDate
+                "\"SHORT_WEB_URL\" TEXT," + // 11: short_web_url
+                "\"SHORT_URL\" TEXT," + // 12: short_url
+                "\"WEB_URL\" TEXT," + // 13: web_url
+                "\"CATEGORY_ID\" INTEGER);"); // 14: categoryId
     }
 
     /** Drops the underlying database table. */
@@ -104,14 +112,14 @@ public class PostDao extends AbstractDao<Post, Long> {
             stmt.bindString(5, url);
         }
  
-        String created = entity.getCreated();
-        if (created != null) {
-            stmt.bindString(6, created);
+        String publishedDate = entity.getPublishedDate();
+        if (publishedDate != null) {
+            stmt.bindString(6, publishedDate);
         }
  
-        Long createdDate = entity.getCreatedDate();
-        if (createdDate != null) {
-            stmt.bindLong(7, createdDate);
+        Long published = entity.getPublished();
+        if (published != null) {
+            stmt.bindLong(7, published);
         }
  
         String modified = entity.getModified();
@@ -124,14 +132,34 @@ public class PostDao extends AbstractDao<Post, Long> {
             stmt.bindLong(9, institute);
         }
  
-        Boolean active = entity.getActive();
-        if (active != null) {
-            stmt.bindLong(10, active ? 1L: 0L);
+        Boolean is_active = entity.getIs_active();
+        if (is_active != null) {
+            stmt.bindLong(10, is_active ? 1L: 0L);
+        }
+ 
+        Long modifiedDate = entity.getModifiedDate();
+        if (modifiedDate != null) {
+            stmt.bindLong(11, modifiedDate);
+        }
+ 
+        String short_web_url = entity.getShort_web_url();
+        if (short_web_url != null) {
+            stmt.bindString(12, short_web_url);
+        }
+ 
+        String short_url = entity.getShort_url();
+        if (short_url != null) {
+            stmt.bindString(13, short_url);
+        }
+ 
+        String web_url = entity.getWeb_url();
+        if (web_url != null) {
+            stmt.bindString(14, web_url);
         }
  
         Long categoryId = entity.getCategoryId();
         if (categoryId != null) {
-            stmt.bindLong(11, categoryId);
+            stmt.bindLong(15, categoryId);
         }
     }
 
@@ -156,12 +184,16 @@ public class PostDao extends AbstractDao<Post, Long> {
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // summary
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // contentHtml
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // url
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // created
-            cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6), // createdDate
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // publishedDate
+            cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6), // published
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // modified
             cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // institute
-            cursor.isNull(offset + 9) ? null : cursor.getShort(offset + 9) != 0, // active
-            cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10) // categoryId
+            cursor.isNull(offset + 9) ? null : cursor.getShort(offset + 9) != 0, // is_active
+            cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10), // modifiedDate
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // short_web_url
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // short_url
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // web_url
+            cursor.isNull(offset + 14) ? null : cursor.getLong(offset + 14) // categoryId
         );
         return entity;
     }
@@ -174,12 +206,16 @@ public class PostDao extends AbstractDao<Post, Long> {
         entity.setSummary(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setContentHtml(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setUrl(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setCreated(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setCreatedDate(cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6));
+        entity.setPublishedDate(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setPublished(cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6));
         entity.setModified(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
         entity.setInstitute(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
-        entity.setActive(cursor.isNull(offset + 9) ? null : cursor.getShort(offset + 9) != 0);
-        entity.setCategoryId(cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10));
+        entity.setIs_active(cursor.isNull(offset + 9) ? null : cursor.getShort(offset + 9) != 0);
+        entity.setModifiedDate(cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10));
+        entity.setShort_web_url(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setShort_url(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setWeb_url(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setCategoryId(cursor.isNull(offset + 14) ? null : cursor.getLong(offset + 14));
      }
     
     /** @inheritdoc */

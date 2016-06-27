@@ -4,7 +4,7 @@ package in.testpress.testpress.ui;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
 import android.view.ViewGroup;
 
@@ -13,7 +13,7 @@ import java.util.List;
 
 import in.testpress.testpress.models.AttemptItem;
 
-public class ExamPagerAdapter extends FragmentStatePagerAdapter {
+public class ExamPagerAdapter extends FragmentPagerAdapter {
     int numberOfPages = 0;
     List<AttemptItem> attemptItemList = Collections.emptyList();
 
@@ -42,11 +42,6 @@ public class ExamPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public int getCount() {
         return numberOfPages;
-    }
-
-    @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-
     }
 
 }

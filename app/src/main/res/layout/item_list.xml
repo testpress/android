@@ -36,16 +36,21 @@
 
     <ListView
         android:id="@android:id/list"
-        style="@style/ListView"
+        android:divider="#dddddd"
+        android:dividerHeight="1dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone" />
 
-    <ProgressBar
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/pb_loading"
+        android:layout_centerInParent="true"
+        android:tint="@color/primary"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:indeterminate="true"
-        android:layout_centerInParent="true" />
+        app:mpb_progressStyle="circular"
+        style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal" />
 
 </RelativeLayout>

@@ -35,6 +35,7 @@ public class ReviewActivity extends TestpressFragmentActivity {
             Intent intent = new Intent(ReviewActivity.this, ExamsListActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("currentItem", "2");
+            intent.putExtra("isDeepLink", getIntent().getBooleanExtra("isDeepLink", false));
             startActivity(intent);
             finish();
         } else {

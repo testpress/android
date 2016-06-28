@@ -44,7 +44,7 @@
     <string name="no_products">No Products</string>
     <string name="no_products_description">There are no products to purchase right now.</string>
     <string name="no_documents">No Documents</string>
-    <string name="no_documents_description">There are no documents purchased right now.</string>
+    <string name="no_documents_description">There are no downloadable documents right now.</string>
     <string name="no_orders">No transactions yet</string>
     <string name="no_orders_description">Your purchased orders will be reflected here.</string>
     <string name="no_posts">No Articles</string>

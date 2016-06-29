@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-
+    
     <string name="app_name">NIME</string>
+    <string name="host_url">nime.testpress.in</string>
     <string name="content_column">Content</string>
     <string name="page_referrers">Referrers</string>
     <string name="refresh_action">Refresh</string>
@@ -26,6 +27,7 @@
     <string name="date_column">Date</string>
     <string name="error_loading_exams">Loading exams failed</string>
     <string name="error_loading_products">Loading Products failed</string>
+    <string name="error_loading_documents">Loading Documents failed</string>
     <string name="error_loading_orders">Loading Orders failed</string>
     <string name="error_loading_attempts">Loading attempts failed</string>
     <string name="error_loading_questions">Loading questions failed</string>
@@ -41,6 +43,8 @@
     <string name="no_questions_to_review">There are no questions to review.</string>
     <string name="no_products">No Products</string>
     <string name="no_products_description">There are no products to purchase right now.</string>
+    <string name="no_documents">No Documents</string>
+    <string name="no_documents_description">There are no downloadable documents right now.</string>
     <string name="no_orders">No transactions yet</string>
     <string name="no_orders_description">Your purchased orders will be reflected here.</string>
     <string name="no_posts">No Articles</string>
@@ -136,4 +140,8 @@
     <string name="speech_recognition_not_supported">Opps! Your device doesn\'t support Speech to Text</string>
 
     <string name="no_posts_description">There are no posts right now.</string>
+    <string name="post_authentication_failed">Sorry, you don\'t have access to this article.</string>
+    <string name="access_denied">Access denied</string>
+    <string name="share">Share</string>
+    <string name="invalid_post">Invalid Article</string>
 </resources>

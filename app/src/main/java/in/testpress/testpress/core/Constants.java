@@ -79,9 +79,14 @@ public final class Constants {
         public static final String URL_USERS = URL_BASE + URL_USERS_FRAG;
 
         /**
-         * List Products Exams URL
+         * List Products URL
          */
         public static final String URL_PRODUCTS_FRAG = "api/v2.2/products/";
+
+        /**
+         * List Documents URL
+         */
+        public static final String URL_DOCUMENTS_FRAG = "api/v2.2/notes/";
 
         /**
          * List Products Exams URL
@@ -181,6 +186,8 @@ public final class Constants {
     public static final String GCM_PREFERENCE_NAME = "testpress." + Auth.TESTPRESS_ACCOUNT_NAME + ".GCM";
     public static final String GCM_PROPERTY_REG_ID = "GCMRegId";
     public static final String SENT_TOKEN_TO_SERVER = "sentTokenToServer";
+
+    public static final String IS_DEEP_LINK = "is_deep_link";
 
     public static final HashMap<String, Integer> genderChoices;
     static

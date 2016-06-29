@@ -30,6 +30,8 @@ import in.testpress.testpress.ui.AttemptsListAdapter;
 import in.testpress.testpress.ui.AttemptsListFragment;
 import in.testpress.testpress.ui.AvailableExamsListAdapter;
 import in.testpress.testpress.ui.CropImageActivity;
+import in.testpress.testpress.ui.DocumentsListActivity;
+import in.testpress.testpress.ui.DocumentsListFragment;
 import in.testpress.testpress.ui.ExamActivity;
 import in.testpress.testpress.ui.ExamsListActivity;
 import in.testpress.testpress.ui.ExamsListFragment;
@@ -107,7 +109,9 @@ import retrofit.converter.GsonConverter;
                 CropImageActivity.class,
                 MainMenuFragment.class,
                 ResetPasswordActivity.class,
-                SearchActivity.class
+                SearchActivity.class,
+                DocumentsListActivity.class,
+                DocumentsListFragment.class
         }
 )
 public class TestpressModule {

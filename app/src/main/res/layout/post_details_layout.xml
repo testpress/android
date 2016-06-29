@@ -81,10 +81,11 @@
                 />
 
             <TextView
-                android:id="@+id/empty_view"
+                android:id="@+id/content_empty_view"
                 android:visibility="gone"
                 android:textSize="16sp"
                 android:paddingTop="10dp"
+                android:gravity="center_horizontal"
                 android:textColor="@android:color/black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -92,6 +93,8 @@
 
         </RelativeLayout>
     </ScrollView>
+
+    <include layout="@layout/empty_view"/>
 
     <me.zhanghai.android.materialprogressbar.MaterialProgressBar
         xmlns:app="http://schemas.android.com/apk/res-auto"

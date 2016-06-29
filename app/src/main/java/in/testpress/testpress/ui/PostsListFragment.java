@@ -136,9 +136,8 @@ public class PostsListFragment extends Fragment implements
                     mFistTimeCallback = true;
                     return;
                 }
-                if (adapter.getFootersCount() != 0) { // Remove loading footer if added already
-                    adapter.removeFooter(loadingLayout);
-                }
+                listView.setVisibility(View.VISIBLE);
+                emptyView.setVisibility(View.GONE);
                 String filter = mTopLevelSpinnerAdapter.getTag(position);
                 if (filter.isEmpty()) {
                     adapter.getWrappedAdapter().clearCategoryFilter();
@@ -330,6 +329,11 @@ public class PostsListFragment extends Fragment implements
 
             //Return if no new posts are available
             if (items.isEmpty()) {
+                displayDataFromDB();
+                if (postDao.count() == 0) {
+                    setEmptyText(R.string.no_posts, R.string.no_posts_description, R.drawable.ic_error_outline_black_18dp);
+                    retryButton.setVisibility(View.GONE);
+                }
                 return;
             }
             listView.setVisibility(View.VISIBLE);
@@ -383,6 +387,11 @@ public class PostsListFragment extends Fragment implements
     void displayDataFromDB() {
         Ln.d("Adapter notifyDataSetChanged displayDataFromDB");
         adapter.notifyDataSetChanged();
+
+        if (postDao.count() == 0 || (pager != null && !pager.hasMore() && adapter.getCount() == 0)) {
+            setEmptyText(R.string.no_posts, R.string.no_posts_description, R.drawable.ic_error_outline_black_18dp);
+            retryButton.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -440,6 +449,10 @@ public class PostsListFragment extends Fragment implements
                         .Published).list().get((int) postDao.count() - 1);
                 pager.setQueryParams("until", lastPost.getPublishedDate());
                 pager.setLatestModifiedDate(null);
+                if (listView.getVisibility() != View.VISIBLE) {
+                    listView.setVisibility(View.VISIBLE);
+                    emptyView.setVisibility(View.GONE);
+                }
                 Ln.d("Most old Published post available is " + lastPost.getTitle() + lastPost.getPublishedDate());
                 if (adapter.getFootersCount() == 0) { //display loading footer if not present
                     // when loading next page

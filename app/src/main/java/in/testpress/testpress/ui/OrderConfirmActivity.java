@@ -212,7 +212,7 @@ public class OrderConfirmActivity extends TestpressFragmentActivity {
                 Intent intent = new Intent(OrderConfirmActivity.this, PaymentModeActivity.class);
                 paymentParams = new PaymentParams();
                 paymentParams.setKey(order.getApikey());
-                paymentParams.setTxnId(order.getId().toString());
+                paymentParams.setTxnId(order.getOrderId());
                 paymentParams.setAmount(order.getAmount());
                 paymentParams.setProductInfo("Testpress");
                 paymentParams.setFirstName(order.getName());

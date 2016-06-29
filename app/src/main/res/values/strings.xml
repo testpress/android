@@ -44,7 +44,7 @@
     <string name="no_products">No Products</string>
     <string name="no_products_description">There are no products to purchase right now.</string>
     <string name="no_documents">No Documents</string>
-    <string name="no_documents_description">There are no documents purchased right now.</string>
+    <string name="no_documents_description">There are no downloadable documents right now.</string>
     <string name="no_orders">No transactions yet</string>
     <string name="no_orders_description">Your purchased orders will be reflected here.</string>
     <string name="no_posts">No Posts</string>
@@ -140,7 +140,8 @@
     <string name="speech_recognition_not_supported">Opps! Your device doesn\'t support Speech to Text</string>
 
     <string name="no_posts_description">There are no posts right now.</string>
-    <string name="post_authentication_failed">Sorry, you don\'t have authorization to access this article.</string>
+    <string name="post_authentication_failed">Sorry, you don\'t have access to this article.</string>
+    <string name="access_denied">Access denied</string>
     <string name="share">Share</string>
     <string name="invalid_post">Invalid Article</string>
 

@@ -49,7 +49,7 @@ public class PaymentSuccessActivity extends TestpressFragmentActivity {
         order = getIntent().getParcelableExtra("order");
         progressBar = (ProgressBar) findViewById(R.id.pb_loading);
         progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
-        orderId.setText("Order Id: " + order.getId());
+        orderId.setText("Order Id: " + order.getOrderId());
         amount.setText("Amount: ₹ " + order.getAmount());
         final List<OrderItem> orderItems = order.getOrderItems();
         paymentDetailsView.setVisibility(View.GONE);

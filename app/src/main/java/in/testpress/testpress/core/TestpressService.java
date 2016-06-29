@@ -45,6 +45,10 @@ public class TestpressService {
         this.authToken = authToken;
     }
 
+    public void invalidateAuthToken() {
+        authToken = null;
+    }
+
     private RestAdapter getRestAdapter() {
         return restAdapter;
     }

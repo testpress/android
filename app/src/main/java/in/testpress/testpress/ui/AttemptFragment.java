@@ -210,7 +210,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
             return;
         }
 
-        if (pager.getCurrentItem() != pager.getChildCount()) {
+        if (pager.getCurrentItem() < (pagerAdapter.getCount() - 1)) {
             pager.setCurrentItem(pager.getCurrentItem() + 1);
         }
 

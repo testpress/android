@@ -32,6 +32,7 @@
         android:theme="@style/Theme.Testpress.Dark">
         <activity
             android:name=".ui.SplashScreenActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

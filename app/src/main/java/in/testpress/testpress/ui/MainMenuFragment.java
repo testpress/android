@@ -80,7 +80,7 @@ public class MainMenuFragment extends Fragment {
     //Menu for unauthorized users
     String[] menuNames = {
             "Store",
-            "Posts",
+            "News",
             "Share",
             "Rate Us",
             "Login"

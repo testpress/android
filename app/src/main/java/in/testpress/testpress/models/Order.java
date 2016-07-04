@@ -12,6 +12,7 @@ public class Order implements Parcelable {
 
     private String url;
     private Integer id;
+    private String orderId;
     private String date;
     private String user;
     private String status;
@@ -33,6 +34,7 @@ public class Order implements Parcelable {
         url     = parcel.readString();
         date    = parcel.readString();
         id      = parcel.readInt();
+        orderId = parcel.readString();
         user    = parcel.readString();
         status  = parcel.readString();
         email   = parcel.readString();
@@ -58,6 +60,7 @@ public class Order implements Parcelable {
         parcel.writeString(url);
         parcel.writeString(date);
         parcel.writeInt(id);
+        parcel.writeString(orderId);
         parcel.writeString(user);
         parcel.writeString(status);
         parcel.writeString(email);
@@ -117,6 +120,14 @@ public class Order implements Parcelable {
      */
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 
     /**

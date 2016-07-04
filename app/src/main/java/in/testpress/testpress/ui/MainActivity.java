@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInstaller;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
@@ -63,6 +62,7 @@ public class MainActivity extends TestpressFragmentActivity {
     protected RelativeLayout progressBarLayout;
     private boolean userHasAuthenticated = false;
     private MainMenuFragment fragment;
+    private SharedPreferences gcmPreferences;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -72,8 +72,8 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     private void initScreen() {
-        SharedPreferences prefs = getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
-        if (!prefs.getBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false)) {
+        gcmPreferences = getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
+        if (!gcmPreferences.getBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false)) {
             if (checkPlayServices()) {
                 // Start IntentService to register this application with GCM.
                 Intent intent = new Intent(MainActivity.this, RegistrationIntentService.class);
@@ -135,9 +135,31 @@ public class MainActivity extends TestpressFragmentActivity {
             }
 
             @Override
+            protected void onException(Exception e) throws RuntimeException {
+            }
+
+            @Override
             protected void onSuccess(final Device device) throws Exception {
-                SharedPreferences sharedPreferences = getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
-                sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, true).apply();
+                gcmPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, true).apply();
+            }
+        }.execute();
+    }
+
+    private void updateDevice() {
+        new SafeAsyncTask<Device>() {
+            @Override
+            public Device call() throws Exception {
+                String token = GCMPreference.getRegistrationId(MainActivity.this.getApplicationContext());
+                return testpressService.register(token, Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+            }
+
+            @Override
+            protected void onException(Exception e) throws RuntimeException {
+            }
+
+            @Override
+            protected void onSuccess(final Device device) throws Exception {
+                gcmPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, true).apply();
             }
         }.execute();
     }
@@ -221,8 +243,10 @@ public class MainActivity extends TestpressFragmentActivity {
                                 .widgetColorRes(R.color.primary)
                                 .progress(true, 0)
                                 .show();
+                        testpressService.invalidateAuthToken();
                         serviceProvider.invalidateAuthToken();
-
+                        gcmPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
+                        updateDevice();
                         DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
                         PostDao postDao = daoSession.getPostDao();
                         postDao.deleteAll();

@@ -57,7 +57,9 @@ public class TestpressGCMListenerService extends GcmListenerService {
          * In some cases it may be useful to show a notification indicating to the user
          * that a message was received.
          */
-        sendNotification(title, message, url);
+        if (title != null && message != null && url != null) {
+            sendNotification(title, message, url);
+        }
         // [END_EXCLUDE]
     }
     // [END receive_message]

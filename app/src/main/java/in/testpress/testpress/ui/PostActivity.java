@@ -115,7 +115,7 @@ public class PostActivity extends DeepLinkHandlerActivity {
                 if (e.getCause() instanceof UnknownHostException) {
                     setEmptyText(R.string.network_error, R.string.no_internet, R.drawable.ic_error_outline_black_18dp);
                 } else if (e.getMessage().equals("404 NOT FOUND")) {
-                    setEmptyText(R.string.authentication_failed, R.string.post_authentication_failed, R.drawable.ic_error_outline_black_18dp);
+                    setEmptyText(R.string.access_denied, R.string.post_authentication_failed, R.drawable.ic_error_outline_black_18dp);
                 } else {
                     setEmptyText(R.string.network_error, R.string.error_loading_content, R.drawable.ic_error_outline_black_18dp);
                 }
@@ -123,6 +123,7 @@ public class PostActivity extends DeepLinkHandlerActivity {
 
             @Override
             protected void onSuccess(final Post post) throws Exception {
+                PostActivity.this.post = post;
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                 simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
                 post.setPublished(simpleDateFormat.parse(post.getPublishedDate()).getTime());

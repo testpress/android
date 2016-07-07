@@ -3,14 +3,22 @@ package in.testpress.testpress.ui;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -36,7 +44,6 @@ import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.CategoryDao;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.PostDao;
-import in.testpress.testpress.util.FormatDate;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.ShareUtil;
 
@@ -113,7 +120,7 @@ public class PostActivity extends DeepLinkHandlerActivity {
             protected void onException(final Exception e) throws RuntimeException {
                 progressBar.setVisibility(View.GONE);
                 if (e.getCause() instanceof UnknownHostException) {
-                    setEmptyText(R.string.network_error, R.string.no_internet, R.drawable.ic_error_outline_black_18dp);
+                    setEmptyText(R.string.network_error, R.string.no_internet_try_again, R.drawable.ic_error_outline_black_18dp);
                 } else if (e.getMessage().equals("404 NOT FOUND")) {
                     setEmptyText(R.string.access_denied, R.string.post_authentication_failed, R.drawable.ic_error_outline_black_18dp);
                 } else {
@@ -142,13 +149,21 @@ public class PostActivity extends DeepLinkHandlerActivity {
         }.execute();
     }
 
+    class ImageHandler {
+        @JavascriptInterface
+        public void onClickImage(String url) {
+            Intent intent = new Intent(PostActivity.this, ZoomableImageActivity.class);
+            intent.putExtra("url", url);
+            startActivity(intent);
+        }
+    }
+
     private void displayPost(Post post) {
         postDetails.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
         getSupportActionBar().setTitle(post.getTitle());
         title.setText(post.getTitle());
         summary.setText(post.getSummary());
-        FormatDate formatter = new FormatDate();
         date.setText(DateUtils.getRelativeTimeSpanString(post.getPublished()));
         if (post.getContentHtml() != null) {
             WebSettings settings = content.getSettings();
@@ -157,10 +172,60 @@ public class PostActivity extends DeepLinkHandlerActivity {
             settings.setBuiltInZoomControls(true);
             settings.setDisplayZoomControls(false);
             settings.setSupportZoom(true);
-            content.loadData(post.getContentHtml(), "text/html; charset=utf-8", null);
+            settings.setUseWideViewPort(true);
+            settings.setLoadWithOverviewMode(true);
+            content.addJavascriptInterface(new ImageHandler(), "ImageHandler");
+            content.setWebViewClient(new WebViewClient() {
+                @Override
+                public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                    super.onPageStarted(view, url, favicon);
+                    progressBar.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                    super.onReceivedError(view, request, error);
+                    progressBar.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onPageFinished(WebView view, String url) {
+                    super.onPageFinished(view, url);
+                    progressBar.setVisibility(View.GONE);
+                    String javascript = "javascript:var images = document.getElementsByTagName(\"img\");" +
+                            "for (i = 0; i < images.length; i++) {" +
+                            "   images[i].onclick = (" +
+                            "       function() {" +
+                            "           var src = images[i].src;" +
+                            "           return function() {" +
+                            "               ImageHandler.onClickImage(src);" +
+                            "           }" +
+                            "       }" +
+                            "   )();" +
+                            "}";
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        content.evaluateJavascript(javascript, null);
+                    } else {
+                        content.loadUrl(javascript, null);
+                    }
+                }
+
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(intent);
+                    return true;
+                }
+            });
+            content.loadDataWithBaseURL(null, getHeader() + post.getContentHtml(), "text/html", "UTF-8", null);
         } else {
             content.setVisibility(View.GONE);
         }
+    }
+
+    String getHeader() {
+        return "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\" />" +
+                "<style>img{display: inline;height: auto;max-width: 100%;}</style>";
     }
 
     @Override

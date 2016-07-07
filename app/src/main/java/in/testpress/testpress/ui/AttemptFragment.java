@@ -383,6 +383,7 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
         }
 
         if(mExam.getTemplateType() == 2) {  //for IBPS templates only
+            List<String> subjectsList = new ArrayList<>(); // Used to get subjects in order as it fetched
 //          To Populate the spinner with the subjects
             HashMap<String, List<AttemptItem>> subjectsWiseItems = new HashMap<>();
             for (AttemptItem item : items) {
@@ -396,11 +397,12 @@ public class AttemptFragment extends Fragment implements LoaderManager.LoaderCal
                 } else {
                     subjectsWiseItems.put(item.getAttemptQuestion().getSubject(), new ArrayList<AttemptItem>()); //else add the subject & then add item to it
                     subjectsWiseItems.get(item.getAttemptQuestion().getSubject()).add(item);
+                    subjectsList.add(item.getAttemptQuestion().getSubject());
                 }
             }
 
             //store each set of subject items to attemptItemList
-            for (String subject : subjectsWiseItems.keySet()) {
+            for (String subject : subjectsList) {
                 subjects.put(subject, attemptItemList.size());   //add subjects & it starting point
                 attemptItemList.addAll(subjectsWiseItems.get(subject));
                 mTopLevelSpinnerAdapter.addItem(subject, subject, true, 0);

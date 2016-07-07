@@ -35,6 +35,7 @@ import in.testpress.testpress.ui.DocumentsListFragment;
 import in.testpress.testpress.ui.ExamActivity;
 import in.testpress.testpress.ui.ExamsListActivity;
 import in.testpress.testpress.ui.ExamsListFragment;
+import in.testpress.testpress.ui.ZoomableImageActivity;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.MainMenuFragment;
 import in.testpress.testpress.ui.NavigationDrawerFragment;
@@ -111,7 +112,8 @@ import retrofit.converter.GsonConverter;
                 ResetPasswordActivity.class,
                 SearchActivity.class,
                 DocumentsListActivity.class,
-                DocumentsListFragment.class
+                DocumentsListFragment.class,
+                ZoomableImageActivity.class
         }
 )
 public class TestpressModule {

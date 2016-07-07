@@ -207,6 +207,9 @@
             android:name=".ui.SearchActivity"
             android:configChanges="orientation|keyboard|screenSize" />
 
+        <activity
+            android:name=".ui.ZoomableImageActivity" />
+
     </application>
 
 </manifest>

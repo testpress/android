@@ -90,7 +90,7 @@ android {
         targetSdkVersion 22
         versionCode 110
         versionName '1.0'
-        applicationId 'in.testpress.testpress'
+        applicationId 'in.testpress.medeg'
     }
 
     packagingOptions {

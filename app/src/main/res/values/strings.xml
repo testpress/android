@@ -2,8 +2,8 @@
 
 <resources>
 
-    <string name="app_name">Testpress</string>
-    <string name="host_url">demo.testpress.in</string>
+    <string name="app_name">Prime PG</string>
+    <string name="host_url">pgtestseries.testpress.in</string>
     <string name="content_column">Content</string>
     <string name="page_referrers">Referrers</string>
     <string name="refresh_action">Refresh</string>
@@ -131,7 +131,7 @@
     <string name="title_activity_reset_password_verification">ResetPasswordVerificationActivity
     </string>
 
-    <string name="share_message">Good app to prepare for IAS. Get it at https://play.google.com/store/apps/details?id=</string>
+    <string name="share_message">Good app to prepare for AIIMS , AIPGMEE , DNB, JIPMER, PGI and Nepal-PG MCQs. Get it at https://play.google.com/store/apps/details?id=</string>
 
     <string name="search">Search</string>
     <string name="search_hint">Search...</string>

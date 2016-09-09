@@ -56,8 +56,8 @@ public class MainMenuFragment extends Fragment {
     //Menu for authorized users
     String[] menuItemNames = {
             "My Exams",
-            "Store",
-            "Documents",
+//            "Store",
+//            "Documents",
 //            "Orders",
             "Posts",
             "Profile",
@@ -67,8 +67,8 @@ public class MainMenuFragment extends Fragment {
     } ;
     int[] menuItemImageId = {
             R.drawable.exams,
-            R.drawable.store,
-            R.drawable.documents,
+//            R.drawable.store,
+//            R.drawable.documents,
 //            R.drawable.cart,
             R.drawable.posts,
             R.drawable.ic_profile_details,
@@ -79,14 +79,14 @@ public class MainMenuFragment extends Fragment {
 
     //Menu for unauthorized users
     String[] menuNames = {
-            "Store",
+//            "Store",
             "Posts",
             "Share",
             "Rate Us",
             "Login"
     } ;
     int[] menuImageId = {
-            R.drawable.store,
+//            R.drawable.store,
             R.drawable.posts,
             R.drawable.share,
             R.drawable.heart,
@@ -128,55 +128,55 @@ public class MainMenuFragment extends Fragment {
                             intent = new Intent(getActivity(), ExamsListActivity.class);
                             startActivity(intent);
                             break;
-                        case 1:
-                            intent = new Intent(getActivity(), ProductsListActivity.class);
-                            startActivity(intent);
-                            break;
-                        case 2:
-                            intent = new Intent(getActivity(), DocumentsListActivity.class);
-                            startActivity(intent);
-                            break;
+//                        case 1:
+//                            intent = new Intent(getActivity(), ProductsListActivity.class);
+//                            startActivity(intent);
+//                            break;
+//                        case 2:
+//                            intent = new Intent(getActivity(), DocumentsListActivity.class);
+//                            startActivity(intent);
+//                            break;
 //                    case 2:
 //                        intent = new Intent(getActivity(), OrdersListActivity.class);
 //                        startActivity(intent);
 //                        break;
-                        case 3:
+                        case 1:
                             intent = new Intent(getActivity(), PostsListActivity.class);
                             intent.putExtra("userAuthenticated", true);
                             startActivity(intent);
                             break;
-                        case 4:
+                        case 2:
                             intent = new Intent(getActivity(), ProfileDetailsActivity.class);
                             startActivity(intent);
                             break;
-                        case 5:
+                        case 3:
                             //Share
                             shareApp();
                             break;
-                        case 6:
+                        case 4:
                             //Rate
                             rateApp();
                             break;
-                        case 7:
+                        case 5:
                             ((MainActivity) getActivity()).logout();
                             break;
                     }
                 } else {
                     switch (position) {
+//                        case 0:
+//                            intent = new Intent(getActivity(), ProductsListActivity.class);
+//                            startActivity(intent);
+//                            break;
                         case 0:
-                            intent = new Intent(getActivity(), ProductsListActivity.class);
-                            startActivity(intent);
-                            break;
-                        case 1:
                             intent = new Intent(getActivity(), PostsListActivity.class);
                             intent.putExtra("userAuthenticated", false);
                             startActivity(intent);
                             break;
-                        case 2:
+                        case 1:
                             //Share
                             shareApp();
                             break;
-                        case 3:
+                        case 2:
                             //Rate
                             rateApp();
                             break;

@@ -5,12 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import in.testpress.testpress.models.Category;
-import in.testpress.testpress.models.ExamCategory;
 import in.testpress.testpress.models.Notes;
 import in.testpress.testpress.models.Post;
-import in.testpress.testpress.models.Attempt;
-import in.testpress.testpress.models.AttemptItem;
-import in.testpress.testpress.models.Exam;
 import in.testpress.testpress.models.Order;
 import in.testpress.testpress.models.OrderItem;
 import in.testpress.testpress.models.Device;
@@ -19,7 +15,6 @@ import in.testpress.testpress.models.ProductDetails;
 import in.testpress.testpress.models.ProfileDetails;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.ResetPassword;
-import in.testpress.testpress.models.ReviewItem;
 import in.testpress.testpress.models.TestpressApiResponse;
 import in.testpress.testpress.models.Update;
 import retrofit.RestAdapter;
@@ -57,8 +52,6 @@ public class TestpressService {
         return getRestAdapter().create(AuthenticationService.class);
     }
 
-    private ExamService getExamsService() { return getRestAdapter().create(ExamService.class); }
-
     private ProductService getProductsService() { return getRestAdapter().create(ProductService.class); }
 
     private DocumentsService getDocumentsService() { return getRestAdapter().create(DocumentsService.class); }
@@ -73,62 +66,10 @@ public class TestpressService {
         return "JWT " + authToken;
     }
 
-    public TestpressApiResponse<Exam> getExams(String urlFrag, Map<String, String> queryParams) {
-        return getExamsService().getExams(urlFrag, queryParams, getAuthToken());
-    }
-
-    public TestpressApiResponse<ExamCategory> getExamsCourses() {
-        return getExamsService().getExamsCourses(getAuthToken());
-    }
-
-    public TestpressApiResponse<Attempt> getAttempts(String urlFrag, Map<String, String> queryParams) {
-        return getExamsService().getAttempts(urlFrag, queryParams, getAuthToken());
-    }
-
-    public TestpressApiResponse<ReviewItem> getReviewItems(String urlFrag) {
-        return getExamsService().getReviewItems(urlFrag, getAuthToken());
-    }
-
-    public Attempt createAttempt(String attemptsUrlFrag) {
-        return getExamsService().createAttempt(attemptsUrlFrag, getAuthToken());
-    }
-
-    public Attempt startAttempt(String startAttemptUrlFrag) {
-        return getExamsService().startAttempt(startAttemptUrlFrag, getAuthToken());
-    }
-
-    public Attempt endAttempt(String endAttemptUrlFrag) {
-        return getExamsService().endExam(endAttemptUrlFrag, getAuthToken());
-    }
-
-    public TestpressApiResponse<AttemptItem> getQuestions(String questionsUrlFrag) {
-        return getExamsService().getQuestions(questionsUrlFrag, getAuthToken());
-    }
-
-    public AttemptItem postAnswer(String answerUrlFrag, List<Integer> savedAnswers, Boolean review) {
-        HashMap<String, Object> answer = new HashMap<String, Object>();
-        answer.put("selected_answers", savedAnswers);
-        answer.put("review", review);
-        return getExamsService().postAnswer(answerUrlFrag, getAuthToken(), answer);
-    }
-
     public ResetPassword resetPassword(String email){
         HashMap<String,String> emailcode = new HashMap<String,String>();
         emailcode.put("email",email);
         return getResetPasswordService().resetPassword(emailcode);
-    }
-
-
-    public Attempt heartbeat(String heartbeatUrlFrag) {
-        return getExamsService().heartbeat(heartbeatUrlFrag, getAuthToken());
-    }
-
-    public Attempt endExam(String endExamUrlFrag) {
-        return getExamsService().endExam(endExamUrlFrag, getAuthToken());
-    }
-
-    public Void mailPdf(String mailPdfUrlFrag) {
-        return getExamsService().mailPdf(mailPdfUrlFrag, getAuthToken());
     }
 
     public Update checkUpdate(String version) {

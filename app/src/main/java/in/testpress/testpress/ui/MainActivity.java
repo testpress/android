@@ -244,7 +244,7 @@ public class MainActivity extends TestpressFragmentActivity {
                                 .progress(true, 0)
                                 .show();
                         testpressService.invalidateAuthToken();
-                        serviceProvider.invalidateAuthToken();
+                        serviceProvider.invalidateAuthToken(MainActivity.this);
                         gcmPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
                         updateDevice();
                         DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();

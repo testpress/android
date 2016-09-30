@@ -6,43 +6,18 @@
     <color name="text_light">#999999</color>
     <color name="text_inverted">#FFFFFF</color>
     <color name="text_title">#DFDFDF</color>
-    <color name="pager_footer">#3598db</color>
-    <color name="pager_selected_text">#FFFFFF</color>
-    <color name="pager_background">#F4F4F4</color>
-    <color name="pager_background_alternate">#E7E7E7</color>
-    <color name="text_link">#1fb6ed</color>
+
     <color name="table_text">#484848</color>
-    <color name="table_text_inverted">#FFFFFF</color>
     <color name="table_text_light">#A6A6A6</color>
-    <color name="table_text_header">#636363</color>
-    <color name="header_background_start">#ECECEC</color>
-    <color name="header_background_end">#C3C3C3</color>
-    <color name="header_background_top">#F9F9F9</color>
-    <color name="header_background_bottom">#A7A7A7</color>
+
     <color name="actionbar_background_start">#3598db</color>
-    <color name="actionbar_background_end">#3598db</color>
-    <color name="testpress_divider_top">#000000</color>
-    <color name="testpress_divider_bottom">#efefef</color>
-    <color name="main_background_start">#2E2E2E</color>
-    <color name="main_background_end">#2C2C2C</color>
-    <color name="button_background_enabled_start">#3E4095</color>
-    <color name="button_background_enabled_end">#3E4095</color>
-    <color name="button_background_pressed_start">#3E4095</color>
-    <color name="button_background_pressed_end">#3E4095</color>
+
     <color name="edit_text_background_start">#EFF6FF</color>
     <color name="edit_text_background_end">#FBFDFF</color>
     <color name="button_background_disabled_start">#7b7b7b</color>
     <color name="button_background_disabled_end">#646464</color>
     <color name="text_shadow">#000000</color>
 
-    <color name="background_selected">#1fb6ed</color>
-    <color name="nav_button_text_light">#ffffff</color>
-    <color name="nav_button_pressed">#1fb6ed</color>
-    <color name="nav_button_disabled">#646464</color>
-    <color name="nav_button_text_disabled">#464646</color>
-
-    <color name="dark_grey">#1f1f1f</color>
-    <color name="navigation_drawer_item_separator">#c2c2c2</color>
     <color name="red">#d9534f</color>
     <color name="green">#18be99</color>
     <color name="blue">#3598db</color>
@@ -53,34 +28,11 @@
 
     <color name="list_dropdown_divider_color">#92a3a3a3</color>
     <color name="body_text_3">#60000000</color>
-    <color name="theme_primary_light">#7986cb</color>
-    <color name="list_dropdown_foreground_normal">#ff333333</color>
-    <color name="body_text_2_inverse">#8affffff</color>
 
     <color name="native_background">#ffffff</color>
     <color name="orange_button_end">#F9783F</color>
     <color name="orange_button_start">#FA9365</color>
     <color name="list_divider">#9D9D9D</color>
-    <color name="fbutton_color_turquoise">#1abc9c</color>
-    <color name="fbutton_color_green_sea">#16a085</color>
-    <color name="fbutton_color_emerald">#2ecc71</color>
-    <color name="fbutton_color_nephritis">#27ae60</color>
-    <color name="fbutton_color_peter_river">#3498db</color>
-    <color name="fbutton_color_belize_hole">#2980b9</color>
-    <color name="fbutton_color_amethyst">#9b59b6</color>
-    <color name="fbutton_color_wisteria">#8e44ad</color>
-    <color name="fbutton_color_wet_asphalt">#34495e</color>
-    <color name="fbutton_color_midnight_blue">#2c3e50</color>
-    <color name="fbutton_color_sun_flower">#f1c40f</color>
-    <color name="fbutton_color_orange">#f39c12</color>
-    <color name="fbutton_color_carrot">#e67e22</color>
-    <color name="fbutton_color_pumpkin">#d35400</color>
-    <color name="fbutton_color_alizarin">#e74c3c</color>
-    <color name="fbutton_color_pomegranate">#c0392b</color>
-    <color name="fbutton_color_clouds">#ecf0f1</color>
-    <color name="fbutton_color_silver">#bdc3c7</color>
-    <color name="fbutton_color_concrete">#95a5a6</color>
-    <color name="fbutton_color_asbestos">#7f8c8d</color>
 
     <!-- Color of the mime-type icons inside the editor. 50% black. -->
     <color name="editor_icon_color">#7f7f7f</color>

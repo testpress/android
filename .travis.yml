@@ -15,7 +15,7 @@ android:
    # Additional components
    - extra-google-m2repository
    - extra-android-m2repository
-jdk: oraclejdk7
+jdk: oraclejdk8
 
 before_install:
   # required libs for android build tools

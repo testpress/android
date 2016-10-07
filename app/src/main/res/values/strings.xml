@@ -2,8 +2,8 @@
 
 <resources>
 
-    <string name="app_name">Testpress</string>
-    <string name="host_url">demo.testpress.in</string>
+    <string name="app_name">JZMU Academics</string>
+    <string name="host_url">jzmu.testpress.in/</string>
 
     <string name="refresh_action">Refresh</string>
 
@@ -68,7 +68,7 @@
     <string name="title_activity_reset_password_verification">ResetPasswordVerificationActivity
     </string>
 
-    <string name="share_message">Good app to prepare for IAS. Get it at https://play.google.com/store/apps/details?id=</string>
+    <string name="share_message">Good app to prepare for FMGE. Get it at https://play.google.com/store/apps/details?id=</string>
 
     <string name="tap_to_retry">Tap to retry</string>
 

@@ -58,6 +58,7 @@ public class MainMenuFragment extends Fragment {
 
     //Menu for authorized users
     String[] menuItemNames = {
+            "Website",
             "My Exams",
             "Store",
             "Documents",
@@ -69,6 +70,7 @@ public class MainMenuFragment extends Fragment {
             "Logout"
     } ;
     int[] menuItemImageId = {
+            R.drawable.website_icon,
             R.drawable.exams,
             R.drawable.store,
             R.drawable.documents,
@@ -82,6 +84,7 @@ public class MainMenuFragment extends Fragment {
 
     //Menu for unauthorized users
     String[] menuNames = {
+            "Website",
             "Store",
             "Posts",
             "Share",
@@ -89,6 +92,7 @@ public class MainMenuFragment extends Fragment {
             "Login"
     } ;
     int[] menuImageId = {
+            R.drawable.website_icon,
             R.drawable.store,
             R.drawable.posts,
             R.drawable.share,
@@ -128,6 +132,11 @@ public class MainMenuFragment extends Fragment {
                 if (account.length > 0) {
                     switch (position) {
                         case 0:
+                            intent = new Intent(getActivity(), InAppBrowserActivity.class);
+                            intent.putExtra(InAppBrowserActivity.URL, Constants.Http.WEBSITE_URL);
+                            startActivity(intent);
+                            break;
+                        case 1:
                             if (TestpressSdk.hasActiveSession(getActivity())) {
                                 showExams();
                             } else {
@@ -145,11 +154,11 @@ public class MainMenuFragment extends Fragment {
                                 }.execute();
                             }
                             break;
-                        case 1:
+                        case 2:
                             intent = new Intent(getActivity(), ProductsListActivity.class);
                             startActivity(intent);
                             break;
-                        case 2:
+                        case 3:
                             intent = new Intent(getActivity(), DocumentsListActivity.class);
                             startActivity(intent);
                             break;
@@ -157,43 +166,48 @@ public class MainMenuFragment extends Fragment {
 //                        intent = new Intent(getActivity(), OrdersListActivity.class);
 //                        startActivity(intent);
 //                        break;
-                        case 3:
+                        case 4:
                             intent = new Intent(getActivity(), PostsListActivity.class);
                             intent.putExtra("userAuthenticated", true);
                             startActivity(intent);
                             break;
-                        case 4:
+                        case 5:
                             intent = new Intent(getActivity(), ProfileDetailsActivity.class);
                             startActivity(intent);
                             break;
-                        case 5:
+                        case 6:
                             //Share
                             shareApp();
                             break;
-                        case 6:
+                        case 7:
                             //Rate
                             rateApp();
                             break;
-                        case 7:
+                        case 8:
                             ((MainActivity) getActivity()).logout();
                             break;
                     }
                 } else {
                     switch (position) {
                         case 0:
-                            intent = new Intent(getActivity(), ProductsListActivity.class);
+                            intent = new Intent(getActivity(), InAppBrowserActivity.class);
+                            intent.putExtra(InAppBrowserActivity.URL, Constants.Http.WEBSITE_URL);
                             startActivity(intent);
                             break;
                         case 1:
+                            intent = new Intent(getActivity(), ProductsListActivity.class);
+                            startActivity(intent);
+                            break;
+                        case 2:
                             intent = new Intent(getActivity(), PostsListActivity.class);
                             intent.putExtra("userAuthenticated", false);
                             startActivity(intent);
                             break;
-                        case 2:
+                        case 3:
                             //Share
                             shareApp();
                             break;
-                        case 3:
+                        case 4:
                             //Rate
                             rateApp();
                             break;

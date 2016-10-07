@@ -187,6 +187,10 @@
         <activity
             android:name=".ui.ZoomableImageActivity" />
 
+        <activity
+            android:name=".ui.InAppBrowserActivity"
+            android:configChanges="orientation|keyboard|screenSize" />
+
     </application>
 
 </manifest>

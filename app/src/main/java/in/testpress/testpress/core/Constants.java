@@ -16,7 +16,7 @@ public final class Constants {
         /**
          * Account name
          */
-        public static final String TESTPRESS_ACCOUNT_NAME = "testpress";
+        public static final String TESTPRESS_ACCOUNT_NAME = "jzmu";
 
         /**
          * Account type id
@@ -37,11 +37,12 @@ public final class Constants {
     public static final class Http {
         private Http() {}
 
+        public static final String WEBSITE_URL = "http://www.jzmustudy.com/";
 
         /**
          * Base URL for all requests
          */
-        public static final String URL_BASE = "http://demo.testpress.in";
+        public static final String URL_BASE = "http://jzmu.testpress.in";
 
         /**
          * Check Update url

@@ -4,7 +4,6 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountsException;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,7 +13,6 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +38,6 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import butterknife.OnItemClick;
 import de.greenrobot.dao.query.LazyList;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
@@ -151,7 +148,7 @@ public class PostsListFragment extends Fragment implements
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
-        mSpinnerContainer.setVisibility(View.VISIBLE);
+        mSpinnerContainer.setVisibility(View.GONE);
     }
 
     @Override
@@ -214,10 +211,6 @@ public class PostsListFragment extends Fragment implements
                             Color.parseColor("#" + category.getColor()));
                 }
 
-                if ((mSpinnerContainer.getVisibility() == View.GONE)) {
-                    Ln.e("Setting visible");
-                    mSpinnerContainer.setVisibility(View.VISIBLE);
-                }
                 mTopLevelSpinnerAdapter.notifyDataSetChanged();
 
                 if (categoryFilter != null) {
@@ -225,13 +218,17 @@ public class PostsListFragment extends Fragment implements
                     spinner.setSelection(mTopLevelSpinnerAdapter.getItemPositionFromTag(categoryFilter.toString()));
                 }
 
-                Toolbar toolbar = ((PostsListActivity)(getActivity())).getActionBarToolbar();
-                View view = toolbar.findViewById(R.id.actionbar_spinnerwrap);
-                toolbar.removeView(view);
-                toolbar.invalidate();
-                ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                toolbar.addView(mSpinnerContainer, lp);
+                if (!categories.isEmpty()) {
+                    Ln.e("Setting visible");
+                    mSpinnerContainer.setVisibility(View.VISIBLE);
+                    Toolbar toolbar = ((PostsListActivity)(getActivity())).getActionBarToolbar();
+                    View view = toolbar.findViewById(R.id.actionbar_spinnerwrap);
+                    toolbar.removeView(view);
+                    toolbar.invalidate();
+                    ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    toolbar.addView(mSpinnerContainer, lp);
+                }
             }
 
         }.execute();
@@ -529,16 +526,6 @@ public class PostsListFragment extends Fragment implements
         categoryDao.insertOrReplaceInTx(categories);
         postDao.insertOrReplaceInTx(posts);
         LogAllPosts();
-    }
-
-    @OnItemClick(android.R.id.list)
-    public void onListItemClick(int position) {
-        Ln.d("Clicked " + position);
-        Post post = adapter.getWrappedAdapter().getItem(position);
-        Ln.d("Post at position is " + post.getTitle());
-        Intent intent = new Intent(getActivity(), PostActivity.class);
-        intent.putExtra("shortWebUrl", post.getShort_web_url());
-        startActivity(intent);
     }
 
     protected int getErrorMessage(Exception exception) {

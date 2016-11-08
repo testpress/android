@@ -8,6 +8,8 @@ import android.content.SharedPreferences;
 
 import java.io.IOException;
 
+import in.testpress.core.TestpressSdk;
+import in.testpress.core.TestpressSession;
 import in.testpress.testpress.authenticator.ApiKeyProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
@@ -28,8 +30,9 @@ public class TestpressServiceProvider {
         this.keyProvider = keyProvider;
     }
 
-    public void invalidateAuthToken() {
+    public void invalidateAuthToken(Context context) {
         authToken = null;
+        TestpressSdk.clearActiveSession(context);
     }
     /**
      * Get service for configured key provider
@@ -45,6 +48,8 @@ public class TestpressServiceProvider {
         if (authToken == null) {
             // The call to keyProvider.getAuthKey(...) is what initiates the login screen. Call that now.
             authToken = keyProvider.getAuthKey(activity);
+            TestpressSdk.setTestpressSession(activity,
+                    new TestpressSession(Constants.Http.URL_BASE, authToken));
         }
 
         // TODO: See how that affects the testpress service.
@@ -52,7 +57,7 @@ public class TestpressServiceProvider {
     }
 
     public void handleForbidden(final Activity activity, TestpressServiceProvider serviceProvider, LogoutService logoutService) {
-        serviceProvider.invalidateAuthToken();
+        serviceProvider.invalidateAuthToken(activity);
         DaoSession daoSession = ((TestpressApplication) activity.getApplicationContext()).getDaoSession();
         PostDao postDao = daoSession.getPostDao();
         postDao.deleteAll();

@@ -31,6 +31,9 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import in.testpress.core.TestpressSdk;
+import in.testpress.core.TestpressSession;
+import in.testpress.exam.TestpressExam;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
@@ -125,8 +128,22 @@ public class MainMenuFragment extends Fragment {
                 if (account.length > 0) {
                     switch (position) {
                         case 0:
-                            intent = new Intent(getActivity(), ExamsListActivity.class);
-                            startActivity(intent);
+                            if (TestpressSdk.hasActiveSession(getActivity())) {
+                                showExams();
+                            } else {
+                                new SafeAsyncTask<Void>() {
+                                    @Override
+                                    public Void call() throws Exception {
+                                        serviceProvider.getService(getActivity());
+                                        return null;
+                                    }
+
+                                    @Override
+                                    protected void onSuccess(Void aVoid) throws Exception {
+                                        showExams();
+                                    }
+                                }.execute();
+                            }
                             break;
 //                        case 1:
 //                            intent = new Intent(getActivity(), ProductsListActivity.class);
@@ -192,6 +209,10 @@ public class MainMenuFragment extends Fragment {
         });
     }
 
+    void showExams() {
+        TestpressExam.show(getActivity(), TestpressSdk.getTestpressSession(getActivity()));
+    }
+
     void shareApp() {
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("text/plain");
@@ -241,7 +262,6 @@ public class MainMenuFragment extends Fragment {
             }
         }.execute();
     }
-
 
     public static class StarredCategoryAdapter
             extends RecyclerView.Adapter<StarredCategoryAdapter.ViewHolder> {

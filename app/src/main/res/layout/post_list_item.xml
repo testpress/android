@@ -2,6 +2,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -13,62 +14,80 @@
         card_view:cardPreventCornerOverlap="false"
         card_view:cardUseCompatPadding="true"
         card_view:cardElevation="4dp"
-        card_view:contentPadding="15dp"
         card_view:cardCornerRadius="2dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        <in.testpress.testpress.ui.view.MaterialRippleLayout
+            android:id="@+id/ripple_layout"
+            android:paddingTop="15dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:mrl_rippleColor="#666">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="14dp"
-                android:layout_height="14dp"
-                android:layout_marginRight="3dp"
-                android:tint="#aaa"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_event_black_18dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/calendar_icon"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_marginRight="3dp"
+                    android:tint="#aaa"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_event_black_18dp"/>
+
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="#aaa"
+                    android:text="2015-09-25"
+                    android:textSize="12sp"
+                    android:layout_toRightOf="@id/calendar_icon"
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/date"
+                android:id="@+id/title"
                 android:layout_width="wrap_content"
-                android:textStyle="bold"
-                android:textColor="#aaa"
-                android:text="2015-09-25"
-                android:layout_height="wrap_content" />
+                android:paddingRight="10dp"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:layout_marginBottom="10dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:text="Expected Questions: Seating Arrangements 1234 1234567890123456123465789123456789"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/category"
+                android:text="Alerts"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:textSize="18sp"
-            android:textColor="@color/black"
-            android:maxLines="2"
-            android:ellipsize="end"
-            android:layout_marginBottom="10dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:text="Expected Questions: Seating Arrangements 1234 1234567890123456123465789123456789"
-            android:layout_height="wrap_content"/>
+        </in.testpress.testpress.ui.view.MaterialRippleLayout>
 
-        <TextView
-            android:id="@+id/category"
-            android:text="Alerts"
-            android:paddingLeft="7dp"
-            android:paddingRight="7dp"
-            android:paddingTop="2dp"
-            android:paddingBottom="2dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-    </LinearLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>
 

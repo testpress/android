@@ -40,10 +40,8 @@ import in.testpress.testpress.events.UnAuthorizedErrorEvent;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.Device;
 import in.testpress.testpress.models.PostDao;
-import in.testpress.testpress.ui.ExamsListActivity;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.OrderConfirmActivity;
-import in.testpress.testpress.ui.ProductsListActivity;
 import in.testpress.testpress.ui.TextWatcherAdapter;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.InternetConnectivityChecker;
@@ -270,7 +268,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
      */
 
     protected void finishLogin() {
-        registerDevice();
+        updateDevice();
         final Account account = new Account(username, Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
 
         authToken = token;
@@ -314,7 +312,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         finish();
     }
 
-    private void registerDevice() {
+    private void updateDevice() {
         final SharedPreferences sharedPreferences = getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
         sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
         new SafeAsyncTask<Device>() {
@@ -322,6 +320,11 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             public Device call() throws Exception {
                 String token = GCMPreference.getRegistrationId(getApplicationContext());
                 return testpressService.register(token, Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+            }
+
+            @Override
+            protected void onException(Exception e) throws RuntimeException {
+                sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
             }
 
             @Override

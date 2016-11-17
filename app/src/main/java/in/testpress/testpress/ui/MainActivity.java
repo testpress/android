@@ -6,12 +6,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInstaller;
-import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -42,47 +41,49 @@ import com.google.android.gms.common.GoogleApiAvailability;
 
 import javax.inject.Inject;
 
-/**
- * Initial activity for the application.
- *
- * If you need to remove the authentication from the application please see
- * {@link in.testpress.testpress.authenticator.ApiKeyProvider#getAuthKey(android.app.Activity)}
- */
 public class MainActivity extends TestpressFragmentActivity {
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String TAG = "MainActivity";
 
-    private BroadcastReceiver mRegistrationBroadcastReceiver;
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected TestpressService testpressService;
     @Inject protected LogoutService logoutService;
 
-    protected RelativeLayout progressBarLayout;
-    private boolean userHasAuthenticated = false;
-    private MainMenuFragment fragment;
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
+    private RelativeLayout mProgressBarLayout;
+    private MainMenuFragment mFragment;
+    private SharedPreferences mGcmPreferences;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         Injector.inject(this);
         super.onCreate(savedInstanceState);
-        onNewIntent(getIntent());
+        setContentView(R.layout.main_activity);
+        mProgressBarLayout = (RelativeLayout) findViewById(R.id.progressbar);
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                registerDevice();
+            }
+        };
+        checkUpdate();
     }
 
     private void initScreen() {
-        SharedPreferences prefs = getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
-        if (!prefs.getBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false)) {
+        mGcmPreferences = getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
+        if (!mGcmPreferences.getBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false)) {
             if (checkPlayServices()) {
                 // Start IntentService to register this application with GCM.
                 Intent intent = new Intent(MainActivity.this, RegistrationIntentService.class);
                 startService(intent);
             }
         }
-        fragment = new MainMenuFragment();
+        mFragment = new MainMenuFragment();
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, fragment)
+                .replace(R.id.container, mFragment)
                 .commitAllowingStateLoss();
-        progressBarLayout.setVisibility(View.GONE);
+        mProgressBarLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -129,13 +130,37 @@ public class MainActivity extends TestpressFragmentActivity {
                 if (account.length > 0) {
                     testpressService = serviceProvider.getService(MainActivity.this);
                 }
-                return testpressService.register(token, Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+                return testpressService.register(token,
+                        Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+            }
+
+            @Override
+            protected void onException(Exception e) throws RuntimeException {
             }
 
             @Override
             protected void onSuccess(final Device device) throws Exception {
-                SharedPreferences sharedPreferences = getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
-                sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, true).apply();
+                mGcmPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, true).apply();
+            }
+        }.execute();
+    }
+
+    private void updateDevice() {
+        new SafeAsyncTask<Device>() {
+            @Override
+            public Device call() throws Exception {
+                String token = GCMPreference.getRegistrationId(MainActivity.this.getApplicationContext());
+                return testpressService.register(token,
+                        Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+            }
+
+            @Override
+            protected void onException(Exception e) throws RuntimeException {
+            }
+
+            @Override
+            protected void onSuccess(final Device device) throws Exception {
+                mGcmPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, true).apply();
             }
         }.execute();
     }
@@ -155,32 +180,46 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             protected void onSuccess(final Update update) throws Exception {
                 if(update.getUpdateRequired()) {
-                    new MaterialDialog.Builder(MainActivity.this)
-                            .cancelable(true)
-                            .content(update.getMessage())
-                            .cancelListener(new DialogInterface.OnCancelListener() {
-                                @Override
-                                public void onCancel(DialogInterface dialogInterface) {
-                                    if (update.getForce()) {
+                    if (update.getForce()) {
+                        new MaterialDialog.Builder(MainActivity.this)
+                                .cancelable(true)
+                                .content(update.getMessage())
+                                .cancelListener(new DialogInterface.OnCancelListener() {
+                                    @Override
+                                    public void onCancel(DialogInterface dialogInterface) {
                                         finish();
-                                    } else {
-                                        initScreen();
                                     }
-                                }
-                            })
-                            .neutralText("Update")
-                            .buttonsGravity(GravityEnum.CENTER)
-                            .neutralColorRes(R.color.primary)
-                            .callback(new MaterialDialog.ButtonCallback() {
-                                @Override
-                                public void onNeutral(MaterialDialog dialog) {
-                                    dialog.cancel();
-                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "in.testpress.testpress")));
-                                    //Should change "in.testpress.testpress" to "in.testpress.<App name>" for different apps
-                                    finish();
-                                }
-                            })
-                            .show();
+                                })
+                                .neutralText("Update")
+                                .buttonsGravity(GravityEnum.CENTER)
+                                .neutralColorRes(R.color.primary)
+                                .callback(new MaterialDialog.ButtonCallback() {
+                                    @Override
+                                    public void onNeutral(MaterialDialog dialog) {
+                                        dialog.cancel();
+                                        startActivity(new Intent(Intent.ACTION_VIEW,
+                                                Uri.parse("market://details?id=" + getPackageName())));
+                                        finish();
+                                    }
+                                })
+                                .show();
+                    } else {
+                        initScreen();
+                        final CoordinatorLayout coordinatorLayout =
+                                (CoordinatorLayout) findViewById(R.id.coordinator_layout);
+                        Snackbar snackbar = Snackbar
+                                .make(coordinatorLayout, "New update is available",
+                                        Snackbar.LENGTH_INDEFINITE)
+                                .setAction("UPDATE", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        startActivity(new Intent(Intent.ACTION_VIEW,
+                                                Uri.parse("market://details?id=" + getPackageName())));
+                                        finish();
+                                    }
+                                });
+                        snackbar.show();
+                    }
                 } else {
                     initScreen();
                 }
@@ -206,13 +245,15 @@ public class MainActivity extends TestpressFragmentActivity {
                                 .widgetColorRes(R.color.primary)
                                 .progress(true, 0)
                                 .show();
-                        serviceProvider.invalidateAuthToken();
-
+                        testpressService.invalidateAuthToken();
+                        serviceProvider.invalidateAuthToken(MainActivity.this);
+                        mGcmPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
+                        updateDevice();
                         DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
                         PostDao postDao = daoSession.getPostDao();
                         postDao.deleteAll();
                         daoSession.clear();
-                        getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+                        getSupportFragmentManager().beginTransaction().remove(mFragment).commit();
                         logoutService.logout(new Runnable() {
                             @Override
                             public void run() {
@@ -229,29 +270,4 @@ public class MainActivity extends TestpressFragmentActivity {
                 .show();
     }
 
-    @Override
-    public void onNewIntent(Intent intent){
-        Bundle extras = intent.getExtras();
-        if(extras != null){
-            if(extras.containsKey("url"))
-            {
-                Intent newintent = new Intent(this, PostActivity.class);
-                newintent.putExtra("url", intent.getStringExtra("url"));
-                startActivity(newintent);
-                finish();
-            }
-        } else {
-            setContentView(R.layout.main_activity);
-            progressBarLayout = (RelativeLayout) findViewById(R.id.progressbar);
-            ProgressBar progressBar = (ProgressBar) findViewById(R.id.pb_loading);
-            progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
-            mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    registerDevice();
-                }
-            };
-            checkUpdate();
-        }
-    }
 }

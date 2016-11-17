@@ -31,13 +31,18 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import in.testpress.core.TestpressSdk;
+import in.testpress.core.TestpressSession;
+import in.testpress.exam.TestpressExam;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
+import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LoginActivity;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.Category;
+import in.testpress.testpress.models.CategoryDao;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 
@@ -55,6 +60,7 @@ public class MainMenuFragment extends Fragment {
     String[] menuItemNames = {
             "My Exams",
             "Store",
+            "Documents",
 //            "Orders",
             "Posts",
             "Profile",
@@ -65,6 +71,7 @@ public class MainMenuFragment extends Fragment {
     int[] menuItemImageId = {
             R.drawable.exams,
             R.drawable.store,
+            R.drawable.documents,
 //            R.drawable.cart,
             R.drawable.posts,
             R.drawable.ic_profile_details,
@@ -121,35 +128,53 @@ public class MainMenuFragment extends Fragment {
                 if (account.length > 0) {
                     switch (position) {
                         case 0:
-                            intent = new Intent(getActivity(), ExamsListActivity.class);
-                            startActivity(intent);
+                            if (TestpressSdk.hasActiveSession(getActivity())) {
+                                showExams();
+                            } else {
+                                new SafeAsyncTask<Void>() {
+                                    @Override
+                                    public Void call() throws Exception {
+                                        serviceProvider.getService(getActivity());
+                                        return null;
+                                    }
+
+                                    @Override
+                                    protected void onSuccess(Void aVoid) throws Exception {
+                                        showExams();
+                                    }
+                                }.execute();
+                            }
                             break;
                         case 1:
                             intent = new Intent(getActivity(), ProductsListActivity.class);
+                            startActivity(intent);
+                            break;
+                        case 2:
+                            intent = new Intent(getActivity(), DocumentsListActivity.class);
                             startActivity(intent);
                             break;
 //                    case 2:
 //                        intent = new Intent(getActivity(), OrdersListActivity.class);
 //                        startActivity(intent);
 //                        break;
-                        case 2:
+                        case 3:
                             intent = new Intent(getActivity(), PostsListActivity.class);
                             intent.putExtra("userAuthenticated", true);
                             startActivity(intent);
                             break;
-                        case 3:
+                        case 4:
                             intent = new Intent(getActivity(), ProfileDetailsActivity.class);
                             startActivity(intent);
                             break;
-                        case 4:
+                        case 5:
                             //Share
                             shareApp();
                             break;
-                        case 5:
+                        case 6:
                             //Rate
                             rateApp();
                             break;
-                        case 6:
+                        case 7:
                             ((MainActivity) getActivity()).logout();
                             break;
                     }
@@ -181,6 +206,10 @@ public class MainMenuFragment extends Fragment {
                 }
             }
         });
+    }
+
+    void showExams() {
+        TestpressExam.show(getActivity(), TestpressSdk.getTestpressSession(getActivity()));
     }
 
     void shareApp() {
@@ -219,17 +248,19 @@ public class MainMenuFragment extends Fragment {
 
             protected void onSuccess(final List<Category> categories) throws Exception {
                 Ln.e("On success");
-                if (categories.isEmpty() == true) {
+                if (categories.isEmpty()) {
                     quickLinksContainer.setVisibility(View.GONE);
                 } else {
                     quickLinksContainer.setVisibility(View.VISIBLE);
+                    CategoryDao categoryDao = ((TestpressApplication) getActivity()
+                            .getApplicationContext()).getDaoSession().getCategoryDao();
+                    categoryDao.insertOrReplaceInTx(categories);
                     recyclerView.setAdapter(new StarredCategoryAdapter(getActivity(),
                             categories));
                 }
             }
         }.execute();
     }
-
 
     public static class StarredCategoryAdapter
             extends RecyclerView.Adapter<StarredCategoryAdapter.ViewHolder> {

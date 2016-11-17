@@ -16,6 +16,8 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import in.testpress.core.TestpressSdk;
+import in.testpress.exam.TestpressExam;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -49,18 +51,14 @@ public class PaymentSuccessActivity extends TestpressFragmentActivity {
         order = getIntent().getParcelableExtra("order");
         progressBar = (ProgressBar) findViewById(R.id.pb_loading);
         progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
-        orderId.setText("Order Id: " + order.getId());
+        orderId.setText("Order Id: " + order.getOrderId());
         amount.setText("Amount: ₹ " + order.getAmount());
         final List<OrderItem> orderItems = order.getOrderItems();
         paymentDetailsView.setVisibility(View.GONE);
         ProductDetails productDetails = getIntent().getParcelableExtra("productDetails");
         if(productDetails.getExams().size() != 0) {
-           if(productDetails.getExams().size() > 1) {
-                intent = new Intent(this, ExamsListActivity.class);
-           } else {
-                intent = new Intent(this, ExamActivity.class);
-                intent.putExtra("exam", productDetails.getExams().get(0));
-           }
+            //noinspection ConstantConditions
+            TestpressExam.show(this, TestpressSdk.getTestpressSession(this));
         } else {
             examButton.setVisibility(View.GONE);
         }

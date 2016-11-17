@@ -30,6 +30,8 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import in.testpress.core.TestpressSdk;
+import in.testpress.exam.TestpressExam;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.R.id;
@@ -99,20 +101,16 @@ public class OrderConfirmActivity extends TestpressFragmentActivity {
                 order = createdOrder;
                 if(createdOrder.getStatus().equals("Completed")) {
                     setResult(RESULT_OK);
-                    Intent intent;
                     if(productDetails.getExams().size() != 0) {
-                        if(productDetails.getExams().size() > 1) {
-                            intent = new Intent(OrderConfirmActivity.this, ExamsListActivity.class);
-                        } else {
-                            intent = new Intent(OrderConfirmActivity.this, ExamActivity.class);
-                            intent.putExtra("exam", productDetails.getExams().get(0));
-                        }
+                        //noinspection ConstantConditions
+                        TestpressExam.show(OrderConfirmActivity.this,
+                                TestpressSdk.getTestpressSession(OrderConfirmActivity.this));
                     } else {
-                        intent = new Intent(OrderConfirmActivity.this, PaymentSuccessActivity.class);
+                        Intent intent = new Intent(OrderConfirmActivity.this, PaymentSuccessActivity.class);
                         intent.putExtra("order", order);
+                        intent.putExtras(getIntent().getExtras());
+                        startActivity(intent);
                     }
-                    intent.putExtras(getIntent().getExtras());
-                    startActivity(intent);
                     finish();
                 } else if(productDetails.getRequiresShipping()) {
                     landmark.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -212,7 +210,7 @@ public class OrderConfirmActivity extends TestpressFragmentActivity {
                 Intent intent = new Intent(OrderConfirmActivity.this, PaymentModeActivity.class);
                 paymentParams = new PaymentParams();
                 paymentParams.setKey(order.getApikey());
-                paymentParams.setTxnId(order.getId().toString());
+                paymentParams.setTxnId(order.getOrderId());
                 paymentParams.setAmount(order.getAmount());
                 paymentParams.setProductInfo("Testpress");
                 paymentParams.setFirstName(order.getName());

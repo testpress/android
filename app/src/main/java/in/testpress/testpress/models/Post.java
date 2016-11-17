@@ -14,11 +14,15 @@ public class Post {
     private String summary;
     private String contentHtml;
     private String url;
-    private String created;
-    private Long createdDate;
+    private String publishedDate;
+    private Long published;
     private String modified;
     private Integer institute;
-    private Boolean active;
+    private Boolean is_active;
+    private Long modifiedDate;
+    private String short_web_url;
+    private String short_url;
+    private String web_url;
     private Long categoryId;
 
     /** Used to resolve relations */
@@ -38,17 +42,21 @@ public class Post {
         this.id = id;
     }
 
-    public Post(Long id, String title, String summary, String contentHtml, String url, String created, Long createdDate, String modified, Integer institute, Boolean active, Long categoryId) {
+    public Post(Long id, String title, String summary, String contentHtml, String url, String publishedDate, Long published, String modified, Integer institute, Boolean is_active, Long modifiedDate, String short_web_url, String short_url, String web_url, Long categoryId) {
         this.id = id;
         this.title = title;
         this.summary = summary;
         this.contentHtml = contentHtml;
         this.url = url;
-        this.created = created;
-        this.createdDate = createdDate;
+        this.publishedDate = publishedDate;
+        this.published = published;
         this.modified = modified;
         this.institute = institute;
-        this.active = active;
+        this.is_active = is_active;
+        this.modifiedDate = modifiedDate;
+        this.short_web_url = short_web_url;
+        this.short_url = short_url;
+        this.web_url = web_url;
         this.categoryId = categoryId;
     }
 
@@ -98,20 +106,20 @@ public class Post {
         this.url = url;
     }
 
-    public String getCreated() {
-        return created;
+    public String getPublishedDate() {
+        return publishedDate;
     }
 
-    public void setCreated(String created) {
-        this.created = created;
+    public void setPublishedDate(String publishedDate) {
+        this.publishedDate = publishedDate;
     }
 
-    public Long getCreatedDate() {
-        return createdDate;
+    public Long getPublished() {
+        return published;
     }
 
-    public void setCreatedDate(Long createdDate) {
-        this.createdDate = createdDate;
+    public void setPublished(Long published) {
+        this.published = published;
     }
 
     public String getModified() {
@@ -130,12 +138,44 @@ public class Post {
         this.institute = institute;
     }
 
-    public Boolean getActive() {
-        return active;
+    public Boolean getIs_active() {
+        return is_active;
     }
 
-    public void setActive(Boolean active) {
-        this.active = active;
+    public void setIs_active(Boolean is_active) {
+        this.is_active = is_active;
+    }
+
+    public Long getModifiedDate() {
+        return modifiedDate;
+    }
+
+    public void setModifiedDate(Long modifiedDate) {
+        this.modifiedDate = modifiedDate;
+    }
+
+    public String getShort_web_url() {
+        return short_web_url;
+    }
+
+    public void setShort_web_url(String short_web_url) {
+        this.short_web_url = short_web_url;
+    }
+
+    public String getShort_url() {
+        return short_url;
+    }
+
+    public void setShort_url(String short_url) {
+        this.short_url = short_url;
+    }
+
+    public String getWeb_url() {
+        return web_url;
+    }
+
+    public void setWeb_url(String web_url) {
+        this.web_url = web_url;
     }
 
     public Long getCategoryId() {

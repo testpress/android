@@ -3,66 +3,29 @@
 <resources>
 
     <string name="app_name">Conceptree Learning</string>
+    <string name="host_url">conceptree.testpress.in</string>
     <string name="content_column">Content</string>
     <string name="page_referrers">Referrers</string>
+
     <string name="refresh_action">Refresh</string>
-    <string name="filter_action">Filter</string>
-    <string name="retake_action">Retake</string>
-    <string name="email_mcqs">Email MCQs</string>
-    <string name="email_pdf">Email PDF</string>
-    <string name="logout_action">Logout</string>
-    <string name="page_available_exams">Available</string>
-    <string name="page_upcoming_exams">Upcoming</string>
-    <string name="page_history_exams">History</string>
-    <string name="page_stats">Stats</string>
-    <string name="page_all">All</string>
-    <string name="page_correct">Correct</string>
-    <string name="page_incorrect">Incorrect</string>
-    <string name="page_unanswered">Unanswered</string>
-    <string name="page_review">Marked for Review</string>
-    <string name="title_column">Title</string>
-    <string name="location_column">Location</string>
-    <string name="user_column">User</string>
-    <string name="date_column">Date</string>
-    <string name="error_loading_exams">Loading exams failed</string>
+
     <string name="error_loading_products">Loading Products failed</string>
+    <string name="error_loading_documents">Loading Documents failed</string>
     <string name="error_loading_orders">Loading Orders failed</string>
-    <string name="error_loading_attempts">Loading attempts failed</string>
-    <string name="error_loading_questions">Loading questions failed</string>
     <string name="error_loading_posts">Loading posts failed</string>
     <string name="error_loading_content">Loading content failed</string>
-    <string name="no_exams">No Exams</string>
-    <string name="no_exams_description">You can buy exams from the store.</string>
-    <string name="no_attempts">No Attempts</string>
-    <string name="no_attempts_description">To review, start and complete your exams.</string>
-    <string name="review">Review</string>
-    <string name="view_attempts">View Attempts</string>
-    <string name="no_questions">No Questions</string>
-    <string name="no_questions_to_review">There are no questions to review.</string>
+
     <string name="no_products">No Products</string>
     <string name="no_products_description">There are no products to purchase right now.</string>
+    <string name="no_documents">No Documents</string>
+    <string name="no_documents_description">There are no downloadable documents right now.</string>
     <string name="no_orders">No transactions yet</string>
     <string name="no_orders_description">Your purchased orders will be reflected here.</string>
     <string name="no_posts">No Articles</string>
-    <string name="avatar">Avatar</string>
-    <string name="choose">Choose</string>
-    <string name="start_exam">Start Exam</string>
-    <string name="next">Next</string>
-    <string name="previous">Prev</string>
-    <string name="paused">Paused</string>
-    <string name="end">End</string>
+
     <string name="edit">Edit</string>
     <string name="cancel">Cancel</string>
-    <string name="pause_message">Do you want to Pause the exam?</string>
-    <string name="pause_content">You can pause the exam &amp; resume later before end date</string>
-    <string name="end_message">Do you want to End the exam?</string>
-    <string name="mail_pdf_confirm_title">Mail PDF</string>
-    <string name="mail_pdf_confirm">PDF will be mailed to your email address. Click OK to confirm.</string>
-    <string name="mail_pdf">Initiating PDF mail</string>
-    <string name="mail_pdf_complete">PDF Request Complete</string>
-    <string name="mail_pdf_complete_description">Your PDF request has been initiated. Please wait while your PDF is generated and mailed to you.</string>
-    <string name="mail_pdf_error">PDF Request Error</string>
-    <string name="mail_pdf_error_description">There was an error in generating your PDF.</string>
+
     <string name="loading">Loading...</string>
     <string name="please_wait">Please Wait...</string>
     <string name="ok">OK</string>
@@ -71,16 +34,15 @@
     <string name="authentication_failed">Authentication failed</string>
     <string name="network_error">Network Error</string>
     <string name="no_internet">Please check your internet connection &amp; refresh again</string>
+    <string name="no_internet_try_again">Please check your internet connection &amp; try again</string>
     <string name="try_after_sometime">Please try after sometime</string>
 
     <!-- AuthenticatorActivity -->
     <string name="label_username">Username</string>
     <string name="label_password">Password</string>
     <string name="label_email">Email</string>
-    <string name="label_confirm_password">Confirm Password</string>
     <string name="label_phone">Phone</string>
-    <string name="label_sign_in">Sign In</string>
-    <string name="label_sign_up">Sign Up</string>
+
     <string name="label_logging_out">Logging Out...</string>
     <string name="verify">Verify</string>
     <string name="reset_password">Reset Password</string>
@@ -88,39 +50,21 @@
     <string name="reset_error_message">Email address is invalid. Please enter a registered email address. </string>
     <string name="manually_verify">Manually Verify</string>
     <string name="label_ask_code">Enter the code sent via sms</string>
-    <string name="verify_code">Verify Code</string>
     <string name="message_verifying">Verifying code</string>
     <string name="label_fill_all_details">*Please fill all details</string>
     <string name="label_fill_required_details">*Please fill required details</string>
     <string name="register">Register</string>
     <string name="message_signing_in">Signing in…</string>
-    <string name="blank_field_warning">Please populate this field</string>
     <string name="message_bad_credentials">Email Address or Password is incorrect</string>
     <string name="message_auth_failed">Please enter a valid password</string>
     <string name="message_auth_failed_new_account">Please enter a valid email address &amp; password</string>
-    <string name="timer_running">Timer is running</string>
-    <string name="timer_is_paused">Timer is paused</string>
-    <string name="stop">Stop</string>
-    <string name="start">Start</string>
-    <string name="pause">Pause</string>
-    <string name="resume">Resume</string>
-    <string name="title_timer">Timer</string>
-    <string name="home">Home</string>
-    <string name="navigation_drawer_open">Drawer Open</string>
-    <string name="navigation_drawer_close">Drawer Close</string>
-    <string name="title_home">Home</string>
-    <string name="icon_heart">&#xf004;</string>
-    <string name="thumbs_o_up">&#xf087;</string>
 
-    <string name="all_exams">All Exams</string>
-    <string name="courses">Courses</string>
-    <string name="all_categories">All Categories</string>
     <string name="payment_completed">Payment Successfully Completed</string>
     <string name="thanks_for_purchasing">Thank you for Purchasing</string>
     <string name="books_message">Books will be Delivered to you shortly</string>
     <string name="continue_purchase">Continue Purchase</string>
     <string name="take_exam">Take Exam</string>
-    <string name="clear_posts">Clear Offline Posts</string>
+
     <string name="all_posts">All Posts</string>
     <string name="categories">Categories</string>
     <string name="title_activity_reset_password_verification">ResetPasswordVerificationActivity
@@ -128,12 +72,12 @@
 
     <string name="share_message">Good app to prepare for IIT-JEE, AIEEE. Get it at https://play.google.com/store/apps/details?id=</string>
 
-    <string name="search">Search</string>
-    <string name="search_hint">Search...</string>
     <string name="tap_to_retry">Tap to retry</string>
-    <string name="no_results_found">Sorry, No results found</string>
-    <string name="try_with_other_keyword">Please try with some other keywords</string>
-    <string name="speech_recognition_not_supported">Opps! Your device doesn\'t support Speech to Text</string>
 
     <string name="no_posts_description">There are no posts right now.</string>
+    <string name="post_authentication_failed">Sorry, you don\'t have access to this article.</string>
+    <string name="access_denied">Access denied</string>
+    <string name="share">Share</string>
+    <string name="invalid_post">Invalid Article</string>
+
 </resources>

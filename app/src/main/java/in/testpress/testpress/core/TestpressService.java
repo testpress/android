@@ -1,5 +1,11 @@
 package in.testpress.testpress.core;
 
+import com.squareup.okhttp.Interceptor;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,9 +24,10 @@ import in.testpress.testpress.models.ResetPassword;
 import in.testpress.testpress.models.TestpressApiResponse;
 import in.testpress.testpress.models.Update;
 import retrofit.RestAdapter;
+import retrofit.client.OkClient;
 
 public class TestpressService {
-    private RestAdapter restAdapter;
+    private RestAdapter.Builder restAdapter;
     private String authToken;
 
     public TestpressService() {
@@ -31,11 +38,11 @@ public class TestpressService {
      *
      * @param restAdapter The RestAdapter that allows HTTP Communication.
      */
-    public TestpressService(RestAdapter restAdapter) {
+    public TestpressService(RestAdapter.Builder restAdapter) {
         this.restAdapter = restAdapter;
     }
 
-    public TestpressService(RestAdapter restAdapter, String authToken) {
+    public TestpressService(RestAdapter.Builder restAdapter, String authToken) {
         this.restAdapter = restAdapter;
         this.authToken = authToken;
     }
@@ -45,7 +52,20 @@ public class TestpressService {
     }
 
     private RestAdapter getRestAdapter() {
-        return restAdapter;
+        if (authToken != null) {
+            OkHttpClient client = new OkHttpClient();
+            Interceptor interceptor = new Interceptor() {
+                @Override
+                public Response intercept(Chain chain) throws IOException {
+                    Request.Builder header = chain.request().newBuilder();
+                    header.addHeader("Authorization", getAuthToken());
+                    return chain.proceed(header.build());
+                }
+            };
+            client.networkInterceptors().add(interceptor);
+            restAdapter.setClient(new OkClient(client));
+        }
+        return restAdapter.build();
     }
 
     private AuthenticationService getAuthenticationService() {
@@ -91,35 +111,19 @@ public class TestpressService {
         HashMap<String, String> credentials = new HashMap<String, String>();
         credentials.put("registration_id", registrationId);
         credentials.put("device_id", deviceId);
-        if (authToken == null) {
-            return getDevicesService().register(credentials, null);
-        } else {
-            return getDevicesService().register(credentials, getAuthToken());
-        }
+        return getDevicesService().register(credentials);
     }
 
     public TestpressApiResponse<Post> getPosts(String urlFrag, Map<String, String> queryParams, String latestModifiedDate) {
-        if (authToken == null) {
-            return getPostService().getPosts(urlFrag, queryParams, null, latestModifiedDate);
-        } else {
-            return getPostService().getPosts(urlFrag, queryParams, getAuthToken(), latestModifiedDate);
-        }
+        return getPostService().getPosts(urlFrag, queryParams, latestModifiedDate);
     }
 
     public TestpressApiResponse<Category> getCategories(String urlFrag, Map<String, String> queryParams) {
-        if (authToken == null) {
-            return getPostService().getCategories(urlFrag, queryParams, null);
-        } else {
-            return getPostService().getCategories(urlFrag, queryParams, getAuthToken());
-        }
+        return getPostService().getCategories(urlFrag, queryParams);
     }
 
     public Post getPostDetail(String url, Map<String, Boolean> queryParams) {
-        if (authToken == null) {
-            return getPostService().getPostDetails(url, queryParams, null);
-        } else {
-            return getPostService().getPostDetails(url, queryParams, getAuthToken());
-        }
+        return getPostService().getPostDetails(url, queryParams);
     }
 
     public RegistrationSuccessResponse register(String username,String email, String password, String phone){
@@ -151,18 +155,18 @@ public class TestpressService {
     }
 
     public TestpressApiResponse<Notes> getDocumentsList(String urlFrag, Map<String, String> queryParams) {
-        return getDocumentsService().getDocumentsList(urlFrag, queryParams, getAuthToken());
+        return getDocumentsService().getDocumentsList(urlFrag, queryParams);
     }
 
     public Notes getDownloadUrl(String slug) {
-        return getDocumentsService().getDownloadUrl(slug, getAuthToken());
+        return getDocumentsService().getDownloadUrl(slug);
     }
 
     public Order order(String user, List<OrderItem> orderItems) {
         HashMap<String, Object> orderParameters = new HashMap<String, Object>();
         orderParameters.put("user", user);
         orderParameters.put("order_items", orderItems);
-        return getProductsService().order(orderParameters, getAuthToken());
+        return getProductsService().order(orderParameters);
     }
 
     public Order orderConfirm(String confirmUrlFrag, String address, String zip, String phone, String landmark, String user, List<OrderItem> orderItems) {
@@ -173,15 +177,15 @@ public class TestpressService {
         orderParameters.put("zip", zip);
         orderParameters.put("phone", phone);
         orderParameters.put("land_mark", landmark);
-        return getProductsService().orderConfirm(confirmUrlFrag, orderParameters, getAuthToken());
+        return getProductsService().orderConfirm(confirmUrlFrag, orderParameters);
     }
 
     public TestpressApiResponse<Order> getOrders(String urlFrag) {
-        return getProductsService().getOrders(urlFrag, getAuthToken());
+        return getProductsService().getOrders(urlFrag);
     }
 
     public ProfileDetails getProfileDetails() {
-        return getAuthenticationService().getProfileDetails(getAuthToken());
+        return getAuthenticationService().getProfileDetails();
     }
 
     public ProfileDetails updateUserDetails(String url, String email, String firstName, String lastName, String phone, int gender, String birthDate, String address, String city, int state, String zip) {
@@ -204,7 +208,7 @@ public class TestpressService {
             userParameters.put("state_choices", state);
         }
         userParameters.put("zip", zip);
-        return getAuthenticationService().updateUser(url, userParameters, getAuthToken());
+        return getAuthenticationService().updateUser(url, userParameters);
     }
 
     public ProfileDetails updateProfileImage(String url, String image, int[] cropDetails) {
@@ -216,6 +220,6 @@ public class TestpressService {
             userParameters.put("crop_width", cropDetails[2]);
             userParameters.put("crop_height", cropDetails[3]);
         }
-        return getAuthenticationService().updateUser(url, userParameters, getAuthToken());
+        return getAuthenticationService().updateUser(url, userParameters);
     }
 }

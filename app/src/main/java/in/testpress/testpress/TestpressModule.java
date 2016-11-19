@@ -103,13 +103,13 @@ public class TestpressModule {
 //    }
 
     @Provides
-    TestpressService provideTestpressService(RestAdapter restAdapter) {
+    TestpressService provideTestpressService(RestAdapter.Builder restAdapter) {
         return new TestpressService(restAdapter);
     }
 
     @Singleton
     @Provides
-    TestpressServiceProvider provideTestpressServiceProvider(RestAdapter restAdapter, ApiKeyProvider apiKeyProvider) {
+    TestpressServiceProvider provideTestpressServiceProvider(RestAdapter.Builder restAdapter, ApiKeyProvider apiKeyProvider) {
         return new TestpressServiceProvider(restAdapter, apiKeyProvider);
     }
 
@@ -149,13 +149,12 @@ public class TestpressModule {
     }
 
     @Provides
-    RestAdapter provideRestAdapter(RestErrorHandler restErrorHandler, RestAdapterRequestInterceptor restRequestInterceptor, Gson gson) {
+    RestAdapter.Builder provideRestAdapter(RestErrorHandler restErrorHandler, RestAdapterRequestInterceptor restRequestInterceptor, Gson gson) {
         return new RestAdapter.Builder()
                 .setEndpoint(Constants.Http.URL_BASE)
                 .setErrorHandler(restErrorHandler)
                 .setRequestInterceptor(restRequestInterceptor)
                 .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setConverter(new GsonConverter(gson))
-                .build();
+                .setConverter(new GsonConverter(gson));
     }
 }

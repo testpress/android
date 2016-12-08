@@ -24,6 +24,8 @@ import in.testpress.testpress.core.RestAdapterRequestInterceptor;
 import in.testpress.testpress.core.RestErrorHandler;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.core.UserAgentProvider;
+import in.testpress.testpress.ui.AnalyticsActivity;
+import in.testpress.testpress.ui.AnalyticsFragment;
 import in.testpress.testpress.ui.CropImageActivity;
 import in.testpress.testpress.ui.DocumentsListActivity;
 import in.testpress.testpress.ui.DocumentsListFragment;
@@ -85,7 +87,9 @@ import retrofit.converter.GsonConverter;
                 ResetPasswordActivity.class,
                 DocumentsListActivity.class,
                 DocumentsListFragment.class,
-                ZoomableImageActivity.class
+                ZoomableImageActivity.class,
+                AnalyticsActivity.class,
+                AnalyticsFragment.class
         }
 )
 public class TestpressModule {
@@ -103,13 +107,13 @@ public class TestpressModule {
 //    }
 
     @Provides
-    TestpressService provideTestpressService(RestAdapter restAdapter) {
+    TestpressService provideTestpressService(RestAdapter.Builder restAdapter) {
         return new TestpressService(restAdapter);
     }
 
     @Singleton
     @Provides
-    TestpressServiceProvider provideTestpressServiceProvider(RestAdapter restAdapter, ApiKeyProvider apiKeyProvider) {
+    TestpressServiceProvider provideTestpressServiceProvider(RestAdapter.Builder restAdapter, ApiKeyProvider apiKeyProvider) {
         return new TestpressServiceProvider(restAdapter, apiKeyProvider);
     }
 
@@ -149,13 +153,12 @@ public class TestpressModule {
     }
 
     @Provides
-    RestAdapter provideRestAdapter(RestErrorHandler restErrorHandler, RestAdapterRequestInterceptor restRequestInterceptor, Gson gson) {
+    RestAdapter.Builder provideRestAdapter(RestErrorHandler restErrorHandler, RestAdapterRequestInterceptor restRequestInterceptor, Gson gson) {
         return new RestAdapter.Builder()
                 .setEndpoint(Constants.Http.URL_BASE)
                 .setErrorHandler(restErrorHandler)
                 .setRequestInterceptor(restRequestInterceptor)
                 .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setConverter(new GsonConverter(gson))
-                .build();
+                .setConverter(new GsonConverter(gson));
     }
 }

@@ -7,6 +7,8 @@
     <color name="text_inverted">#FFFFFF</color>
     <color name="text_title">#DFDFDF</color>
 
+    <color name="tab_text_color">#888888</color>
+
     <color name="table_text">#484848</color>
     <color name="table_text_light">#A6A6A6</color>
 
@@ -41,5 +43,11 @@
     <color name="testpress_actionbar_text">@color/white</color>
     <color name="testpress_color_primary">@color/primary</color>
     <color name="testpress_button_text_color">@color/white</color>
+
+    <color name="green_correct">#00CCAA</color>
+    <color name="red_incorrect">#E65C6C</color>
+    <color name="yellow">#FFA319</color>
+
+    <color name="graph_text">#777777</color>
 
 </resources>

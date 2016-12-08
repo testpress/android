@@ -114,7 +114,8 @@ public class PostActivity extends DeepLinkHandlerActivity {
                 }
                 Map<String, Boolean> queryParams = new LinkedHashMap<>();
                 queryParams.put("short_link", true);
-                return testpressService.getPostDetail(shortWebUrl.replace(Constants.Http.URL_BASE +"/p/", ""), queryParams);
+                Uri uri = Uri.parse(shortWebUrl);
+                return testpressService.getPostDetail(uri.getLastPathSegment(), queryParams);
             }
 
             @Override

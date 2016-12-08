@@ -63,6 +63,7 @@ public class MainMenuFragment extends Fragment {
 //            "Documents",
 //            "Orders",
             "Posts",
+            "Analytics",
             "Profile",
             "Share",
             "Rate Us",
@@ -74,6 +75,7 @@ public class MainMenuFragment extends Fragment {
 //            R.drawable.documents,
 //            R.drawable.cart,
             R.drawable.posts,
+            R.drawable.analytics,
             R.drawable.ic_profile_details,
             R.drawable.share,
             R.drawable.heart,
@@ -164,18 +166,22 @@ public class MainMenuFragment extends Fragment {
                             startActivity(intent);
                             break;
                         case 2:
-                            intent = new Intent(getActivity(), ProfileDetailsActivity.class);
+                            intent = new Intent(getActivity(), AnalyticsActivity.class);
                             startActivity(intent);
                             break;
                         case 3:
+                            intent = new Intent(getActivity(), ProfileDetailsActivity.class);
+                            startActivity(intent);
+                            break;
+                        case 4:
                             //Share
                             shareApp();
                             break;
-                        case 4:
+                        case 5:
                             //Rate
                             rateApp();
                             break;
-                        case 5:
+                        case 6:
                             ((MainActivity) getActivity()).logout();
                             break;
                     }

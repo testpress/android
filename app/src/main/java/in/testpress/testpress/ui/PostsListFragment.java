@@ -45,6 +45,7 @@ import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
+import in.testpress.testpress.core.PostCategoryPager;
 import in.testpress.testpress.core.PostsPager;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.Category;
@@ -100,6 +101,9 @@ public class PostsListFragment extends Fragment implements
     private static final int MISSED_POSTS_THRESHOLD = 50;
 
     Long categoryFilter = null;
+    boolean authorizationChecked;
+    PostCategoryPager categoryPager;
+    List<Category> categories = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -186,21 +190,45 @@ public class PostsListFragment extends Fragment implements
         listView.setFastScrollEnabled(true);
     }
 
+    /**
+     * Initialize {@link TestpressService} with auth-token for the first time & returns the same
+     * instance afterwards.
+     *
+     * @return TestpressService
+     */
+    TestpressService getTestpressService() {
+        if (!authorizationChecked) {
+            AccountManager manager = (AccountManager) getActivity().getSystemService(Context.ACCOUNT_SERVICE);
+            final Account[] account = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
+            if (account.length > 0) {
+                try {
+                    testpressService = serviceProvider.getService(getActivity());
+                } catch (AccountsException e) {
+                } catch (IOException e) {
+                }
+            }
+            authorizationChecked = true;
+        }
+        return testpressService;
+    }
+
+    PostCategoryPager getCategoryPager() {
+        if (categoryPager == null) {
+            categoryPager = new PostCategoryPager(getTestpressService());
+            return categoryPager;
+        }
+        return categoryPager;
+    }
+
     public void fetchCategories() {
         new SafeAsyncTask<List<Category>>() {
             @Override
             public List<Category> call() throws Exception {
-                AccountManager manager = (AccountManager) getActivity().getSystemService(Context.ACCOUNT_SERVICE);
-                final Account[] account = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
-                if (account.length > 0) {
-                    try {
-                        testpressService = serviceProvider.getService(getActivity());
-                    } catch (AccountsException e) {
-                    } catch (IOException e) {
-                    }
-                }
-                return testpressService
-                        .getCategories(Constants.Http.URL_CATEGORIES_FRAG, null).getResults();
+                do {
+                    getCategoryPager().next();
+                    categories = getCategoryPager().getResources();
+                } while (getCategoryPager().hasNext());
+                return categories;
             }
 
             protected void onSuccess(final List<Category> categories) throws Exception {
@@ -264,16 +292,7 @@ public class PostsListFragment extends Fragment implements
 
     void initPager() {
         if (refreshPager == null) {
-            AccountManager manager = (AccountManager) getActivity().getSystemService(Context.ACCOUNT_SERVICE);
-            final Account[] account = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
-            if (account.length > 0) {
-                try {
-                    testpressService = serviceProvider.getService(getActivity());
-                } catch (AccountsException e) {
-                } catch (IOException e) {
-                }
-            }
-            refreshPager = new PostsPager(testpressService, postDao);
+            refreshPager = new PostsPager(getTestpressService(), postDao);
             refreshPager.setQueryParams("order", "-published_date");
             if (postDao.count() > 0) {
                 Post latest = postDao.queryBuilder().orderDesc(PostDao.Properties.ModifiedDate)
@@ -440,7 +459,7 @@ public class PostsListFragment extends Fragment implements
             Ln.d("Onscroll showing more");
 
             if (pager == null) {
-                pager = new PostsPager(testpressService, null);
+                pager = new PostsPager(getTestpressService(), null);
                 pager.setQueryParams("order", "-published_date");
                 Post lastPost = postDao.queryBuilder().orderDesc(PostDao.Properties
                         .Published).list().get((int) postDao.count() - 1);
@@ -490,6 +509,9 @@ public class PostsListFragment extends Fragment implements
                     LogLatestPostModifiedDate(latest);
                 }
                 getLoaderManager().restartLoader(REFRESH_LOADER_ID, null, PostsListFragment.this);
+                categories.clear();
+                categoryPager.clear();
+                fetchCategories();
             }
         });
     }

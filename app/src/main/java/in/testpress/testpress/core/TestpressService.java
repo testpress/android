@@ -19,6 +19,7 @@ import in.testpress.testpress.models.Device;
 import in.testpress.testpress.models.Product;
 import in.testpress.testpress.models.ProductDetails;
 import in.testpress.testpress.models.ProfileDetails;
+import in.testpress.testpress.models.Subject;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.ResetPassword;
 import in.testpress.testpress.models.TestpressApiResponse;
@@ -77,6 +78,8 @@ public class TestpressService {
     private DocumentsService getDocumentsService() { return getRestAdapter().create(DocumentsService.class); }
 
     private PostService getPostService() { return getRestAdapter().create(PostService.class); }
+
+    private AnalyticsService getAnalyticsService() { return getRestAdapter().create(AnalyticsService.class); }
 
     private DeviceService getDevicesService() { return getRestAdapter().create(DeviceService.class); }
 
@@ -221,5 +224,9 @@ public class TestpressService {
             userParameters.put("crop_height", cropDetails[3]);
         }
         return getAuthenticationService().updateUser(url, userParameters);
+    }
+
+    public TestpressApiResponse<Subject> getSubjects(String urlFrag, Map<String, String> queryParams) {
+        return getAnalyticsService().getSubjects(urlFrag, queryParams);
     }
 }

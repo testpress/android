@@ -89,6 +89,11 @@ public final class Constants {
         public static final String URL_DOCUMENTS_FRAG = "api/v2.2/notes/";
 
         /**
+         * Subject Wise Answers Count List URL
+         */
+        public static final String URL_SUBJECT_ANALYTICS_FRAG = "api/v2.2/analytics/";
+
+        /**
          * List Products Exams URL
          */
         public static final String URL_ORDERS_FRAG = "/api/v2/orders/";
@@ -159,6 +164,7 @@ public final class Constants {
          */
         public static final String SEARCH_QUERY = "q";
         public static final String STATE = "state";
+        public static final String PARENT = "parent";
     }
 
 

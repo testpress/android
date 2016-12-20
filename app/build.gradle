@@ -49,7 +49,7 @@ dependencies {
     compile 'com.edmodo:cropper:1.0.1'
     
     // Testpress exam
-    compile ('com.github.testpress:exam:1.0.4@aar') {
+    compile ('com.github.testpress:exam:1.0.5@aar') {
         transitive=true
     }
 

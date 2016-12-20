@@ -21,11 +21,11 @@ import in.testpress.testpress.util.GCMPreference;
 import retrofit.RestAdapter;
 
 public class TestpressServiceProvider {
-    private RestAdapter restAdapter;
+    private RestAdapter.Builder restAdapter;
     private ApiKeyProvider keyProvider;
     String authToken;
 
-    public TestpressServiceProvider(RestAdapter restAdapter, ApiKeyProvider keyProvider) {
+    public TestpressServiceProvider(RestAdapter.Builder restAdapter, ApiKeyProvider keyProvider) {
         this.restAdapter = restAdapter;
         this.keyProvider = keyProvider;
     }

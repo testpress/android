@@ -59,6 +59,7 @@ public class PostActivity extends DeepLinkHandlerActivity {
     @InjectView(R.id.content) WebView content;
     @InjectView(R.id.title) TextView title;
     @InjectView(R.id.summary) TextView summary;
+    @InjectView(R.id.summary_layout) LinearLayout summaryLayout;
     @InjectView(R.id.date) TextView date;
     @InjectView(R.id.content_empty_view) TextView contentEmptyView;
     @InjectView(R.id.postDetails) RelativeLayout postDetails;
@@ -113,7 +114,8 @@ public class PostActivity extends DeepLinkHandlerActivity {
                 }
                 Map<String, Boolean> queryParams = new LinkedHashMap<>();
                 queryParams.put("short_link", true);
-                return testpressService.getPostDetail(shortWebUrl.replace(Constants.Http.URL_BASE +"/p/", ""), queryParams);
+                Uri uri = Uri.parse(shortWebUrl);
+                return testpressService.getPostDetail(uri.getLastPathSegment(), queryParams);
             }
 
             @Override
@@ -163,7 +165,12 @@ public class PostActivity extends DeepLinkHandlerActivity {
         progressBar.setVisibility(View.GONE);
         getSupportActionBar().setTitle(post.getTitle());
         title.setText(post.getTitle());
-        summary.setText(post.getSummary());
+        if (post.getSummary().trim().isEmpty()) {
+            summaryLayout.setVisibility(View.GONE);
+        } else {
+            summary.setText(post.getSummary());
+            summaryLayout.setVisibility(View.VISIBLE);
+        }
         date.setText(DateUtils.getRelativeTimeSpanString(post.getPublished()));
         if (post.getContentHtml() != null) {
             WebSettings settings = content.getSettings();
@@ -217,7 +224,7 @@ public class PostActivity extends DeepLinkHandlerActivity {
                     return true;
                 }
             });
-            content.loadDataWithBaseURL(null, getHeader() + post.getContentHtml(), "text/html", "UTF-8", null);
+            content.loadDataWithBaseURL("file:///android_asset/", getHeader() + post.getContentHtml(), "text/html", "UTF-8", null);
         } else {
             content.setVisibility(View.GONE);
         }
@@ -225,6 +232,7 @@ public class PostActivity extends DeepLinkHandlerActivity {
 
     String getHeader() {
         return "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\" />" +
+                "<link rel=\"stylesheet\" type=\"text/css\" href=\"typebase.css\" />" +
                 "<style>img{display: inline;height: auto;max-width: 100%;}</style>";
     }
 

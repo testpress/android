@@ -75,7 +75,7 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 22
-        versionCode 111
+        versionCode 112
         versionName '1.0.' + versionCode
         applicationId 'in.testpress.jzmu'
     }

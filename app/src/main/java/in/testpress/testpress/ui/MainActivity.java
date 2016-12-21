@@ -2,6 +2,7 @@ package in.testpress.testpress.ui;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.accounts.OperationCanceledException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,7 +11,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.RelativeLayout;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -18,6 +24,11 @@ import android.provider.Settings;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import in.testpress.core.TestpressSdk;
+import in.testpress.course.TestpressCourse;
+import in.testpress.exam.TestpressExam;
 import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
@@ -43,6 +54,7 @@ import javax.inject.Inject;
 
 public class MainActivity extends TestpressFragmentActivity {
 
+    private static final String SELECTED_ITEM = "selectedItem";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String TAG = "MainActivity";
 
@@ -50,24 +62,66 @@ public class MainActivity extends TestpressFragmentActivity {
     @Inject protected TestpressService testpressService;
     @Inject protected LogoutService logoutService;
 
+    @InjectView(R.id.coordinator_layout) CoordinatorLayout coordinatorLayout;
+    @InjectView(R.id.progressbar) RelativeLayout progressBarLayout;
+    @InjectView(R.id.container) FrameLayout fragmentContainer;
+    @InjectView(R.id.grid) GridView grid;
+
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-    private RelativeLayout mProgressBarLayout;
-    private MainMenuFragment mFragment;
+    private MainMenuFragment mMainMenuFragment;
+    private int mSelectedItem;
+    private BottomNavBarAdapter mAdapter;
     private SharedPreferences mGcmPreferences;
+    private int[] mMenuItemImageId = {
+            R.drawable.learn,
+            R.drawable.news,
+            R.drawable.profile_default,
+    };
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         Injector.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-        mProgressBarLayout = (RelativeLayout) findViewById(R.id.progressbar);
+        ButterKnife.inject(this);
+        if (savedInstanceState != null) {
+            mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM);
+        }
+        fragmentContainer.setVisibility(View.INVISIBLE);
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 registerDevice();
             }
         };
-        checkUpdate();
+        checkAuth();
+    }
+
+    private void checkAuth() {
+        new SafeAsyncTask<Boolean>() {
+
+            @Override
+            public Boolean call() throws Exception {
+                final TestpressService service = serviceProvider.getService(MainActivity.this);
+                return service != null;
+            }
+
+            @Override
+            protected void onException(final Exception e) throws RuntimeException {
+                super.onException(e);
+                if (e instanceof OperationCanceledException) {
+                    // User cancelled the authentication process (back button, etc).
+                    // Since auth could not take place, lets finish this activity.
+                    finish();
+                }
+            }
+
+            @Override
+            protected void onSuccess(final Boolean hasAuthenticated) throws Exception {
+                super.onSuccess(hasAuthenticated);
+                checkUpdate();
+            }
+        }.execute();
     }
 
     private void initScreen() {
@@ -79,11 +133,77 @@ public class MainActivity extends TestpressFragmentActivity {
                 startService(intent);
             }
         }
-        mFragment = new MainMenuFragment();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, mFragment)
-                .commitAllowingStateLoss();
-        mProgressBarLayout.setVisibility(View.GONE);
+        mAdapter = new BottomNavBarAdapter(this, mMenuItemImageId);
+        grid.setAdapter(mAdapter);
+        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selectFragment(position);
+            }
+        });
+        mMainMenuFragment = new MainMenuFragment();
+        selectFragment(mSelectedItem);
+    }
+
+    private void selectFragment(int position) {
+        mSelectedItem = position;
+        mAdapter.setSelectedPosition(position);
+        mAdapter.notifyDataSetChanged();
+        switch (position) {
+            case 0:
+                updateToolbarText(getString(R.string.learn));
+                initSDK(position);
+                break;
+            case 1:
+                updateToolbarText(getString(R.string.testpress_exams));
+                initSDK(position);
+                break;
+            case 2:
+                updateToolbarText(getString(R.string.app_name));
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container, mMainMenuFragment)
+                        .commitAllowingStateLoss();
+                fragmentContainer.setVisibility(View.VISIBLE);
+                progressBarLayout.setVisibility(View.GONE);
+                break;
+        }
+    }
+
+    void initSDK(final int position) {
+        if (TestpressSdk.hasActiveSession(this)) {
+            showSDK(position);
+        } else {
+            new SafeAsyncTask<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    serviceProvider.getService(MainActivity.this);
+                    return null;
+                }
+
+                @Override
+                protected void onSuccess(Void aVoid) throws Exception {
+                    showSDK(position);
+                }
+            }.execute();
+        }
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    void showSDK(int position) {
+        if (position == 0) {
+            TestpressCourse.show(this, R.id.container, TestpressSdk.getTestpressSession(this));
+        } else {
+            TestpressExam.show(this, R.id.container, TestpressSdk.getTestpressSession(this));
+        }
+        fragmentContainer.setVisibility(View.VISIBLE);
+        progressBarLayout.setVisibility(View.GONE);
+    }
+
+    private void updateToolbarText(CharSequence text) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(text);
+        }
     }
 
     @Override
@@ -205,8 +325,6 @@ public class MainActivity extends TestpressFragmentActivity {
                                 .show();
                     } else {
                         initScreen();
-                        final CoordinatorLayout coordinatorLayout =
-                                (CoordinatorLayout) findViewById(R.id.coordinator_layout);
                         Snackbar snackbar = Snackbar
                                 .make(coordinatorLayout, "New update is available",
                                         Snackbar.LENGTH_INDEFINITE)
@@ -231,6 +349,8 @@ public class MainActivity extends TestpressFragmentActivity {
         new MaterialDialog.Builder(this)
                 .title("Log Out")
                 .content("Are you sure you want to log out?")
+                .titleColor(ContextCompat.getColor(this, R.color.black))
+                .contentColor(ContextCompat.getColor(this, R.color.normal_text))
                 .positiveText(R.string.ok)
                 .negativeText(R.string.cancel)
                 .positiveColorRes(R.color.primary)
@@ -242,6 +362,8 @@ public class MainActivity extends TestpressFragmentActivity {
                         final MaterialDialog materialDialog = new MaterialDialog.Builder(MainActivity.this)
                                 .title(R.string.label_logging_out)
                                 .content(R.string.please_wait)
+                                .titleColor(ContextCompat.getColor(MainActivity.this, R.color.black))
+                                .contentColor(ContextCompat.getColor(MainActivity.this, R.color.normal_text))
                                 .widgetColorRes(R.color.primary)
                                 .progress(true, 0)
                                 .show();
@@ -253,7 +375,7 @@ public class MainActivity extends TestpressFragmentActivity {
                         PostDao postDao = daoSession.getPostDao();
                         postDao.deleteAll();
                         daoSession.clear();
-                        getSupportFragmentManager().beginTransaction().remove(mFragment).commit();
+                        getSupportFragmentManager().beginTransaction().remove(mMainMenuFragment).commit();
                         logoutService.logout(new Runnable() {
                             @Override
                             public void run() {
@@ -270,4 +392,9 @@ public class MainActivity extends TestpressFragmentActivity {
                 .show();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(SELECTED_ITEM, mSelectedItem);
+        super.onSaveInstanceState(outState);
+    }
 }

@@ -100,4 +100,7 @@
     <string name="individual_reports">Individual Reports</string>
     <string name="overall_reports">Overall Reports</string>
 
+    <string name="learn">Learn</string>
+    <string name="profile">Profile</string>
+
 </resources>

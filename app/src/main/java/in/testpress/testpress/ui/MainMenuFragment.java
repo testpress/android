@@ -32,7 +32,6 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
-import in.testpress.core.TestpressSession;
 import in.testpress.exam.TestpressExam;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
@@ -58,7 +57,6 @@ public class MainMenuFragment extends Fragment {
 
     //Menu for authorized users
     String[] menuItemNames = {
-            "My Exams",
             "Store",
             "Documents",
 //            "Orders",
@@ -70,7 +68,6 @@ public class MainMenuFragment extends Fragment {
             "Logout"
     } ;
     int[] menuItemImageId = {
-            R.drawable.exams,
             R.drawable.store,
             R.drawable.documents,
 //            R.drawable.cart,
@@ -101,6 +98,7 @@ public class MainMenuFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Injector.inject(this);
+        getActivity().invalidateOptionsMenu();
         return inflater.inflate(R.layout.main_menu_grid_view, null);
     }
 
@@ -129,29 +127,29 @@ public class MainMenuFragment extends Fragment {
                 Intent intent;
                 if (account.length > 0) {
                     switch (position) {
+//                        case 0:
+//                            if (TestpressSdk.hasActiveSession(getActivity())) {
+//                                showExams();
+//                            } else {
+//                                new SafeAsyncTask<Void>() {
+//                                    @Override
+//                                    public Void call() throws Exception {
+//                                        serviceProvider.getService(getActivity());
+//                                        return null;
+//                                    }
+//
+//                                    @Override
+//                                    protected void onSuccess(Void aVoid) throws Exception {
+//                                        showExams();
+//                                    }
+//                                }.execute();
+//                            }
+//                            break;
                         case 0:
-                            if (TestpressSdk.hasActiveSession(getActivity())) {
-                                showExams();
-                            } else {
-                                new SafeAsyncTask<Void>() {
-                                    @Override
-                                    public Void call() throws Exception {
-                                        serviceProvider.getService(getActivity());
-                                        return null;
-                                    }
-
-                                    @Override
-                                    protected void onSuccess(Void aVoid) throws Exception {
-                                        showExams();
-                                    }
-                                }.execute();
-                            }
-                            break;
-                        case 1:
                             intent = new Intent(getActivity(), ProductsListActivity.class);
                             startActivity(intent);
                             break;
-                        case 2:
+                        case 1:
                             intent = new Intent(getActivity(), DocumentsListActivity.class);
                             startActivity(intent);
                             break;
@@ -159,28 +157,28 @@ public class MainMenuFragment extends Fragment {
 //                        intent = new Intent(getActivity(), OrdersListActivity.class);
 //                        startActivity(intent);
 //                        break;
-                        case 3:
+                        case 2:
                             intent = new Intent(getActivity(), PostsListActivity.class);
                             intent.putExtra("userAuthenticated", true);
                             startActivity(intent);
                             break;
-                        case 4:
+                        case 3:
                             intent = new Intent(getActivity(), AnalyticsActivity.class);
                             startActivity(intent);
                             break;
-                        case 5:
+                        case 4:
                             intent = new Intent(getActivity(), ProfileDetailsActivity.class);
                             startActivity(intent);
                             break;
-                        case 6:
+                        case 5:
                             //Share
                             shareApp();
                             break;
-                        case 7:
+                        case 6:
                             //Rate
                             rateApp();
                             break;
-                        case 8:
+                        case 7:
                             ((MainActivity) getActivity()).logout();
                             break;
                     }

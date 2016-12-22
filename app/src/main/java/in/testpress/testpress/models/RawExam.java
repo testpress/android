@@ -231,7 +231,7 @@ public class RawExam implements Parcelable {
 
     public String formatDate(String inputString) {
         Date date = null;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {
             if(inputString != null && !inputString.isEmpty()) {

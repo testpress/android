@@ -215,7 +215,7 @@ public class MainMenuFragment extends Fragment {
     }
 
     void showExams() {
-        TestpressExam.show(getActivity(), TestpressSdk.getTestpressSession(getActivity()));
+        TestpressExam.showCategories(getActivity(), TestpressSdk.getTestpressSession(getActivity()));
     }
 
     void shareApp() {

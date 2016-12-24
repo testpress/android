@@ -30,6 +30,7 @@ import in.testpress.testpress.ui.CropImageActivity;
 import in.testpress.testpress.ui.DocumentsListActivity;
 import in.testpress.testpress.ui.DocumentsListFragment;
 import in.testpress.testpress.ui.InAppBrowserActivity;
+import in.testpress.testpress.ui.SplashScreenActivity;
 import in.testpress.testpress.ui.ZoomableImageActivity;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.MainMenuFragment;
@@ -91,7 +92,8 @@ import retrofit.converter.GsonConverter;
                 ZoomableImageActivity.class,
                 InAppBrowserActivity.class,
                 AnalyticsActivity.class,
-                AnalyticsFragment.class
+                AnalyticsFragment.class,
+                SplashScreenActivity.class
         }
 )
 public class TestpressModule {

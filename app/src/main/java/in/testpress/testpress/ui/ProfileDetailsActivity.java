@@ -187,7 +187,7 @@ public class ProfileDetailsActivity extends TestpressFragmentActivity implements
 
     void displayProfileDetails(ProfileDetails profileDetails) {
         //download and display image from url
-        imageLoader.displayImage(profileDetails.getMediumImage(), profilePhoto, options);
+        imageLoader.displayImage(profileDetails.getLargeImage(), profilePhoto, options);
         menu.setGroupVisible(R.id.editMode, false);
         menu.setGroupVisible(R.id.viewMode, false);
         setVisibility(View.VISIBLE, new View[]{displayName, editButton});
@@ -265,9 +265,11 @@ public class ProfileDetailsActivity extends TestpressFragmentActivity implements
 
     @OnClick(R.id.profile_photo)
     public void displayProfilePhoto() {
-        Intent intent = new Intent(this, ProfilePhotoActivity.class);
-        intent.putExtra("profilePhoto", profileDetails.getPhoto());
-        startActivityForResult(intent, SELECT_IMAGE);
+        if (profileDetails != null) {
+            Intent intent = new Intent(this, ProfilePhotoActivity.class);
+            intent.putExtra("profilePhoto", profileDetails.getPhoto());
+            startActivityForResult(intent, SELECT_IMAGE);
+        }
     }
 
     @OnClick(R.id.edit_profile_photo)

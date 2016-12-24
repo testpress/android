@@ -46,7 +46,7 @@ public class SplashScreenActivity extends Activity {
             @Override
             public void run() {
                 Uri uri = getIntent().getData();
-                if (uri != null) {
+                if (uri != null && uri.getPathSegments().size() > 0) {
                     List<String> pathSegments = uri.getPathSegments();
                     switch (pathSegments.get(0)) {
                         case "p":

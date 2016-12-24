@@ -3,7 +3,7 @@ apply plugin: 'com.google.gms.google-services'
 
 ext {
     supportLib = '25.0.1'
-    testpressSDK = '1.0.6'
+    testpressSDK = '1.0.8'
 }
 
 dependencies {

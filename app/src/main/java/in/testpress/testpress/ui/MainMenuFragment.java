@@ -251,6 +251,9 @@ public class MainMenuFragment extends Fragment {
             }
 
             protected void onSuccess(final List<Category> categories) throws Exception {
+                if (getActivity() == null) {
+                    return;
+                }
                 Ln.e("On success");
                 if (categories.isEmpty()) {
                     quickLinksContainer.setVisibility(View.GONE);

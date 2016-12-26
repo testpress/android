@@ -93,7 +93,7 @@ public class PostsListAdapter extends BaseAdapter {
             categoryView.setVisibility(View.GONE);
         }
 
-        convertView.findViewById(R.id.ripple_layout).setOnClickListener(new View.OnClickListener() {
+        convertView.findViewById(R.id.card_view).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(activity, PostActivity.class);

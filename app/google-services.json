@@ -106,6 +106,45 @@
           "status": 1
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1064046661341:android:a7c0a67448fc583c",
+        "android_client_info": {
+          "package_name": "in.raceinstitute"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1064046661341-hhqlenfj0tp414jb3k1bvdi0i5saudam.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.raceinstitute",
+            "certificate_hash": "C53DDD6F9C8BF151F77333CB7AE1B4111E6ADD49"
+          }
+        },
+        {
+          "client_id": "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAR0MchRzB4IRIci31KWo_6Dgjr2tE4JdY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
     }
   ],
   "configuration_version": "1"

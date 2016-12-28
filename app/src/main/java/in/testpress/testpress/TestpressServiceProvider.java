@@ -6,6 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import com.facebook.AccessToken;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
+
 import java.io.IOException;
 
 import in.testpress.core.TestpressSdk;
@@ -32,6 +36,8 @@ public class TestpressServiceProvider {
 
     public void invalidateAuthToken(Context context) {
         authToken = null;
+        FacebookSdk.sdkInitialize(context.getApplicationContext());
+        LoginManager.getInstance().logOut();
         TestpressSdk.clearActiveSession(context);
     }
     /**

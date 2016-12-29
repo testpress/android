@@ -101,6 +101,7 @@
 
         <activity
             android:name=".authenticator.LoginActivity"
+            android:windowSoftInputMode="stateHidden"
             android:excludeFromRecents="true">
 
             <!--

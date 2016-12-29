@@ -70,6 +70,11 @@ table {
 }
 table td,
 table th {
-  padding: 0;
+  border-top: 1px solid #ddd;
+  padding-top: 5px;
+  padding-right: 8px;
+  padding-bottom: 5px;
+  padding-left: 0px;
+  vertical-align: top;
   line-height: 27.2px;
 }

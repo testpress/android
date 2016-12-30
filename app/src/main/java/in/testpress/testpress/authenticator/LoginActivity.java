@@ -227,6 +227,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
                     @Override
                     public void onSuccess(TestpressSession response) {
                         authToken = response.getToken();
+                        testpressService.setAuthToken(authToken);
                         onAuthenticationResult(true);
                     }
 

@@ -64,7 +64,7 @@ public class MainActivity extends TestpressFragmentActivity {
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                registerDevice();
+                registerDevice(false);
             }
         };
         checkUpdate();
@@ -120,36 +120,16 @@ public class MainActivity extends TestpressFragmentActivity {
         return true;
     }
 
-    private void registerDevice() {
+    private void registerDevice(final boolean checkAuth) {
         new SafeAsyncTask<Device>() {
             @Override
             public Device call() throws Exception {
                 String token = GCMPreference.getRegistrationId(MainActivity.this.getApplicationContext());
                 AccountManager manager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
                 Account[] account = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
-                if (account.length > 0) {
+                if (account.length > 0 && checkAuth) {
                     testpressService = serviceProvider.getService(MainActivity.this);
                 }
-                return testpressService.register(token,
-                        Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
-            }
-
-            @Override
-            protected void onException(Exception e) throws RuntimeException {
-            }
-
-            @Override
-            protected void onSuccess(final Device device) throws Exception {
-                mGcmPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, true).apply();
-            }
-        }.execute();
-    }
-
-    private void updateDevice() {
-        new SafeAsyncTask<Device>() {
-            @Override
-            public Device call() throws Exception {
-                String token = GCMPreference.getRegistrationId(MainActivity.this.getApplicationContext());
                 return testpressService.register(token,
                         Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
             }
@@ -248,7 +228,7 @@ public class MainActivity extends TestpressFragmentActivity {
                         testpressService.invalidateAuthToken();
                         serviceProvider.invalidateAuthToken(MainActivity.this);
                         mGcmPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
-                        updateDevice();
+                        registerDevice(true);
                         DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
                         PostDao postDao = daoSession.getPostDao();
                         postDao.deleteAll();

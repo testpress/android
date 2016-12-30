@@ -60,7 +60,7 @@ public class MainMenuFragment extends Fragment {
     String[] menuItemNames = {
             "My Exams",
             "Store",
-            "Documents",
+//            "Documents",
 //            "Orders",
             "Posts",
             "Analytics",
@@ -72,7 +72,7 @@ public class MainMenuFragment extends Fragment {
     int[] menuItemImageId = {
             R.drawable.exams,
             R.drawable.store,
-            R.drawable.documents,
+//            R.drawable.documents,
 //            R.drawable.cart,
             R.drawable.posts,
             R.drawable.analytics,
@@ -151,36 +151,36 @@ public class MainMenuFragment extends Fragment {
                             intent = new Intent(getActivity(), ProductsListActivity.class);
                             startActivity(intent);
                             break;
-                        case 2:
-                            intent = new Intent(getActivity(), DocumentsListActivity.class);
-                            startActivity(intent);
-                            break;
+//                        case 2:
+//                            intent = new Intent(getActivity(), DocumentsListActivity.class);
+//                            startActivity(intent);
+//                            break;
 //                    case 2:
 //                        intent = new Intent(getActivity(), OrdersListActivity.class);
 //                        startActivity(intent);
 //                        break;
-                        case 3:
+                        case 2:
                             intent = new Intent(getActivity(), PostsListActivity.class);
                             intent.putExtra("userAuthenticated", true);
                             startActivity(intent);
                             break;
-                        case 4:
+                        case 3:
                             intent = new Intent(getActivity(), AnalyticsActivity.class);
                             startActivity(intent);
                             break;
-                        case 5:
+                        case 4:
                             intent = new Intent(getActivity(), ProfileDetailsActivity.class);
                             startActivity(intent);
                             break;
-                        case 6:
+                        case 5:
                             //Share
                             shareApp();
                             break;
-                        case 7:
+                        case 6:
                             //Rate
                             rateApp();
                             break;
-                        case 8:
+                        case 7:
                             ((MainActivity) getActivity()).logout();
                             break;
                     }
@@ -215,7 +215,7 @@ public class MainMenuFragment extends Fragment {
     }
 
     void showExams() {
-        TestpressExam.show(getActivity(), TestpressSdk.getTestpressSession(getActivity()));
+        TestpressExam.showCategories(getActivity(), TestpressSdk.getTestpressSession(getActivity()));
     }
 
     void shareApp() {

@@ -111,4 +111,7 @@
     <string name="login_with_google">Login with Google</string>
     <string name="google_sign_in_wrong_hash">Google sign in error, please contact the administrator to check key hashes.</string>
 
+    <string name="logout">Log Out</string>
+    <string name="logout_confirm_message">Are you sure you want to log out?</string>
+
 </resources>

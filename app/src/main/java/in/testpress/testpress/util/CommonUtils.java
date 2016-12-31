@@ -1,22 +1,31 @@
 package in.testpress.testpress.util;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.accounts.OperationCanceledException;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.provider.Settings;
 
 import in.testpress.testpress.TestpressServiceProvider;
+import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
+import in.testpress.testpress.models.Device;
+
+import static android.content.Context.ACCOUNT_SERVICE;
 
 public class CommonUtils {
 
-    public static void checkAuth(final Activity activity,
-                                 final TestpressServiceProvider serviceProvider,
-                                 final CheckAuthCallBack checkAuthCallBack) {
+    public static void getAuth(final Activity activity,
+                               final TestpressServiceProvider serviceProvider,
+                               final CheckAuthCallBack checkAuthCallBack) {
 
-        new SafeAsyncTask<Boolean>() {
+        new SafeAsyncTask<TestpressService>() {
             @Override
-            public Boolean call() throws Exception {
-                TestpressService service = serviceProvider.getService(activity);
-                return service != null;
+            public TestpressService call() throws Exception {
+                return serviceProvider.getService(activity);
             }
 
             @Override
@@ -29,15 +38,59 @@ public class CommonUtils {
             }
 
             @Override
-            protected void onSuccess(final Boolean hasAuthenticated) throws Exception {
-                super.onSuccess(hasAuthenticated);
-                checkAuthCallBack.onSuccess(hasAuthenticated);
+            protected void onSuccess(final TestpressService testpressService) throws Exception {
+                super.onSuccess(testpressService);
+                checkAuthCallBack.onSuccess(testpressService);
             }
         }.execute();
     }
 
     public static abstract class CheckAuthCallBack {
-        public abstract void onSuccess(Boolean hasAuthenticated);
+        public abstract void onSuccess(TestpressService testpressService);
+    }
+
+    public static boolean isUserAuthenticated(final Activity activity) {
+        AccountManager manager = (AccountManager) activity.getSystemService(ACCOUNT_SERVICE);
+        Account[] account = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
+        return account.length > 0;
+    }
+
+    public static void registerDevice(final Activity activity, TestpressService testpressService,
+                               TestpressServiceProvider serviceProvider) {
+        if (isUserAuthenticated(activity)) {
+            getAuth(activity, serviceProvider, new CheckAuthCallBack() {
+                @Override
+                public void onSuccess(TestpressService testpressService) {
+                    registerDevice(activity, testpressService);
+                }
+            });
+        } else {
+            registerDevice(activity, testpressService);
+        }
+    }
+
+    public static void registerDevice(final Activity activity,
+                                      final TestpressService testpressService) {
+        new SafeAsyncTask<Device>() {
+            @SuppressLint("HardwareIds")
+            @Override
+            public Device call() throws Exception {
+                String token = GCMPreference.getRegistrationId(activity.getApplicationContext());
+                return testpressService.register(token, Settings.Secure.getString(
+                        activity.getContentResolver(), Settings.Secure.ANDROID_ID));
+            }
+
+            @Override
+            protected void onException(Exception e) throws RuntimeException {
+            }
+
+            @Override
+            protected void onSuccess(final Device device) throws Exception {
+                SharedPreferences preferences = activity.getSharedPreferences(
+                        Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
+                preferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, true).apply();
+            }
+        }.execute();
     }
 
 }

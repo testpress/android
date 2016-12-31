@@ -7,7 +7,7 @@ import in.testpress.testpress.models.Subject;
 
 import static in.testpress.testpress.ui.AnalyticsFragment.SUBJECT;
 
-public class AnalyticsActivity extends BaseToolBarActivity {
+public class AnalyticsActivity extends BaseAuthenticatedActivity {
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {

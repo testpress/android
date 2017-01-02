@@ -29,6 +29,7 @@ import in.testpress.testpress.ui.AnalyticsFragment;
 import in.testpress.testpress.ui.CropImageActivity;
 import in.testpress.testpress.ui.DocumentsListActivity;
 import in.testpress.testpress.ui.DocumentsListFragment;
+import in.testpress.testpress.ui.SplashScreenActivity;
 import in.testpress.testpress.ui.ZoomableImageActivity;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.MainMenuFragment;
@@ -89,7 +90,8 @@ import retrofit.converter.GsonConverter;
                 DocumentsListFragment.class,
                 ZoomableImageActivity.class,
                 AnalyticsActivity.class,
-                AnalyticsFragment.class
+                AnalyticsFragment.class,
+                SplashScreenActivity.class
         }
 )
 public class TestpressModule {
@@ -111,7 +113,6 @@ public class TestpressModule {
         return new TestpressService(restAdapter);
     }
 
-    @Singleton
     @Provides
     TestpressServiceProvider provideTestpressServiceProvider(RestAdapter.Builder restAdapter, ApiKeyProvider apiKeyProvider) {
         return new TestpressServiceProvider(restAdapter, apiKeyProvider);

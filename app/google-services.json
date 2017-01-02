@@ -1,35 +1,33 @@
 {
   "project_info": {
-    "project_id": "default-demo-app-bfeac",
     "project_number": "1064046661341",
-    "name": "Testpress"
+    "project_id": "default-demo-app-bfeac"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "",
-        "client_id": "android:gcm.play.android.samples.com.gcmquickstart",
-        "client_type": 1,
         "android_client_info": {
           "package_name": "gcm.play.android.samples.com.gcmquickstart"
         }
       },
-      "oauth_client": [],
-      "api_key": [],
+      "oauth_client": [
+        {
+          "client_id": "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAR0MchRzB4IRIci31KWo_6Dgjr2tE4JdY"
+        }
+      ],
       "services": {
         "analytics_service": {
           "status": 1
         },
-        "cloud_messaging_service": {
-          "status": 2,
-          "apns_config": []
-        },
         "appinvite_service": {
           "status": 1,
           "other_platform_oauth_client": []
-        },
-        "google_signin_service": {
-          "status": 1
         },
         "ads_service": {
           "status": 1
@@ -39,28 +37,39 @@
     {
       "client_info": {
         "mobilesdk_app_id": "1:1064046661341:android:32058aba3dcf6479",
-        "client_id": "android:in.testpress.testpress",
-        "client_type": 1,
         "android_client_info": {
           "package_name": "in.testpress.testpress"
         }
       },
-      "oauth_client": [],
-      "api_key": [],
+      "oauth_client": [
+        {
+          "client_id": "1064046661341-395pp52c4qu56fv4a3ftag11tju2me89.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.testpress.testpress",
+            "certificate_hash": "C53DDD6F9C8BF151F77333CB7AE1B4111E6ADD49"
+          }
+        },
+        {
+          "client_id": "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAR0MchRzB4IRIci31KWo_6Dgjr2tE4JdY"
+        }
+      ],
       "services": {
         "analytics_service": {
-          "status": 1
-        },
-        "cloud_messaging_service": {
           "status": 2,
-          "apns_config": []
+          "analytics_property": {
+            "tracking_id": "UA-43289429-1"
+          }
         },
         "appinvite_service": {
           "status": 1,
           "other_platform_oauth_client": []
-        },
-        "google_signin_service": {
-          "status": 1
         },
         "ads_service": {
           "status": 1
@@ -70,28 +79,106 @@
     {
       "client_info": {
         "mobilesdk_app_id": "1:1064046661341:android:5e5e98bafa2e283d",
-        "client_id": "android:in.testpress.race",
-        "client_type": 1,
         "android_client_info": {
           "package_name": "in.testpress.race"
         }
       },
-      "oauth_client": [],
-      "api_key": [],
+      "oauth_client": [
+        {
+          "client_id": "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAR0MchRzB4IRIci31KWo_6Dgjr2tE4JdY"
+        }
+      ],
       "services": {
         "analytics_service": {
           "status": 1
-        },
-        "cloud_messaging_service": {
-          "status": 2,
-          "apns_config": []
         },
         "appinvite_service": {
           "status": 1,
           "other_platform_oauth_client": []
         },
-        "google_signin_service": {
+        "ads_service": {
           "status": 1
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1064046661341:android:a7c0a67448fc583c",
+        "android_client_info": {
+          "package_name": "in.raceinstitute"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1064046661341-hhqlenfj0tp414jb3k1bvdi0i5saudam.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.raceinstitute",
+            "certificate_hash": "C53DDD6F9C8BF151F77333CB7AE1B4111E6ADD49"
+          }
+        },
+        {
+          "client_id": "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAR0MchRzB4IRIci31KWo_6Dgjr2tE4JdY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1064046661341:android:ae58cf075c287fc0",
+        "android_client_info": {
+          "package_name": "in.testpress.conceptree"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1064046661341-kmou64cbvqr6ge1h162ujss9gf044kko.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.testpress.conceptree",
+            "certificate_hash": "C53DDD6F9C8BF151F77333CB7AE1B4111E6ADD49"
+          }
+        },
+        {
+          "client_id": "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAR0MchRzB4IRIci31KWo_6Dgjr2tE4JdY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 1
@@ -99,6 +186,5 @@
       }
     }
   ],
-  "client_info": [],
-  "ARTIFACT_VERSION": "1"
+  "configuration_version": "1"
 }

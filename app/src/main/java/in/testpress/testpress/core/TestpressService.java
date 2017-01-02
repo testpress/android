@@ -48,6 +48,10 @@ public class TestpressService {
         this.authToken = authToken;
     }
 
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
+    }
+
     public void invalidateAuthToken() {
         authToken = null;
     }

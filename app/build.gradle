@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
 
 dependencies {
 
@@ -49,23 +48,44 @@ dependencies {
     compile 'com.edmodo:cropper:1.0.1'
     
     // Testpress exam
-    compile ('com.github.testpress:exam:1.0.7@aar') {
+    compile ('com.github.testpress:exam:1.0.8@aar') {
         transitive=true
     }
 
     // Gcm
-    compile "com.google.android.gms:play-services-gcm:9.6.1"
+    compile 'com.google.android.gms:play-services-gcm:10.0.1'
+
+    // Google Sign In
+    compile 'com.google.android.gms:play-services-auth:10.0.1'
+
+    // Facebook SDK
+    compile 'com.facebook.android:facebook-android-sdk:4.18.0'
 
     // Flat button
     compile 'info.hoang8f:fbutton:1.0.5'
 }
 
+def key_alias = "sample"
+def key_password = "sample"
+def store_file = "testpress_debug_keystore.jks"
+def store_password = "sample"
+
+try {
+    key_alias = TESTPRESS_KEY_ALIAS
+    key_password = TESTPRESS_KEY_PASSWORD
+    store_file = TESTPRESS_KEYSTORE_PATH
+    store_password = TESTPRESS_KEYSTORE_PASSWORD
+} catch (Exception ignored) {
+    println 'Failed to find key store details. Social Login is disabled'
+}
+
 android {
+
     compileSdkVersion 24
     buildToolsVersion '24.0.3'
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 22
         versionCode 110
         versionName '1.0.' + versionCode
@@ -79,14 +99,14 @@ android {
         exclude 'LICENSE.txt'
     }
 
-    // signingConfigs {
-        // release {
-            // storeFile file(System.getenv('ANDROID_KEYSTORE_PATH'))
-            // storePassword System.getenv('ANDROID_STORE_PASS')
-            // keyAlias System.getenv('ANDROID_KEY_ALIAS')
-            // keyPassword System.getenv('ANDROID_KEY_PASS')
-        // }
-    // }
+    signingConfigs {
+        config {
+            keyAlias key_alias
+            keyPassword key_password
+            storeFile file(store_file)
+            storePassword store_password
+        }
+    }
 
     lintOptions {
         abortOnError false
@@ -94,11 +114,12 @@ android {
 
     buildTypes {
         debug {
-            applicationIdSuffix '.debug'
+            signingConfig signingConfigs.config
             minifyEnabled false
             // zipAlign false // this is default for debug
         }
         release {
+            signingConfig signingConfigs.config
             // minifyEnabled true
             // proguardFile '..\proguard.cfg'
             // signingConfig signingConfigs.release
@@ -108,3 +129,5 @@ android {
         }
     }
 }
+
+apply plugin: 'com.google.gms.google-services'

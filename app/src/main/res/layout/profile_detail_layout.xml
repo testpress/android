@@ -8,7 +8,7 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="@dimen/collapsing_app_bar_height"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <android.support.design.widget.CollapsingToolbarLayout
@@ -63,6 +63,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/editor_delete_button_width"
+                android:layout_marginRight="@dimen/editor_delete_button_width"
                 android:layout_marginBottom="@dimen/editor_padding_between_read_only_editor_views"
                 android:paddingBottom="20dp"
                 android:paddingTop="10dp"
@@ -112,6 +113,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/editor_delete_button_width"
+                android:layout_marginRight="@dimen/editor_delete_button_width"
                 android:layout_marginBottom="@dimen/editor_padding_between_read_only_editor_views"
                 android:paddingBottom="20dp"
                 android:id="@+id/phone_container"
@@ -160,6 +162,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/editor_delete_button_width"
                 android:layout_marginEnd="@dimen/editor_delete_button_width"
                 android:layout_marginBottom="@dimen/editor_padding_between_read_only_editor_views"
                 android:paddingBottom="20dp"
@@ -209,6 +212,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/editor_delete_button_width"
                 android:layout_marginEnd="@dimen/editor_delete_button_width"
                 android:layout_marginBottom="@dimen/editor_padding_between_read_only_editor_views"
                 android:paddingBottom="20dp"
@@ -296,7 +300,7 @@
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
                                 android:id="@+id/edit_profile_photo"
-                                android:src="@drawable/edit_icon_white"
+                                android:src="@drawable/ic_edit_white_24dp"
                                 android:padding="5dp"
                                 android:background="#80000000"
                                 android:layout_alignParentRight="true"

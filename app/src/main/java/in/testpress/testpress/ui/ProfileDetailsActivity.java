@@ -60,13 +60,15 @@ import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.models.ProfileDetails;
+import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.FormatDate;
 import in.testpress.testpress.util.ImageUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 
-public class ProfileDetailsActivity extends TestpressFragmentActivity implements LoaderManager.LoaderCallbacks<ProfileDetails> {
+public class ProfileDetailsActivity extends BaseAuthenticatedActivity
+        implements LoaderManager.LoaderCallbacks<ProfileDetails> {
 
     @Inject TestpressServiceProvider serviceProvider;
     @InjectView(R.id.profile_photo) ImageView profilePhoto;
@@ -118,6 +120,9 @@ public class ProfileDetailsActivity extends TestpressFragmentActivity implements
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!CommonUtils.isUserAuthenticated(this)) {
+            return;
+        }
         setContentView(R.layout.profile_detail_layout);
         Injector.inject(this);
         ButterKnife.inject(this);
@@ -187,7 +192,7 @@ public class ProfileDetailsActivity extends TestpressFragmentActivity implements
 
     void displayProfileDetails(ProfileDetails profileDetails) {
         //download and display image from url
-        imageLoader.displayImage(profileDetails.getMediumImage(), profilePhoto, options);
+        imageLoader.displayImage(profileDetails.getLargeImage(), profilePhoto, options);
         menu.setGroupVisible(R.id.editMode, false);
         menu.setGroupVisible(R.id.viewMode, false);
         setVisibility(View.VISIBLE, new View[]{displayName, editButton});
@@ -265,9 +270,11 @@ public class ProfileDetailsActivity extends TestpressFragmentActivity implements
 
     @OnClick(R.id.profile_photo)
     public void displayProfilePhoto() {
-        Intent intent = new Intent(this, ProfilePhotoActivity.class);
-        intent.putExtra("profilePhoto", profileDetails.getPhoto());
-        startActivityForResult(intent, SELECT_IMAGE);
+        if (profileDetails != null) {
+            Intent intent = new Intent(this, ProfilePhotoActivity.class);
+            intent.putExtra("profilePhoto", profileDetails.getPhoto());
+            startActivityForResult(intent, SELECT_IMAGE);
+        }
     }
 
     @OnClick(R.id.edit_profile_photo)

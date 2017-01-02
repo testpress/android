@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,6 +37,7 @@ import in.testpress.testpress.R.id;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
+import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.Order;
 import in.testpress.testpress.models.OrderItem;
 import in.testpress.testpress.models.ProductDetails;
@@ -49,6 +49,7 @@ import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 
 public class OrderConfirmActivity extends TestpressFragmentActivity {
 
+    @Inject TestpressService testpressService;
     @Inject TestpressServiceProvider serviceProvider;
     @Inject protected LogoutService logoutService;
     @InjectView(id.address) EditText address;
@@ -91,7 +92,8 @@ public class OrderConfirmActivity extends TestpressFragmentActivity {
                 if(accounts.length != 0) {
                     return serviceProvider.getService(OrderConfirmActivity.this).order(Constants.Http.URL_USERS + accounts[0].name + "/", orderItems);
                 } else {
-                    serviceProvider.handleForbidden(OrderConfirmActivity.this, serviceProvider, logoutService);
+                    serviceProvider.logout(OrderConfirmActivity.this, testpressService,
+                            serviceProvider, logoutService);
                     throw new Exception("No Account exist");
                 }
             }

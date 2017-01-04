@@ -89,7 +89,7 @@ android {
         targetSdkVersion 22
         versionCode 110
         versionName '1.0.' + versionCode
-        applicationId 'in.testpress.testpress'
+        applicationId 'in.testpress.jeelearn'
     }
 
     packagingOptions {

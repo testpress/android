@@ -111,6 +111,20 @@
       "client_info": {
         "mobilesdk_app_id": "1:1064046661341:android:a7c0a67448fc583c",
         "android_client_info": {
+          "package_name": "in.testpress.dma"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAR0MchRzB4IRIci31KWo_6Dgjr2tE4JdY"
+        }
+      ]
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1064046661341:android:a7c0a67448fc583c",
+        "android_client_info": {
           "package_name": "in.raceinstitute"
         }
       },

@@ -76,8 +76,7 @@
 
                 <TextView
                     android:id="@+id/forgot_password"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
+                    android:layout_centerInParent="true"
                     android:layout_marginLeft="5dp"
                     android:layout_marginStart="5dp"
                     android:layout_width="wrap_content"
@@ -86,6 +85,7 @@
                     android:text="@string/forgot_password" />
 
                 <TextView
+                    android:visibility="gone"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
                     android:id="@+id/signup"
@@ -98,6 +98,7 @@
             </RelativeLayout>
 
             <LinearLayout
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/social_sign_in_buttons"

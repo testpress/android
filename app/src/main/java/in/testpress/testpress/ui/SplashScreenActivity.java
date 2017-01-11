@@ -20,6 +20,7 @@ import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.core.Constants;
+import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.util.CommonUtils;
 
 import static in.testpress.exam.TestpressExam.ACTION_PRESSED_HOME;
@@ -83,10 +84,10 @@ public class SplashScreenActivity extends Activity {
     @SuppressWarnings("ConstantConditions")
     private void deepLinkExams(Uri uri) {
         final List<String> pathSegments = uri.getPathSegments();
-        CommonUtils.checkAuth(SplashScreenActivity.this, serviceProvider,
+        CommonUtils.getAuth(SplashScreenActivity.this, serviceProvider,
                 new CommonUtils.CheckAuthCallBack() {
                     @Override
-                    public void onSuccess(Boolean hasAuthenticated) {
+                    public void onSuccess(TestpressService testpressService) {
                         if (pathSegments.size() == 2) {
                             TestpressExam.startExam(SplashScreenActivity.this, pathSegments.get(1),
                                     TestpressSdk.getTestpressSession(SplashScreenActivity.this));

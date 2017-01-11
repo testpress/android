@@ -1,7 +1,5 @@
 package in.testpress.testpress.ui;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.accounts.OperationCanceledException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,8 +9,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
+
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
@@ -20,7 +19,6 @@ import android.widget.GridView;
 import android.widget.RelativeLayout;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.provider.Settings;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -32,16 +30,13 @@ import in.testpress.exam.TestpressExam;
 import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
-import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.authenticator.RegistrationIntentService;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
-import in.testpress.testpress.models.DaoSession;
-import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.models.Update;
-import in.testpress.testpress.models.Device;
+import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.SafeAsyncTask;
 
@@ -71,7 +66,6 @@ public class MainActivity extends TestpressFragmentActivity {
     private MainMenuFragment mMainMenuFragment;
     private int mSelectedItem;
     private BottomNavBarAdapter mAdapter;
-    private SharedPreferences mGcmPreferences;
     private int[] mMenuItemImageId = {
             R.drawable.learn,
             R.drawable.news,
@@ -91,7 +85,7 @@ public class MainActivity extends TestpressFragmentActivity {
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                registerDevice();
+                CommonUtils.registerDevice(MainActivity.this, testpressService, serviceProvider);
             }
         };
         checkAuth();
@@ -125,8 +119,9 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     private void initScreen() {
-        mGcmPreferences = getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
-        if (!mGcmPreferences.getBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false)) {
+        SharedPreferences preferences =
+                getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
+        if (!preferences.getBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false)) {
             if (checkPlayServices()) {
                 // Start IntentService to register this application with GCM.
                 Intent intent = new Intent(MainActivity.this, RegistrationIntentService.class);
@@ -149,6 +144,10 @@ public class MainActivity extends TestpressFragmentActivity {
         mSelectedItem = position;
         mAdapter.setSelectedPosition(position);
         mAdapter.notifyDataSetChanged();
+        if (!CommonUtils.isUserAuthenticated(this)) {
+            serviceProvider.logout(this, testpressService, serviceProvider, logoutService);
+            return;
+        }
         switch (position) {
             case 0:
                 updateToolbarText(getString(R.string.learn));
@@ -240,51 +239,6 @@ public class MainActivity extends TestpressFragmentActivity {
         return true;
     }
 
-    private void registerDevice() {
-        new SafeAsyncTask<Device>() {
-            @Override
-            public Device call() throws Exception {
-                String token = GCMPreference.getRegistrationId(MainActivity.this.getApplicationContext());
-                AccountManager manager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
-                Account[] account = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
-                if (account.length > 0) {
-                    testpressService = serviceProvider.getService(MainActivity.this);
-                }
-                return testpressService.register(token,
-                        Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
-            }
-
-            @Override
-            protected void onException(Exception e) throws RuntimeException {
-            }
-
-            @Override
-            protected void onSuccess(final Device device) throws Exception {
-                mGcmPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, true).apply();
-            }
-        }.execute();
-    }
-
-    private void updateDevice() {
-        new SafeAsyncTask<Device>() {
-            @Override
-            public Device call() throws Exception {
-                String token = GCMPreference.getRegistrationId(MainActivity.this.getApplicationContext());
-                return testpressService.register(token,
-                        Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
-            }
-
-            @Override
-            protected void onException(Exception e) throws RuntimeException {
-            }
-
-            @Override
-            protected void onSuccess(final Device device) throws Exception {
-                mGcmPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, true).apply();
-            }
-        }.execute();
-    }
-
     private void checkUpdate() {
         new SafeAsyncTask<Update>() {
             @Override
@@ -346,49 +300,19 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     public void logout() {
-        new MaterialDialog.Builder(this)
-                .title("Log Out")
-                .content("Are you sure you want to log out?")
-                .titleColor(ContextCompat.getColor(this, R.color.black))
-                .contentColor(ContextCompat.getColor(this, R.color.normal_text))
-                .positiveText(R.string.ok)
-                .negativeText(R.string.cancel)
-                .positiveColorRes(R.color.primary)
-                .negativeColorRes(R.color.primary)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        dialog.dismiss();
-                        final MaterialDialog materialDialog = new MaterialDialog.Builder(MainActivity.this)
-                                .title(R.string.label_logging_out)
-                                .content(R.string.please_wait)
-                                .titleColor(ContextCompat.getColor(MainActivity.this, R.color.black))
-                                .contentColor(ContextCompat.getColor(MainActivity.this, R.color.normal_text))
-                                .widgetColorRes(R.color.primary)
-                                .progress(true, 0)
-                                .show();
-                        testpressService.invalidateAuthToken();
-                        serviceProvider.invalidateAuthToken(MainActivity.this);
-                        mGcmPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
-                        updateDevice();
-                        DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
-                        PostDao postDao = daoSession.getPostDao();
-                        postDao.deleteAll();
-                        daoSession.clear();
-                        getSupportFragmentManager().beginTransaction().remove(mMainMenuFragment).commit();
-                        logoutService.logout(new Runnable() {
+        new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
+                .setTitle(R.string.logout)
+                .setMessage(R.string.logout_confirm_message)
+                .setPositiveButton(R.string.ok,
+                        new DialogInterface.OnClickListener() {
                             @Override
-                            public void run() {
-                                // Calling a checkAuth will force the service to look for a logged in user
-                                // and when it finds none the user will be requested to log in again.
-                                Intent intent = MainActivity.this.getIntent();
-                                materialDialog.dismiss();
-                                MainActivity.this.finish();
-                                MainActivity.this.startActivity(intent);
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                                serviceProvider.logout(MainActivity.this, testpressService,
+                                        serviceProvider, logoutService);
                             }
-                        });
-                    }
-                })
+                        })
+                .setNegativeButton(R.string.cancel, null)
                 .show();
     }
 

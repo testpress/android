@@ -2,11 +2,11 @@ package in.testpress.testpress;
 
 import android.accounts.AccountsException;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 
@@ -21,7 +21,9 @@ import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.ui.MainActivity;
+import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
+import in.testpress.util.UIUtils;
 import retrofit.RestAdapter;
 
 public class TestpressServiceProvider {
@@ -62,14 +64,25 @@ public class TestpressServiceProvider {
         return new TestpressService(restAdapter, authToken);
     }
 
-    public void handleForbidden(final Activity activity, TestpressServiceProvider serviceProvider, LogoutService logoutService) {
+    public void logout(final Activity activity, TestpressService testpressService,
+                       TestpressServiceProvider serviceProvider,
+                       LogoutService logoutService) {
+        final ProgressDialog progressDialog = new ProgressDialog(activity);
+        progressDialog.setTitle(R.string.label_logging_out);
+        progressDialog.setMessage(activity.getString(R.string.please_wait));
+        progressDialog.setCancelable(false);
+        UIUtils.setIndeterminateDrawable(activity, progressDialog, 4);
+        progressDialog.show();
         serviceProvider.invalidateAuthToken(activity);
-        DaoSession daoSession = ((TestpressApplication) activity.getApplicationContext()).getDaoSession();
+        SharedPreferences preferences = activity.getSharedPreferences(Constants.GCM_PREFERENCE_NAME,
+                Context.MODE_PRIVATE);
+        preferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
+        CommonUtils.registerDevice(activity, testpressService, serviceProvider);
+        DaoSession daoSession =
+                ((TestpressApplication) activity.getApplicationContext()).getDaoSession();
         PostDao postDao = daoSession.getPostDao();
         postDao.deleteAll();
         daoSession.clear();
-        SharedPreferences sharedPreferences = activity.getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
-        sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
         logoutService.logout(new Runnable() {
             @Override
             public void run() {
@@ -80,8 +93,9 @@ public class TestpressServiceProvider {
                     intent = new Intent(activity, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 }
-                activity.startActivity(intent);
+                progressDialog.dismiss();
                 activity.finish();
+                activity.startActivity(intent);
             }
         });
     }

@@ -180,7 +180,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 loginLayout.setVisibility(View.GONE);
-                username = Profile.getCurrentProfile().getName();
+                username = loginResult.getAccessToken().getUserId();
                 authenticate(loginResult.getAccessToken().getUserId(),
                         loginResult.getAccessToken().getToken(), TestpressSdk.Provider.FACEBOOK);
             }
@@ -220,11 +220,16 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         orLabel.setTypeface(TestpressSdk.getRubikMediumFont(this));
     }
 
-    private void authenticate(final String userId, String accessToken, TestpressSdk.Provider provider) {
+    private void authenticate(final String userId, String accessToken,
+                              final TestpressSdk.Provider provider) {
         TestpressSdk.initialize(this, Constants.Http.URL_BASE, userId, accessToken, provider,
                 new TestpressCallback<TestpressSession>() {
                     @Override
                     public void onSuccess(TestpressSession response) {
+                        if (provider == TestpressSdk.Provider.FACEBOOK &&
+                                Profile.getCurrentProfile() != null) {
+                            username = Profile.getCurrentProfile().getName();
+                        }
                         authToken = response.getToken();
                         testpressService.setAuthToken(authToken);
                         onAuthenticationResult(true);

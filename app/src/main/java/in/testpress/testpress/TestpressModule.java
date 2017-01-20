@@ -24,21 +24,15 @@ import in.testpress.testpress.core.RestAdapterRequestInterceptor;
 import in.testpress.testpress.core.RestErrorHandler;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.core.UserAgentProvider;
-import in.testpress.testpress.ui.AttemptFragment;
-import in.testpress.testpress.ui.AttemptsListActivity;
-import in.testpress.testpress.ui.AttemptsListAdapter;
-import in.testpress.testpress.ui.AttemptsListFragment;
-import in.testpress.testpress.ui.AvailableExamsListAdapter;
+import in.testpress.testpress.ui.AnalyticsActivity;
+import in.testpress.testpress.ui.AnalyticsFragment;
 import in.testpress.testpress.ui.CropImageActivity;
 import in.testpress.testpress.ui.DocumentsListActivity;
 import in.testpress.testpress.ui.DocumentsListFragment;
-import in.testpress.testpress.ui.ExamActivity;
-import in.testpress.testpress.ui.ExamsListActivity;
-import in.testpress.testpress.ui.ExamsListFragment;
+import in.testpress.testpress.ui.SplashScreenActivity;
 import in.testpress.testpress.ui.ZoomableImageActivity;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.MainMenuFragment;
-import in.testpress.testpress.ui.NavigationDrawerFragment;
 import in.testpress.testpress.ui.OrderConfirmActivity;
 import in.testpress.testpress.ui.OrdersListActivity;
 import in.testpress.testpress.ui.OrdersListFragment;
@@ -51,11 +45,6 @@ import in.testpress.testpress.ui.ProductListFragment;
 import in.testpress.testpress.ui.ProductsListActivity;
 import in.testpress.testpress.ui.ProfileDetailsActivity;
 import in.testpress.testpress.ui.ProfilePhotoActivity;
-import in.testpress.testpress.ui.ReviewActivity;
-import in.testpress.testpress.ui.ReviewFragment;
-import in.testpress.testpress.ui.ReviewQuestionsFragment;
-import in.testpress.testpress.ui.ReviewStatsFragment;
-import in.testpress.testpress.ui.SearchActivity;
 import in.testpress.testpress.ui.paymentGateway.CreditDebitCardActivity;
 import in.testpress.testpress.ui.paymentGateway.NetBankingActivity;
 import in.testpress.testpress.ui.paymentGateway.PaymentModeActivity;
@@ -75,18 +64,8 @@ import retrofit.converter.GsonConverter;
                 TestpressApplication.class,
                 LoginActivity.class,
                 MainActivity.class,
-                ExamActivity.class,
-                NavigationDrawerFragment.class,
-                ExamsListFragment.class,
-                AttemptFragment.class,
-                ReviewFragment.class,
-                AttemptsListFragment.class,
-                ReviewQuestionsFragment.class,
-                ReviewActivity.class,
-                AttemptsListActivity.class,
                 RegisterActivity.class,
                 CodeVerificationActivity.class,
-                ExamsListActivity.class,
                 ProductsListActivity.class,
                 ProductListFragment.class,
                 ProductDetailsActivity.class,
@@ -102,18 +81,17 @@ import retrofit.converter.GsonConverter;
                 PostActivity.class,
                 PostsListActivity.class,
                 PostsListFragment.class,
-                AttemptsListAdapter.class,
-                AvailableExamsListAdapter.class,
-                ReviewStatsFragment.class,
                 ProfileDetailsActivity.class,
                 ProfilePhotoActivity.class,
                 CropImageActivity.class,
                 MainMenuFragment.class,
                 ResetPasswordActivity.class,
-                SearchActivity.class,
                 DocumentsListActivity.class,
                 DocumentsListFragment.class,
-                ZoomableImageActivity.class
+                ZoomableImageActivity.class,
+                AnalyticsActivity.class,
+                AnalyticsFragment.class,
+                SplashScreenActivity.class
         }
 )
 public class TestpressModule {
@@ -131,13 +109,12 @@ public class TestpressModule {
 //    }
 
     @Provides
-    TestpressService provideTestpressService(RestAdapter restAdapter) {
+    TestpressService provideTestpressService(RestAdapter.Builder restAdapter) {
         return new TestpressService(restAdapter);
     }
 
-    @Singleton
     @Provides
-    TestpressServiceProvider provideTestpressServiceProvider(RestAdapter restAdapter, ApiKeyProvider apiKeyProvider) {
+    TestpressServiceProvider provideTestpressServiceProvider(RestAdapter.Builder restAdapter, ApiKeyProvider apiKeyProvider) {
         return new TestpressServiceProvider(restAdapter, apiKeyProvider);
     }
 
@@ -177,13 +154,12 @@ public class TestpressModule {
     }
 
     @Provides
-    RestAdapter provideRestAdapter(RestErrorHandler restErrorHandler, RestAdapterRequestInterceptor restRequestInterceptor, Gson gson) {
+    RestAdapter.Builder provideRestAdapter(RestErrorHandler restErrorHandler, RestAdapterRequestInterceptor restRequestInterceptor, Gson gson) {
         return new RestAdapter.Builder()
                 .setEndpoint(Constants.Http.URL_BASE)
                 .setErrorHandler(restErrorHandler)
                 .setRequestInterceptor(restRequestInterceptor)
                 .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setConverter(new GsonConverter(gson))
-                .build();
+                .setConverter(new GsonConverter(gson));
     }
 }

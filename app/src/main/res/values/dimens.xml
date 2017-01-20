@@ -6,27 +6,20 @@
 
     <!-- body content -->
     <dimen name="element_spacing_normal">8dp</dimen>
-    <dimen name="content_padding_normal">16dp</dimen>
-    <dimen name="text_size_xsmall">11sp</dimen>
+
     <dimen name="text_size_small">12sp</dimen>
     <dimen name="text_size_medium">14sp</dimen>
     <dimen name="text_size_xmedium">16sp</dimen>
     <dimen name="text_size_large">18sp</dimen>
     <dimen name="text_size_xlarge">20sp</dimen>
     <dimen name="text_size_xxlarge">23sp</dimen>
-    <dimen name="text_size_diff_large_small">6sp</dimen>
-    <dimen name="speaker_image_size">40dp</dimen>
+
     <dimen name="margin_normal">5dp</dimen>
     <dimen name="tag_color_dot_size">12dp</dimen>
 
     <dimen name="explore_dropdown_item_height">48dp</dimen>
     <dimen name="explore_spinner_width">200dp</dimen>
     <dimen name="spinner_left_padding">16dp</dimen>
-
-    <dimen name="detail_backdrop_height">256dp</dimen>
-    <dimen name="card_margin">16dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
-    <dimen name="list_item_avatar_size">40dp</dimen>
 
     <!-- Top margin applied to mime-type icons inside the editor. This is needed to give the
         appearance that the icons are top aligned with the text, since visible text doesn't
@@ -48,6 +41,6 @@
 
     <dimen name="activity_horizontal_margin">10dp</dimen>
     <dimen name="activity_vertical_margin">10dp</dimen>
-    <dimen name="app_bar_height">250dp</dimen>
+    <dimen name="collapsing_app_bar_height">300dp</dimen>
     <dimen name="text_margin">16dp</dimen>
 </resources>

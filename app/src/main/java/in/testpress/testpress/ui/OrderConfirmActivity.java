@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,12 +29,15 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import in.testpress.core.TestpressSdk;
+import in.testpress.exam.TestpressExam;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.R.id;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
+import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.Order;
 import in.testpress.testpress.models.OrderItem;
 import in.testpress.testpress.models.ProductDetails;
@@ -47,6 +49,7 @@ import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 
 public class OrderConfirmActivity extends TestpressFragmentActivity {
 
+    @Inject TestpressService testpressService;
     @Inject TestpressServiceProvider serviceProvider;
     @Inject protected LogoutService logoutService;
     @InjectView(id.address) EditText address;
@@ -89,7 +92,8 @@ public class OrderConfirmActivity extends TestpressFragmentActivity {
                 if(accounts.length != 0) {
                     return serviceProvider.getService(OrderConfirmActivity.this).order(Constants.Http.URL_USERS + accounts[0].name + "/", orderItems);
                 } else {
-                    serviceProvider.handleForbidden(OrderConfirmActivity.this, serviceProvider, logoutService);
+                    serviceProvider.logout(OrderConfirmActivity.this, testpressService,
+                            serviceProvider, logoutService);
                     throw new Exception("No Account exist");
                 }
             }
@@ -99,20 +103,16 @@ public class OrderConfirmActivity extends TestpressFragmentActivity {
                 order = createdOrder;
                 if(createdOrder.getStatus().equals("Completed")) {
                     setResult(RESULT_OK);
-                    Intent intent;
                     if(productDetails.getExams().size() != 0) {
-                        if(productDetails.getExams().size() > 1) {
-                            intent = new Intent(OrderConfirmActivity.this, ExamsListActivity.class);
-                        } else {
-                            intent = new Intent(OrderConfirmActivity.this, ExamActivity.class);
-                            intent.putExtra("exam", productDetails.getExams().get(0));
-                        }
+                        //noinspection ConstantConditions
+                        TestpressExam.show(OrderConfirmActivity.this,
+                                TestpressSdk.getTestpressSession(OrderConfirmActivity.this));
                     } else {
-                        intent = new Intent(OrderConfirmActivity.this, PaymentSuccessActivity.class);
+                        Intent intent = new Intent(OrderConfirmActivity.this, PaymentSuccessActivity.class);
                         intent.putExtra("order", order);
+                        intent.putExtras(getIntent().getExtras());
+                        startActivity(intent);
                     }
-                    intent.putExtras(getIntent().getExtras());
-                    startActivity(intent);
                     finish();
                 } else if(productDetails.getRequiresShipping()) {
                     landmark.setOnEditorActionListener(new TextView.OnEditorActionListener() {

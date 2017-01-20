@@ -78,7 +78,7 @@ public class OrderConfirmActivity extends TestpressFragmentActivity {
         shippingDetails.setVisibility(View.GONE);
         progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
         productDetails = getIntent().getParcelableExtra("productDetails");
-        orderItem.setProduct(Constants.Http.URL_BASE + "/api/v2/products/" + productDetails.getSlug() + "/"); //now using v2 instead v2.1
+        orderItem.setProduct(productDetails.getUrl());
         orderItem.setQuantity(1);
         orderItem.setPrice(productDetails.getPrice());
         final List<OrderItem> orderItems = new ArrayList<>();
@@ -90,7 +90,7 @@ public class OrderConfirmActivity extends TestpressFragmentActivity {
                 AccountManager manager = AccountManager.get(OrderConfirmActivity.this);
                 Account[] accounts = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
                 if(accounts.length != 0) {
-                    return serviceProvider.getService(OrderConfirmActivity.this).order(Constants.Http.URL_USERS + accounts[0].name + "/", orderItems);
+                    return serviceProvider.getService(OrderConfirmActivity.this).order(orderItems);
                 } else {
                     serviceProvider.logout(OrderConfirmActivity.this, testpressService,
                             serviceProvider, logoutService);
@@ -214,7 +214,7 @@ public class OrderConfirmActivity extends TestpressFragmentActivity {
                 paymentParams.setKey(order.getApikey());
                 paymentParams.setTxnId(order.getOrderId());
                 paymentParams.setAmount(order.getAmount());
-                paymentParams.setProductInfo("Testpress");
+                paymentParams.setProductInfo(order.getProductInfo());
                 paymentParams.setFirstName(order.getName());
                 paymentParams.setEmail(order.getEmail());
                 paymentParams.setUdf1("");

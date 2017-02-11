@@ -68,7 +68,6 @@ public class MainActivity extends TestpressFragmentActivity {
     private BottomNavBarAdapter mAdapter;
     private int[] mMenuItemImageId = {
             R.drawable.learn,
-            R.drawable.news,
             R.drawable.profile_default,
     };
 
@@ -154,10 +153,6 @@ public class MainActivity extends TestpressFragmentActivity {
                 initSDK(position);
                 break;
             case 1:
-                updateToolbarText(getString(R.string.testpress_exams));
-                initSDK(position);
-                break;
-            case 2:
                 updateToolbarText(getString(R.string.app_name));
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.container, mMainMenuFragment)

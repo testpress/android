@@ -4,6 +4,10 @@
 
     <string name="app_name">FMGE SOLUTIONS</string>
     <string name="host_url">drmarwahfmge.testpress.in</string>
+    <string name="facebook_app_id">733962776688753</string>
+    <string name="fb_login_protocol_scheme">733962776688753</string>
+    <string name="server_client_id">1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com</string>
+    <string name="share_message">Good app to prepare for FMGE. Get it at https://play.google.com/store/apps/details?id=</string>
 
     <string name="refresh_action">Refresh</string>
 
@@ -12,6 +16,7 @@
     <string name="error_loading_orders">Loading Orders failed</string>
     <string name="error_loading_posts">Loading posts failed</string>
     <string name="error_loading_content">Loading content failed</string>
+    <string name="error_loading_analytics">Loading analytics failed</string>
 
     <string name="no_products">No Products</string>
     <string name="no_products_description">There are no products to purchase right now.</string>
@@ -20,6 +25,8 @@
     <string name="no_orders">No transactions yet</string>
     <string name="no_orders_description">Your purchased orders will be reflected here.</string>
     <string name="no_posts">No Articles</string>
+    <string name="no_analytics">No Analytics Data</string>
+    <string name="no_analytics_description">To review the Analytics, start and complete your exams.</string>
 
     <string name="edit">Edit</string>
     <string name="cancel">Cancel</string>
@@ -30,10 +37,12 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="authentication_failed">Authentication failed</string>
+    <string name="please_login">Please login to see the content</string>
     <string name="network_error">Network Error</string>
     <string name="no_internet">Please check your internet connection &amp; refresh again</string>
     <string name="no_internet_try_again">Please check your internet connection &amp; try again</string>
     <string name="try_after_sometime">Please try after sometime</string>
+    <string name="something_went_wrong_please_try_after">Something went wrong, please try after sometime</string>
 
     <!-- AuthenticatorActivity -->
     <string name="label_username">Username</string>
@@ -53,6 +62,7 @@
     <string name="label_fill_required_details">*Please fill required details</string>
     <string name="register">Register</string>
     <string name="message_signing_in">Signing in…</string>
+    <string name="invalid_username_or_password">Invalid username/password</string>
     <string name="message_bad_credentials">Email Address or Password is incorrect</string>
     <string name="message_auth_failed">Please enter a valid password</string>
     <string name="message_auth_failed_new_account">Please enter a valid email address &amp; password</string>
@@ -68,8 +78,6 @@
     <string name="title_activity_reset_password_verification">ResetPasswordVerificationActivity
     </string>
 
-    <string name="share_message">Good app to prepare for FMGE. Get it at https://play.google.com/store/apps/details?id=</string>
-
     <string name="tap_to_retry">Tap to retry</string>
 
     <string name="no_posts_description">There are no posts right now.</string>
@@ -77,5 +85,33 @@
     <string name="access_denied">Access denied</string>
     <string name="share">Share</string>
     <string name="invalid_post">Invalid Article</string>
+
+    <string name="subject_wise_analytics">Subject Wise Analytics</string>
+
+    <string name="subject_name">Subject</string>
+    <string name="total">Total</string>
+    <string name="correct">Correct</string>
+    <string name="incorrect">Incorrect</string>
+    <string name="unanswered">Unanswered</string>
+    <string name="all">All</string>
+
+    <string name="strength">Strength</string>
+    <string name="weakness">Weakness</string>
+
+    <string name="strength_label">Strength / Correct</string>
+    <string name="weakness_label">Weakness / Incorrect</string>
+
+    <string name="individual_reports">Individual Reports</string>
+    <string name="overall_reports">Overall Reports</string>
+
+    <string name="or">or</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="sign_up">Sign up with Email</string>
+    <string name="login_with_facebook">Login with Facebook</string>
+    <string name="login_with_google">Login with Google</string>
+    <string name="google_sign_in_wrong_hash">Google sign in error, please contact the administrator to check key hashes.</string>
+
+    <string name="logout">Log Out</string>
+    <string name="logout_confirm_message">Are you sure you want to log out?</string>
 
 </resources>

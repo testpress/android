@@ -32,17 +32,18 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
-import in.testpress.core.TestpressSession;
 import in.testpress.exam.TestpressExam;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LoginActivity;
+import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.CategoryDao;
+import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 
@@ -50,6 +51,7 @@ public class MainMenuFragment extends Fragment {
 
     @Inject protected TestpressService testpressService;
     @Inject protected TestpressServiceProvider serviceProvider;
+    @Inject protected LogoutService logoutService;
     GridView grid;
     @InjectView(R.id.recyclerview) RecyclerView recyclerView;
     @InjectView(R.id.quick_links_container)
@@ -63,6 +65,7 @@ public class MainMenuFragment extends Fragment {
             "Documents",
 //            "Orders",
             "Posts",
+            "Analytics",
             "Profile",
             "Share",
             "Rate Us",
@@ -74,6 +77,7 @@ public class MainMenuFragment extends Fragment {
             R.drawable.documents,
 //            R.drawable.cart,
             R.drawable.posts,
+            R.drawable.analytics,
             R.drawable.ic_profile_details,
             R.drawable.share,
             R.drawable.heart,
@@ -128,6 +132,11 @@ public class MainMenuFragment extends Fragment {
                 if (account.length > 0) {
                     switch (position) {
                         case 0:
+                            if (!CommonUtils.isUserAuthenticated(getActivity())) {
+                                serviceProvider.logout(getActivity(), testpressService,
+                                        serviceProvider, logoutService);
+                                return;
+                            }
                             if (TestpressSdk.hasActiveSession(getActivity())) {
                                 showExams();
                             } else {
@@ -163,18 +172,22 @@ public class MainMenuFragment extends Fragment {
                             startActivity(intent);
                             break;
                         case 4:
-                            intent = new Intent(getActivity(), ProfileDetailsActivity.class);
+                            intent = new Intent(getActivity(), AnalyticsActivity.class);
                             startActivity(intent);
                             break;
                         case 5:
+                            intent = new Intent(getActivity(), ProfileDetailsActivity.class);
+                            startActivity(intent);
+                            break;
+                        case 6:
                             //Share
                             shareApp();
                             break;
-                        case 6:
+                        case 7:
                             //Rate
                             rateApp();
                             break;
-                        case 7:
+                        case 8:
                             ((MainActivity) getActivity()).logout();
                             break;
                     }
@@ -247,6 +260,9 @@ public class MainMenuFragment extends Fragment {
             }
 
             protected void onSuccess(final List<Category> categories) throws Exception {
+                if (getActivity() == null) {
+                    return;
+                }
                 Ln.e("On success");
                 if (categories.isEmpty()) {
                     quickLinksContainer.setVisibility(View.GONE);

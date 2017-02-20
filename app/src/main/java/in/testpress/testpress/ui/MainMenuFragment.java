@@ -32,17 +32,18 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
-import in.testpress.core.TestpressSession;
 import in.testpress.exam.TestpressExam;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LoginActivity;
+import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.CategoryDao;
+import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 
@@ -50,6 +51,7 @@ public class MainMenuFragment extends Fragment {
 
     @Inject protected TestpressService testpressService;
     @Inject protected TestpressServiceProvider serviceProvider;
+    @Inject protected LogoutService logoutService;
     GridView grid;
     @InjectView(R.id.recyclerview) RecyclerView recyclerView;
     @InjectView(R.id.quick_links_container)
@@ -130,6 +132,11 @@ public class MainMenuFragment extends Fragment {
                 if (account.length > 0) {
                     switch (position) {
                         case 0:
+                            if (!CommonUtils.isUserAuthenticated(getActivity())) {
+                                serviceProvider.logout(getActivity(), testpressService,
+                                        serviceProvider, logoutService);
+                                return;
+                            }
                             if (TestpressSdk.hasActiveSession(getActivity())) {
                                 showExams();
                             } else {

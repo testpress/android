@@ -246,6 +246,9 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
 
     @OnClick(R.id.buy_button) public void order() {
         Ln.e("Buy Button Clicked");
+        if (productDetails == null) {
+            return;
+        }
         if (this.productDetails.getPaymentLink().isEmpty()) {
             AccountManager manager = (AccountManager) getSystemService(Context.ACCOUNT_SERVICE);
             Account[] account = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);

@@ -30,6 +30,7 @@ import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.SubjectPager;
 import in.testpress.testpress.models.Subject;
+import in.testpress.testpress.util.CommonUtils;
 
 public class AnalyticsFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Subject>> {
 
@@ -55,18 +56,12 @@ public class AnalyticsFragment extends Fragment implements LoaderManager.LoaderC
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Injector.inject(this);
-        if (getPager() == null) {
-            return;
-        }
         if (getArguments() != null) {
             subject = getArguments().getParcelable(SUBJECT);
         }
-        if (subject != null) {
-            pager.setQueryParams(Constants.Http.PARENT, subject.getId().toString());
-        } else {
-            pager.setQueryParams(Constants.Http.PARENT, "null");
+        if (CommonUtils.isUserAuthenticated(getActivity())) {
+            getLoaderManager().initLoader(0, null, this);
         }
-        getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
@@ -88,6 +83,11 @@ public class AnalyticsFragment extends Fragment implements LoaderManager.LoaderC
         if (pager == null) {
             try {
                 pager = new SubjectPager(serviceProvider.getService(getActivity()));
+                if (subject != null) {
+                    pager.setQueryParams(Constants.Http.PARENT, subject.getId().toString());
+                } else {
+                    pager.setQueryParams(Constants.Http.PARENT, "null");
+                }
             } catch (AccountsException | IOException e) {
                 displayAuthenticationFailed();
             }
@@ -101,7 +101,7 @@ public class AnalyticsFragment extends Fragment implements LoaderManager.LoaderC
             @Override
             public List<Subject> loadData() throws Exception {
                 do {
-                    pager.next();
+                    getPager().next();
                     subjects = pager.getResources();
                 } while (pager.hasNext());
                 return subjects;

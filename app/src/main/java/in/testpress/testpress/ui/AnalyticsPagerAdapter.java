@@ -29,10 +29,10 @@ public class AnalyticsPagerAdapter extends FragmentPagerAdapter {
         Fragment fragment;
         switch (position) {
             case 0:
-                fragment = new IndividualSubjectAnalyticsFragment();
+                fragment = new StrengthAnalyticsGraphFragment();
                 break;
             case 1:
-                fragment = new StrengthAnalyticsGraphFragment();
+                fragment = new IndividualSubjectAnalyticsFragment();
                 break;
             default:
                 fragment = new IndividualSubjectAnalyticsFragment();
@@ -46,9 +46,9 @@ public class AnalyticsPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(final int position) {
         switch (position) {
             case 0:
-                return resources.getString(R.string.individual_reports);
-            case 1:
                 return resources.getString(R.string.overall_reports);
+            case 1:
+                return resources.getString(R.string.individual_reports);
             default:
                 return null;
         }

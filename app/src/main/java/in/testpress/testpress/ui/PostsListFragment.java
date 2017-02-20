@@ -1,9 +1,6 @@
 package in.testpress.testpress.ui;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.accounts.AccountsException;
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -44,7 +41,6 @@ import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
-import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.PostCategoryPager;
 import in.testpress.testpress.core.PostsPager;
 import in.testpress.testpress.core.TestpressService;
@@ -53,6 +49,7 @@ import in.testpress.testpress.models.CategoryDao;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.PostDao;
+import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 import info.hoang8f.widget.FButton;
@@ -198,9 +195,7 @@ public class PostsListFragment extends Fragment implements
      */
     TestpressService getTestpressService() {
         if (!authorizationChecked) {
-            AccountManager manager = (AccountManager) getActivity().getSystemService(Context.ACCOUNT_SERVICE);
-            final Account[] account = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
-            if (account.length > 0) {
+            if (CommonUtils.isUserAuthenticated(getActivity())) {
                 try {
                     testpressService = serviceProvider.getService(getActivity());
                 } catch (AccountsException e) {
@@ -270,7 +265,7 @@ public class PostsListFragment extends Fragment implements
                     @Override
                     public List<Post> loadData() throws IOException {
                         if (refreshPager == null) {
-                            initPager();
+                            initRefreshPager();
                         }
                         refreshPager.next();
                         return refreshPager.getResources();
@@ -280,6 +275,9 @@ public class PostsListFragment extends Fragment implements
                 return new ThrowableLoader<List<Post>>(getActivity(), null) {
                     @Override
                     public List<Post> loadData() throws IOException {
+                        if (pager == null) {
+                            initOldPostLoadingPager();
+                        }
                         pager.next();
                         return pager.getResources();
                     }
@@ -290,7 +288,7 @@ public class PostsListFragment extends Fragment implements
         }
     }
 
-    void initPager() {
+    void initRefreshPager() {
         if (refreshPager == null) {
             refreshPager = new PostsPager(getTestpressService(), postDao);
             refreshPager.setQueryParams("order", "-published_date");
@@ -302,6 +300,15 @@ public class PostsListFragment extends Fragment implements
                 LogAllPosts();
             }
         }
+    }
+
+    void initOldPostLoadingPager() {
+        pager = new PostsPager(getTestpressService(), null);
+        pager.setQueryParams("order", "-published_date");
+        Post lastPost = postDao.queryBuilder().orderDesc(PostDao.Properties
+                .Published).list().get((int) postDao.count() - 1);
+        pager.setQueryParams("until", lastPost.getPublishedDate());
+        pager.setLatestModifiedDate(null);
     }
 
     @Override
@@ -459,17 +466,10 @@ public class PostsListFragment extends Fragment implements
             Ln.d("Onscroll showing more");
 
             if (pager == null) {
-                pager = new PostsPager(getTestpressService(), null);
-                pager.setQueryParams("order", "-published_date");
-                Post lastPost = postDao.queryBuilder().orderDesc(PostDao.Properties
-                        .Published).list().get((int) postDao.count() - 1);
-                pager.setQueryParams("until", lastPost.getPublishedDate());
-                pager.setLatestModifiedDate(null);
                 if (listView.getVisibility() != View.VISIBLE) {
                     listView.setVisibility(View.VISIBLE);
                     emptyView.setVisibility(View.GONE);
                 }
-                Ln.d("Most old Published post available is " + lastPost.getTitle() + lastPost.getPublishedDate());
                 if (adapter.getFootersCount() == 0) { //display loading footer if not present
                     // when loading next page
                     adapter.addFooter(loadingLayout);

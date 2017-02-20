@@ -136,6 +136,7 @@
 
         <activity
             android:name=".ui.DocumentsListActivity"
+            android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Documents" />
 
@@ -183,6 +184,7 @@
             android:label="Profile Details" />
         <activity
             android:name=".ui.ProfilePhotoActivity"
+            android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboard|screenSize"
             android:label="Profile Photo" />
         <activity

@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -56,19 +55,19 @@ import in.testpress.testpress.R;
 import in.testpress.testpress.R.id;
 import in.testpress.testpress.R.layout;
 import in.testpress.testpress.TestpressApplication;
+import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.events.UnAuthorizedErrorEvent;
 import in.testpress.testpress.models.DaoSession;
-import in.testpress.testpress.models.Device;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.OrderConfirmActivity;
 import in.testpress.testpress.ui.TextWatcherAdapter;
+import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.Ln;
-import in.testpress.testpress.util.SafeAsyncTask;
 
 import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
 import static android.accounts.AccountManager.KEY_ACCOUNT_TYPE;
@@ -181,7 +180,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 loginLayout.setVisibility(View.GONE);
-                username = Profile.getCurrentProfile().getName();
+                username = loginResult.getAccessToken().getUserId();
                 authenticate(loginResult.getAccessToken().getUserId(),
                         loginResult.getAccessToken().getToken(), TestpressSdk.Provider.FACEBOOK);
             }
@@ -221,12 +220,18 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         orLabel.setTypeface(TestpressSdk.getRubikMediumFont(this));
     }
 
-    private void authenticate(final String userId, String accessToken, TestpressSdk.Provider provider) {
+    private void authenticate(final String userId, String accessToken,
+                              final TestpressSdk.Provider provider) {
         TestpressSdk.initialize(this, Constants.Http.URL_BASE, userId, accessToken, provider,
                 new TestpressCallback<TestpressSession>() {
                     @Override
                     public void onSuccess(TestpressSession response) {
+                        if (provider == TestpressSdk.Provider.FACEBOOK &&
+                                Profile.getCurrentProfile() != null) {
+                            username = Profile.getCurrentProfile().getName();
+                        }
                         authToken = response.getToken();
+                        testpressService.setAuthToken(authToken);
                         onAuthenticationResult(true);
                     }
 
@@ -325,7 +330,10 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
      */
 
     protected void finishLogin() {
-        updateDevice();
+        SharedPreferences sharedPreferences =
+                getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
+        sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
+        CommonUtils.registerDevice(this, testpressService);
         final Account account = new Account(username, Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
 
         if (requestNewAccount) {
@@ -365,28 +373,6 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             setResult(RESULT_OK, intent);
         }
         finish();
-    }
-
-    private void updateDevice() {
-        final SharedPreferences sharedPreferences = getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
-        sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
-        new SafeAsyncTask<Device>() {
-            @Override
-            public Device call() throws Exception {
-                String token = GCMPreference.getRegistrationId(getApplicationContext());
-                return testpressService.register(token, Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
-            }
-
-            @Override
-            protected void onException(Exception e) throws RuntimeException {
-                sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
-            }
-
-            @Override
-            protected void onSuccess(final Device device) throws Exception {
-                sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, true).apply();
-            }
-        }.execute();
     }
 
     /**

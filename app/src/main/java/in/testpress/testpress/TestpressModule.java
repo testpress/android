@@ -115,7 +115,6 @@ public class TestpressModule {
         return new TestpressService(restAdapter);
     }
 
-    @Singleton
     @Provides
     TestpressServiceProvider provideTestpressServiceProvider(RestAdapter.Builder restAdapter, ApiKeyProvider apiKeyProvider) {
         return new TestpressServiceProvider(restAdapter, apiKeyProvider);

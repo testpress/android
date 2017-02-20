@@ -2,7 +2,7 @@
 
 <resources>
 
-    <string name="app_name">R. A. C. E</string>
+    <string name="app_name">RACE</string>
     <string name="host_url">onlinetest.raceinstitute.in</string>
     <string name="facebook_app_id">642128432634881</string>
     <string name="fb_login_protocol_scheme">642128432634881</string>

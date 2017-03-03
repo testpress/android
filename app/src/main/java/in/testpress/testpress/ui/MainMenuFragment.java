@@ -5,6 +5,7 @@ import android.accounts.AccountManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
@@ -67,6 +68,7 @@ public class MainMenuFragment extends Fragment {
             "Posts",
             "Analytics",
             "Profile",
+            "Facebook",
             "Share",
             "Rate Us",
             "Logout"
@@ -79,6 +81,7 @@ public class MainMenuFragment extends Fragment {
             R.drawable.posts,
             R.drawable.analytics,
             R.drawable.ic_profile_details,
+            R.drawable.facebook_icon,
             R.drawable.share,
             R.drawable.heart,
             R.drawable.logout
@@ -88,6 +91,7 @@ public class MainMenuFragment extends Fragment {
     String[] menuNames = {
             "Store",
             "Posts",
+            "Facebook",
             "Share",
             "Rate Us",
             "Login"
@@ -95,6 +99,7 @@ public class MainMenuFragment extends Fragment {
     int[] menuImageId = {
             R.drawable.store,
             R.drawable.posts,
+            R.drawable.facebook_icon,
             R.drawable.share,
             R.drawable.heart,
             R.drawable.login
@@ -180,14 +185,19 @@ public class MainMenuFragment extends Fragment {
                             startActivity(intent);
                             break;
                         case 5:
+                            // Facebook group link
+                            startActivity(new Intent(Intent.ACTION_VIEW,
+                                    Uri.parse(getFacebookPageURL(getContext()))));
+                            break;
+                        case 6:
                             //Share
                             shareApp();
                             break;
-                        case 6:
+                        case 7:
                             //Rate
                             rateApp();
                             break;
-                        case 7:
+                        case 8:
                             ((MainActivity) getActivity()).logout();
                             break;
                     }
@@ -203,10 +213,15 @@ public class MainMenuFragment extends Fragment {
                             startActivity(intent);
                             break;
                         case 2:
+                            // Facebook group link
+                            startActivity(new Intent(Intent.ACTION_VIEW,
+                                    Uri.parse(getFacebookPageURL(getContext()))));
+                            break;
+                        case 3:
                             //Share
                             shareApp();
                             break;
-                        case 3:
+                        case 4:
                             //Rate
                             rateApp();
                             break;
@@ -353,6 +368,23 @@ public class MainMenuFragment extends Fragment {
         @Override
         public int getItemCount() {
             return mValues.size();
+        }
+    }
+
+    public String getFacebookPageURL(Context context) {
+        String facebookUrl = "https://www.facebook.com/groups/helpgroup2016/";
+        String facebookAppPakageName = "com.facebook.katana";
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            int versionCode = packageManager.getPackageInfo(facebookAppPakageName, 0).versionCode;
+            boolean activated = packageManager.getApplicationInfo(facebookAppPakageName, 0).enabled;
+            if(activated && (versionCode >= 3002850)){
+                return "fb://facewebmodal/f?href=" + facebookUrl;
+            } else{
+                return facebookUrl;
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            return facebookUrl;
         }
     }
 }

@@ -49,7 +49,7 @@ import in.testpress.testpress.util.ShareUtil;
 
 import info.hoang8f.widget.FButton;
 
-public class PostActivity extends DeepLinkHandlerActivity {
+public class PostActivity extends TestpressFragmentActivity {
 
     String shortWebUrl;
     PostDao postDao;

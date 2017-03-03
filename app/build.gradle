@@ -48,7 +48,7 @@ dependencies {
     compile 'com.edmodo:cropper:1.0.1'
     
     // Testpress exam
-    compile ('com.github.testpress:exam:1.0.10@aar') {
+    compile ('com.github.testpress:exam:1.0.14@aar') {
         transitive=true
     }
 
@@ -82,7 +82,7 @@ try {
 android {
 
     compileSdkVersion 24
-    buildToolsVersion '24.0.3'
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         minSdkVersion 15

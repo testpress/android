@@ -113,7 +113,7 @@
                     android:layout_weight="1"/>
 
                 <info.hoang8f.widget.FButton
-                    android:id="@+id/examButton"
+                    android:id="@+id/home_button"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:paddingTop="5dp"
@@ -121,7 +121,7 @@
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
                     android:layout_marginLeft="30dp"
-                    android:text="@string/take_exam"
+                    android:text="@string/goto_home"
                     fbutton:buttonColor="@color/primary"
                     fbutton:shadowEnabled="true"
                     fbutton:shadowHeight="2dp"

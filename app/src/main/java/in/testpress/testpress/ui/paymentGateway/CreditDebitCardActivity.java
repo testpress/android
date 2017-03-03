@@ -4,14 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.payu.india.Model.PaymentParams;
 import com.payu.india.Model.PayuConfig;
 import com.payu.india.Model.PayuHashes;
@@ -27,6 +25,8 @@ import in.testpress.testpress.R;
 import in.testpress.testpress.ui.TestpressFragmentActivity;
 import in.testpress.testpress.ui.TextWatcherAdapter;
 import in.testpress.testpress.util.InternetConnectivityChecker;
+
+import static in.testpress.testpress.ui.paymentGateway.PaymentModeActivity.ACTION_BACK_PRESSED;
 
 public class CreditDebitCardActivity extends TestpressFragmentActivity {
 
@@ -119,31 +119,16 @@ public class CreditDebitCardActivity extends TestpressFragmentActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PayuConstants.PAYU_REQUEST_CODE) {
-            if(resultCode == RESULT_OK) {
-                setResult(resultCode, data);
-                finish();
-            }
+            setResult(resultCode, data);
+            finish();
         }
     }
 
     @Override
     public void onBackPressed(){
-        new MaterialDialog.Builder(this)
-                .title("Do you really want to cancel the order ?")
-                .positiveText(R.string.ok)
-                .negativeText(R.string.cancel)
-                .positiveColorRes(R.color.primary)
-                .negativeColorRes(R.color.primary)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        dialog.dismiss();
-                        Intent intent = new Intent();
-                        intent.putExtra("result", "Transaction canceled due to back pressed!");
-                        setResult(RESULT_CANCELED, intent);
-                        finish();
-                    }
-                })
-                .show();
+        Intent intent = new Intent();
+        intent.setAction(ACTION_BACK_PRESSED);
+        setResult(RESULT_CANCELED, intent);
+        finish();
     }
 }

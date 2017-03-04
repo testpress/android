@@ -215,6 +215,7 @@ public class CodeVerificationActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(final Boolean authSuccess) {  //Successfully Verified
+                setResult(RESULT_OK);
                 if(password == null){
                     gotoLoginScreen();
                 } else {
@@ -249,10 +250,10 @@ public class CodeVerificationActivity extends AppCompatActivity {
                 postDao.deleteAll();
                 daoSession.clear();
                 Intent intent;
-                switch (getIntent().getExtras().getString("deeplinkTo", "")) {
-                    case "payment":
+                switch (getIntent().getExtras().getString(Constants.DEEP_LINK_TO, "")) {
+                    case Constants.DEEP_LINK_TO_PAYMENTS:
                         intent = new Intent(CodeVerificationActivity.this, OrderConfirmActivity.class);
-                        intent.putExtra("isDeepLink", true);
+                        intent.putExtra(Constants.IS_DEEP_LINK, true);
                         intent.putExtras(getIntent().getExtras());
                         break;
                     default:

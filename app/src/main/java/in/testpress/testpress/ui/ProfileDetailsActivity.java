@@ -548,8 +548,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                super.onBackPressed();
-                return true;
+                return super.onOptionsItemSelected(item);
             case R.id.refresh:
                 progressBar.setVisibility(View.VISIBLE);
                 getSupportLoaderManager().restartLoader(0, null, this);
@@ -561,7 +560,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
                 displayProfileDetails(profileDetails);
                 return true;
             default:
-                return false;
+                return super.onOptionsItemSelected(item);
         }
     }
 

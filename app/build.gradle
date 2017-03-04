@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 ext {
     supportLib = '25.0.1'
-    testpressSDK = '1.0.12'
+    testpressSDK = '1.0.15'
 }
 
 dependencies {
@@ -53,6 +53,7 @@ dependencies {
     compile 'com.edmodo:cropper:1.0.1'
     
     // Testpress exam
+
     compile ('com.github.testpress:exam:' + testpressSDK + '@aar') {
         transitive=true
     }
@@ -88,8 +89,9 @@ try {
 }
 
 android {
+
     compileSdkVersion 25
-    buildToolsVersion '24.0.3'
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         minSdkVersion 15

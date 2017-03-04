@@ -217,7 +217,7 @@ public class MainMenuFragment extends Fragment {
                             break;
                         default:
                             intent = new Intent(getActivity(), LoginActivity.class);
-                            intent.putExtra("deeplinkTo", "home");
+                            intent.putExtra(Constants.DEEP_LINK_TO, "home");
                             startActivity(intent);
                             break;
                     }

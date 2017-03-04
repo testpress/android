@@ -30,6 +30,7 @@ import com.github.testpress.mikephil.charting.formatter.PercentFormatter;
 import com.github.testpress.mikephil.charting.interfaces.datasets.IBarDataSet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -37,6 +38,7 @@ import butterknife.InjectView;
 import in.testpress.testpress.R;
 import in.testpress.testpress.models.Subject;
 import in.testpress.testpress.util.GraphAxisLabelFormatter;
+import in.testpress.testpress.util.GraphAxisPercentValueFormatter;
 import in.testpress.testpress.util.UIUtils;
 
 import static in.testpress.testpress.ui.AnalyticsFragment.SUBJECTS;
@@ -143,19 +145,21 @@ public class StrengthAnalyticsGraphFragment extends Fragment {
     }
 
     private ArrayList<IBarDataSet> getDataForAllAnswers() {
-        ArrayList<BarEntry> correctPercentageEntries = new ArrayList<BarEntry>();
-        ArrayList<BarEntry> incorrectPercentageEntries = new ArrayList<BarEntry>();
-        ArrayList<BarEntry> unansweredPercentageEntries = new ArrayList<BarEntry>();
-        for (int i = 1; i <= ((subjects.size() * 4) - 1); i++) {
-            Subject subject = subjects.get((i-1)/4);
-            unansweredPercentageEntries.add(new BarEntry(i++, subject.getUnansweredPercentage()));
-            incorrectPercentageEntries.add(new BarEntry(i++, subject.getIncorrectPercentage()));
-            correctPercentageEntries.add(new BarEntry(i++, subject.getCorrectPercentage()));
+        ArrayList<BarEntry> entries = new ArrayList<BarEntry>();
+        for (int i = 1; i <= subjects.size(); i++) {
+            Subject subject = subjects.get(i-1);
+            entries.add(new BarEntry(i, new float[]{subject.getCorrectPercentage(),
+                    subject.getIncorrectPercentage(), subject.getUnansweredPercentage()}));
         }
+        BarDataSet barDataSet = new BarDataSet(entries, "");
+        List<Integer> cols = Arrays.asList(
+                ContextCompat.getColor(getContext(), R.color.green_correct),
+                ContextCompat.getColor(getContext(), R.color.red_incorrect),
+                ContextCompat.getColor(getContext(), R.color.yellow)
+        );
+        barDataSet.setColors(cols);
         ArrayList<IBarDataSet> sets = new ArrayList<IBarDataSet>();
-        sets.add(getBarDataSet(correctPercentageEntries, R.color.green_correct));
-        sets.add(getBarDataSet(incorrectPercentageEntries, R.color.red_incorrect));
-        sets.add(getBarDataSet(unansweredPercentageEntries, R.color.yellow));
+        sets.add(barDataSet);
         return sets;
     }
 
@@ -202,7 +206,7 @@ public class StrengthAnalyticsGraphFragment extends Fragment {
                 if (dataForAllAnswers == null) {
                     dataForAllAnswers = getDataForAllAnswers();
                 }
-                populateChart(chart, dataForAllAnswers, 4);
+                populateChart(chart, dataForAllAnswers, true);
                 break;
             case 1:
                 strengthLabel.setText(getString(R.string.strength_label));
@@ -211,7 +215,7 @@ public class StrengthAnalyticsGraphFragment extends Fragment {
                 if (dataForCorrectAnswers == null) {
                     dataForCorrectAnswers = getDataForCorrectAnswers();
                 }
-                populateChart(chart, dataForCorrectAnswers, 1);
+                populateChart(chart, dataForCorrectAnswers, false);
                 break;
             case 2:
                 weaknessLabel.setText(getString(R.string.weakness_label));
@@ -220,7 +224,7 @@ public class StrengthAnalyticsGraphFragment extends Fragment {
                 if (dataForIncorrectAnswers == null) {
                     dataForIncorrectAnswers = getDataForIncorrectAnswers();
                 }
-                populateChart(chart, dataForIncorrectAnswers, 1);
+                populateChart(chart, dataForIncorrectAnswers, false);
                 break;
             case 3:
                 UIUtils.setGone(new View[] {strengthLabelLayout, weaknessLabelLayout});
@@ -228,16 +232,14 @@ public class StrengthAnalyticsGraphFragment extends Fragment {
                 if (dataForUnansweredAnswers == null) {
                     dataForUnansweredAnswers = getDataForUnansweredAnswers();
                 }
-                populateChart(chart, dataForUnansweredAnswers, 1);
+                populateChart(chart, dataForUnansweredAnswers, false);
                 break;
         }
     }
 
-    protected void populateChart(HorizontalBarChart chart, ArrayList<IBarDataSet> sets, int interval) {
+    protected void populateChart(HorizontalBarChart chart, ArrayList<IBarDataSet> sets, boolean all) {
         BarData data = new BarData(sets);
-        data.setValueTextSize(12);
         data.setValueTypeface(Typeface.DEFAULT_BOLD);
-        data.setValueFormatter(new PercentFormatter());
 
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -254,19 +256,11 @@ public class StrengthAnalyticsGraphFragment extends Fragment {
         xAxis.setAvoidFirstLastClipping(true);
         xAxis.setXOffset(10);
         xAxis.setTextColor(ContextCompat.getColor(getActivity(), R.color.black));
-        xAxis.setValueFormatter(new GraphAxisLabelFormatter(labels, interval));
-
-        if (interval > 1) {
-            xAxis.setAxisMinValue( - (interval / 2));
-            xAxis.setAxisMaxValue(((subjects.size() * interval) + (interval / 2)));
-            chart.setMinimumHeight(Math.max(200, subjects.size() * 300));
-            data.setBarWidth(0.7f);
-        } else {
-            xAxis.setAxisMinValue(0);
-            xAxis.setAxisMaxValue(subjects.size() + 1);
-            chart.setMinimumHeight(Math.max(200, subjects.size() * 100));
-            data.setBarWidth(0.5f);
-        }
+        xAxis.setValueFormatter(new GraphAxisLabelFormatter(labels, 1));
+        xAxis.setAxisMinValue(0);
+        xAxis.setAxisMaxValue(subjects.size() + 1);
+        chart.setMinimumHeight(Math.max(200, subjects.size() * 100));
+        data.setBarWidth(0.5f);
 
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.setDrawAxisLine(false);
@@ -277,20 +271,38 @@ public class StrengthAnalyticsGraphFragment extends Fragment {
         leftAxis.setSpaceTop(15f);
 
         YAxis rightAxis = chart.getAxisRight();
-        rightAxis.setLabelCount(5, false);
-        rightAxis.setTextSize(10);
         rightAxis.setAxisMinValue(0f);
         rightAxis.setAxisMaxValue(100f);
-        rightAxis.setDrawGridLines(true);
-        rightAxis.setTextColor(ContextCompat.getColor(getActivity(), R.color.graph_text));
-        rightAxis.setGridColor(Color.parseColor("#cccccc"));
+
+        if (all) {
+            data.setValueTextSize(10);
+            data.setValueFormatter(new GraphAxisPercentValueFormatter());
+            xAxis.setDrawAxisLine(false);
+            rightAxis.setDrawLabels(false);
+            rightAxis.setDrawAxisLine(false);
+            rightAxis.setDrawGridLines(false);
+            chart.setDrawValueAboveBar(false);
+            chart.setExtraOffsets(0, 0, 30, 0);
+        } else {
+            data.setValueTextSize(12);
+            data.setValueFormatter(new PercentFormatter());
+            xAxis.setDrawAxisLine(true);
+            rightAxis.setLabelCount(5, false);
+            rightAxis.setTextSize(10);
+            rightAxis.setDrawLabels(true);
+            rightAxis.setDrawAxisLine(true);
+            rightAxis.setDrawGridLines(true);
+            rightAxis.setTextColor(ContextCompat.getColor(getActivity(), R.color.graph_text));
+            rightAxis.setGridColor(Color.parseColor("#cccccc"));
+            chart.setDrawValueAboveBar(true);
+            chart.setExtraOffsets(0, 0, 50, 0);
+        }
 
         chart.setData(data);
         chart.setDescription("");
         chart.setFitBars(true);
         chart.setTouchEnabled(false);
         chart.getLegend().setEnabled(false);
-        chart.setExtraOffsets(0, 0, 50, 0);
         chart.animateY(500);
         chart.invalidate();
     }

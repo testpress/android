@@ -34,6 +34,7 @@ import in.testpress.testpress.util.SafeAsyncTask;
 import retrofit.RetrofitError;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
+import static in.testpress.testpress.authenticator.LoginActivity.REQUEST_CODE_REGISTER_USER;
 
 public class RegisterActivity extends AppCompatActivity {
     @Inject TestpressService testpressService;
@@ -119,8 +120,7 @@ public class RegisterActivity extends AppCompatActivity {
                 intent.putExtra("password", registrationSuccessResponse.getPassword());
                 intent.putExtra("phoneNumber", registrationSuccessResponse.getPhone());
                 intent.putExtras(getIntent().getExtras());
-                startActivity(intent);
-                finish();
+                startActivityForResult(intent, REQUEST_CODE_REGISTER_USER);
             }
         }.execute();
     }
@@ -207,6 +207,15 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 })
                 .show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_REGISTER_USER) {
+            setResult(resultCode);
+            finish();
         }
     }
 }

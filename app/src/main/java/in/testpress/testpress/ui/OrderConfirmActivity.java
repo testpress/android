@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,6 +47,7 @@ import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.SafeAsyncTask;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
+import static in.testpress.testpress.ui.ProductDetailsActivity.PRODUCT_SLUG;
 
 public class OrderConfirmActivity extends TestpressFragmentActivity {
 
@@ -255,16 +257,30 @@ public class OrderConfirmActivity extends TestpressFragmentActivity {
                 intent.putExtra("order", order);
                 intent.putExtras(getIntent().getExtras());
                 startActivity(intent);
-            }
-            if (getIntent().getBooleanExtra("isDeepLink", false)) {
-                Intent intent = new Intent(OrderConfirmActivity.this, ProductDetailsActivity.class);
-                intent.putExtras(getIntent().getExtras());
-                startActivity(intent);
+            } else if (getIntent().getBooleanExtra(Constants.IS_DEEP_LINK, false)) {
+                gotoProductDetails();
             } else {
                 setResult(resultCode, data);
             }
             finish();
         }
+    }
+
+    private void gotoProductDetails() {
+        Intent intent = new Intent(this, ProductDetailsActivity.class);
+        intent.putExtra(Constants.IS_DEEP_LINK, true);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra(PRODUCT_SLUG, productDetails.getSlug());
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        if(item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -279,10 +295,8 @@ public class OrderConfirmActivity extends TestpressFragmentActivity {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         dialog.dismiss();
-                        if (getIntent().getBooleanExtra("isDeepLink", false)) {
-                            Intent intent = new Intent(OrderConfirmActivity.this, ProductDetailsActivity.class);
-                            intent.putExtras(getIntent().getExtras());
-                            startActivity(intent);
+                        if (getIntent().getBooleanExtra(Constants.IS_DEEP_LINK, false)) {
+                            gotoProductDetails();
                         } else {
                             Intent intent = new Intent();
                             intent.putExtra("result", "Transaction canceled due to back pressed!");

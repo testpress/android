@@ -31,6 +31,7 @@ import in.testpress.testpress.util.InternetConnectivityChecker;
 
 public class PaymentModeActivity extends TestpressFragmentActivity implements PaymentRelatedDetailsListener{
 
+    public static final String ACTION_BACK_PRESSED = "backPressed";
     @InjectView(R.id.paymentMethodLayout) LinearLayout paymentMethodLayout;
     @InjectView(R.id.pb_loading) ProgressBar progressBar;
     @InjectView(R.id.amount) TextView amount;
@@ -76,11 +77,9 @@ public class PaymentModeActivity extends TestpressFragmentActivity implements Pa
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PayuConstants.PAYU_REQUEST_CODE) {
-            if(resultCode == RESULT_OK) {
+            if (data.getAction() == null || !data.getAction().equals(ACTION_BACK_PRESSED)) {
                 setResult(resultCode, data);
                 finish();
-            } else {
-                cancelled = true;
             }
         }
     }
@@ -122,31 +121,23 @@ public class PaymentModeActivity extends TestpressFragmentActivity implements Pa
 
     @Override
     public void onBackPressed(){
-        if(cancelled) { //if already cancelled in previous activity simply go back
-            finishActivity();
-        } else {
-            new MaterialDialog.Builder(this)
-                    .title("Do you really want to cancel the order ?")
-                    .positiveText(R.string.ok)
-                    .negativeText(R.string.cancel)
-                    .positiveColorRes(R.color.primary)
-                    .negativeColorRes(R.color.primary)
-                    .callback(new MaterialDialog.ButtonCallback() {
-                        @Override
-                        public void onPositive(MaterialDialog dialog) {
-                            dialog.dismiss();
-                            finishActivity();
-                        }
-                    })
-                    .show();
-        }
+        new MaterialDialog.Builder(this)
+                .title("Do you really want to cancel the order ?")
+                .positiveText(R.string.ok)
+                .negativeText(R.string.cancel)
+                .positiveColorRes(R.color.primary)
+                .negativeColorRes(R.color.primary)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        dialog.dismiss();
+                        Intent intent = new Intent();
+                        setResult(RESULT_CANCELED, intent);
+                        finish();
+                    }
+                })
+                .show();
     }
 
-    void finishActivity() {
-        Intent intent = new Intent();
-        intent.putExtra("result", "Transaction canceled due to back pressed!");
-        setResult(RESULT_CANCELED, intent);
-        finish();
-    }
 }
 

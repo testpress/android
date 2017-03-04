@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,6 +47,7 @@ import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.SafeAsyncTask;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
+import static in.testpress.testpress.ui.ProductDetailsActivity.PRODUCT_SLUG;
 
 public class OrderConfirmActivity extends TestpressFragmentActivity {
 
@@ -78,7 +80,7 @@ public class OrderConfirmActivity extends TestpressFragmentActivity {
         shippingDetails.setVisibility(View.GONE);
         progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
         productDetails = getIntent().getParcelableExtra("productDetails");
-        orderItem.setProduct(Constants.Http.URL_BASE + "/api/v2/products/" + productDetails.getSlug() + "/"); //now using v2 instead v2.1
+        orderItem.setProduct(productDetails.getUrl());
         orderItem.setQuantity(1);
         orderItem.setPrice(productDetails.getPrice());
         final List<OrderItem> orderItems = new ArrayList<>();
@@ -90,7 +92,7 @@ public class OrderConfirmActivity extends TestpressFragmentActivity {
                 AccountManager manager = AccountManager.get(OrderConfirmActivity.this);
                 Account[] accounts = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
                 if(accounts.length != 0) {
-                    return serviceProvider.getService(OrderConfirmActivity.this).order(Constants.Http.URL_USERS + accounts[0].name + "/", orderItems);
+                    return serviceProvider.getService(OrderConfirmActivity.this).order(orderItems);
                 } else {
                     serviceProvider.logout(OrderConfirmActivity.this, testpressService,
                             serviceProvider, logoutService);
@@ -214,7 +216,7 @@ public class OrderConfirmActivity extends TestpressFragmentActivity {
                 paymentParams.setKey(order.getApikey());
                 paymentParams.setTxnId(order.getOrderId());
                 paymentParams.setAmount(order.getAmount());
-                paymentParams.setProductInfo("Testpress");
+                paymentParams.setProductInfo(order.getProductInfo());
                 paymentParams.setFirstName(order.getName());
                 paymentParams.setEmail(order.getEmail());
                 paymentParams.setUdf1("");
@@ -255,16 +257,30 @@ public class OrderConfirmActivity extends TestpressFragmentActivity {
                 intent.putExtra("order", order);
                 intent.putExtras(getIntent().getExtras());
                 startActivity(intent);
-            }
-            if (getIntent().getBooleanExtra("isDeepLink", false)) {
-                Intent intent = new Intent(OrderConfirmActivity.this, ProductDetailsActivity.class);
-                intent.putExtras(getIntent().getExtras());
-                startActivity(intent);
+            } else if (getIntent().getBooleanExtra(Constants.IS_DEEP_LINK, false)) {
+                gotoProductDetails();
             } else {
                 setResult(resultCode, data);
             }
             finish();
         }
+    }
+
+    private void gotoProductDetails() {
+        Intent intent = new Intent(this, ProductDetailsActivity.class);
+        intent.putExtra(Constants.IS_DEEP_LINK, true);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra(PRODUCT_SLUG, productDetails.getSlug());
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        if(item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -279,10 +295,8 @@ public class OrderConfirmActivity extends TestpressFragmentActivity {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         dialog.dismiss();
-                        if (getIntent().getBooleanExtra("isDeepLink", false)) {
-                            Intent intent = new Intent(OrderConfirmActivity.this, ProductDetailsActivity.class);
-                            intent.putExtras(getIntent().getExtras());
-                            startActivity(intent);
+                        if (getIntent().getBooleanExtra(Constants.IS_DEEP_LINK, false)) {
+                            gotoProductDetails();
                         } else {
                             Intent intent = new Intent();
                             intent.putExtra("result", "Transaction canceled due to back pressed!");

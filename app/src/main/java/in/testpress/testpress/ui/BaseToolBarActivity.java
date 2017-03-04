@@ -1,8 +1,11 @@
 package in.testpress.testpress.ui;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+
+import in.testpress.testpress.core.Constants;
 
 /**
  * Base activity used to support the toolbar_material & handle backpress.
@@ -24,7 +27,14 @@ public abstract class BaseToolBarActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         if(item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            if (getIntent().getBooleanExtra(Constants.IS_DEEP_LINK, false)) {
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            } else {
+                onBackPressed();
+            }
             return true;
         }
         return false;

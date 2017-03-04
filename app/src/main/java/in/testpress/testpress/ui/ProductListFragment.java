@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
+import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.ProductsPager;
 import in.testpress.testpress.core.ResourcePager;
 import in.testpress.testpress.core.TestpressService;
@@ -68,13 +69,9 @@ public class ProductListFragment extends PagedItemFragment<Product> {
 
     public void onListItemClick(ListView l, View v, int position, long id) {
         Product product = ((Product) l.getItemAtPosition(position));
-        if(internetConnectivityChecker.isConnected()) {
-            Intent intent = new Intent(getActivity(), ProductDetailsActivity.class);
-            intent.putExtra("productUrl", product.getUrl());
-            startActivity(intent);
-        } else {
-            internetConnectivityChecker.showAlert();
-        }
+        Intent intent = new Intent(getActivity(), ProductDetailsActivity.class);
+        intent.putExtra(ProductDetailsActivity.PRODUCT_SLUG, product.getSlug());
+        startActivity(intent);
     }
 
     @Override

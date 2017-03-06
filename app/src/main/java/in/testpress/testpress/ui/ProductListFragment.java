@@ -1,6 +1,5 @@
 package in.testpress.testpress.ui;
 
-import android.accounts.AccountsException;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,7 +8,6 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
-import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -17,23 +15,21 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
-import in.testpress.testpress.TestpressServiceProvider;
-import in.testpress.testpress.authenticator.LogoutService;
+import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.ProductsPager;
 import in.testpress.testpress.core.ResourcePager;
+import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.Product;
 
 public class ProductListFragment extends PagedItemFragment<Product> {
 
-    @Inject protected TestpressServiceProvider serviceProvider;
-    @Inject protected LogoutService logoutService;
-
-    ProductsPager pager;
+    @Inject protected TestpressService testpressService;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Injector.inject(this);
         ButterKnife.inject(this.getActivity());
+        pager = new ProductsPager(testpressService);
         super.onCreate(savedInstanceState);
     }
 
@@ -51,15 +47,6 @@ public class ProductListFragment extends PagedItemFragment<Product> {
     }
 
     protected ResourcePager<Product> getPager() {
-        if (pager == null) {
-            try {
-                pager = new ProductsPager(serviceProvider.getService(getActivity()));
-            } catch (AccountsException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
         return pager;
     }
 
@@ -82,23 +69,14 @@ public class ProductListFragment extends PagedItemFragment<Product> {
 
     public void onListItemClick(ListView l, View v, int position, long id) {
         Product product = ((Product) l.getItemAtPosition(position));
-        if(internetConnectivityChecker.isConnected()) {
-            Intent intent = new Intent(getActivity(), ProductDetailsActivity.class);
-            intent.putExtra("productUrl", product.getUrl());
-            startActivity(intent);
-        } else {
-            internetConnectivityChecker.showAlert();
-        }
+        Intent intent = new Intent(getActivity(), ProductDetailsActivity.class);
+        intent.putExtra(ProductDetailsActivity.PRODUCT_SLUG, product.getSlug());
+        startActivity(intent);
     }
 
     @Override
     protected int getErrorMessage(Exception exception) {
-        if((exception.getMessage() != null) && (exception.getMessage()).equals("403 FORBIDDEN")) {
-            serviceProvider.handleForbidden(getActivity(), serviceProvider, logoutService);
-            return R.string.authentication_failed;
-        } else {
-            setEmptyText(R.string.network_error, R.string.no_internet, R.drawable.ic_error_outline_black_18dp);
-        }
+        setEmptyText(R.string.network_error, R.string.no_internet, R.drawable.ic_error_outline_black_18dp);
         return R.string.error_loading_products;
     }
 }

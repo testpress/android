@@ -15,4 +15,5 @@ public class ProductsListActivity extends TestpressFragmentActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, productsListFragment).commitAllowingStateLoss();
     }
+
 }

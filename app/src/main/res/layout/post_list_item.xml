@@ -1,91 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginTop="4dp"
-    android:background="#ffffff"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
     android:orientation="vertical">
 
-    <!--<View-->
-        <!--android:id="@+id/category_color_border"-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="4dp"-->
-        <!--android:background="#333333" />-->
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
+        style="@style/CardViewNormal"
+        card_view:cardBackgroundColor="@android:color/white"
+        card_view:cardPreventCornerOverlap="false"
+        card_view:cardUseCompatPadding="true"
+        card_view:cardElevation="4dp"
+        card_view:cardCornerRadius="2dp">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp">
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:textSize="18sp"
-            android:textColor="@android:color/black"
-            android:singleLine="true"
-            android:ellipsize="end"
-            android:layout_marginBottom="5dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:text="Expected Questions: Seating Arrangements 1234 1234567890123456"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:id="@+id/summary"
-            android:textSize="14sp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:text="Six persons-A, B, C, D, E and F \u2013 are sitting in two cars namely X and Y but not necessarily in the same order. Out of six persons two are driving the cars. There are three persons in each car ad one persons must be on front seat besides the person who is driving the car. In car X, D is neither driving nor sitting on the back seat. F is sitting on the back seat in Car Y. C is on the driver\u2019s seat but not in the Car X. A is neither driving nor travelling in the Car Y. E is not on the driver\u2019s seat in any car.\r\n\r\n"
+        <in.testpress.testpress.ui.view.MaterialRippleLayout
+            android:id="@+id/ripple_layout"
+            android:paddingTop="15dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="15dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:layout_below="@id/title"/>
+            app:mrl_rippleColor="#666">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:orientation="horizontal"
-            android:layout_below="@id/summary">
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/calendar_icon"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_marginRight="3dp"
+                    android:tint="#aaa"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_event_black_18dp"/>
+
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="#aaa"
+                    android:text="2015-09-25"
+                    android:textSize="12sp"
+                    android:layout_toRightOf="@id/calendar_icon"
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:paddingRight="10dp"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:layout_marginBottom="10dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:text="Expected Questions: Seating Arrangements 1234 1234567890123456123465789123456789"
+                android:layout_height="wrap_content"/>
 
             <TextView
                 android:id="@+id/category"
                 android:text="Alerts"
-                android:textSize="11sp"
-                android:textStyle="bold"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:paddingTop="3dp"
-                android:paddingBottom="3dp"
-                android:background="@drawable/button_background_enabled"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:textSize="12sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
-            <!--<TextView-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="\u00A0 \u2014 \u00A0"/>-->
+        </LinearLayout>
 
-            <TextView
-                android:id="@+id/date"
-                android:layout_width="wrap_content"
-                android:textSize="12sp"
-                android:text="Date: 2015-09-25 05:15:43"
-                android:layout_centerVertical="true"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"/>
+        </in.testpress.testpress.ui.view.MaterialRippleLayout>
 
-        </RelativeLayout>
-
-    </RelativeLayout>
-
+    </android.support.v7.widget.CardView>
 </LinearLayout>
 
 

@@ -30,7 +30,7 @@ public class OrdersListAdapter extends SingleTypeAdapter<Order> {
     protected void update(final int position, final Order item) {
         if(item.getOrderItems().size() != 0)
             setText(0, item.getOrderItems().get(0).getProduct().split("/")[6]);
-        setText(1, "OrderId: " + item.getId());
+        setText(1, "OrderId: " + item.getOrderId());
         setText(2, "Status: " + item.getStatus());
         FormatDate date = new FormatDate();
         setText(3, date.formatDateTime(item.getDate()));

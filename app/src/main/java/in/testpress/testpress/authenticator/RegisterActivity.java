@@ -34,6 +34,7 @@ import in.testpress.testpress.util.SafeAsyncTask;
 import retrofit.RetrofitError;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
+import static in.testpress.testpress.authenticator.LoginActivity.REQUEST_CODE_REGISTER_USER;
 
 public class RegisterActivity extends AppCompatActivity {
     @Inject TestpressService testpressService;
@@ -114,14 +115,12 @@ public class RegisterActivity extends AppCompatActivity {
             public void onSuccess(final Boolean authSuccess) {
                 progressDialog.dismiss();
                 Intent intent = new Intent(RegisterActivity.this, CodeVerificationActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                Bundle bundle = new Bundle();
-                bundle.putString("username", registrationSuccessResponse.getUsername());
-                bundle.putString("password", registrationSuccessResponse.getPassword());
-                bundle.putString("phoneNumber", registrationSuccessResponse.getPhone());
-                intent.putExtras(bundle);
-                startActivity(intent);
-                finish();
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.putExtra("username", registrationSuccessResponse.getUsername());
+                intent.putExtra("password", registrationSuccessResponse.getPassword());
+                intent.putExtra("phoneNumber", registrationSuccessResponse.getPhone());
+                intent.putExtras(getIntent().getExtras());
+                startActivityForResult(intent, REQUEST_CODE_REGISTER_USER);
             }
         }.execute();
     }
@@ -208,6 +207,15 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 })
                 .show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_REGISTER_USER) {
+            setResult(resultCode);
+            finish();
         }
     }
 }

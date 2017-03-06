@@ -1,5 +1,6 @@
 package in.testpress.testpress.ui.paymentGateway;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -29,7 +30,6 @@ public class PaymentsActivity extends AppCompatActivity{
     String url;
     PayuConfig payuConfig;
     boolean viewPortWide;
-    private BroadcastReceiver mReceiver = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,38 +68,7 @@ public class PaymentsActivity extends AppCompatActivity{
         }
         try {
             Class.forName("com.payu.custombrowser.Bank");
-            final Bank bank = new Bank() {
-                @Override
-                public void registerBroadcast(BroadcastReceiver broadcastReceiver, IntentFilter filter) {
-                    mReceiver = broadcastReceiver;
-                    registerReceiver(broadcastReceiver, filter);
-                }
-
-                @Override
-                public void unregisterBroadcast(BroadcastReceiver broadcastReceiver) {
-                    if(mReceiver != null){
-                        unregisterReceiver(mReceiver);
-                        mReceiver = null;
-                    }
-                }
-
-                @Override
-                public void onHelpUnavailable() {
-                    findViewById(R.id.parent).setVisibility(View.GONE);
-                    findViewById(R.id.trans_overlay).setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onBankError() {
-                    findViewById(R.id.parent).setVisibility(View.GONE);
-                    findViewById(R.id.trans_overlay).setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onHelpAvailable() {
-                    findViewById(R.id.parent).setVisibility(View.VISIBLE);
-                }
-            };
+            final Bank bank = new TestpressBankFragment();
             Bundle args = new Bundle();
             args.putInt(Bank.WEBVIEW, R.id.webview);
             args.putInt(Bank.TRANS_LAYOUT, R.id.trans_overlay);

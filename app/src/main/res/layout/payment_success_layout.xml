@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -14,6 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/paymentDetails"
+            android:padding="20dp"
             android:visibility="visible">
 
             <TextView
@@ -24,6 +26,7 @@
                 android:textStyle="bold"
                 android:textColor="@color/primary"
                 android:layout_centerHorizontal="true"
+                android:gravity="center"
                 android:layout_height="wrap_content"
                 android:padding="10dp"/>
 
@@ -92,29 +95,39 @@
                 android:layout_margin="10dp"
                 android:layout_below="@id/furtherDetails">
 
-                <Button
+                <info.hoang8f.widget.FButton
                     android:id="@+id/continueButton"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
                     android:text="@string/continue_purchase"
-                    android:textStyle="bold"
-                    android:background="@drawable/opaque_blue_button"
+                    fbutton:buttonColor="@color/primary"
+                    fbutton:shadowEnabled="true"
+                    fbutton:shadowHeight="2dp"
+                    fbutton:cornerRadius="2dp"
+                    style="@style/Base.Widget.AppCompat.Button.Borderless"
                     android:textColor="#fff"
-                    android:textSize="@dimen/text_size_large"
                     android:layout_weight="1"/>
 
-                <Button
-                    android:id="@+id/examButton"
+                <info.hoang8f.widget.FButton
+                    android:id="@+id/home_button"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="40dp"
-                    android:paddingRight="40dp"
+                    android:layout_height="match_parent"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
                     android:layout_marginLeft="30dp"
-                    android:text="@string/take_exam"
-                    android:background="@drawable/opaque_blue_button"
-                    android:textStyle="bold"
+                    android:text="@string/goto_home"
+                    fbutton:buttonColor="@color/primary"
+                    fbutton:shadowEnabled="true"
+                    fbutton:shadowHeight="2dp"
+                    fbutton:cornerRadius="2dp"
+                    style="@style/Base.Widget.AppCompat.Button.Borderless"
                     android:textColor="#fff"
-                    android:textSize="@dimen/text_size_large"
                     android:layout_weight="1"/>
 
             </LinearLayout>

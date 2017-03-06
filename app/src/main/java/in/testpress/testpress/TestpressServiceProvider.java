@@ -2,30 +2,45 @@ package in.testpress.testpress;
 
 import android.accounts.AccountsException;
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 
 import java.io.IOException;
 
+import in.testpress.core.TestpressSdk;
+import in.testpress.core.TestpressSession;
 import in.testpress.testpress.authenticator.ApiKeyProvider;
 import in.testpress.testpress.authenticator.LogoutService;
+import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.ui.MainActivity;
+import in.testpress.testpress.util.CommonUtils;
+import in.testpress.testpress.util.GCMPreference;
+import in.testpress.util.UIUtils;
 import retrofit.RestAdapter;
 
 public class TestpressServiceProvider {
-    private RestAdapter restAdapter;
+    private RestAdapter.Builder restAdapter;
     private ApiKeyProvider keyProvider;
     String authToken;
 
-    public TestpressServiceProvider(RestAdapter restAdapter, ApiKeyProvider keyProvider) {
+    public TestpressServiceProvider(RestAdapter.Builder restAdapter, ApiKeyProvider keyProvider) {
         this.restAdapter = restAdapter;
         this.keyProvider = keyProvider;
     }
 
-    public void invalidateAuthToken() {
+    public void invalidateAuthToken(Context context) {
         authToken = null;
+        FacebookSdk.sdkInitialize(context.getApplicationContext());
+        LoginManager.getInstance().logOut();
+        TestpressSdk.clearActiveSession(context);
     }
     /**
      * Get service for configured key provider
@@ -41,15 +56,30 @@ public class TestpressServiceProvider {
         if (authToken == null) {
             // The call to keyProvider.getAuthKey(...) is what initiates the login screen. Call that now.
             authToken = keyProvider.getAuthKey(activity);
+            TestpressSdk.setTestpressSession(activity,
+                    new TestpressSession(Constants.Http.URL_BASE, authToken));
         }
 
         // TODO: See how that affects the testpress service.
         return new TestpressService(restAdapter, authToken);
     }
 
-    public void handleForbidden(final Activity activity, TestpressServiceProvider serviceProvider, LogoutService logoutService) {
-        serviceProvider.invalidateAuthToken();
-        DaoSession daoSession = ((TestpressApplication) activity.getApplicationContext()).getDaoSession();
+    public void logout(final Activity activity, TestpressService testpressService,
+                       TestpressServiceProvider serviceProvider,
+                       LogoutService logoutService) {
+        final ProgressDialog progressDialog = new ProgressDialog(activity);
+        progressDialog.setTitle(R.string.label_logging_out);
+        progressDialog.setMessage(activity.getString(R.string.please_wait));
+        progressDialog.setCancelable(false);
+        UIUtils.setIndeterminateDrawable(activity, progressDialog, 4);
+        progressDialog.show();
+        serviceProvider.invalidateAuthToken(activity);
+        SharedPreferences preferences = activity.getSharedPreferences(Constants.GCM_PREFERENCE_NAME,
+                Context.MODE_PRIVATE);
+        preferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
+        CommonUtils.registerDevice(activity, testpressService, serviceProvider);
+        DaoSession daoSession =
+                ((TestpressApplication) activity.getApplicationContext()).getDaoSession();
         PostDao postDao = daoSession.getPostDao();
         postDao.deleteAll();
         daoSession.clear();
@@ -63,8 +93,9 @@ public class TestpressServiceProvider {
                     intent = new Intent(activity, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 }
-                activity.startActivity(intent);
+                progressDialog.dismiss();
                 activity.finish();
+                activity.startActivity(intent);
             }
         });
     }

@@ -6,8 +6,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -30,13 +33,19 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
+import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.events.SmsReceivingEvent;
+import in.testpress.testpress.models.DaoSession;
+import in.testpress.testpress.models.Device;
+import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.RegistrationErrorDetails;
 import in.testpress.testpress.ui.MainActivity;
+import in.testpress.testpress.ui.OrderConfirmActivity;
 import in.testpress.testpress.ui.TextWatcherAdapter;
+import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.SafeAsyncTask;
 import retrofit.RetrofitError;
@@ -64,6 +73,7 @@ public class CodeVerificationActivity extends AppCompatActivity {
     private SmsReceivingEvent smsReceivingEvent;
     private Timer timer;
     private InternetConnectivityChecker internetConnectivityChecker = new InternetConnectivityChecker(this);
+    private PackageManager packageManager;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -85,10 +95,15 @@ public class CodeVerificationActivity extends AppCompatActivity {
             welcomeText.setText("Waiting to automatically detect an sms sent to " + phoneNumber + "\nIf you get the verification code press Manually Verify");
             timer = new Timer();
             smsReceivingEvent = new SmsReceivingEvent(timer);
-            IntentFilter filter = new IntentFilter();
-            filter.addAction("android.provider.Telephony.SMS_RECEIVED");
-            registerReceiver(smsReceivingEvent, filter); //start receiver
-            timer.start(); //start timer
+            packageManager = getBaseContext().getPackageManager();
+            if (packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
+                IntentFilter filter = new IntentFilter();
+                filter.addAction("android.provider.Telephony.SMS_RECEIVED");
+                registerReceiver(smsReceivingEvent, filter); //start receiver
+                timer.start(); // Start timer
+            } else {
+                timer.onFinish();
+            }
         }
         verificationCodeText.addTextChangedListener(watcher);
         verificationCodeText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -147,7 +162,9 @@ public class CodeVerificationActivity extends AppCompatActivity {
         public void onFinish() {
             countText.setText("30s");
             progressBar.setProgress(30);
-            unregisterReceiver(smsReceivingEvent); //end receiver
+            if (packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
+                unregisterReceiver(smsReceivingEvent); //end receiver
+            }
             if (smsReceivingEvent.code  != null) { //checking smsReceivingEvent get the code or not
                 verificationCodeText.setText(smsReceivingEvent.code);
                 handleCodeVerification(); //verify code
@@ -198,6 +215,7 @@ public class CodeVerificationActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(final Boolean authSuccess) {  //Successfully Verified
+                setResult(RESULT_OK);
                 if(password == null){
                     gotoLoginScreen();
                 } else {
@@ -226,11 +244,46 @@ public class CodeVerificationActivity extends AppCompatActivity {
                 final Account account = new Account(username, Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
                 accountManager.addAccountExplicitly(account, password, null);
                 accountManager.setAuthToken(account, Constants.Auth.TESTPRESS_ACCOUNT_TYPE, authToken);
-                //call main activity, it will simply go to available exams
-                Intent intent = new Intent(CodeVerificationActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                updateDevice();
+                DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
+                PostDao postDao = daoSession.getPostDao();
+                postDao.deleteAll();
+                daoSession.clear();
+                Intent intent;
+                switch (getIntent().getExtras().getString(Constants.DEEP_LINK_TO, "")) {
+                    case Constants.DEEP_LINK_TO_PAYMENTS:
+                        intent = new Intent(CodeVerificationActivity.this, OrderConfirmActivity.class);
+                        intent.putExtra(Constants.IS_DEEP_LINK, true);
+                        intent.putExtras(getIntent().getExtras());
+                        break;
+                    default:
+                        intent = new Intent(CodeVerificationActivity.this, MainActivity.class);
+                        break;
+                }
                 startActivity(intent);
                 finish();
+            }
+        }.execute();
+    }
+
+    private void updateDevice() {
+        final SharedPreferences sharedPreferences = getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
+        sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
+        new SafeAsyncTask<Device>() {
+            @Override
+            public Device call() throws Exception {
+                String token = GCMPreference.getRegistrationId(getApplicationContext());
+                return testpressService.register(token, Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+            }
+
+            @Override
+            protected void onException(Exception e) throws RuntimeException {
+                sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
+            }
+
+            @Override
+            protected void onSuccess(final Device device) throws Exception {
+                sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, true).apply();
             }
         }.execute();
     }

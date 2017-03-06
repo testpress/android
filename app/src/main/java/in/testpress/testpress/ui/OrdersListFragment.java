@@ -21,13 +21,14 @@ import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.OrdersPager;
 import in.testpress.testpress.core.ResourcePager;
+import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.Order;
 
 public class OrdersListFragment extends PagedItemFragment<Order> {
 
+    @Inject protected TestpressService testpressService;
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected LogoutService logoutService;
-    OrdersPager pager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -85,7 +86,7 @@ public class OrdersListFragment extends PagedItemFragment<Order> {
     @Override
     protected int getErrorMessage(Exception exception) {
         if((exception.getMessage() != null) && (exception.getMessage()).equals("403 FORBIDDEN")) {
-            serviceProvider.handleForbidden(getActivity(), serviceProvider, logoutService);
+            serviceProvider.logout(getActivity(), testpressService, serviceProvider, logoutService);
             return R.string.authentication_failed;
         } else {
             setEmptyText(R.string.network_error, R.string.no_internet, R.drawable.ic_error_outline_black_18dp);

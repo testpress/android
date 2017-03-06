@@ -1,10 +1,11 @@
 package in.testpress.testpress.core;
 
-import android.content.Intent;
+import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.google.android.gms.iid.InstanceIDListenerService;
 
-import in.testpress.testpress.authenticator.RegistrationIntentService;
+import in.testpress.testpress.util.GCMPreference;
 
 public class TestpressInstanceIDListenerService extends InstanceIDListenerService {
 
@@ -18,9 +19,9 @@ public class TestpressInstanceIDListenerService extends InstanceIDListenerServic
     // [START refresh_token]
     @Override
     public void onTokenRefresh() {
-        // Fetch updated Instance ID token and notify our app's server of any changes (if applicable).
-        Intent intent = new Intent(this, RegistrationIntentService.class);
-        startService(intent);
+        //Need to fetch updated Instance ID token and notify our server
+        SharedPreferences gcmPreferences = getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
+        gcmPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
     }
     // [END refresh_token]
 }

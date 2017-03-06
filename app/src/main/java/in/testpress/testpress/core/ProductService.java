@@ -10,27 +10,30 @@ import in.testpress.testpress.models.TestpressApiResponse;
 import retrofit.http.Body;
 import retrofit.http.EncodedPath;
 import retrofit.http.GET;
-import retrofit.http.Header;
 import retrofit.http.POST;
 import retrofit.http.PUT;
+import retrofit.http.Path;
 import retrofit.http.QueryMap;
 
 public interface ProductService {
 
     @GET("/{products_url}")
-    TestpressApiResponse<Product> getProducts(@EncodedPath("products_url") String productsUrl, @QueryMap Map<String, String> options, @Header("Authorization") String authorization);
+    TestpressApiResponse<Product> getProducts(@EncodedPath("products_url") String productsUrl,
+                                              @QueryMap Map<String, String> options);
 
-    @GET("/{product_url}")
-    ProductDetails getProductDetails(@EncodedPath("product_url") String productUrlFrag, @Header("Authorization") String authorization);
+    @GET("/" + Constants.Http.URL_PRODUCTS_FRAG + "{product_slug}")
+    ProductDetails getProductDetails(
+            @Path(value = "product_slug", encode = false) String productUrlFrag);
 
     @POST(Constants.Http.URL_ORDERS_FRAG)
-    Order order(@Body HashMap<String, Object> arguments, @Header("Authorization") String authorization);
+    Order order(@Body HashMap<String, Object> arguments);
 
     @PUT("/{confirmUrlFrag}")
-    Order orderConfirm(@EncodedPath("confirmUrlFrag") String confirmUrlFrag, @Body HashMap<String, Object> arguments, @Header("Authorization") String authorization);
+    Order orderConfirm(@EncodedPath("confirmUrlFrag") String confirmUrlFrag,
+                       @Body HashMap<String, Object> argumentsn);
 
     @GET("/{orders_url}")
-    TestpressApiResponse<Order> getOrders(@EncodedPath("orders_url") String ordersUrl, @Header("Authorization") String authorization);
+    TestpressApiResponse<Order> getOrders(@EncodedPath("orders_url") String ordersUrl);
 
 }
 

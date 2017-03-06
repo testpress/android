@@ -12,6 +12,7 @@ public class Order implements Parcelable {
 
     private String url;
     private Integer id;
+    private String orderId;
     private String date;
     private String user;
     private String status;
@@ -26,6 +27,7 @@ public class Order implements Parcelable {
     private String apikey;
     private String zip;
     private String landMark;
+    private String productInfo;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     // Parcelling part
@@ -33,6 +35,7 @@ public class Order implements Parcelable {
         url     = parcel.readString();
         date    = parcel.readString();
         id      = parcel.readInt();
+        orderId = parcel.readString();
         user    = parcel.readString();
         status  = parcel.readString();
         email   = parcel.readString();
@@ -58,6 +61,7 @@ public class Order implements Parcelable {
         parcel.writeString(url);
         parcel.writeString(date);
         parcel.writeInt(id);
+        parcel.writeString(orderId);
         parcel.writeString(user);
         parcel.writeString(status);
         parcel.writeString(email);
@@ -117,6 +121,14 @@ public class Order implements Parcelable {
      */
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 
     /**
@@ -369,6 +381,14 @@ public class Order implements Parcelable {
      */
     public void setLandMark(String landMark) {
         this.landMark = landMark;
+    }
+
+    public String getProductInfo() {
+        return productInfo;
+    }
+
+    public void setProductInfo(String productInfo) {
+        this.productInfo = productInfo;
     }
 
     public Map<String, Object> getAdditionalProperties() {

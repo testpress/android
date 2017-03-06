@@ -157,8 +157,8 @@ public class TestpressService {
         return getProductsService().getProducts(urlFrag, queryParams);
     }
 
-    public ProductDetails getProductDetail(String productUrlFrag) {
-        return getProductsService().getProductDetails(productUrlFrag);
+    public ProductDetails getProductDetail(String productSlug) {
+        return getProductsService().getProductDetails(productSlug);
     }
 
     public TestpressApiResponse<Notes> getDocumentsList(String urlFrag, Map<String, String> queryParams) {
@@ -169,9 +169,8 @@ public class TestpressService {
         return getDocumentsService().getDownloadUrl(slug);
     }
 
-    public Order order(String user, List<OrderItem> orderItems) {
+    public Order order(List<OrderItem> orderItems) {
         HashMap<String, Object> orderParameters = new HashMap<String, Object>();
-        orderParameters.put("user", user);
         orderParameters.put("order_items", orderItems);
         return getProductsService().order(orderParameters);
     }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="30dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        style="@style/AnswersCountHeader"
+        android:text="@string/subject_name"
+        android:layout_weight="@integer/subject_weight"
+        android:gravity="start"
+        android:id="@+id/subject_name" />
+
+    <TextView
+        style="@style/AnswersCountHeader"
+        android:text="@string/correct"
+        android:layout_weight="@integer/correct_weight"
+        android:id="@+id/correct" />
+
+    <TextView
+        style="@style/AnswersCountHeader"
+        android:text="@string/incorrect"
+        android:layout_weight="@integer/incorrect_weight"
+        android:id="@+id/incorrect" />
+
+    <TextView
+        style="@style/AnswersCountHeader"
+        android:text="@string/unanswered"
+        android:layout_weight="@integer/unanswered_weight"
+        android:id="@+id/unanswered" />
+
+</LinearLayout>

@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="in.testpress.testpress"
-    android:versionCode="106"
-    android:versionName="1.1">
-
-    <uses-sdk
-        android:minSdkVersion="14"
-        android:targetSdkVersion="22" />
+    package="in.testpress.testpress" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -18,7 +12,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
 
@@ -30,6 +23,9 @@
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:theme="@style/Theme.Testpress.Dark">
+
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+
         <activity
             android:name=".ui.SplashScreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -105,7 +101,7 @@
 
         <activity
             android:name=".authenticator.LoginActivity"
-            android:configChanges="orientation|keyboard|screenSize"
+            android:windowSoftInputMode="stateHidden"
             android:excludeFromRecents="true">
 
             <!--
@@ -113,21 +109,12 @@
                 someone who explicitly knows the class name
             -->
         </activity>
-        <activity
-            android:name=".ui.ExamActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
-        <activity
-            android:name=".ui.ReviewActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="Review" />
+
         <activity
             android:name=".ui.PostActivity"
             android:label="Article"
             android:configChanges="orientation|keyboardHidden|screenSize" />
-        <activity
-            android:name=".ui.AttemptsListActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="Attempts List" />
+
         <activity
             android:name=".authenticator.RegisterActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -136,10 +123,7 @@
             android:name=".authenticator.CodeVerificationActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Verify" />
-        <activity
-            android:name=".ui.ExamsListActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="Exams" />
+
         <activity
             android:name=".ui.ProductsListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -151,8 +135,15 @@
 
         <activity
             android:name=".ui.DocumentsListActivity"
+            android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Documents" />
+
+        <activity
+            android:name=".ui.AnalyticsActivity"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/subject_wise_analytics" />
 
         <activity
             android:name=".ui.PostsListActivity"
@@ -192,6 +183,7 @@
             android:label="Profile Details" />
         <activity
             android:name=".ui.ProfilePhotoActivity"
+            android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboard|screenSize"
             android:label="Profile Photo" />
         <activity
@@ -204,8 +196,18 @@
             android:label="@string/title_activity_reset_password_verification" />
 
         <activity
-            android:name=".ui.SearchActivity"
-            android:configChanges="orientation|keyboard|screenSize" />
+            android:name=".ui.ZoomableImageActivity" />
+
+        <activity
+            android:name="com.facebook.CustomTabActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="@string/fb_login_protocol_scheme" />
+            </intent-filter>
+        </activity>
 
     </application>
 

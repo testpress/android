@@ -12,6 +12,7 @@ import retrofit.http.EncodedPath;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.PUT;
+import retrofit.http.Path;
 import retrofit.http.QueryMap;
 
 public interface ProductService {
@@ -20,8 +21,9 @@ public interface ProductService {
     TestpressApiResponse<Product> getProducts(@EncodedPath("products_url") String productsUrl,
                                               @QueryMap Map<String, String> options);
 
-    @GET("/{product_url}")
-    ProductDetails getProductDetails(@EncodedPath("product_url") String productUrlFrag);
+    @GET("/" + Constants.Http.URL_PRODUCTS_FRAG + "{product_slug}")
+    ProductDetails getProductDetails(
+            @Path(value = "product_slug", encode = false) String productUrlFrag);
 
     @POST(Constants.Http.URL_ORDERS_FRAG)
     Order order(@Body HashMap<String, Object> arguments);

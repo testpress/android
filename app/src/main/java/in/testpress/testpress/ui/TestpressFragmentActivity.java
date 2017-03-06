@@ -1,6 +1,7 @@
 package in.testpress.testpress.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,6 +20,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import in.testpress.testpress.R;
+import in.testpress.testpress.core.Constants;
 
 
 /**
@@ -61,7 +63,14 @@ public class TestpressFragmentActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         if(item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            if (getIntent().getBooleanExtra(Constants.IS_DEEP_LINK, false)) {
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            } else {
+                onBackPressed();
+            }
             return true;
         }
         return false;

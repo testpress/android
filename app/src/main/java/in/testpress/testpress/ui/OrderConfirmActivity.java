@@ -47,6 +47,7 @@ import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.SafeAsyncTask;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
+import static in.testpress.testpress.core.Constants.Http.URL_PAYMENT_RESPONSE_HANDLER;
 import static in.testpress.testpress.ui.ProductDetailsActivity.PRODUCT_SLUG;
 
 public class OrderConfirmActivity extends TestpressFragmentActivity {
@@ -224,8 +225,8 @@ public class OrderConfirmActivity extends TestpressFragmentActivity {
                 paymentParams.setUdf3("");
                 paymentParams.setUdf4("");
                 paymentParams.setUdf5("");
-                paymentParams.setSurl("https://testpress.in/payments/response/payu/");
-                paymentParams.setFurl("https://testpress.in/payments/response/payu/");
+                paymentParams.setSurl(URL_PAYMENT_RESPONSE_HANDLER);
+                paymentParams.setFurl(URL_PAYMENT_RESPONSE_HANDLER);
                 payuConfig = new PayuConfig();
                 payuConfig.setEnvironment(PayuConstants.PRODUCTION_ENV);
                 PayuHashes payuHashes = new PayuHashes();

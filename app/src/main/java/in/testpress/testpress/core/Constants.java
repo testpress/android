@@ -100,6 +100,11 @@ public final class Constants {
         public static final String URL_CATEGORIES_FRAG = URL_POSTS_FRAG + "categories/";
 
         /**
+         * Handle Success & Failure of payments
+         */
+        public static final String URL_PAYMENT_RESPONSE_HANDLER = URL_BASE + "/payments/response/payu/";
+
+        /**
          * Query Params
          */
         public static final String PARENT = "parent";

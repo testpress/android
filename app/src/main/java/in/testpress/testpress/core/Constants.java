@@ -100,6 +100,11 @@ public final class Constants {
         public static final String URL_CATEGORIES_FRAG = URL_POSTS_FRAG + "categories/";
 
         /**
+         * Handle Success & Failure of payments
+         */
+        public static final String URL_PAYMENT_RESPONSE_HANDLER = URL_BASE + "/payments/response/payu/";
+
+        /**
          * Query Params
          */
         public static final String PARENT = "parent";
@@ -109,6 +114,8 @@ public final class Constants {
     public static final String GCM_PROPERTY_REG_ID = "GCMRegId";
 
     public static final String IS_DEEP_LINK = "is_deep_link";
+    public static final String DEEP_LINK_TO = "deep_link_to";
+    public static final String DEEP_LINK_TO_PAYMENTS = "deep_link_to_payments";
 
     public static final HashMap<String, Integer> genderChoices;
     static

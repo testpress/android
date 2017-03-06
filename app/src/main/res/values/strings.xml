@@ -72,6 +72,7 @@
     <string name="books_message">Books will be Delivered to you shortly</string>
     <string name="continue_purchase">Continue Purchase</string>
     <string name="take_exam">Take Exam</string>
+    <string name="goto_home">Goto Home</string>
 
     <string name="all_posts">All Posts</string>
     <string name="categories">Categories</string>

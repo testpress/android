@@ -19,6 +19,8 @@ import in.testpress.exam.TestpressExam;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
+import in.testpress.testpress.authenticator.LoginActivity;
+import in.testpress.testpress.authenticator.ResetPasswordActivity;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.util.CommonUtils;
@@ -53,17 +55,61 @@ public class SplashScreenActivity extends Activity {
                         case "p":
                             Intent intent = new Intent(SplashScreenActivity.this, PostActivity.class);
                             intent.putExtra("shortWebUrl", uri.toString());
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                                     Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             intent.putExtra(Constants.IS_DEEP_LINK, true);
                             startActivity(intent);
                             finish();
                             break;
+                        case "posts":
+                            Intent postsIntent =
+                                    new Intent(SplashScreenActivity.this, PostsListActivity.class);
+                            postsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                                    Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+                            postsIntent.putExtra(Constants.IS_DEEP_LINK, true);
+                            startActivity(postsIntent);
+                            finish();
+                            break;
                         case "exams":
                             deepLinkExams(uri);
                             break;
-                        default:
+                        case "user":
+                        case "profile":
+                            gotoActivity(ProfileDetailsActivity.class, true);
+                            break;
+                        case "password":
+                            gotoActivity(ResetPasswordActivity.class, false);
+                            break;
+                        case "analytics":
+                            gotoActivity(AnalyticsActivity.class, true);
+                            break;
+                        case "documents":
+                            gotoActivity(DocumentsListActivity.class, true);
+                            break;
+                        case "login":
+                            gotoActivity(MainActivity.class, true);
+                            break;
+                        case "courses":
+                        case "chapters":
+                        case "orders":
+                        case "learn":
+                        case "leaderboard":
+                        case "dashboard":
+                        case "contact":
+                        case "privacy":
+                        case "refund":
+                        case "update":
+                        case "about":
                             gotoHome();
+                            break;
+                        case "store":
+                        case "market":
+                        case "products":
+                            deepLinkToProduct(uri);
+                            break;
+                        default:
+                            gotoProductDetails(pathSegments.get(0));
                             break;
                     }
                 } else {
@@ -89,15 +135,56 @@ public class SplashScreenActivity extends Activity {
                     @Override
                     public void onSuccess(TestpressService testpressService) {
                         if (pathSegments.size() == 2) {
-                            TestpressExam.startExam(SplashScreenActivity.this, pathSegments.get(1),
-                                    TestpressSdk.getTestpressSession(SplashScreenActivity.this));
-                        } else {
-                            TestpressExam.show(SplashScreenActivity.this,
-                                    TestpressSdk.getTestpressSession(SplashScreenActivity.this));
-                            finish();
+                            if (!pathSegments.get(1).equals("available") ||
+                                    !pathSegments.get(1).equals("upcoming") ||
+                                    !pathSegments.get(1).equals("history")) {
+                                TestpressExam.startExam(SplashScreenActivity.this, pathSegments.get(1),
+                                        TestpressSdk.getTestpressSession(SplashScreenActivity.this));
+                                return;
+                            }
                         }
+                        TestpressExam.show(SplashScreenActivity.this,
+                                TestpressSdk.getTestpressSession(SplashScreenActivity.this));
+                        finish();
                     }
                 });
+    }
+
+    private void deepLinkToProduct(Uri uri) {
+        final List<String> pathSegments = uri.getPathSegments();
+        if (pathSegments.size() == 2) {
+            gotoProductDetails(uri.getLastPathSegment());
+        } else {
+            Intent intent = new Intent(this, ProductsListActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.putExtra(Constants.IS_DEEP_LINK, true);
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    private void gotoProductDetails(String productSlug) {
+        Intent productIntent =
+                new Intent(SplashScreenActivity.this, ProductDetailsActivity.class);
+        productIntent.putExtra(ProductDetailsActivity.PRODUCT_SLUG, productSlug);
+        productIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        productIntent.putExtra(Constants.IS_DEEP_LINK, true);
+        startActivity(productIntent);
+        finish();
+    }
+
+    private void gotoActivity(Class activityClass, boolean requireAuthentication) {
+        if (requireAuthentication && !CommonUtils.isUserAuthenticated(SplashScreenActivity.this)) {
+            activityClass = LoginActivity.class;
+        }
+        Intent passwordIntent =
+                new Intent(SplashScreenActivity.this, activityClass);
+        passwordIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        passwordIntent.putExtra(Constants.IS_DEEP_LINK, true);
+        startActivity(passwordIntent);
+        finish();
     }
 
     @Override

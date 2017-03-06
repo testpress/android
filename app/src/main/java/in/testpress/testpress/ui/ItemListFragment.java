@@ -81,13 +81,11 @@ public abstract class ItemListFragment<E> extends Fragment
      * Is the list currently shown?
      */
     protected boolean listShown;
-    protected InternetConnectivityChecker internetConnectivityChecker;
 
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setListShown(false);
-        internetConnectivityChecker = new InternetConnectivityChecker(getActivity());
         getLoaderManager().initLoader(0, null, this);
     }
 

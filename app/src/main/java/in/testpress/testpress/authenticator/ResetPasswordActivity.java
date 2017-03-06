@@ -22,10 +22,11 @@ import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.ResetPassword;
+import in.testpress.testpress.ui.TestpressFragmentActivity;
 import in.testpress.testpress.ui.TextWatcherAdapter;
 import in.testpress.testpress.util.SafeAsyncTask;
 
-public class ResetPasswordActivity extends AppCompatActivity {
+public class ResetPasswordActivity extends TestpressFragmentActivity {
 
     @Inject TestpressService testpressService;
     @InjectView(R.id.et_useremail) EditText email;

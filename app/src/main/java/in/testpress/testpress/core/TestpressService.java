@@ -157,8 +157,8 @@ public class TestpressService {
         return getProductsService().getProducts(urlFrag, queryParams);
     }
 
-    public ProductDetails getProductDetail(String productUrlFrag) {
-        return getProductsService().getProductDetails(productUrlFrag);
+    public ProductDetails getProductDetail(String productSlug) {
+        return getProductsService().getProductDetails(productSlug);
     }
 
     public TestpressApiResponse<Notes> getDocumentsList(String urlFrag, Map<String, String> queryParams) {

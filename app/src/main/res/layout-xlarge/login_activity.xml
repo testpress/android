@@ -1,41 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
+    xmlns:facebook="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/login_layout"
+    android:fillViewport="true">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:paddingTop="50dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:orientation="vertical">
+
+        <ImageView
+            android:src="@drawable/logo"
+            android:layout_width="wrap_content"
+            android:layout_height="150dp"
+            android:layout_marginBottom="50dp"
+            android:layout_gravity="center_horizontal" />
+
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/form"
-            android:paddingTop="60dp"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp">
-
-            <ImageView android:src="@drawable/logo"
-                       android:layout_width="wrap_content"
-                       android:layout_height="wrap_content"
-                       android:layout_gravity="center_horizontal" />
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center">
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <!-- Username Label -->
             <android.support.design.widget.TextInputLayout
                 style="@style/TextLabelTab"
-                android:theme="@style/TextLabel"
-                android:layout_marginTop="-80dp"
-                android:layout_marginBottom="8dp">
+                android:theme="@style/TextLabel" >
                 <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/et_username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
-                    android:singleLine="true"
+                    android:imeOptions="actionNext"
                     android:hint="Username" />
             </android.support.design.widget.TextInputLayout>
 
@@ -43,8 +45,8 @@
             <android.support.design.widget.TextInputLayout
                 style="@style/TextLabelTab"
                 android:theme="@style/TextLabel"
-                android:layout_marginTop="40dp"
-                android:layout_marginBottom="40dp">
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp">
                 <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/et_password"
                     android:layout_width="match_parent"
@@ -52,65 +54,111 @@
                     android:fontFamily="sans-serif"
                     android:inputType="textPassword"
                     android:maxLines="1"
-                    android:singleLine="true"
+                    android:imeOptions="actionSend"
                     android:hint="Password"/>
             </android.support.design.widget.TextInputLayout>
 
             <info.hoang8f.widget.FButton
                 android:id="@+id/b_signin"
                 style="@style/TextLabelTab"
+                android:layout_marginTop="5dp"
                 fbutton:buttonColor="@color/primary"
                 fbutton:shadowEnabled="true"
                 fbutton:shadowHeight="3dp"
                 fbutton:cornerRadius="2dp"
-                android:layout_marginTop="20dp"
                 android:text="Login"
-                android:textColor="@color/white"
-            />
-        </LinearLayout>
-        </LinearLayout>
+                android:textColor="@color/white" />
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="#c5c5c5"
-            android:layout_alignTop="@+id/register_actions"
-            android:layout_marginBottom="15dp"
-            android:layout_gravity="center_horizontal"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/register_actions"
-            android:orientation="horizontal"
-            android:padding="12dp"
-            android:weightSum="2"
-            android:layout_alignParentBottom="true">
-            <TextView android:id="@+id/link_signup"
-                      android:layout_width="0dp"
-                      android:layout_height="wrap_content"
-                      android:layout_weight="1"
-                      android:padding="20dp"
-                      android:textStyle="bold"
-                      android:text="Register"
-                      android:textColor="#444444"
-                      android:layout_gravity="center"
-                      android:gravity="center"
-                      android:textSize="14dip"/>
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="#c5c5c5"/>
-            <TextView android:id="@+id/reset_password"
-                      android:layout_width="0dp"
-                      android:layout_height="wrap_content"
-                      android:padding="20dp"
-                      android:text="Forgot Password"
-                      android:textColor="#444444"
-                      android:textStyle="bold"
-                      android:layout_gravity="center"
-                      android:layout_weight="1"
-                      android:gravity="center"
-                      android:textSize="14dip"/>
-        </LinearLayout>
+            <RelativeLayout
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp" >
 
-    </RelativeLayout>
+                <TextView
+                    android:id="@+id/forgot_password"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#1793e6"
+                    android:text="@string/forgot_password" />
+
+                <TextView
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:id="@+id/signup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="#1793e6"
+                    android:text="@string/sign_up" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/social_sign_in_buttons"
+                android:orientation="vertical"
+                android:gravity="center" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginBottom="40dp"
+                    android:orientation="horizontal"
+                    android:gravity="center" >
+
+                    <View
+                        android:layout_width="100dp"
+                        android:layout_height="1dp"
+                        android:background="#ccc" />
+
+                    <TextView
+                        android:id="@+id/or"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:gravity="center"
+                        android:textAllCaps="true"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:text="@string/or" />
+
+                    <View
+                        android:layout_width="100dp"
+                        android:layout_height="1dp"
+                        android:background="#ccc" />
+
+                </LinearLayout>
+
+                <com.facebook.login.widget.LoginButton
+                    android:id="@+id/fb_login_button"
+                    android:layout_width="400dp"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:paddingLeft="10dp"
+                    facebook:com_facebook_login_text="@string/login_with_facebook" />
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/google_sign_in_button"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/login_with_google"
+                    android:textAllCaps="false"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/white"
+                    android:paddingRight="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/google_plus_signin_btn_text_dark"
+                    android:layout_width="406dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

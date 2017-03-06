@@ -128,9 +128,10 @@
             android:layout_height="wrap_content"
             fbutton:buttonColor="@color/primary"
             fbutton:shadowEnabled="true"
-            fbutton:shadowHeight="5dp"
+            fbutton:shadowHeight="3dp"
             fbutton:cornerRadius="2dp"
             android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
             android:text="Register"
             android:textColor="@color/white"
             />

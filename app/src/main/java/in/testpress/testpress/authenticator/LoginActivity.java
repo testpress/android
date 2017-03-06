@@ -8,19 +8,36 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.Profile;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.github.kevinsawicki.wishlist.Toaster;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -29,33 +46,34 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import in.testpress.core.TestpressCallback;
+import in.testpress.core.TestpressException;
+import in.testpress.core.TestpressSdk;
+import in.testpress.core.TestpressSession;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.R.id;
 import in.testpress.testpress.R.layout;
 import in.testpress.testpress.TestpressApplication;
+import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.events.UnAuthorizedErrorEvent;
 import in.testpress.testpress.models.DaoSession;
-import in.testpress.testpress.models.Device;
 import in.testpress.testpress.models.PostDao;
-import in.testpress.testpress.ui.ExamsListActivity;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.OrderConfirmActivity;
-import in.testpress.testpress.ui.ProductsListActivity;
 import in.testpress.testpress.ui.TextWatcherAdapter;
+import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.Ln;
-import in.testpress.testpress.util.SafeAsyncTask;
-import retrofit.RetrofitError;
 
 import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
 import static android.accounts.AccountManager.KEY_ACCOUNT_TYPE;
 import static android.accounts.AccountManager.KEY_AUTHTOKEN;
 import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
-import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
+import static android.view.inputmethod.EditorInfo.IME_ACTION_SEND;
 
 public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     /**
@@ -84,16 +102,17 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
     @Inject Bus bus;
 
+    @InjectView(id.login_layout) ScrollView loginLayout;
     @InjectView(id.et_username) EditText usernameText;
     @InjectView(id.et_password) protected EditText passwordText;
     @InjectView(id.b_signin) protected Button signInButton;
+    @InjectView(id.or) protected TextView orLabel;
+    @InjectView(id.fb_login_button) protected LoginButton fbLoginButton;
 
     private final TextWatcher watcher = validationTextWatcher();
 
-    private SafeAsyncTask<Boolean> authenticationTask;
     private String authToken;
     private String authTokenType;
-    private MaterialDialog progressDialog;
     private InternetConnectivityChecker internetConnectivityChecker = new InternetConnectivityChecker(this);
     /**
      * If set we are just checking that the user knows their credentials; this
@@ -105,12 +124,15 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
     private String password;
 
-    private String token;
-
     /**
      * Was the original caller asking for an entirely new account?
      */
     protected boolean requestNewAccount = false;
+
+    public static final int REQUEST_CODE_REGISTER_USER = 1111;
+    public static final int REQUEST_CODE_GOOGLE_SIGN_IN = 2222;
+    private CallbackManager callbackManager;
+    private GoogleApiClient googleApiClient;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -127,6 +149,11 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
         requestNewAccount = username == null;
 
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        if (AccessToken.getCurrentAccessToken() != null) {
+            LoginManager.getInstance().logOut();
+        }
+
         setContentView(layout.login_activity);
 
         ButterKnife.inject(this);
@@ -135,7 +162,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
             public boolean onEditorAction(final TextView v, final int actionId,
                                           final KeyEvent event) {
-                if (actionId == IME_ACTION_DONE && signInButton.isEnabled()) {
+                if (actionId == IME_ACTION_SEND && signInButton.isEnabled()) {
                     signIn();
                     return true;
                 }
@@ -144,9 +171,83 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         });
 
         usernameText.addTextChangedListener(watcher);
+        usernameText.setSingleLine();
         passwordText.addTextChangedListener(watcher);
         passwordText.setTypeface(Typeface.DEFAULT);
         passwordText.setTransformationMethod(new PasswordTransformationMethod());
+        callbackManager = CallbackManager.Factory.create();
+        fbLoginButton.invalidate();
+        fbLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                loginLayout.setVisibility(View.GONE);
+                username = loginResult.getAccessToken().getUserId();
+                authenticate(loginResult.getAccessToken().getUserId(),
+                        loginResult.getAccessToken().getToken(), TestpressSdk.Provider.FACEBOOK);
+            }
+
+            @Override
+            public void onCancel() {
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                if (error.getMessage().contains("CONNECTION_FAILURE")) {
+                    showAlert(getString(R.string.no_internet_try_again));
+                } else {
+                    Log.e("Facebook sign in error", "check hashes");
+                    showAlert(getString(R.string.something_went_wrong_please_try_after));
+                }
+            }
+        });
+        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(
+                GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestIdToken(getString(R.string.server_client_id))
+                .build();
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                        if (connectionResult.getErrorMessage() != null) {
+                            showAlert(connectionResult.getErrorMessage());
+                        } else {
+                            showAlert(connectionResult.toString());
+                        }
+                    }
+                })
+                .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
+                .build();
+        orLabel.setTypeface(TestpressSdk.getRubikMediumFont(this));
+    }
+
+    private void authenticate(final String userId, String accessToken,
+                              final TestpressSdk.Provider provider) {
+        TestpressSdk.initialize(this, Constants.Http.URL_BASE, userId, accessToken, provider,
+                new TestpressCallback<TestpressSession>() {
+                    @Override
+                    public void onSuccess(TestpressSession response) {
+                        if (provider == TestpressSdk.Provider.FACEBOOK &&
+                                Profile.getCurrentProfile() != null) {
+                            username = Profile.getCurrentProfile().getName();
+                        }
+                        authToken = response.getToken();
+                        testpressService.setAuthToken(authToken);
+                        onAuthenticationResult(true);
+                    }
+
+                    @Override
+                    public void onException(TestpressException e) {
+                        loginLayout.setVisibility(View.VISIBLE);
+                        if (e.isNetworkError()) {
+                            showAlert(getString(R.string.no_internet_try_again));
+                        } else if (e.isClientError()) {
+                            showAlert(getString(R.string.invalid_username_or_password));
+                        } else {
+                            showAlert(getString(R.string.testpress_some_thing_went_wrong_try_again));
+                        }
+                    }
+                });
     }
 
     private TextWatcher validationTextWatcher() {
@@ -194,54 +295,14 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
      * @param view
      */
     public void handleLogin(final View view) {
-        if (authenticationTask != null) {
-            return;
-        }
 
         if (requestNewAccount) {
             username = usernameText.getText().toString();
         }
 
         password = passwordText.getText().toString();
-        progressDialog = new MaterialDialog.Builder(this)
-                .title(R.string.message_signing_in)
-                .content(R.string.please_wait)
-                .widgetColorRes(R.color.primary)
-                .progress(true, 0)
-                .show();
 
-        authenticationTask = new SafeAsyncTask<Boolean>() {
-            public Boolean call() throws Exception {
-
-                token = testpressService.authenticate(username, password);
-
-                return true;
-            }
-
-            @Override
-            protected void onException(final Exception e) throws RuntimeException {
-                showAlert("Invalid username/password");
-                // Retrofit Errors are handled inside of the {
-                if(!(e instanceof RetrofitError)) {
-                    final Throwable cause = e.getCause() != null ? e.getCause() : e;
-                    if(cause != null) {
-                        Toaster.showLong(LoginActivity.this, cause.getMessage());
-                    }
-                }
-            }
-
-            @Override
-            public void onSuccess(final Boolean authSuccess) {
-                onAuthenticationResult(authSuccess);
-            }
-
-            @Override
-            protected void onFinally() throws RuntimeException {
-                progressDialog.dismiss();
-                authenticationTask = null;
-            }
-        };
-        authenticationTask.execute();
+        authenticate(username, password, TestpressSdk.Provider.TESTPRESS);
     }
 
     /**
@@ -270,10 +331,11 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
      */
 
     protected void finishLogin() {
-        updateDevice();
+        SharedPreferences sharedPreferences =
+                getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
+        sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
+        CommonUtils.registerDevice(this, testpressService);
         final Account account = new Account(username, Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
-
-        authToken = token;
 
         if (requestNewAccount) {
             accountManager.addAccountExplicitly(account, password, null);
@@ -285,55 +347,26 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         PostDao postDao = daoSession.getPostDao();
         postDao.deleteAll();
         daoSession.clear();
-        if (getIntent().getStringExtra("deeplinkTo") != null) {
-            Intent intent;
-            switch (getIntent().getStringExtra("deeplinkTo")) {
-                case "payment":
-                    intent = new Intent(this, OrderConfirmActivity.class);
-                    intent.putExtra("isDeepLink", true);
-                    intent.putExtras(getIntent().getExtras());
-                    break;
-                default:
-                    intent = new Intent(this, MainActivity.class);
-                    break;
-            }
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-        } else {
+        if (authTokenType != null && authTokenType.equals(Constants.Auth.AUTHTOKEN_TYPE)) {
             final Intent intent = new Intent();
             intent.putExtra(KEY_ACCOUNT_NAME, username);
             intent.putExtra(KEY_ACCOUNT_TYPE, Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
-
-            if (authTokenType != null
-                    && authTokenType.equals(Constants.Auth.AUTHTOKEN_TYPE)) {
-                intent.putExtra(KEY_AUTHTOKEN, authToken);
-            }
+            intent.putExtra(KEY_AUTHTOKEN, authToken);
             setAccountAuthenticatorResult(intent.getExtras());
             setResult(RESULT_OK, intent);
+        } else {
+            Intent intent = new Intent(this, MainActivity.class);
+            if (getIntent().getStringExtra(Constants.DEEP_LINK_TO) != null &&
+                    getIntent().getStringExtra(Constants.DEEP_LINK_TO)
+                            .equals(Constants.DEEP_LINK_TO_PAYMENTS)) {
+                    intent = new Intent(this, OrderConfirmActivity.class);
+                    intent.putExtra(Constants.IS_DEEP_LINK, true);
+                    intent.putExtras(getIntent().getExtras());
+            }
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
         }
         finish();
-    }
-
-    private void updateDevice() {
-        final SharedPreferences sharedPreferences = getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
-        sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
-        new SafeAsyncTask<Device>() {
-            @Override
-            public Device call() throws Exception {
-                String token = GCMPreference.getRegistrationId(getApplicationContext());
-                return testpressService.register(token, Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
-            }
-
-            @Override
-            protected void onException(Exception e) throws RuntimeException {
-                sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
-            }
-
-            @Override
-            protected void onSuccess(final Device device) throws Exception {
-                sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, true).apply();
-            }
-        }.execute();
     }
 
     /**
@@ -365,7 +398,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
                 .content(alertMessage)
                 .neutralText(R.string.ok)
                 .neutralColorRes(R.color.primary)
-                .buttonsGravity(GravityEnum.CENTER)
+                .buttonsGravity(GravityEnum.END)
                 .show();
     }
 
@@ -377,18 +410,18 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         }
     }
 
-    @OnClick(id.link_signup) public void signUp() {
+    @OnClick(id.signup) public void signUp() {
         if(internetConnectivityChecker.isConnected()) {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             intent.putExtras(getIntent().getExtras());
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CODE_REGISTER_USER);
         } else {
             internetConnectivityChecker.showAlert();
         }
 
     }
 
-    @OnClick(id.reset_password) public void verify() {
+    @OnClick(id.forgot_password) public void verify() {
         if(internetConnectivityChecker.isConnected()) {
             Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
             startActivity(intent);
@@ -396,4 +429,44 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             internetConnectivityChecker.showAlert();
         }
     }
+
+    @OnClick(id.google_sign_in_button) public void googleSignIn() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+        startActivityForResult(signInIntent, REQUEST_CODE_GOOGLE_SIGN_IN);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_REGISTER_USER) {
+            if (resultCode == RESULT_OK) {
+                finish();
+            }
+        } else if (requestCode == REQUEST_CODE_GOOGLE_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            if (result.isSuccess()) {
+                //noinspection ConstantConditions
+                if (result.getSignInAccount().getGivenName() == null ||
+                        result.getSignInAccount().getGivenName().isEmpty()) {
+                    username = result.getSignInAccount().getGivenName();
+                } else {
+                    username = result.getSignInAccount().getEmail();
+                }
+                authenticate(result.getSignInAccount().getId(), result.getSignInAccount().getIdToken(),
+                        TestpressSdk.Provider.GOOGLE);
+            } else if (result.getStatus().getStatusCode() == CommonStatusCodes.NETWORK_ERROR) {
+                showAlert(getString(R.string.no_internet_try_again));
+            } else if (result.getStatus().getStatusCode() == CommonStatusCodes.DEVELOPER_ERROR) {
+                showAlert(getString(R.string.google_sign_in_wrong_hash));
+            } else if (result.getStatus().getStatusCode() == 12501) {
+                Log.e("Google sign in error", "Might be wrong app certificate SHA1");
+                showAlert(getString(R.string.something_went_wrong_please_try_after));
+            } else {
+                Log.e("Google sign in error", result.getStatus().toString());
+            }
+        } else {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
 }

@@ -1,6 +1,7 @@
 package in.testpress.testpress.ui;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.text.format.DateUtils;
@@ -91,6 +92,15 @@ public class PostsListAdapter extends BaseAdapter {
         } else {
             categoryView.setVisibility(View.GONE);
         }
+
+        convertView.findViewById(R.id.ripple_layout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(activity, PostActivity.class);
+                intent.putExtra("shortWebUrl", post.getShort_web_url());
+                activity.startActivity(intent);
+            }
+        });
         return convertView;
     }
 }

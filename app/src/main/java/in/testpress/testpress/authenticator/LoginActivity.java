@@ -129,6 +129,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
      */
     protected boolean requestNewAccount = false;
 
+    public static final int REQUEST_CODE_REGISTER_USER = 1111;
     public static final int REQUEST_CODE_GOOGLE_SIGN_IN = 2222;
     private CallbackManager callbackManager;
     private GoogleApiClient googleApiClient;
@@ -180,7 +181,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 loginLayout.setVisibility(View.GONE);
-                username = Profile.getCurrentProfile().getName();
+                username = loginResult.getAccessToken().getUserId();
                 authenticate(loginResult.getAccessToken().getUserId(),
                         loginResult.getAccessToken().getToken(), TestpressSdk.Provider.FACEBOOK);
             }
@@ -220,11 +221,16 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         orLabel.setTypeface(TestpressSdk.getRubikMediumFont(this));
     }
 
-    private void authenticate(final String userId, String accessToken, TestpressSdk.Provider provider) {
+    private void authenticate(final String userId, String accessToken,
+                              final TestpressSdk.Provider provider) {
         TestpressSdk.initialize(this, Constants.Http.URL_BASE, userId, accessToken, provider,
                 new TestpressCallback<TestpressSession>() {
                     @Override
                     public void onSuccess(TestpressSession response) {
+                        if (provider == TestpressSdk.Provider.FACEBOOK &&
+                                Profile.getCurrentProfile() != null) {
+                            username = Profile.getCurrentProfile().getName();
+                        }
                         authToken = response.getToken();
                         testpressService.setAuthToken(authToken);
                         onAuthenticationResult(true);
@@ -341,31 +347,24 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         PostDao postDao = daoSession.getPostDao();
         postDao.deleteAll();
         daoSession.clear();
-        if (getIntent().getStringExtra("deeplinkTo") != null) {
-            Intent intent;
-            switch (getIntent().getStringExtra("deeplinkTo")) {
-                case "payment":
-                    intent = new Intent(this, OrderConfirmActivity.class);
-                    intent.putExtra("isDeepLink", true);
-                    intent.putExtras(getIntent().getExtras());
-                    break;
-                default:
-                    intent = new Intent(this, MainActivity.class);
-                    break;
-            }
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-        } else {
+        if (authTokenType != null && authTokenType.equals(Constants.Auth.AUTHTOKEN_TYPE)) {
             final Intent intent = new Intent();
             intent.putExtra(KEY_ACCOUNT_NAME, username);
             intent.putExtra(KEY_ACCOUNT_TYPE, Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
-
-            if (authTokenType != null
-                    && authTokenType.equals(Constants.Auth.AUTHTOKEN_TYPE)) {
-                intent.putExtra(KEY_AUTHTOKEN, authToken);
-            }
+            intent.putExtra(KEY_AUTHTOKEN, authToken);
             setAccountAuthenticatorResult(intent.getExtras());
             setResult(RESULT_OK, intent);
+        } else {
+            Intent intent = new Intent(this, MainActivity.class);
+            if (getIntent().getStringExtra(Constants.DEEP_LINK_TO) != null &&
+                    getIntent().getStringExtra(Constants.DEEP_LINK_TO)
+                            .equals(Constants.DEEP_LINK_TO_PAYMENTS)) {
+                    intent = new Intent(this, OrderConfirmActivity.class);
+                    intent.putExtra(Constants.IS_DEEP_LINK, true);
+                    intent.putExtras(getIntent().getExtras());
+            }
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
         }
         finish();
     }
@@ -415,7 +414,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         if(internetConnectivityChecker.isConnected()) {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             intent.putExtras(getIntent().getExtras());
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CODE_REGISTER_USER);
         } else {
             internetConnectivityChecker.showAlert();
         }
@@ -439,7 +438,11 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_GOOGLE_SIGN_IN) {
+        if (requestCode == REQUEST_CODE_REGISTER_USER) {
+            if (resultCode == RESULT_OK) {
+                finish();
+            }
+        } else if (requestCode == REQUEST_CODE_GOOGLE_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result.isSuccess()) {
                 //noinspection ConstantConditions

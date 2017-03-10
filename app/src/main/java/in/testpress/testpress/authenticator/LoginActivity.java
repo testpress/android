@@ -149,7 +149,6 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
         requestNewAccount = username == null;
 
-        FacebookSdk.sdkInitialize(getApplicationContext());
         if (AccessToken.getCurrentAccessToken() != null) {
             LoginManager.getInstance().logOut();
         }

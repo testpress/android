@@ -1,6 +1,7 @@
 package in.testpress.testpress.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -26,6 +27,7 @@ import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.util.CommonUtils;
 
 import static in.testpress.exam.TestpressExam.ACTION_PRESSED_HOME;
+import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 import static in.testpress.exam.ui.CarouselFragment.TEST_TAKEN_REQUEST_CODE;
 
 public class SplashScreenActivity extends Activity {
@@ -72,7 +74,7 @@ public class SplashScreenActivity extends Activity {
                             finish();
                             break;
                         case "exams":
-                            deepLinkExams(uri);
+                            authenticateUser(uri);
                             break;
                         case "user":
                         case "profile":
@@ -82,7 +84,7 @@ public class SplashScreenActivity extends Activity {
                             gotoActivity(ResetPasswordActivity.class, false);
                             break;
                         case "analytics":
-                            gotoActivity(AnalyticsActivity.class, true);
+                            authenticateUser(uri);
                             break;
                         case "documents":
                             gotoActivity(DocumentsListActivity.class, true);
@@ -128,24 +130,37 @@ public class SplashScreenActivity extends Activity {
     }
 
     @SuppressWarnings("ConstantConditions")
-    private void deepLinkExams(Uri uri) {
+    private void authenticateUser(final Uri uri) {
+        final Activity activity = SplashScreenActivity.this;
         final List<String> pathSegments = uri.getPathSegments();
-        CommonUtils.getAuth(SplashScreenActivity.this, serviceProvider,
+        CommonUtils.getAuth(activity, serviceProvider,
                 new CommonUtils.CheckAuthCallBack() {
                     @Override
                     public void onSuccess(TestpressService testpressService) {
-                        if (pathSegments.size() == 2) {
-                            if (!pathSegments.get(1).equals("available") ||
-                                    !pathSegments.get(1).equals("upcoming") ||
-                                    !pathSegments.get(1).equals("history")) {
-                                TestpressExam.startExam(SplashScreenActivity.this, pathSegments.get(1),
-                                        TestpressSdk.getTestpressSession(SplashScreenActivity.this));
-                                return;
-                            }
+                        switch (pathSegments.get(0)) {
+                            case "exams":
+                                if (pathSegments.size() == 2) {
+                                    if (!pathSegments.get(1).equals("available") ||
+                                            !pathSegments.get(1).equals("upcoming") ||
+                                            !pathSegments.get(1).equals("history")) {
+
+                                        // If exam slug is present, directly goto the start exam screen
+                                        TestpressExam.startExam(activity, pathSegments.get(1),
+                                                TestpressSdk.getTestpressSession(activity));
+                                        return;
+                                    }
+                                }
+                                // Show exams list
+                                TestpressExam.show(activity,
+                                        TestpressSdk.getTestpressSession(activity));
+                                finish();
+                                break;
+
+                            case "analytics":
+                                TestpressExam.showAnalytics(activity, SUBJECT_ANALYTICS_PATH,
+                                        TestpressSdk.getTestpressSession(activity));
+                                break;
                         }
-                        TestpressExam.show(SplashScreenActivity.this,
-                                TestpressSdk.getTestpressSession(SplashScreenActivity.this));
-                        finish();
                     }
                 });
     }

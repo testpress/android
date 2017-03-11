@@ -4,7 +4,6 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -28,7 +27,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.payu.india.Payu.PayuConstants;
 
-import java.net.URL;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,19 +41,19 @@ import in.testpress.testpress.R;
 import in.testpress.testpress.authenticator.LoginActivity;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
-import in.testpress.testpress.models.Exam;
 import in.testpress.testpress.models.ProductDetails;
 import in.testpress.testpress.models.RawExam;
 import in.testpress.testpress.util.FormatDate;
-import in.testpress.testpress.util.InternetConnectivityChecker;
 
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.UILImageGetter;
 import in.testpress.testpress.util.ZoomableImageString;
-import retrofit.RetrofitError;
+import in.testpress.util.UIUtils;
 
-public class ProductDetailsActivity extends TestpressFragmentActivity implements LoaderManager.LoaderCallbacks<ProductDetails>{
+public class ProductDetailsActivity extends TestpressFragmentActivity
+        implements LoaderManager.LoaderCallbacks<ProductDetails> {
 
+    public static final String PRODUCT_SLUG = "productSlug";
     @Inject protected TestpressService testpressService;
     @InjectView(R.id.thumbnail_image) ImageView image;
     @InjectView(R.id.title) TextView titleText;
@@ -71,12 +70,16 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
     @InjectView(R.id.exams_list) ListView examsListView;
     @InjectView(R.id.notes_list_container) View notesListContainer;
     @InjectView(R.id.notes_list) ListView notesListView;
-    @InjectView(R.id.product_details) LinearLayout productDetailsView;
+    @InjectView(R.id.main_content) View productDetailsView;
     @InjectView(R.id.buy_button) Button buyButton;
+    @InjectView(R.id.empty_container) LinearLayout emptyView;
+    @InjectView(R.id.empty_title) TextView emptyTitleView;
+    @InjectView(R.id.empty_description) TextView emptyDescView;
+    @InjectView(R.id.retry_button) Button retryButton;
 
     ProgressBar progressBar;
     ProductDetails productDetails;
-    String productUrl;
+    String productSlug;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -84,16 +87,15 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
         setContentView(R.layout.product_details_layout);
         Injector.inject(this);
         ButterKnife.inject(this);
-        if (getIntent().getStringExtra("productUrl") != null) {
-            productUrl = getIntent().getStringExtra("productUrl");
+        if (getIntent().getStringExtra(PRODUCT_SLUG) != null) {
+            productSlug = getIntent().getStringExtra(PRODUCT_SLUG);
         } else if (getIntent().getParcelableExtra("productDetails") != null) {
-            productUrl = ((ProductDetails) getIntent().getParcelableExtra("productDetails")).getUrl();
+            productSlug = ((ProductDetails) getIntent().getParcelableExtra("productDetails")).getSlug();
         }
         getSupportLoaderManager().initLoader(0, null, this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        productDetailsView.setVisibility(View.GONE);
         progressBar = (ProgressBar) findViewById(R.id.pb_loading);
-        progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
+        UIUtils.setIndeterminateDrawable(this, progressBar, 4);
     }
 
     @Override
@@ -102,18 +104,7 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
 
             @Override
             public ProductDetails loadData() throws Exception {
-                String productUrlFragment;
-                URL url = new URL(productUrl);
-                try {
-                    productUrlFragment = url.getFile().substring(1);
-                } catch (Exception e) {
-                    return null;
-                }
-                try {
-                    return testpressService.getProductDetail(productUrlFragment);
-                } catch (RetrofitError retrofitError) {
-                    return null;
-                }
+                return testpressService.getProductDetail(productSlug);
             }
         };
     }
@@ -163,6 +154,22 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
     }
 
     public void onLoadFinished(final Loader<ProductDetails> loader, final ProductDetails productDetails) {
+        if (productDetails == null) {
+            //noinspection ThrowableResultOfMethodCallIgnored
+            Exception exception = ((ThrowableLoader<ProductDetails>) loader).clearException();
+            exception.printStackTrace();
+            if (exception.getMessage().equals("404 NOT FOUND")) {
+                gotoMainActivity();
+            } else if (exception.getCause() instanceof IOException) {
+                setEmptyText(R.string.network_error, R.string.no_internet_try_again,
+                        R.drawable.ic_error_outline_black_18dp);
+            } else {
+                setEmptyText(R.string.error_loading_products, R.string.try_after_sometime,
+                        R.drawable.ic_error_outline_black_18dp);
+            }
+            progressBar.setVisibility(View.GONE);
+            return;
+        }
         progressBar.setVisibility(View.GONE);
         productDetailsView.setVisibility(View.VISIBLE);
         FormatDate date = new FormatDate();
@@ -258,7 +265,7 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
                 startActivityForResult(intent, PayuConstants.PAYU_REQUEST_CODE);
             } else {
                 Intent intent = new Intent(this, LoginActivity.class);
-                intent.putExtra("deeplinkTo", "payment");
+                intent.putExtra(Constants.DEEP_LINK_TO, Constants.DEEP_LINK_TO_PAYMENTS);
                 intent.putExtra("productDetails", productDetails);
                 startActivity(intent);
             }
@@ -280,15 +287,25 @@ public class ProductDetailsActivity extends TestpressFragmentActivity implements
 
     @Override
     public void onBackPressed() {
-        if(getIntent().getBooleanExtra("isDeepLink", false)) {
-            Intent intent = new Intent(this, ProductsListActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.putExtras(getIntent().getExtras());
-            startActivity(intent);
-            finish();
+        if(getIntent().getBooleanExtra(Constants.IS_DEEP_LINK, false)) {
+            gotoMainActivity();
         } else {
             super.onBackPressed();
         }
+    }
+
+    private void gotoMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    protected void setEmptyText(final int title, final int description, final int left) {
+        emptyView.setVisibility(View.VISIBLE);
+        emptyTitleView.setText(title);
+        emptyTitleView.setCompoundDrawablesWithIntrinsicBounds(left, 0, 0, 0);
+        emptyDescView.setText(description);
     }
 
     @Override

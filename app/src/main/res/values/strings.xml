@@ -16,7 +16,6 @@
     <string name="error_loading_orders">Loading Orders failed</string>
     <string name="error_loading_posts">Loading posts failed</string>
     <string name="error_loading_content">Loading content failed</string>
-    <string name="error_loading_analytics">Loading analytics failed</string>
 
     <string name="no_products">No Products</string>
     <string name="no_products_description">There are no products to purchase right now.</string>
@@ -25,8 +24,6 @@
     <string name="no_orders">No transactions yet</string>
     <string name="no_orders_description">Your purchased orders will be reflected here.</string>
     <string name="no_posts">No Articles</string>
-    <string name="no_analytics">No Analytics Data</string>
-    <string name="no_analytics_description">To review the Analytics, start and complete your exams.</string>
 
     <string name="edit">Edit</string>
     <string name="cancel">Cancel</string>
@@ -72,6 +69,7 @@
     <string name="books_message">Books will be Delivered to you shortly</string>
     <string name="continue_purchase">Continue Purchase</string>
     <string name="take_exam">Take Exam</string>
+    <string name="goto_home">Goto Home</string>
 
     <string name="all_posts">All Posts</string>
     <string name="categories">Categories</string>
@@ -85,24 +83,6 @@
     <string name="access_denied">Access denied</string>
     <string name="share">Share</string>
     <string name="invalid_post">Invalid Article</string>
-
-    <string name="subject_wise_analytics">Subject Wise Analytics</string>
-
-    <string name="subject_name">Subject</string>
-    <string name="total">Total</string>
-    <string name="correct">Correct</string>
-    <string name="incorrect">Incorrect</string>
-    <string name="unanswered">Unanswered</string>
-    <string name="all">All</string>
-
-    <string name="strength">Strength</string>
-    <string name="weakness">Weakness</string>
-
-    <string name="strength_label">Strength / Correct</string>
-    <string name="weakness_label">Weakness / Incorrect</string>
-
-    <string name="individual_reports">Individual Reports</string>
-    <string name="overall_reports">Overall Reports</string>
 
     <string name="or">or</string>
     <string name="forgot_password">Forgot Password?</string>

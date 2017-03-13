@@ -47,6 +47,8 @@ import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 
+import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
+
 public class MainMenuFragment extends Fragment {
 
     @Inject protected TestpressService testpressService;
@@ -132,27 +134,7 @@ public class MainMenuFragment extends Fragment {
                 if (account.length > 0) {
                     switch (position) {
                         case 0:
-                            if (!CommonUtils.isUserAuthenticated(getActivity())) {
-                                serviceProvider.logout(getActivity(), testpressService,
-                                        serviceProvider, logoutService);
-                                return;
-                            }
-                            if (TestpressSdk.hasActiveSession(getActivity())) {
-                                showExams();
-                            } else {
-                                new SafeAsyncTask<Void>() {
-                                    @Override
-                                    public Void call() throws Exception {
-                                        serviceProvider.getService(getActivity());
-                                        return null;
-                                    }
-
-                                    @Override
-                                    protected void onSuccess(Void aVoid) throws Exception {
-                                        showExams();
-                                    }
-                                }.execute();
-                            }
+                            checkAuthenticatedUser(0);
                             break;
                         case 1:
                             intent = new Intent(getActivity(), ProductsListActivity.class);
@@ -172,8 +154,7 @@ public class MainMenuFragment extends Fragment {
                             startActivity(intent);
                             break;
                         case 3:
-                            intent = new Intent(getActivity(), AnalyticsActivity.class);
-                            startActivity(intent);
+                            checkAuthenticatedUser(4);
                             break;
                         case 4:
                             intent = new Intent(getActivity(), ProfileDetailsActivity.class);
@@ -221,8 +202,43 @@ public class MainMenuFragment extends Fragment {
         });
     }
 
-    void showExams() {
-        TestpressExam.showCategories(getActivity(), TestpressSdk.getTestpressSession(getActivity()));
+    void checkAuthenticatedUser(final int position) {
+        if (!CommonUtils.isUserAuthenticated(getActivity())) {
+            serviceProvider.logout(getActivity(), testpressService,
+                    serviceProvider, logoutService);
+            return;
+        }
+        if (TestpressSdk.hasActiveSession(getActivity())) {
+            showSDK(position);
+        } else {
+            new SafeAsyncTask<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    serviceProvider.getService(getActivity());
+                    return null;
+                }
+
+                @Override
+                protected void onSuccess(Void aVoid) throws Exception {
+                    showSDK(position);
+                }
+            }.execute();
+        }
+    }
+
+    void showSDK(int position) {
+        switch (position) {
+            case 0:
+                //noinspection ConstantConditions
+                TestpressExam.showCategories(getActivity(), false,
+                        TestpressSdk.getTestpressSession(getActivity()));
+                break;
+            case 4:
+                //noinspection ConstantConditions
+                TestpressExam.showAnalytics(getActivity(), SUBJECT_ANALYTICS_PATH,
+                        TestpressSdk.getTestpressSession(getActivity()));
+                break;
+        }
     }
 
     void shareApp() {

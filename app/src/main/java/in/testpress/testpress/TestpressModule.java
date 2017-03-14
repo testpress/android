@@ -24,8 +24,6 @@ import in.testpress.testpress.core.RestAdapterRequestInterceptor;
 import in.testpress.testpress.core.RestErrorHandler;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.core.UserAgentProvider;
-import in.testpress.testpress.ui.AnalyticsActivity;
-import in.testpress.testpress.ui.AnalyticsFragment;
 import in.testpress.testpress.ui.CropImageActivity;
 import in.testpress.testpress.ui.DocumentsListActivity;
 import in.testpress.testpress.ui.DocumentsListFragment;
@@ -89,8 +87,6 @@ import retrofit.converter.GsonConverter;
                 DocumentsListActivity.class,
                 DocumentsListFragment.class,
                 ZoomableImageActivity.class,
-                AnalyticsActivity.class,
-                AnalyticsFragment.class,
                 SplashScreenActivity.class
         }
 )

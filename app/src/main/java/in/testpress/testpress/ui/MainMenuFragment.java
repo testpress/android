@@ -230,7 +230,7 @@ public class MainMenuFragment extends Fragment {
         switch (position) {
             case 0:
                 //noinspection ConstantConditions
-                TestpressExam.showCategories(getActivity(), true,
+                TestpressExam.showCategories(getActivity(), false,
                         TestpressSdk.getTestpressSession(getActivity()));
                 break;
             case 4:

@@ -145,6 +145,19 @@
           "status": 1
         }
       }
+    },
+    {
+      "client_info": {
+        "android_client_info": {
+          "package_name": "in.testpress.iiipi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAR0MchRzB4IRIci31KWo_6Dgjr2tE4JdY"
+        }
+      ]
     }
   ],
   "configuration_version": "1"

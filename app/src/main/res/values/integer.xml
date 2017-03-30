@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <integer name="subject_weight">4</integer>
-    <integer name="correct_weight">2</integer>
-    <integer name="incorrect_weight">3</integer>
-    <integer name="unanswered_weight">3</integer>
-
-</resources>

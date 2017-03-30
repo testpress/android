@@ -38,17 +38,22 @@ import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LoginActivity;
+import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.CategoryDao;
+import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
+
+import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 
 public class MainMenuFragment extends Fragment {
 
     @Inject protected TestpressService testpressService;
     @Inject protected TestpressServiceProvider serviceProvider;
+    @Inject protected LogoutService logoutService;
     GridView grid;
     @InjectView(R.id.recyclerview) RecyclerView recyclerView;
     @InjectView(R.id.quick_links_container)
@@ -58,7 +63,7 @@ public class MainMenuFragment extends Fragment {
     //Menu for authorized users
     String[] menuItemNames = {
             "Store",
-            "Documents",
+//            "Documents",
 //            "Orders",
             "Posts",
             "Analytics",
@@ -69,7 +74,7 @@ public class MainMenuFragment extends Fragment {
     } ;
     int[] menuItemImageId = {
             R.drawable.store,
-            R.drawable.documents,
+//            R.drawable.documents,
 //            R.drawable.cart,
             R.drawable.posts,
             R.drawable.analytics,
@@ -149,36 +154,35 @@ public class MainMenuFragment extends Fragment {
                             intent = new Intent(getActivity(), ProductsListActivity.class);
                             startActivity(intent);
                             break;
-                        case 1:
-                            intent = new Intent(getActivity(), DocumentsListActivity.class);
-                            startActivity(intent);
-                            break;
+//                        case 1:
+//                            intent = new Intent(getActivity(), DocumentsListActivity.class);
+//                            startActivity(intent);
+//                            break;
 //                    case 2:
 //                        intent = new Intent(getActivity(), OrdersListActivity.class);
 //                        startActivity(intent);
 //                        break;
-                        case 2:
+                        case 1:
                             intent = new Intent(getActivity(), PostsListActivity.class);
                             intent.putExtra("userAuthenticated", true);
                             startActivity(intent);
                             break;
-                        case 3:
-                            intent = new Intent(getActivity(), AnalyticsActivity.class);
-                            startActivity(intent);
+                        case 2:
+                            checkAuthenticatedUser(3);
                             break;
-                        case 4:
+                        case 3:
                             intent = new Intent(getActivity(), ProfileDetailsActivity.class);
                             startActivity(intent);
                             break;
-                        case 5:
+                        case 4:
                             //Share
                             shareApp();
                             break;
-                        case 6:
+                        case 5:
                             //Rate
                             rateApp();
                             break;
-                        case 7:
+                        case 6:
                             ((MainActivity) getActivity()).logout();
                             break;
                     }
@@ -212,8 +216,43 @@ public class MainMenuFragment extends Fragment {
         });
     }
 
-    void showExams() {
-        TestpressExam.show(getActivity(), TestpressSdk.getTestpressSession(getActivity()));
+    void checkAuthenticatedUser(final int position) {
+        if (!CommonUtils.isUserAuthenticated(getActivity())) {
+            serviceProvider.logout(getActivity(), testpressService,
+                    serviceProvider, logoutService);
+            return;
+        }
+        if (TestpressSdk.hasActiveSession(getActivity())) {
+            showSDK(position);
+        } else {
+            new SafeAsyncTask<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    serviceProvider.getService(getActivity());
+                    return null;
+                }
+
+                @Override
+                protected void onSuccess(Void aVoid) throws Exception {
+                    showSDK(position);
+                }
+            }.execute();
+        }
+    }
+
+    void showSDK(int position) {
+        switch (position) {
+            case 0:
+                //noinspection ConstantConditions
+                TestpressExam.showCategories(getActivity(), true,
+                        TestpressSdk.getTestpressSession(getActivity()));
+                break;
+            case 3:
+                //noinspection ConstantConditions
+                TestpressExam.showAnalytics(getActivity(), SUBJECT_ANALYTICS_PATH,
+                        TestpressSdk.getTestpressSession(getActivity()));
+                break;
+        }
     }
 
     void shareApp() {

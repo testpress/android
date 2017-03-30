@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
 ext {
-    supportLib = '25.0.1'
-    testpressSDK = '1.0.15'
+    supportLib = '25.2.0'
+    testpressSDK = '1.0.19'
 }
 
 dependencies {
@@ -29,6 +29,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:design:' + supportLib
     compile 'com.android.support:cardview-v7:' + supportLib
+    compile 'com.android.support:customtabs:' + supportLib
 
 
     // SlidingUp Panel
@@ -62,13 +63,13 @@ dependencies {
     }
 
     // Gcm
-    compile 'com.google.android.gms:play-services-gcm:10.0.1'
+    compile 'com.google.android.gms:play-services-gcm:10.2.0'
 
     // Google Sign In
-    compile 'com.google.android.gms:play-services-auth:10.0.1'
+    compile 'com.google.android.gms:play-services-auth:10.2.0'
 
     // Facebook SDK
-    compile 'com.facebook.android:facebook-android-sdk:4.18.0'
+    compile 'com.facebook.android:facebook-android-sdk:4.20.0'
 
     // Flat button
     compile 'info.hoang8f:fbutton:1.0.5'
@@ -91,7 +92,7 @@ try {
 android {
 
     compileSdkVersion 25
-    buildToolsVersion '25.0.0'
+    buildToolsVersion '25.0.2'
 
     defaultConfig {
         minSdkVersion 15

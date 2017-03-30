@@ -74,11 +74,6 @@ public final class Constants {
         public static final String URL_DOCUMENTS_FRAG = "api/v2.2/notes/";
 
         /**
-         * Subject Wise Answers Count List URL
-         */
-        public static final String URL_SUBJECT_ANALYTICS_FRAG = "api/v2.2/analytics/";
-
-        /**
          * List Products Exams URL
          */
         public static final String URL_ORDERS_FRAG = "/api/v2.2/orders/";
@@ -98,6 +93,11 @@ public final class Constants {
          */
         public static final String URL_POSTS_FRAG =  "api/v2.2/posts/";
         public static final String URL_CATEGORIES_FRAG = URL_POSTS_FRAG + "categories/";
+
+        /**
+         * Handle Success & Failure of payments
+         */
+        public static final String URL_PAYMENT_RESPONSE_HANDLER = URL_BASE + "/payments/response/payu/";
 
         /**
          * Query Params

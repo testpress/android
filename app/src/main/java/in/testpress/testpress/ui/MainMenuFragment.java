@@ -38,17 +38,22 @@ import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LoginActivity;
+import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.CategoryDao;
+import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
+
+import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 
 public class MainMenuFragment extends Fragment {
 
     @Inject protected TestpressService testpressService;
     @Inject protected TestpressServiceProvider serviceProvider;
+    @Inject protected LogoutService logoutService;
     GridView grid;
     @InjectView(R.id.recyclerview) RecyclerView recyclerView;
     @InjectView(R.id.quick_links_container)
@@ -163,8 +168,7 @@ public class MainMenuFragment extends Fragment {
                             startActivity(intent);
                             break;
                         case 2:
-                            intent = new Intent(getActivity(), AnalyticsActivity.class);
-                            startActivity(intent);
+                            checkAuthenticatedUser(3);
                             break;
                         case 3:
                             intent = new Intent(getActivity(), ProfileDetailsActivity.class);
@@ -212,8 +216,43 @@ public class MainMenuFragment extends Fragment {
         });
     }
 
-    void showExams() {
-        TestpressExam.show(getActivity(), TestpressSdk.getTestpressSession(getActivity()));
+    void checkAuthenticatedUser(final int position) {
+        if (!CommonUtils.isUserAuthenticated(getActivity())) {
+            serviceProvider.logout(getActivity(), testpressService,
+                    serviceProvider, logoutService);
+            return;
+        }
+        if (TestpressSdk.hasActiveSession(getActivity())) {
+            showSDK(position);
+        } else {
+            new SafeAsyncTask<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    serviceProvider.getService(getActivity());
+                    return null;
+                }
+
+                @Override
+                protected void onSuccess(Void aVoid) throws Exception {
+                    showSDK(position);
+                }
+            }.execute();
+        }
+    }
+
+    void showSDK(int position) {
+        switch (position) {
+            case 0:
+                //noinspection ConstantConditions
+                TestpressExam.showCategories(getActivity(), true,
+                        TestpressSdk.getTestpressSession(getActivity()));
+                break;
+            case 3:
+                //noinspection ConstantConditions
+                TestpressExam.showAnalytics(getActivity(), SUBJECT_ANALYTICS_PATH,
+                        TestpressSdk.getTestpressSession(getActivity()));
+                break;
+        }
     }
 
     void shareApp() {

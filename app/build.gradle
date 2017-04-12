@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 ext {
     supportLib = '25.2.0'
-    testpressSDK = '1.0.21'
+    testpressSDK = '1.0.22'
 }
 
 dependencies {

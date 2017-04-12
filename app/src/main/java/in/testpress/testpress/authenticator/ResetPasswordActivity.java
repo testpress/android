@@ -1,6 +1,7 @@
 package in.testpress.testpress.authenticator;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -26,7 +27,7 @@ import in.testpress.testpress.ui.TestpressFragmentActivity;
 import in.testpress.testpress.ui.TextWatcherAdapter;
 import in.testpress.testpress.util.SafeAsyncTask;
 
-public class ResetPasswordActivity extends TestpressFragmentActivity {
+public class ResetPasswordActivity extends FragmentActivity {
 
     @Inject TestpressService testpressService;
     @InjectView(R.id.et_useremail) EditText email;

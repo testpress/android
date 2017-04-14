@@ -21,6 +21,7 @@ class ExploreSpinnerAdapter extends BaseAdapter {
     private boolean mTopLevel;
     private LayoutInflater inflater;
     private Resources resources;
+    private boolean hideSpinner; // Icon will be used instead of showing the selected item in spinner.
 
     ExploreSpinnerAdapter(LayoutInflater inflater, Resources resources, boolean topLevel) {
         this.inflater = inflater;
@@ -56,6 +57,24 @@ class ExploreSpinnerAdapter extends BaseAdapter {
 
     public void addHeader(String title) {
         mItems.add(new ExploreSpinnerItem(true, "", title, false, 0));
+    }
+
+    public int getItemPosition(String title) {
+        for (ExploreSpinnerItem item : mItems) {
+            if (item.title.equals(title)) {
+                return mItems.indexOf(item);
+            }
+        }
+        return -1;
+    }
+
+    public int getItemPositionFromTag(String tag) {
+        for (ExploreSpinnerItem item : mItems) {
+            if (item.tag.equals(tag)) {
+                return mItems.indexOf(item);
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -117,7 +136,14 @@ class ExploreSpinnerAdapter extends BaseAdapter {
         }
         TextView textView = (TextView) view.findViewById(android.R.id.text1);
         textView.setText(getTitle(position));
+        if (hideSpinner) {
+            view.setVisibility(View.GONE);
+        }
         return view;
+    }
+
+    public void hideSpinner(boolean hideSelectedItem) {
+        this.hideSpinner = hideSelectedItem;
     }
 
     private String getTitle(int position) {

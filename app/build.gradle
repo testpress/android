@@ -1,38 +1,18 @@
-buildscript {
-    repositories {
-        maven { url 'http://repo1.maven.org/maven2' }
-        mavenLocal()
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.0'
-    }
-}
 apply plugin: 'com.android.application'
 
-repositories {
-    maven { url 'https://github.com/donnfelker/mvn-repo/raw/master/' }
-    mavenLocal()
-    mavenCentral()
-}
-
 dependencies {
-    compile 'com.google.code.gson:gson:2.3'
 
     // Dependency Injection
     compile 'com.squareup.dagger:dagger:1.0.1'
     compile 'com.squareup.dagger:dagger-compiler:1.0.1'
     compile 'com.jakewharton:butterknife:6.1.0'
 
-    compile 'com.actionbarsherlock:viewpagerindicator:2.4.1'
-    compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.github.kevinsawicki:wishlist:0.9'
+    compile 'com.github.kevinsawicki:wishlist:0.9@aar'
 
     // Event Bus
     compile 'com.squareup:otto:1.3.5'
 
     // Image Loading
-    compile 'com.squareup.picasso:picasso:2.3.2'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
 
     // HTTP
@@ -41,36 +21,73 @@ dependencies {
     compile 'com.squareup.retrofit:retrofit:1.9.0'
 
     // Android Support Libs
-    compile 'com.android.support:support-v4:22.0.0'
-    compile 'com.android.support:appcompat-v7:22.0.0'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:cardview-v7:25.2.0'
+    compile 'com.android.support:customtabs:25.2.0'
 
-    //SlidingUp Panel
+    // SlidingUp Panel
     compile 'com.sothree.slidinguppanel:library:3.0.0'
-
-    compile 'com.joanzapata.android:android-iconify:1.0.9'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
 
-    //Material Dialog
-    compile 'com.afollestad:material-dialogs:0.7.8.1'
+    // Material Dialog
+    compile 'com.afollestad.material-dialogs:core:0.8.5.9'
+
     androidTestCompile 'junit:junit:4.11'
     androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
     androidTestCompile 'org.mockito:mockito-core:1.9.5'
 
-    repositories {
-        maven { url "https://jitpack.io" }
+    // Payu
+    compile files('libs/payusdk.jar')
+    compile project(':CustomBrowser-release')
+
+    // GreenDao for database
+    compile 'de.greenrobot:greendao:2.0.0'
+
+    // Image cropper tool
+    compile 'com.edmodo:cropper:1.0.1'
+    
+    // Testpress exam
+    compile ('com.github.testpress:exam:1.0.21@aar') {
+        transitive=true
     }
-    compile 'com.github.PhilJay:MPAndroidChart:v2.1.0'
+
+    // Gcm
+    compile 'com.google.android.gms:play-services-gcm:10.2.0'
+
+    // Google Sign In
+    compile 'com.google.android.gms:play-services-auth:10.2.0'
+
+    // Facebook SDK
+    compile 'com.facebook.android:facebook-android-sdk:4.20.0'
+
+    // Flat button
+    compile 'info.hoang8f:fbutton:1.0.5'
+}
+
+def key_alias = "sample"
+def key_password = "sample"
+def store_file = "testpress_debug_keystore.jks"
+def store_password = "sample"
+
+try {
+    key_alias = TESTPRESS_KEY_ALIAS
+    key_password = TESTPRESS_KEY_PASSWORD
+    store_file = TESTPRESS_KEYSTORE_PATH
+    store_password = TESTPRESS_KEYSTORE_PASSWORD
+} catch (Exception ignored) {
+    println 'Failed to find key store details. Social Login is disabled'
 }
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion '20.0.0'
+
+    compileSdkVersion 24
+    buildToolsVersion '25.0.2'
 
     defaultConfig {
-        minSdkVersion 10
+        minSdkVersion 15
         targetSdkVersion 22
-        versionCode 105
-        versionName '1.0'
+        versionCode 110
+        versionName '1.0.' + versionCode
         applicationId 'in.testpress.koncpt'
     }
 
@@ -81,14 +98,14 @@ android {
         exclude 'LICENSE.txt'
     }
 
-    // signingConfigs {
-        // release {
-            // storeFile file(System.getenv('ANDROID_KEYSTORE_PATH'))
-            // storePassword System.getenv('ANDROID_STORE_PASS')
-            // keyAlias System.getenv('ANDROID_KEY_ALIAS')
-            // keyPassword System.getenv('ANDROID_KEY_PASS')
-        // }
-    // }
+    signingConfigs {
+        config {
+            keyAlias key_alias
+            keyPassword key_password
+            storeFile file(store_file)
+            storePassword store_password
+        }
+    }
 
     lintOptions {
         abortOnError false
@@ -96,11 +113,12 @@ android {
 
     buildTypes {
         debug {
-            applicationIdSuffix '.debug'
+            signingConfig signingConfigs.config
             minifyEnabled false
             // zipAlign false // this is default for debug
         }
         release {
+            signingConfig signingConfigs.config
             // minifyEnabled true
             // proguardFile '..\proguard.cfg'
             // signingConfig signingConfigs.release
@@ -110,3 +128,5 @@ android {
         }
     }
 }
+
+apply plugin: 'com.google.gms.google-services'

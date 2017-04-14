@@ -3,18 +3,21 @@ package in.testpress.testpress;
 import android.app.Application;
 import android.app.Instrumentation;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+
+import in.testpress.testpress.models.DaoMaster;
+import in.testpress.testpress.models.DaoSession;
 
 public class TestpressApplication extends Application {
     private static TestpressApplication instance;
+    public DaoSession daoSession;
 
     /**
      * Create main application
@@ -41,9 +44,16 @@ public class TestpressApplication extends Application {
         // Perform injection
         Injector.init(getRootModule(), this);
         initImageLoader(getApplicationContext());
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "testpress-db", null);
+        SQLiteDatabase db = helper.getWritableDatabase();
+        DaoMaster daoMaster = new DaoMaster(db);
+        daoSession = daoMaster.newSession();
 
     }
 
+    public DaoSession getDaoSession() {
+        return daoSession;
+    }
 
     public static void initImageLoader(Context context) {
         DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()

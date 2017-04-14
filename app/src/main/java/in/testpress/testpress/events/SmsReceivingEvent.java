@@ -11,7 +11,6 @@ import in.testpress.testpress.authenticator.CodeVerificationActivity.Timer;
 public class SmsReceivingEvent extends BroadcastReceiver {
     public String code;
     private Timer timer;
-
     public SmsReceivingEvent(Timer timer) {
         this.timer = timer;
     }
@@ -28,7 +27,7 @@ public class SmsReceivingEvent extends BroadcastReceiver {
                 if (senderNum.matches(".*TSTPRS")) { //check whether TSTPRS present in senderAddress
                     String smsContent = currentMessage.getDisplayMessageBody();
                     //get the code from smsContent
-                    code = smsContent.replaceAll(".*(?<=Thank you for registering at Testpress.in. Your authorization code is )([^\n]*)(?=.).*", "$1");
+                    code = smsContent.replaceAll(".*(?=.*)(?<=Your authorization code is )([^\n]*)(?=.).*", "$1");
                     timer.cancel();
                     timer.onFinish();
                 }

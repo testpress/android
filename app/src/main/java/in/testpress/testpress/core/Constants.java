@@ -2,6 +2,8 @@
 
 package in.testpress.testpress.core;
 
+import java.util.HashMap;
+
 /**
  * Testpress constants
  */
@@ -12,19 +14,14 @@ public final class Constants {
         private Auth() {}
 
         /**
-         * Account type id
-         */
-        public static final String TESTPRESS_ACCOUNT_TYPE = "in.testpress.koncpt";
-
-        /**
          * Account name
          */
         public static final String TESTPRESS_ACCOUNT_NAME = "koncpt";
 
         /**
-         * Provider id
+         * Account type id
          */
-        public static final String TESTPRESS_PROVIDER_AUTHORITY = "in.testpress.koncpt.sync";
+        public static final String TESTPRESS_ACCOUNT_TYPE = "in.testpress." + TESTPRESS_ACCOUNT_NAME;
 
         /**
          * Auth token type
@@ -46,95 +43,103 @@ public final class Constants {
          */
         public static final String CHECK_UPDATE_URL_Frag = "/api/android/check/";
 
+        /**
+         * Reset password URl
+         *
+         */
+        public  static final String RESET_PASSWORD_URL = "/api/v2.2/password/reset/";
 
         /**
          * Authentication URL
          */
-        public static final String URL_AUTH_FRAG = "/api/v2/auth-token/";
-        public static final String URL_AUTH = URL_BASE + URL_AUTH_FRAG;
+        public static final String URL_AUTH_FRAG = "/api/v2.2/auth-token/";
 
         /**
          * New User Register URL
          */
-        public static final String URL_REGISTER_FRAG = "/api/v2/register/";
-        public static final String URL_REGISTER = URL_BASE + URL_REGISTER_FRAG;
+        public static final String URL_REGISTER_FRAG = "/api/v2.2/register/";
         /**
          * Code Verification URL
          */
-        public static final String URL_VERIFY_FRAG = "/api/v2/verify/";
-        public static final String URL_VERIFY = URL_BASE + URL_VERIFY_FRAG;
+        public static final String URL_VERIFY_FRAG = "/api/v2.2/verify/";
 
         /**
-         * List Users URL
+         * List Products URL
          */
-        public static final String URL_USERS_FRAG =  "/api/v2/users/";
-        public static final String URL_USERS = URL_BASE + URL_USERS_FRAG;
+        public static final String URL_PRODUCTS_FRAG = "api/v2.2/products/";
 
         /**
-         * List Available Exams URL
+         * List Documents URL
          */
-        public static final String URL_AVAILABLE_EXAMS_FRAG =  "api/v2.1/exams/available/";
-        public static final String URL_AVAILABLE_EXAMS = URL_BASE + URL_AVAILABLE_EXAMS_FRAG;
+        public static final String URL_DOCUMENTS_FRAG = "api/v2.2/notes/";
 
         /**
-         * List Upcoming Exams URL
+         * List Products Exams URL
          */
-        public static final String URL_UPCOMING_EXAMS_FRAG =  "api/v2.1/exams/upcoming/";
-        public static final String URL_UPCOMING_EXAMS = URL_BASE + URL_UPCOMING_EXAMS_FRAG;
+        public static final String URL_ORDERS_FRAG = "/api/v2.2/orders/";
 
         /**
-         * List History Exams URL
+         * Profile Details URL
          */
-        public static final String URL_HISTORY_EXAMS_FRAG =  "api/v2.1/exams/history/";
-        public static final String URL_HISTORY_EXAMS = URL_BASE + URL_HISTORY_EXAMS_FRAG;
+        public static final String URL_PROFILE_DETAILS_FRAG =  "/api/v2.2/me/";
 
         /**
-         * Start Exam URL
+         * Devices Register URL
          */
-        public static final String URL_START_EXAM_FRAG =  "api/v2.1/exams/start/";
-        public static final String URL_START_EXAM = URL_BASE + URL_START_EXAM_FRAG;
+        public static final String URL_DEVICES_REGISTER_FRAG =  "/api/v2.2/devices/register/";
 
         /**
-         * End Exam URL
+         * Institute Settings URL
          */
-        public static final String URL_END_EXAM_FRAG =  "end/";
-        public static final String URL_END_EXAM = URL_BASE + URL_END_EXAM_FRAG;
+        public static final String URL_INSTITUTE_SETTINGS_FRAG =  "/api/v2.2/settings/";
 
         /**
-         * PARAMS for auth
+         * Posts URL
          */
-        public static final String PARAM_USERNAME = "username";
-        public static final String PARAM_PASSWORD = "password";
-        public static final String CONTENT_TYPE_JSON = "application/json";
-        public static final String USERNAME = "username";
-        public static final String PASSWORD = "password";
-        public static final String SESSION_TOKEN = "sessionToken";
+        public static final String URL_POSTS_FRAG =  "api/v2.2/posts/";
+        public static final String URL_CATEGORIES_FRAG = URL_POSTS_FRAG + "categories/";
 
+        /**
+         * Handle Success & Failure of payments
+         */
+        public static final String URL_PAYMENT_RESPONSE_HANDLER = URL_BASE + "/payments/response/payu/";
 
+        /**
+         * Query Params
+         */
+        public static final String PARENT = "parent";
     }
 
+    public static final String GCM_PREFERENCE_NAME = "testpress." + Auth.TESTPRESS_ACCOUNT_NAME + ".GCM";
+    public static final String GCM_PROPERTY_REG_ID = "GCMRegId";
 
-    public static final class Extra {
-        private Extra() {}
+    public static final String IS_DEEP_LINK = "is_deep_link";
+    public static final String DEEP_LINK_TO = "deep_link_to";
+    public static final String DEEP_LINK_TO_PAYMENTS = "deep_link_to_payments";
+
+    public static final HashMap<String, Integer> genderChoices;
+    static
+    {
+        genderChoices = new HashMap<String, Integer>();
+        genderChoices.put("--select--", -1);
+        genderChoices.put("Male", 1);
+        genderChoices.put("Female", 2);
+        genderChoices.put("Transgender", 3);
     }
 
-    public static final class Intent {
-        private Intent() {}
-
-        /**
-         * Action prefix for all intents created
-         */
-        public static final String INTENT_PREFIX = "in.testpress.koncpt.";
-
-    }
-
-    public static class Notification {
-        private Notification() {
+    public static final HashMap<String, Integer> stateChoices;
+    static
+    {
+        stateChoices = new HashMap<String, Integer>();
+        String[] states = {
+                "--select--", "Others", "Andaman and Nicobar Islands", "Andhra Pradesh", "Arunachal Pradesh", "Assam",
+                "Bihar", "Chandigarh", "Chhattisgarh", "Dadra and Nagar Haveli", "Daman and Diu", "Delhi", "Goa", "Gujarat",
+                "Haryana", "Himachal Pradesh", "Jammu and Kashmir", "Jharkhand", "Karnataka", "Kerala", "Lakshadweep",
+                "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Pondicherry",
+                "Rajasthan", "Sikkim", "Tamil Nadu", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal", "Telengana"
+        };
+        for (int i = -1; i < 37; i++) {
+            stateChoices.put(states[i + 1], i);
         }
-
-        public static final int TIMER_NOTIFICATION_ID = 1000; // Why 1000? Why not? :)
     }
-
 }
-
-

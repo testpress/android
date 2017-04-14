@@ -1,13 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/coordinator_layout"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <include layout="@layout/toolbar_actionbar" /> <!-- placeholder, empty except on L -->
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/toolbar_actionbar" /> <!-- placeholder, empty except on L -->
+
+    </android.support.design.widget.AppBarLayout>
+
     <!-- The main content view -->
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/container"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:background="@color/native_background">
 
     </FrameLayout>
-</LinearLayout>
+
+    <include layout="@layout/empty_view" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/progressbar">
+        <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/pb_loading"
+            android:layout_centerInParent="true"
+            android:tint="@color/primary"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:indeterminate="true"
+            app:mpb_progressStyle="circular"
+            style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal" />
+    </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

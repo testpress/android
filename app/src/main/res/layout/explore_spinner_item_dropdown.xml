@@ -31,5 +31,5 @@
         android:drawablePadding="8dp"
         android:gravity="center_vertical|start"
         android:textSize="16sp"
-        android:textColor="@color/list_dropdown_foreground_color" />
+        android:textColor="@drawable/spinner_text" />
 </LinearLayout>

@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:id="@+id/main_content"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/collapsing_app_bar_height"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:contentScrim="?attr/colorPrimary"
+            app:expandedTitleMarginStart="48dp"
+            app:title=""
+            app:expandedTitleMarginEnd="64dp">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:id="@+id/profile_photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    app:layout_collapseMode="parallax" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/actionbar_gradient_dark" />
+            </FrameLayout>
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:layout_collapseMode="pin" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingTop="24dp">
+
+            <!--Username-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/editor_delete_button_width"
+                android:layout_marginRight="@dimen/editor_delete_button_width"
+                android:layout_marginBottom="@dimen/editor_padding_between_read_only_editor_views"
+                android:paddingBottom="20dp"
+                android:paddingTop="10dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/user_icon"
+                    android:layout_marginTop="2dp"
+                    android:src="@drawable/ic_account_circle_white_18dp"
+                    style="@style/EditKindIconStyle" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/username_container"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/username"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/editor_form_text_size"
+                        android:textColor="#212121"
+                        android:singleLine="true"
+                        android:saveEnabled="false"
+                        android:text=""
+                        android:layout_marginBottom="5dp"
+                        android:enabled="false"/>
+
+                    <TextView
+                        android:layout_width="@dimen/editor_type_label_width"
+                        android:layout_height="wrap_content"
+                        android:textSize="13sp"
+                        android:textColor="#8a8a8a"
+                        android:singleLine="true"
+                        android:saveEnabled="false"
+                        android:text="Username"
+                        android:enabled="false"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+            <!--Phone-->
+            <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/editor_delete_button_width"
+                android:layout_marginRight="@dimen/editor_delete_button_width"
+                android:layout_marginBottom="@dimen/editor_padding_between_read_only_editor_views"
+                android:paddingBottom="20dp"
+                android:id="@+id/phone_container"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/phone_icon"
+                    android:layout_marginTop="2dp"
+                    android:src="@drawable/ic_phone_white_18dp"
+                    style="@style/EditKindIconStyle" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/editor_form_text_size"
+                        android:textColor="#212121"
+                        android:singleLine="true"
+                        android:saveEnabled="false"
+                        android:text=""
+                        android:layout_marginBottom="5dp"
+                        android:enabled="false"/>
+
+                    <TextView
+                        android:layout_width="@dimen/editor_type_label_width"
+                        android:layout_height="wrap_content"
+                        android:textSize="13sp"
+                        android:textColor="#8a8a8a"
+                        android:singleLine="true"
+                        android:saveEnabled="false"
+                        android:text="Phone"
+                        android:enabled="false"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <!--Email-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/editor_delete_button_width"
+                android:layout_marginEnd="@dimen/editor_delete_button_width"
+                android:layout_marginBottom="@dimen/editor_padding_between_read_only_editor_views"
+                android:paddingBottom="20dp"
+                android:id="@+id/email_container"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/email_icon"
+                    android:layout_marginTop="2dp"
+                    android:src="@drawable/ic_email_white_18dp"
+                    style="@style/EditKindIconStyle" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/editor_form_text_size"
+                        android:textColor="#212121"
+                        android:singleLine="true"
+                        android:saveEnabled="false"
+                        android:text=""
+                        android:layout_marginBottom="5dp"
+                        android:enabled="false"/>
+
+                    <TextView
+                        android:layout_width="@dimen/editor_type_label_width"
+                        android:layout_height="wrap_content"
+                        android:textSize="13sp"
+                        android:textColor="#8a8a8a"
+                        android:singleLine="true"
+                        android:saveEnabled="false"
+                        android:text="Email"
+                        android:enabled="false"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <!--Address-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/editor_delete_button_width"
+                android:layout_marginEnd="@dimen/editor_delete_button_width"
+                android:layout_marginBottom="@dimen/editor_padding_between_read_only_editor_views"
+                android:paddingBottom="20dp"
+                android:id="@+id/address_container"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/address_icon"
+                    android:layout_marginTop="2dp"
+                    android:src="@drawable/ic_location_on_white_18dp"
+                    style="@style/EditKindIconStyle" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/editor_form_text_size"
+                        android:textColor="#212121"
+                        android:saveEnabled="false"
+                        android:text=""
+                        android:layout_marginBottom="5dp"
+                        android:enabled="false"/>
+
+                    <TextView
+                        android:layout_width="@dimen/editor_type_label_width"
+                        android:layout_height="wrap_content"
+                        android:textSize="13sp"
+                        android:textColor="#8a8a8a"
+                        android:singleLine="true"
+                        android:saveEnabled="false"
+                        android:text="Address"
+                        android:enabled="false"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                            android:orientation="vertical" android:layout_width="match_parent"
+                            android:visibility="gone"
+                            android:layout_height="match_parent">
+
+                <include layout="@layout/toolbar_actionbar"/>
+
+                <ProgressBar
+                    android:id="@+id/horizontal_progress_bar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_below="@+id/toolbar_actionbar"
+                    android:indeterminate="true" />
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/horizontal_progress_bar">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/profile_details"
+                        android:padding="10dp">
+
+                        <RelativeLayout
+                            android:layout_width="170dp"
+                            android:layout_height="170dp"
+                            android:background="@drawable/black_border"
+                            android:layout_centerHorizontal="true"
+                            android:id="@+id/imageLayout">
+                            <ImageView
+                                android:layout_width="150dp"
+                                android:layout_height="150dp"
+                                android:id="@+id/profile_photo2"
+                                android:cropToPadding="true"
+                                android:src="@drawable/icon"/>
+
+                            <ImageView
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:id="@+id/edit_profile_photo"
+                                android:src="@drawable/ic_edit_white_24dp"
+                                android:padding="5dp"
+                                android:background="#80000000"
+                                android:layout_alignParentRight="true"
+                                android:layout_alignParentBottom="true"/>
+                        </RelativeLayout>
+
+                        <TextView
+                            android:id="@+id/display_name"
+                            android:layout_width="wrap_content"
+                            android:text="Testpress User"
+                            android:textSize="25sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/primary"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/imageLayout"
+                            android:layout_marginTop="10dp"
+                            android:layout_centerHorizontal="true"/>
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:id="@+id/edit"
+                            android:src="@drawable/edit_blue_circle"
+                            android:padding="2dp"
+                            android:layout_below="@id/imageLayout"
+                            android:layout_alignParentRight="true"
+                            android:layout_toRightOf="@id/display_name"/>
+
+                        <TableLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_below="@+id/display_name"
+                            android:stretchColumns="1"
+                            android:shrinkColumns="1"
+                            android:id="@+id/userDetails"
+                            android:layout_margin="10dp">
+
+                            <TableRow
+                                android:layout_centerHorizontal="true"
+                                android:id="@+id/email_container2">
+
+                                <TextView
+                                    android:id="@+id/email_label"
+                                    style="@style/userDetailLableText"
+                                    android:text="Email: "/>
+
+                                <EditText
+                                    android:id="@+id/email2"
+                                    style="@style/userDetailEditText"
+                                    android:inputType="textEmailAddress"
+                                    android:nextFocusDown="@+id/first_name" />
+                            </TableRow>
+
+                            <TableRow
+                                android:layout_centerHorizontal="true"
+                                android:id="@+id/first_name_container"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:id="@+id/firstNamelabel"
+                                    android:text="First Name: "
+                                    style="@style/userDetailLableText"/>
+
+                                <EditText
+                                    android:id="@+id/first_name"
+                                    style="@style/userDetailEditText"
+                                    android:inputType="textPersonName"
+                                    android:enabled="true"
+                                    android:nextFocusDown="@+id/last_name" />
+                            </TableRow>
+
+                            <TableRow
+                                android:layout_centerHorizontal="true"
+                                android:id="@+id/last_name_container"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:id="@+id/lastNamelabel"
+                                    android:text="Last Name: "
+                                    style="@style/userDetailLableText"/>
+
+                                <EditText
+                                    android:id="@+id/last_name"
+                                    android:textSize="16sp"
+                                    android:enabled="true"
+                                    android:nextFocusDown="@+id/mobile"
+                                    style="@style/userDetailEditText" />
+                            </TableRow>
+
+                            <TableRow
+                                android:layout_marginTop="5dp"
+                                android:paddingBottom="5dp"
+                                android:id="@+id/mobile_container"
+                                android:layout_centerHorizontal="true">
+
+                                <TextView
+                                    android:id="@+id/mobileNolabel"
+                                    style="@style/userDetailLableText"
+                                    android:text="Mobile No.: " />
+
+                                <EditText
+                                    android:id="@+id/mobile"
+                                    style="@style/userDetailEditText"
+                                    android:nextFocusDown="@+id/date_of_birth"
+                                    android:inputType="phone"/>
+                            </TableRow>
+
+                            <TableRow
+                                android:layout_marginTop="10dp"
+                                android:id="@+id/gender_container"
+                                android:layout_centerHorizontal="true">
+
+                                <TextView
+                                    android:id="@+id/genderlabel"
+                                    style="@style/userDetailLableText"
+                                    android:text="Gender: " />
+
+                                <RelativeLayout
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/focusable_border">
+                                    <Spinner
+                                        android:layout_height="wrap_content"
+                                        android:layout_width="match_parent"
+                                        android:id="@+id/gender"
+                                        android:layout_gravity="start"
+                                        android:enabled="false"
+                                        />
+                                </RelativeLayout>
+                            </TableRow>
+
+                            <TableRow
+                                android:layout_marginTop="10dp"
+                                android:id="@+id/date_of_birth_container"
+                                android:layout_centerHorizontal="true">
+
+                                <TextView
+                                    android:id="@+id/dateOfBirthlabel"
+                                    android:layout_gravity="center"
+                                    android:text="Date Of Birth: "
+                                    style="@style/userDetailLableText"/>
+
+                                <LinearLayout
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <EditText
+                                        android:id="@+id/date_of_birth"
+                                        android:layout_width="match_parent"
+                                        android:hint="YYYY-MM-DD"
+                                        android:inputType="date"
+                                        android:paddingRight="30dp"
+                                        android:nextFocusDown="@+id/address"
+                                        style="@style/userDetailEditText"/>
+
+                                    <ImageButton
+                                        android:id="@+id/datepicker"
+                                        android:layout_marginLeft="-30dp"
+                                        style="?android:buttonBarButtonStyle"
+                                        android:src="@drawable/calendar"
+                                        android:visibility="gone"
+                                        android:layout_width="30dp"
+                                        android:layout_height="30dp" />
+
+                                </LinearLayout>
+
+                            </TableRow>
+
+                            <TableRow
+                                android:layout_marginTop="10dp"
+                                android:id="@+id/address_container2"
+                                android:layout_centerHorizontal="true">
+
+                                <TextView
+                                    android:id="@+id/addresslabel"
+                                    style="@style/userDetailLableText"
+                                    android:text="Address: " />
+
+                                <EditText
+                                    android:id="@+id/address2"
+                                    android:nextFocusDown="@+id/city"
+                                    style="@style/userDetailEditText"/>
+                            </TableRow>
+
+                            <TableRow
+                                android:layout_marginTop="10dp"
+                                android:id="@+id/city_container"
+                                android:layout_centerHorizontal="true">
+
+                                <TextView
+                                    android:id="@+id/citylabel"
+                                    android:text="City: "
+                                    style="@style/userDetailLableText"/>
+
+                                <EditText
+                                    android:id="@+id/city"
+                                    android:nextFocusDown="@+id/pin_code"
+                                    style="@style/userDetailEditText"/>
+                            </TableRow>
+
+                            <TableRow
+                                android:layout_marginTop="10dp"
+                                android:id="@+id/state_container"
+                                android:layout_centerHorizontal="true">
+
+                                <TextView
+                                    android:id="@+id/statelabel"
+                                    android:text="State: "
+                                    style="@style/userDetailLableText"/>
+
+                                <RelativeLayout
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/focusable_border">
+                                    <Spinner
+                                        android:layout_height="wrap_content"
+                                        android:layout_width="match_parent"
+                                        android:id="@+id/state"
+                                        android:layout_gravity="start"
+                                        android:enabled="false"
+                                        />
+                                </RelativeLayout>
+                            </TableRow>
+
+                            <TableRow
+                                android:layout_marginTop="10dp"
+                                android:id="@+id/pincode_container"
+                                android:layout_centerHorizontal="true">
+
+                                <TextView
+                                    android:id="@+id/pinCodelabel"
+                                    android:text="Pin Code: "
+                                    style="@style/userDetailLableText"/>
+
+                                <EditText
+                                    android:id="@+id/pin_code"
+                                    android:maxLength="6"
+                                    android:imeOptions="actionDone"
+                                    android:inputType="numberDecimal"
+                                    style="@style/userDetailEditText"/>
+
+                            </TableRow>
+                        </TableLayout>
+
+                        <Button
+                            android:id="@+id/save"
+                            style="@style/ShadowText"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="10dp"
+                            android:layout_below="@id/userDetails"
+                            android:background="@color/green"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:text="save"
+                            android:textColor="#ffffff"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:visibility="gone"
+                            android:enabled="true"/>
+
+                    </RelativeLayout>
+                </ScrollView>
+
+                <ProgressBar
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:id="@+id/pb_loading"
+                    android:indeterminate="true"
+                    android:layout_centerInParent="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:id="@+id/empty"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--app:layout_anchor="@id/appbar"-->
+        <!--app:layout_anchorGravity="bottom|right|end"-->
+        <!--android:src="@drawable/edit_icon_white"-->
+        <!--android:layout_margin="@dimen/fab_margin"-->
+        <!--android:clickable="true"/>-->
+
+</android.support.design.widget.CoordinatorLayout>

@@ -13,26 +13,41 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import in.testpress.testpress.authenticator.ApiKeyProvider;
-import in.testpress.testpress.authenticator.NewUserRegistrationActivity;
-import in.testpress.testpress.authenticator.TestpressAuthenticatorActivity;
+import in.testpress.testpress.authenticator.RegisterActivity;
+import in.testpress.testpress.authenticator.RegistrationIntentService;
+import in.testpress.testpress.authenticator.ResetPasswordActivity;
+import in.testpress.testpress.authenticator.LoginActivity;
 import in.testpress.testpress.authenticator.CodeVerificationActivity;
 import in.testpress.testpress.core.Constants;
-import in.testpress.testpress.core.ExamPager;
 import in.testpress.testpress.core.PostFromAnyThreadBus;
 import in.testpress.testpress.core.RestAdapterRequestInterceptor;
 import in.testpress.testpress.core.RestErrorHandler;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.core.UserAgentProvider;
-import in.testpress.testpress.ui.AttemptFragment;
-import in.testpress.testpress.ui.AttemptsListActivity;
-import in.testpress.testpress.ui.AttemptsListFragment;
-import in.testpress.testpress.ui.ExamActivity;
-import in.testpress.testpress.ui.ExamsListFragment;
+import in.testpress.testpress.ui.AccountActivateActivity;
+import in.testpress.testpress.ui.CropImageActivity;
+import in.testpress.testpress.ui.DocumentsListActivity;
+import in.testpress.testpress.ui.DocumentsListFragment;
+import in.testpress.testpress.ui.SplashScreenActivity;
+import in.testpress.testpress.ui.ZoomableImageActivity;
 import in.testpress.testpress.ui.MainActivity;
-import in.testpress.testpress.ui.NavigationDrawerFragment;
-import in.testpress.testpress.ui.ReviewActivity;
-import in.testpress.testpress.ui.ReviewFragment;
-import in.testpress.testpress.ui.ReviewQuestionsFragment;
+import in.testpress.testpress.ui.MainMenuFragment;
+import in.testpress.testpress.ui.OrderConfirmActivity;
+import in.testpress.testpress.ui.OrdersListActivity;
+import in.testpress.testpress.ui.OrdersListFragment;
+import in.testpress.testpress.ui.PaymentSuccessActivity;
+import in.testpress.testpress.ui.PostActivity;
+import in.testpress.testpress.ui.PostsListActivity;
+import in.testpress.testpress.ui.PostsListFragment;
+import in.testpress.testpress.ui.ProductDetailsActivity;
+import in.testpress.testpress.ui.ProductListFragment;
+import in.testpress.testpress.ui.ProductsListActivity;
+import in.testpress.testpress.ui.ProfileDetailsActivity;
+import in.testpress.testpress.ui.ProfilePhotoActivity;
+import in.testpress.testpress.ui.paymentGateway.CreditDebitCardActivity;
+import in.testpress.testpress.ui.paymentGateway.NetBankingActivity;
+import in.testpress.testpress.ui.paymentGateway.PaymentModeActivity;
+import in.testpress.testpress.ui.paymentGateway.PaymentsActivity;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
 
@@ -46,21 +61,35 @@ import retrofit.converter.GsonConverter;
 
         injects = {
                 TestpressApplication.class,
-                TestpressAuthenticatorActivity.class,
+                LoginActivity.class,
                 MainActivity.class,
-                ExamActivity.class,
-                NavigationDrawerFragment.class,
-                ExamsListFragment.class,
-                AttemptFragment.class,
-                ReviewFragment.class,
-                AttemptsListFragment.class,
-                ReviewQuestionsFragment.class,
-                ReviewActivity.class,
-                AttemptsListActivity.class,
-                ExamPager.class,
-                NewUserRegistrationActivity.class,
-                CodeVerificationActivity.class
-
+                RegisterActivity.class,
+                CodeVerificationActivity.class,
+                ProductsListActivity.class,
+                ProductListFragment.class,
+                ProductDetailsActivity.class,
+                OrdersListActivity.class,
+                OrdersListFragment.class,
+                PaymentSuccessActivity.class,
+                OrderConfirmActivity.class,
+                PaymentModeActivity.class,
+                PaymentsActivity.class,
+                CreditDebitCardActivity.class,
+                NetBankingActivity.class,
+                RegistrationIntentService.class,
+                PostActivity.class,
+                PostsListActivity.class,
+                PostsListFragment.class,
+                ProfileDetailsActivity.class,
+                ProfilePhotoActivity.class,
+                CropImageActivity.class,
+                MainMenuFragment.class,
+                ResetPasswordActivity.class,
+                DocumentsListActivity.class,
+                DocumentsListFragment.class,
+                ZoomableImageActivity.class,
+                SplashScreenActivity.class,
+                AccountActivateActivity.class
         }
 )
 public class TestpressModule {
@@ -78,13 +107,12 @@ public class TestpressModule {
 //    }
 
     @Provides
-    TestpressService provideTestpressService(RestAdapter restAdapter) {
+    TestpressService provideTestpressService(RestAdapter.Builder restAdapter) {
         return new TestpressService(restAdapter);
     }
 
-    @Singleton
     @Provides
-    TestpressServiceProvider provideTestpressServiceProvider(RestAdapter restAdapter, ApiKeyProvider apiKeyProvider) {
+    TestpressServiceProvider provideTestpressServiceProvider(RestAdapter.Builder restAdapter, ApiKeyProvider apiKeyProvider) {
         return new TestpressServiceProvider(restAdapter, apiKeyProvider);
     }
 
@@ -124,13 +152,12 @@ public class TestpressModule {
     }
 
     @Provides
-    RestAdapter provideRestAdapter(RestErrorHandler restErrorHandler, RestAdapterRequestInterceptor restRequestInterceptor, Gson gson) {
+    RestAdapter.Builder provideRestAdapter(RestErrorHandler restErrorHandler, RestAdapterRequestInterceptor restRequestInterceptor, Gson gson) {
         return new RestAdapter.Builder()
                 .setEndpoint(Constants.Http.URL_BASE)
                 .setErrorHandler(restErrorHandler)
                 .setRequestInterceptor(restRequestInterceptor)
                 .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setConverter(new GsonConverter(gson))
-                .build();
+                .setConverter(new GsonConverter(gson));
     }
 }

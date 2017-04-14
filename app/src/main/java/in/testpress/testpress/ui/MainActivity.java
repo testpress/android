@@ -1,117 +1,177 @@
-
-
 package in.testpress.testpress.ui;
 
-import android.accounts.OperationCanceledException;
-import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.MenuItem;
-import android.view.Window;
+import android.widget.TextView;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import in.testpress.testpress.BuildConfig;
+import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
+import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
+import in.testpress.testpress.authenticator.RegistrationIntentService;
+import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
-import in.testpress.testpress.events.NavItemSelectedEvent;
+import in.testpress.testpress.models.DaoSession;
+import in.testpress.testpress.models.InstituteSettings;
+import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.Update;
-import in.testpress.testpress.util.Ln;
+import in.testpress.testpress.util.CommonUtils;
+import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.SafeAsyncTask;
-import in.testpress.testpress.util.UIUtils;
 
-import com.squareup.otto.Subscribe;
+import com.afollestad.materialdialogs.GravityEnum;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+
+import java.io.IOException;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-
-
-/**
- * Initial activity for the application.
- *
- * If you need to remove the authentication from the application please see
- * {@link in.testpress.testpress.authenticator.ApiKeyProvider#getAuthKey(android.app.Activity)}
- */
 public class MainActivity extends TestpressFragmentActivity {
+
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private static final String TAG = "MainActivity";
 
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected TestpressService testpressService;
     @Inject protected LogoutService logoutService;
+    @InjectView(R.id.progressbar) RelativeLayout mProgressBarLayout;
+    @InjectView(R.id.empty_container) LinearLayout emptyView;
+    @InjectView(R.id.empty_title) TextView emptyTitleView;
+    @InjectView(R.id.empty_description) TextView emptyDescView;
+    @InjectView(R.id.retry_button) Button retryButton;
 
-    private boolean userHasAuthenticated = false;
-
-
-    private CharSequence title;
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
+    private InstituteSettingsDao instituteSettingsDao;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        // View injection with Butterknife
-        ButterKnife.inject(this);
+        Injector.inject(this);
         super.onCreate(savedInstanceState);
-
-        if(isTablet()) {
-            setContentView(R.layout.main_activity_tablet);
-        } else {
-            setContentView(R.layout.main_activity);
-        }
-
-        //checkAuth();
-        checkUpdate();
-
-    }
-
-    private boolean isTablet() {
-        return UIUtils.isTablet(this);
+        setContentView(R.layout.main_activity);
+        ButterKnife.inject(this);
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                CommonUtils.registerDevice(MainActivity.this, testpressService, serviceProvider);
+            }
+        };
+        DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
+        instituteSettingsDao = daoSession.getInstituteSettingsDao();
+        getInstituteSettings();
     }
 
     private void initScreen() {
-        if (userHasAuthenticated) {
-
-            final Intent intent = getIntent();
-            Bundle data = intent.getExtras();
-            CarouselFragment fragment = new CarouselFragment();
-            fragment.setArguments(data);
-            Ln.d("Foo");
-            final FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, fragment)
-                    .commitAllowingStateLoss();
+        SharedPreferences preferences =
+                getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
+        if (!preferences.getBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false)) {
+            if (checkPlayServices()) {
+                // Start IntentService to register this application with GCM.
+                Intent intent = new Intent(MainActivity.this, RegistrationIntentService.class);
+                startService(intent);
+            }
         }
-
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, new MainMenuFragment())
+                .commitAllowingStateLoss();
+        mProgressBarLayout.setVisibility(View.GONE);
     }
 
-    private void checkAuth() {
-        new SafeAsyncTask<Boolean>() {
-
+    private void getInstituteSettings() {
+        mProgressBarLayout.setVisibility(View.VISIBLE);
+        new SafeAsyncTask<InstituteSettings>() {
             @Override
-            public Boolean call() throws Exception {
-                final TestpressService svc = serviceProvider.getService(MainActivity.this);
-                return svc != null;
+            public InstituteSettings call() throws Exception {
+                return testpressService.getInstituteSettings();
             }
 
             @Override
-            protected void onException(final Exception e) throws RuntimeException {
-                super.onException(e);
-                if (e instanceof OperationCanceledException) {
-                    // User cancelled the authentication process (back button, etc).
-                    // Since auth could not take place, lets finish this activity.
-                    finish();
+            protected void onException(Exception exception) throws RuntimeException {
+                if (instituteSettingsDao.queryBuilder()
+                        .where(InstituteSettingsDao.Properties.BaseUrl
+                        .eq(Constants.Http.URL_BASE)).count() != 0) {
+
+                    checkUpdate();
+                    return;
                 }
+                if (exception.getCause() instanceof IOException) {
+                    setEmptyText(R.string.network_error, R.string.no_internet_try_again,
+                            R.drawable.ic_error_outline_black_18dp);
+                } else {
+                    setEmptyText(R.string.network_error, R.string.try_after_sometime,
+                            R.drawable.ic_error_outline_black_18dp);
+                }
+                mProgressBarLayout.setVisibility(View.GONE);
+                retryButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        emptyView.setVisibility(View.GONE);
+                        getInstituteSettings();
+                    }
+                });
             }
 
             @Override
-            protected void onSuccess(final Boolean hasAuthenticated) throws Exception {
-                super.onSuccess(hasAuthenticated);
-                userHasAuthenticated = true;
-                initScreen();
+            protected void onSuccess(InstituteSettings instituteSettings) throws Exception {
+                instituteSettings.setBaseUrl(Constants.Http.URL_BASE);
+                instituteSettingsDao.insertOrReplace(instituteSettings);
+                checkUpdate();
             }
         }.execute();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(GCMPreference.REGISTRATION_COMPLETE));
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        super.onPause();
+    }
+
+    /**
+     * Check the device to make sure it has the Google Play Services APK. If
+     * it doesn't, display a dialog that allows users to download the APK from
+     * the Google Play Store or enable it in the device's system settings.
+     */
+    private boolean checkPlayServices() {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
+                        .show();
+            } else {
+                Log.i(TAG, "This device is not supported.");
+                finish();
+            }
+            return false;
+        }
+        return true;
     }
 
     private void checkUpdate() {
@@ -123,82 +183,81 @@ public class MainActivity extends TestpressFragmentActivity {
 
             @Override
             protected void onException(final Exception e) throws RuntimeException {
-                checkAuth();
+                initScreen();
             }
 
             @Override
             protected void onSuccess(final Update update) throws Exception {
                 if(update.getUpdateRequired()) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                    builder.setCancelable(true);
-                    if(update.getForce()) {
-                        builder.setMessage(update.getMessage());
-                        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                            @Override
-                            public void onCancel(DialogInterface dialogInterface) {
-                                finish();
-                            }
-                        });
+                    if (update.getForce()) {
+                        new MaterialDialog.Builder(MainActivity.this)
+                                .cancelable(true)
+                                .content(update.getMessage())
+                                .cancelListener(new DialogInterface.OnCancelListener() {
+                                    @Override
+                                    public void onCancel(DialogInterface dialogInterface) {
+                                        finish();
+                                    }
+                                })
+                                .neutralText("Update")
+                                .buttonsGravity(GravityEnum.CENTER)
+                                .neutralColorRes(R.color.primary)
+                                .callback(new MaterialDialog.ButtonCallback() {
+                                    @Override
+                                    public void onNeutral(MaterialDialog dialog) {
+                                        dialog.cancel();
+                                        startActivity(new Intent(Intent.ACTION_VIEW,
+                                                Uri.parse("market://details?id=" + getPackageName())));
+                                        finish();
+                                    }
+                                })
+                                .show();
                     } else {
-                        builder.setMessage(update.getMessage());
-                        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                            @Override
-                            public void onCancel(DialogInterface dialogInterface) {
-                                checkAuth();
-                            }
-                        });
+                        initScreen();
+                        final CoordinatorLayout coordinatorLayout =
+                                (CoordinatorLayout) findViewById(R.id.coordinator_layout);
+                        Snackbar snackbar = Snackbar
+                                .make(coordinatorLayout, "New update is available",
+                                        Snackbar.LENGTH_INDEFINITE)
+                                .setAction("UPDATE", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        startActivity(new Intent(Intent.ACTION_VIEW,
+                                                Uri.parse("market://details?id=" + getPackageName())));
+                                        finish();
+                                    }
+                                });
+                        snackbar.show();
                     }
-
-                    builder.setNeutralButton("Update",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "in.testpress.testpress")));
-                                    //Should change "in.testpress.testpress" to "in.testpress.<App name>" for different apps
-                                    finish();
-                                }
-                            });
-                    AlertDialog alert = builder.create();
-                    alert.show();
-
-                } else checkAuth();
+                } else {
+                    initScreen();
+                }
             }
         }.execute();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                //menuDrawer.toggleMenu();
-                return true;
-            case R.id.logout:
-                serviceProvider.invalidateAuthToken();
-                logoutService.logout(new Runnable() {
-                    @Override
-                    public void run() {
-                        // Calling a refresh will force the service to look for a logged in user
-                        // and when it finds none the user will be requested to log in again.
-                        checkAuth();
-                    }
-                });
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+    public void logout() {
+        new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
+                .setTitle(R.string.logout)
+                .setMessage(R.string.logout_confirm_message)
+                .setPositiveButton(R.string.ok,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                                serviceProvider.logout(MainActivity.this, testpressService,
+                                        serviceProvider, logoutService);
+                            }
+                        })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
     }
 
-    @Subscribe
-    public void onNavigationItemSelected(NavItemSelectedEvent event) {
-
-        Ln.d("Selected: %1$s", event.getItemPosition());
-
-        switch(event.getItemPosition()) {
-            case 0:
-                // Home
-                // do nothing as we're already on the home screen.
-                break;
-        }
+    protected void setEmptyText(final int title, final int description, final int left) {
+        emptyView.setVisibility(View.VISIBLE);
+        emptyTitleView.setText(title);
+        emptyTitleView.setCompoundDrawablesWithIntrinsicBounds(left, 0, 0, 0);
+        emptyDescView.setText(description);
     }
+
 }

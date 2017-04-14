@@ -7,10 +7,8 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -18,9 +16,11 @@ public class Exam implements Parcelable {
     private String totalMarks;
     private String url;
     private Integer id;
+    private Integer attemptsCount;
+    private Integer pausedAttemptsCount;
     private String title;
     private String description;
-    private String course;
+    private String course_category;
     private String startDate;
     private String endDate;
     private String duration;
@@ -29,29 +29,32 @@ public class Exam implements Parcelable {
     private String markPerQuestion;
     private Integer templateType;
     private Boolean allowRetake;
+    private Boolean allowPdf;
+    private Integer maxRetakes;
     private String attemptsUrl;
-    private List<Attempt> attempts;
     private Map<String, String> additionalProperties = new HashMap<String, String>();
 
     // Parcelling part
     public Exam(Parcel parcel){
-        totalMarks         = parcel.readString();
-        url                = parcel.readString();
-        id                 = parcel.readInt();
-        title              = parcel.readString();
-        description        = parcel.readString();
-        course             = parcel.readString();
-        startDate          = parcel.readString();
-        endDate            = parcel.readString();
-        duration           = parcel.readString();
-        numberOfQuestions  = parcel.readInt();
-        negativeMarks      = parcel.readString();
-        markPerQuestion    = parcel.readString();
-        templateType       = parcel.readInt();
-        allowRetake        = parcel.readByte() != 0;
-        attemptsUrl        = parcel.readString();
-        attempts = new ArrayList<Attempt>();
-        parcel.readTypedList(attempts, Attempt.CREATOR);
+        totalMarks          = parcel.readString();
+        url                 = parcel.readString();
+        id                  = parcel.readInt();
+        attemptsCount       = parcel.readInt();
+        pausedAttemptsCount = parcel.readInt();
+        title               = parcel.readString();
+        description         = parcel.readString();
+        course_category = parcel.readString();
+        startDate           = parcel.readString();
+        endDate             = parcel.readString();
+        duration            = parcel.readString();
+        numberOfQuestions   = parcel.readInt();
+        negativeMarks       = parcel.readString();
+        markPerQuestion     = parcel.readString();
+        templateType        = parcel.readInt();
+        allowRetake         = parcel.readByte() != 0;
+        allowPdf            = parcel.readByte() != 0;
+        maxRetakes          = parcel.readInt();
+        attemptsUrl         = parcel.readString();
     }
 
     @Override
@@ -64,9 +67,11 @@ public class Exam implements Parcelable {
         parcel.writeString(totalMarks);
         parcel.writeString(url);
         parcel.writeInt(id);
+        parcel.writeInt(attemptsCount);
+        parcel.writeInt(pausedAttemptsCount);
         parcel.writeString(title);
         parcel.writeString(description);
-        parcel.writeString(course);
+        parcel.writeString(course_category);
         parcel.writeString(startDate);
         parcel.writeString(endDate);
         parcel.writeString(duration);
@@ -79,8 +84,13 @@ public class Exam implements Parcelable {
         } else {
             parcel.writeByte((byte) (allowRetake ? 1 : 0)); //if review == true, byte == 1
         }
+        if (allowPdf == null) {
+            parcel.writeByte((byte) (0));
+        } else {
+            parcel.writeByte((byte) (allowPdf ? 1 : 0)); //if review == true, byte == 1
+        }
+        parcel.writeInt(maxRetakes);
         parcel.writeString(attemptsUrl);
-        parcel.writeTypedList(attempts);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
@@ -120,6 +130,16 @@ public class Exam implements Parcelable {
         return url;
     }
 
+    public String getUrlFrag() {
+        try {
+            URL fragUrl = new URL(url);
+            return fragUrl.getFile().substring(1);
+        }
+        catch (Exception e) {
+            return null;
+        }
+    }
+
     /**
      *
      * @param url
@@ -147,6 +167,41 @@ public class Exam implements Parcelable {
         this.id = id;
     }
 
+    /**
+     *
+     * @return
+     * The attempts count
+     */
+    public Integer getAttemptsCount() {
+        return attemptsCount;
+    }
+
+    /**
+     *
+     * @param attemptsCount
+     * The attempts count
+     */
+    public void setAttemptsCount(Integer attemptsCount) {
+        this.attemptsCount = attemptsCount;
+    }
+
+    /**
+     *
+     * @return
+     * Paused attempts count
+     */
+    public Integer getPausedAttemptsCount() {
+        return pausedAttemptsCount;
+    }
+
+    /**
+     *
+     * @param pausedAttemptsCount
+     * Paused attempts count
+     */
+    public void setPausedAttemptsCount(Integer pausedAttemptsCount) {
+        this.pausedAttemptsCount = pausedAttemptsCount;
+    }
     /**
      *
      * @return
@@ -186,19 +241,19 @@ public class Exam implements Parcelable {
     /**
      *
      * @return
-     * The course
+     * The course_category
      */
-    public String getCourse() {
-        return course;
+    public String getCourse_category() {
+        return course_category;
     }
 
     /**
      *
-     * @param course
-     * The course
+     * @param course_category
+     * The course_category
      */
-    public void setCourse(String course) {
-        this.course = course;
+    public void setCourse_category(String course_category) {
+        this.course_category = course_category;
     }
     /**
      *
@@ -206,7 +261,6 @@ public class Exam implements Parcelable {
      * The startDate
      */
     public String getStartDate() {
-        startDate = startDate.substring(0,startDate.length()-10);
         return startDate;
     }
 
@@ -231,7 +285,7 @@ public class Exam implements Parcelable {
             }
         } catch (ParseException e) {
         }
-        return null;
+        return "forever";
     }
 
     /**
@@ -240,6 +294,14 @@ public class Exam implements Parcelable {
      * The endDate
      */
     public String getEndDate() {
+        return endDate;
+    }
+
+    public String getFormattedStartDate() {
+        return formatDate(startDate);
+    }
+
+    public String getFormattedEndDate() {
         return formatDate(endDate);
     }
 
@@ -369,6 +431,30 @@ public class Exam implements Parcelable {
     /**
      *
      * @return
+     * Allow pdf
+     */
+    public Boolean getAllowPdf() {
+        return allowPdf;
+    }
+
+    /**
+     *
+     * @param allowPdf
+     * Allow retake
+     */
+    public void setAllowPdf(Boolean allowPdf) {
+        this.allowPdf = allowPdf;
+    }
+
+    public Integer getMaxRetakes() {
+        return maxRetakes;
+    }
+
+    public void setMaxRetakes(Integer maxRetakes) { this.maxRetakes = maxRetakes; }
+
+    /**
+     *
+     * @return
      * The startUrl
      */
     public String getAttemptsUrl() {
@@ -383,15 +469,6 @@ public class Exam implements Parcelable {
         catch (Exception e) {
             return null;
         }
-    }
-
-
-    public List<Attempt> getAttempts() {
-        return attempts;
-    }
-
-    public void setAttempts(List<Attempt> attempts) {
-        this.attempts = attempts;
     }
 
     /**

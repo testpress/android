@@ -10,20 +10,29 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.TextView;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
+import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.authenticator.RegistrationIntentService;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
+import in.testpress.testpress.models.DaoSession;
+import in.testpress.testpress.models.InstituteSettings;
+import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.Update;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
@@ -33,6 +42,8 @@ import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+
+import java.io.IOException;
 
 import javax.inject.Inject;
 
@@ -44,23 +55,30 @@ public class MainActivity extends TestpressFragmentActivity {
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected TestpressService testpressService;
     @Inject protected LogoutService logoutService;
+    @InjectView(R.id.progressbar) RelativeLayout mProgressBarLayout;
+    @InjectView(R.id.empty_container) LinearLayout emptyView;
+    @InjectView(R.id.empty_title) TextView emptyTitleView;
+    @InjectView(R.id.empty_description) TextView emptyDescView;
+    @InjectView(R.id.retry_button) Button retryButton;
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-    private RelativeLayout mProgressBarLayout;
+    private InstituteSettingsDao instituteSettingsDao;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         Injector.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-        mProgressBarLayout = (RelativeLayout) findViewById(R.id.progressbar);
+        ButterKnife.inject(this);
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 CommonUtils.registerDevice(MainActivity.this, testpressService, serviceProvider);
             }
         };
-        checkUpdate();
+        DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
+        instituteSettingsDao = daoSession.getInstituteSettingsDao();
+        getInstituteSettings();
     }
 
     private void initScreen() {
@@ -77,6 +95,49 @@ public class MainActivity extends TestpressFragmentActivity {
                 .replace(R.id.container, new MainMenuFragment())
                 .commitAllowingStateLoss();
         mProgressBarLayout.setVisibility(View.GONE);
+    }
+
+    private void getInstituteSettings() {
+        mProgressBarLayout.setVisibility(View.VISIBLE);
+        new SafeAsyncTask<InstituteSettings>() {
+            @Override
+            public InstituteSettings call() throws Exception {
+                return testpressService.getInstituteSettings();
+            }
+
+            @Override
+            protected void onException(Exception exception) throws RuntimeException {
+                if (instituteSettingsDao.queryBuilder()
+                        .where(InstituteSettingsDao.Properties.BaseUrl
+                        .eq(Constants.Http.URL_BASE)).count() != 0) {
+
+                    checkUpdate();
+                    return;
+                }
+                if (exception.getCause() instanceof IOException) {
+                    setEmptyText(R.string.network_error, R.string.no_internet_try_again,
+                            R.drawable.ic_error_outline_black_18dp);
+                } else {
+                    setEmptyText(R.string.network_error, R.string.try_after_sometime,
+                            R.drawable.ic_error_outline_black_18dp);
+                }
+                mProgressBarLayout.setVisibility(View.GONE);
+                retryButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        emptyView.setVisibility(View.GONE);
+                        getInstituteSettings();
+                    }
+                });
+            }
+
+            @Override
+            protected void onSuccess(InstituteSettings instituteSettings) throws Exception {
+                instituteSettings.setBaseUrl(Constants.Http.URL_BASE);
+                instituteSettingsDao.insertOrReplace(instituteSettings);
+                checkUpdate();
+            }
+        }.execute();
     }
 
     @Override
@@ -190,6 +251,13 @@ public class MainActivity extends TestpressFragmentActivity {
                         })
                 .setNegativeButton(R.string.cancel, null)
                 .show();
+    }
+
+    protected void setEmptyText(final int title, final int description, final int left) {
+        emptyView.setVisibility(View.VISIBLE);
+        emptyTitleView.setText(title);
+        emptyTitleView.setCompoundDrawablesWithIntrinsicBounds(left, 0, 0, 0);
+        emptyDescView.setText(description);
     }
 
 }

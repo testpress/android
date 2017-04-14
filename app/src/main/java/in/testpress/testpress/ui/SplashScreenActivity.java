@@ -1,7 +1,6 @@
 package in.testpress.testpress.ui;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -91,6 +90,9 @@ public class SplashScreenActivity extends Activity {
                             break;
                         case "login":
                             gotoActivity(MainActivity.class, true);
+                            break;
+                        case "activate":
+                            gotoAccountActivate(uri.getPath());
                             break;
                         case "courses":
                         case "chapters":
@@ -185,6 +187,14 @@ public class SplashScreenActivity extends Activity {
         productIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         productIntent.putExtra(Constants.IS_DEEP_LINK, true);
         startActivity(productIntent);
+        finish();
+    }
+
+    private void gotoAccountActivate(String activateUrlFrag) {
+        Intent intent = new Intent(SplashScreenActivity.this, AccountActivateActivity.class);
+        intent.putExtra(AccountActivateActivity.ACTIVATE_URL_FRAG, activateUrlFrag);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
         finish();
     }
 

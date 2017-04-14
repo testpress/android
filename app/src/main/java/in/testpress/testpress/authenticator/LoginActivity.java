@@ -484,7 +484,9 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     @OnClick(id.signup) public void signUp() {
         if(internetConnectivityChecker.isConnected()) {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-            intent.putExtras(getIntent().getExtras());
+            if(getIntent().getExtras() != null) {
+                intent.putExtras(getIntent().getExtras());
+            }
             startActivityForResult(intent, REQUEST_CODE_REGISTER_USER);
         } else {
             internetConnectivityChecker.showAlert();

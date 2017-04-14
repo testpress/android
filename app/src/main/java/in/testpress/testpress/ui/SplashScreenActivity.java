@@ -202,13 +202,10 @@ public class SplashScreenActivity extends Activity {
         if (requireAuthentication && !CommonUtils.isUserAuthenticated(SplashScreenActivity.this)) {
             activityClass = LoginActivity.class;
         }
-        Intent passwordIntent =
-                new Intent(SplashScreenActivity.this, activityClass);
-        passwordIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-        passwordIntent.putExtra(Constants.IS_DEEP_LINK, true);
-        startActivity(passwordIntent);
+        Intent intent = new Intent(SplashScreenActivity.this, activityClass);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra(Constants.IS_DEEP_LINK, true);
+        startActivity(intent);
         finish();
     }
 

@@ -27,6 +27,7 @@ import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.authenticator.LoginActivity;
 import in.testpress.testpress.core.TestpressService;
+import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.util.UIUtils;
 import retrofit.client.Response;
@@ -46,7 +47,6 @@ public class AccountActivateActivity extends AppCompatActivity {
     @InjectView(R.id.success_image) ImageView successImage;
     @InjectView(R.id.success_title) TextView successTitle;
     @InjectView(R.id.success_description) TextView successDescription;
-    @InjectView(R.id.success_ok) TextView loginButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -106,12 +106,10 @@ public class AccountActivateActivity extends AppCompatActivity {
                 if (htmlResponse.contains(getString(R.string.activate_completed_title))) {
                     successTitle.setText(R.string.activate_completed_title);
                     successDescription.setText(R.string.activate_completed_message);
-                    loginButton.setText(R.string.login);
                 } else {
                     successImage.setImageResource(R.drawable.testpress_alert_warning);
                     successTitle.setText(R.string.activate_incomplete_title);
                     successDescription.setText(R.string.activate_incomplete_message);
-                    loginButton.setText(R.string.ok);
                 }
                 successContainer.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
@@ -120,10 +118,14 @@ public class AccountActivateActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.success_ok) public void login() {
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
+        if (CommonUtils.isUserAuthenticated(this)) {
+            finish();
+        } else {
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        }
     }
 
     protected void setEmptyText(final int title, final int description, final int left) {

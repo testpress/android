@@ -35,7 +35,7 @@ public class ResetPasswordActivity extends FragmentActivity {
     public int resetErrorMessage;
     @InjectView(R.id.success_ok) Button okButton;
     @InjectView(R.id.form) LinearLayout formContainer;
-    @InjectView(R.id.success_complete) RelativeLayout successContainer;
+    @InjectView(R.id.success_complete) LinearLayout successContainer;
     private final TextWatcher watcher = validationTextWatcher();
 
     @Override

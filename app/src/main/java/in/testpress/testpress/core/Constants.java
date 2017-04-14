@@ -58,11 +58,11 @@ public final class Constants {
         /**
          * New User Register URL
          */
-        public static final String URL_REGISTER_FRAG = "/api/v2/register/";
+        public static final String URL_REGISTER_FRAG = "/api/v2.2/register/";
         /**
          * Code Verification URL
          */
-        public static final String URL_VERIFY_FRAG = "/api/v2/verify/";
+        public static final String URL_VERIFY_FRAG = "/api/v2.2/verify/";
 
         /**
          * List Products URL
@@ -88,6 +88,11 @@ public final class Constants {
          * Devices Register URL
          */
         public static final String URL_DEVICES_REGISTER_FRAG =  "/api/v2.2/devices/register/";
+
+        /**
+         * Institute Settings URL
+         */
+        public static final String URL_INSTITUTE_SETTINGS_FRAG =  "/api/v2.2/settings/";
 
         /**
          * Posts URL

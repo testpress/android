@@ -4,10 +4,24 @@
     android:layout_height="match_parent"
     xmlns:fbutton="http://schemas.android.com/apk/res-auto"
     xmlns:facebook="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/login_layout"
     android:fillViewport="true">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <ProgressBar
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:id="@+id/pb_loading"
+        android:indeterminate="true"
+        android:visibility="gone"
+        android:layout_centerInParent="true"/>
+
+    <include layout="@layout/empty_view" />
+
     <LinearLayout
+        android:id="@+id/login_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="50dp"
@@ -85,7 +99,6 @@
                     android:text="@string/forgot_password" />
 
                 <TextView
-                    android:visibility="gone"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
                     android:id="@+id/signup"
@@ -98,7 +111,6 @@
             </RelativeLayout>
 
             <LinearLayout
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/social_sign_in_buttons"
@@ -144,11 +156,12 @@
                     android:paddingTop="12dp"
                     android:paddingBottom="12dp"
                     android:paddingLeft="10dp"
+                    android:layout_marginBottom="10dp"
                     facebook:com_facebook_login_text="@string/login_with_facebook" />
 
                 <android.support.v7.widget.AppCompatButton
                     android:id="@+id/google_sign_in_button"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:text="@string/login_with_google"
                     android:textAllCaps="false"
                     android:textStyle="bold"
@@ -162,4 +175,5 @@
 
         </LinearLayout>
     </LinearLayout>
+    </RelativeLayout>
 </ScrollView>

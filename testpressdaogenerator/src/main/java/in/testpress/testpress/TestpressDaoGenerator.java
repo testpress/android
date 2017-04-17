@@ -8,7 +8,7 @@ import de.greenrobot.daogenerator.ToMany;
 
 public class TestpressDaoGenerator {
     public static void main(String args[]) throws Exception {
-        Schema schema = new Schema(3, "in.testpress.testpress.models");
+        Schema schema = new Schema(4, "in.testpress.testpress.models");
 
         Entity post = schema.addEntity("Post");
         post.addLongProperty("id").primaryKey();
@@ -35,6 +35,28 @@ public class TestpressDaoGenerator {
         Property categoryId = post.addLongProperty("categoryId").getProperty();
         post.addToOne(category, categoryId);
 
-        new DaoGenerator().generateAll(schema, "../app/src/main/java/");
+        Entity instituteSettings = schema.addEntity("InstituteSettings");
+        instituteSettings.addStringProperty("baseUrl").primaryKey();
+        instituteSettings.addStringProperty("verificationMethod");
+        instituteSettings.addBooleanProperty("allowSignup");
+        instituteSettings.addBooleanProperty("forceStudentData");
+        instituteSettings.addBooleanProperty("removeTpBranding");
+        instituteSettings.addStringProperty("url");
+        instituteSettings.addBooleanProperty("showGameFrontend");
+        instituteSettings.addBooleanProperty("coursesEnabled");
+        instituteSettings.addBooleanProperty("coursesEnableGamification");
+        instituteSettings.addStringProperty("coursesLabel");
+        instituteSettings.addBooleanProperty("postsEnabled");
+        instituteSettings.addStringProperty("postsLabel");
+        instituteSettings.addBooleanProperty("storeEnabled");
+        instituteSettings.addStringProperty("storeLabel");
+        instituteSettings.addBooleanProperty("documentsEnabled");
+        instituteSettings.addStringProperty("documentsLabel");
+        instituteSettings.addBooleanProperty("resultsEnabled");
+        instituteSettings.addBooleanProperty("dashboardEnabled");
+        instituteSettings.addBooleanProperty("facebookLoginEnabled");
+        instituteSettings.addBooleanProperty("googleLoginEnabled");
+
+        new DaoGenerator().generateAll(schema, "app/src/main/java/");
     }
 }

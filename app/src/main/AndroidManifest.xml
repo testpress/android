@@ -140,12 +140,6 @@
             android:label="Documents" />
 
         <activity
-            android:name=".ui.AnalyticsActivity"
-            android:theme="@style/AppTheme"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/subject_wise_analytics" />
-
-        <activity
             android:name=".ui.PostsListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Articles" />
@@ -208,6 +202,11 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.AccountActivateActivity"
+            android:configChanges="orientation|keyboard|screenSize"
+            android:label="@string/activate" />
 
     </application>
 

@@ -8,6 +8,14 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/success_message_layout" />
+
+    <LinearLayout
+        android:id="@+id/register_layout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="60dp"
         android:paddingLeft="24dp"
@@ -56,6 +64,7 @@
 
         <!-- Phone Label -->
         <android.support.design.widget.TextInputLayout
+            android:id="@+id/phone_layout"
             style="@style/TextLabelTab"
             android:theme="@style/TextLabel"
             android:layout_marginTop="8dp"
@@ -129,5 +138,7 @@
             android:text="Register"
             android:textColor="@color/white"
             />
+    </LinearLayout>
+
     </LinearLayout>
 </ScrollView>

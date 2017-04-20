@@ -10,9 +10,11 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -37,6 +39,7 @@ import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.RegistrationErrorDetails;
+import in.testpress.testpress.ui.ExploreSpinnerAdapter;
 import in.testpress.testpress.ui.TextWatcherAdapter;
 import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.SafeAsyncTask;
@@ -50,6 +53,7 @@ import static in.testpress.testpress.authenticator.RegisterActivity.Verification
 public class RegisterActivity extends AppCompatActivity {
 
     @Inject TestpressService testpressService;
+    @InjectView(id.membership_id) EditText membershipId;
     @InjectView(id.et_username) EditText usernameText;
     @InjectView(id.et_password) EditText passwordText;
     @InjectView(id.et_password_confirm) EditText confirmPasswordText;
@@ -58,6 +62,7 @@ public class RegisterActivity extends AppCompatActivity {
     @InjectView(id.phone_layout) TextInputLayout phoneLayout;
     @InjectView(id.tv_fill_all_details) TextView fillAllDetailsText;
     @InjectView(id.b_register) Button registerButton;
+    @InjectView(id.professional_membership_spinner) Spinner professionalMembershipSpinner;
     @InjectView(id.register_layout) LinearLayout registerLayout;
     @InjectView(R.id.success_complete) LinearLayout successContainer;
     @InjectView(R.id.success_description) TextView successDescription;
@@ -68,6 +73,7 @@ public class RegisterActivity extends AppCompatActivity {
     private InternetConnectivityChecker internetConnectivityChecker = new InternetConnectivityChecker(this);
     private VerificationMethod verificationMethod;
     enum VerificationMethod { MOBILE, EMAIL }
+    private int professionalMembership; // Default CA
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -97,16 +103,33 @@ public class RegisterActivity extends AppCompatActivity {
                 return false;
             }
         });
+        membershipId.setSingleLine();
         usernameText.addTextChangedListener(watcher);
         passwordText.addTextChangedListener(watcher);
         emailText.addTextChangedListener(watcher);
-        if (verificationMethod.equals(MOBILE)) {
-            phoneText.addTextChangedListener(watcher);
-            phoneLayout.setVisibility(View.VISIBLE);
-        } else {
-            phoneLayout.setVisibility(View.GONE);
-        }
+        phoneText.addTextChangedListener(watcher);
+        phoneLayout.setVisibility(View.VISIBLE);
         confirmPasswordText.addTextChangedListener(watcher);
+        ExploreSpinnerAdapter adapter = new ExploreSpinnerAdapter(getLayoutInflater(),
+                getResources(), false);
+
+        for (String string : getResources().getStringArray(R.array.professional_membership)) {
+            adapter.addItem(string, string, true, 0);
+        }
+        professionalMembershipSpinner.setAdapter(adapter);
+        professionalMembershipSpinner.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position,
+                                               long id) {
+
+                        professionalMembership = position + 1;
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                    }
+                });
     }
 
     void postDetails(){
@@ -118,7 +141,14 @@ public class RegisterActivity extends AppCompatActivity {
                 .show();
         new SafeAsyncTask<Boolean>() {
             public Boolean call() throws Exception {
-                registrationSuccessResponse = testpressService.register(usernameText.getText().toString(), emailText.getText().toString(), passwordText.getText().toString(), phoneText.getText().toString());
+                registrationSuccessResponse = testpressService.register(
+                        usernameText.getText().toString(),
+                        professionalMembership,
+                        membershipId.getText().toString(),
+                        emailText.getText().toString(),
+                        passwordText.getText().toString(),
+                        phoneText.getText().toString()
+                );
                 return true;
             }
 
@@ -127,8 +157,8 @@ public class RegisterActivity extends AppCompatActivity {
                 // Retrofit Errors are handled
                 if((e instanceof RetrofitError)) {
                     RegistrationErrorDetails registrationErrorDetails = (RegistrationErrorDetails)((RetrofitError) e).getBodyAs(RegistrationErrorDetails.class);
-                    if(!registrationErrorDetails.getUsername().isEmpty()) {
-                        usernameText.setError(registrationErrorDetails.getUsername().get(0));
+                    if(!registrationErrorDetails.getFirstName().isEmpty()) {
+                        usernameText.setError(registrationErrorDetails.getPhone().get(0));
                         usernameText.requestFocus();
                     }
                     if(!registrationErrorDetails.getEmail().isEmpty()) {
@@ -143,6 +173,18 @@ public class RegisterActivity extends AppCompatActivity {
                         phoneText.setError(registrationErrorDetails.getPhone().get(0));
                         phoneText.requestFocus();
                     }
+                    if(!registrationErrorDetails.getMembershipId().isEmpty()) {
+                        membershipId.setError(registrationErrorDetails.getPhone().get(0));
+                        membershipId.requestFocus();
+                    }
+                    if(!registrationErrorDetails.getProfessionalMembership().isEmpty()) {
+                        new AlertDialog.Builder(RegisterActivity.this,
+                                R.style.TestpressAppCompatAlertDialogStyle)
+                                .setMessage(registrationErrorDetails.getPhone().get(0))
+                                .setPositiveButton(R.string.ok, null)
+                                .show();
+                    }
+
                 }
                 progressDialog.dismiss();
             }
@@ -178,7 +220,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void updateUIWithValidation() {
         final boolean populated = populated(usernameText) && populated(passwordText) &&
                 populated(emailText) && populated(confirmPasswordText) &&
-                (populated(phoneText) || verificationMethod.equals(EMAIL));
+                populated(phoneText);
         if(populated) {
             registerButton.setEnabled(true);
             fillAllDetailsText.setVisibility(View.GONE);
@@ -207,16 +249,14 @@ public class RegisterActivity extends AppCompatActivity {
                emailText.requestFocus();
                return false;
            }
-            if (verificationMethod.equals(MOBILE)) {
-                //Phone number verification
-                Pattern phoneNumberPattern = Pattern.compile("[789]\\d{9}");
-                Matcher phoneNumberMatcher = phoneNumberPattern.matcher(phoneText.getText()
-                        .toString().trim());
-                if (!phoneNumberMatcher.matches()) {
-                    phoneText.setError("Please enter 10 digit valid mobile number");
-                    phoneText.requestFocus();
-                    return false;
-                }
+            //Phone number verification
+            Pattern phoneNumberPattern = Pattern.compile("[789]\\d{9}");
+            Matcher phoneNumberMatcher = phoneNumberPattern.matcher(phoneText.getText()
+                    .toString().trim());
+            if (!phoneNumberMatcher.matches()) {
+                phoneText.setError("Please enter 10 digit valid mobile number");
+                phoneText.requestFocus();
+                return false;
             }
            //Password verification
            if(passwordText.getText().toString().trim().length()<6){

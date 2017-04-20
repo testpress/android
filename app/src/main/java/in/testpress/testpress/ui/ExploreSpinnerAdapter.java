@@ -16,14 +16,14 @@ import java.util.ArrayList;
 import in.testpress.testpress.R;
 
 /** Adapter that provides views for our top-level Action Bar spinner. */
-class ExploreSpinnerAdapter extends BaseAdapter {
+public class ExploreSpinnerAdapter extends BaseAdapter {
     private int mDotSize;
     private boolean mTopLevel;
     private LayoutInflater inflater;
     private Resources resources;
     private boolean hideSpinner; // Icon will be used instead of showing the selected item in spinner.
 
-    ExploreSpinnerAdapter(LayoutInflater inflater, Resources resources, boolean topLevel) {
+    public ExploreSpinnerAdapter(LayoutInflater inflater, Resources resources, boolean topLevel) {
         this.inflater = inflater;
         this.resources = resources;
         this.mTopLevel = topLevel;

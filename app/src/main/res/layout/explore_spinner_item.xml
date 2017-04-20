@@ -1,20 +1,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="@dimen/explore_spinner_width"
+    android:layout_width="95dp"
     android:layout_height="wrap_content">
 
     <TextView
         android:id="@android:id/text1"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:textColor="#ffffff"
         android:textSize="16sp"
         android:layout_gravity="end"
         android:gravity="center_vertical"
         android:background="@color/primary"
-        android:drawablePadding="3dp"
+        android:drawablePadding="5dp"
         android:drawableRight="@drawable/spinner_triangle" />
 
 </LinearLayout>

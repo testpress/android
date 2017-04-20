@@ -7,12 +7,40 @@ import java.util.Map;
 
 public class RegistrationErrorDetails {
 
+    private List<String> firstName = new ArrayList<String>();
+    private List<String> professionalMembership = new ArrayList<String>();
+    private List<String> membershipId = new ArrayList<String>();
     private List<String> username = new ArrayList<String>();
     private List<String> email = new ArrayList<String>();
     private List<String> password = new ArrayList<String>();
     private List<String> phone = new ArrayList<String>();
     private List<String> nonFieldErrors = new ArrayList<String>();
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+
+    public List<String> getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(List<String> firstName) {
+        this.firstName = firstName;
+    }
+
+    public List<String> getProfessionalMembership() {
+        return professionalMembership;
+    }
+
+    public void setProfessionalMembership(List<String> professionalMembership) {
+        this.professionalMembership = professionalMembership;
+    }
+
+    public List<String> getMembershipId() {
+        return membershipId;
+    }
+
+    public void setMembershipId(List<String> membershipId) {
+        this.membershipId = membershipId;
+    }
+
     /**
      *
      * @return

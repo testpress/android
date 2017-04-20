@@ -9,6 +9,14 @@
     <string name="server_client_id">1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com</string>
     <string name="share_message">Learning Management System of the IIIP of ICAI. Get it at https://play.google.com/store/apps/details?id=</string>
 
+    <string-array name="professional_membership">
+        <item>CA</item>
+        <item>CS</item>
+        <item>CWA</item>
+        <item>LAWYER</item>
+        <item>OTHERS</item>
+    </string-array>
+
     <string name="refresh_action">Refresh</string>
 
     <string name="error_loading_products">Loading Products failed</string>
@@ -42,7 +50,9 @@
     <string name="something_went_wrong_please_try_after">Something went wrong, please try after sometime</string>
 
     <!-- AuthenticatorActivity -->
-    <string name="label_username">Username</string>
+    <string name="label_username">Name</string>
+    <string name="professional_membership">Professional Membership</string>
+    <string name="membership_id">Membership Id (If applicable)</string>
     <string name="label_password">Password</string>
     <string name="label_email">Email</string>
     <string name="label_phone">Phone</string>

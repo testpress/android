@@ -131,9 +131,14 @@ public class TestpressService {
         return getPostService().getPostDetails(url, queryParams);
     }
 
-    public RegistrationSuccessResponse register(String username,String email, String password, String phone){
+    public RegistrationSuccessResponse register(String name, Integer professionalMembership,
+                                                String membershipId, String email, String password,
+                                                String phone) {
+
         HashMap<String, String> userDetails = new HashMap<String, String>();
-        userDetails.put("username", username);
+        userDetails.put("first_name", name);
+        userDetails.put("professional_membership", professionalMembership.toString());
+        userDetails.put("membership_id", membershipId);
         userDetails.put("email", email);
         userDetails.put("password", password);
         if (!phone.trim().isEmpty()) {

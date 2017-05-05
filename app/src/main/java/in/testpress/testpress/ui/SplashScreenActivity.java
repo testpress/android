@@ -222,7 +222,7 @@ public class SplashScreenActivity extends Activity {
             if (resultCode == RESULT_OK) {
                 gotoHome();
             } else if (resultCode == RESULT_CANCELED) {
-                if (data.getBooleanExtra(ACTION_PRESSED_HOME, false)) {
+                if (data != null && data.getBooleanExtra(ACTION_PRESSED_HOME, false)) {
                     gotoHome();
                 } else {
                     finish();

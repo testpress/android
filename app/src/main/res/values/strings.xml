@@ -94,4 +94,12 @@
     <string name="logout">Log Out</string>
     <string name="logout_confirm_message">Are you sure you want to log out?</string>
 
+    <string name="activation_email_sent_message">An activation email has been sent. Please check your email and click on the link to activate your account.</string>
+    <string name="activate">Activate</string>
+    <string name="activate_completed_title">Activation complete</string>
+    <string name="activate_completed_message">Thanks, activation complete! You may now login using the username and password you set at registration.</string>
+    <string name="activate_incomplete_title">Activation problem</string>
+    <string name="activate_incomplete_message">It seems that the activation key is invalid. Please check the url again.</string>
+    <string name="login">Login</string>
+
 </resources>

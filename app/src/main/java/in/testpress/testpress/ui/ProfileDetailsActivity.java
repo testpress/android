@@ -178,10 +178,10 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
                 emptyView.setText(R.string.no_internet);
                 emptyView.setVisibility(View.VISIBLE);
                 Toaster.showLong(ProfileDetailsActivity.this, R.string.no_internet);
-                return;
             } else {
                 Toaster.showLong(ProfileDetailsActivity.this, exception.getMessage());
             }
+            return;
         } else {
             emptyView.setVisibility(View.GONE);
             this.profileDetails = profileDetails;

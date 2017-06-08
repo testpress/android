@@ -67,6 +67,7 @@ import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.OrderConfirmActivity;
+import in.testpress.testpress.ui.PostActivity;
 import in.testpress.testpress.ui.TextWatcherAdapter;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
@@ -427,12 +428,22 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             setResult(RESULT_OK, intent);
         } else {
             Intent intent = new Intent(this, MainActivity.class);
-            if (getIntent().getStringExtra(Constants.DEEP_LINK_TO) != null &&
-                    getIntent().getStringExtra(Constants.DEEP_LINK_TO)
-                            .equals(Constants.DEEP_LINK_TO_PAYMENTS)) {
-                    intent = new Intent(this, OrderConfirmActivity.class);
-                    intent.putExtra(Constants.IS_DEEP_LINK, true);
-                    intent.putExtras(getIntent().getExtras());
+            if (getIntent().getStringExtra(Constants.DEEP_LINK_TO) != null) {
+                switch (getIntent().getStringExtra(Constants.DEEP_LINK_TO)) {
+                    case Constants.DEEP_LINK_TO_PAYMENTS:
+                        intent = new Intent(this, OrderConfirmActivity.class);
+                        intent.putExtra(Constants.IS_DEEP_LINK, true);
+                        intent.putExtras(getIntent().getExtras());
+                        break;
+                    case Constants.DEEP_LINK_TO_POST:
+                        intent = new Intent(this, PostActivity.class);
+                        intent.putExtra(Constants.IS_DEEP_LINK, true);
+                        intent.putExtras(getIntent().getExtras());
+                        break;
+                    default:
+                        intent = new Intent(this, MainActivity.class);
+                        break;
+                }
             }
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);

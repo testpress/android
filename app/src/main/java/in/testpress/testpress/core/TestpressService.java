@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import in.testpress.testpress.models.Category;
+import in.testpress.testpress.models.Comment;
 import in.testpress.testpress.models.Device;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.Notes;
@@ -129,6 +130,16 @@ public class TestpressService {
 
     public Post getPostDetail(String url, Map<String, Boolean> queryParams) {
         return getPostService().getPostDetails(url, queryParams);
+    }
+
+    public TestpressApiResponse<Comment> getComments(long postId, Map<String, String> queryParams) {
+        return getPostService().getComments(postId, queryParams);
+    }
+
+    public Comment sendComments(long postId, String comment) {
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("comment", comment);
+        return getPostService().sendComments(postId, params);
     }
 
     public RegistrationSuccessResponse register(String username,String email, String password, String phone){

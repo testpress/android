@@ -1,7 +1,6 @@
 package in.testpress.testpress.ui;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -91,6 +90,9 @@ public class SplashScreenActivity extends Activity {
                             break;
                         case "login":
                             gotoActivity(MainActivity.class, true);
+                            break;
+                        case "activate":
+                            gotoAccountActivate(uri.getPath());
                             break;
                         case "courses":
                         case "chapters":
@@ -188,17 +190,22 @@ public class SplashScreenActivity extends Activity {
         finish();
     }
 
+    private void gotoAccountActivate(String activateUrlFrag) {
+        Intent intent = new Intent(SplashScreenActivity.this, AccountActivateActivity.class);
+        intent.putExtra(AccountActivateActivity.ACTIVATE_URL_FRAG, activateUrlFrag);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
     private void gotoActivity(Class activityClass, boolean requireAuthentication) {
         if (requireAuthentication && !CommonUtils.isUserAuthenticated(SplashScreenActivity.this)) {
             activityClass = LoginActivity.class;
         }
-        Intent passwordIntent =
-                new Intent(SplashScreenActivity.this, activityClass);
-        passwordIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-        passwordIntent.putExtra(Constants.IS_DEEP_LINK, true);
-        startActivity(passwordIntent);
+        Intent intent = new Intent(SplashScreenActivity.this, activityClass);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra(Constants.IS_DEEP_LINK, true);
+        startActivity(intent);
         finish();
     }
 
@@ -215,7 +222,7 @@ public class SplashScreenActivity extends Activity {
             if (resultCode == RESULT_OK) {
                 gotoHome();
             } else if (resultCode == RESULT_CANCELED) {
-                if (data.getBooleanExtra(ACTION_PRESSED_HOME, false)) {
+                if (data != null && data.getBooleanExtra(ACTION_PRESSED_HOME, false)) {
                     gotoHome();
                 } else {
                     finish();

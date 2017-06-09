@@ -6,11 +6,13 @@ import in.testpress.testpress.models.AuthToken;
 import in.testpress.testpress.models.ProfileDetails;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.Update;
+import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.EncodedPath;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.PUT;
+import retrofit.http.Path;
 
 public interface AuthenticationService {
 
@@ -39,4 +41,8 @@ public interface AuthenticationService {
     @PUT("/{updateUserUrlFrag}")
     ProfileDetails updateUser(@EncodedPath("updateUserUrlFrag") String updateUserUrlFrag,
                               @Body HashMap<String, Object> arguments);
+
+    @GET("/{account_activate_url}")
+    Response activateAccount(
+            @Path(value = "account_activate_url", encode = false) String accountActivateUrl);
 }

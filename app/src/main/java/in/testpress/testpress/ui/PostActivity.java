@@ -338,7 +338,7 @@ public class PostActivity extends TestpressFragmentActivity implements
                 return new ThrowableLoader<List<Comment>>(this, null) {
                     @Override
                     public List<Comment> loadData() throws IOException {
-                        getPreviousCommentsPager().next();
+                        getPreviousCommentsPager().clearResources().next();
                         return getPreviousCommentsPager().getResources();
                     }
                 };

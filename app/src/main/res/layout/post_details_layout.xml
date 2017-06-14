@@ -1,21 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:orientation="vertical" android:layout_width="match_parent"
-                android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <include layout="@layout/toolbar_actionbar"/> <!-- placeholder, empty except on L -->
 
-    <ScrollView
+    <LinearLayout
+        android:layout_below="@+id/toolbar_actionbar"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:background="#ffffff"
-        android:layout_below="@+id/toolbar_actionbar">
+        >
 
         <RelativeLayout
+            android:descendantFocusability="blocksDescendants"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/postDetails"
-            android:padding="20dp">
+            android:id="@+id/postDetails">
 
             <TextView
                 android:id="@+id/title"
@@ -25,6 +35,9 @@
                 android:gravity="center"
                 android:layout_centerHorizontal="true"
                 android:textStyle="bold"
+                android:paddingTop="15dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
                 android:textColor="@android:color/black"
                 android:layout_height="wrap_content"/>
 
@@ -47,12 +60,13 @@
                 android:layout_marginTop="20dp"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="20dp"
-                android:background="#c0c0c0"/>
-
+                android:background="#e6e6e6"/>
 
             <LinearLayout
                 android:id="@+id/summary_layout"
                 android:gravity="center"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -73,32 +87,225 @@
                     android:layout_width="100dp"
                     android:layout_height="1dp"
                     android:layout_marginTop="20dp"
-                    android:layout_marginBottom="20dp"
-                    android:background="#c0c0c0"/>
+                    android:layout_marginBottom="10dp"
+                    android:background="#e6e6e6"/>
 
             </LinearLayout>
 
-            <WebView  xmlns:android="http://schemas.android.com/apk/res/android"
-                      android:id="@+id/content"
-                      android:paddingTop="10dp"
-                      android:layout_width="match_parent"
-                      android:layout_height="match_parent"
-                      android:layout_below="@id/summary_layout"
-                />
+            <LinearLayout
+                android:id="@+id/content_layout"
+                android:paddingLeft="13dp"
+                android:paddingRight="13dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/summary_layout" >
+
+                <WebView
+                    android:id="@+id/content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/content_empty_view"
                 android:visibility="gone"
                 android:textSize="16sp"
                 android:paddingTop="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
                 android:gravity="center_horizontal"
                 android:textColor="@android:color/black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/summary_layout"/>
 
+            <LinearLayout
+                android:orientation="vertical"
+                android:id="@+id/comments_layout"
+                android:visibility="gone"
+                android:paddingBottom="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/content_layout">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="15dp"
+                    android:background="#e6e6e6"/>
+
+                <TextView
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:text="@string/comments_title"
+                    android:textSize="18sp"
+                    android:lineSpacingExtra="4sp"
+                    android:id="@+id/comments_label" />
+
+                <TextView
+                    android:id="@+id/comments_empty_view"
+                    android:visibility="gone"
+                    android:textSize="16sp"
+                    android:padding="20dp"
+                    android:text="@string/no_comments"
+                    android:gravity="center_horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <include
+                    layout="@layout/loading_layout_small"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:id="@+id/loading_previous_comments_layout"/>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:id="@+id/load_previous_comments_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/load_previous_comments"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:text="@string/load_previous_comments" />
+
+                </LinearLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/comments_list_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <include
+                    layout="@layout/loading_layout_small"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:id="@+id/loading_new_comments_layout"/>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:id="@+id/load_new_comments_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:id="@+id/load_new_comments_text"
+                        android:text="@string/load_new_comments" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
         </RelativeLayout>
     </ScrollView>
+
+        <LinearLayout
+            android:id="@+id/comment_box_layout"
+            android:visibility="gone"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#ccc" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:background="#fff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <EditText
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/comment_box"
+                    android:inputType="text|textMultiLine"
+                    android:textSize="16sp"
+                    android:minLines="1"
+                    android:maxLines="5"
+                    android:layout_gravity="center"
+                    android:gravity="left|bottom"
+                    android:background="#fff"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="10dp"
+                    android:lineSpacingExtra="4dp"
+                    android:hint="@string/write_a_comment"
+                    tools:ignore="RtlHardcoded" />
+
+                <ImageButton
+                    android:id="@+id/send"
+                    android:layout_width="40dp"
+                    android:layout_height="45dp"
+                    android:padding="16dp"
+                    android:layout_gravity="bottom"
+                    android:background="#fff"
+                    android:tint="@color/primary"
+                    android:src="@drawable/ic_send_black_24dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/new_comments_available_label"
+        android:background="@drawable/curved_blue_background"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="60dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <ImageView
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:tint="@color/testpress_button_text_color"
+            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/down_arrow" />
+
+        <TextView
+            android:text="New Comments"
+            android:textColor="@color/testpress_button_text_color"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
+    </LinearLayout>
 
     <include layout="@layout/empty_view"/>
 

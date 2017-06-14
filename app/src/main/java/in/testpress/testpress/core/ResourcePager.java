@@ -76,6 +76,12 @@ public abstract class ResourcePager<E> {
         page = 1;
         resources.clear();
         hasMore = true;
+        clearQueryParams();
+        return this;
+    }
+
+    public ResourcePager<E> clearResources() {
+        resources.clear();
         return this;
     }
 

@@ -80,6 +80,11 @@ public abstract class ResourcePager<E> {
         return this;
     }
 
+    public ResourcePager<E> clearResources() {
+        resources.clear();
+        return this;
+    }
+
     /**
      * Get number of resources loaded into this pager
      *

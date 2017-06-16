@@ -100,6 +100,8 @@ public final class Constants {
         public static final String URL_POSTS_FRAG =  "api/v2.2/posts/";
         public static final String URL_CATEGORIES_FRAG = URL_POSTS_FRAG + "categories/";
 
+        public static final String URL_COMMENTS_FRAG =  "/comments/";
+
         /**
          * Handle Success & Failure of payments
          */
@@ -109,6 +111,10 @@ public final class Constants {
          * Query Params
          */
         public static final String PARENT = "parent";
+        public static final String PAGE = "page";
+        public static final String SINCE = "since";
+        public static final String UNTIL = "until";
+        public static final String ORDER = "order";
     }
 
     public static final String GCM_PREFERENCE_NAME = "testpress." + Auth.TESTPRESS_ACCOUNT_NAME + ".GCM";
@@ -117,6 +123,7 @@ public final class Constants {
     public static final String IS_DEEP_LINK = "is_deep_link";
     public static final String DEEP_LINK_TO = "deep_link_to";
     public static final String DEEP_LINK_TO_PAYMENTS = "deep_link_to_payments";
+    public static final String DEEP_LINK_TO_POST = "deep_link_to_post";
 
     public static final HashMap<String, Integer> genderChoices;
     static

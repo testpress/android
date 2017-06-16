@@ -1,8 +1,14 @@
 /*! Typebase.less v0.1.0 | MIT License */
 /* Setup */
+
+@font-face {
+    font-family: "PT-Serif-Regular";
+    src: url('PT_Serif-Web-Regular.ttf');
+}
+
 html {
   /* Change default typefaces here */
-  font-family: serif;
+  font-family: 'PT-Serif-Regular', serif;
   font-size: 100%;
   -webkit-font-smoothing: antialiased;
 }

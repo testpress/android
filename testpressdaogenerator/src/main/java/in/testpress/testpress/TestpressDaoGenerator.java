@@ -8,7 +8,7 @@ import de.greenrobot.daogenerator.ToMany;
 
 public class TestpressDaoGenerator {
     public static void main(String args[]) throws Exception {
-        Schema schema = new Schema(4, "in.testpress.testpress.models");
+        Schema schema = new Schema(5, "in.testpress.testpress.models");
 
         Entity post = schema.addEntity("Post");
         post.addLongProperty("id").primaryKey();
@@ -25,6 +25,8 @@ public class TestpressDaoGenerator {
         post.addStringProperty("short_web_url");
         post.addStringProperty("short_url");
         post.addStringProperty("web_url");
+        post.addIntProperty("commentsCount");
+        post.addStringProperty("commentsUrl");
 
         Entity category = schema.addEntity("Category");
         category.addLongProperty("id").primaryKey();

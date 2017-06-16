@@ -8,11 +8,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings;
+import android.support.v4.content.Loader;
+
+import java.util.List;
 
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.Device;
+import in.testpress.testpress.ui.ThrowableLoader;
 
 import static android.content.Context.ACCOUNT_SERVICE;
 
@@ -91,6 +95,14 @@ public class CommonUtils {
                 preferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, true).apply();
             }
         }.execute();
+    }
+
+    public static <T> Exception getException(Loader<List<T>> loader) {
+        if (loader instanceof ThrowableLoader) {
+            return ((ThrowableLoader<List<T>>) loader).clearException();
+        } else {
+            return null;
+        }
     }
 
 }

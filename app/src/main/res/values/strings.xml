@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyEllipsis">
 
     <string name="app_name">D. M. A.</string>
     <string name="host_url">dma.testpress.in</string>
@@ -36,6 +36,7 @@
     <string name="authentication_failed">Authentication failed</string>
     <string name="please_login">Please login to see the content</string>
     <string name="network_error">Network Error</string>
+    <string name="no_internet_connection">No internet connection</string>
     <string name="no_internet">Please check your internet connection &amp; refresh again</string>
     <string name="no_internet_try_again">Please check your internet connection &amp; try again</string>
     <string name="try_after_sometime">Please try after sometime</string>
@@ -104,5 +105,13 @@
     <string name="activate_incomplete_title">Activation problem</string>
     <string name="activate_incomplete_message">It seems that the activation key is invalid. Please check the url again.</string>
     <string name="login">Login</string>
+
+    <string name="comments_title">Comments</string>
+    <string name="write_a_comment">Write a comment...</string>
+    <string name="load_previous_comments">Load previous comments</string>
+    <string name="load_new_comments">Load new comments</string>
+    <string name="load_comments">Load comments</string>
+    <string name="comment_posted">Comment posted successfully</string>
+    <string name="no_comments">Be the first to post a comment</string>
 
 </resources>

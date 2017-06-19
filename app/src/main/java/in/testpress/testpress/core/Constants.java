@@ -16,7 +16,7 @@ public final class Constants {
         /**
          * Account name
          */
-        public static final String TESTPRESS_ACCOUNT_NAME = "testpress";
+        public static final String TESTPRESS_ACCOUNT_NAME = "smartjoint";
 
         /**
          * Account type id
@@ -36,7 +36,7 @@ public final class Constants {
         /**
          * Base URL for all requests
          */
-        public static final String URL_BASE = "http://sandbox.testpress.in";
+        public static final String URL_BASE = "http://smartjoint.testpress.in";
 
         /**
          * Check Update url

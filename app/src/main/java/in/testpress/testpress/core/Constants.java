@@ -16,12 +16,12 @@ public final class Constants {
         /**
          * Account name
          */
-        public static final String TESTPRESS_ACCOUNT_NAME = "testpress";
+        public static final String TESTPRESS_ACCOUNT_NAME = "arulinstitute";
 
         /**
          * Account type id
          */
-        public static final String TESTPRESS_ACCOUNT_TYPE = "in.testpress." + TESTPRESS_ACCOUNT_NAME;
+        public static final String TESTPRESS_ACCOUNT_TYPE = "com." + TESTPRESS_ACCOUNT_NAME;
 
         /**
          * Auth token type
@@ -36,7 +36,7 @@ public final class Constants {
         /**
          * Base URL for all requests
          */
-        public static final String URL_BASE = "http://sandbox.testpress.in";
+        public static final String URL_BASE = "http://etest.arulinstitute.com";
 
         /**
          * Check Update url

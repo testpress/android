@@ -233,7 +233,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#ccc" />
+                android:background="#e6e6e6" />
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -261,13 +261,14 @@
 
                 <ImageButton
                     android:id="@+id/send"
-                    android:layout_width="40dp"
+                    android:layout_width="45dp"
                     android:layout_height="45dp"
-                    android:padding="16dp"
+                    android:padding="10dp"
                     android:layout_gravity="bottom"
                     android:background="#fff"
                     android:tint="@color/primary"
-                    android:src="@drawable/ic_send_black_24dp" />
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/testpress_paper_plane" />
 
             </LinearLayout>
 

@@ -144,7 +144,7 @@ public class PostActivity extends TestpressFragmentActivity implements
         in.testpress.util.UIUtils.setIndeterminateDrawable(this, progressDialog, 4);
         ViewUtils.setTypeface(new TextView[] {loadPreviousCommentsText, commentsLabel,
                 loadNewCommentsText, title}, TestpressSdk.getRubikMediumFont(this));
-        ViewUtils.setTypeface(new TextView[] {date, summary, commentsEmptyView},
+        ViewUtils.setTypeface(new TextView[] {date, summary, commentsEmptyView, commentsEditText},
                 TestpressSdk.getRubikRegularFont(this));
 
         if(shortWebUrl != null) {

@@ -1,14 +1,20 @@
 package in.testpress.testpress.ui;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.content.Context;
+import android.accounts.AccountsException;
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,13 +25,16 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
-import java.net.UnknownHostException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,25 +44,47 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
+import in.testpress.core.TestpressSdk;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
+import in.testpress.testpress.authenticator.LoginActivity;
+import in.testpress.testpress.core.CommentsPager;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.CategoryDao;
+import in.testpress.testpress.models.Comment;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.PostDao;
+import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.ShareUtil;
-
+import in.testpress.testpress.util.UIUtils;
+import in.testpress.util.ViewUtils;
 import info.hoang8f.widget.FButton;
 
-public class PostActivity extends TestpressFragmentActivity {
+import static in.testpress.testpress.util.CommonUtils.getException;
+
+public class PostActivity extends TestpressFragmentActivity implements
+        LoaderManager.LoaderCallbacks<List<Comment>> {
+
+    public static final String SHORT_WEB_URL = "shortWebUrl";
+    public static final int NEW_COMMENT_SYNC_INTERVAL = 10000; // 10 sec
+    private static final int PREVIOUS_COMMENTS_LOADER_ID = 0;
+    private static final int NEW_COMMENTS_LOADER_ID = 1;
 
     String shortWebUrl;
     PostDao postDao;
     Post post;
+    CommentsPager previousCommentsPager;
+    CommentsPager newCommentsPager;
+    CommentsListAdapter commentsAdapter;
+    ProgressDialog progressDialog;
+    SimpleDateFormat simpleDateFormat;
+    boolean postedNewComment;
+
     @Inject protected TestpressService testpressService;
     @Inject protected TestpressServiceProvider serviceProvider;
     @InjectView(R.id.content) WebView content;
@@ -68,6 +99,31 @@ public class PostActivity extends TestpressFragmentActivity {
     @InjectView(R.id.empty_title) TextView emptyTitleView;
     @InjectView(R.id.empty_description) TextView emptyDescView;
     @InjectView(R.id.retry_button) FButton retryButton;
+    @InjectView(R.id.comments_layout) LinearLayout commentsLayout;
+    @InjectView(R.id.loading_previous_comments_layout) LinearLayout previousCommentsLoadingLayout;
+    @InjectView(R.id.loading_new_comments_layout) LinearLayout newCommentsLoadingLayout;
+    @InjectView(R.id.comments_list_view) RecyclerView listView;
+    @InjectView(R.id.load_previous_comments_layout) LinearLayout loadPreviousCommentsLayout;
+    @InjectView(R.id.load_previous_comments) TextView loadPreviousCommentsText;
+    @InjectView(R.id.load_new_comments_layout) LinearLayout loadNewCommentsLayout;
+    @InjectView(R.id.load_new_comments_text) TextView loadNewCommentsText;
+    @InjectView(R.id.comments_label) TextView commentsLabel;
+    @InjectView(R.id.comments_empty_view) TextView commentsEmptyView;
+    @InjectView(R.id.comment_box) EditText commentsEditText;
+    @InjectView(R.id.comment_box_layout) LinearLayout commentBoxLayout;
+    @InjectView(R.id.scroll_view) ScrollView scrollView;
+    @InjectView(android.R.id.content) View activityRootLayout;
+    @InjectView(R.id.new_comments_available_label) LinearLayout newCommentsAvailableLabel;
+
+    private Handler newCommentsHandler;
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            commentsAdapter.notifyDataSetChanged(); // Update the time in comments
+            getNewCommentsPager().reset();
+            getSupportLoaderManager().restartLoader(NEW_COMMENTS_LOADER_ID, null, PostActivity.this);
+        }
+    };
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -79,7 +135,18 @@ public class PostActivity extends TestpressFragmentActivity {
         postDetails.setVisibility(View.GONE);
         progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
         postDao = ((TestpressApplication) getApplicationContext()).getDaoSession().getPostDao();
-        shortWebUrl = getIntent().getStringExtra("shortWebUrl");
+        simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        shortWebUrl = getIntent().getStringExtra(SHORT_WEB_URL);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getResources().getString(R.string.please_wait));
+        progressDialog.setCancelable(false);
+        in.testpress.util.UIUtils.setIndeterminateDrawable(this, progressDialog, 4);
+        ViewUtils.setTypeface(new TextView[] {loadPreviousCommentsText, commentsLabel,
+                loadNewCommentsText, title}, TestpressSdk.getRubikMediumFont(this));
+        ViewUtils.setTypeface(new TextView[] {date, summary, commentsEmptyView, commentsEditText},
+                TestpressSdk.getRubikRegularFont(this));
+
         if(shortWebUrl != null) {
             List<Post> posts = postDao.queryBuilder().where(PostDao.Properties.Short_web_url.eq(shortWebUrl)).list();
             if (!posts.isEmpty()) {
@@ -107,21 +174,17 @@ public class PostActivity extends TestpressFragmentActivity {
         new SafeAsyncTask<Post>() {
             @Override
             public Post call() throws Exception {
-                AccountManager manager = (AccountManager) getSystemService(Context.ACCOUNT_SERVICE);
-                final Account[] account = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
-                if (account.length > 0) {
-                    testpressService = serviceProvider.getService(PostActivity.this);
-                }
                 Map<String, Boolean> queryParams = new LinkedHashMap<>();
                 queryParams.put("short_link", true);
                 Uri uri = Uri.parse(shortWebUrl);
-                return testpressService.getPostDetail(uri.getLastPathSegment(), queryParams);
+                return getService().getPostDetail(uri.getLastPathSegment(), queryParams);
             }
 
             @Override
             protected void onException(final Exception e) throws RuntimeException {
+                super.onException(e);
                 progressBar.setVisibility(View.GONE);
-                if (e.getCause() instanceof UnknownHostException) {
+                if (e.getCause() instanceof IOException) {
                     setEmptyText(R.string.network_error, R.string.no_internet_try_again, R.drawable.ic_error_outline_black_18dp);
                 } else if (e.getMessage().equals("404 NOT FOUND")) {
                     setEmptyText(R.string.access_denied, R.string.post_authentication_failed, R.drawable.ic_error_outline_black_18dp);
@@ -133,8 +196,6 @@ public class PostActivity extends TestpressFragmentActivity {
             @Override
             protected void onSuccess(final Post post) throws Exception {
                 PostActivity.this.post = post;
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-                simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
                 post.setPublished(simpleDateFormat.parse(post.getPublishedDate()).getTime());
                 if (postDao.queryBuilder().where(PostDao.Properties.Id.eq(post.getId())).count() != 0) {
                     post.setModifiedDate(simpleDateFormat.parse(post.getModified()).getTime());
@@ -198,7 +259,6 @@ public class PostActivity extends TestpressFragmentActivity {
                 @Override
                 public void onPageFinished(WebView view, String url) {
                     super.onPageFinished(view, url);
-                    progressBar.setVisibility(View.GONE);
                     String javascript = "javascript:var images = document.getElementsByTagName(\"img\");" +
                             "for (i = 0; i < images.length; i++) {" +
                             "   images[i].onclick = (" +
@@ -215,6 +275,8 @@ public class PostActivity extends TestpressFragmentActivity {
                     } else {
                         content.loadUrl(javascript, null);
                     }
+                    progressBar.setVisibility(View.GONE);
+                    displayComments();
                 }
 
                 @Override
@@ -227,7 +289,287 @@ public class PostActivity extends TestpressFragmentActivity {
             content.loadDataWithBaseURL("file:///android_asset/", getHeader() + post.getContentHtml(), "text/html", "UTF-8", null);
         } else {
             content.setVisibility(View.GONE);
+            commentsLayout.setVisibility(View.GONE);
         }
+    }
+
+    void displayComments() {
+        commentsAdapter = new CommentsListAdapter(this);
+        listView.setNestedScrollingEnabled(false);
+        listView.setLayoutManager(new LinearLayoutManager(this));
+        listView.setAdapter(commentsAdapter);
+        loadPreviousCommentsLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadPreviousCommentsLayout.setVisibility(View.GONE);
+                getSupportLoaderManager()
+                        .restartLoader(PREVIOUS_COMMENTS_LOADER_ID, null, PostActivity.this);
+            }
+        });
+        loadNewCommentsLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadNewCommentsLayout.setVisibility(View.GONE);
+                getSupportLoaderManager()
+                        .restartLoader(NEW_COMMENTS_LOADER_ID, null, PostActivity.this);
+            }
+        });
+        newCommentsAvailableLabel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                newCommentsAvailableLabel.setVisibility(View.GONE);
+                scrollView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        scrollView.fullScroll(View.FOCUS_DOWN);
+                    }
+                });
+            }
+        });
+        commentsLayout.setVisibility(View.VISIBLE);
+        getSupportLoaderManager().initLoader(PREVIOUS_COMMENTS_LOADER_ID, null, PostActivity.this);
+    }
+
+    @Override
+    public Loader<List<Comment>> onCreateLoader(int loaderId, Bundle args) {
+        switch (loaderId) {
+            case PREVIOUS_COMMENTS_LOADER_ID:
+                previousCommentsLoadingLayout.setVisibility(View.VISIBLE);
+                return new ThrowableLoader<List<Comment>>(this, null) {
+                    @Override
+                    public List<Comment> loadData() throws IOException {
+                        getPreviousCommentsPager().clearResources().next();
+                        return getPreviousCommentsPager().getResources();
+                    }
+                };
+            case NEW_COMMENTS_LOADER_ID:
+                if (postedNewComment) {
+                    newCommentsLoadingLayout.setVisibility(View.VISIBLE);
+                }
+                return new ThrowableLoader<List<Comment>>(this, null) {
+                    @Override
+                    public List<Comment> loadData() throws IOException {
+                        do {
+                            getNewCommentsPager().next();
+                        } while (getNewCommentsPager().hasNext());
+                        return getNewCommentsPager().getResources();
+                    }
+                };
+            default:
+                //An invalid id was passed
+                return null;
+        }
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    CommentsPager getPreviousCommentsPager() {
+        if (previousCommentsPager == null) {
+            previousCommentsPager = new CommentsPager(getService(), post.getId());
+            previousCommentsPager.queryParams.put(Constants.Http.ORDER, "-submit_date");
+            previousCommentsPager.queryParams.put(Constants.Http.UNTIL,
+                    new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ").format(new Date()));
+        }
+        return previousCommentsPager;
+    }
+
+    CommentsPager getNewCommentsPager() {
+        if (newCommentsPager == null) {
+            newCommentsPager = new CommentsPager(getService(), post.getId());
+        }
+        List<Comment> comments = commentsAdapter.getComments();
+        if (newCommentsPager.queryParams.isEmpty() && comments.size() != 0) {
+            Comment latestComment = comments.get(comments.size() - 1);
+            //noinspection ConstantConditions
+            newCommentsPager.queryParams.put(Constants.Http.SINCE, latestComment.getSubmitDate());
+        }
+        return newCommentsPager;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<Comment>> loader, List<Comment> comments) {
+        switch (loader.getId()) {
+            case PREVIOUS_COMMENTS_LOADER_ID:
+                onPreviousCommentsLoadFinished(loader, comments);
+                break;
+            case NEW_COMMENTS_LOADER_ID:
+                onNewCommentsLoadFinished(loader, comments);
+                break;
+        }
+    }
+
+    void onPreviousCommentsLoadFinished(Loader<List<Comment>> loader, List<Comment> comments) {
+        //noinspection ThrowableResultOfMethodCallIgnored
+        final Exception exception = getException(loader);
+        if (exception != null) {
+            previousCommentsLoadingLayout.setVisibility(View.GONE);
+            if (post.getCommentsCount() == 0) {
+                commentBoxLayout.setVisibility(View.VISIBLE);
+            } else if (exception.getCause() instanceof IOException) {
+                loadPreviousCommentsText.setText(R.string.load_comments);
+                loadPreviousCommentsLayout.setVisibility(View.VISIBLE);
+                Snackbar.make(activityRootLayout, R.string.no_internet_connection,
+                        Snackbar.LENGTH_SHORT).show();
+            } else {
+                Snackbar.make(activityRootLayout, R.string.network_error,
+                        Snackbar.LENGTH_SHORT).show();
+            }
+            return;
+        }
+
+        if (!comments.isEmpty()) {
+            commentsAdapter.addComments(comments);
+        } else {
+            commentsEmptyView.setVisibility(View.VISIBLE);
+        }
+        if (post.getCommentsCount() < getPreviousCommentsPager().getCommentsCount()) {
+            updateCommentsCount(getPreviousCommentsPager().getCommentsCount());
+        }
+        if (getPreviousCommentsPager().hasNext()) {
+            loadPreviousCommentsText.setText(R.string.load_previous_comments);
+            loadPreviousCommentsLayout.setVisibility(View.VISIBLE);
+        } else {
+            loadPreviousCommentsLayout.setVisibility(View.GONE);
+        }
+        if (commentBoxLayout.getVisibility() == View.GONE) {
+            commentBoxLayout.setVisibility(View.VISIBLE);
+        }
+        previousCommentsLoadingLayout.setVisibility(View.GONE);
+        if (newCommentsHandler == null) {
+            newCommentsHandler = new Handler();
+            newCommentsHandler.postDelayed(runnable, NEW_COMMENT_SYNC_INTERVAL);
+        }
+    }
+
+    void onNewCommentsLoadFinished(Loader<List<Comment>> loader, List<Comment> comments) {
+        //noinspection ThrowableResultOfMethodCallIgnored
+        final Exception exception = getException(loader);
+        if (exception != null) {
+            newCommentsLoadingLayout.setVisibility(View.GONE);
+            if (postedNewComment) {
+                if (exception.getCause() instanceof IOException) {
+                    Snackbar.make(activityRootLayout, R.string.no_internet_connection,
+                            Snackbar.LENGTH_SHORT).show();
+                } else {
+                    Snackbar.make(activityRootLayout, R.string.network_error,
+                            Snackbar.LENGTH_SHORT).show();
+                }
+                loadNewCommentsLayout.setVisibility(View.VISIBLE);
+            } else {
+                newCommentsHandler.postDelayed(runnable, NEW_COMMENT_SYNC_INTERVAL);
+            }
+            return;
+        }
+
+        if (!comments.isEmpty()) {
+            commentsAdapter.addComments(comments);
+            int noOfComments = post.getCommentsCount() + getNewCommentsPager().getCommentsCount();
+            updateCommentsCount(noOfComments);
+        }
+        if (commentsAdapter.getItemCount() != 0 && commentsEmptyView.getVisibility() == View.VISIBLE) {
+            commentsEmptyView.setVisibility(View.GONE);
+        }
+        newCommentsLoadingLayout.setVisibility(View.GONE);
+        if (postedNewComment) {
+            // if user posted a comment scroll to the bottom
+            postedNewComment = false;
+            scrollView.post(new Runnable() {
+                @Override
+                public void run() {
+                    scrollView.fullScroll(View.FOCUS_DOWN);
+                }
+            });
+        } else {
+            LinearLayoutManager layoutManager= (LinearLayoutManager) listView.getLayoutManager();
+            int totalItemCount = layoutManager.getItemCount();
+            int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+            boolean endHasBeenReached = lastVisibleItemPosition + 2 >= totalItemCount;
+            if (!comments.isEmpty() && !endHasBeenReached) {
+                newCommentsAvailableLabel.setVisibility(View.VISIBLE);
+            }
+        }
+        newCommentsHandler.postDelayed(runnable, NEW_COMMENT_SYNC_INTERVAL);
+    }
+
+    @OnClick(R.id.send) void sendComment() {
+        final String comments = commentsEditText.getText().toString().trim();
+        if (comments.isEmpty()) {
+            return;
+        }
+        if (!CommonUtils.isUserAuthenticated(this)) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.putExtra(Constants.DEEP_LINK_TO, Constants.DEEP_LINK_TO_POST);
+            intent.putExtra(SHORT_WEB_URL, shortWebUrl);
+            startActivity(intent);
+            return;
+        }
+        if (!progressDialog.isShowing()) {
+            progressDialog.show();
+        }
+        UIUtils.hideSoftKeyboard(this);
+        new SafeAsyncTask<Comment>() {
+            public Comment call() throws Exception {
+                return getService().sendComments(post.getId(), comments);
+            }
+
+            @Override
+            protected void onException(final Exception exception) throws RuntimeException {
+                super.onException(exception);
+                progressDialog.dismiss();
+                if (exception.getCause() instanceof IOException) {
+                    Snackbar.make(activityRootLayout, R.string.no_internet_connection,
+                            Snackbar.LENGTH_SHORT).show();
+                } else {
+                    Snackbar.make(activityRootLayout, R.string.network_error,
+                            Snackbar.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onSuccess(final Comment comments) {
+                commentsEditText.setText("");
+                listView.requestLayout();
+                progressDialog.dismiss();
+                Snackbar.make(activityRootLayout, R.string.comment_posted,
+                        Snackbar.LENGTH_SHORT).show();
+
+                if (newCommentsHandler != null) {
+                    newCommentsHandler.removeCallbacks(runnable);
+                }
+                postedNewComment = true;
+                getNewCommentsPager().reset();
+                getSupportLoaderManager()
+                        .restartLoader(NEW_COMMENTS_LOADER_ID, null, PostActivity.this);
+            }
+        }.execute();
+    }
+
+    /**
+     * Call this method only from async task
+     *
+     * @return TestpressService
+     */
+    TestpressService getService() {
+        if (CommonUtils.isUserAuthenticated(this)) {
+            try {
+                testpressService = serviceProvider.getService(PostActivity.this);
+            } catch (IOException | AccountsException e) {
+                e.printStackTrace();
+            }
+        }
+        return testpressService;
+    }
+
+    @SuppressLint("DefaultLocale")
+    void updateCommentsCount(int count) {
+        List<Post> posts = postDao.queryBuilder()
+                .where(PostDao.Properties.Id.eq(post.getId())).list();
+
+        if (!posts.isEmpty()) {
+            Post post = posts.get(0);
+            post.setCommentsCount(count);
+            post.update();
+        }
+        post.setCommentsCount(count);
     }
 
     String getHeader() {
@@ -261,6 +603,18 @@ public class PostActivity extends TestpressFragmentActivity {
             emptyDescView.setText(description);
             retryButton.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onDestroy () {
+        if (newCommentsHandler != null) {
+            newCommentsHandler.removeCallbacks(runnable);
+        }
+        super.onDestroy ();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<Comment>> loader) {
     }
 
 }

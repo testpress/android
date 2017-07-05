@@ -42,9 +42,6 @@ dependencies {
 
     // GreenDao for database
     compile 'de.greenrobot:greendao:2.0.0'
-
-    // Image cropper tool
-    compile 'com.edmodo:cropper:1.0.1'
     
     // Testpress exam
     compile ('com.github.testpress:exam:1.0.30@aar') {

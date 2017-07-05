@@ -1,8 +1,5 @@
 package in.testpress.testpress.core;
 
-import android.text.Html;
-import android.text.SpannableString;
-
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -141,8 +138,7 @@ public class TestpressService {
 
     public Comment sendComments(long postId, String comment) {
         HashMap<String, String> params = new HashMap<String, String>();
-        //noinspection deprecation
-        params.put("comment", Html.toHtml(new SpannableString(comment)));
+        params.put("comment", comment);
         return getPostService().sendComments(postId, params);
     }
 

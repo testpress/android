@@ -17,9 +17,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import in.testpress.core.TestpressSdk;
@@ -29,6 +27,8 @@ import in.testpress.testpress.util.FormatDate;
 import in.testpress.testpress.util.UILImageGetter;
 import in.testpress.testpress.util.ZoomableImageString;
 import in.testpress.util.ViewUtils;
+
+import static in.testpress.testpress.ui.PostActivity.UPDATE_TIME_SPAN;
 
 class CommentsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -97,14 +97,7 @@ class CommentsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             holder.comment.setText(zoomableImageQuestion.convertString(htmlSpan));
             holder.comment.setMovementMethod(LinkMovementMethod.getInstance());
 
-            //noinspection ConstantConditions
-            long submitDateMillis = FormatDate.getDate(comment.getSubmitDate(),
-                    "yyyy-MM-dd'T'HH:mm:ss", "UTC").getTime();
-
-            holder.submitDate.setText(FormatDate.getAbbreviatedTimeSpan(submitDateMillis));
-
-            // Hide item separator for last item
-            holder.divider.setVisibility((position + 1 == comments.size()) ? View.GONE : View.VISIBLE);
+            updateTimeSpan(comment, holder);
 
             holder.userName.setTypeface(TestpressSdk.getRubikMediumFont(activity));
             ViewUtils.setTypeface(new TextView[] {holder.submitDate, holder.comment},
@@ -112,16 +105,35 @@ class CommentsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
+    void addPreviousComments(List<Comment> comments) {
+        Collections.reverse(comments);
+        this.comments.addAll(0, comments);
+        notifyItemRangeInserted(0, comments.size());
+    }
+
     void addComments(List<Comment> comments) {
         this.comments.addAll(comments);
-        Collections.sort(this.comments, new Comparator<Comment>() {
-            @Override
-            public int compare(Comment o1, Comment o2) {
-                return FormatDate.compareDate(o1.getSubmitDate(), o2.getSubmitDate(),
-                        "yyyy-MM-dd'T'HH:mm:ss", "UTC") ? 1 : -1;
-            }
-        });
-        notifyDataSetChanged();
+        notifyItemRangeInserted(getItemCount(), comments.size());
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position,
+                                 List<Object> payloads) {
+
+        if (payloads.isEmpty() || !payloads.get(0).equals(UPDATE_TIME_SPAN)) {
+            // Perform a full update
+            onBindViewHolder(viewHolder, position);
+        } else { // Update time span only
+            updateTimeSpan(comments.get(position), (CommentsViewHolder) viewHolder);
+        }
+    }
+
+    private void updateTimeSpan(Comment comment, CommentsViewHolder holder) {
+        //noinspection ConstantConditions
+        long submitDateMillis = FormatDate.getDate(comment.getSubmitDate(),
+                "yyyy-MM-dd'T'HH:mm:ss", "UTC").getTime();
+
+        holder.submitDate.setText(FormatDate.getAbbreviatedTimeSpan(submitDateMillis));
     }
 
     List<Comment> getComments() {

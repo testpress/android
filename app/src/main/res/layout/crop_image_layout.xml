@@ -10,17 +10,17 @@
         android:orientation="horizontal" android:layout_width="match_parent"
         android:layout_weight="90"
         android:layout_height="0dp">
-        <com.edmodo.cropper.CropImageView
+        <com.theartofdev.edmodo.cropper.CropImageView
             xmlns:custom="http://schemas.android.com/apk/res-auto"
             android:id="@+id/CropImageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            custom:aspectRatioX="1"
-            custom:aspectRatioY="1"
-            custom:fixAspectRatio="true"
+            custom:cropAspectRatioX="1"
+            custom:cropAspectRatioY="1"
+            custom:cropFixAspectRatio="true"
             android:layout_gravity="center"
             android:background="#000000"
-            custom:guidelines="on" />
+            custom:cropGuidelines="on" />
     </LinearLayout>
 
     <LinearLayout

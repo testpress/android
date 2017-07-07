@@ -25,7 +25,7 @@ import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.util.CommonUtils;
 
-import static in.testpress.exam.TestpressExam.ACTION_PRESSED_HOME;
+import static in.testpress.core.TestpressSdk.ACTION_PRESSED_HOME;
 import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 import static in.testpress.exam.ui.CarouselFragment.TEST_TAKEN_REQUEST_CODE;
 
@@ -147,8 +147,11 @@ public class SplashScreenActivity extends Activity {
                                             !pathSegments.get(1).equals("history")) {
 
                                         // If exam slug is present, directly goto the start exam screen
-                                        TestpressExam.startExam(activity, pathSegments.get(1),
-                                                TestpressSdk.getTestpressSession(activity));
+                                        TestpressExam.showExamAttemptedState(
+                                                activity,
+                                                pathSegments.get(1),
+                                                TestpressSdk.getTestpressSession(activity)
+                                        );
                                         return;
                                     }
                                 }

@@ -10,11 +10,15 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.SpannableString;
 import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,8 +33,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
+
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -45,7 +50,11 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import in.testpress.core.TestpressCallback;
+import in.testpress.core.TestpressException;
 import in.testpress.core.TestpressSdk;
+import in.testpress.model.FileDetails;
+import in.testpress.network.TestpressApiClient;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
@@ -59,10 +68,12 @@ import in.testpress.testpress.models.Comment;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.util.CommonUtils;
+import in.testpress.testpress.util.ImagePickerUtil;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.ShareUtil;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.util.ViewUtils;
+import in.testpress.util.WebViewUtils;
 import info.hoang8f.widget.FButton;
 
 import static in.testpress.testpress.util.CommonUtils.getException;
@@ -71,6 +82,7 @@ public class PostActivity extends TestpressFragmentActivity implements
         LoaderManager.LoaderCallbacks<List<Comment>> {
 
     public static final String SHORT_WEB_URL = "shortWebUrl";
+    public static final String UPDATE_TIME_SPAN = "updateTimeSpan";
     public static final int NEW_COMMENT_SYNC_INTERVAL = 10000; // 10 sec
     private static final int PREVIOUS_COMMENTS_LOADER_ID = 0;
     private static final int NEW_COMMENTS_LOADER_ID = 1;
@@ -84,6 +96,8 @@ public class PostActivity extends TestpressFragmentActivity implements
     ProgressDialog progressDialog;
     SimpleDateFormat simpleDateFormat;
     boolean postedNewComment;
+    ImagePickerUtil imagePickerUtil;
+    Uri selectedCommentImageUri;
 
     @Inject protected TestpressService testpressService;
     @Inject protected TestpressServiceProvider serviceProvider;
@@ -111,7 +125,7 @@ public class PostActivity extends TestpressFragmentActivity implements
     @InjectView(R.id.comments_empty_view) TextView commentsEmptyView;
     @InjectView(R.id.comment_box) EditText commentsEditText;
     @InjectView(R.id.comment_box_layout) LinearLayout commentBoxLayout;
-    @InjectView(R.id.scroll_view) ScrollView scrollView;
+    @InjectView(R.id.scroll_view) NestedScrollView scrollView;
     @InjectView(android.R.id.content) View activityRootLayout;
     @InjectView(R.id.new_comments_available_label) LinearLayout newCommentsAvailableLabel;
 
@@ -119,7 +133,10 @@ public class PostActivity extends TestpressFragmentActivity implements
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            commentsAdapter.notifyDataSetChanged(); // Update the time in comments
+            //noinspection ArraysAsListWithZeroOrOneArgument
+            commentsAdapter.notifyItemRangeChanged(0, commentsAdapter.getItemCount(),
+                    UPDATE_TIME_SPAN); // Update the time in comments
+
             getNewCommentsPager().reset();
             getSupportLoaderManager().restartLoader(NEW_COMMENTS_LOADER_ID, null, PostActivity.this);
         }
@@ -144,7 +161,7 @@ public class PostActivity extends TestpressFragmentActivity implements
         in.testpress.util.UIUtils.setIndeterminateDrawable(this, progressDialog, 4);
         ViewUtils.setTypeface(new TextView[] {loadPreviousCommentsText, commentsLabel,
                 loadNewCommentsText, title}, TestpressSdk.getRubikMediumFont(this));
-        ViewUtils.setTypeface(new TextView[] {date, summary, commentsEmptyView},
+        ViewUtils.setTypeface(new TextView[] {date, summary, commentsEmptyView, commentsEditText},
                 TestpressSdk.getRubikRegularFont(this));
 
         if(shortWebUrl != null) {
@@ -326,6 +343,23 @@ public class PostActivity extends TestpressFragmentActivity implements
                 });
             }
         });
+        scrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY,
+                                       int oldScrollX, int oldScrollY) {
+
+                int scrollViewHeight = scrollView.getHeight();
+                int totalScrollViewChildHeight = scrollView.getChildAt(0).getHeight();
+                // Let's assume end has reached at 50 pixels before itself(on partial visible of last item)
+                boolean endHasBeenReached =
+                        (scrollY + scrollViewHeight + 50) >= totalScrollViewChildHeight;
+
+                if (endHasBeenReached) {
+                    newCommentsAvailableLabel.setVisibility(View.GONE);
+                }
+            }
+        });
+        imagePickerUtil = new ImagePickerUtil(activityRootLayout, this);
         commentsLayout.setVisibility(View.VISIBLE);
         getSupportLoaderManager().initLoader(PREVIOUS_COMMENTS_LOADER_ID, null, PostActivity.this);
     }
@@ -417,7 +451,7 @@ public class PostActivity extends TestpressFragmentActivity implements
         }
 
         if (!comments.isEmpty()) {
-            commentsAdapter.addComments(comments);
+            commentsAdapter.addPreviousComments(comments);
         } else {
             commentsEmptyView.setVisibility(View.VISIBLE);
         }
@@ -479,10 +513,10 @@ public class PostActivity extends TestpressFragmentActivity implements
                 }
             });
         } else {
-            LinearLayoutManager layoutManager= (LinearLayoutManager) listView.getLayoutManager();
-            int totalItemCount = layoutManager.getItemCount();
-            int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
-            boolean endHasBeenReached = lastVisibleItemPosition + 2 >= totalItemCount;
+            int scrollY = scrollView.getScrollY();
+            int scrollViewHeight = scrollView.getHeight();
+            int totalScrollViewChildHeight = scrollView.getChildAt(0).getHeight();
+            boolean endHasBeenReached = (scrollY + scrollViewHeight) >= totalScrollViewChildHeight;
             if (!comments.isEmpty() && !endHasBeenReached) {
                 newCommentsAvailableLabel.setVisibility(View.VISIBLE);
             }
@@ -491,37 +525,39 @@ public class PostActivity extends TestpressFragmentActivity implements
     }
 
     @OnClick(R.id.send) void sendComment() {
-        final String comments = commentsEditText.getText().toString().trim();
-        if (comments.isEmpty()) {
+        final String comment = commentsEditText.getText().toString().trim();
+        if (comment.isEmpty()) {
             return;
         }
         if (!CommonUtils.isUserAuthenticated(this)) {
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.putExtra(Constants.DEEP_LINK_TO, Constants.DEEP_LINK_TO_POST);
-            intent.putExtra(SHORT_WEB_URL, shortWebUrl);
-            startActivity(intent);
+            showLoginScreen();
             return;
         }
         if (!progressDialog.isShowing()) {
             progressDialog.show();
         }
         UIUtils.hideSoftKeyboard(this);
+        //noinspection deprecation
+        postComment(Html.toHtml(new SpannableString(comment))); // Convert to html to support line breaks
+    }
+    
+    void showLoginScreen() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.putExtra(Constants.DEEP_LINK_TO, Constants.DEEP_LINK_TO_POST);
+        intent.putExtra(SHORT_WEB_URL, shortWebUrl);
+        startActivity(intent);
+    }
+    
+    void postComment(final String comment) {
         new SafeAsyncTask<Comment>() {
             public Comment call() throws Exception {
-                return getService().sendComments(post.getId(), comments);
+                return getService().sendComments(post.getId(), comment);
             }
 
             @Override
             protected void onException(final Exception exception) throws RuntimeException {
                 super.onException(exception);
-                progressDialog.dismiss();
-                if (exception.getCause() instanceof IOException) {
-                    Snackbar.make(activityRootLayout, R.string.no_internet_connection,
-                            Snackbar.LENGTH_SHORT).show();
-                } else {
-                    Snackbar.make(activityRootLayout, R.string.network_error,
-                            Snackbar.LENGTH_SHORT).show();
-                }
+                handleExceptionOnSendComment(exception);
             }
 
             @Override
@@ -541,6 +577,57 @@ public class PostActivity extends TestpressFragmentActivity implements
                         .restartLoader(NEW_COMMENTS_LOADER_ID, null, PostActivity.this);
             }
         }.execute();
+    }
+
+    @OnClick(R.id.image_comment_button) void pickImage() {
+        CropImage.startPickImageActivity(this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        imagePickerUtil.onActivityResult(requestCode, resultCode, data,
+                new ImagePickerUtil.ImagePickerActivityResultHandler() {
+                    @Override
+                    public void onStoragePermissionsRequired(Uri selectedImageUri) {
+                        selectedCommentImageUri = selectedImageUri;
+                    }
+
+                    @Override
+                    public void onSuccessfullyImageCropped(String imagePath) {
+                        uploadImage(imagePath);
+                    }
+                });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        
+        imagePickerUtil.onRequestPermissionsResult(requestCode, grantResults, selectedCommentImageUri);
+    }
+
+    void uploadImage(String imagePath) {
+        if (!progressDialog.isShowing()) {
+            progressDialog.show();
+        }
+        if (!CommonUtils.isUserAuthenticated(this)) {
+            showLoginScreen();
+            return;
+        }
+        //noinspection ConstantConditions
+        new TestpressApiClient(this, TestpressSdk.getTestpressSession(this))
+                .upload(imagePath).enqueue(new TestpressCallback<FileDetails>() {
+                    @Override
+                    public void onSuccess(FileDetails fileDetails) {
+                        postComment(WebViewUtils.appendImageTags(fileDetails.getUrl()));
+                    }
+        
+                    @Override
+                    public void onException(TestpressException exception) {
+                        handleExceptionOnSendComment(exception);
+                    }
+        });
     }
 
     /**
@@ -602,6 +689,17 @@ public class PostActivity extends TestpressFragmentActivity implements
             emptyTitleView.setCompoundDrawablesWithIntrinsicBounds(left, 0, 0, 0);
             emptyDescView.setText(description);
             retryButton.setVisibility(View.GONE);
+        }
+    }
+
+    void handleExceptionOnSendComment(Exception exception) {
+        progressDialog.dismiss();
+        if (exception.getCause() instanceof IOException) {
+            Snackbar.make(activityRootLayout, R.string.testpress_no_internet_connection,
+                    Snackbar.LENGTH_SHORT).show();
+        } else {
+            Snackbar.make(activityRootLayout, R.string.testpress_network_error,
+                    Snackbar.LENGTH_SHORT).show();
         }
     }
 

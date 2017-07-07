@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -124,7 +124,7 @@
                 android:orientation="vertical"
                 android:id="@+id/comments_layout"
                 android:visibility="gone"
-                android:paddingBottom="10dp"
+                android:layout_marginBottom="-2dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/content_layout">
@@ -221,7 +221,7 @@
             </LinearLayout>
 
         </RelativeLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
         <LinearLayout
             android:id="@+id/comment_box_layout"
@@ -241,6 +241,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
 
+                <ImageButton
+                    android:id="@+id/image_comment_button"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:padding="12dp"
+                    android:layout_gravity="bottom"
+                    android:background="?attr/selectableItemBackground"
+                    android:tint="#555"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_add_a_photo_black_24dp" />
+
                 <EditText
                     android:layout_weight="1"
                     android:layout_width="0dp"
@@ -253,8 +264,8 @@
                     android:layout_gravity="center"
                     android:gravity="left|bottom"
                     android:background="#fff"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="10dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
                     android:lineSpacingExtra="4dp"
                     android:hint="@string/write_a_comment"
                     tools:ignore="RtlHardcoded" />
@@ -265,7 +276,7 @@
                     android:layout_height="45dp"
                     android:padding="10dp"
                     android:layout_gravity="bottom"
-                    android:background="#fff"
+                    android:background="?attr/selectableItemBackground"
                     android:tint="@color/primary"
                     android:scaleType="fitCenter"
                     android:src="@drawable/testpress_paper_plane" />

@@ -164,7 +164,7 @@ public class ProductDetailsActivity extends TestpressFragmentActivity
                 setEmptyText(R.string.network_error, R.string.no_internet_try_again,
                         R.drawable.ic_error_outline_black_18dp);
             } else {
-                setEmptyText(R.string.error_loading_analytics, R.string.try_after_sometime,
+                setEmptyText(R.string.error_loading_products, R.string.try_after_sometime,
                         R.drawable.ic_error_outline_black_18dp);
             }
             progressBar.setVisibility(View.GONE);

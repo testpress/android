@@ -25,7 +25,8 @@ import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.util.CommonUtils;
 
-import static in.testpress.exam.TestpressExam.ACTION_PRESSED_HOME;
+import static in.testpress.core.TestpressSdk.ACTION_PRESSED_HOME;
+import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 import static in.testpress.exam.ui.CarouselFragment.TEST_TAKEN_REQUEST_CODE;
 
 public class SplashScreenActivity extends Activity {
@@ -72,7 +73,7 @@ public class SplashScreenActivity extends Activity {
                             finish();
                             break;
                         case "exams":
-                            deepLinkExams(uri);
+                            authenticateUser(uri);
                             break;
                         case "user":
                         case "profile":
@@ -82,13 +83,16 @@ public class SplashScreenActivity extends Activity {
                             gotoActivity(ResetPasswordActivity.class, false);
                             break;
                         case "analytics":
-                            gotoActivity(AnalyticsActivity.class, true);
+                            authenticateUser(uri);
                             break;
                         case "documents":
                             gotoActivity(DocumentsListActivity.class, true);
                             break;
                         case "login":
                             gotoActivity(MainActivity.class, true);
+                            break;
+                        case "activate":
+                            gotoAccountActivate(uri.getPath());
                             break;
                         case "courses":
                         case "chapters":
@@ -128,24 +132,40 @@ public class SplashScreenActivity extends Activity {
     }
 
     @SuppressWarnings("ConstantConditions")
-    private void deepLinkExams(Uri uri) {
+    private void authenticateUser(final Uri uri) {
+        final Activity activity = SplashScreenActivity.this;
         final List<String> pathSegments = uri.getPathSegments();
-        CommonUtils.getAuth(SplashScreenActivity.this, serviceProvider,
+        CommonUtils.getAuth(activity, serviceProvider,
                 new CommonUtils.CheckAuthCallBack() {
                     @Override
                     public void onSuccess(TestpressService testpressService) {
-                        if (pathSegments.size() == 2) {
-                            if (!pathSegments.get(1).equals("available") ||
-                                    !pathSegments.get(1).equals("upcoming") ||
-                                    !pathSegments.get(1).equals("history")) {
-                                TestpressExam.startExam(SplashScreenActivity.this, pathSegments.get(1),
-                                        TestpressSdk.getTestpressSession(SplashScreenActivity.this));
-                                return;
-                            }
+                        switch (pathSegments.get(0)) {
+                            case "exams":
+                                if (pathSegments.size() == 2) {
+                                    if (!pathSegments.get(1).equals("available") ||
+                                            !pathSegments.get(1).equals("upcoming") ||
+                                            !pathSegments.get(1).equals("history")) {
+
+                                        // If exam slug is present, directly goto the start exam screen
+                                        TestpressExam.showExamAttemptedState(
+                                                activity,
+                                                pathSegments.get(1),
+                                                TestpressSdk.getTestpressSession(activity)
+                                        );
+                                        return;
+                                    }
+                                }
+                                // Show exams list
+                                TestpressExam.show(activity,
+                                        TestpressSdk.getTestpressSession(activity));
+                                finish();
+                                break;
+
+                            case "analytics":
+                                TestpressExam.showAnalytics(activity, SUBJECT_ANALYTICS_PATH,
+                                        TestpressSdk.getTestpressSession(activity));
+                                break;
                         }
-                        TestpressExam.show(SplashScreenActivity.this,
-                                TestpressSdk.getTestpressSession(SplashScreenActivity.this));
-                        finish();
                     }
                 });
     }
@@ -173,17 +193,22 @@ public class SplashScreenActivity extends Activity {
         finish();
     }
 
+    private void gotoAccountActivate(String activateUrlFrag) {
+        Intent intent = new Intent(SplashScreenActivity.this, AccountActivateActivity.class);
+        intent.putExtra(AccountActivateActivity.ACTIVATE_URL_FRAG, activateUrlFrag);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
     private void gotoActivity(Class activityClass, boolean requireAuthentication) {
         if (requireAuthentication && !CommonUtils.isUserAuthenticated(SplashScreenActivity.this)) {
             activityClass = LoginActivity.class;
         }
-        Intent passwordIntent =
-                new Intent(SplashScreenActivity.this, activityClass);
-        passwordIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-        passwordIntent.putExtra(Constants.IS_DEEP_LINK, true);
-        startActivity(passwordIntent);
+        Intent intent = new Intent(SplashScreenActivity.this, activityClass);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra(Constants.IS_DEEP_LINK, true);
+        startActivity(intent);
         finish();
     }
 
@@ -200,7 +225,7 @@ public class SplashScreenActivity extends Activity {
             if (resultCode == RESULT_OK) {
                 gotoHome();
             } else if (resultCode == RESULT_CANCELED) {
-                if (data.getBooleanExtra(ACTION_PRESSED_HOME, false)) {
+                if (data != null && data.getBooleanExtra(ACTION_PRESSED_HOME, false)) {
                     gotoHome();
                 } else {
                     finish();

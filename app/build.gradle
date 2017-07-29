@@ -39,7 +39,7 @@ dependencies {
     compile 'de.greenrobot:greendao:2.0.0'
     
     // Testpress exam
-    compile ('com.github.testpress:exam:1.0.32@aar') {
+    compile ('com.github.testpress:exam:1.0.34@aar') {
         transitive=true
     }
 

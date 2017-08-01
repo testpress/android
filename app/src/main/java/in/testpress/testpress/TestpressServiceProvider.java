@@ -11,6 +11,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 
 import java.io.IOException;
+import java.util.List;
 
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
@@ -19,6 +20,8 @@ import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.DaoSession;
+import in.testpress.testpress.models.InstituteSettings;
+import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.util.CommonUtils;
@@ -56,8 +59,25 @@ public class TestpressServiceProvider {
         if (authToken == null) {
             // The call to keyProvider.getAuthKey(...) is what initiates the login screen. Call that now.
             authToken = keyProvider.getAuthKey(activity);
-            TestpressSdk.setTestpressSession(activity,
-                    new TestpressSession(Constants.Http.URL_BASE, authToken));
+            DaoSession daoSession =
+                    ((TestpressApplication) activity.getApplicationContext()).getDaoSession();
+            InstituteSettingsDao instituteSettingsDao = daoSession.getInstituteSettingsDao();
+            List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
+                    .where(InstituteSettingsDao.Properties.BaseUrl.eq(Constants.Http.URL_BASE))
+                    .list();
+
+            in.testpress.model.InstituteSettings settings;
+            if (instituteSettingsList.isEmpty()) {
+                settings = new in.testpress.model.InstituteSettings(Constants.Http.URL_BASE);
+            } else {
+                InstituteSettings instituteSettings = instituteSettingsList.get(0);
+                settings = new in.testpress.model.InstituteSettings(
+                        instituteSettings.getBaseUrl(),
+                        instituteSettings.getShowGameFrontend(),
+                        instituteSettings.getCoursesEnableGamification()
+                );
+            }
+            TestpressSdk.setTestpressSession(activity, new TestpressSession(settings, authToken));
         }
 
         // TODO: See how that affects the testpress service.
@@ -67,7 +87,9 @@ public class TestpressServiceProvider {
     public void logout(final Activity activity, TestpressService testpressService,
                        TestpressServiceProvider serviceProvider,
                        LogoutService logoutService) {
-        final ProgressDialog progressDialog = new ProgressDialog(activity);
+        final ProgressDialog progressDialog = new ProgressDialog(activity,
+                R.style.AppCompatAlertDialogStyle);
+
         progressDialog.setTitle(R.string.label_logging_out);
         progressDialog.setMessage(activity.getString(R.string.please_wait));
         progressDialog.setCancelable(false);

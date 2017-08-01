@@ -81,6 +81,7 @@ public class MainActivity extends TestpressFragmentActivity {
     private BottomNavBarAdapter mAdapter;
     private int[] mMenuItemImageId = {
             R.drawable.learn,
+            R.drawable.leaderboard,
             R.drawable.profile_default,
     };
     private InstituteSettingsDao instituteSettingsDao;
@@ -129,6 +130,7 @@ public class MainActivity extends TestpressFragmentActivity {
             protected void onSuccess(final Boolean hasAuthenticated) throws Exception {
                 super.onSuccess(hasAuthenticated);
                 checkUpdate();
+
             }
         }.execute();
     }
@@ -169,6 +171,10 @@ public class MainActivity extends TestpressFragmentActivity {
                 initSDK(position);
                 break;
             case 1:
+                updateToolbarText(getString(R.string.testpress_leaderboard));
+                initSDK(position);
+                break;
+            case 2:
                 updateToolbarText(getString(R.string.app_name));
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.container, mMainMenuFragment)
@@ -183,18 +189,7 @@ public class MainActivity extends TestpressFragmentActivity {
         if (TestpressSdk.hasActiveSession(this)) {
             showSDK(position);
         } else {
-            new SafeAsyncTask<Void>() {
-                @Override
-                public Void call() throws Exception {
-                    serviceProvider.getService(MainActivity.this);
-                    return null;
-                }
-
-                @Override
-                protected void onSuccess(Void aVoid) throws Exception {
-                    showSDK(position);
-                }
-            }.execute();
+            checkAuth();
         }
     }
 
@@ -202,6 +197,9 @@ public class MainActivity extends TestpressFragmentActivity {
     void showSDK(int position) {
         if (position == 0) {
             TestpressCourse.show(this, R.id.container, TestpressSdk.getTestpressSession(this));
+        } else if (position == 1) {
+            TestpressCourse.showLeaderboard(this, R.id.container,
+                    TestpressSdk.getTestpressSession(this));
         } else {
             TestpressExam.show(this, R.id.container, TestpressSdk.getTestpressSession(this));
         }
@@ -230,7 +228,7 @@ public class MainActivity extends TestpressFragmentActivity {
                         .where(InstituteSettingsDao.Properties.BaseUrl
                         .eq(Constants.Http.URL_BASE)).count() != 0) {
 
-                    checkUpdate();
+                    checkAuth();
                     return;
                 }
                 if (exception.getCause() instanceof IOException) {

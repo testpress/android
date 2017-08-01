@@ -151,6 +151,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     private CallbackManager callbackManager;
     private GoogleApiClient googleApiClient;
     private InstituteSettingsDao instituteSettingsDao;
+    private InstituteSettings instituteSettings;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -243,7 +244,8 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         if (instituteSettingsList.size() == 0) {
             getInstituteSettings();
         } else {
-            updateInstituteSpecificFields(instituteSettingsList.get(0));
+            instituteSettings = instituteSettingsList.get(0);
+            updateInstituteSpecificFields();
         }
     }
 
@@ -279,6 +281,8 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             protected void onSuccess(InstituteSettings instituteSettings) throws Exception {
                 instituteSettings.setBaseUrl(Constants.Http.URL_BASE);
                 instituteSettingsDao.insertOrReplace(instituteSettings);
+                LoginActivity.this.instituteSettings = instituteSettings;
+                updateInstituteSpecificFields();
                 loginLayout.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
             }
@@ -287,7 +291,13 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
     private void authenticate(final String userId, String accessToken,
                               final TestpressSdk.Provider provider) {
-        TestpressSdk.initialize(this, Constants.Http.URL_BASE, userId, accessToken, provider,
+
+        in.testpress.model.InstituteSettings settings = new in.testpress.model.InstituteSettings(
+                instituteSettings.getBaseUrl(),
+                instituteSettings.getShowGameFrontend(),
+                instituteSettings.getCoursesEnableGamification()
+        );
+        TestpressSdk.initialize(this, settings, userId, accessToken, provider,
                 new TestpressCallback<TestpressSession>() {
                     @Override
                     public void onSuccess(TestpressSession response) {
@@ -314,7 +324,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
                 });
     }
 
-    private void updateInstituteSpecificFields(InstituteSettings instituteSettings) {
+    private void updateInstituteSpecificFields() {
         ViewUtils.setGone(fbLoginButton, !instituteSettings.getFacebookLoginEnabled());
         ViewUtils.setGone(googleLoginButton, !instituteSettings.getGoogleLoginEnabled());
         ViewUtils.setGone(socialLoginLayout, !instituteSettings.getFacebookLoginEnabled() &&

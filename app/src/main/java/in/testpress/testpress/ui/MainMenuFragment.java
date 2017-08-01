@@ -62,7 +62,6 @@ public class MainMenuFragment extends Fragment {
 
     //Menu for authorized users
     String[] menuItemNames = {
-            "My Exams",
 //            "Store",
             "Documents",
 //            "Orders",
@@ -74,7 +73,6 @@ public class MainMenuFragment extends Fragment {
             "Logout"
     } ;
     int[] menuItemImageId = {
-            R.drawable.exams,
 //            R.drawable.store,
             R.drawable.documents,
 //            R.drawable.cart,
@@ -105,6 +103,7 @@ public class MainMenuFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Injector.inject(this);
+        getActivity().invalidateOptionsMenu();
         return inflater.inflate(R.layout.main_menu_grid_view, null);
     }
 
@@ -133,14 +132,29 @@ public class MainMenuFragment extends Fragment {
                 Intent intent;
                 if (account.length > 0) {
                     switch (position) {
-                        case 0:
-                            checkAuthenticatedUser(0);
-                            break;
+//                        case 0:
+//                            if (TestpressSdk.hasActiveSession(getActivity())) {
+//                                showExams();
+//                            } else {
+//                                new SafeAsyncTask<Void>() {
+//                                    @Override
+//                                    public Void call() throws Exception {
+//                                        serviceProvider.getService(getActivity());
+//                                        return null;
+//                                    }
+//
+//                                    @Override
+//                                    protected void onSuccess(Void aVoid) throws Exception {
+//                                        showExams();
+//                                    }
+//                                }.execute();
+//                            }
+//                            break;
 //                        case 1:
 //                            intent = new Intent(getActivity(), ProductsListActivity.class);
 //                            startActivity(intent);
 //                            break;
-                        case 1:
+                        case 0:
                             intent = new Intent(getActivity(), DocumentsListActivity.class);
                             startActivity(intent);
                             break;
@@ -148,27 +162,27 @@ public class MainMenuFragment extends Fragment {
 //                        intent = new Intent(getActivity(), OrdersListActivity.class);
 //                        startActivity(intent);
 //                        break;
-                        case 2:
+                        case 1:
                             intent = new Intent(getActivity(), PostsListActivity.class);
                             intent.putExtra("userAuthenticated", true);
                             startActivity(intent);
                             break;
-                        case 3:
-                            checkAuthenticatedUser(4);
+                        case 2:
+                            checkAuthenticatedUser(3);
                             break;
-                        case 4:
+                        case 3:
                             intent = new Intent(getActivity(), ProfileDetailsActivity.class);
                             startActivity(intent);
                             break;
-                        case 5:
+                        case 4:
                             //Share
                             shareApp();
                             break;
-                        case 6:
+                        case 5:
                             //Rate
                             rateApp();
                             break;
-                        case 7:
+                        case 6:
                             ((MainActivity) getActivity()).logout();
                             break;
                     }
@@ -233,7 +247,7 @@ public class MainMenuFragment extends Fragment {
                 TestpressExam.showCategories(getActivity(), true,
                         TestpressSdk.getTestpressSession(getActivity()));
                 break;
-            case 4:
+            case 3:
                 //noinspection ConstantConditions
                 TestpressExam.showAnalytics(getActivity(), SUBJECT_ANALYTICS_PATH,
                         TestpressSdk.getTestpressSession(getActivity()));

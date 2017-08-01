@@ -1,5 +1,6 @@
 package in.testpress.testpress.ui;
 
+import android.accounts.OperationCanceledException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,8 +9,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
+
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -21,6 +27,9 @@ import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import in.testpress.core.TestpressSdk;
+import in.testpress.course.TestpressCourse;
+import in.testpress.exam.TestpressExam;
 import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
@@ -49,19 +58,32 @@ import javax.inject.Inject;
 
 public class MainActivity extends TestpressFragmentActivity {
 
+    private static final String SELECTED_ITEM = "selectedItem";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String TAG = "MainActivity";
 
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected TestpressService testpressService;
     @Inject protected LogoutService logoutService;
-    @InjectView(R.id.progressbar) RelativeLayout mProgressBarLayout;
     @InjectView(R.id.empty_container) LinearLayout emptyView;
     @InjectView(R.id.empty_title) TextView emptyTitleView;
     @InjectView(R.id.empty_description) TextView emptyDescView;
     @InjectView(R.id.retry_button) Button retryButton;
 
+    @InjectView(R.id.coordinator_layout) CoordinatorLayout coordinatorLayout;
+    @InjectView(R.id.progressbar) RelativeLayout progressBarLayout;
+    @InjectView(R.id.container) FrameLayout fragmentContainer;
+    @InjectView(R.id.grid) GridView grid;
+
     private BroadcastReceiver mRegistrationBroadcastReceiver;
+    private MainMenuFragment mMainMenuFragment;
+    private int mSelectedItem;
+    private BottomNavBarAdapter mAdapter;
+    private int[] mMenuItemImageId = {
+            R.drawable.learn,
+            R.drawable.leaderboard,
+            R.drawable.profile_default,
+    };
     private InstituteSettingsDao instituteSettingsDao;
 
     @Override
@@ -70,6 +92,10 @@ public class MainActivity extends TestpressFragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         ButterKnife.inject(this);
+        if (savedInstanceState != null) {
+            mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM);
+        }
+        fragmentContainer.setVisibility(View.INVISIBLE);
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -79,6 +105,34 @@ public class MainActivity extends TestpressFragmentActivity {
         DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
         instituteSettingsDao = daoSession.getInstituteSettingsDao();
         getInstituteSettings();
+    }
+
+    private void checkAuth() {
+        new SafeAsyncTask<Boolean>() {
+
+            @Override
+            public Boolean call() throws Exception {
+                final TestpressService service = serviceProvider.getService(MainActivity.this);
+                return service != null;
+            }
+
+            @Override
+            protected void onException(final Exception e) throws RuntimeException {
+                super.onException(e);
+                if (e instanceof OperationCanceledException) {
+                    // User cancelled the authentication process (back button, etc).
+                    // Since auth could not take place, lets finish this activity.
+                    finish();
+                }
+            }
+
+            @Override
+            protected void onSuccess(final Boolean hasAuthenticated) throws Exception {
+                super.onSuccess(hasAuthenticated);
+                checkUpdate();
+
+            }
+        }.execute();
     }
 
     private void initScreen() {
@@ -91,14 +145,77 @@ public class MainActivity extends TestpressFragmentActivity {
                 startService(intent);
             }
         }
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, new MainMenuFragment())
-                .commitAllowingStateLoss();
-        mProgressBarLayout.setVisibility(View.GONE);
+        mAdapter = new BottomNavBarAdapter(this, mMenuItemImageId);
+        grid.setAdapter(mAdapter);
+        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selectFragment(position);
+            }
+        });
+        mMainMenuFragment = new MainMenuFragment();
+        selectFragment(mSelectedItem);
+    }
+
+    private void selectFragment(int position) {
+        mSelectedItem = position;
+        mAdapter.setSelectedPosition(position);
+        mAdapter.notifyDataSetChanged();
+        if (!CommonUtils.isUserAuthenticated(this)) {
+            serviceProvider.logout(this, testpressService, serviceProvider, logoutService);
+            return;
+        }
+        switch (position) {
+            case 0:
+                updateToolbarText(getString(R.string.learn));
+                initSDK(position);
+                break;
+            case 1:
+                updateToolbarText(getString(R.string.testpress_leaderboard));
+                initSDK(position);
+                break;
+            case 2:
+                updateToolbarText(getString(R.string.app_name));
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container, mMainMenuFragment)
+                        .commitAllowingStateLoss();
+                fragmentContainer.setVisibility(View.VISIBLE);
+                progressBarLayout.setVisibility(View.GONE);
+                break;
+        }
+    }
+
+    void initSDK(final int position) {
+        if (TestpressSdk.hasActiveSession(this)) {
+            showSDK(position);
+        } else {
+            checkAuth();
+        }
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    void showSDK(int position) {
+        if (position == 0) {
+            TestpressCourse.show(this, R.id.container, TestpressSdk.getTestpressSession(this));
+        } else if (position == 1) {
+            TestpressCourse.showLeaderboard(this, R.id.container,
+                    TestpressSdk.getTestpressSession(this));
+        } else {
+            TestpressExam.show(this, R.id.container, TestpressSdk.getTestpressSession(this));
+        }
+        fragmentContainer.setVisibility(View.VISIBLE);
+        progressBarLayout.setVisibility(View.GONE);
+    }
+
+    private void updateToolbarText(CharSequence text) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(text);
+        }
     }
 
     private void getInstituteSettings() {
-        mProgressBarLayout.setVisibility(View.VISIBLE);
+        progressBarLayout.setVisibility(View.VISIBLE);
         new SafeAsyncTask<InstituteSettings>() {
             @Override
             public InstituteSettings call() throws Exception {
@@ -111,7 +228,7 @@ public class MainActivity extends TestpressFragmentActivity {
                         .where(InstituteSettingsDao.Properties.BaseUrl
                         .eq(Constants.Http.URL_BASE)).count() != 0) {
 
-                    checkUpdate();
+                    checkAuth();
                     return;
                 }
                 if (exception.getCause() instanceof IOException) {
@@ -121,7 +238,7 @@ public class MainActivity extends TestpressFragmentActivity {
                     setEmptyText(R.string.network_error, R.string.try_after_sometime,
                             R.drawable.ic_error_outline_black_18dp);
                 }
-                mProgressBarLayout.setVisibility(View.GONE);
+                progressBarLayout.setVisibility(View.GONE);
                 retryButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -135,7 +252,7 @@ public class MainActivity extends TestpressFragmentActivity {
             protected void onSuccess(InstituteSettings instituteSettings) throws Exception {
                 instituteSettings.setBaseUrl(Constants.Http.URL_BASE);
                 instituteSettingsDao.insertOrReplace(instituteSettings);
-                checkUpdate();
+                checkAuth();
             }
         }.execute();
     }
@@ -214,8 +331,6 @@ public class MainActivity extends TestpressFragmentActivity {
                                 .show();
                     } else {
                         initScreen();
-                        final CoordinatorLayout coordinatorLayout =
-                                (CoordinatorLayout) findViewById(R.id.coordinator_layout);
                         Snackbar snackbar = Snackbar
                                 .make(coordinatorLayout, "New update is available",
                                         Snackbar.LENGTH_INDEFINITE)
@@ -251,6 +366,12 @@ public class MainActivity extends TestpressFragmentActivity {
                         })
                 .setNegativeButton(R.string.cancel, null)
                 .show();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(SELECTED_ITEM, mSelectedItem);
+        super.onSaveInstanceState(outState);
     }
 
     protected void setEmptyText(final int title, final int description, final int left) {

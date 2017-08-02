@@ -343,14 +343,14 @@ public class PostsListFragment extends Fragment implements
         //If no data is available in the local database, directly insert
         //display from database
         Ln.e(swipeLayout.isRefreshing());
-        if ((postDao.count() == 0) || items.isEmpty()) {
+        if ((postDao.count() == 0) || items == null || items.isEmpty()) {
 
             //Remove the swipe refresh icon and the sticky notification if any
             swipeLayout.setRefreshing(false);
             mStickyView.setVisibility(View.GONE);
 
             //Return if no new posts are available
-            if (items.isEmpty()) {
+            if (items == null || items.isEmpty()) {
                 displayDataFromDB();
                 if (postDao.count() == 0) {
                     setEmptyText(R.string.no_posts, R.string.no_posts_description, R.drawable.ic_error_outline_black_18dp);
@@ -496,6 +496,9 @@ public class PostsListFragment extends Fragment implements
         new Handler().post(new Runnable() {
             @Override
             public void run() {
+                if (swipeLayout == null) {
+                    return;
+                }
                 swipeLayout.setRefreshing(true);
                 mStickyView.setVisibility(View.GONE);
                 isUserSwiped = true;

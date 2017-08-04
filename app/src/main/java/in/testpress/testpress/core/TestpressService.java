@@ -1,31 +1,35 @@
 package in.testpress.testpress.core;
 
+import com.squareup.okhttp.Interceptor;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import in.testpress.testpress.models.Category;
-import in.testpress.testpress.models.ExamCategory;
+import in.testpress.testpress.models.Comment;
+import in.testpress.testpress.models.Device;
+import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.Notes;
-import in.testpress.testpress.models.Post;
-import in.testpress.testpress.models.Attempt;
-import in.testpress.testpress.models.AttemptItem;
-import in.testpress.testpress.models.Exam;
 import in.testpress.testpress.models.Order;
 import in.testpress.testpress.models.OrderItem;
-import in.testpress.testpress.models.Device;
+import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.Product;
 import in.testpress.testpress.models.ProductDetails;
 import in.testpress.testpress.models.ProfileDetails;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.ResetPassword;
-import in.testpress.testpress.models.ReviewItem;
 import in.testpress.testpress.models.TestpressApiResponse;
 import in.testpress.testpress.models.Update;
 import retrofit.RestAdapter;
+import retrofit.client.OkClient;
 
 public class TestpressService {
-    private RestAdapter restAdapter;
+    private RestAdapter.Builder restAdapter;
     private String authToken;
 
     public TestpressService() {
@@ -36,12 +40,16 @@ public class TestpressService {
      *
      * @param restAdapter The RestAdapter that allows HTTP Communication.
      */
-    public TestpressService(RestAdapter restAdapter) {
+    public TestpressService(RestAdapter.Builder restAdapter) {
         this.restAdapter = restAdapter;
     }
 
-    public TestpressService(RestAdapter restAdapter, String authToken) {
+    public TestpressService(RestAdapter.Builder restAdapter, String authToken) {
         this.restAdapter = restAdapter;
+        this.authToken = authToken;
+    }
+
+    public void setAuthToken(String authToken) {
         this.authToken = authToken;
     }
 
@@ -50,14 +58,25 @@ public class TestpressService {
     }
 
     private RestAdapter getRestAdapter() {
-        return restAdapter;
+        if (authToken != null) {
+            OkHttpClient client = new OkHttpClient();
+            Interceptor interceptor = new Interceptor() {
+                @Override
+                public Response intercept(Chain chain) throws IOException {
+                    Request.Builder header = chain.request().newBuilder();
+                    header.addHeader("Authorization", getAuthToken());
+                    return chain.proceed(header.build());
+                }
+            };
+            client.networkInterceptors().add(interceptor);
+            restAdapter.setClient(new OkClient(client));
+        }
+        return restAdapter.build();
     }
 
     private AuthenticationService getAuthenticationService() {
         return getRestAdapter().create(AuthenticationService.class);
     }
-
-    private ExamService getExamsService() { return getRestAdapter().create(ExamService.class); }
 
     private ProductService getProductsService() { return getRestAdapter().create(ProductService.class); }
 
@@ -73,62 +92,10 @@ public class TestpressService {
         return "JWT " + authToken;
     }
 
-    public TestpressApiResponse<Exam> getExams(String urlFrag, Map<String, String> queryParams) {
-        return getExamsService().getExams(urlFrag, queryParams, getAuthToken());
-    }
-
-    public TestpressApiResponse<ExamCategory> getExamsCourses() {
-        return getExamsService().getExamsCourses(getAuthToken());
-    }
-
-    public TestpressApiResponse<Attempt> getAttempts(String urlFrag, Map<String, String> queryParams) {
-        return getExamsService().getAttempts(urlFrag, queryParams, getAuthToken());
-    }
-
-    public TestpressApiResponse<ReviewItem> getReviewItems(String urlFrag) {
-        return getExamsService().getReviewItems(urlFrag, getAuthToken());
-    }
-
-    public Attempt createAttempt(String attemptsUrlFrag) {
-        return getExamsService().createAttempt(attemptsUrlFrag, getAuthToken());
-    }
-
-    public Attempt startAttempt(String startAttemptUrlFrag) {
-        return getExamsService().startAttempt(startAttemptUrlFrag, getAuthToken());
-    }
-
-    public Attempt endAttempt(String endAttemptUrlFrag) {
-        return getExamsService().endExam(endAttemptUrlFrag, getAuthToken());
-    }
-
-    public TestpressApiResponse<AttemptItem> getQuestions(String questionsUrlFrag) {
-        return getExamsService().getQuestions(questionsUrlFrag, getAuthToken());
-    }
-
-    public AttemptItem postAnswer(String answerUrlFrag, List<Integer> savedAnswers, Boolean review) {
-        HashMap<String, Object> answer = new HashMap<String, Object>();
-        answer.put("selected_answers", savedAnswers);
-        answer.put("review", review);
-        return getExamsService().postAnswer(answerUrlFrag, getAuthToken(), answer);
-    }
-
     public ResetPassword resetPassword(String email){
         HashMap<String,String> emailcode = new HashMap<String,String>();
         emailcode.put("email",email);
         return getResetPasswordService().resetPassword(emailcode);
-    }
-
-
-    public Attempt heartbeat(String heartbeatUrlFrag) {
-        return getExamsService().heartbeat(heartbeatUrlFrag, getAuthToken());
-    }
-
-    public Attempt endExam(String endExamUrlFrag) {
-        return getExamsService().endExam(endExamUrlFrag, getAuthToken());
-    }
-
-    public Void mailPdf(String mailPdfUrlFrag) {
-        return getExamsService().mailPdf(mailPdfUrlFrag, getAuthToken());
     }
 
     public Update checkUpdate(String version) {
@@ -150,46 +117,40 @@ public class TestpressService {
         HashMap<String, String> credentials = new HashMap<String, String>();
         credentials.put("registration_id", registrationId);
         credentials.put("device_id", deviceId);
-        if (authToken == null) {
-            return getDevicesService().register(credentials, null);
-        } else {
-            return getDevicesService().register(credentials, getAuthToken());
-        }
+        return getDevicesService().register(credentials);
     }
 
     public TestpressApiResponse<Post> getPosts(String urlFrag, Map<String, String> queryParams, String latestModifiedDate) {
-        if (authToken == null) {
-            return getPostService().getPosts(urlFrag, queryParams, null, latestModifiedDate);
-        } else {
-            return getPostService().getPosts(urlFrag, queryParams, getAuthToken(), latestModifiedDate);
-        }
+        return getPostService().getPosts(urlFrag, queryParams, latestModifiedDate);
     }
 
     public TestpressApiResponse<Category> getCategories(String urlFrag, Map<String, String> queryParams) {
-        if (authToken == null) {
-            return getPostService().getCategories(urlFrag, queryParams, null);
-        } else {
-            return getPostService().getCategories(urlFrag, queryParams, getAuthToken());
-        }
+        return getPostService().getCategories(urlFrag, queryParams);
     }
 
     public Post getPostDetail(String url, Map<String, Boolean> queryParams) {
-        if (authToken == null) {
-            return getPostService().getPostDetails(url, queryParams, null);
-        } else {
-            return getPostService().getPostDetails(url, queryParams, getAuthToken());
-        }
+        return getPostService().getPostDetails(url, queryParams);
+    }
+
+    public TestpressApiResponse<Comment> getComments(long postId, Map<String, String> queryParams) {
+        return getPostService().getComments(postId, queryParams);
+    }
+
+    public Comment sendComments(long postId, String comment) {
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("comment", comment);
+        return getPostService().sendComments(postId, params);
     }
 
     public RegistrationSuccessResponse register(String username,String email, String password, String phone){
-        RegistrationSuccessResponse registrationSuccessResponseResponse;
         HashMap<String, String> userDetails = new HashMap<String, String>();
         userDetails.put("username", username);
         userDetails.put("email", email);
         userDetails.put("password", password);
-        userDetails.put("phone", phone);
-        registrationSuccessResponseResponse = getAuthenticationService().register(userDetails);
-        return registrationSuccessResponseResponse;
+        if (!phone.trim().isEmpty()) {
+            userDetails.put("phone", phone);
+        }
+        return getAuthenticationService().register(userDetails);
     }
 
     public RegistrationSuccessResponse verifyCode(String username, String code){
@@ -205,23 +166,22 @@ public class TestpressService {
         return getProductsService().getProducts(urlFrag, queryParams);
     }
 
-    public ProductDetails getProductDetail(String productUrlFrag) {
-        return getProductsService().getProductDetails(productUrlFrag);
+    public ProductDetails getProductDetail(String productSlug) {
+        return getProductsService().getProductDetails(productSlug);
     }
 
     public TestpressApiResponse<Notes> getDocumentsList(String urlFrag, Map<String, String> queryParams) {
-        return getDocumentsService().getDocumentsList(urlFrag, queryParams, getAuthToken());
+        return getDocumentsService().getDocumentsList(urlFrag, queryParams);
     }
 
     public Notes getDownloadUrl(String slug) {
-        return getDocumentsService().getDownloadUrl(slug, getAuthToken());
+        return getDocumentsService().getDownloadUrl(slug);
     }
 
-    public Order order(String user, List<OrderItem> orderItems) {
+    public Order order(List<OrderItem> orderItems) {
         HashMap<String, Object> orderParameters = new HashMap<String, Object>();
-        orderParameters.put("user", user);
         orderParameters.put("order_items", orderItems);
-        return getProductsService().order(orderParameters, getAuthToken());
+        return getProductsService().order(orderParameters);
     }
 
     public Order orderConfirm(String confirmUrlFrag, String address, String zip, String phone, String landmark, String user, List<OrderItem> orderItems) {
@@ -232,15 +192,15 @@ public class TestpressService {
         orderParameters.put("zip", zip);
         orderParameters.put("phone", phone);
         orderParameters.put("land_mark", landmark);
-        return getProductsService().orderConfirm(confirmUrlFrag, orderParameters, getAuthToken());
+        return getProductsService().orderConfirm(confirmUrlFrag, orderParameters);
     }
 
     public TestpressApiResponse<Order> getOrders(String urlFrag) {
-        return getProductsService().getOrders(urlFrag, getAuthToken());
+        return getProductsService().getOrders(urlFrag);
     }
 
     public ProfileDetails getProfileDetails() {
-        return getAuthenticationService().getProfileDetails(getAuthToken());
+        return getAuthenticationService().getProfileDetails();
     }
 
     public ProfileDetails updateUserDetails(String url, String email, String firstName, String lastName, String phone, int gender, String birthDate, String address, String city, int state, String zip) {
@@ -263,7 +223,7 @@ public class TestpressService {
             userParameters.put("state_choices", state);
         }
         userParameters.put("zip", zip);
-        return getAuthenticationService().updateUser(url, userParameters, getAuthToken());
+        return getAuthenticationService().updateUser(url, userParameters);
     }
 
     public ProfileDetails updateProfileImage(String url, String image, int[] cropDetails) {
@@ -275,6 +235,15 @@ public class TestpressService {
             userParameters.put("crop_width", cropDetails[2]);
             userParameters.put("crop_height", cropDetails[3]);
         }
-        return getAuthenticationService().updateUser(url, userParameters, getAuthToken());
+        return getAuthenticationService().updateUser(url, userParameters);
     }
+
+    public InstituteSettings getInstituteSettings() {
+        return getDevicesService().getInstituteSettings();
+    }
+
+    public retrofit.client.Response activateAccount(String urlFrag) {
+        return getAuthenticationService().activateAccount(urlFrag);
+    }
+
 }

@@ -1,10 +1,6 @@
 package in.testpress.testpress.ui;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.accounts.AccountsException;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,7 +10,6 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,14 +35,13 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import butterknife.OnItemClick;
 import de.greenrobot.dao.query.LazyList;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
-import in.testpress.testpress.core.Constants;
+import in.testpress.testpress.core.PostCategoryPager;
 import in.testpress.testpress.core.PostsPager;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.Category;
@@ -55,6 +49,7 @@ import in.testpress.testpress.models.CategoryDao;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.PostDao;
+import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 import info.hoang8f.widget.FButton;
@@ -103,6 +98,9 @@ public class PostsListFragment extends Fragment implements
     private static final int MISSED_POSTS_THRESHOLD = 50;
 
     Long categoryFilter = null;
+    boolean authorizationChecked;
+    PostCategoryPager categoryPager;
+    List<Category> categories = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -151,7 +149,7 @@ public class PostsListFragment extends Fragment implements
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
-        mSpinnerContainer.setVisibility(View.VISIBLE);
+        mSpinnerContainer.setVisibility(View.GONE);
     }
 
     @Override
@@ -168,7 +166,6 @@ public class PostsListFragment extends Fragment implements
         adapter = new HeaderFooterListAdapter<PostsListAdapter>(listView, new PostsListAdapter
                 (getActivity(), R.layout.post_list_item));
         listView.setAdapter(adapter);
-        listView.setDividerHeight(0);
         loadingLayout = LayoutInflater.from(getActivity()).inflate(R.layout.loading_layout, null);
     }
 
@@ -189,21 +186,43 @@ public class PostsListFragment extends Fragment implements
         listView.setFastScrollEnabled(true);
     }
 
+    /**
+     * Initialize {@link TestpressService} with auth-token for the first time & returns the same
+     * instance afterwards.
+     *
+     * @return TestpressService
+     */
+    TestpressService getTestpressService() {
+        if (!authorizationChecked) {
+            if (CommonUtils.isUserAuthenticated(getActivity())) {
+                try {
+                    testpressService = serviceProvider.getService(getActivity());
+                } catch (AccountsException e) {
+                } catch (IOException e) {
+                }
+            }
+            authorizationChecked = true;
+        }
+        return testpressService;
+    }
+
+    PostCategoryPager getCategoryPager() {
+        if (categoryPager == null) {
+            categoryPager = new PostCategoryPager(getTestpressService());
+            return categoryPager;
+        }
+        return categoryPager;
+    }
+
     public void fetchCategories() {
         new SafeAsyncTask<List<Category>>() {
             @Override
             public List<Category> call() throws Exception {
-                AccountManager manager = (AccountManager) getActivity().getSystemService(Context.ACCOUNT_SERVICE);
-                final Account[] account = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
-                if (account.length > 0) {
-                    try {
-                        testpressService = serviceProvider.getService(getActivity());
-                    } catch (AccountsException e) {
-                    } catch (IOException e) {
-                    }
-                }
-                return testpressService
-                        .getCategories(Constants.Http.URL_CATEGORIES_FRAG, null).getResults();
+                do {
+                    getCategoryPager().next();
+                    categories = getCategoryPager().getResources();
+                } while (getCategoryPager().hasNext());
+                return categories;
             }
 
             protected void onSuccess(final List<Category> categories) throws Exception {
@@ -214,10 +233,6 @@ public class PostsListFragment extends Fragment implements
                             Color.parseColor("#" + category.getColor()));
                 }
 
-                if ((mSpinnerContainer.getVisibility() == View.GONE)) {
-                    Ln.e("Setting visible");
-                    mSpinnerContainer.setVisibility(View.VISIBLE);
-                }
                 mTopLevelSpinnerAdapter.notifyDataSetChanged();
 
                 if (categoryFilter != null) {
@@ -225,13 +240,17 @@ public class PostsListFragment extends Fragment implements
                     spinner.setSelection(mTopLevelSpinnerAdapter.getItemPositionFromTag(categoryFilter.toString()));
                 }
 
-                Toolbar toolbar = ((PostsListActivity)(getActivity())).getActionBarToolbar();
-                View view = toolbar.findViewById(R.id.actionbar_spinnerwrap);
-                toolbar.removeView(view);
-                toolbar.invalidate();
-                ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                toolbar.addView(mSpinnerContainer, lp);
+                if (!categories.isEmpty()) {
+                    Ln.e("Setting visible");
+                    mSpinnerContainer.setVisibility(View.VISIBLE);
+                    Toolbar toolbar = ((PostsListActivity)(getActivity())).getActionBarToolbar();
+                    View view = toolbar.findViewById(R.id.actionbar_spinnerwrap);
+                    toolbar.removeView(view);
+                    toolbar.invalidate();
+                    ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    toolbar.addView(mSpinnerContainer, lp);
+                }
             }
 
         }.execute();
@@ -245,7 +264,7 @@ public class PostsListFragment extends Fragment implements
                     @Override
                     public List<Post> loadData() throws IOException {
                         if (refreshPager == null) {
-                            initPager();
+                            initRefreshPager();
                         }
                         refreshPager.next();
                         return refreshPager.getResources();
@@ -255,6 +274,9 @@ public class PostsListFragment extends Fragment implements
                 return new ThrowableLoader<List<Post>>(getActivity(), null) {
                     @Override
                     public List<Post> loadData() throws IOException {
+                        if (pager == null) {
+                            initOldPostLoadingPager();
+                        }
                         pager.next();
                         return pager.getResources();
                     }
@@ -265,18 +287,9 @@ public class PostsListFragment extends Fragment implements
         }
     }
 
-    void initPager() {
+    void initRefreshPager() {
         if (refreshPager == null) {
-            AccountManager manager = (AccountManager) getActivity().getSystemService(Context.ACCOUNT_SERVICE);
-            final Account[] account = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
-            if (account.length > 0) {
-                try {
-                    testpressService = serviceProvider.getService(getActivity());
-                } catch (AccountsException e) {
-                } catch (IOException e) {
-                }
-            }
-            refreshPager = new PostsPager(testpressService, postDao);
+            refreshPager = new PostsPager(getTestpressService(), postDao);
             refreshPager.setQueryParams("order", "-published_date");
             if (postDao.count() > 0) {
                 Post latest = postDao.queryBuilder().orderDesc(PostDao.Properties.ModifiedDate)
@@ -286,6 +299,15 @@ public class PostsListFragment extends Fragment implements
                 LogAllPosts();
             }
         }
+    }
+
+    void initOldPostLoadingPager() {
+        pager = new PostsPager(getTestpressService(), null);
+        pager.setQueryParams("order", "-published_date");
+        Post lastPost = postDao.queryBuilder().orderDesc(PostDao.Properties
+                .Published).list().get((int) postDao.count() - 1);
+        pager.setQueryParams("until", lastPost.getPublishedDate());
+        pager.setLatestModifiedDate(null);
     }
 
     @Override
@@ -321,14 +343,14 @@ public class PostsListFragment extends Fragment implements
         //If no data is available in the local database, directly insert
         //display from database
         Ln.e(swipeLayout.isRefreshing());
-        if ((postDao.count() == 0) || items.isEmpty()) {
+        if ((postDao.count() == 0) || items == null || items.isEmpty()) {
 
             //Remove the swipe refresh icon and the sticky notification if any
             swipeLayout.setRefreshing(false);
             mStickyView.setVisibility(View.GONE);
 
             //Return if no new posts are available
-            if (items.isEmpty()) {
+            if (items == null || items.isEmpty()) {
                 displayDataFromDB();
                 if (postDao.count() == 0) {
                     setEmptyText(R.string.no_posts, R.string.no_posts_description, R.drawable.ic_error_outline_black_18dp);
@@ -443,17 +465,10 @@ public class PostsListFragment extends Fragment implements
             Ln.d("Onscroll showing more");
 
             if (pager == null) {
-                pager = new PostsPager(testpressService, null);
-                pager.setQueryParams("order", "-published_date");
-                Post lastPost = postDao.queryBuilder().orderDesc(PostDao.Properties
-                        .Published).list().get((int) postDao.count() - 1);
-                pager.setQueryParams("until", lastPost.getPublishedDate());
-                pager.setLatestModifiedDate(null);
                 if (listView.getVisibility() != View.VISIBLE) {
                     listView.setVisibility(View.VISIBLE);
                     emptyView.setVisibility(View.GONE);
                 }
-                Ln.d("Most old Published post available is " + lastPost.getTitle() + lastPost.getPublishedDate());
                 if (adapter.getFootersCount() == 0) { //display loading footer if not present
                     // when loading next page
                     adapter.addFooter(loadingLayout);
@@ -481,6 +496,9 @@ public class PostsListFragment extends Fragment implements
         new Handler().post(new Runnable() {
             @Override
             public void run() {
+                if (swipeLayout == null) {
+                    return;
+                }
                 swipeLayout.setRefreshing(true);
                 mStickyView.setVisibility(View.GONE);
                 isUserSwiped = true;
@@ -493,6 +511,9 @@ public class PostsListFragment extends Fragment implements
                     LogLatestPostModifiedDate(latest);
                 }
                 getLoaderManager().restartLoader(REFRESH_LOADER_ID, null, PostsListFragment.this);
+                categories.clear();
+                categoryPager.clear();
+                fetchCategories();
             }
         });
     }
@@ -531,18 +552,8 @@ public class PostsListFragment extends Fragment implements
         LogAllPosts();
     }
 
-    @OnItemClick(android.R.id.list)
-    public void onListItemClick(int position) {
-        Ln.d("Clicked " + position);
-        Post post = adapter.getWrappedAdapter().getItem(position);
-        Ln.d("Post at position is " + post.getTitle());
-        Intent intent = new Intent(getActivity(), PostActivity.class);
-        intent.putExtra("shortWebUrl", post.getShort_web_url());
-        startActivity(intent);
-    }
-
     protected int getErrorMessage(Exception exception) {
-        if (exception.getCause() instanceof UnknownHostException) {
+        if (exception.getCause() instanceof IOException) {
             if (adapter.getCount() == 0) {
                 setEmptyText(R.string.network_error, R.string.no_internet,R.drawable.ic_error_outline_black_18dp);
             }
@@ -596,6 +607,12 @@ public class PostsListFragment extends Fragment implements
         } else {
             return null;
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
     }
 
     protected void showError(final int message) {

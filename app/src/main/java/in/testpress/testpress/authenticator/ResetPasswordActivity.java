@@ -1,6 +1,7 @@
 package in.testpress.testpress.authenticator;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -22,10 +23,11 @@ import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.ResetPassword;
+import in.testpress.testpress.ui.TestpressFragmentActivity;
 import in.testpress.testpress.ui.TextWatcherAdapter;
 import in.testpress.testpress.util.SafeAsyncTask;
 
-public class ResetPasswordActivity extends AppCompatActivity {
+public class ResetPasswordActivity extends FragmentActivity {
 
     @Inject TestpressService testpressService;
     @InjectView(R.id.et_useremail) EditText email;
@@ -33,7 +35,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
     public int resetErrorMessage;
     @InjectView(R.id.success_ok) Button okButton;
     @InjectView(R.id.form) LinearLayout formContainer;
-    @InjectView(R.id.success_complete) RelativeLayout successContainer;
+    @InjectView(R.id.success_complete) LinearLayout successContainer;
     private final TextWatcher watcher = validationTextWatcher();
 
     @Override

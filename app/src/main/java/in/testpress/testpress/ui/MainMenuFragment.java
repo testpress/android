@@ -31,22 +31,29 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import in.testpress.core.TestpressSdk;
+import in.testpress.exam.TestpressExam;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LoginActivity;
+import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.CategoryDao;
+import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
+
+import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 
 public class MainMenuFragment extends Fragment {
 
     @Inject protected TestpressService testpressService;
     @Inject protected TestpressServiceProvider serviceProvider;
+    @Inject protected LogoutService logoutService;
     GridView grid;
     @InjectView(R.id.recyclerview) RecyclerView recyclerView;
     @InjectView(R.id.quick_links_container)
@@ -55,22 +62,22 @@ public class MainMenuFragment extends Fragment {
 
     //Menu for authorized users
     String[] menuItemNames = {
-            "My Exams",
             "Store",
 //            "Documents",
 //            "Orders",
             "News",
+            "Analytics",
             "Profile",
             "Share",
             "Rate Us",
             "Logout"
     } ;
     int[] menuItemImageId = {
-            R.drawable.exams,
             R.drawable.store,
 //            R.drawable.documents,
 //            R.drawable.cart,
             R.drawable.posts,
+            R.drawable.analytics,
             R.drawable.ic_profile_details,
             R.drawable.share,
             R.drawable.heart,
@@ -96,6 +103,7 @@ public class MainMenuFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Injector.inject(this);
+        getActivity().invalidateOptionsMenu();
         return inflater.inflate(R.layout.main_menu_grid_view, null);
     }
 
@@ -124,15 +132,29 @@ public class MainMenuFragment extends Fragment {
                 Intent intent;
                 if (account.length > 0) {
                     switch (position) {
+//                        case 0:
+//                            if (TestpressSdk.hasActiveSession(getActivity())) {
+//                                showExams();
+//                            } else {
+//                                new SafeAsyncTask<Void>() {
+//                                    @Override
+//                                    public Void call() throws Exception {
+//                                        serviceProvider.getService(getActivity());
+//                                        return null;
+//                                    }
+//
+//                                    @Override
+//                                    protected void onSuccess(Void aVoid) throws Exception {
+//                                        showExams();
+//                                    }
+//                                }.execute();
+//                            }
+//                            break;
                         case 0:
-                            intent = new Intent(getActivity(), ExamsListActivity.class);
-                            startActivity(intent);
-                            break;
-                        case 1:
                             intent = new Intent(getActivity(), ProductsListActivity.class);
                             startActivity(intent);
                             break;
-//                        case 2:
+//                        case 1:
 //                            intent = new Intent(getActivity(), DocumentsListActivity.class);
 //                            startActivity(intent);
 //                            break;
@@ -140,10 +162,13 @@ public class MainMenuFragment extends Fragment {
 //                        intent = new Intent(getActivity(), OrdersListActivity.class);
 //                        startActivity(intent);
 //                        break;
-                        case 2:
+                        case 1:
                             intent = new Intent(getActivity(), PostsListActivity.class);
                             intent.putExtra("userAuthenticated", true);
                             startActivity(intent);
+                            break;
+                        case 2:
+                            checkAuthenticatedUser(3);
                             break;
                         case 3:
                             intent = new Intent(getActivity(), ProfileDetailsActivity.class);
@@ -182,13 +207,52 @@ public class MainMenuFragment extends Fragment {
                             break;
                         default:
                             intent = new Intent(getActivity(), LoginActivity.class);
-                            intent.putExtra("deeplinkTo", "home");
+                            intent.putExtra(Constants.DEEP_LINK_TO, "home");
                             startActivity(intent);
                             break;
                     }
                 }
             }
         });
+    }
+
+    void checkAuthenticatedUser(final int position) {
+        if (!CommonUtils.isUserAuthenticated(getActivity())) {
+            serviceProvider.logout(getActivity(), testpressService,
+                    serviceProvider, logoutService);
+            return;
+        }
+        if (TestpressSdk.hasActiveSession(getActivity())) {
+            showSDK(position);
+        } else {
+            new SafeAsyncTask<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    serviceProvider.getService(getActivity());
+                    return null;
+                }
+
+                @Override
+                protected void onSuccess(Void aVoid) throws Exception {
+                    showSDK(position);
+                }
+            }.execute();
+        }
+    }
+
+    void showSDK(int position) {
+        switch (position) {
+            case 0:
+                //noinspection ConstantConditions
+                TestpressExam.showCategories(getActivity(), true,
+                        TestpressSdk.getTestpressSession(getActivity()));
+                break;
+            case 3:
+                //noinspection ConstantConditions
+                TestpressExam.showAnalytics(getActivity(), SUBJECT_ANALYTICS_PATH,
+                        TestpressSdk.getTestpressSession(getActivity()));
+                break;
+        }
     }
 
     void shareApp() {
@@ -226,6 +290,9 @@ public class MainMenuFragment extends Fragment {
             }
 
             protected void onSuccess(final List<Category> categories) throws Exception {
+                if (getActivity() == null) {
+                    return;
+                }
                 Ln.e("On success");
                 if (categories.isEmpty()) {
                     quickLinksContainer.setVisibility(View.GONE);
@@ -240,7 +307,6 @@ public class MainMenuFragment extends Fragment {
             }
         }.execute();
     }
-
 
     public static class StarredCategoryAdapter
             extends RecyclerView.Adapter<StarredCategoryAdapter.ViewHolder> {

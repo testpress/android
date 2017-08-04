@@ -183,4 +183,42 @@ public class HeaderFooterListAdapter<E extends BaseAdapter> extends
     public boolean isEmpty() {
         return wrapped.isEmpty();
     }
+
+    @Override
+    public int getCount() {
+        if (getWrappedAdapter() != null) {
+            return getFootersCount() + getHeadersCount() + getWrappedAdapter().getCount();
+        } else {
+            return getFootersCount() + getHeadersCount();
+        }
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+        if (getCount() > 0) {
+            int numHeaders = getHeadersCount();
+            if (position < numHeaders) {
+                return headers.get(position).isSelectable;
+            }
+
+            // Adapter
+            final int adjPosition = position - numHeaders;
+            int adapterCount = 0;
+            if (getWrappedAdapter() != null) {
+                adapterCount = getWrappedAdapter().getCount();
+                if (adjPosition < adapterCount) {
+                    return getWrappedAdapter().isEnabled(adjPosition);
+                }
+            }
+
+            if (getFootersCount() > 0) {
+                // Footer (off-limits positions will throw an IndexOutOfBoundsException)
+                return footers.get(adjPosition - adapterCount).isSelectable;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
 }

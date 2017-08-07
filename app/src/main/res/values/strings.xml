@@ -3,7 +3,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyEllipsis">
 
     <string name="app_name">A2Z-Bank Coaching</string>
-    <string name="host_url">a2z.testpress.in</string>
+    <string name="host_url">a2ztraining.testpress.in</string>
     <string name="facebook_app_id">733962776688753</string>
     <string name="fb_login_protocol_scheme">733962776688753</string>
     <string name="server_client_id">1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com</string>

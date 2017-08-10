@@ -119,4 +119,9 @@
     <string name="wrong_url">Url is Incorrect / Not supported.</string>
     <string name="browser_not_available">You need a browser app to this action.</string>
 
+    <string name="babapedia">Babapedia</string>
+    <string name="forum">Forum</string>
+    <string name="babapedia_url">http://babapedia2018.iasbaba.com</string>
+    <string name="forum_url">http://ilp2018.iasbaba.com/forum</string>
+
 </resources>

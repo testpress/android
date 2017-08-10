@@ -148,8 +148,7 @@ public class MainActivity extends TestpressFragmentActivity {
         // Show courses list if game front end is enabled, otherwise hide bottom bar
         if (mInstituteSettings.getShowGameFrontend()) {
             //noinspection ConstantConditions
-            addMenuItem(R.string.learn, R.drawable.learn,
-                    TestpressCourse.getCoursesListFragment(this, TestpressSdk.getTestpressSession(this)));
+            addMenuItem(R.string.learn, R.drawable.learn, new CoursesListFragment());
 
             if (mInstituteSettings.getCoursesEnableGamification()) {
                 //noinspection ConstantConditions

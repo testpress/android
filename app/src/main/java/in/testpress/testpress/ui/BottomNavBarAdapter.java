@@ -8,26 +8,28 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import java.util.ArrayList;
+
 import in.testpress.testpress.R;
 
 public class BottomNavBarAdapter extends BaseAdapter {
     private Context mContext;
-    private final int[] mItemsImageId;
+    private ArrayList<Integer> mItemsImageId;
     private int selectedPosition;
 
-    public BottomNavBarAdapter(Context context, int[] menuItemImageId) {
+    public BottomNavBarAdapter(Context context, ArrayList<Integer> menuItemImageId) {
         mContext = context;
         mItemsImageId = menuItemImageId;
     }
 
     @Override
     public int getCount() {
-        return mItemsImageId.length;
+        return mItemsImageId.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return mItemsImageId[position];
+        return position;
     }
 
     @Override
@@ -43,7 +45,7 @@ public class BottomNavBarAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.bottom_nav_bar_item, null);
         }
         ImageView imageView = (ImageView) convertView.findViewById(R.id.menu_icon);
-        imageView.setImageResource(mItemsImageId[position]);
+        imageView.setImageResource(mItemsImageId.get(position));
         if (selectedPosition == position) {
             imageView.setColorFilter(ContextCompat.getColor(mContext, R.color.primary));
         } else {

@@ -28,6 +28,7 @@ class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
 
     private static final int[][] webLinks = {
             { R.string.babapedia , R.drawable.global_learning, R.string.babapedia_url },
+            { R.string.value_add_notes , R.drawable.notes, R.string.value_add_notes_url },
             { R.string.forum, R.drawable.forum, R.string.forum_url }
     };
 
@@ -62,7 +63,7 @@ class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
 
     @Override
     public int getItemCount() {
-        return mCourses.size() + 2;
+        return mCourses.size() + webLinks.length;
     }
 
     @Override

@@ -120,8 +120,10 @@
     <string name="browser_not_available">You need a browser app to this action.</string>
 
     <string name="babapedia">Babapedia</string>
+    <string name="value_add_notes">Value Add Notes</string>
     <string name="forum">Forum</string>
     <string name="babapedia_url">http://babapedia2018.iasbaba.com</string>
+    <string name="value_add_notes_url">http://ilp2018.iasbaba.com/value-add-notes</string>
     <string name="forum_url">http://ilp2018.iasbaba.com/forum</string>
 
 </resources>

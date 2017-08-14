@@ -56,7 +56,7 @@ public class InAppBrowserActivity extends TestpressFragmentActivity {
         webView.setWebChromeClient(new WebChromeClient());
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        webSettings.setBuiltInZoomControls(false);
+        webSettings.setBuiltInZoomControls(true);
         webSettings.setUseWideViewPort(true);
         webSettings.setLoadWithOverviewMode(true);
         swipeRefresh.setColorSchemeResources(R.color.primary);
@@ -112,6 +112,19 @@ public class InAppBrowserActivity extends TestpressFragmentActivity {
                 swipeRefresh.setRefreshing(false);
             }
 
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url.endsWith(".pdf")){
+                    // Load pdf in google docs
+                    String googleDocs = "https://docs.google.com/viewer?url=";
+                    view.loadUrl(googleDocs + url);
+                } else {
+                    // Load all other urls normally.
+                    view.loadUrl(url);
+                }
+                return true;
+            }
         });
         loadUrl();
     }

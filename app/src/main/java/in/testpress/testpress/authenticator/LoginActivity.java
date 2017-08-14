@@ -329,7 +329,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         ViewUtils.setGone(googleLoginButton, !instituteSettings.getGoogleLoginEnabled());
         ViewUtils.setGone(socialLoginLayout, !instituteSettings.getFacebookLoginEnabled() &&
                 !instituteSettings.getGoogleLoginEnabled());
-        ViewUtils.setGone(signUpButton, !instituteSettings.getAllowSignup());
+        ViewUtils.setGone(signUpButton, true);
     }
 
     private TextWatcher validationTextWatcher() {

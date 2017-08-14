@@ -9,12 +9,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -29,7 +30,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
 import in.testpress.course.TestpressCourse;
-import in.testpress.exam.TestpressExam;
 import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
@@ -53,6 +53,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -72,18 +74,18 @@ public class MainActivity extends TestpressFragmentActivity {
 
     @InjectView(R.id.coordinator_layout) CoordinatorLayout coordinatorLayout;
     @InjectView(R.id.progressbar) RelativeLayout progressBarLayout;
-    @InjectView(R.id.container) FrameLayout fragmentContainer;
+    @InjectView(R.id.viewpager) ViewPager viewPager;
     @InjectView(R.id.grid) GridView grid;
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-    private MainMenuFragment mMainMenuFragment;
     private int mSelectedItem;
-    private BottomNavBarAdapter mAdapter;
-    private int[] mMenuItemImageId = {
-            R.drawable.learn,
-            R.drawable.profile_default,
-    };
+    private BottomNavBarAdapter mBottomBarAdapter;
+    private ArrayList<Integer> mMenuItemImageIds = new ArrayList<>();
+    private ArrayList<Integer> mMenuItemTitleIds = new ArrayList<>();
+    private ArrayList<Fragment> mMenuItemFragments = new ArrayList<>();
+    private InstituteSettings mInstituteSettings;
     private InstituteSettingsDao instituteSettingsDao;
+    private boolean isUserAuthenticated;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -94,7 +96,7 @@ public class MainActivity extends TestpressFragmentActivity {
         if (savedInstanceState != null) {
             mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM);
         }
-        fragmentContainer.setVisibility(View.INVISIBLE);
+        viewPager.setVisibility(View.INVISIBLE);
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -103,14 +105,15 @@ public class MainActivity extends TestpressFragmentActivity {
         };
         DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
         instituteSettingsDao = daoSession.getInstituteSettingsDao();
-        getInstituteSettings();
+        fetchInstituteSettings();
     }
 
-    private void checkAuth() {
+    private void updateTestpressSession() {
         new SafeAsyncTask<Boolean>() {
 
             @Override
             public Boolean call() throws Exception {
+                // Calling getService will update the testpress session.
                 final TestpressService service = serviceProvider.getService(MainActivity.this);
                 return service != null;
             }
@@ -128,6 +131,7 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             protected void onSuccess(final Boolean hasAuthenticated) throws Exception {
                 super.onSuccess(hasAuthenticated);
+                isUserAuthenticated = true;
                 checkUpdate();
             }
         }.execute();
@@ -143,70 +147,60 @@ public class MainActivity extends TestpressFragmentActivity {
                 startService(intent);
             }
         }
-        mAdapter = new BottomNavBarAdapter(this, mMenuItemImageId);
-        grid.setAdapter(mAdapter);
+        // Show courses list if game front end is enabled, otherwise hide bottom bar
+        if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
+            //noinspection ConstantConditions
+            addMenuItem(R.string.learn, R.drawable.learn,
+                    TestpressCourse.getCoursesListFragment(this, TestpressSdk.getTestpressSession(this)));
+
+            if (mInstituteSettings.getCoursesEnableGamification()) {
+                //noinspection ConstantConditions
+                addMenuItem(R.string.testpress_leaderboard, R.drawable.leaderboard,
+                        TestpressCourse.getLeaderboardFragment(this, TestpressSdk.getTestpressSession(this)));
+            }
+        } else {
+            grid.setVisibility(View.GONE);
+        }
+        addMenuItem(R.string.app_name, R.drawable.profile_default, new MainMenuFragment());
+        mBottomBarAdapter = new BottomNavBarAdapter(this, mMenuItemImageIds);
+        grid.setAdapter(mBottomBarAdapter);
+        grid.setNumColumns(mBottomBarAdapter.getCount());
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectFragment(position);
+                viewPager.setCurrentItem(position);
             }
         });
-        mMainMenuFragment = new MainMenuFragment();
-        selectFragment(mSelectedItem);
+        BottomBarPagerAdapter mPagerAdapter = new BottomBarPagerAdapter(this, mMenuItemFragments);
+        viewPager.setAdapter(mPagerAdapter);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                onItemSelected(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
+        viewPager.setOffscreenPageLimit(mPagerAdapter.getCount());
+        viewPager.setCurrentItem(mSelectedItem);
+        viewPager.setVisibility(View.VISIBLE);
+        progressBarLayout.setVisibility(View.GONE);
     }
 
-    private void selectFragment(int position) {
+    private void onItemSelected(int position) {
         mSelectedItem = position;
-        mAdapter.setSelectedPosition(position);
-        mAdapter.notifyDataSetChanged();
+        mBottomBarAdapter.setSelectedPosition(position);
+        mBottomBarAdapter.notifyDataSetChanged();
+        updateToolbarText(getString(mMenuItemTitleIds.get(position)));
         if (!CommonUtils.isUserAuthenticated(this)) {
             serviceProvider.logout(this, testpressService, serviceProvider, logoutService);
-            return;
         }
-        switch (position) {
-            case 0:
-                updateToolbarText(getString(R.string.learn));
-                initSDK(position);
-                break;
-            case 1:
-                updateToolbarText(getString(R.string.app_name));
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container, mMainMenuFragment)
-                        .commitAllowingStateLoss();
-                fragmentContainer.setVisibility(View.VISIBLE);
-                progressBarLayout.setVisibility(View.GONE);
-                break;
-        }
-    }
-
-    void initSDK(final int position) {
-        if (TestpressSdk.hasActiveSession(this)) {
-            showSDK(position);
-        } else {
-            new SafeAsyncTask<Void>() {
-                @Override
-                public Void call() throws Exception {
-                    serviceProvider.getService(MainActivity.this);
-                    return null;
-                }
-
-                @Override
-                protected void onSuccess(Void aVoid) throws Exception {
-                    showSDK(position);
-                }
-            }.execute();
-        }
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    void showSDK(int position) {
-        if (position == 0) {
-            TestpressCourse.show(this, R.id.container, TestpressSdk.getTestpressSession(this));
-        } else {
-            TestpressExam.show(this, R.id.container, TestpressSdk.getTestpressSession(this));
-        }
-        fragmentContainer.setVisibility(View.VISIBLE);
-        progressBarLayout.setVisibility(View.GONE);
     }
 
     private void updateToolbarText(CharSequence text) {
@@ -216,7 +210,7 @@ public class MainActivity extends TestpressFragmentActivity {
         }
     }
 
-    private void getInstituteSettings() {
+    private void fetchInstituteSettings() {
         progressBarLayout.setVisibility(View.VISIBLE);
         new SafeAsyncTask<InstituteSettings>() {
             @Override
@@ -226,11 +220,12 @@ public class MainActivity extends TestpressFragmentActivity {
 
             @Override
             protected void onException(Exception exception) throws RuntimeException {
-                if (instituteSettingsDao.queryBuilder()
-                        .where(InstituteSettingsDao.Properties.BaseUrl
-                        .eq(Constants.Http.URL_BASE)).count() != 0) {
+                List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
+                        .where(InstituteSettingsDao.Properties.BaseUrl.eq(Constants.Http.URL_BASE))
+                        .list();
 
-                    checkUpdate();
+                if (instituteSettingsList.size() > 0) {
+                    onFinishFetchingInstituteSettings(instituteSettingsList.get(0));
                     return;
                 }
                 if (exception.getCause() instanceof IOException) {
@@ -245,7 +240,7 @@ public class MainActivity extends TestpressFragmentActivity {
                     @Override
                     public void onClick(View v) {
                         emptyView.setVisibility(View.GONE);
-                        getInstituteSettings();
+                        fetchInstituteSettings();
                     }
                 });
             }
@@ -254,9 +249,21 @@ public class MainActivity extends TestpressFragmentActivity {
             protected void onSuccess(InstituteSettings instituteSettings) throws Exception {
                 instituteSettings.setBaseUrl(Constants.Http.URL_BASE);
                 instituteSettingsDao.insertOrReplace(instituteSettings);
-                checkAuth();
+                onFinishFetchingInstituteSettings(instituteSettings);
             }
         }.execute();
+    }
+
+    public void onFinishFetchingInstituteSettings(InstituteSettings instituteSettings) {
+        this.mInstituteSettings = instituteSettings;
+        // TODO: Get allowAnonymousUser flag from institute settings
+        boolean allowAnonymousUser = true; // True if users can use the app(Access posts) without login
+        //noinspection ConstantConditions
+        if (CommonUtils.isUserAuthenticated(this) || !allowAnonymousUser) {
+            updateTestpressSession(); // Show login screen if user not logged in
+        } else {
+            checkUpdate();
+        }
     }
 
     @Override
@@ -351,6 +358,12 @@ public class MainActivity extends TestpressFragmentActivity {
                 }
             }
         }.execute();
+    }
+
+    public void addMenuItem(int titleResId, int imageResId, Fragment fragment) {
+        mMenuItemTitleIds.add(titleResId);
+        mMenuItemImageIds.add(imageResId);
+        mMenuItemFragments.add(fragment);
     }
 
     public void logout() {

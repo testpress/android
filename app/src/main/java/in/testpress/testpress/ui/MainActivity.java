@@ -85,6 +85,7 @@ public class MainActivity extends TestpressFragmentActivity {
     private ArrayList<Fragment> mMenuItemFragments = new ArrayList<>();
     private InstituteSettings mInstituteSettings;
     private InstituteSettingsDao instituteSettingsDao;
+    private boolean isUserAuthenticated;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -104,14 +105,15 @@ public class MainActivity extends TestpressFragmentActivity {
         };
         DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
         instituteSettingsDao = daoSession.getInstituteSettingsDao();
-        getInstituteSettings();
+        fetchInstituteSettings();
     }
 
-    private void checkAuth() {
+    private void updateTestpressSession() {
         new SafeAsyncTask<Boolean>() {
 
             @Override
             public Boolean call() throws Exception {
+                // Calling getService will update the testpress session.
                 final TestpressService service = serviceProvider.getService(MainActivity.this);
                 return service != null;
             }
@@ -129,8 +131,8 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             protected void onSuccess(final Boolean hasAuthenticated) throws Exception {
                 super.onSuccess(hasAuthenticated);
+                isUserAuthenticated = true;
                 checkUpdate();
-
             }
         }.execute();
     }
@@ -146,7 +148,7 @@ public class MainActivity extends TestpressFragmentActivity {
             }
         }
         // Show courses list if game front end is enabled, otherwise hide bottom bar
-        if (mInstituteSettings.getShowGameFrontend()) {
+        if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             //noinspection ConstantConditions
             addMenuItem(R.string.learn, R.drawable.learn, new CoursesListFragment());
 
@@ -207,7 +209,7 @@ public class MainActivity extends TestpressFragmentActivity {
         }
     }
 
-    private void getInstituteSettings() {
+    private void fetchInstituteSettings() {
         progressBarLayout.setVisibility(View.VISIBLE);
         new SafeAsyncTask<InstituteSettings>() {
             @Override
@@ -222,8 +224,7 @@ public class MainActivity extends TestpressFragmentActivity {
                         .list();
 
                 if (instituteSettingsList.size() > 0) {
-                    MainActivity.this.mInstituteSettings = instituteSettingsList.get(0);
-                    checkAuth();
+                    onFinishFetchingInstituteSettings(instituteSettingsList.get(0));
                     return;
                 }
                 if (exception.getCause() instanceof IOException) {
@@ -238,7 +239,7 @@ public class MainActivity extends TestpressFragmentActivity {
                     @Override
                     public void onClick(View v) {
                         emptyView.setVisibility(View.GONE);
-                        getInstituteSettings();
+                        fetchInstituteSettings();
                     }
                 });
             }
@@ -247,10 +248,21 @@ public class MainActivity extends TestpressFragmentActivity {
             protected void onSuccess(InstituteSettings instituteSettings) throws Exception {
                 instituteSettings.setBaseUrl(Constants.Http.URL_BASE);
                 instituteSettingsDao.insertOrReplace(instituteSettings);
-                MainActivity.this.mInstituteSettings = instituteSettings;
-                checkAuth();
+                onFinishFetchingInstituteSettings(instituteSettings);
             }
         }.execute();
+    }
+
+    public void onFinishFetchingInstituteSettings(InstituteSettings instituteSettings) {
+        this.mInstituteSettings = instituteSettings;
+        // TODO: Get allowAnonymousUser flag from institute settings
+        boolean allowAnonymousUser = true; // True if users can use the app(Access posts) without login
+        //noinspection ConstantConditions
+        if (CommonUtils.isUserAuthenticated(this) || !allowAnonymousUser) {
+            updateTestpressSession(); // Show login screen if user not logged in
+        } else {
+            checkUpdate();
+        }
     }
 
     @Override

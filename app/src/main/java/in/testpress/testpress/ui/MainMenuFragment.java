@@ -90,7 +90,7 @@ public class MainMenuFragment extends Fragment {
             "News",
             "Share",
             "Rate Us",
-            "ILP Login"
+            "ILP/AIPTS Login"
     } ;
     int[] menuImageId = {
             R.drawable.store,

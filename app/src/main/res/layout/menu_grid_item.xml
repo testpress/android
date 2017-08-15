@@ -22,6 +22,8 @@
         android:textSize="14sp"
         android:textStyle="bold"
         android:textAllCaps="true"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:layout_marginTop="10dp"
         android:text="TextView"
         android:textColor="@color/black"/>

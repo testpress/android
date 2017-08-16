@@ -85,6 +85,9 @@
     <string name="share">Share</string>
     <string name="invalid_post">Invalid Article</string>
 
+    <string name="learn">Learn</string>
+    <string name="profile">Profile</string>
+
     <string name="or">or</string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="sign_up">Sign up with Email</string>
@@ -110,5 +113,9 @@
     <string name="load_comments">Load comments</string>
     <string name="comment_posted">Comment posted successfully</string>
     <string name="no_comments">Be the first to post a comment</string>
+
+    <string name="not_supported">Not supported</string>
+    <string name="wrong_url">Url is Incorrect / Not supported.</string>
+    <string name="browser_not_available">You need a browser app to this action.</string>
 
 </resources>

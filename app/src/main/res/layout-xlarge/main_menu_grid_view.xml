@@ -1,25 +1,39 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical">
+    android:background="#f9f9f9" >
+
+    <TextView
+        android:id="@+id/welcome_message"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="45dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:gravity="center"
+        android:layout_above="@+id/grid"
+        android:letterSpacing="0.04"
+        android:text="Welcome back, John!"
+        android:textColor="#333"
+        tools:ignore="UnusedAttribute" />
 
     <GridView
-        android:numColumns="auto_fit"
+        android:layout_centerInParent="true"
+        android:numColumns="2"
         android:gravity="center"
         android:columnWidth="200dp"
         android:stretchMode="columnWidth"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:verticalSpacing="1dp"
-        android:horizontalSpacing="1dp"
-        android:background="#efefef"
+        android:verticalSpacing="20dp"
+        android:horizontalSpacing="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
         android:id="@+id/grid">
     </GridView>
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="#efefef"/>
 
     <LinearLayout
         android:orientation="vertical"
@@ -52,4 +66,4 @@
                                                 android:layout_height="match_parent" />
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

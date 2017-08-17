@@ -99,6 +99,8 @@ public class TestpressServiceProvider {
         SharedPreferences preferences = activity.getSharedPreferences(Constants.GCM_PREFERENCE_NAME,
                 Context.MODE_PRIVATE);
         preferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
+        SharedPreferences defaultPreferences = activity.getPreferences(Context.MODE_PRIVATE);
+        defaultPreferences.edit().clear().apply();
         CommonUtils.registerDevice(activity, testpressService, serviceProvider);
         DaoSession daoSession =
                 ((TestpressApplication) activity.getApplicationContext()).getDaoSession();

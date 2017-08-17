@@ -16,13 +16,20 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,13 +50,23 @@ import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.CategoryDao;
+import in.testpress.testpress.models.ProfileDetails;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
+import in.testpress.util.UIUtils;
 
 import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 
 public class MainMenuFragment extends Fragment {
+
+    @InjectView(R.id.welcome_message) TextView welcomeMessage;
+    @InjectView(R.id.pb_loading) ProgressBar progressBar;
+    @InjectView(R.id.grid_layout) RelativeLayout gridLayout;
+    @InjectView(R.id.empty_container) LinearLayout emptyView;
+    @InjectView(R.id.empty_title) TextView emptyTitleView;
+    @InjectView(R.id.empty_description) TextView emptyDescView;
+    @InjectView(R.id.retry_button) Button retryButton;
 
     @Inject protected TestpressService testpressService;
     @Inject protected TestpressServiceProvider serviceProvider;
@@ -62,26 +79,28 @@ public class MainMenuFragment extends Fragment {
 
     //Menu for authorized users
     String[] menuItemNames = {
-            "Store",
+            "My Exams",
+//            "Store",
 //            "Documents",
 //            "Orders",
-            "Posts",
             "Analytics",
             "Profile",
-            "Share",
-            "Rate Us",
-            "Logout"
+            "Notifications",
+//            "Share",
+//            "Rate Us",
+//            "Logout"
     } ;
     int[] menuItemImageId = {
-            R.drawable.store,
+            R.drawable.exams,
+//            R.drawable.store,
 //            R.drawable.documents,
 //            R.drawable.cart,
-            R.drawable.posts,
             R.drawable.analytics,
             R.drawable.ic_profile_details,
-            R.drawable.share,
-            R.drawable.heart,
-            R.drawable.logout
+            R.drawable.notification,
+//            R.drawable.share,
+//            R.drawable.heart,
+//            R.drawable.logout
     };
 
     //Menu for unauthorized users
@@ -101,6 +120,16 @@ public class MainMenuFragment extends Fragment {
     };
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.main_menu, menu);
+        if (account.length == 0) {
+            MenuItem logout = menu.findItem(R.id.logout);
+            logout.setVisible(false);
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Injector.inject(this);
         getActivity().invalidateOptionsMenu();
@@ -112,7 +141,18 @@ public class MainMenuFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
-        fetchStarredCategories();
+//        fetchStarredCategories();
+        ProfileDetails profileDetails = ProfileDetails.getProfileDetailsFromPreferences(getActivity());
+        if (profileDetails == null) {
+            gridLayout.setVisibility(View.GONE);
+            UIUtils.setIndeterminateDrawable(getActivity(), progressBar, 4);
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            welcomeMessage.setText(String.format(getString(R.string.welcome_message),
+                    profileDetails.getDisplayName()));
+        }
+        fetchProfileDetails();
+        welcomeMessage.setTypeface(TestpressSdk.getRubikRegularFont(getContext()));
         AccountManager manager = (AccountManager) getActivity().getSystemService(Context.ACCOUNT_SERVICE);
         account = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
         MainMenuGridAdapter adapter;
@@ -151,8 +191,7 @@ public class MainMenuFragment extends Fragment {
 //                            }
 //                            break;
                         case 0:
-                            intent = new Intent(getActivity(), ProductsListActivity.class);
-                            startActivity(intent);
+                            checkAuthenticatedUser(0);
                             break;
 //                        case 1:
 //                            intent = new Intent(getActivity(), DocumentsListActivity.class);
@@ -162,15 +201,15 @@ public class MainMenuFragment extends Fragment {
 //                        intent = new Intent(getActivity(), OrdersListActivity.class);
 //                        startActivity(intent);
 //                        break;
-                        case 1:
+                        case 3:
                             intent = new Intent(getActivity(), PostsListActivity.class);
                             intent.putExtra("userAuthenticated", true);
                             startActivity(intent);
                             break;
-                        case 2:
+                        case 1:
                             checkAuthenticatedUser(3);
                             break;
-                        case 3:
+                        case 2:
                             intent = new Intent(getActivity(), ProfileDetailsActivity.class);
                             startActivity(intent);
                             break;
@@ -214,6 +253,7 @@ public class MainMenuFragment extends Fragment {
                 }
             }
         });
+        setHasOptionsMenu(true);
     }
 
     void checkAuthenticatedUser(final int position) {
@@ -272,6 +312,65 @@ public class MainMenuFragment extends Fragment {
             startActivity(new Intent(Intent.ACTION_VIEW,
                     Uri.parse("https://play.google.com/store/apps/details?id=" + getActivity().getPackageName())));
         }
+    }
+
+    private void fetchProfileDetails() {
+        new SafeAsyncTask<ProfileDetails>() {
+            @Override
+            public ProfileDetails call() throws Exception {
+                return serviceProvider.getService(getActivity()).getProfileDetails();
+            }
+
+            @Override
+            protected void onException(Exception exception) throws RuntimeException {
+                if (ProfileDetails.getProfileDetailsFromPreferences(getActivity()) != null) {
+                    return;
+                }
+                int errorDescription;
+                if (exception.getCause() instanceof IOException) {
+                    errorDescription = R.string.no_internet_try_again;
+                } else {
+                    errorDescription = R.string.try_after_sometime;
+                }
+                setEmptyText(R.string.network_error, errorDescription);
+                progressBar.setVisibility(View.GONE);
+                retryButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        emptyView.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.VISIBLE);
+                        fetchProfileDetails();
+                    }
+                });
+            }
+
+            @Override
+            protected void onSuccess(ProfileDetails profileDetails) throws Exception {
+                ProfileDetails.saveProfileDetailsInPreferences(getActivity(), profileDetails);
+                welcomeMessage.setText(String.format(getString(R.string.welcome_message),
+                        profileDetails.getDisplayName()));
+
+                emptyView.setVisibility(View.GONE);
+                gridLayout.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+            }
+        }.execute();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.share:
+                shareApp();
+                return true;
+            case R.id.rate_us:
+                rateApp();
+                return true;
+            case R.id.logout:
+                ((MainActivity) getActivity()).logout();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void fetchStarredCategories() {
@@ -384,5 +483,11 @@ public class MainMenuFragment extends Fragment {
         public int getItemCount() {
             return mValues.size();
         }
+    }
+
+    protected void setEmptyText(final int title, final int description) {
+        emptyView.setVisibility(View.VISIBLE);
+        emptyTitleView.setText(title);
+        emptyDescView.setText(description);
     }
 }

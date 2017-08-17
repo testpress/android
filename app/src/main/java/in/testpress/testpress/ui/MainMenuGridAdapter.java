@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import in.testpress.core.TestpressSdk;
 import in.testpress.testpress.R;
 
 public class MainMenuGridAdapter extends BaseAdapter {
@@ -46,6 +47,7 @@ public class MainMenuGridAdapter extends BaseAdapter {
             TextView textView = (TextView) grid.findViewById(R.id.menuName);
             ImageView imageView = (ImageView)grid.findViewById(R.id.menuIcon);
             textView.setText(menuItemNames[position]);
+            textView.setTypeface(TestpressSdk.getRubikMediumFont(mContext));
             imageView.setImageResource(menuItemImageId[position]);
         } else {
             grid = (View) convertView;

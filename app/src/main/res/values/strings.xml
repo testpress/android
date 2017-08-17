@@ -9,6 +9,8 @@
     <string name="server_client_id">1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com</string>
     <string name="share_message">Good app to prepare for IIT JEE Main &amp; Advance. Get it at https://play.google.com/store/apps/details?id=</string>
 
+    <string name="welcome_message">Welcome back, %1$s!</string>
+
     <string name="refresh_action">Refresh</string>
 
     <string name="error_loading_products">Loading Products failed</string>
@@ -95,6 +97,7 @@
     <string name="login_with_google">Login with Google</string>
     <string name="google_sign_in_wrong_hash">Google sign in error, please contact the administrator to check key hashes.</string>
 
+    <string name="rate_us">Rate Us</string>
     <string name="logout">Log Out</string>
     <string name="logout_confirm_message">Are you sure you want to log out?</string>
 

@@ -87,7 +87,7 @@ public class TestpressGCMListenerService extends GcmListenerService {
 
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.icon)
+                .setSmallIcon(R.drawable.ic_notification)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.icon))
                 .setContentTitle(title)
                 .setContentText(message)

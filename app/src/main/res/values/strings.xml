@@ -9,6 +9,13 @@
     <string name="server_client_id">1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com</string>
     <string name="share_message">Good app to prepare for UPSC, IAS. Have a look https://play.google.com/store/apps/details?id=</string>
 
+    <string name="babapedia">Babapedia</string>
+    <string name="value_add_notes">Value Add Notes</string>
+    <string name="forum">Forum</string>
+    <string name="babapedia_url">http://babapedia2018.iasbaba.com</string>
+    <string name="value_add_notes_url">http://ilp2018.iasbaba.com/value-add-notes</string>
+    <string name="forum_url">http://ilp2018.iasbaba.com/forum</string>
+
     <string name="refresh_action">Refresh</string>
 
     <string name="error_loading_products">Loading Products failed</string>
@@ -87,7 +94,6 @@
     <string name="invalid_post">Invalid Article</string>
 
     <string name="learn">Learn</string>
-    <string name="profile">Profile</string>
 
     <string name="or">or</string>
     <string name="forgot_password">Forgot Password?</string>
@@ -105,7 +111,7 @@
     <string name="activate_completed_message">Thanks, activation complete! You may now login using the username and password you set at registration.</string>
     <string name="activate_incomplete_title">Activation problem</string>
     <string name="activate_incomplete_message">It seems that the activation key is invalid. Please check the url again.</string>
-    <string name="login">Login</string>
+    <string name="login">ILP/AIPTS Login</string>
 
     <string name="comments_title">Comments</string>
     <string name="write_a_comment">Write a comment...</string>
@@ -119,11 +125,13 @@
     <string name="wrong_url">Url is Incorrect / Not supported.</string>
     <string name="browser_not_available">You need a browser app to this action.</string>
 
-    <string name="babapedia">Babapedia</string>
-    <string name="value_add_notes">Value Add Notes</string>
-    <string name="forum">Forum</string>
-    <string name="babapedia_url">http://babapedia2018.iasbaba.com</string>
-    <string name="value_add_notes_url">http://ilp2018.iasbaba.com/value-add-notes</string>
-    <string name="forum_url">http://ilp2018.iasbaba.com/forum</string>
+    <string name="my_exams">My Exams</string>
+    <string name="store">Store</string>
+    <string name="posts">News</string>
+    <string name="documents">Documents</string>
+    <string name="analytics">Analytics</string>
+    <string name="profile">Profile</string>
+    <string name="orders">Orders</string>
+    <string name="rate_us">Rate Us</string>
 
 </resources>

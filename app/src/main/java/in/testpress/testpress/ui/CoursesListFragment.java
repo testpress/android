@@ -134,7 +134,8 @@ public class CoursesListFragment extends Fragment
             return;
         }
         adapter.setCourses(items);
-        adapter.notifyDataSetChanged();
+        recyclerView.getRecycledViewPool().clear();
+        adapter.notifyItemRangeChanged(0, items.size());
         recyclerView.setVisibility(View.VISIBLE);
         emptyView.setVisibility(View.GONE);
     }

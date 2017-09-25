@@ -538,7 +538,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             }
         } else if (requestCode == REQUEST_CODE_GOOGLE_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            if (result.isSuccess()) {
+            if (result != null && result.isSuccess()) {
                 //noinspection ConstantConditions
                 if (result.getSignInAccount().getGivenName() == null ||
                         result.getSignInAccount().getGivenName().isEmpty()) {

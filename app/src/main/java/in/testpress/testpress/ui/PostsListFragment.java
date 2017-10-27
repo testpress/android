@@ -391,7 +391,7 @@ public class PostsListFragment extends Fragment implements
 
     void onNetworkLoadFinished(List<Post> items) {
 
-        if (!pager.hasMore()) {
+        if (pager != null && !pager.hasMore()) {
             if (adapter.getFootersCount() != 0) {  //if pager reached last page remove footer if
                 // footer added already
                 adapter.removeFooter(loadingLayout);

@@ -76,6 +76,7 @@ public class TestpressServiceProvider {
                         instituteSettings.getShowGameFrontend(),
                         instituteSettings.getCoursesEnableGamification()
                 );
+                settings.setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled());
             }
             TestpressSdk.setTestpressSession(activity, new TestpressSession(settings, authToken));
         }

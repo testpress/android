@@ -2,12 +2,12 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyEllipsis">
 
-    <string name="app_name">Testpress</string>
-    <string name="host_url">sandbox.testpress.in</string>
-    <string name="facebook_app_id">733962776688753</string>
-    <string name="fb_login_protocol_scheme">733962776688753</string>
+    <string name="app_name">We Shine Academy</string>
+    <string name="host_url">www.weshineonlineexam.com</string>
+    <string name="facebook_app_id">666596320396420</string>
+    <string name="fb_login_protocol_scheme">666596320396420</string>
     <string name="server_client_id">1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com</string>
-    <string name="share_message">Good app to prepare for online exams. Get it at https://play.google.com/store/apps/details?id=</string>
+    <string name="share_message">Good app to prepare for TNPSC, BANK, SSC, RRB exams. Get it at https://play.google.com/store/apps/details?id=</string>
 
     <string name="refresh_action">Refresh</string>
 

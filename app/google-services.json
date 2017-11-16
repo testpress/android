@@ -148,17 +148,17 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1064046661341:android:fd5dcb5181269658",
+        "mobilesdk_app_id": "1:1064046661341:android:f5add917bcefd970",
         "android_client_info": {
-          "package_name": "in.testpress.lmsdemo"
+          "package_name": "in.testpress.tech.lmsdemo"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1064046661341-2tjgav0r09jjevlhj8f2ac79vv6hfnqg.apps.googleusercontent.com",
+          "client_id": "1064046661341-bqva3hjthlpghucd94ug4o7jse2636f8.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "in.testpress.lmsdemo",
+            "package_name": "in.testpress.tech.lmsdemo",
             "certificate_hash": "c53ddd6f9c8bf151f77333cb7ae1b4111e6add49"
           }
         },

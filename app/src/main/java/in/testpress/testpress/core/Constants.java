@@ -21,7 +21,7 @@ public final class Constants {
         /**
          * Account type id
          */
-        public static final String TESTPRESS_ACCOUNT_TYPE = "in.testpress." + TESTPRESS_ACCOUNT_NAME;
+        public static final String TESTPRESS_ACCOUNT_TYPE = "in.testpress.tech." + TESTPRESS_ACCOUNT_NAME;
 
         /**
          * Auth token type

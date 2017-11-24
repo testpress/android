@@ -2,7 +2,7 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyEllipsis">
 
-    <string name="app_name">We Shine Academy</string>
+    <string name="app_name">WeShine Online Exams</string>
     <string name="host_url">www.weshineonlineexam.com</string>
     <string name="facebook_app_id">666596320396420</string>
     <string name="fb_login_protocol_scheme">666596320396420</string>

@@ -292,7 +292,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     private void authenticate(final String userId, String accessToken,
                               final TestpressSdk.Provider provider) {
 
-        in.testpress.model.InstituteSettings settings = new in.testpress.model.InstituteSettings(
+        in.testpress.models.InstituteSettings settings = new in.testpress.models.InstituteSettings(
                 instituteSettings.getBaseUrl(),
                 instituteSettings.getShowGameFrontend(),
                 instituteSettings.getCoursesEnableGamification()

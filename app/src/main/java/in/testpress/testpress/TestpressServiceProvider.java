@@ -68,12 +68,12 @@ public class TestpressServiceProvider {
                     .where(InstituteSettingsDao.Properties.BaseUrl.eq(Constants.Http.URL_BASE))
                     .list();
 
-            in.testpress.model.InstituteSettings settings;
+            in.testpress.models.InstituteSettings settings;
             if (instituteSettingsList.isEmpty()) {
-                settings = new in.testpress.model.InstituteSettings(Constants.Http.URL_BASE);
+                settings = new in.testpress.models.InstituteSettings(Constants.Http.URL_BASE);
             } else {
                 InstituteSettings instituteSettings = instituteSettingsList.get(0);
-                settings = new in.testpress.model.InstituteSettings(
+                settings = new in.testpress.models.InstituteSettings(
                         instituteSettings.getBaseUrl(),
                         instituteSettings.getShowGameFrontend(),
                         instituteSettings.getCoursesEnableGamification()
@@ -109,8 +109,6 @@ public class TestpressServiceProvider {
         postDao.deleteAll();
         daoSession.clear();
         TestpressSdk.clearActiveSession(activity);
-        TestpressExam.clearDatabase(activity);
-        TestpressCourse.clearDatabase(activity);
         logoutService.logout(new Runnable() {
             @Override
             public void run() {

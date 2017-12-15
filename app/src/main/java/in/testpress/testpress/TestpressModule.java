@@ -25,9 +25,13 @@ import in.testpress.testpress.core.RestErrorHandler;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.core.UserAgentProvider;
 import in.testpress.testpress.ui.AccountActivateActivity;
+import in.testpress.testpress.ui.CreateForumActivity;
 import in.testpress.testpress.ui.CropImageActivity;
 import in.testpress.testpress.ui.DocumentsListActivity;
 import in.testpress.testpress.ui.DocumentsListFragment;
+import in.testpress.testpress.ui.ForumActivity;
+import in.testpress.testpress.ui.ForumListActivity;
+import in.testpress.testpress.ui.ForumListFragment;
 import in.testpress.testpress.ui.SplashScreenActivity;
 import in.testpress.testpress.ui.ZoomableImageActivity;
 import in.testpress.testpress.ui.MainActivity;
@@ -89,7 +93,11 @@ import retrofit.converter.GsonConverter;
                 DocumentsListFragment.class,
                 ZoomableImageActivity.class,
                 SplashScreenActivity.class,
-                AccountActivateActivity.class
+                AccountActivateActivity.class,
+                ForumListActivity.class,
+                ForumListFragment.class,
+                ForumActivity.class,
+                CreateForumActivity.class
         }
 )
 public class TestpressModule {

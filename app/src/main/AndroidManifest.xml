@@ -117,6 +117,16 @@
             android:configChanges="orientation|keyboardHidden|screenSize" />
 
         <activity
+            android:name=".ui.ForumActivity"
+            android:label="Article"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
+        <activity
+            android:name=".ui.CreateForumActivity"
+            android:label="Create Forum Post"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+
+        <activity
             android:name=".authenticator.RegisterActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Register" />
@@ -143,6 +153,12 @@
             android:name=".ui.PostsListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Articles" />
+
+        <activity
+            android:name=".ui.ForumListActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Discussions" />
+
         <activity
             android:name=".ui.OrdersListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

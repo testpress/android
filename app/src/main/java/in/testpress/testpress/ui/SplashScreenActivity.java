@@ -66,14 +66,14 @@ public class SplashScreenActivity extends Activity {
                     switch (pathSegments.get(0)) {
                         case "p":
                             Intent intent = new Intent(SplashScreenActivity.this, PostActivity.class);
-                            intent.putExtra("shortWebUrl", uri.toString());
+                            intent.putExtra("url", uri.toString());
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                                     Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             intent.putExtra(Constants.IS_DEEP_LINK, true);
                             startActivity(intent);
                             finish();
                             break;
-                        case "posts":
+                        case "forums":
                             Intent postsIntent =
                                     new Intent(SplashScreenActivity.this, PostsListActivity.class);
                             postsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |

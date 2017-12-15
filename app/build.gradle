@@ -74,6 +74,9 @@ dependencies {
 
     // Flat button
     compile 'info.hoang8f:fbutton:1.0.5'
+
+    compile 'com.facebook.stetho:stetho:1.5.0'
+
 }
 
 def key_alias = "sample"

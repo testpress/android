@@ -14,6 +14,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -23,7 +24,6 @@ import android.widget.RelativeLayout;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.widget.TextView;
 
 import butterknife.ButterKnife;
@@ -89,6 +89,9 @@ public class MainActivity extends TestpressFragmentActivity {
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
+//        mMenuItemFragments.clear();
+//        mMenuItemImageIds.clear();
+//        mMenuItemTitleIds.clear();
         Injector.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
@@ -96,7 +99,7 @@ public class MainActivity extends TestpressFragmentActivity {
         if (savedInstanceState != null) {
             mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM);
         }
-        viewPager.setVisibility(View.INVISIBLE);
+        viewPager.setVisibility(View.VISIBLE);
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -105,6 +108,18 @@ public class MainActivity extends TestpressFragmentActivity {
         };
         DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
         instituteSettingsDao = daoSession.getInstituteSettingsDao();
+
+//        List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
+//                .where(InstituteSettingsDao.Properties.BaseUrl.eq(Constants.Http.URL_BASE))
+//                .list();
+//
+//        if (instituteSettingsList.size() > 0) {
+//            Log.e("Institute settings", "found");
+//            this.mInstituteSettings = instituteSettingsList.get(0);
+//            initScreen();
+//        }
+        Log.e("Institute settings", "not found");
+
         fetchInstituteSettings();
     }
 
@@ -147,8 +162,10 @@ public class MainActivity extends TestpressFragmentActivity {
                 startService(intent);
             }
         }
+        Log.e("Checking for gamified","");
         // Show courses list if game front end is enabled, otherwise hide bottom bar
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
+            Log.e("Checking for gamified","true found");
             //noinspection ConstantConditions
             addMenuItem(R.string.learn, R.drawable.learn,
                     TestpressCourse.getCoursesListFragment(this, TestpressSdk.getTestpressSession(this)));
@@ -161,8 +178,13 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             grid.setVisibility(View.GONE);
         }
+        addMenuItem(R.string.articles, R.drawable.news, new PostsListFragment());
+        addMenuItem(R.string.discussions, R.drawable.chat_icon, new ForumListFragment());
         addMenuItem(R.string.app_name, R.drawable.profile_default, new MainMenuFragment());
-        mBottomBarAdapter = new BottomNavBarAdapter(this, mMenuItemImageIds);
+        Log.e("No. of items", mMenuItemImageIds.size()+"");
+        mBottomBarAdapter = new BottomNavBarAdapter(this, mMenuItemImageIds,
+                mMenuItemTitleIds);
+        Log.e("No. of adapt", mBottomBarAdapter.getCount()+"");
         grid.setAdapter(mBottomBarAdapter);
         grid.setNumColumns(mBottomBarAdapter.getCount());
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -211,7 +233,6 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     private void fetchInstituteSettings() {
-        progressBarLayout.setVisibility(View.VISIBLE);
         new SafeAsyncTask<InstituteSettings>() {
             @Override
             public InstituteSettings call() throws Exception {
@@ -235,7 +256,7 @@ public class MainActivity extends TestpressFragmentActivity {
                     setEmptyText(R.string.network_error, R.string.try_after_sometime,
                             R.drawable.ic_error_outline_black_18dp);
                 }
-                progressBarLayout.setVisibility(View.GONE);
+//                progressBarLayout.setVisibility(View.GONE);
                 retryButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

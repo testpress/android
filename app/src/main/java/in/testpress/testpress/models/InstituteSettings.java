@@ -35,7 +35,7 @@ public class InstituteSettings {
         this.baseUrl = baseUrl;
     }
 
-    public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, Boolean facebookLoginEnabled, Boolean googleLoginEnabled) {
+    public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, Boolean facebookLoginEnabled, Boolean googleLoginEnabled, Boolean commentsVotingEnabled) {
         this.baseUrl = baseUrl;
         this.verificationMethod = verificationMethod;
         this.allowSignup = allowSignup;
@@ -56,6 +56,7 @@ public class InstituteSettings {
         this.dashboardEnabled = dashboardEnabled;
         this.facebookLoginEnabled = facebookLoginEnabled;
         this.googleLoginEnabled = googleLoginEnabled;
+        this.commentsVotingEnabled = commentsVotingEnabled;
     }
 
     public String getBaseUrl() {
@@ -225,4 +226,5 @@ public class InstituteSettings {
     public void setCommentsVotingEnabled(Boolean commentsVotingEnabled) {
         this.commentsVotingEnabled = commentsVotingEnabled;
     }
+
 }

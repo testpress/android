@@ -82,7 +82,7 @@ public class MainMenuFragment extends Fragment {
                 ((TestpressApplication) getActivity().getApplicationContext()).getDaoSession();
 
         InstituteSettingsDao instituteSettingsDao = daoSession.getInstituteSettingsDao();
-        InstituteSettings instituteSettings = instituteSettingsDao.queryBuilder()
+        final InstituteSettings instituteSettings = instituteSettingsDao.queryBuilder()
                 .where(InstituteSettingsDao.Properties.BaseUrl.eq(Constants.Http.URL_BASE))
                 .list().get(0);
 
@@ -102,7 +102,11 @@ public class MainMenuFragment extends Fragment {
             mMenuItemResIds.put(R.string.store, R.drawable.store);
         }
         if (instituteSettings.getPostsEnabled()) {
-            mMenuItemResIds.put(R.string.posts, R.drawable.posts);
+//            mMenuItemResIds.put(R.string.posts, R.drawable.posts);
+        }
+        //TODO : Edit InstituteSettings DataModel and check whether forum is enabled or not
+        if (isUserAuthenticated) {
+//            mMenuItemResIds.put(R.string.forum, R.drawable.discussion);
         }
         mMenuItemResIds.put(R.string.share, R.drawable.share);
         mMenuItemResIds.put(R.string.rate_us, R.drawable.heart);
@@ -142,6 +146,11 @@ public class MainMenuFragment extends Fragment {
                         intent.putExtra("userAuthenticated", isUserAuthenticated);
                         startActivity(intent);
                         break;
+                    case R.string.forum:
+                        intent = new Intent(getActivity(), ForumListActivity.class);
+                        intent.putExtra("userAuthenticated", isUserAuthenticated);
+                        startActivity(intent);
+                        break;
                     case R.string.analytics:
                         checkAuthenticatedUser(R.string.analytics);
                         break;
@@ -153,7 +162,7 @@ public class MainMenuFragment extends Fragment {
                         shareApp();
                         break;
                     case R.string.rate_us:
-                        rateApp();
+                        //rateApp();
                         break;
                     case R.string.logout:
                         ((MainActivity) getActivity()).logout();

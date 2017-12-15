@@ -10,6 +10,7 @@ public class Comment {
     private String userUrl;
     private String comment;
     private String submitDate;
+    private String created;
     private ContentObject contentObject;
 
     /**
@@ -145,6 +146,14 @@ public class Comment {
      */
     public String getSubmitDate() {
         return submitDate;
+    }
+
+    public String getCreated() {
+        return created;
+    }
+
+    public void setCreated(String created) {
+        this.created = created;
     }
 
     /**

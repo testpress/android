@@ -73,6 +73,7 @@
     <string name="goto_home">Goto Home</string>
 
     <string name="all_posts">All Posts</string>
+    <string name="all_discussions">All Discussions</string>
     <string name="categories">Categories</string>
     <string name="title_activity_reset_password_verification">ResetPasswordVerificationActivity
     </string>
@@ -120,10 +121,20 @@
     <string name="my_exams">My Exams</string>
     <string name="store">Store</string>
     <string name="posts">Posts</string>
+    <string name="forum">Forum</string>
+    <string name="article">Article</string>
+    <string name="discussions">Discussions</string>
     <string name="documents">Documents</string>
     <string name="analytics">Analytics</string>
     <string name="profile">Profile</string>
     <string name="orders">Orders</string>
     <string name="rate_us">Rate Us</string>
+    <string name="testpress_user_name">User Name</string>
+    <string name="testpress_new_comments">New Comments</string>
+    <string name="testpress_post_title">Post title</string>
+    <string name="testpress_pick_a_topic">Pick a topic</string>
+    <string name="testpress_post_content">Post Content</string>
+    <string name="testpress_publish">Publish</string>
+    <string name="articles">Articles</string>
 
 </resources>

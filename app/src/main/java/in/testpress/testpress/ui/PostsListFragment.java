@@ -1,6 +1,7 @@
 package in.testpress.testpress.ui;
 
 import android.accounts.AccountsException;
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -105,8 +106,10 @@ public class PostsListFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments().getLong("category_filter") != 0) {
-            categoryFilter = getArguments().getLong("category_filter");
+        if (getArguments() != null) {
+            if (getArguments().getLong("category_filter") != 0) {
+                categoryFilter = getArguments().getLong("category_filter");
+            }
         }
         //Get the dao handles for posts and categories
         daoSession = ((TestpressApplication) getActivity().getApplicationContext()).getDaoSession();
@@ -118,8 +121,13 @@ public class PostsListFragment extends Fragment implements
         mTopLevelSpinnerAdapter = new ExploreSpinnerAdapter(getActivity().getLayoutInflater(),
                 getActivity().getResources(), true);
         mTopLevelSpinnerAdapter.addItem("", getString(R.string.all_posts), false, 0);
-        mTopLevelSpinnerAdapter.addHeader(getString(R.string.categories));
-        Toolbar toolbar = ((PostsListActivity) (getActivity())).getActionBarToolbar();
+        mTopLevelSpinnerAdapter.addHeader(getString(R.string.categories));Toolbar toolbar;
+        if (getActivity() instanceof MainActivity) {
+            toolbar = ((MainActivity) (getActivity())).getActionBarToolbar();
+//            mSpinnerContainer.setVisibility(View.GONE);
+        } else {
+            toolbar = ((PostsListActivity) (getActivity())).getActionBarToolbar();
+        }
         mSpinnerContainer = getActivity().getLayoutInflater().inflate(R.layout.actionbar_spinner,
                 toolbar, false);
 
@@ -243,7 +251,13 @@ public class PostsListFragment extends Fragment implements
                 if (!categories.isEmpty()) {
                     Ln.e("Setting visible");
                     mSpinnerContainer.setVisibility(View.VISIBLE);
-                    Toolbar toolbar = ((PostsListActivity)(getActivity())).getActionBarToolbar();
+                    Toolbar toolbar;
+                    if (getActivity() instanceof MainActivity) {
+                        toolbar = ((MainActivity) (getActivity())).getActionBarToolbar();
+                        mSpinnerContainer.setVisibility(View.GONE);
+                    } else {
+                        toolbar = ((PostsListActivity) (getActivity())).getActionBarToolbar();
+                    }
                     View view = toolbar.findViewById(R.id.actionbar_spinnerwrap);
                     toolbar.removeView(view);
                     toolbar.invalidate();
@@ -256,6 +270,7 @@ public class PostsListFragment extends Fragment implements
         }.execute();
     }
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     public Loader<List<Post>> onCreateLoader(int loaderID, Bundle args) {
         switch (loaderID) {
@@ -651,7 +666,13 @@ public class PostsListFragment extends Fragment implements
         super.setUserVisibleHint(visible);
         Ln.e("setUserVisibleHunt");
         if (visible && getActivity() != null) {
-            Toolbar toolbar = ((PostsListActivity)(getActivity())).getActionBarToolbar();
+            Toolbar toolbar;
+            if (getActivity() instanceof MainActivity) {
+                toolbar = ((MainActivity) (getActivity())).getActionBarToolbar();
+                mSpinnerContainer.setVisibility(View.GONE);
+            } else {
+                toolbar = ((PostsListActivity) (getActivity())).getActionBarToolbar();
+            }
             View view = toolbar.findViewById(R.id.actionbar_spinnerwrap);
             toolbar.removeView(view);
             toolbar.invalidate();

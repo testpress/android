@@ -1,5 +1,7 @@
 package in.testpress.testpress.core;
 
+import android.util.Log;
+
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -10,9 +12,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import in.testpress.exam.models.Vote;
 import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.Comment;
 import in.testpress.testpress.models.Device;
+import in.testpress.testpress.models.Forum;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.Notes;
 import in.testpress.testpress.models.Order;
@@ -121,15 +125,28 @@ public class TestpressService {
     }
 
     public TestpressApiResponse<Post> getPosts(String urlFrag, Map<String, String> queryParams, String latestModifiedDate) {
+        Log.e("url", urlFrag);
+        Log.e("queryParams", queryParams.toString());
+        Log.e("latestModified", latestModifiedDate+"");
         return getPostService().getPosts(urlFrag, queryParams, latestModifiedDate);
     }
 
+    public TestpressApiResponse<Forum> getForums(String urlFrag, Map<String, String> queryParams, String latestModifiedDate) {
+        return getPostService().getForums(urlFrag, queryParams, latestModifiedDate);
+    }
+
     public TestpressApiResponse<Category> getCategories(String urlFrag, Map<String, String> queryParams) {
+        Log.e("url", urlFrag);
+        Log.e("queryParams", queryParams.toString());
         return getPostService().getCategories(urlFrag, queryParams);
     }
 
     public Post getPostDetail(String url, Map<String, Boolean> queryParams) {
         return getPostService().getPostDetails(url, queryParams);
+    }
+
+    public Forum getForumDetail(String url, Map<String, Boolean> queryParams) {
+        return getPostService().getForumDetails(url, queryParams);
     }
 
     public TestpressApiResponse<Comment> getComments(long postId, Map<String, String> queryParams) {
@@ -244,6 +261,36 @@ public class TestpressService {
 
     public retrofit.client.Response activateAccount(String urlFrag) {
         return getAuthenticationService().activateAccount(urlFrag);
+    }
+
+    public Forum postForum(String title, String content, String category) {
+        Log.e("Rcvd Cat", category+"");
+        HashMap<String, String> postParameters = new HashMap<String, String>();
+        postParameters.put("title", title);
+        postParameters.put("content_html", content);
+        if (category != null) {
+            postParameters.put("category", category);
+        }
+        Log.e("Payload being send", postParameters.toString());
+        return getPostService().postForum(postParameters);
+    }
+
+    public Vote<Forum> castVote(Forum forum, int typeOfVote) {
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put("content_object", forum);
+        params.put("type_of_vote", typeOfVote);
+        return getPostService().castVote(params);
+    }
+
+    public String deleteCommentVote(Forum forum) {
+        return getPostService().deleteCommentVote(forum.getVoteId());
+    }
+
+    public Vote<Forum> updateCommentVote(Forum forum, int typeOfVote) {
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put("content_object", forum);
+        params.put("type_of_vote", typeOfVote);
+        return getPostService().updateCommentVote(forum.getVoteId(), params);
     }
 
 }

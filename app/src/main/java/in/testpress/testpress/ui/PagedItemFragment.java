@@ -1,6 +1,7 @@
 package in.testpress.testpress.ui;
 
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
@@ -76,6 +77,7 @@ public abstract class PagedItemFragment<E> extends ItemListFragment<E>
         // Don't take any action on changed
     }
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     public Loader<List<E>> onCreateLoader(int id, Bundle bundle) {
         return new ThrowableLoader<List<E>>(getActivity(), items) {

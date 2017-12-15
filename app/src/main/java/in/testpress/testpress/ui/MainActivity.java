@@ -157,6 +157,8 @@ public class MainActivity extends TestpressFragmentActivity {
                 addMenuItem(R.string.testpress_leaderboard, R.drawable.leaderboard,
                         TestpressCourse.getLeaderboardFragment(this, TestpressSdk.getTestpressSession(this)));
             }
+            addMenuItem(R.string.articles, R.drawable.news, new PostsListFragment());
+            addMenuItem(R.string.discussions, R.drawable.chat_icon, new ForumListFragment());
         } else {
             grid.setVisibility(View.GONE);
         }

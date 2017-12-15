@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/testpress_white">
+
+    <include layout="@layout/toolbar_actionbar"/>
+
+    <LinearLayout
+        android:id="@+id/post_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/title_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:background="@drawable/light_grey_round_corner_border">
+
+            <TextView
+                android:id="@+id/title_heading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/testpress_text_gray_medium"
+                android:textSize="10sp"
+                android:textAllCaps="true"
+                android:text="@string/testpress_post_title"/>
+
+            <EditText
+                android:id="@+id/post_title"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:textSize="16sp"
+                android:textColor="@color/testpress_black"
+                android:background="@drawable/no_border"
+                android:layout_marginBottom="0dp"
+                android:layout_marginTop="10dp"
+                android:inputType="textMultiLine"
+                android:maxLines="3"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="20dp">
+
+            <TextView
+                android:id="@+id/topic_heading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/testpress_pick_a_topic"
+                android:textSize="10sp"
+                android:textAllCaps="true"
+                android:textColor="@color/testpress_text_gray_medium"/>
+
+            <Spinner
+                style="@style/Widget.Testpress.HeaderBar.Spinner.Base"
+                android:id="@+id/categories_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:layout_gravity="start"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/content_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="6"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/light_grey_round_corner_border">
+
+            <TextView
+                android:id="@+id/content_heading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/testpress_post_content"
+                android:textSize="10sp"
+                android:textAllCaps="true"
+                android:textColor="@color/testpress_text_gray_medium"/>
+
+            <EditText
+                android:id="@+id/post_details"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="10dp"
+                android:gravity="start"
+                android:textSize="16sp"
+                android:textColor="@color/testpress_black"
+                android:background="@drawable/no_border"
+                android:layout_weight="1"
+                android:inputType="textMultiLine"
+                android:fontFamily="serif"
+                tools:ignore="NestedWeights" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/publish_button"
+            android:layout_width="140dp"
+            android:layout_height="40dp"
+            android:text="@string/testpress_publish"
+            android:textSize="16sp"
+            android:textColor="@color/testpress_white"
+            android:layout_gravity="end"
+            android:gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/rounded_end_green_background"/>
+
+    </LinearLayout>
+
+    <include layout="@layout/empty_view" />
+
+</LinearLayout>

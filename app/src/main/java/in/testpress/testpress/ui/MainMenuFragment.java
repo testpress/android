@@ -113,9 +113,9 @@ public class MainMenuFragment extends Fragment {
         if (drupalRssFeedEnabled) {
             mMenuItemResIds.put(R.string.rss_posts, R.drawable.rss_feed);
         }
-        if (instituteSettings.getPostsEnabled()) {
-            mMenuItemResIds.put(R.string.posts, R.drawable.posts);
-        }
+//        if (instituteSettings.getPostsEnabled()) {
+//            mMenuItemResIds.put(R.string.posts, R.drawable.posts);
+//        }
         mMenuItemResIds.put(R.string.share, R.drawable.share);
         mMenuItemResIds.put(R.string.rate_us, R.drawable.heart);
         if (isUserAuthenticated) {
@@ -159,6 +159,11 @@ public class MainMenuFragment extends Fragment {
                         break;
                     case R.string.posts:
                         intent = new Intent(getActivity(), PostsListActivity.class);
+                        intent.putExtra("userAuthenticated", isUserAuthenticated);
+                        startActivity(intent);
+                        break;
+                    case R.string.forum:
+                        intent = new Intent(getActivity(), ForumListActivity.class);
                         intent.putExtra("userAuthenticated", isUserAuthenticated);
                         startActivity(intent);
                         break;

@@ -196,7 +196,7 @@ public class MainMenuFragment extends Fragment {
         switch (clickedMenuTitleResId) {
             case R.string.my_exams:
                 //noinspection ConstantConditions
-                TestpressExam.showCategories(getActivity(), true,
+                TestpressExam.showCategories(getActivity(), false,
                         TestpressSdk.getTestpressSession(getActivity()));
                 break;
             case R.string.analytics:

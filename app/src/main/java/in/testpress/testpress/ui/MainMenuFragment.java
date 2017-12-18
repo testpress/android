@@ -43,6 +43,9 @@ import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.CategoryDao;
+import in.testpress.testpress.models.DaoSession;
+import in.testpress.testpress.models.InstituteSettings;
+import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
@@ -60,51 +63,10 @@ public class MainMenuFragment extends Fragment {
     LinearLayout quickLinksContainer;
     Account[] account;
 
-    //Menu for authorized users
-    String[] menuItemNames = {
-            "My Exams",
-            "Store",
-//            "Documents",
-//            "Orders",
-            "Posts",
-            "Analytics",
-            "Profile",
-            "Share",
-            "Rate Us",
-            "Logout"
-    } ;
-    int[] menuItemImageId = {
-            R.drawable.exams,
-            R.drawable.store,
-//            R.drawable.documents,
-//            R.drawable.cart,
-            R.drawable.posts,
-            R.drawable.analytics,
-            R.drawable.ic_profile_details,
-            R.drawable.share,
-            R.drawable.heart,
-            R.drawable.logout
-    };
-
-    //Menu for unauthorized users
-    String[] menuNames = {
-            "Store",
-            "Posts",
-            "Share",
-            "Rate Us",
-            "Login"
-    } ;
-    int[] menuImageId = {
-            R.drawable.store,
-            R.drawable.posts,
-            R.drawable.share,
-            R.drawable.heart,
-            R.drawable.login
-    };
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Injector.inject(this);
+        getActivity().invalidateOptionsMenu();
         return inflater.inflate(R.layout.main_menu_grid_view, null);
     }
 
@@ -116,100 +78,104 @@ public class MainMenuFragment extends Fragment {
         fetchStarredCategories();
         AccountManager manager = (AccountManager) getActivity().getSystemService(Context.ACCOUNT_SERVICE);
         account = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
-        MainMenuGridAdapter adapter;
-        if (account.length > 0) {
-            adapter = new MainMenuGridAdapter(getActivity(), menuItemNames, menuItemImageId);
-        } else {
-            adapter = new MainMenuGridAdapter(getActivity(), menuNames, menuImageId);
+        DaoSession daoSession =
+                ((TestpressApplication) getActivity().getApplicationContext()).getDaoSession();
+
+        InstituteSettingsDao instituteSettingsDao = daoSession.getInstituteSettingsDao();
+        InstituteSettings instituteSettings = instituteSettingsDao.queryBuilder()
+                .where(InstituteSettingsDao.Properties.BaseUrl.eq(Constants.Http.URL_BASE))
+                .list().get(0);
+
+        LinkedHashMap<Integer, Integer> mMenuItemResIds = new LinkedHashMap<>();
+        final boolean isUserAuthenticated = account.length > 0;
+        if (isUserAuthenticated) {
+            if (!instituteSettings.getShowGameFrontend()) {
+                mMenuItemResIds.put(R.string.my_exams, R.drawable.exams);
+            }
+            if (instituteSettings.getDocumentsEnabled()) {
+                mMenuItemResIds.put(R.string.documents, R.drawable.documents);
+            }
+            mMenuItemResIds.put(R.string.analytics, R.drawable.analytics);
+            mMenuItemResIds.put(R.string.profile, R.drawable.ic_profile_details);
         }
+        if (instituteSettings.getStoreEnabled()) {
+            mMenuItemResIds.put(R.string.store, R.drawable.store);
+        }
+        if (instituteSettings.getPostsEnabled()) {
+            mMenuItemResIds.put(R.string.posts, R.drawable.posts);
+        }
+        mMenuItemResIds.put(R.string.share, R.drawable.share);
+        mMenuItemResIds.put(R.string.rate_us, R.drawable.heart);
+        if (isUserAuthenticated) {
+            mMenuItemResIds.put(R.string.logout, R.drawable.logout);
+        } else {
+            mMenuItemResIds.put(R.string.login, R.drawable.login);
+        }
+
+        MainMenuGridAdapter adapter = new MainMenuGridAdapter(getActivity(), mMenuItemResIds);
         grid=(GridView)view.findViewById(R.id.grid);
         grid.setAdapter(adapter);
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Intent intent;
-                if (account.length > 0) {
-                    switch (position) {
-                        case 0:
-                            checkAuthenticatedUser(0);
-                            break;
-                        case 1:
-                            intent = new Intent(getActivity(), ProductsListActivity.class);
-                            startActivity(intent);
-                            break;
-//                        case 2:
-//                            intent = new Intent(getActivity(), DocumentsListActivity.class);
-//                            startActivity(intent);
-//                            break;
-//                    case 2:
-//                        intent = new Intent(getActivity(), OrdersListActivity.class);
-//                        startActivity(intent);
-//                        break;
-                        case 2:
-                            intent = new Intent(getActivity(), PostsListActivity.class);
-                            intent.putExtra("userAuthenticated", true);
-                            startActivity(intent);
-                            break;
-                        case 3:
-                            checkAuthenticatedUser(4);
-                            break;
-                        case 4:
-                            intent = new Intent(getActivity(), ProfileDetailsActivity.class);
-                            startActivity(intent);
-                            break;
-                        case 5:
-                            //Share
-                            shareApp();
-                            break;
-                        case 6:
-                            //Rate
-                            rateApp();
-                            break;
-                        case 7:
-                            ((MainActivity) getActivity()).logout();
-                            break;
-                    }
-                } else {
-                    switch (position) {
-                        case 0:
-                            intent = new Intent(getActivity(), ProductsListActivity.class);
-                            startActivity(intent);
-                            break;
-                        case 1:
-                            intent = new Intent(getActivity(), PostsListActivity.class);
-                            intent.putExtra("userAuthenticated", false);
-                            startActivity(intent);
-                            break;
-                        case 2:
-                            //Share
-                            shareApp();
-                            break;
-                        case 3:
-                            //Rate
-                            rateApp();
-                            break;
-                        default:
-                            intent = new Intent(getActivity(), LoginActivity.class);
-                            intent.putExtra(Constants.DEEP_LINK_TO, "home");
-                            startActivity(intent);
-                            break;
-                    }
+                switch ((int) id) {
+                    case R.string.my_exams:
+                        checkAuthenticatedUser(R.string.my_exams);
+                        break;
+                    case R.string.store:
+                        intent = new Intent(getActivity(), ProductsListActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.string.documents:
+                        intent = new Intent(getActivity(), DocumentsListActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.string.orders:
+                        intent = new Intent(getActivity(), OrdersListActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.string.posts:
+                        intent = new Intent(getActivity(), PostsListActivity.class);
+                        intent.putExtra("userAuthenticated", isUserAuthenticated);
+                        startActivity(intent);
+                        break;
+                    case R.string.analytics:
+                        checkAuthenticatedUser(R.string.analytics);
+                        break;
+                    case R.string.profile:
+                        intent = new Intent(getActivity(), ProfileDetailsActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.string.share:
+                        shareApp();
+                        break;
+                    case R.string.rate_us:
+                        rateApp();
+                        break;
+                    case R.string.logout:
+                        ((MainActivity) getActivity()).logout();
+                        break;
+                    case R.string.login:
+                        intent = new Intent(getActivity(), LoginActivity.class);
+                        intent.putExtra(Constants.DEEP_LINK_TO, "home");
+                        startActivity(intent);
+                        break;
                 }
             }
         });
     }
 
-    void checkAuthenticatedUser(final int position) {
+    void checkAuthenticatedUser(final int clickedMenuTitleResId) {
         if (!CommonUtils.isUserAuthenticated(getActivity())) {
             serviceProvider.logout(getActivity(), testpressService,
                     serviceProvider, logoutService);
             return;
         }
         if (TestpressSdk.hasActiveSession(getActivity())) {
-            showSDK(position);
+            showSDK(clickedMenuTitleResId);
         } else {
             new SafeAsyncTask<Void>() {
                 @Override
@@ -220,20 +186,20 @@ public class MainMenuFragment extends Fragment {
 
                 @Override
                 protected void onSuccess(Void aVoid) throws Exception {
-                    showSDK(position);
+                    showSDK(clickedMenuTitleResId);
                 }
             }.execute();
         }
     }
 
-    void showSDK(int position) {
-        switch (position) {
-            case 0:
+    void showSDK(int clickedMenuTitleResId) {
+        switch (clickedMenuTitleResId) {
+            case R.string.my_exams:
                 //noinspection ConstantConditions
                 TestpressExam.showCategories(getActivity(), true,
                         TestpressSdk.getTestpressSession(getActivity()));
                 break;
-            case 4:
+            case R.string.analytics:
                 //noinspection ConstantConditions
                 TestpressExam.showAnalytics(getActivity(), SUBJECT_ANALYTICS_PATH,
                         TestpressSdk.getTestpressSession(getActivity()));

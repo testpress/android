@@ -9,6 +9,12 @@
     <string name="server_client_id">1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com</string>
     <string name="share_message">Good app to prepare for NEET &amp; JEE. Get it at https://play.google.com/store/apps/details?id=</string>
 
+    <string name="my_schedule">Schedule</string>
+    <string name="my_attendance">Attendance</string>
+    <string name="my_test_mark">Test Mark</string>
+    <string name="my_review">Review</string>
+    <string name="progress_card">Progress Card</string>
+
     <string name="refresh_action">Refresh</string>
 
     <string name="error_loading_products">Loading Products failed</string>

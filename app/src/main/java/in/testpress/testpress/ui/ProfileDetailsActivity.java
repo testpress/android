@@ -57,9 +57,11 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
+import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.models.ProfileDetails;
+import in.testpress.testpress.models.ProfileDetailsDao;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.FormatDate;
 import in.testpress.testpress.util.ImageUtils;
@@ -117,6 +119,8 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     static final private int FETCH_AND_CROP_IMAGE = 500;
     static final private int SAVE_CROPPED_IMAGE = 999;
 
+    ProfileDetailsDao profileDetailsDao;
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,8 +156,19 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
                 .showImageForEmptyUri(R.drawable.profile_image_sample)
                 .showImageOnFail(R.drawable.profile_image_sample)
                 .showImageOnLoading(R.drawable.profile_image_sample).build();
-        getSupportLoaderManager().initLoader(0, null, this);
+
+        profileDetailsDao = ((TestpressApplication) getApplicationContext())
+                .getDaoSession().getProfileDetailsDao();
+
+        if (profileDetailsDao.queryBuilder().count() > 0) {
+            profileDetails = profileDetailsDao.queryBuilder().list().get(0);
+            displayProfileDetails(profileDetails);
+        } else {
+            getSupportLoaderManager().initLoader(0, null, this);
+        }
     }
+
+
 
     @Override
     public Loader<ProfileDetails> onCreateLoader(int id, Bundle bundle) {
@@ -193,8 +208,6 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     void displayProfileDetails(ProfileDetails profileDetails) {
         //download and display image from url
         imageLoader.displayImage(profileDetails.getLargeImage(), profilePhoto, options);
-        menu.setGroupVisible(R.id.editMode, false);
-        menu.setGroupVisible(R.id.viewMode, false);
         setVisibility(View.VISIBLE, new View[]{displayName, editButton});
         setVisibility(View.GONE, new View[]{firstNameRow, lastNameRow, imageEditButton, datePicker});
         displayName.setText(profileDetails.getFirstName() + " " + profileDetails.getLastName());
@@ -544,6 +557,8 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.tick_cancel_refresh, menu);
         this.menu = menu;
+        menu.setGroupVisible(R.id.editMode, false);
+        menu.setGroupVisible(R.id.viewMode, false);
         return true;
     }
 

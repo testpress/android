@@ -107,6 +107,7 @@ public class TestpressServiceProvider {
                 ((TestpressApplication) activity.getApplicationContext()).getDaoSession();
         PostDao postDao = daoSession.getPostDao();
         postDao.deleteAll();
+        daoSession.getProfileDetailsDao().deleteAll();
         daoSession.clear();
         TestpressSdk.clearActiveSession(activity);
         TestpressExam.clearDatabase(activity);

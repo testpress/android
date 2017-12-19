@@ -28,6 +28,8 @@ import in.testpress.testpress.ui.AccountActivateActivity;
 import in.testpress.testpress.ui.CropImageActivity;
 import in.testpress.testpress.ui.DocumentsListActivity;
 import in.testpress.testpress.ui.DocumentsListFragment;
+import in.testpress.testpress.ui.InAppBrowserActivity;
+import in.testpress.testpress.ui.ProgressCardFragment;
 import in.testpress.testpress.ui.SplashScreenActivity;
 import in.testpress.testpress.ui.ZoomableImageActivity;
 import in.testpress.testpress.ui.MainActivity;
@@ -89,7 +91,9 @@ import retrofit.converter.GsonConverter;
                 DocumentsListFragment.class,
                 ZoomableImageActivity.class,
                 SplashScreenActivity.class,
-                AccountActivateActivity.class
+                AccountActivateActivity.class,
+                InAppBrowserActivity.class,
+                ProgressCardFragment.class
         }
 )
 public class TestpressModule {

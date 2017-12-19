@@ -193,6 +193,9 @@
             android:name=".ui.ZoomableImageActivity" />
 
         <activity
+            android:name=".ui.InAppBrowserActivity" />
+
+        <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
             <intent-filter>

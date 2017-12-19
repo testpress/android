@@ -59,6 +59,27 @@ public class TestpressDaoGenerator {
         instituteSettings.addBooleanProperty("facebookLoginEnabled");
         instituteSettings.addBooleanProperty("googleLoginEnabled");
 
+        Entity profileDetails = schema.addEntity("ProfileDetails");
+        profileDetails.addLongProperty("id").primaryKey();
+        profileDetails.addStringProperty("url");
+        profileDetails.addStringProperty("username");
+        profileDetails.addStringProperty("displayName");
+        profileDetails.addStringProperty("firstName");
+        profileDetails.addStringProperty("lastName");
+        profileDetails.addStringProperty("email");
+        profileDetails.addStringProperty("photo");
+        profileDetails.addStringProperty("largeImage");
+        profileDetails.addStringProperty("mediumImage");
+        profileDetails.addStringProperty("birthDate");
+        profileDetails.addStringProperty("gender");
+        profileDetails.addStringProperty("address1");
+        profileDetails.addStringProperty("address2");
+        profileDetails.addStringProperty("city");
+        profileDetails.addStringProperty("zip");
+        profileDetails.addStringProperty("state");
+        profileDetails.addStringProperty("stateChoices");
+        profileDetails.addStringProperty("phone");
+
         new DaoGenerator().generateAll(schema, "app/src/main/java/");
     }
 }

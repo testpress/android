@@ -161,6 +161,7 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             grid.setVisibility(View.GONE);
         }
+        addMenuItem(R.string.information, R.drawable.news, new PostsListFragment());
         addMenuItem(R.string.progress_card, R.drawable.report_card, new ProgressCardFragment());
         addMenuItem(R.string.app_name, R.drawable.profile_default, new MainMenuFragment());
         mBottomBarAdapter = new BottomNavBarAdapter(this, mMenuItemImageIds);

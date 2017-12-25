@@ -8,6 +8,7 @@
     <string name="fb_login_protocol_scheme">137048160409223</string>
     <string name="server_client_id">1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com</string>
     <string name="share_message">Good app to prepare for NEET &amp; JEE. Get it at https://play.google.com/store/apps/details?id=</string>
+    <string name="information">Information</string>
 
     <string name="my_schedule">Schedule</string>
     <string name="my_attendance">Attendance</string>

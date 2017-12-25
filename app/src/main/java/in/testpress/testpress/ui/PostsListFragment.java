@@ -101,11 +101,12 @@ public class PostsListFragment extends Fragment implements
     boolean authorizationChecked;
     PostCategoryPager categoryPager;
     List<Category> categories = new ArrayList<>();
+    Toolbar toolbar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments().getLong("category_filter") != 0) {
+        if (getArguments() != null && getArguments().getLong("category_filter") != 0) {
             categoryFilter = getArguments().getLong("category_filter");
         }
         //Get the dao handles for posts and categories
@@ -119,7 +120,11 @@ public class PostsListFragment extends Fragment implements
                 getActivity().getResources(), true);
         mTopLevelSpinnerAdapter.addItem("", getString(R.string.all_posts), false, 0);
         mTopLevelSpinnerAdapter.addHeader(getString(R.string.categories));
-        Toolbar toolbar = ((PostsListActivity) (getActivity())).getActionBarToolbar();
+        if (getActivity() instanceof MainActivity) {
+            toolbar = ((MainActivity) (getActivity())).getActionBarToolbar();
+        } else {
+            toolbar = ((PostsListActivity) (getActivity())).getActionBarToolbar();
+        }
         mSpinnerContainer = getActivity().getLayoutInflater().inflate(R.layout.actionbar_spinner,
                 toolbar, false);
 
@@ -243,7 +248,6 @@ public class PostsListFragment extends Fragment implements
                 if (!categories.isEmpty()) {
                     Ln.e("Setting visible");
                     mSpinnerContainer.setVisibility(View.VISIBLE);
-                    Toolbar toolbar = ((PostsListActivity)(getActivity())).getActionBarToolbar();
                     View view = toolbar.findViewById(R.id.actionbar_spinnerwrap);
                     toolbar.removeView(view);
                     toolbar.invalidate();
@@ -651,7 +655,12 @@ public class PostsListFragment extends Fragment implements
         super.setUserVisibleHint(visible);
         Ln.e("setUserVisibleHunt");
         if (visible && getActivity() != null) {
-            Toolbar toolbar = ((PostsListActivity)(getActivity())).getActionBarToolbar();
+            if (getActivity() instanceof MainActivity) {
+                toolbar = ((MainActivity) (getActivity())).getActionBarToolbar();
+                mSpinnerContainer.setVisibility(View.GONE);
+            } else {
+                toolbar = ((PostsListActivity) (getActivity())).getActionBarToolbar();
+            }
             View view = toolbar.findViewById(R.id.actionbar_spinnerwrap);
             toolbar.removeView(view);
             toolbar.invalidate();

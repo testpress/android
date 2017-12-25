@@ -119,6 +119,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     @InjectView(id.google_sign_in_button) protected Button googleLoginButton;
     @InjectView(id.social_sign_in_buttons) protected LinearLayout socialLoginLayout;
     @InjectView(id.signup) protected TextView signUpButton;
+    @InjectView(id.forgot_password) protected TextView forgotPasswordButton;
 
     @InjectView(id.pb_loading) ProgressBar progressBar;
     @InjectView(R.id.empty_container) LinearLayout emptyView;
@@ -330,6 +331,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         ViewUtils.setGone(socialLoginLayout, !instituteSettings.getFacebookLoginEnabled() &&
                 !instituteSettings.getGoogleLoginEnabled());
         ViewUtils.setGone(signUpButton, !instituteSettings.getAllowSignup());
+        ViewUtils.setGone(forgotPasswordButton, !Constants.ENABLE_FORGOT_PASSWORD);
     }
 
     private TextWatcher validationTextWatcher() {

@@ -126,6 +126,8 @@ public final class Constants {
     public static final String DEEP_LINK_TO_PAYMENTS = "deep_link_to_payments";
     public static final String DEEP_LINK_TO_POST = "deep_link_to_post";
 
+    public static final boolean ENABLE_FORGOT_PASSWORD = false;
+
     public static final HashMap<String, Integer> genderChoices;
     static
     {

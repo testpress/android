@@ -2,7 +2,7 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyEllipsis">
 
-    <string name="app_name">Extel Academy</string>
+    <string name="app_name">Extel Classes</string>
     <string name="host_url">extelacademy.testpress.in</string>
     <string name="facebook_app_id">137048160409223</string>
     <string name="fb_login_protocol_scheme">137048160409223</string>

@@ -153,4 +153,11 @@
     <string name="testpress_publish">Publish</string>
     <string name="articles">Articles</string>
 
+    <string name="title_must_be_min_3_characters">The title must be at least 3 characters.</string>
+    <string name="title_must_be_max_200_characters">The title must be less than 200 characters.</string>
+    <string name="content_field_required">The content field is required.</string>
+    <string name="image_cleared">Image cleared!</string>
+    <string name="posted_successfully">Posted successfully!</string>
+    <string name="create_post">Create Post</string>
+
 </resources>

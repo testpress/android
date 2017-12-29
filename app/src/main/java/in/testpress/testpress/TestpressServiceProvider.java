@@ -13,15 +13,16 @@ import com.facebook.login.LoginManager;
 import java.io.IOException;
 import java.util.List;
 
+import in.testpress.core.TestpressSDKDatabase;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
-import in.testpress.course.TestpressCourse;
 import in.testpress.exam.TestpressExam;
 import in.testpress.testpress.authenticator.ApiKeyProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.DaoSession;
+import in.testpress.testpress.models.ForumDao;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.PostDao;
@@ -107,6 +108,7 @@ public class TestpressServiceProvider {
                 ((TestpressApplication) activity.getApplicationContext()).getDaoSession();
         PostDao postDao = daoSession.getPostDao();
         postDao.deleteAll();
+        TestpressSDKDatabase.clearDatabase(activity.getApplicationContext());
         daoSession.clear();
         TestpressSdk.clearActiveSession(activity);
         logoutService.logout(new Runnable() {

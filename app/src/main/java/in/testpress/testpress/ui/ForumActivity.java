@@ -219,7 +219,7 @@ public class ForumActivity extends TestpressFragmentActivity implements
                     displayForum(forum);
                     return;
                 } else {
-                    fetchForum();
+                    fetchForum(true);
                 }
             }
             // If there is no post in this url in db or
@@ -237,7 +237,7 @@ public class ForumActivity extends TestpressFragmentActivity implements
         return true;
     }
 
-    private void fetchForum() {
+    private void fetchForum(final boolean displayFlag) {
         Log.e("Inside", "fetchForum start");
         new SafeAsyncTask<Forum>() {
             @Override
@@ -291,7 +291,9 @@ public class ForumActivity extends TestpressFragmentActivity implements
 //                userDao.insertOrReplace(user);
 //                forum.setUserId(user.getId());
 //                forumDao.insertOrReplace(forum);
-                displayForum(forum);
+                if (displayFlag) {
+                    displayForum(forum);
+                }
             }
         }.execute();
         Log.e("Inside", "fetchForum end");
@@ -984,6 +986,11 @@ public class ForumActivity extends TestpressFragmentActivity implements
 
     @SuppressLint("DefaultLocale")
     void updateCommentsCount(int count) {
+        if (forum.getCommentsCount() == 0) {
+            fetchForum(false);
+            return;
+        }
+
         List<Forum> forums = forumDao.queryBuilder()
                 .where(ForumDao.Properties.Id.eq(forum.getId())).list();
 
@@ -1011,7 +1018,8 @@ public class ForumActivity extends TestpressFragmentActivity implements
     public boolean onOptionsItemSelected(final MenuItem item) {
         if(item.getItemId() == R.id.share) {
             if (forum != null) {
-                ShareUtil.shareUrl(this, forum.getTitle(), forum.getUrl());
+                ShareUtil.shareUrl(this, forum.getTitle(), Constants.Http.URL_BASE +
+                        "/p/" + forum.getShortLink());
             } else {
                 ShareUtil.shareUrl(this, "Check out this article", url);
             }

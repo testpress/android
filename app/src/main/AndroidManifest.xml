@@ -121,10 +121,12 @@
             android:label="Article"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:windowSoftInputMode="adjustResize|stateHidden"/>
+
         <activity
             android:name=".ui.CreateForumActivity"
             android:label="Create Forum Post"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
 
         <activity
             android:name=".authenticator.RegisterActivity"

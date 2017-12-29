@@ -5,7 +5,6 @@ import android.app.Instrumentation;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.facebook.stetho.Stetho;
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -49,8 +48,6 @@ public class TestpressApplication extends Application {
         SQLiteDatabase db = helper.getWritableDatabase();
         DaoMaster daoMaster = new DaoMaster(db);
         daoSession = daoMaster.newSession();
-        Stetho.initializeWithDefaults(this);
-
     }
 
     public DaoSession getDaoSession() {

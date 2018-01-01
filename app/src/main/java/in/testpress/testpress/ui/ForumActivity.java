@@ -233,7 +233,7 @@ public class ForumActivity extends TestpressFragmentActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.share, menu);
+//        getMenuInflater().inflate(R.menu.share, menu);
         return true;
     }
 
@@ -264,12 +264,15 @@ public class ForumActivity extends TestpressFragmentActivity implements
             @Override
             protected void onSuccess(final Forum forum) throws Exception {
 
-                ForumActivity.this.forum = forum;
                 forum.setPublished(simpleDateFormat.parse(forum.getPublishedDate()).getTime());
                 forum.modified = ForumActivity.this.forum.getModified();
                 Log.e("Forum",forum.toString());
                 Log.e("Forum Id",forum.getId()+"");
-                if (forumDao.queryBuilder().where(ForumDao.Properties.Id.eq(forum.getId())).count() != 0) {
+                ForumActivity.this.forum = forum;
+                if (forumDao.queryBuilder()
+                        .where(ForumDao.Properties.Id.eq(forum.getId())).count() != 0) {
+                    forum.setModifiedDate(simpleDateFormat
+                            .parse(ForumActivity.this.forum.getModified()).getTime());
 //                    forum.setModified(forum.getModified());
                     if (forum.category != null) {
                         forum.setCategory(forum.category);

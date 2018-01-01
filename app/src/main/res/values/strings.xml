@@ -2,12 +2,12 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyEllipsis">
 
-    <string name="app_name">Testpress Demo</string>
-    <string name="host_url">lmsdemo.testpress.in</string>
+    <string name="app_name">DBMCI</string>
+    <string name="host_url">dbmci.testpress.in</string>
     <string name="facebook_app_id">733962776688753</string>
     <string name="fb_login_protocol_scheme">733962776688753</string>
     <string name="server_client_id">1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com</string>
-    <string name="share_message">Good app to prepare for online exams. Get it at https://play.google.com/store/apps/details?id=</string>
+    <string name="share_message">Good app to prepare for medical exams. Get it at https://play.google.com/store/apps/details?id=</string>
 
     <string name="refresh_action">Refresh</string>
 
@@ -24,6 +24,7 @@
     <string name="no_orders">No transactions yet</string>
     <string name="no_orders_description">Your purchased orders will be reflected here.</string>
     <string name="no_posts">No Articles</string>
+    <string name="no_discussions">No Discussions</string>
 
     <string name="edit">Edit</string>
     <string name="cancel">Cancel</string>

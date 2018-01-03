@@ -10,11 +10,11 @@
     <string name="share_message">Good app to prepare for NEET &amp; JEE. Get it at https://play.google.com/store/apps/details?id=</string>
     <string name="information">Information</string>
 
-    <string name="my_schedule">Schedule</string>
-    <string name="my_attendance">Attendance</string>
-    <string name="my_test_mark">Test Mark</string>
-    <string name="my_review">Review</string>
-    <string name="progress_card">Progress Card</string>
+    <string name="my_schedule">Classroom Schedule</string>
+    <string name="my_attendance">Classroom Attendance</string>
+    <string name="my_test_mark">Classroom Test Mark</string>
+    <string name="my_review">Classroom Review</string>
+    <string name="progress_card">Classroom Progress Card</string>
 
     <string name="refresh_action">Refresh</string>
 
@@ -96,7 +96,7 @@
 
     <string name="or">or</string>
     <string name="forgot_password">Forgot Password?</string>
-    <string name="sign_up">Sign up with Email</string>
+    <string name="sign_up">Free Sign Up</string>
     <string name="login_with_facebook">Login with Facebook</string>
     <string name="login_with_google">Login with Google</string>
     <string name="google_sign_in_wrong_hash">Google sign in error, please contact the administrator to check key hashes.</string>

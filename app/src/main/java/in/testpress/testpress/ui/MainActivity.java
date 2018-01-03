@@ -147,6 +147,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 startService(intent);
             }
         }
+        addMenuItem(R.string.progress_card, R.drawable.report_card, new ProgressCardFragment());
         // Show courses list if game front end is enabled, otherwise hide bottom bar
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             //noinspection ConstantConditions
@@ -162,7 +163,6 @@ public class MainActivity extends TestpressFragmentActivity {
             grid.setVisibility(View.GONE);
         }
         addMenuItem(R.string.information, R.drawable.news, new PostsListFragment());
-        addMenuItem(R.string.progress_card, R.drawable.report_card, new ProgressCardFragment());
         addMenuItem(R.string.app_name, R.drawable.profile_default, new MainMenuFragment());
         mBottomBarAdapter = new BottomNavBarAdapter(this, mMenuItemImageIds);
         grid.setAdapter(mBottomBarAdapter);
@@ -190,7 +190,7 @@ public class MainActivity extends TestpressFragmentActivity {
             }
         });
         viewPager.setOffscreenPageLimit(mPagerAdapter.getCount());
-        viewPager.setCurrentItem(mSelectedItem);
+        onItemSelected(mSelectedItem);
         viewPager.setVisibility(View.VISIBLE);
         progressBarLayout.setVisibility(View.GONE);
     }

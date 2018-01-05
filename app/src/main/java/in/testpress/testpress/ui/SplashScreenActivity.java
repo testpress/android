@@ -1,12 +1,15 @@
 package in.testpress.testpress.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import junit.framework.Assert;
 
@@ -28,6 +31,7 @@ import in.testpress.testpress.authenticator.ResetPasswordActivity;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.util.CommonUtils;
+import in.testpress.util.ViewUtils;
 
 import static in.testpress.core.TestpressSdk.ACTION_PRESSED_HOME;
 import static in.testpress.core.TestpressSdk.COURSE_CHAPTER_REQUEST_CODE;
@@ -48,12 +52,22 @@ public class SplashScreenActivity extends Activity {
     @InjectView(R.id.splash_image) ImageView splashImage;
 
     // Splash screen timer
-    private static final int SPLASH_TIME_OUT = 2000;
+    private static int SPLASH_TIME_OUT = 2000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        SharedPreferences sharedPreferences =
+                getSharedPreferences(Constants.SPLASH_SCREEN_PREFERENCE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        if (sharedPreferences.getBoolean(Constants.SPLASH_SCREEN_TIME_OUT_PROPERTY_NAME, true)) {
+            SPLASH_TIME_OUT = 2000;
+            editor.putBoolean(Constants.SPLASH_SCREEN_TIME_OUT_PROPERTY_NAME, false);
+            editor.apply();
+        } else {
+            SPLASH_TIME_OUT = 0;
+        }
         Injector.inject(this);
         ButterKnife.inject(this);
         new Handler().postDelayed(new Runnable() {

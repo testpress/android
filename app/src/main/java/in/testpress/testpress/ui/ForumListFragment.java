@@ -137,6 +137,9 @@ public class ForumListFragment extends Fragment implements
                 categoryFilter = getArguments().getLong("category_filter");
             }
         }
+        if (getActivity() == null) {
+            return;
+        }
         daoSession = ((TestpressApplication) getActivity().getApplicationContext()).getDaoSession();
         forumDao = daoSession.getForumDao();
         userDao = daoSession.getUserDao();
@@ -418,6 +421,9 @@ public class ForumListFragment extends Fragment implements
 
             protected void onSuccess(final List<Category> categories) throws Exception {
                 Ln.e("On success");
+                if (getActivity() == null) {
+                    return;
+                }
                 categoryDao.insertOrReplaceInTx(categories);
                 mTopLevelSpinnerAdapter.clear();
                 mTopLevelSpinnerAdapter.addItem("", getString(R.string.all_discussions), false, 0);
@@ -452,7 +458,9 @@ public class ForumListFragment extends Fragment implements
                     Ln.e("Setting visible");
 //                    mSpinnerContainer.setVisibility(View.VISIBLE);
                     Toolbar toolbar;
-                    if (getActivity() instanceof MainActivity) {
+                    if (getActivity() == null) {
+                        return;
+                    } else if (getActivity() instanceof MainActivity) {
                         toolbar = ((MainActivity) (getActivity())).getActionBarToolbar();
                         mSpinnerContainer.setVisibility(View.GONE);
                     } else {

@@ -120,6 +120,10 @@ public final class Constants {
         public static final String ORDER = "order";
     }
 
+    public static final String SPLASH_SCREEN_PREFERENCE_NAME = "testpress." +
+            Auth.TESTPRESS_ACCOUNT_NAME + ".SPLASH_SCREEN";
+    public static final String SPLASH_SCREEN_TIME_OUT_PROPERTY_NAME = "FIRST_LAUNCH";
+
     public static final String GCM_PREFERENCE_NAME = "testpress." + Auth.TESTPRESS_ACCOUNT_NAME + ".GCM";
     public static final String GCM_PROPERTY_REG_ID = "GCMRegId";
 

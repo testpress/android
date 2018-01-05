@@ -239,6 +239,10 @@ public class MainMenuFragment extends Fragment {
         new SafeAsyncTask<List<Category>>() {
             @Override
             public List<Category> call() throws Exception {
+                if (getActivity() == null) {
+                    return null;
+
+                }
                 Map<String, String> queryParams = new LinkedHashMap<String, String>();
                 queryParams.put("starred", "true");
                 if (account.length > 0) {

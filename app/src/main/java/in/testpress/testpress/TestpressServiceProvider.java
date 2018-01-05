@@ -59,6 +59,9 @@ public class TestpressServiceProvider {
      */
     public TestpressService getService(final Activity activity)
             throws IOException, AccountsException {
+        if (activity == null) {
+            return null;
+        }
         if (authToken == null) {
             // The call to keyProvider.getAuthKey(...) is what initiates the login screen. Call that now.
             authToken = keyProvider.getAuthKey(activity);

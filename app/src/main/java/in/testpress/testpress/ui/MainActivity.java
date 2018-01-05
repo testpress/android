@@ -109,21 +109,21 @@ public class MainActivity extends TestpressFragmentActivity {
         DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
         instituteSettingsDao = daoSession.getInstituteSettingsDao();
 
-//        List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
-//                .where(InstituteSettingsDao.Properties.BaseUrl.eq(Constants.Http.URL_BASE))
-//                .list();
-//
-//        if (instituteSettingsList.size() > 0) {
-//            Log.e("Institute settings", "found");
-//            this.mInstituteSettings = instituteSettingsList.get(0);
-//            initScreen();
-//        }
-        Log.e("Institute settings", "not found");
+        List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
+                .where(InstituteSettingsDao.Properties.BaseUrl.eq(Constants.Http.URL_BASE))
+                .list();
 
-        fetchInstituteSettings();
+        if (instituteSettingsList.size() > 0) {
+            Log.e("Institute settings", "found");
+            onFinishFetchingInstituteSettings(instituteSettingsList.get(0), true);
+            fetchInstituteSettings(false);
+        } else {
+            Log.e("Institute settings", "not found");
+            fetchInstituteSettings(true);
+        }
     }
 
-    private void updateTestpressSession() {
+    private void updateTestpressSession(final boolean initScreenFlag) {
         new SafeAsyncTask<Boolean>() {
 
             @Override
@@ -147,7 +147,11 @@ public class MainActivity extends TestpressFragmentActivity {
             protected void onSuccess(final Boolean hasAuthenticated) throws Exception {
                 super.onSuccess(hasAuthenticated);
                 isUserAuthenticated = true;
-                checkUpdate();
+                if (initScreenFlag) {
+                    initScreen();
+                } else {
+                    checkUpdate(initScreenFlag);
+                }
             }
         }.execute();
     }
@@ -195,6 +199,7 @@ public class MainActivity extends TestpressFragmentActivity {
         });
         BottomBarPagerAdapter mPagerAdapter = new BottomBarPagerAdapter(this, mMenuItemFragments);
         viewPager.setAdapter(mPagerAdapter);
+        viewPager.setOffscreenPageLimit(0);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -233,7 +238,7 @@ public class MainActivity extends TestpressFragmentActivity {
         }
     }
 
-    private void fetchInstituteSettings() {
+    private void fetchInstituteSettings(final boolean initScreenFlag) {
         new SafeAsyncTask<InstituteSettings>() {
             @Override
             public InstituteSettings call() throws Exception {
@@ -247,7 +252,10 @@ public class MainActivity extends TestpressFragmentActivity {
                         .list();
 
                 if (instituteSettingsList.size() > 0) {
-                    onFinishFetchingInstituteSettings(instituteSettingsList.get(0));
+                    onFinishFetchingInstituteSettings(instituteSettingsList.get(0), initScreenFlag);
+                    return;
+                }
+                if (!initScreenFlag) {
                     return;
                 }
                 if (exception.getCause() instanceof IOException) {
@@ -257,12 +265,12 @@ public class MainActivity extends TestpressFragmentActivity {
                     setEmptyText(R.string.network_error, R.string.try_after_sometime,
                             R.drawable.ic_error_outline_black_18dp);
                 }
-//                progressBarLayout.setVisibility(View.GONE);
+                progressBarLayout.setVisibility(View.GONE);
                 retryButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         emptyView.setVisibility(View.GONE);
-                        fetchInstituteSettings();
+                        fetchInstituteSettings(initScreenFlag);
                     }
                 });
             }
@@ -271,20 +279,23 @@ public class MainActivity extends TestpressFragmentActivity {
             protected void onSuccess(InstituteSettings instituteSettings) throws Exception {
                 instituteSettings.setBaseUrl(Constants.Http.URL_BASE);
                 instituteSettingsDao.insertOrReplace(instituteSettings);
-                onFinishFetchingInstituteSettings(instituteSettings);
+                onFinishFetchingInstituteSettings(instituteSettings, initScreenFlag);
             }
         }.execute();
     }
 
-    public void onFinishFetchingInstituteSettings(InstituteSettings instituteSettings) {
+    public void onFinishFetchingInstituteSettings(InstituteSettings instituteSettings,
+                                                  boolean initScreenFlag) {
         this.mInstituteSettings = instituteSettings;
         // TODO: Get allowAnonymousUser flag from institute settings
         boolean allowAnonymousUser = false; // True if users can use the app(Access posts) without login
         //noinspection ConstantConditions
-        if (CommonUtils.isUserAuthenticated(this) || !allowAnonymousUser) {
-            updateTestpressSession(); // Show login screen if user not logged in
+        if ((CommonUtils.isUserAuthenticated(this) || !allowAnonymousUser) && initScreenFlag) {
+            updateTestpressSession(initScreenFlag); // Show login screen if user not logged in
+        } else if (!initScreenFlag){
+            checkUpdate(initScreenFlag);
         } else {
-            checkUpdate();
+            initScreen();
         }
     }
 
@@ -322,7 +333,7 @@ public class MainActivity extends TestpressFragmentActivity {
         return true;
     }
 
-    private void checkUpdate() {
+    private void checkUpdate(final boolean initScreenFlag) {
         new SafeAsyncTask<Update>() {
             @Override
             public Update call() throws Exception {
@@ -331,7 +342,9 @@ public class MainActivity extends TestpressFragmentActivity {
 
             @Override
             protected void onException(final Exception e) throws RuntimeException {
-                initScreen();
+                if(initScreenFlag) {
+                    initScreen();
+                }
             }
 
             @Override
@@ -346,7 +359,9 @@ public class MainActivity extends TestpressFragmentActivity {
                                     if (update.getForce()) {
                                         finish();
                                     } else {
-                                        initScreen();
+                                        if(initScreenFlag) {
+                                            initScreen();
+                                        }
                                     }
                                 }
                             })
@@ -365,7 +380,9 @@ public class MainActivity extends TestpressFragmentActivity {
                             })
                             .show();
                 } else {
-                    initScreen();
+                    if(initScreenFlag) {
+                        initScreen();
+                    }
                 }
             }
         }.execute();

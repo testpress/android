@@ -111,6 +111,9 @@ public class PostsListFragment extends Fragment implements
                 categoryFilter = getArguments().getLong("category_filter");
             }
         }
+        if (getActivity() == null) {
+            return;
+        }
         //Get the dao handles for posts and categories
         daoSession = ((TestpressApplication) getActivity().getApplicationContext()).getDaoSession();
         postDao = daoSession.getPostDao();
@@ -252,7 +255,9 @@ public class PostsListFragment extends Fragment implements
                     Ln.e("Setting visible");
                     mSpinnerContainer.setVisibility(View.VISIBLE);
                     Toolbar toolbar;
-                    if (getActivity() instanceof MainActivity) {
+                    if (getActivity() == null) {
+                        return;
+                    } else if (getActivity() instanceof MainActivity) {
                         toolbar = ((MainActivity) (getActivity())).getActionBarToolbar();
                         mSpinnerContainer.setVisibility(View.GONE);
                     } else {

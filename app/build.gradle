@@ -101,7 +101,7 @@ android {
         targetSdkVersion 22
         versionCode 110
         versionName '1.0.' + versionCode
-        applicationId 'com.dbmci'
+        applicationId 'in.testpress.tech.lmsdemo'
     }
 
     packagingOptions {

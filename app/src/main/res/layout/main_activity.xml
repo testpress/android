@@ -3,8 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/coordinator_layout"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
+    android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <android.support.design.widget.AppBarLayout
@@ -30,14 +29,9 @@
             android:background="@color/native_background" />
 
         <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@drawable/bottombar_gradient" />
-
-        <View
             android:layout_width="fill_parent"
             android:layout_height="1dp"
-            android:background="#E0E0E0" />
+            android:background="#efefef"/>
 
         <GridView
             android:layout_gravity="bottom"

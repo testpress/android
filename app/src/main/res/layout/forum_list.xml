@@ -95,6 +95,12 @@
 
         </in.testpress.exam.ui.view.SlidingPaneLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/testpress_gradient_shadow_gray_top" />
+
     </RelativeLayout>
 
 </LinearLayout>

@@ -179,12 +179,12 @@ public class MainActivity extends TestpressFragmentActivity {
                 addMenuItem(R.string.testpress_leaderboard, R.drawable.leaderboard,
                         TestpressCourse.getLeaderboardFragment(this, TestpressSdk.getTestpressSession(this)));
             }
-            addMenuItem(R.string.articles, R.drawable.news, new PostsListFragment());
-            addMenuItem(R.string.discussions, R.drawable.chat_icon, new ForumListFragment());
         } else {
             grid.setVisibility(View.GONE);
         }
-        addMenuItem(R.string.profile, R.drawable.profile_default, new MainMenuFragment());
+        addMenuItem(R.string.articles, R.drawable.news, new PostsListFragment());
+        addMenuItem(R.string.discussions, R.drawable.chat_icon, new ForumListFragment());
+        addMenuItem(R.string.app_name, R.drawable.profile_default, new MainMenuFragment());
         Log.e("No. of items", mMenuItemImageIds.size()+"");
         mBottomBarAdapter = new BottomNavBarAdapter(this, mMenuItemImageIds,
                 mMenuItemTitleIds);
@@ -218,7 +218,6 @@ public class MainActivity extends TestpressFragmentActivity {
         viewPager.setCurrentItem(mSelectedItem);
         viewPager.setVisibility(View.VISIBLE);
         progressBarLayout.setVisibility(View.GONE);
-        updateToolbarText(getString(mMenuItemTitleIds.get(mSelectedItem)));
     }
 
     private void onItemSelected(int position) {
@@ -350,35 +349,51 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             protected void onSuccess(final Update update) throws Exception {
                 if(update.getUpdateRequired()) {
-                    new MaterialDialog.Builder(MainActivity.this)
-                            .content(update.getMessage())
-                            .cancelable(!update.getForce())
-                            .cancelListener(new DialogInterface.OnCancelListener() {
-                                @Override
-                                public void onCancel(DialogInterface dialogInterface) {
-                                    if (update.getForce()) {
+                    if (update.getForce()) {
+                        new MaterialDialog.Builder(MainActivity.this)
+                                .cancelable(true)
+                                .content(update.getMessage())
+                                .cancelListener(new DialogInterface.OnCancelListener() {
+                                    @Override
+                                    public void onCancel(DialogInterface dialogInterface) {
                                         finish();
+<<<<<<< HEAD
                                     } else {
                                         if(initScreenFlag) {
                                             initScreen();
                                         }
+=======
+>>>>>>> parent of 48d3964... Customised for DBMCI and bug fixes
                                     }
-                                }
-                            })
-                            .neutralText("Update")
-                            .buttonsGravity(GravityEnum.CENTER)
-                            .neutralColorRes(R.color.primary)
-                            .contentColor(getResources().getColor(R.color.testpress_black))
-                            .callback(new MaterialDialog.ButtonCallback() {
-                                @Override
-                                public void onNeutral(MaterialDialog dialog) {
-                                    dialog.cancel();
-                                    startActivity(new Intent(Intent.ACTION_VIEW,
-                                            Uri.parse("market://details?id=" + getPackageName())));
-                                    finish();
-                                }
-                            })
-                            .show();
+                                })
+                                .neutralText("Update")
+                                .buttonsGravity(GravityEnum.CENTER)
+                                .neutralColorRes(R.color.primary)
+                                .callback(new MaterialDialog.ButtonCallback() {
+                                    @Override
+                                    public void onNeutral(MaterialDialog dialog) {
+                                        dialog.cancel();
+                                        startActivity(new Intent(Intent.ACTION_VIEW,
+                                                Uri.parse("market://details?id=" + getPackageName())));
+                                        finish();
+                                    }
+                                })
+                                .show();
+                    } else {
+                        initScreen();
+                        Snackbar snackbar = Snackbar
+                                .make(coordinatorLayout, "New update is available",
+                                        Snackbar.LENGTH_INDEFINITE)
+                                .setAction("UPDATE", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        startActivity(new Intent(Intent.ACTION_VIEW,
+                                                Uri.parse("market://details?id=" + getPackageName())));
+                                        finish();
+                                    }
+                                });
+                        snackbar.show();
+                    }
                 } else {
                     if(initScreenFlag) {
                         initScreen();

@@ -10,8 +10,16 @@
         android:layout_gravity="center"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="5dp"
         android:src="@drawable/learn" />
+
+    <TextView
+        android:id="@+id/menu_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:layout_marginBottom="7dp"
+        android:layout_gravity="center"/>
 
 </LinearLayout>

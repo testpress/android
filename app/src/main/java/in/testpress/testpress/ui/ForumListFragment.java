@@ -577,7 +577,8 @@ public class ForumListFragment extends Fragment implements
             if (items == null || items.isEmpty()) {
                 displayDataFromDB();
                 if (forumDao.count() == 0) {
-                    setEmptyText(R.string.no_posts, R.string.no_posts_description, R.drawable.ic_error_outline_black_18dp);
+                    setEmptyText(R.string.no_discussions, R.string.no_posts_description,
+                            R.drawable.ic_error_outline_black_18dp);
                     retryButton.setVisibility(View.GONE);
                 }
                 return;
@@ -636,7 +637,8 @@ public class ForumListFragment extends Fragment implements
         adapter.notifyDataSetChanged();
 
         if (forumDao.count() == 0 || (pager != null && !pager.hasMore() && adapter.getCount() == 0)) {
-            setEmptyText(R.string.no_posts, R.string.no_posts_description, R.drawable.ic_error_outline_black_18dp);
+            setEmptyText(R.string.no_discussions, R.string.no_posts_description,
+                    R.drawable.ic_error_outline_black_18dp);
             retryButton.setVisibility(View.GONE);
         }
     }
@@ -705,7 +707,8 @@ public class ForumListFragment extends Fragment implements
                         adapter.removeFooter(loadingLayout);
                     }
                     if (adapter.getCount() == 0) {
-                        setEmptyText(R.string.no_posts, R.string.no_posts_description, R.drawable.ic_error_outline_black_18dp);
+                        setEmptyText(R.string.no_discussions, R.string.no_posts_description,
+                                R.drawable.ic_error_outline_black_18dp);
                         retryButton.setVisibility(View.GONE);
                     }
                     return;

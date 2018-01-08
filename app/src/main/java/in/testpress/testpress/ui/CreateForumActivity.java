@@ -3,6 +3,7 @@ package in.testpress.testpress.ui;
 import android.accounts.AccountsException;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.support.design.widget.Snackbar;
 import android.text.Html;
 import android.text.SpannableString;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -149,6 +151,7 @@ public class CreateForumActivity extends TestpressFragmentActivity{
             @Override
             public void onClick(View view) {
                 postTitle.requestFocus();
+                openKeyboard();
             }
         });
 
@@ -156,6 +159,7 @@ public class CreateForumActivity extends TestpressFragmentActivity{
             @Override
             public void onClick(View view) {
                 postDetails.requestFocus();
+                openKeyboard();
             }
         });
 
@@ -322,6 +326,14 @@ public class CreateForumActivity extends TestpressFragmentActivity{
         emptyTitleView.setText(title);
         emptyTitleView.setCompoundDrawablesWithIntrinsicBounds(left, 0, 0, 0);
         emptyDescView.setText(description);
+    }
+
+    protected void openKeyboard() {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInputFromWindow(
+                contentLayout.getApplicationWindowToken(),
+                InputMethodManager.SHOW_FORCED, 0);
     }
 
     /**

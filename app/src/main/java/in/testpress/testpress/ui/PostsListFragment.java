@@ -186,7 +186,7 @@ public class PostsListFragment extends Fragment implements
         swipeLayout.setOnRefreshListener(this);
         swipeLayout.setColorSchemeResources(R.color.primary);
         swipeLayout.measure(View.MEASURED_SIZE_MASK,View.MEASURED_HEIGHT_STATE_SHIFT);
-        swipeLayout.setRefreshing(true);
+        swipeLayout.setRefreshing(false);
         getLoaderManager().initLoader(REFRESH_LOADER_ID, null, this);
         fetchCategories();
         if (categoryFilter != null) {

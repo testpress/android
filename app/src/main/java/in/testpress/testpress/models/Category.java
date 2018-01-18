@@ -16,7 +16,7 @@ public class Category {
     private String color;
     private String slug;
 
-    @Generated
+    @Generated(hash = 1150634039)
     public Category() {
     }
 
@@ -24,7 +24,7 @@ public class Category {
         this.id = id;
     }
 
-    @Generated
+    @Generated(hash = 1792114525)
     public Category(Long id, String name, String color, String slug) {
         this.id = id;
         this.name = name;

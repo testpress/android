@@ -1,9 +1,23 @@
 apply plugin: 'com.android.application'
 
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral() // add repository
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2' // add plugin
+    }
+}
+
 ext {
     supportLib = '25.3.1'
     testpressSDK = '1.0.49'
 }
+
+apply plugin: 'com.android.application'
+apply plugin: 'org.greenrobot.greendao' // apply plugin
 
 dependencies {
 
@@ -41,9 +55,6 @@ dependencies {
     // Payu
     compile files('libs/payusdk.jar')
     compile project(':CustomBrowser-release')
-
-    // GreenDao for database
-    compile 'de.greenrobot:greendao:2.0.0'
     
     // Testpress exam
 //    compile ('com.github.testpress:exam:' + testpressSDK + '@aar') {
@@ -61,6 +72,8 @@ dependencies {
     compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+
+    // GreenDao for database
     compile 'org.greenrobot:greendao:3.2.0'
 
     // Gcm
@@ -143,3 +156,7 @@ android {
 }
 
 apply plugin: 'com.google.gms.google-services'
+
+greendao {
+    schemaVersion 8
+}

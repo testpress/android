@@ -25,7 +25,7 @@ public class User {
     private String xSmallImage;
     private String miniImage;
 
-    @Generated
+    @Generated(hash = 586692638)
     public User() {
     }
 
@@ -33,7 +33,7 @@ public class User {
         this.id = id;
     }
 
-    @Generated
+    @Generated(hash = 288410570)
     public User(Long id, String url, String username, String firstName, String lastName, String displayName, String photo, String largeImage, String mediumImage, String mediumSmallImage, String smallImage, String xSmallImage, String miniImage) {
         this.id = id;
         this.url = url;

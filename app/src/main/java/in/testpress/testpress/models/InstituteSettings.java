@@ -33,7 +33,7 @@ public class InstituteSettings {
     private Boolean googleLoginEnabled;
     private Boolean commentsVotingEnabled;
 
-    @Generated
+    @Generated(hash = 1954258773)
     public InstituteSettings() {
     }
 
@@ -41,7 +41,7 @@ public class InstituteSettings {
         this.baseUrl = baseUrl;
     }
 
-    @Generated
+    @Generated(hash = 1925346715)
     public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, Boolean facebookLoginEnabled, Boolean googleLoginEnabled, Boolean commentsVotingEnabled) {
         this.baseUrl = baseUrl;
         this.verificationMethod = verificationMethod;

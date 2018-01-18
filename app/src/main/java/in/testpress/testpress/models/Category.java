@@ -13,8 +13,10 @@ public class Category {
     @Id
     private Long id;
     public String name;
+    private int order;
     private String color;
     private String slug;
+    private boolean isStarred;
 
     @Generated(hash = 1150634039)
     public Category() {
@@ -24,12 +26,14 @@ public class Category {
         this.id = id;
     }
 
-    @Generated(hash = 1792114525)
-    public Category(Long id, String name, String color, String slug) {
+    @Generated(hash = 26621454)
+    public Category(Long id, String name, int order, String color, String slug, boolean isStarred) {
         this.id = id;
         this.name = name;
+        this.order = order;
         this.color = color;
         this.slug = slug;
+        this.isStarred = isStarred;
     }
 
     public Long getId() {
@@ -62,6 +66,22 @@ public class Category {
 
     public void setSlug(String slug) {
         this.slug = slug;
+    }
+
+    public int getOrder() {
+        return this.order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
+    public boolean getIsStarred() {
+        return this.isStarred;
+    }
+
+    public void setIsStarred(boolean isStarred) {
+        this.isStarred = isStarred;
     }
 
 }

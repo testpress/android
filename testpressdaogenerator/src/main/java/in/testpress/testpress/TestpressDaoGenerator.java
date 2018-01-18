@@ -1,12 +1,9 @@
 package in.testpress.testpress;
 
-import java.util.Properties;
-
-import de.greenrobot.daogenerator.DaoGenerator;
-import de.greenrobot.daogenerator.Entity;
-import de.greenrobot.daogenerator.Property;
-import de.greenrobot.daogenerator.Schema;
-import de.greenrobot.daogenerator.ToMany;
+import org.greenrobot.greendao.generator.DaoGenerator;
+import org.greenrobot.greendao.generator.Entity;
+import org.greenrobot.greendao.generator.Property;
+import org.greenrobot.greendao.generator.Schema;
 
 public class TestpressDaoGenerator {
     public static void main(String args[]) throws Exception {
@@ -69,7 +66,7 @@ public class TestpressDaoGenerator {
         addUserToForum(forum, user, "lastCommentedBy", "commentorId");
         addCategoryToForum(forum, category);
 
-        new DaoGenerator().generateAll(schema, "app/src/main/java/");
+        new DaoGenerator().generateAll(schema, "../app/src/main/java/");
     }
 
     public static void addUserToForum(Entity forum, Entity user, String name, String key) {

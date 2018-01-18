@@ -23,6 +23,8 @@ import android.widget.TextView;
 
 import com.github.kevinsawicki.wishlist.Toaster;
 
+import org.greenrobot.greendao.query.LazyList;
+
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.text.Format;
@@ -36,7 +38,6 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import de.greenrobot.dao.query.LazyList;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;

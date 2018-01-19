@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyEllipsis">
 
     <string name="app_name">IIIP of ICAI</string>
     <string name="host_url">iiipi.testpress.in</string>
@@ -44,6 +44,7 @@
     <string name="authentication_failed">Authentication failed</string>
     <string name="please_login">Please login to see the content</string>
     <string name="network_error">Network Error</string>
+    <string name="no_internet_connection">No internet connection</string>
     <string name="no_internet">Please check your internet connection &amp; refresh again</string>
     <string name="no_internet_try_again">Please check your internet connection &amp; try again</string>
     <string name="try_after_sometime">Please try after sometime</string>
@@ -95,7 +96,6 @@
     <string name="invalid_post">Invalid Article</string>
 
     <string name="learn">Learn</string>
-    <string name="profile">Profile</string>
 
     <string name="or">or</string>
     <string name="forgot_password">Forgot Password?</string>
@@ -114,5 +114,26 @@
     <string name="activate_incomplete_title">Activation problem</string>
     <string name="activate_incomplete_message">It seems that the activation key is invalid. Please check the url again.</string>
     <string name="login">Login</string>
+
+    <string name="comments_title">Comments</string>
+    <string name="write_a_comment">Write a comment...</string>
+    <string name="load_previous_comments">Load previous comments</string>
+    <string name="load_new_comments">Load new comments</string>
+    <string name="load_comments">Load comments</string>
+    <string name="comment_posted">Comment posted successfully</string>
+    <string name="no_comments">Be the first to post a comment</string>
+
+    <string name="not_supported">Not supported</string>
+    <string name="wrong_url">Url is Incorrect / Not supported.</string>
+    <string name="browser_not_available">You need a browser app to this action.</string>
+
+    <string name="my_exams">My Exams</string>
+    <string name="store">Store</string>
+    <string name="posts">Posts</string>
+    <string name="documents">Documents</string>
+    <string name="analytics">Analytics</string>
+    <string name="profile">Profile</string>
+    <string name="orders">Orders</string>
+    <string name="rate_us">Rate Us</string>
 
 </resources>

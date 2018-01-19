@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
 ext {
-    supportLib = '25.2.0'
-    testpressSDK = '1.0.26'
+    supportLib = '25.3.1'
+    testpressSDK = '1.0.49'
 }
 
 dependencies {
@@ -27,14 +27,7 @@ dependencies {
 
     // Android Support Libs
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:design:' + supportLib
-    compile 'com.android.support:cardview-v7:' + supportLib
     compile 'com.android.support:customtabs:' + supportLib
-
-
-    // SlidingUp Panel
-    compile 'com.sothree.slidinguppanel:library:3.0.0'
-    compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
 
     // Material Dialog
     compile 'com.afollestad.material-dialogs:core:0.8.5.9'
@@ -49,12 +42,8 @@ dependencies {
 
     // GreenDao for database
     compile 'de.greenrobot:greendao:2.0.0'
-
-    // Image cropper tool
-    compile 'com.edmodo:cropper:1.0.1'
     
     // Testpress exam
-
     compile ('com.github.testpress:exam:' + testpressSDK + '@aar') {
         transitive=true
     }
@@ -63,10 +52,10 @@ dependencies {
     }
 
     // Gcm
-    compile 'com.google.android.gms:play-services-gcm:10.2.0'
+    compile 'com.google.android.gms:play-services-gcm:11.0.2'
 
     // Google Sign In
-    compile 'com.google.android.gms:play-services-auth:10.2.0'
+    compile 'com.google.android.gms:play-services-auth:11.0.2'
 
     // Facebook SDK
     compile 'com.facebook.android:facebook-android-sdk:4.20.0'

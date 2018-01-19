@@ -67,6 +67,7 @@ import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.OrderConfirmActivity;
+import in.testpress.testpress.ui.PostActivity;
 import in.testpress.testpress.ui.TextWatcherAdapter;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
@@ -150,6 +151,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     private CallbackManager callbackManager;
     private GoogleApiClient googleApiClient;
     private InstituteSettingsDao instituteSettingsDao;
+    private InstituteSettings instituteSettings;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -242,7 +244,8 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         if (instituteSettingsList.size() == 0) {
             getInstituteSettings();
         } else {
-            updateInstituteSpecificFields(instituteSettingsList.get(0));
+            instituteSettings = instituteSettingsList.get(0);
+            updateInstituteSpecificFields();
         }
     }
 
@@ -278,6 +281,8 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             protected void onSuccess(InstituteSettings instituteSettings) throws Exception {
                 instituteSettings.setBaseUrl(Constants.Http.URL_BASE);
                 instituteSettingsDao.insertOrReplace(instituteSettings);
+                LoginActivity.this.instituteSettings = instituteSettings;
+                updateInstituteSpecificFields();
                 loginLayout.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
             }
@@ -286,7 +291,13 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
     private void authenticate(final String userId, String accessToken,
                               final TestpressSdk.Provider provider) {
-        TestpressSdk.initialize(this, Constants.Http.URL_BASE, userId, accessToken, provider,
+
+        in.testpress.model.InstituteSettings settings = new in.testpress.model.InstituteSettings(
+                instituteSettings.getBaseUrl(),
+                instituteSettings.getShowGameFrontend(),
+                instituteSettings.getCoursesEnableGamification()
+        );
+        TestpressSdk.initialize(this, settings, userId, accessToken, provider,
                 new TestpressCallback<TestpressSession>() {
                     @Override
                     public void onSuccess(TestpressSession response) {
@@ -313,7 +324,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
                 });
     }
 
-    private void updateInstituteSpecificFields(InstituteSettings instituteSettings) {
+    private void updateInstituteSpecificFields() {
         ViewUtils.setGone(fbLoginButton, !instituteSettings.getFacebookLoginEnabled());
         ViewUtils.setGone(googleLoginButton, !instituteSettings.getGoogleLoginEnabled());
         ViewUtils.setGone(socialLoginLayout, !instituteSettings.getFacebookLoginEnabled() &&
@@ -427,12 +438,22 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             setResult(RESULT_OK, intent);
         } else {
             Intent intent = new Intent(this, MainActivity.class);
-            if (getIntent().getStringExtra(Constants.DEEP_LINK_TO) != null &&
-                    getIntent().getStringExtra(Constants.DEEP_LINK_TO)
-                            .equals(Constants.DEEP_LINK_TO_PAYMENTS)) {
-                    intent = new Intent(this, OrderConfirmActivity.class);
-                    intent.putExtra(Constants.IS_DEEP_LINK, true);
-                    intent.putExtras(getIntent().getExtras());
+            if (getIntent().getStringExtra(Constants.DEEP_LINK_TO) != null) {
+                switch (getIntent().getStringExtra(Constants.DEEP_LINK_TO)) {
+                    case Constants.DEEP_LINK_TO_PAYMENTS:
+                        intent = new Intent(this, OrderConfirmActivity.class);
+                        intent.putExtra(Constants.IS_DEEP_LINK, true);
+                        intent.putExtras(getIntent().getExtras());
+                        break;
+                    case Constants.DEEP_LINK_TO_POST:
+                        intent = new Intent(this, PostActivity.class);
+                        intent.putExtra(Constants.IS_DEEP_LINK, true);
+                        intent.putExtras(getIntent().getExtras());
+                        break;
+                    default:
+                        intent = new Intent(this, MainActivity.class);
+                        break;
+                }
             }
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
@@ -517,7 +538,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             }
         } else if (requestCode == REQUEST_CODE_GOOGLE_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            if (result.isSuccess()) {
+            if (result != null && result.isSuccess()) {
                 //noinspection ConstantConditions
                 if (result.getSignInAccount().getGivenName() == null ||
                         result.getSignInAccount().getGivenName().isEmpty()) {

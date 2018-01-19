@@ -56,7 +56,7 @@ import butterknife.OnClick;
 import in.testpress.core.TestpressCallback;
 import in.testpress.core.TestpressException;
 import in.testpress.core.TestpressSdk;
-import in.testpress.model.FileDetails;
+import in.testpress.models.FileDetails;
 import in.testpress.network.TestpressApiClient;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
@@ -84,7 +84,7 @@ import static in.testpress.testpress.util.CommonUtils.getException;
 public class PostActivity extends TestpressFragmentActivity implements
         LoaderManager.LoaderCallbacks<List<Comment>> {
 
-    public static final String SHORT_WEB_URL = "shortWebUrl";
+    public static final String SHORT_WEB_URL = "url";
     public static final String UPDATE_TIME_SPAN = "updateTimeSpan";
     public static final int NEW_COMMENT_SYNC_INTERVAL = 10000; // 10 sec
     private static final int PREVIOUS_COMMENTS_LOADER_ID = 0;
@@ -446,6 +446,9 @@ public class PostActivity extends TestpressFragmentActivity implements
     void onPreviousCommentsLoadFinished(Loader<List<Comment>> loader, List<Comment> comments) {
         //noinspection ThrowableResultOfMethodCallIgnored
         final Exception exception = getException(loader);
+        if (previousCommentsPager == null || (exception == null && comments == null)) {
+            return;
+        }
         if (exception != null) {
             previousCommentsLoadingLayout.setVisibility(View.GONE);
             if (post.getCommentsCount() == 0) {

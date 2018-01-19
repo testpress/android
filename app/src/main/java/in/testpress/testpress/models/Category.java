@@ -7,7 +7,7 @@ package in.testpress.testpress.models;
 public class Category {
 
     private Long id;
-    private String name;
+    public String name;
     private String color;
     private String slug;
 

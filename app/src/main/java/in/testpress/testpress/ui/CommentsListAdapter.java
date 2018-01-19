@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,7 +107,9 @@ class CommentsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     void addPreviousComments(List<Comment> comments) {
+        Log.e("ssssssss", comments.get(0).getComment());
         Collections.reverse(comments);
+        Log.e("ssssssss", comments.get(0).getComment());
         this.comments.addAll(0, comments);
         notifyItemRangeInserted(0, comments.size());
     }

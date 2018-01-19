@@ -91,7 +91,7 @@ public class PostsListAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(activity, PostActivity.class);
-                intent.putExtra("shortWebUrl", post.getShort_web_url());
+                intent.putExtra("url", post.getShort_web_url());
                 activity.startActivity(intent);
             }
         });

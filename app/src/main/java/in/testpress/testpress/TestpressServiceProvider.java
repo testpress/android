@@ -13,13 +13,16 @@ import com.facebook.login.LoginManager;
 import java.io.IOException;
 import java.util.List;
 
+import in.testpress.core.TestpressSDKDatabase;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
+import in.testpress.exam.TestpressExam;
 import in.testpress.testpress.authenticator.ApiKeyProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.DaoSession;
+import in.testpress.testpress.models.ForumDao;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.PostDao;
@@ -56,6 +59,9 @@ public class TestpressServiceProvider {
      */
     public TestpressService getService(final Activity activity)
             throws IOException, AccountsException {
+        if (activity == null) {
+            return null;
+        }
         if (authToken == null) {
             // The call to keyProvider.getAuthKey(...) is what initiates the login screen. Call that now.
             authToken = keyProvider.getAuthKey(activity);
@@ -66,16 +72,17 @@ public class TestpressServiceProvider {
                     .where(InstituteSettingsDao.Properties.BaseUrl.eq(Constants.Http.URL_BASE))
                     .list();
 
-            in.testpress.model.InstituteSettings settings;
+            in.testpress.models.InstituteSettings settings;
             if (instituteSettingsList.isEmpty()) {
-                settings = new in.testpress.model.InstituteSettings(Constants.Http.URL_BASE);
+                settings = new in.testpress.models.InstituteSettings(Constants.Http.URL_BASE);
             } else {
                 InstituteSettings instituteSettings = instituteSettingsList.get(0);
-                settings = new in.testpress.model.InstituteSettings(
+                settings = new in.testpress.models.InstituteSettings(
                         instituteSettings.getBaseUrl(),
                         instituteSettings.getShowGameFrontend(),
                         instituteSettings.getCoursesEnableGamification()
                 );
+                settings.setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled());
             }
             TestpressSdk.setTestpressSession(activity, new TestpressSession(settings, authToken));
         }
@@ -104,7 +111,9 @@ public class TestpressServiceProvider {
                 ((TestpressApplication) activity.getApplicationContext()).getDaoSession();
         PostDao postDao = daoSession.getPostDao();
         postDao.deleteAll();
+        TestpressSDKDatabase.clearDatabase(activity.getApplicationContext());
         daoSession.clear();
+        TestpressSdk.clearActiveSession(activity);
         logoutService.logout(new Runnable() {
             @Override
             public void run() {

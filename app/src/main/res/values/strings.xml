@@ -24,6 +24,7 @@
     <string name="no_orders">No transactions yet</string>
     <string name="no_orders_description">Your purchased orders will be reflected here.</string>
     <string name="no_posts">No Articles</string>
+    <string name="no_discussions">No Discussions</string>
 
     <string name="edit">Edit</string>
     <string name="cancel">Cancel</string>
@@ -73,6 +74,7 @@
     <string name="goto_home">Goto Home</string>
 
     <string name="all_posts">All Posts</string>
+    <string name="all_discussions">All Discussions</string>
     <string name="categories">Categories</string>
     <string name="title_activity_reset_password_verification">ResetPasswordVerificationActivity
     </string>
@@ -86,7 +88,6 @@
     <string name="invalid_post">Invalid Article</string>
 
     <string name="learn">Learn</string>
-    <string name="profile">Profile</string>
 
     <string name="or">or</string>
     <string name="forgot_password">Forgot Password?</string>
@@ -117,5 +118,24 @@
     <string name="not_supported">Not supported</string>
     <string name="wrong_url">Url is Incorrect / Not supported.</string>
     <string name="browser_not_available">You need a browser app to this action.</string>
+
+    <string name="my_exams">My Exams</string>
+    <string name="store">Store</string>
+    <string name="posts">Posts</string>
+    <string name="forum">Forum</string>
+    <string name="article">Article</string>
+    <string name="discussions">Discussions</string>
+    <string name="documents">Documents</string>
+    <string name="analytics">Analytics</string>
+    <string name="profile">Profile</string>
+    <string name="orders">Orders</string>
+    <string name="rate_us">Rate Us</string>
+    <string name="testpress_user_name">User Name</string>
+    <string name="testpress_new_comments">New Comments</string>
+    <string name="testpress_post_title">Post title</string>
+    <string name="testpress_pick_a_topic">Pick a topic</string>
+    <string name="testpress_post_content">Post Content</string>
+    <string name="testpress_publish">Publish</string>
+    <string name="articles">Articles</string>
 
 </resources>

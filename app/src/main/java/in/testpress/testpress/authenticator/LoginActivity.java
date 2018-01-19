@@ -292,7 +292,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     private void authenticate(final String userId, String accessToken,
                               final TestpressSdk.Provider provider) {
 
-        in.testpress.model.InstituteSettings settings = new in.testpress.model.InstituteSettings(
+        in.testpress.models.InstituteSettings settings = new in.testpress.models.InstituteSettings(
                 instituteSettings.getBaseUrl(),
                 instituteSettings.getShowGameFrontend(),
                 instituteSettings.getCoursesEnableGamification()
@@ -538,7 +538,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             }
         } else if (requestCode == REQUEST_CODE_GOOGLE_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            if (result.isSuccess()) {
+            if (result != null && result.isSuccess()) {
                 //noinspection ConstantConditions
                 if (result.getSignInAccount().getGivenName() == null ||
                         result.getSignInAccount().getGivenName().isEmpty()) {

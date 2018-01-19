@@ -14,6 +14,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -23,7 +24,6 @@ import android.widget.RelativeLayout;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.widget.TextView;
 
 import butterknife.ButterKnife;
@@ -89,6 +89,9 @@ public class MainActivity extends TestpressFragmentActivity {
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
+//        mMenuItemFragments.clear();
+//        mMenuItemImageIds.clear();
+//        mMenuItemTitleIds.clear();
         Injector.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
@@ -96,7 +99,7 @@ public class MainActivity extends TestpressFragmentActivity {
         if (savedInstanceState != null) {
             mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM);
         }
-        viewPager.setVisibility(View.INVISIBLE);
+        viewPager.setVisibility(View.VISIBLE);
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -105,10 +108,22 @@ public class MainActivity extends TestpressFragmentActivity {
         };
         DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
         instituteSettingsDao = daoSession.getInstituteSettingsDao();
-        fetchInstituteSettings();
+
+        List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
+                .where(InstituteSettingsDao.Properties.BaseUrl.eq(Constants.Http.URL_BASE))
+                .list();
+
+        if (instituteSettingsList.size() > 0) {
+            Log.e("Institute settings", "found");
+            onFinishFetchingInstituteSettings(instituteSettingsList.get(0), true);
+            fetchInstituteSettings(false);
+        } else {
+            Log.e("Institute settings", "not found");
+            fetchInstituteSettings(true);
+        }
     }
 
-    private void updateTestpressSession() {
+    private void updateTestpressSession(final boolean initScreenFlag) {
         new SafeAsyncTask<Boolean>() {
 
             @Override
@@ -132,7 +147,11 @@ public class MainActivity extends TestpressFragmentActivity {
             protected void onSuccess(final Boolean hasAuthenticated) throws Exception {
                 super.onSuccess(hasAuthenticated);
                 isUserAuthenticated = true;
-                checkUpdate();
+                if (initScreenFlag) {
+                    initScreen();
+                } else {
+                    checkUpdate(initScreenFlag);
+                }
             }
         }.execute();
     }
@@ -147,8 +166,10 @@ public class MainActivity extends TestpressFragmentActivity {
                 startService(intent);
             }
         }
+        Log.e("Checking for gamified","");
         // Show courses list if game front end is enabled, otherwise hide bottom bar
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
+            Log.e("Checking for gamified","true found");
             //noinspection ConstantConditions
             addMenuItem(R.string.learn, R.drawable.learn,
                     TestpressCourse.getCoursesListFragment(this, TestpressSdk.getTestpressSession(this)));
@@ -158,11 +179,16 @@ public class MainActivity extends TestpressFragmentActivity {
                 addMenuItem(R.string.testpress_leaderboard, R.drawable.leaderboard,
                         TestpressCourse.getLeaderboardFragment(this, TestpressSdk.getTestpressSession(this)));
             }
+            addMenuItem(R.string.articles, R.drawable.news, new PostsListFragment());
+            addMenuItem(R.string.discussions, R.drawable.chat_icon, new ForumListFragment());
         } else {
             grid.setVisibility(View.GONE);
         }
-        addMenuItem(R.string.app_name, R.drawable.profile_default, new MainMenuFragment());
-        mBottomBarAdapter = new BottomNavBarAdapter(this, mMenuItemImageIds);
+        addMenuItem(R.string.profile, R.drawable.profile_default, new MainMenuFragment());
+        Log.e("No. of items", mMenuItemImageIds.size()+"");
+        mBottomBarAdapter = new BottomNavBarAdapter(this, mMenuItemImageIds,
+                mMenuItemTitleIds);
+        Log.e("No. of adapt", mBottomBarAdapter.getCount()+"");
         grid.setAdapter(mBottomBarAdapter);
         grid.setNumColumns(mBottomBarAdapter.getCount());
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -173,6 +199,7 @@ public class MainActivity extends TestpressFragmentActivity {
         });
         BottomBarPagerAdapter mPagerAdapter = new BottomBarPagerAdapter(this, mMenuItemFragments);
         viewPager.setAdapter(mPagerAdapter);
+        viewPager.setOffscreenPageLimit(0);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -191,6 +218,7 @@ public class MainActivity extends TestpressFragmentActivity {
         viewPager.setCurrentItem(mSelectedItem);
         viewPager.setVisibility(View.VISIBLE);
         progressBarLayout.setVisibility(View.GONE);
+        updateToolbarText(getString(mMenuItemTitleIds.get(mSelectedItem)));
     }
 
     private void onItemSelected(int position) {
@@ -210,8 +238,7 @@ public class MainActivity extends TestpressFragmentActivity {
         }
     }
 
-    private void fetchInstituteSettings() {
-        progressBarLayout.setVisibility(View.VISIBLE);
+    private void fetchInstituteSettings(final boolean initScreenFlag) {
         new SafeAsyncTask<InstituteSettings>() {
             @Override
             public InstituteSettings call() throws Exception {
@@ -225,7 +252,10 @@ public class MainActivity extends TestpressFragmentActivity {
                         .list();
 
                 if (instituteSettingsList.size() > 0) {
-                    onFinishFetchingInstituteSettings(instituteSettingsList.get(0));
+                    onFinishFetchingInstituteSettings(instituteSettingsList.get(0), initScreenFlag);
+                    return;
+                }
+                if (!initScreenFlag) {
                     return;
                 }
                 if (exception.getCause() instanceof IOException) {
@@ -240,7 +270,7 @@ public class MainActivity extends TestpressFragmentActivity {
                     @Override
                     public void onClick(View v) {
                         emptyView.setVisibility(View.GONE);
-                        fetchInstituteSettings();
+                        fetchInstituteSettings(initScreenFlag);
                     }
                 });
             }
@@ -249,20 +279,23 @@ public class MainActivity extends TestpressFragmentActivity {
             protected void onSuccess(InstituteSettings instituteSettings) throws Exception {
                 instituteSettings.setBaseUrl(Constants.Http.URL_BASE);
                 instituteSettingsDao.insertOrReplace(instituteSettings);
-                onFinishFetchingInstituteSettings(instituteSettings);
+                onFinishFetchingInstituteSettings(instituteSettings, initScreenFlag);
             }
         }.execute();
     }
 
-    public void onFinishFetchingInstituteSettings(InstituteSettings instituteSettings) {
+    public void onFinishFetchingInstituteSettings(InstituteSettings instituteSettings,
+                                                  boolean initScreenFlag) {
         this.mInstituteSettings = instituteSettings;
         // TODO: Get allowAnonymousUser flag from institute settings
         boolean allowAnonymousUser = false; // True if users can use the app(Access posts) without login
         //noinspection ConstantConditions
-        if (CommonUtils.isUserAuthenticated(this) || !allowAnonymousUser) {
-            updateTestpressSession(); // Show login screen if user not logged in
+        if ((CommonUtils.isUserAuthenticated(this) || !allowAnonymousUser) && initScreenFlag) {
+            updateTestpressSession(initScreenFlag); // Show login screen if user not logged in
+        } else if (!initScreenFlag){
+            checkUpdate(initScreenFlag);
         } else {
-            checkUpdate();
+            initScreen();
         }
     }
 
@@ -300,7 +333,7 @@ public class MainActivity extends TestpressFragmentActivity {
         return true;
     }
 
-    private void checkUpdate() {
+    private void checkUpdate(final boolean initScreenFlag) {
         new SafeAsyncTask<Update>() {
             @Override
             public Update call() throws Exception {
@@ -309,52 +342,47 @@ public class MainActivity extends TestpressFragmentActivity {
 
             @Override
             protected void onException(final Exception e) throws RuntimeException {
-                initScreen();
+                if(initScreenFlag) {
+                    initScreen();
+                }
             }
 
             @Override
             protected void onSuccess(final Update update) throws Exception {
                 if(update.getUpdateRequired()) {
-                    if (update.getForce()) {
-                        new MaterialDialog.Builder(MainActivity.this)
-                                .cancelable(true)
-                                .content(update.getMessage())
-                                .cancelListener(new DialogInterface.OnCancelListener() {
-                                    @Override
-                                    public void onCancel(DialogInterface dialogInterface) {
+                    new MaterialDialog.Builder(MainActivity.this)
+                            .content(update.getMessage())
+                            .cancelable(!update.getForce())
+                            .cancelListener(new DialogInterface.OnCancelListener() {
+                                @Override
+                                public void onCancel(DialogInterface dialogInterface) {
+                                    if (update.getForce()) {
                                         finish();
+                                    } else {
+                                        if(initScreenFlag) {
+                                            initScreen();
+                                        }
                                     }
-                                })
-                                .neutralText("Update")
-                                .buttonsGravity(GravityEnum.CENTER)
-                                .neutralColorRes(R.color.primary)
-                                .callback(new MaterialDialog.ButtonCallback() {
-                                    @Override
-                                    public void onNeutral(MaterialDialog dialog) {
-                                        dialog.cancel();
-                                        startActivity(new Intent(Intent.ACTION_VIEW,
-                                                Uri.parse("market://details?id=" + getPackageName())));
-                                        finish();
-                                    }
-                                })
-                                .show();
-                    } else {
-                        initScreen();
-                        Snackbar snackbar = Snackbar
-                                .make(coordinatorLayout, "New update is available",
-                                        Snackbar.LENGTH_INDEFINITE)
-                                .setAction("UPDATE", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        startActivity(new Intent(Intent.ACTION_VIEW,
-                                                Uri.parse("market://details?id=" + getPackageName())));
-                                        finish();
-                                    }
-                                });
-                        snackbar.show();
-                    }
+                                }
+                            })
+                            .neutralText("Update")
+                            .buttonsGravity(GravityEnum.CENTER)
+                            .neutralColorRes(R.color.primary)
+                            .contentColor(getResources().getColor(R.color.testpress_black))
+                            .callback(new MaterialDialog.ButtonCallback() {
+                                @Override
+                                public void onNeutral(MaterialDialog dialog) {
+                                    dialog.cancel();
+                                    startActivity(new Intent(Intent.ACTION_VIEW,
+                                            Uri.parse("market://details?id=" + getPackageName())));
+                                    finish();
+                                }
+                            })
+                            .show();
                 } else {
-                    initScreen();
+                    if(initScreenFlag) {
+                        initScreen();
+                    }
                 }
             }
         }.execute();

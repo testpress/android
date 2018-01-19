@@ -99,7 +99,11 @@ public final class Constants {
         public static final String URL_POSTS_FRAG =  "api/v2.2/posts/";
         public static final String URL_CATEGORIES_FRAG = URL_POSTS_FRAG + "categories/";
 
+        public static final String URL_FORUMS_FRAG =  "api/v2.3/forum/";
+
         public static final String URL_COMMENTS_FRAG =  "/comments/";
+
+        public static final String CHAPTERS_PATH =  "/api/v2.2/chapters/";
 
         /**
          * Handle Success & Failure of payments
@@ -115,6 +119,10 @@ public final class Constants {
         public static final String UNTIL = "until";
         public static final String ORDER = "order";
     }
+
+    public static final String SPLASH_SCREEN_PREFERENCE_NAME = "testpress." +
+            Auth.TESTPRESS_ACCOUNT_NAME + ".SPLASH_SCREEN";
+    public static final String SPLASH_SCREEN_TIME_OUT_PROPERTY_NAME = "FIRST_LAUNCH";
 
     public static final String GCM_PREFERENCE_NAME = "testpress." + Auth.TESTPRESS_ACCOUNT_NAME + ".GCM";
     public static final String GCM_PROPERTY_REG_ID = "GCMRegId";

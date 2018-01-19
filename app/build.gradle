@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 ext {
     supportLib = '25.3.1'
-    testpressSDK = '1.0.44'
+    testpressSDK = '1.0.49'
 }
 
 dependencies {
@@ -28,6 +28,8 @@ dependencies {
     // Android Support Libs
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:customtabs:' + supportLib
+    compile 'com.android.support:support-v4:' + supportLib
+    compile 'com.android.support:design:' + supportLib
 
     // Material Dialog
     compile 'com.afollestad.material-dialogs:core:0.8.5.9'
@@ -44,12 +46,22 @@ dependencies {
     compile 'de.greenrobot:greendao:2.0.0'
     
     // Testpress exam
-    compile ('com.github.testpress:exam:' + testpressSDK + '@aar') {
-        transitive=true
-    }
-    compile ('com.github.testpress:course:' + testpressSDK + '@aar') {
-        transitive=true
-    }
+//    compile ('com.github.testpress:exam:' + testpressSDK + '@aar') {
+//        transitive=true
+//    }
+//    compile ('com.github.testpress:course:' + testpressSDK + '@aar') {
+//        transitive=true
+//    }
+    compile project(':core')
+    compile project(':exam')
+    compile project(':course')
+    compile 'com.theartofdev.edmodo:android-image-cropper:2.4.5'
+    compile 'com.github.testpress:MPAndroidChart:v3.0.0-beta2'
+    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'org.greenrobot:greendao:3.2.0'
 
     // Gcm
     compile 'com.google.android.gms:play-services-gcm:11.0.2'
@@ -62,6 +74,7 @@ dependencies {
 
     // Flat button
     compile 'info.hoang8f:fbutton:1.0.5'
+
 }
 
 def key_alias = "sample"

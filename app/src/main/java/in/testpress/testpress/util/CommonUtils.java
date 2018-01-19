@@ -54,6 +54,9 @@ public class CommonUtils {
     }
 
     public static boolean isUserAuthenticated(final Activity activity) {
+        if (activity == null) {
+            return false;
+        }
         AccountManager manager = (AccountManager) activity.getSystemService(ACCOUNT_SERVICE);
         Account[] account = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
         return account.length > 0;

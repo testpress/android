@@ -7,19 +7,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import in.testpress.core.TestpressSdk;
 import in.testpress.testpress.R;
 
 public class BottomNavBarAdapter extends BaseAdapter {
     private Context mContext;
     private ArrayList<Integer> mItemsImageId;
+    private ArrayList<Integer> mMenuItemTitleIds;
     private int selectedPosition;
 
-    public BottomNavBarAdapter(Context context, ArrayList<Integer> menuItemImageId) {
+    public BottomNavBarAdapter(Context context, ArrayList<Integer> menuItemImageId,
+            ArrayList<Integer> menuItemTitleId) {
         mContext = context;
         mItemsImageId = menuItemImageId;
+        mMenuItemTitleIds = menuItemTitleId;
     }
 
     @Override
@@ -52,6 +57,10 @@ public class BottomNavBarAdapter extends BaseAdapter {
             imageView.setColorFilter(ContextCompat.getColor(mContext,
                     R.color.bottom_bar_unselected_item));
         }
+        TextView menuTitle = ((TextView) convertView.findViewById(R.id.menu_title));
+        menuTitle.setText(mMenuItemTitleIds.get(position));
+        menuTitle.setTypeface(TestpressSdk.getRubikRegularFont(mContext));
+
         return convertView;
     }
 

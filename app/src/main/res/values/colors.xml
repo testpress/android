@@ -11,6 +11,7 @@
 
     <color name="table_text">#484848</color>
     <color name="table_text_light">#A6A6A6</color>
+    <color name="text_dark_grey">#666666</color>
 
     <color name="actionbar_background_start">#3598db</color>
 
@@ -54,5 +55,9 @@
     <color name="normal_text">#777777</color>
 
     <color name="divider">#e6e6e6</color>
+
+    <color name="grey_icon">#acacac</color>
+
+    <color name="testpress_vote_indicator">#298cdd</color>
 
 </resources>

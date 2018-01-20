@@ -114,7 +114,7 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 111
+        versionCode 112
         versionName '1.0.' + versionCode
         applicationId 'com.dbmci'
     }

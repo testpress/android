@@ -5,6 +5,7 @@ import android.accounts.AccountManager;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.WindowManager;
 
 
 /**
@@ -44,6 +45,7 @@ public class ActionBarAccountAuthenticatorActivity extends AppCompatActivity {
      * @param icicle the save instance data of this Activity, may be null
      */
     protected void onCreate(Bundle icicle) {
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         super.onCreate(icicle);
 
         accountAuthenticatorResponse =

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
 import in.testpress.testpress.core.Constants;
 
@@ -16,6 +17,7 @@ public abstract class BaseToolBarActivity extends AppCompatActivity {
 
     @Override
     public void setContentView(final int layoutResId) {
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         super.setContentView(layoutResId);
         Toolbar toolbar = (Toolbar) findViewById(in.testpress.R.id.toolbar);
         setSupportActionBar(toolbar);

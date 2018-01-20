@@ -10,6 +10,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -71,6 +72,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle bundle) {
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         super.onCreate(bundle);
         Injector.inject(this);
         setContentView(R.layout.register_activity);

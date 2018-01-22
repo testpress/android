@@ -3,6 +3,7 @@ package in.testpress.testpress.ui;
 import android.accounts.AccountsException;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
@@ -11,8 +12,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -298,8 +301,17 @@ public class PostActivity extends TestpressFragmentActivity implements
 
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    startActivity(intent);
+                    CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+                    builder.setToolbarColor(ContextCompat.getColor(PostActivity.this, R.color.primary));
+                    CustomTabsIntent customTabsIntent = builder.build();
+                    try {
+                        customTabsIntent.launchUrl(PostActivity.this, Uri.parse(url));
+                    } catch (ActivityNotFoundException e) {
+                        boolean wrongUrl = !url.startsWith("http://") && !url.startsWith("https://");
+                        int message = wrongUrl ? R.string.wrong_url : R.string.browser_not_available;
+                        UIUtils.getAlertDialog(PostActivity.this, R.string.not_supported, message)
+                                .show();
+                    }
                     return true;
                 }
             });
@@ -434,6 +446,9 @@ public class PostActivity extends TestpressFragmentActivity implements
     void onPreviousCommentsLoadFinished(Loader<List<Comment>> loader, List<Comment> comments) {
         //noinspection ThrowableResultOfMethodCallIgnored
         final Exception exception = getException(loader);
+        if (previousCommentsPager == null || (exception == null && comments == null)) {
+            return;
+        }
         if (exception != null) {
             previousCommentsLoadingLayout.setVisibility(View.GONE);
             if (post.getCommentsCount() == 0) {

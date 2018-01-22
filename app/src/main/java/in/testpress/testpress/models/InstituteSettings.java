@@ -26,6 +26,7 @@ public class InstituteSettings {
     private Boolean dashboardEnabled;
     private Boolean facebookLoginEnabled;
     private Boolean googleLoginEnabled;
+    private Boolean commentsVotingEnabled;
 
     public InstituteSettings() {
     }
@@ -217,4 +218,11 @@ public class InstituteSettings {
         this.googleLoginEnabled = googleLoginEnabled;
     }
 
+    public Boolean getCommentsVotingEnabled() {
+        return commentsVotingEnabled;
+    }
+
+    public void setCommentsVotingEnabled(Boolean commentsVotingEnabled) {
+        this.commentsVotingEnabled = commentsVotingEnabled;
+    }
 }

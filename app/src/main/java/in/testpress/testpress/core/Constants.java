@@ -36,7 +36,7 @@ public final class Constants {
         /**
          * Base URL for all requests
          */
-        public static final String URL_BASE = "http://onlinetest.raceinstitute.in";
+        public static final String URL_BASE = "https://onlinetest.raceinstitute.in";
 
         /**
          * Check Update url

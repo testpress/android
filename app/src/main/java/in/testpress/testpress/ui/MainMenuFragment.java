@@ -161,7 +161,7 @@ public class MainMenuFragment extends Fragment {
                         shareApp();
                         break;
                     case R.string.rate_us:
-                        //rateApp();
+                        rateApp();
                         break;
                     case R.string.logout:
                         ((MainMenuActivity) getActivity()).logout();

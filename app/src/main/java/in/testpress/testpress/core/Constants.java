@@ -36,7 +36,7 @@ public final class Constants {
         /**
          * Base URL for all requests
          */
-        public static final String URL_BASE = "http://extelacademy.testpress.in";
+        public static final String URL_BASE = "https://extelacademy.testpress.in";
 
         /**
          * Check Update url

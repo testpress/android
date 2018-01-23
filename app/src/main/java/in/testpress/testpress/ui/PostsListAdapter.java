@@ -1,5 +1,6 @@
 package in.testpress.testpress.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,11 +11,14 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import in.testpress.core.TestpressSdk;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.PostDao;
+import in.testpress.testpress.util.FormatDate;
 import in.testpress.testpress.util.Ln;
+import in.testpress.util.ViewUtils;
 
 public class PostsListAdapter extends BaseAdapter {
 
@@ -61,6 +65,7 @@ public class PostsListAdapter extends BaseAdapter {
         return postDao.queryBuilder().where(PostDao.Properties.Is_active.eq(true)).orderDesc(PostDao.Properties.Published).listLazy().get(position).getId();
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final Post post = getItem(position);
@@ -70,29 +75,18 @@ public class PostsListAdapter extends BaseAdapter {
             convertView = activity.getLayoutInflater().inflate(layout, null);
         }
 
-        ((TextView)convertView.findViewById(R.id.title)).setText(post.getTitle());
-        ((TextView)convertView.findViewById(R.id.date)).setText(DateUtils.getRelativeTimeSpanString(post.getPublished()));
+        TextView title = (TextView)convertView.findViewById(R.id.title);
+        title.setText(post.getTitle());
+        TextView date = (TextView)convertView.findViewById(R.id.date);
+        date.setText(FormatDate.getAbbreviatedTimeSpan(post.getPublished()));
         TextView categoryView = (TextView)convertView.findViewById(R.id.category);
-
+        View categoryLayout = convertView.findViewById(R.id.category_layout);
         if(post.getCategory() != null) {
-            int backgroundColor = Color.parseColor("#" + post.getCategory().getColor());
             categoryView.setText(post.getCategory().getName());
-            GradientDrawable drawable = new GradientDrawable();
-            drawable.setCornerRadius(4);
-            drawable.setColor(backgroundColor);
-            categoryView.setBackgroundDrawable(drawable);
-            double grayScale = ( 0.299 * Color.red(backgroundColor) + 0.587 * Color.green(backgroundColor) + 0.114 * Color.blue(backgroundColor));
-            Ln.d("Grayscale for " + post.getCategory().getColor() + " is " + grayScale);
-            if (grayScale > 186) {
-                categoryView.setTextColor(Color.BLACK);
-            } else {
-                categoryView.setTextColor(Color.WHITE);
-            }
-            categoryView.setVisibility(View.VISIBLE);
+            categoryLayout.setVisibility(View.VISIBLE);
         } else {
-            categoryView.setVisibility(View.GONE);
+            categoryLayout.setVisibility(View.GONE);
         }
-
         convertView.findViewById(R.id.ripple_layout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,6 +95,18 @@ public class PostsListAdapter extends BaseAdapter {
                 activity.startActivity(intent);
             }
         });
+        TextView commentsCount = (TextView)convertView.findViewById(R.id.comments_count);
+        View commentsLayout = convertView.findViewById(R.id.comments_layout);
+        if (post.getCommentsCount() == 0) {
+            commentsLayout.setVisibility(View.INVISIBLE);
+        } else {
+            commentsCount.setText(post.getCommentsCount().toString());
+            commentsLayout.setVisibility(View.VISIBLE);
+        }
+        title.setTypeface(TestpressSdk.getRubikMediumFont(activity));
+        ViewUtils.setTypeface(new TextView[] {commentsCount, date, categoryView},
+                TestpressSdk.getRubikRegularFont(activity));
+
         return convertView;
     }
 }

@@ -158,13 +158,13 @@ public class ProductDetailsActivity extends TestpressFragmentActivity
             //noinspection ThrowableResultOfMethodCallIgnored
             Exception exception = ((ThrowableLoader<ProductDetails>) loader).clearException();
             exception.printStackTrace();
-            if (exception.getMessage().equals("404 NOT FOUND")) {
+            if (exception.getMessage() != null && exception.getMessage().equals("404 NOT FOUND")) {
                 gotoMainActivity();
             } else if (exception.getCause() instanceof IOException) {
                 setEmptyText(R.string.network_error, R.string.no_internet_try_again,
                         R.drawable.ic_error_outline_black_18dp);
             } else {
-                setEmptyText(R.string.error_loading_analytics, R.string.try_after_sometime,
+                setEmptyText(R.string.error_loading_products, R.string.try_after_sometime,
                         R.drawable.ic_error_outline_black_18dp);
             }
             progressBar.setVisibility(View.GONE);

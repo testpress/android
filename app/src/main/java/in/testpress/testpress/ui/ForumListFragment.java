@@ -762,6 +762,10 @@ public class ForumListFragment extends Fragment implements
         }
         //Trigger displaying data
         displayDataFromDB();
+        if (!adapter.isEmpty()) {
+            emptyView.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+        }
     }
 
     protected void writeToDB(List<Forum> forums) {

@@ -557,6 +557,10 @@ public class PostsListFragment extends Fragment implements
         }
         //Trigger displaying data
         displayDataFromDB();
+        if (!adapter.isEmpty()) {
+            emptyView.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+        }
     }
 
     protected void writeToDB(List<Post> posts) {

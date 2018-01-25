@@ -353,7 +353,7 @@ public class ForumListFragment extends Fragment implements
         super.onCreateOptionsMenu(menu, menuInflater);
     }
 
-        @Override
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 2) {

@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp"
+    android:paddingRight="10dp"
+    android:paddingLeft="10dp">
+
+    <ImageView
+        android:id="@+id/feed_icon"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:padding="10dp"
+        android:src="@drawable/new_exam_icon"
+        android:background="@drawable/testpress_feed_list_icon_background" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="10dp">
+
+
+        <TextView
+            android:id="@+id/timestamp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="12mins ago"
+            android:layout_marginBottom="5dp"
+            android:textSize="10sp"
+            android:textColor="@color/testpress_text_gray_medium" />
+
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:textSize="14sp"
+            android:textColor="@color/testpress_difficulty_percentage_gray"/>
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Description"
+            android:textSize="12sp"
+            android:layout_marginTop="5dp" />
+
+        <LinearLayout
+            android:id="@+id/attempt_info_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/testpress_round_corner_border"
+            android:padding="20dp"
+            android:layout_marginTop="10dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        style="@style/CircleBorderImage"
+                        android:src="@drawable/score_icon" />
+
+                    <TextView
+                        android:id="@+id/duration"
+                        style="@style/FeedStatsLabel"
+                        android:text="1hr 0 mins" />
+
+                    <TextView
+                        style="@style/FeedStatsValue"
+                        android:text="duration" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        style="@style/CircleBorderImage"
+                        android:src="@drawable/rank_icon" />
+
+                    <TextView
+                        android:id="@+id/student_count"
+                        style="@style/FeedStatsLabel"
+                        android:text="758 students"/>
+
+                    <TextView
+                        style="@style/FeedStatsValue"
+                        android:text="ATTEMPTED THIS" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal|top"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        style="@style/CircleBorderImage"
+                        android:src="@drawable/testpress_correct_flat_icon" />
+
+                    <TextView
+                        android:id="@+id/correct_count"
+                        style="@style/FeedStatsLabel"
+                        android:text="10"/>
+
+                    <TextView
+                        style="@style/FeedStatsValue"
+                        android:text="Correct" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        style="@style/CircleBorderImage"
+                        android:src="@drawable/testpress_incorrect_flat_icon" />
+
+                    <TextView
+                        android:id="@+id/incorrect_count"
+                        style="@style/FeedStatsLabel"
+                        android:text="75"/>
+
+                    <TextView
+                        style="@style/FeedStatsValue"
+                        android:text="InCorrect" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/exam_info_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/testpress_round_corner_border"
+            android:padding="20dp"
+            android:layout_marginTop="10dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        style="@style/CircleBorderImage"
+                        android:src="@drawable/testpress_time_flat_icon" />
+
+                    <TextView
+                        android:id="@+id/exam_duration"
+                        style="@style/FeedStatsLabel"
+                        android:text="1hr 0 mins" />
+
+                    <TextView
+                        style="@style/FeedStatsValue"
+                        android:text="duration" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        style="@style/CircleBorderImage"
+                        android:src="@drawable/testpress_scholar_flat_icon" />
+
+                    <TextView
+                        android:id="@+id/exam_student_count"
+                        style="@style/FeedStatsLabel"
+                        android:text="758 students"/>
+
+                    <TextView
+                        style="@style/FeedStatsValue"
+                        android:text="ATTEMPTED THIS" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal|top"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        style="@style/CircleBorderImage"
+                        android:src="@drawable/total_questions_icon" />
+
+                    <TextView
+                        android:id="@+id/total_questions"
+                        style="@style/FeedStatsLabel"
+                        android:text="10"/>
+
+                    <TextView
+                        style="@style/FeedStatsValue"
+                        android:text="Questions" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="invisible">
+
+                    <ImageView
+                        style="@style/CircleBorderImage"
+                        android:src="@drawable/testpress_incorrect_flat_icon" />
+
+                    <TextView
+                        style="@style/FeedStatsLabel"
+                        android:text="75"/>
+
+                    <TextView
+                        style="@style/FeedStatsValue"
+                        android:text="InCorrect" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -36,7 +36,7 @@ public final class Constants {
         /**
          * Base URL for all requests
          */
-        public static final String URL_BASE = "http://lmsdemo.testpress.in";
+        public static final String URL_BASE = "https://dbmci.testpress.in";
 
 
         /**
@@ -101,6 +101,8 @@ public final class Constants {
         public static final String URL_CATEGORIES_FRAG = URL_POSTS_FRAG + "categories/";
 
         public static final String URL_FORUMS_FRAG =  "api/v2.3/forum/";
+
+        public static final String URL_ACTIVITY_FEED_FRAG =  "/api/v2.4/activities/";
 
         public static final String URL_COMMENTS_FRAG =  "/comments/";
 

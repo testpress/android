@@ -117,6 +117,18 @@
             android:configChanges="orientation|keyboardHidden|screenSize" />
 
         <activity
+            android:name=".ui.MainMenuActivity"
+            android:label="@string/app_name"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
+
+        <activity
+            android:name=".ui.ActivityFeedListActivity"
+            android:label="ActivityFeed"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
+
+        <activity
             android:name=".ui.ForumActivity"
             android:label="Article"
             android:configChanges="orientation|keyboardHidden|screenSize"

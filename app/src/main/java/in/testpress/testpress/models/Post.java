@@ -33,6 +33,7 @@ public class Post {
     private String commentsUrl;
     private String slug;
     private Long categoryId;
+    private boolean forum;
 
     @ToOne(joinProperty = "categoryId")
     public Category category;
@@ -54,9 +55,9 @@ public class Post {
         this.id = id;
     }
 
-    @Generated(hash = 1747437140)
+    @Generated(hash = 280740051)
     public Post(Long id, String title, String summary, String contentHtml, String url, String publishedDate, Long published, String modified, Integer institute, Boolean is_active, Long modifiedDate, String short_web_url, String short_url, String web_url, Integer commentsCount, String commentsUrl, String slug,
-            Long categoryId) {
+            Long categoryId, boolean forum) {
         this.id = id;
         this.title = title;
         this.summary = summary;
@@ -75,6 +76,7 @@ public class Post {
         this.commentsUrl = commentsUrl;
         this.slug = slug;
         this.categoryId = categoryId;
+        this.forum = forum;
     }
 
     public Long getId() {
@@ -291,6 +293,14 @@ public class Post {
 
     public void setSlug(String slug) {
         this.slug = slug;
+    }
+
+    public boolean getForum() {
+        return this.forum;
+    }
+
+    public void setForum(boolean forum) {
+        this.forum = forum;
     }
 
 }

@@ -2,6 +2,34 @@
 
 <resources>
 
+    <style name="FeedStatsLabel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:textColor">@color/testpress_black</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="FeedStatsValue">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:textSize">10sp</item>
+    </style>
+
+    <style name="CircleBorderImage">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginBottom">0dp</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:background">@drawable/testpress_circle_gray_border</item>
+    </style>
+
     <style name="SignInEditText">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

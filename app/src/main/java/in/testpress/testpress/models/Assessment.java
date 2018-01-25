@@ -2,11 +2,13 @@ package in.testpress.testpress.models;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
 
 @Entity
 public class Assessment {
 
-    private int id;
+    @Id
+    private Long id;
     private String score;
     private String reviewPdfUrl;
     private int correctCount;
@@ -17,8 +19,8 @@ public class Assessment {
     private int speed;
     private int accuracy;
     private int exam;
-    @Generated(hash = 1853238259)
-    public Assessment(int id, String score, String reviewPdfUrl, int correctCount,
+    @Generated(hash = 186676685)
+    public Assessment(Long id, String score, String reviewPdfUrl, int correctCount,
             int incorrectCount, String timeTaken, String percentage,
             int unansweredCount, int speed, int accuracy, int exam) {
         this.id = id;
@@ -35,12 +37,6 @@ public class Assessment {
     }
     @Generated(hash = 2086173289)
     public Assessment() {
-    }
-    public int getId() {
-        return this.id;
-    }
-    public void setId(int id) {
-        this.id = id;
     }
     public String getScore() {
         return this.score;
@@ -101,6 +97,12 @@ public class Assessment {
     }
     public void setExam(int exam) {
         this.exam = exam;
+    }
+    public Long getId() {
+        return this.id;
+    }
+    public void setId(Long id) {
+        this.id = id;
     }
     
 }

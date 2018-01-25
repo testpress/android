@@ -108,4 +108,14 @@ public class CommonUtils {
         }
     }
 
+
+
+    public static <T> Exception getLoaderException(Loader<T> loader) {
+        if (loader instanceof ThrowableLoader) {
+            return ((ThrowableLoader<T>) loader).clearException();
+        } else {
+            return null;
+        }
+    }
+
 }

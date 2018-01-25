@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import in.testpress.exam.models.Vote;
+import in.testpress.testpress.models.ActivityFeedResponse;
 import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.Comment;
 import in.testpress.testpress.models.Device;
@@ -28,6 +29,7 @@ import in.testpress.testpress.models.ProfileDetails;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.ResetPassword;
 import in.testpress.testpress.models.TestpressApiResponse;
+import in.testpress.testpress.models.TestpressDataApiResponse;
 import in.testpress.testpress.models.Update;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
@@ -92,6 +94,10 @@ public class TestpressService {
 
     private ResetPasswordService getResetPasswordService(){return getRestAdapter().create(ResetPasswordService.class);}
 
+    private FeedService getFeedService() {
+        return getRestAdapter().create(FeedService.class);
+    }
+
     private String getAuthToken() {
         return "JWT " + authToken;
     }
@@ -122,6 +128,10 @@ public class TestpressService {
         credentials.put("registration_id", registrationId);
         credentials.put("device_id", deviceId);
         return getDevicesService().register(credentials);
+    }
+
+    public TestpressDataApiResponse<ActivityFeedResponse> getActivityFeed(String url) {
+        return getFeedService().getActivityFeed();
     }
 
     public TestpressApiResponse<Post> getPosts(String urlFrag, Map<String, String> queryParams, String latestModifiedDate) {

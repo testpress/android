@@ -183,6 +183,7 @@ public class ForumListAdapter extends BaseAdapter{
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(activity, ForumActivity.class);
+                Log.e("url", forum.getUrl());
                 intent.putExtra("Url", forum.getUrl());
                 activity.startActivity(intent);
             }

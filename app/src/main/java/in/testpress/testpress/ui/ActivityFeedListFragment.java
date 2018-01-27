@@ -351,9 +351,6 @@ public class ActivityFeedListFragment  extends Fragment implements
 
     private void saveDataInDB(ActivityFeedResponse activityFeedResponse) {
         Log.e("Inside", "saveDataInDB");
-        for (Activity activity : activityFeedResponse.getActivities()) {
-            activityDao.insertOrReplace(activity);
-        }
         for (User user : activityFeedResponse.getUsers()) {
             userDao.insertOrReplace(user);
         }
@@ -404,6 +401,67 @@ public class ActivityFeedListFragment  extends Fragment implements
         for (ChapterContent chapterContent : activityFeedResponse.getChaptercontents()) {
             chapterContentDao.insertOrReplace(chapterContent);
         }
+        for (Activity activity : activityFeedResponse.getActivities()) {
+            if (checkIfTargetAndActionExists(activity)) {
+                activityDao.insertOrReplace(activity);
+            } else {
+                Log.e("Not available", "11111111111111");
+            }
+        }
+    }
+
+    private boolean checkIfTargetAndActionExists(Activity feedActivity) {
+        int id = Integer.parseInt(feedActivity.getActionObjectObjectId());
+        String model = getContentTypeWithId(feedActivity.getActionObjectContentType()).getModel();
+        switch (model) {
+            case "post" :
+                return postDao.queryBuilder().where(PostDao.Properties.Id.eq(id)).count() != 0;
+            case "chapter" :
+                return chapterDao.queryBuilder()
+                        .where(FeedChapterDao.Properties.Id.eq(id)).count() != 0;
+            case "chaptercontent" :
+                return chapterContentDao.queryBuilder()
+                        .where(ChapterContentDao.Properties.Id.eq(id)).count() != 0;
+            case "chaptercontentattempt" :
+                return chapterContentAttemptDao.queryBuilder()
+                        .where(ChapterContentAttemptDao.Properties.Id.eq(id)).count() != 0;
+            case "user" :
+                return userDao.queryBuilder()
+                        .where(UserDao.Properties.Id.eq(id)).count() != 0;
+            case "exam" :
+                return examDao.queryBuilder()
+                        .where(FeedExamDao.Properties.Id.eq(id)).count() != 0;
+        }
+        id = feedActivity.getTargetObjectId();
+        model = getContentTypeWithId(feedActivity.getTargetContentType()).getModel();
+        switch (model) {
+            case "post" :
+                return postDao.queryBuilder().where(PostDao.Properties.Id.eq(id)).count() != 0;
+            case "chapter" :
+                return chapterDao.queryBuilder()
+                        .where(FeedChapterDao.Properties.Id.eq(id)).count() != 0;
+            case "chaptercontent" :
+                return chapterContentDao.queryBuilder()
+                        .where(ChapterContentDao.Properties.Id.eq(id)).count() != 0;
+            case "chaptercontentattempt" :
+                return chapterContentAttemptDao.queryBuilder()
+                        .where(ChapterContentAttemptDao.Properties.Id.eq(id)).count() != 0;
+            case "user" :
+                return userDao.queryBuilder()
+                        .where(UserDao.Properties.Id.eq(id)).count() != 0;
+            case "exam" :
+                return examDao.queryBuilder()
+                        .where(FeedExamDao.Properties.Id.eq(id)).count() != 0;
+        }
+        return false;
+    }
+
+    private ContentType getContentTypeWithId(int id) {
+        if (contentTypeDao.queryBuilder().where(ContentTypeDao.Properties.Id.eq(id)).count() != 0) {
+            return contentTypeDao.queryBuilder()
+                    .where(ContentTypeDao.Properties.Id.eq(id)).list().get(0);
+        }
+        return new ContentType();
     }
 
     @Override

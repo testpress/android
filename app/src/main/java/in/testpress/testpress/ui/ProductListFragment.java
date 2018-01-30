@@ -59,7 +59,7 @@ public class ProductListFragment extends PagedItemFragment<Product> {
     public void onLoadFinished(Loader<List<Product>> loader, List<Product> items) {
 
         //Return if no items are returned
-        if (items.isEmpty()) {
+        if (items != null && items.isEmpty()) {
             setEmptyText(R.string.no_products, R.string.no_products_description, R.drawable.box);
             super.onLoadFinished(loader, items);
             return;

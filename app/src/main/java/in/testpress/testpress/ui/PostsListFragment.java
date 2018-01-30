@@ -312,6 +312,9 @@ public class PostsListFragment extends Fragment implements
 
     @Override
     public void onLoadFinished(Loader<List<Post>> loader, List<Post> data) {
+        if (getActivity() == null) {
+            return;
+        }
         final Exception exception = getException(loader);
         if (exception != null) {
             //Remove the swipe refresh icon and the sticky notification if any
@@ -388,7 +391,7 @@ public class PostsListFragment extends Fragment implements
 
     void onNetworkLoadFinished(List<Post> items) {
 
-        if (!pager.hasMore()) {
+        if (pager != null && !pager.hasMore()) {
             if (adapter.getFootersCount() != 0) {  //if pager reached last page remove footer if
                 // footer added already
                 adapter.removeFooter(loadingLayout);

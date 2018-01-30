@@ -12,11 +12,11 @@ android:
     - platform-tools
 
     # build tools version
-    - build-tools-25.0.0
+    - build-tools-25.0.2
 
     # The SDK Version
     - android-22
-    - android-24
+    - android-25
 
     # Additional components
     - extra-google-m2repository

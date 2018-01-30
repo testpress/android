@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 import in.testpress.testpress.models.Category;
+import in.testpress.testpress.models.Comment;
 import in.testpress.testpress.models.Device;
+import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.Notes;
 import in.testpress.testpress.models.Order;
 import in.testpress.testpress.models.OrderItem;
@@ -130,15 +132,25 @@ public class TestpressService {
         return getPostService().getPostDetails(url, queryParams);
     }
 
+    public TestpressApiResponse<Comment> getComments(long postId, Map<String, String> queryParams) {
+        return getPostService().getComments(postId, queryParams);
+    }
+
+    public Comment sendComments(long postId, String comment) {
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("comment", comment);
+        return getPostService().sendComments(postId, params);
+    }
+
     public RegistrationSuccessResponse register(String username,String email, String password, String phone){
-        RegistrationSuccessResponse registrationSuccessResponseResponse;
         HashMap<String, String> userDetails = new HashMap<String, String>();
         userDetails.put("username", username);
         userDetails.put("email", email);
         userDetails.put("password", password);
-        userDetails.put("phone", phone);
-        registrationSuccessResponseResponse = getAuthenticationService().register(userDetails);
-        return registrationSuccessResponseResponse;
+        if (!phone.trim().isEmpty()) {
+            userDetails.put("phone", phone);
+        }
+        return getAuthenticationService().register(userDetails);
     }
 
     public RegistrationSuccessResponse verifyCode(String username, String code){
@@ -224,6 +236,14 @@ public class TestpressService {
             userParameters.put("crop_height", cropDetails[3]);
         }
         return getAuthenticationService().updateUser(url, userParameters);
+    }
+
+    public InstituteSettings getInstituteSettings() {
+        return getDevicesService().getInstituteSettings();
+    }
+
+    public retrofit.client.Response activateAccount(String urlFrag) {
+        return getAuthenticationService().activateAccount(urlFrag);
     }
 
 }

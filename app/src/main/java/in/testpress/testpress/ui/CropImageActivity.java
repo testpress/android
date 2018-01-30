@@ -1,14 +1,14 @@
 package in.testpress.testpress.ui;
 
 import android.content.Intent;
-import android.graphics.RectF;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.edmodo.cropper.CropImageView;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import in.testpress.testpress.R;
 import in.testpress.testpress.util.ImageUtils;
@@ -28,9 +28,9 @@ public class CropImageActivity extends TestpressFragmentActivity {
             @Override
             public void onClick(View v) {
                 // get the cropped coordinates
-                RectF rect = cropImageView.getActualCropRect();
+                Rect rect = cropImageView.getCropRect();
                 //details to crop in server
-                int[] croppedImageDetails = new int[]{(int) rect.left, (int) rect.top, (int) rect.width(), (int) rect.height()};
+                int[] croppedImageDetails = new int[]{ rect.left, rect.top, rect.width(), rect.height()};
                 Intent intent = new Intent();
                 intent.putExtra("croppedImageDetails", croppedImageDetails);
                 intent.putExtra("rotatedDegree", rotatedDegree);

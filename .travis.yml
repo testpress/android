@@ -16,7 +16,7 @@ android:
 
     # The SDK Version
     - android-22
-    - android-24
+    - android-25
 
     # Additional components
     - extra-google-m2repository

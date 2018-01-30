@@ -158,7 +158,7 @@ public class ProductDetailsActivity extends TestpressFragmentActivity
             //noinspection ThrowableResultOfMethodCallIgnored
             Exception exception = ((ThrowableLoader<ProductDetails>) loader).clearException();
             exception.printStackTrace();
-            if (exception.getMessage().equals("404 NOT FOUND")) {
+            if (exception.getMessage() != null && exception.getMessage().equals("404 NOT FOUND")) {
                 gotoMainActivity();
             } else if (exception.getCause() instanceof IOException) {
                 setEmptyText(R.string.network_error, R.string.no_internet_try_again,

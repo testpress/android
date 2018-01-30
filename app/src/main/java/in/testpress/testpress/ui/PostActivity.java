@@ -446,6 +446,9 @@ public class PostActivity extends TestpressFragmentActivity implements
     void onPreviousCommentsLoadFinished(Loader<List<Comment>> loader, List<Comment> comments) {
         //noinspection ThrowableResultOfMethodCallIgnored
         final Exception exception = getException(loader);
+        if (previousCommentsPager == null || (exception == null && comments == null)) {
+            return;
+        }
         if (exception != null) {
             previousCommentsLoadingLayout.setVisibility(View.GONE);
             if (post.getCommentsCount() == 0) {

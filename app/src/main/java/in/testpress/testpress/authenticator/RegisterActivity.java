@@ -110,11 +110,13 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     void postDetails(){
+        registerButton.setEnabled(false);
         progressDialog = new MaterialDialog.Builder(this)
                 .title(R.string.loading)
                 .content(R.string.please_wait)
                 .widgetColorRes(R.color.primary)
                 .progress(true, 0)
+                .cancelable(false)
                 .show();
         new SafeAsyncTask<Boolean>() {
             public Boolean call() throws Exception {
@@ -124,6 +126,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             protected void onException(final Exception e) throws RuntimeException {
+                registerButton.setEnabled(true);
                 // Retrofit Errors are handled
                 if((e instanceof RetrofitError)) {
                     RegistrationErrorDetails registrationErrorDetails = (RegistrationErrorDetails)((RetrofitError) e).getBodyAs(RegistrationErrorDetails.class);

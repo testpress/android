@@ -15,6 +15,8 @@ import java.util.List;
 
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
+import in.testpress.course.TestpressCourse;
+import in.testpress.exam.TestpressExam;
 import in.testpress.testpress.authenticator.ApiKeyProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
@@ -76,6 +78,7 @@ public class TestpressServiceProvider {
                         instituteSettings.getShowGameFrontend(),
                         instituteSettings.getCoursesEnableGamification()
                 );
+                settings.setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled());
             }
             TestpressSdk.setTestpressSession(activity, new TestpressSession(settings, authToken));
         }
@@ -107,6 +110,9 @@ public class TestpressServiceProvider {
         PostDao postDao = daoSession.getPostDao();
         postDao.deleteAll();
         daoSession.clear();
+        TestpressSdk.clearActiveSession(activity);
+        TestpressExam.clearDatabase(activity);
+        TestpressCourse.clearDatabase(activity);
         logoutService.logout(new Runnable() {
             @Override
             public void run() {

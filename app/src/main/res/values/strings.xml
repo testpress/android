@@ -88,7 +88,6 @@
     <string name="invalid_post">Invalid Article</string>
 
     <string name="learn">Learn</string>
-    <string name="profile">Profile</string>
 
     <string name="or">or</string>
     <string name="forgot_password">Forgot Password?</string>
@@ -97,7 +96,6 @@
     <string name="login_with_google">Login with Google</string>
     <string name="google_sign_in_wrong_hash">Google sign in error, please contact the administrator to check key hashes.</string>
 
-    <string name="rate_us">Rate Us</string>
     <string name="logout">Log Out</string>
     <string name="logout_confirm_message">Are you sure you want to log out?</string>
 
@@ -120,5 +118,14 @@
     <string name="not_supported">Not supported</string>
     <string name="wrong_url">Url is Incorrect / Not supported.</string>
     <string name="browser_not_available">You need a browser app to this action.</string>
+
+    <string name="my_exams">My Exams</string>
+    <string name="store">Store</string>
+    <string name="posts">Posts</string>
+    <string name="documents">Documents</string>
+    <string name="analytics">Analytics</string>
+    <string name="profile">Profile</string>
+    <string name="orders">Orders</string>
+    <string name="rate_us">Rate Us</string>
 
 </resources>

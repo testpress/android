@@ -13,12 +13,13 @@
         android:id="@+id/welcome_message"
         android:layout_marginRight="15dp"
         android:layout_marginLeft="15dp"
-        android:layout_marginBottom="45dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="22sp"
         android:gravity="center"
-        android:layout_above="@+id/grid"
+        android:layout_below="@+id/toolbar"
         android:letterSpacing="0.04"
         android:text="Welcome back, John!"
         android:textColor="#333"
@@ -37,6 +38,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="20dp"
+        android:layout_below="@id/welcome_message"
         android:id="@+id/grid">
     </GridView>
 

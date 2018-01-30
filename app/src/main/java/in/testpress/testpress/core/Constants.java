@@ -36,7 +36,7 @@ public final class Constants {
         /**
          * Base URL for all requests
          */
-        public static final String URL_BASE = "http://online.iitbuds.com";
+        public static final String URL_BASE = "https://online.iitbuds.com";
 
         /**
          * Check Update url
@@ -100,6 +100,8 @@ public final class Constants {
         public static final String URL_CATEGORIES_FRAG = URL_POSTS_FRAG + "categories/";
 
         public static final String URL_COMMENTS_FRAG =  "/comments/";
+
+        public static final String CHAPTERS_PATH =  "/api/v2.2/chapters/";
 
         /**
          * Handle Success & Failure of payments

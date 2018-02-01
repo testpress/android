@@ -67,7 +67,6 @@ public class PostsPager extends ResourcePager<Post> {
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         boolean emptyPage = false;
-        networkFail = false;
         try {
             for (int i = 0; i < count && hasNext(); i++) {
                 Ln.d("PostsPager Getting Items");
@@ -102,7 +101,6 @@ public class PostsPager extends ResourcePager<Post> {
             Ln.d("ParseException " + e);
         } catch (Exception e) {
             hasMore = false;
-            networkFail = true;
             throw e;
         }
         hasMore = hasNext() && !emptyPage;

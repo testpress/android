@@ -145,6 +145,45 @@
           "status": 1
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:883172205205:android:3130d42f06fcc25d",
+        "android_client_info": {
+          "package_name": "in.testpress.appoloacademy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "883172205205-kldi5qn1j810g2cjagd6i2drl214jve2.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "883172205205-a9sk40fjp9tu2phe77td3pa01sor2l24.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.testpress.appoloacademy",
+            "certificate_hash": "c53ddd6f9c8bf151f77333cb7ae1b4111e6add49"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKWj9EII7gKwIjJUqJR6yHqp_6gB1Qg-4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
     }
   ],
   "configuration_version": "1"

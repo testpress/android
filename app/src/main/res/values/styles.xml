@@ -22,6 +22,17 @@
         <item name="android:shadowRadius">1</item>
     </style>
 
+    <style name="TextLabelWhite" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!--hint color And Label Color in False State-->
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColorHint">@color/testpress_white</item>
+        <!--Label color in True State And Bar Color False And True State-->
+        <!--<item name="colorAccent">@color/fbutton_color_pomegranate</item>-->
+        <item name="colorControlNormal">@color/testpress_white</item>
+        <item name="colorControlActivated">@color/testpress_white</item>
+        <item name="colorControlHighlight">@color/testpress_white</item>
+    </style>
+
     <style name="TextLabel" parent="Theme.AppCompat.Light.DarkActionBar">
         <!--hint color And Label Color in False State-->
         <item name="android:textSize">14sp</item>

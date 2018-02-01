@@ -50,4 +50,9 @@
 
     <color name="graph_text">#777777</color>
 
+    <color name="bottom_bar_unselected_item">#bfbfbf</color>
+    <color name="normal_text">#777777</color>
+
+    <color name="divider">#e6e6e6</color>
+
 </resources>

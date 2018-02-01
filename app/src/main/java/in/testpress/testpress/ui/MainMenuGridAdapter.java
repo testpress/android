@@ -8,32 +8,35 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+
 import in.testpress.testpress.R;
 
 public class MainMenuGridAdapter extends BaseAdapter {
     private Context mContext;
-    private final String[] menuItemNames;
-    private final int[] menuItemImageId;
+    private LinkedHashMap<Integer, Integer> mMenuItemIds;
+    private ArrayList<Integer> mMenuItemTitleIds;
 
-    public MainMenuGridAdapter(Context c,String[] menuItemNames,int[] menuItemImageId ) {
+    public MainMenuGridAdapter(Context c, LinkedHashMap<Integer, Integer> items) {
         mContext = c;
-        this.menuItemImageId = menuItemImageId;
-        this.menuItemNames = menuItemNames;
+        mMenuItemIds = items;
+        mMenuItemTitleIds = new ArrayList<>(mMenuItemIds.keySet());
     }
 
     @Override
     public int getCount() {
-        return menuItemNames.length;
+        return mMenuItemIds.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return mMenuItemTitleIds.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return mMenuItemTitleIds.get(position);
     }
 
     @Override
@@ -45,8 +48,9 @@ public class MainMenuGridAdapter extends BaseAdapter {
             grid = inflater.inflate(R.layout.menu_grid_item, null);
             TextView textView = (TextView) grid.findViewById(R.id.menuName);
             ImageView imageView = (ImageView)grid.findViewById(R.id.menuIcon);
-            textView.setText(menuItemNames[position]);
-            imageView.setImageResource(menuItemImageId[position]);
+            int titleResId = mMenuItemTitleIds.get(position);
+            textView.setText(titleResId);
+            imageView.setImageResource(mMenuItemIds.get(titleResId));
         } else {
             grid = (View) convertView;
         }

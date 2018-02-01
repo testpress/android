@@ -1,7 +1,10 @@
 package in.testpress.testpress.authenticator;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,11 +12,12 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,7 +29,12 @@ import butterknife.OnClick;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.R.id;
+import in.testpress.testpress.TestpressApplication;
+import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
+import in.testpress.testpress.models.DaoSession;
+import in.testpress.testpress.models.InstituteSettings;
+import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.RegistrationErrorDetails;
 import in.testpress.testpress.ui.TextWatcherAdapter;
@@ -35,20 +44,30 @@ import retrofit.RetrofitError;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 import static in.testpress.testpress.authenticator.LoginActivity.REQUEST_CODE_REGISTER_USER;
+import static in.testpress.testpress.authenticator.RegisterActivity.VerificationMethod.EMAIL;
+import static in.testpress.testpress.authenticator.RegisterActivity.VerificationMethod.MOBILE;
 
 public class RegisterActivity extends AppCompatActivity {
+
     @Inject TestpressService testpressService;
     @InjectView(id.et_username) EditText usernameText;
     @InjectView(id.et_password) EditText passwordText;
     @InjectView(id.et_password_confirm) EditText confirmPasswordText;
     @InjectView(id.et_email) EditText emailText;
     @InjectView(id.et_phone) EditText phoneText;
+    @InjectView(id.phone_layout) TextInputLayout phoneLayout;
     @InjectView(id.tv_fill_all_details) TextView fillAllDetailsText;
     @InjectView(id.b_register) Button registerButton;
+    @InjectView(id.register_layout) LinearLayout registerLayout;
+    @InjectView(R.id.success_complete) LinearLayout successContainer;
+    @InjectView(R.id.success_description) TextView successDescription;
+
     private final TextWatcher watcher = validationTextWatcher();
     private RegistrationSuccessResponse registrationSuccessResponse;
     private MaterialDialog progressDialog;
     private InternetConnectivityChecker internetConnectivityChecker = new InternetConnectivityChecker(this);
+    private VerificationMethod verificationMethod;
+    enum VerificationMethod { MOBILE, EMAIL }
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -56,6 +75,18 @@ public class RegisterActivity extends AppCompatActivity {
         Injector.inject(this);
         setContentView(R.layout.register_activity);
         ButterKnife.inject(this);
+        DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
+        InstituteSettingsDao instituteSettingsDao = daoSession.getInstituteSettingsDao();
+        List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
+                .where(InstituteSettingsDao.Properties.BaseUrl.eq(Constants.Http.URL_BASE)).list();
+        if (instituteSettingsList.size() != 0) {
+            InstituteSettings instituteSettings = instituteSettingsList.get(0);
+            verificationMethod =
+                    instituteSettings.getVerificationMethod().equals("M") ? MOBILE : EMAIL;
+        } else {
+            // Never happen, just for a safety.
+            finish();
+        }
         confirmPasswordText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(final TextView v, final int actionId,
                                           final KeyEvent event) {
@@ -69,16 +100,23 @@ public class RegisterActivity extends AppCompatActivity {
         usernameText.addTextChangedListener(watcher);
         passwordText.addTextChangedListener(watcher);
         emailText.addTextChangedListener(watcher);
-        phoneText.addTextChangedListener(watcher);
+        if (verificationMethod.equals(MOBILE)) {
+            phoneText.addTextChangedListener(watcher);
+            phoneLayout.setVisibility(View.VISIBLE);
+        } else {
+            phoneLayout.setVisibility(View.GONE);
+        }
         confirmPasswordText.addTextChangedListener(watcher);
     }
 
     void postDetails(){
+        registerButton.setEnabled(false);
         progressDialog = new MaterialDialog.Builder(this)
                 .title(R.string.loading)
                 .content(R.string.please_wait)
                 .widgetColorRes(R.color.primary)
                 .progress(true, 0)
+                .cancelable(false)
                 .show();
         new SafeAsyncTask<Boolean>() {
             public Boolean call() throws Exception {
@@ -88,6 +126,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             protected void onException(final Exception e) throws RuntimeException {
+                registerButton.setEnabled(true);
                 // Retrofit Errors are handled
                 if((e instanceof RetrofitError)) {
                     RegistrationErrorDetails registrationErrorDetails = (RegistrationErrorDetails)((RetrofitError) e).getBodyAs(RegistrationErrorDetails.class);
@@ -114,13 +153,19 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onSuccess(final Boolean authSuccess) {
                 progressDialog.dismiss();
-                Intent intent = new Intent(RegisterActivity.this, CodeVerificationActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                intent.putExtra("username", registrationSuccessResponse.getUsername());
-                intent.putExtra("password", registrationSuccessResponse.getPassword());
-                intent.putExtra("phoneNumber", registrationSuccessResponse.getPhone());
-                intent.putExtras(getIntent().getExtras());
-                startActivityForResult(intent, REQUEST_CODE_REGISTER_USER);
+                if (verificationMethod.equals(MOBILE)) {
+                    Intent intent = new Intent(RegisterActivity.this, CodeVerificationActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.putExtra("username", registrationSuccessResponse.getUsername());
+                    intent.putExtra("password", registrationSuccessResponse.getPassword());
+                    intent.putExtra("phoneNumber", registrationSuccessResponse.getPhone());
+                    intent.putExtras(getIntent().getExtras());
+                    startActivityForResult(intent, REQUEST_CODE_REGISTER_USER);
+                } else {
+                    registerLayout.setVisibility(View.GONE);
+                    successDescription.setText(R.string.activation_email_sent_message);
+                    successContainer.setVisibility(View.VISIBLE);
+                }
             }
         }.execute();
     }
@@ -134,7 +179,9 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void updateUIWithValidation() {
-        final boolean populated = populated(usernameText) && populated(passwordText)&&populated(emailText)&&populated(phoneText)&&populated(confirmPasswordText);
+        final boolean populated = populated(usernameText) && populated(passwordText) &&
+                populated(emailText) && populated(confirmPasswordText) &&
+                (populated(phoneText) || verificationMethod.equals(EMAIL));
         if(populated) {
             registerButton.setEnabled(true);
             fillAllDetailsText.setVisibility(View.GONE);
@@ -163,14 +210,17 @@ public class RegisterActivity extends AppCompatActivity {
                emailText.requestFocus();
                return false;
            }
-           //Phone number verification
-           Pattern phoneNumberPattern = Pattern.compile("[789]\\d{9}");
-           Matcher phoneNumberMatcher = phoneNumberPattern.matcher(phoneText.getText().toString().trim());
-           if(!phoneNumberMatcher.matches()) {
-               phoneText.setError("Please enter 10 digit valid mobile number");
-               phoneText.requestFocus();
-               return false;
-           }
+            if (verificationMethod.equals(MOBILE)) {
+                //Phone number verification
+                Pattern phoneNumberPattern = Pattern.compile("[789]\\d{9}");
+                Matcher phoneNumberMatcher = phoneNumberPattern.matcher(phoneText.getText()
+                        .toString().trim());
+                if (!phoneNumberMatcher.matches()) {
+                    phoneText.setError("Please enter 10 digit valid mobile number");
+                    phoneText.requestFocus();
+                    return false;
+                }
+            }
            //Password verification
            if(passwordText.getText().toString().trim().length()<6){
                passwordText.setError("Password should contain at least 6 digits");
@@ -188,26 +238,31 @@ public class RegisterActivity extends AppCompatActivity {
 
     @OnClick(id.b_register) public void register() {
         if(validate()) {
-        new MaterialDialog.Builder(this)
-                .title("Verify phone")
-                .content("We will verify the phone number\n\n" + phoneText.getText().toString() + "\n\nIs this OK, or would you like to edit the number?")
-                .positiveText(R.string.ok)
-                .negativeText(R.string.edit)
-                .positiveColorRes(R.color.primary)
-                .negativeColorRes(R.color.primary)
-                .buttonsGravity(GravityEnum.CENTER)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        if(internetConnectivityChecker.isConnected()) {
-                            postDetails();
-                        } else {
-                            internetConnectivityChecker.showAlert();
-                        }
-                    }
-                })
-                .show();
+            if (verificationMethod.equals(MOBILE)) {
+                new AlertDialog.Builder(this, R.style.TestpressAppCompatAlertDialogStyle)
+                        .setTitle("Verify phone")
+                        .setMessage("We will verify the phone number\n\n" + phoneText.getText().toString() +
+                                "\n\nIs this OK, or would you like to edit the number?")
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                if(internetConnectivityChecker.isConnected()) {
+                                    postDetails();
+                                } else {
+                                    internetConnectivityChecker.showAlert();
+                                }
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton(R.string.edit, null)
+                        .show();
+            } else {
+                postDetails();
+            }
         }
+    }
+
+    @OnClick(R.id.success_ok) public void verificationMailSent() {
+        finish();
     }
 
     @Override

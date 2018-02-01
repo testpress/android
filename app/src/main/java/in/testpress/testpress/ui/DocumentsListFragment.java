@@ -39,7 +39,6 @@ public class DocumentsListFragment extends PagedItemFragment<Notes> {
     @Override
     protected void configureList(Activity activity, ListView listView) {
         super.configureList(activity, listView);
-        listView.setDividerHeight(0);
         listView.setFastScrollEnabled(true);
     }
 

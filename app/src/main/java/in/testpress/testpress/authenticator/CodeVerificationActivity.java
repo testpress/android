@@ -44,6 +44,7 @@ import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.RegistrationErrorDetails;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.OrderConfirmActivity;
+import in.testpress.testpress.ui.PostActivity;
 import in.testpress.testpress.ui.TextWatcherAdapter;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.InternetConnectivityChecker;
@@ -253,6 +254,11 @@ public class CodeVerificationActivity extends AppCompatActivity {
                 switch (getIntent().getExtras().getString(Constants.DEEP_LINK_TO, "")) {
                     case Constants.DEEP_LINK_TO_PAYMENTS:
                         intent = new Intent(CodeVerificationActivity.this, OrderConfirmActivity.class);
+                        intent.putExtra(Constants.IS_DEEP_LINK, true);
+                        intent.putExtras(getIntent().getExtras());
+                        break;
+                    case Constants.DEEP_LINK_TO_POST:
+                        intent = new Intent(CodeVerificationActivity.this, PostActivity.class);
                         intent.putExtra(Constants.IS_DEEP_LINK, true);
                         intent.putExtras(getIntent().getExtras());
                         break;

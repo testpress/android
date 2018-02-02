@@ -25,9 +25,11 @@ import in.testpress.testpress.core.RestErrorHandler;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.core.UserAgentProvider;
 import in.testpress.testpress.ui.AccountActivateActivity;
+import in.testpress.testpress.ui.ApplicationFormFragment;
 import in.testpress.testpress.ui.CropImageActivity;
 import in.testpress.testpress.ui.DocumentsListActivity;
 import in.testpress.testpress.ui.DocumentsListFragment;
+import in.testpress.testpress.ui.FormListActivity;
 import in.testpress.testpress.ui.InAppBrowserActivity;
 import in.testpress.testpress.ui.ProgressCardFragment;
 import in.testpress.testpress.ui.SplashScreenActivity;
@@ -93,7 +95,9 @@ import retrofit.converter.GsonConverter;
                 SplashScreenActivity.class,
                 AccountActivateActivity.class,
                 InAppBrowserActivity.class,
-                ProgressCardFragment.class
+                ProgressCardFragment.class,
+                FormListActivity.class,
+                ApplicationFormFragment.class
         }
 )
 public class TestpressModule {

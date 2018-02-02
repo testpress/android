@@ -13,6 +13,7 @@ import java.util.Map;
 import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.Comment;
 import in.testpress.testpress.models.Device;
+import in.testpress.testpress.models.Form;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.Notes;
 import in.testpress.testpress.models.Order;
@@ -87,6 +88,11 @@ public class TestpressService {
     private DeviceService getDevicesService() { return getRestAdapter().create(DeviceService.class); }
 
     private ResetPasswordService getResetPasswordService(){return getRestAdapter().create(ResetPasswordService.class);}
+
+    private AuthenticationService getFormService() {
+        restAdapter.setEndpoint("https://extelacademy.com");
+        return restAdapter.build().create(AuthenticationService.class);
+    }
 
     private String getAuthToken() {
         return "JWT " + authToken;
@@ -244,6 +250,20 @@ public class TestpressService {
 
     public retrofit.client.Response activateAccount(String urlFrag) {
         return getAuthenticationService().activateAccount(urlFrag);
+    }
+
+    public HashMap<Integer, Form> getForms() {
+        return getFormService().getForms();
+    }
+
+    public Integer requestForm(String formId, ProfileDetails profileDetails) {
+        HashMap<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("formid", formId);
+        parameters.put("username", profileDetails.getUsername());
+        parameters.put("studentname", profileDetails.getDisplayName());
+        parameters.put("mobile", profileDetails.getPhone());
+        parameters.put("email", profileDetails.getEmail());
+        return getFormService().requestForm(parameters);
     }
 
 }

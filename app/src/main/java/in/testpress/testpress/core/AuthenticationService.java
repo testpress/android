@@ -3,6 +3,7 @@ package in.testpress.testpress.core;
 import java.util.HashMap;
 
 import in.testpress.testpress.models.AuthToken;
+import in.testpress.testpress.models.Form;
 import in.testpress.testpress.models.ProfileDetails;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.Update;
@@ -13,6 +14,7 @@ import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Path;
+import retrofit.http.QueryMap;
 
 public interface AuthenticationService {
 
@@ -45,4 +47,10 @@ public interface AuthenticationService {
     @GET("/{account_activate_url}")
     Response activateAccount(
             @Path(value = "account_activate_url", encode = false) String accountActivateUrl);
+
+    @GET("/students1617/cgi_api_testpress.php?getforms=testpressforms_2018")
+    HashMap<Integer, Form> getForms();
+
+    @POST("/students1617/cgi_api_testpress.php?putforms=testpressforms_2018")
+    Integer requestForm(@QueryMap HashMap<String, Object> arguments);
 }

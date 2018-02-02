@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -41,7 +42,8 @@ public class ProgressCardFragment extends Fragment {
     @InjectView(R.id.empty_title) TextView emptyTitleView;
     @InjectView(R.id.empty_description) TextView emptyDescView;
     @InjectView(R.id.retry_button) FButton retryButton;
-    @InjectView(R.id.items_layout) LinearLayout itemsLayout;
+    @InjectView(R.id.items_layout) ScrollView itemsLayout;
+    @InjectView(R.id.forms_label) TextView forumsLabel;
     @InjectView(R.id.schedule_label) TextView scheduleLabel;
     @InjectView(R.id.attendance_label) TextView attendanceLabel;
     @InjectView(R.id.marks_label) TextView marksLabel;
@@ -63,7 +65,9 @@ public class ProgressCardFragment extends Fragment {
         Injector.inject(this);
         ButterKnife.inject(this, view);
         ViewUtils.setTypeface(
-                new TextView[]{ scheduleLabel, attendanceLabel, marksLabel, reviewLabel },
+                new TextView[] { forumsLabel, scheduleLabel, attendanceLabel, marksLabel,
+                        reviewLabel },
+
                 TestpressSdk.getRubikMediumFont(getActivity())
         );
     }
@@ -115,6 +119,11 @@ public class ProgressCardFragment extends Fragment {
     void displayItems() {
         progressBar.setVisibility(View.GONE);
         itemsLayout.setVisibility(View.VISIBLE);
+    }
+
+    @OnClick(R.id.form_layout) void showForms() {
+        Intent intent = new Intent(getActivity(), FormListActivity.class);
+        getActivity().startActivity(intent);
     }
 
     @OnClick(R.id.schedule_layout) void showSchedule() {

@@ -101,9 +101,6 @@ public class MainMenuFragment extends Fragment {
         if (instituteSettings.getStoreEnabled()) {
             mMenuItemResIds.put(R.string.store, R.drawable.store);
         }
-        if (instituteSettings.getPostsEnabled()) {
-            mMenuItemResIds.put(R.string.information, R.drawable.posts);
-        }
         mMenuItemResIds.put(R.string.share, R.drawable.share);
         mMenuItemResIds.put(R.string.rate_us, R.drawable.heart);
         if (isUserAuthenticated) {

@@ -86,7 +86,7 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 115
+        versionCode 116
         versionName '1.0.' + versionCode
         applicationId 'com.venperacademy.onlinetest'
     }

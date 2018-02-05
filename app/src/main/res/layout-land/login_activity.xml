@@ -1,21 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<FrameLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fbutton="http://schemas.android.com/apk/res-auto"
+    android:fillViewport="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/login_background"
-        android:scaleType="centerCrop"/>
+    android:layout_height="match_parent"
+    android:background="@drawable/login_background">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center">
+        android:layout_height="wrap_content">
 
         <ProgressBar
             android:layout_width="45dp"
@@ -30,19 +24,18 @@
         <LinearLayout
             android:id="@+id/login_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="24dp"
+            android:layout_height="wrap_content"
             android:paddingTop="24dp"
             android:paddingLeft="24dp"
             android:paddingRight="24dp"
+            android:layout_margin="24dp"
             android:orientation="vertical"
             android:background="#1B75BB" >
 
             <ImageView
                 android:src="@drawable/login_screen_top"
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="100dp"
                 android:layout_marginBottom="24dp"
                 android:layout_gravity="center_horizontal"
                 android:id="@+id/imageView2" />
@@ -75,7 +68,6 @@
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:imeOptions="actionNext"
-                    android:textColor="@color/testpress_white"
                     android:hint="@string/username" />
             </android.support.design.widget.TextInputLayout>
 
@@ -93,8 +85,7 @@
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:imeOptions="actionSend"
-                    android:textColor="@color/testpress_white"
-                    android:hint="@string/password" />
+                    android:hint="@string/password"/>
             </android.support.design.widget.TextInputLayout>
 
             <info.hoang8f.widget.FButton
@@ -200,8 +191,7 @@
 
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="160dp"
                 android:layout_marginBottom="15dp"
                 android:layout_marginTop="15dp"
                 android:src="@drawable/login_screen_bottom" />
@@ -209,4 +199,5 @@
         </LinearLayout>
 
     </RelativeLayout>
-</FrameLayout>
+
+</ScrollView>

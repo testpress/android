@@ -125,5 +125,9 @@
     <string name="profile">Profile</string>
     <string name="orders">Orders</string>
     <string name="rate_us">Rate Us</string>
+    <string name="enter_your_credentials_below">Enter your credentials below</string>
+    <string name="login_to_your_account">Login to your account</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
 
 </resources>

@@ -51,14 +51,17 @@ public class BottomNavBarAdapter extends BaseAdapter {
         }
         ImageView imageView = (ImageView) convertView.findViewById(R.id.menu_icon);
         imageView.setImageResource(mItemsImageId.get(position));
+        TextView menuTitle = ((TextView) convertView.findViewById(R.id.menu_title));
+        menuTitle.setText(mMenuItemTitleIds.get(position));
         if (selectedPosition == position) {
             imageView.setColorFilter(ContextCompat.getColor(mContext, R.color.primary));
+            menuTitle.setTextColor(ContextCompat.getColor(mContext, R.color.primary));
         } else {
             imageView.setColorFilter(ContextCompat.getColor(mContext,
                     R.color.bottom_bar_unselected_item));
+            menuTitle.setTextColor(ContextCompat.getColor(mContext,
+                    R.color.bottom_bar_unselected_item));
         }
-        TextView menuTitle = ((TextView) convertView.findViewById(R.id.menu_title));
-        menuTitle.setText(mMenuItemTitleIds.get(position));
         menuTitle.setTypeface(TestpressSdk.getRubikRegularFont(mContext));
 
         return convertView;

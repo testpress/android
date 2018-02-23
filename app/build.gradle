@@ -86,7 +86,7 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 116
+        versionCode 117
         versionName '1.0.' + versionCode
         applicationId 'com.iasbaba'
     }

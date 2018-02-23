@@ -8,7 +8,7 @@ import de.greenrobot.daogenerator.ToMany;
 
 public class TestpressDaoGenerator {
     public static void main(String args[]) throws Exception {
-        Schema schema = new Schema(5, "in.testpress.testpress.models");
+        Schema schema = new Schema(6, "in.testpress.testpress.models");
 
         Entity post = schema.addEntity("Post");
         post.addLongProperty("id").primaryKey();
@@ -58,6 +58,7 @@ public class TestpressDaoGenerator {
         instituteSettings.addBooleanProperty("dashboardEnabled");
         instituteSettings.addBooleanProperty("facebookLoginEnabled");
         instituteSettings.addBooleanProperty("googleLoginEnabled");
+        instituteSettings.addBooleanProperty("commentsVotingEnabled").notNull();
 
         new DaoGenerator().generateAll(schema, "app/src/main/java/");
     }

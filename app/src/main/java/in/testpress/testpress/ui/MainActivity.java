@@ -161,8 +161,8 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             grid.setVisibility(View.GONE);
         }
-        addMenuItem(R.string.app_name, R.drawable.profile_default, new MainMenuFragment());
-        mBottomBarAdapter = new BottomNavBarAdapter(this, mMenuItemImageIds);
+        addMenuItem(R.string.profile, R.drawable.profile_default, new MainMenuFragment());
+        mBottomBarAdapter = new BottomNavBarAdapter(this, mMenuItemImageIds, mMenuItemTitleIds);
         grid.setAdapter(mBottomBarAdapter);
         grid.setNumColumns(mBottomBarAdapter.getCount());
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -190,6 +190,7 @@ public class MainActivity extends TestpressFragmentActivity {
         viewPager.setOffscreenPageLimit(mPagerAdapter.getCount());
         viewPager.setCurrentItem(mSelectedItem);
         viewPager.setVisibility(View.VISIBLE);
+        onItemSelected(mSelectedItem);
         progressBarLayout.setVisibility(View.GONE);
     }
 

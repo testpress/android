@@ -29,6 +29,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
+import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
 import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.Injector;
@@ -149,14 +150,20 @@ public class MainActivity extends TestpressFragmentActivity {
         }
         // Show courses list if game front end is enabled, otherwise hide bottom bar
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
+            TestpressSession session = TestpressSdk.getTestpressSession(this);
+            in.testpress.model.InstituteSettings settings = session.getInstituteSettings();
+            settings.setCoursesFrontend(mInstituteSettings.getShowGameFrontend());
+            settings.setCoursesGamificationEnabled(mInstituteSettings.getCoursesEnableGamification());
+            session.setInstituteSettings(settings);
+
             //noinspection ConstantConditions
             addMenuItem(R.string.learn, R.drawable.learn,
-                    TestpressCourse.getCoursesListFragment(this, TestpressSdk.getTestpressSession(this)));
+                    TestpressCourse.getCoursesListFragment(this, session));
 
             if (mInstituteSettings.getCoursesEnableGamification()) {
                 //noinspection ConstantConditions
                 addMenuItem(R.string.testpress_leaderboard, R.drawable.leaderboard,
-                        TestpressCourse.getLeaderboardFragment(this, TestpressSdk.getTestpressSession(this)));
+                        TestpressCourse.getLeaderboardFragment(this, session));
             }
         } else {
             grid.setVisibility(View.GONE);

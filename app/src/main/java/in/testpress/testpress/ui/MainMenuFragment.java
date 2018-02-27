@@ -32,6 +32,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
+import in.testpress.core.TestpressSession;
 import in.testpress.exam.TestpressExam;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
@@ -95,6 +96,7 @@ public class MainMenuFragment extends Fragment {
                 mMenuItemResIds.put(R.string.documents, R.drawable.documents);
             }
             mMenuItemResIds.put(R.string.analytics, R.drawable.analytics);
+            mMenuItemResIds.put(R.string.testpress_access_code, R.drawable.access_key);
             mMenuItemResIds.put(R.string.profile, R.drawable.ic_profile_details);
         }
         if (instituteSettings.getStoreEnabled()) {
@@ -140,6 +142,9 @@ public class MainMenuFragment extends Fragment {
                         intent = new Intent(getActivity(), PostsListActivity.class);
                         intent.putExtra("userAuthenticated", isUserAuthenticated);
                         startActivity(intent);
+                        break;
+                    case R.string.testpress_access_code:
+                        checkAuthenticatedUser(R.string.testpress_access_code);
                         break;
                     case R.string.analytics:
                         checkAuthenticatedUser(R.string.analytics);
@@ -192,15 +197,24 @@ public class MainMenuFragment extends Fragment {
     }
 
     void showSDK(int clickedMenuTitleResId) {
+        TestpressSession session = TestpressSdk.getTestpressSession(getActivity());
+        in.testpress.model.InstituteSettings settings = session.getInstituteSettings();
+        settings.setCoursesFrontend(false);
+        settings.setCoursesGamificationEnabled(false);
+        session.setInstituteSettings(settings);
         switch (clickedMenuTitleResId) {
             case R.string.my_exams:
                 //noinspection ConstantConditions
-                TestpressExam.show(getActivity(), TestpressSdk.getTestpressSession(getActivity()));
+                TestpressExam.show(getActivity(), session);
                 break;
             case R.string.analytics:
                 //noinspection ConstantConditions
-                TestpressExam.showAnalytics(getActivity(), SUBJECT_ANALYTICS_PATH,
-                        TestpressSdk.getTestpressSession(getActivity()));
+                TestpressExam.showAnalytics(getActivity(), SUBJECT_ANALYTICS_PATH, session);
+                break;
+            case R.string.testpress_access_code:
+                //noinspection ConstantConditions
+
+                TestpressExam.showExamsForAccessCode(getActivity(), session);
                 break;
         }
     }

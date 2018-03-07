@@ -31,6 +31,7 @@ import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
+import in.testpress.exam.TestpressExam;
 import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
@@ -151,11 +152,6 @@ public class MainActivity extends TestpressFragmentActivity {
         // Show courses list if game front end is enabled, otherwise hide bottom bar
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             TestpressSession session = TestpressSdk.getTestpressSession(this);
-            in.testpress.model.InstituteSettings settings = session.getInstituteSettings();
-            settings.setCoursesFrontend(mInstituteSettings.getShowGameFrontend());
-            settings.setCoursesGamificationEnabled(mInstituteSettings.getCoursesEnableGamification());
-            session.setInstituteSettings(settings);
-
             //noinspection ConstantConditions
             addMenuItem(R.string.learn, R.drawable.learn,
                     TestpressCourse.getCoursesListFragment(this, session));
@@ -165,6 +161,8 @@ public class MainActivity extends TestpressFragmentActivity {
                 addMenuItem(R.string.testpress_leaderboard, R.drawable.leaderboard,
                         TestpressCourse.getLeaderboardFragment(this, session));
             }
+            addMenuItem(R.string.testpress_access_code, R.drawable.access_key,
+                    TestpressExam.getAccessCodeFragment(this, session));
         } else {
             grid.setVisibility(View.GONE);
         }

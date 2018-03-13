@@ -150,7 +150,7 @@ public class ForumListAdapter extends BaseAdapter{
         TextView viewsCount = (TextView) convertView.findViewById(R.id.viewsCount);
         TextView status = (TextView) convertView.findViewById(R.id.status);
 
-        if (forum.getCommentsCount() == 0) {
+        if (forum.getCommentsCount() == 0 || forum.getLastCommentedBy() == null) {
             try {
                 status.setText(forum.getCreatedBy().getDisplayName() + " started " +
                         FormatDate.getAbbreviatedTimeSpan(simpleDateFormat.parse(forum.getLastCommentedTime()).getTime()));

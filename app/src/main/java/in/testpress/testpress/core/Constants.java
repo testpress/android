@@ -36,7 +36,7 @@ public final class Constants {
         /**
          * Base URL for all requests
          */
-        public static final String URL_BASE = "https://www.dma-testhub.eu/";
+        public static final String URL_BASE = "https://www.dma-testhub.com/";
 
         /**
          * Check Update url

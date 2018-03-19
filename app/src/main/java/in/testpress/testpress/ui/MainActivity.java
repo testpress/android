@@ -147,21 +147,22 @@ public class MainActivity extends TestpressFragmentActivity {
                 startService(intent);
             }
         }
+        addMenuItem(R.string.profile, R.drawable.profile_default, new MainMenuFragment());
         // Show courses list if game front end is enabled, otherwise hide bottom bar
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
-            //noinspection ConstantConditions
-            addMenuItem(R.string.learn, R.drawable.learn,
-                    TestpressCourse.getCoursesListFragment(this, TestpressSdk.getTestpressSession(this)));
 
             if (mInstituteSettings.getCoursesEnableGamification()) {
                 //noinspection ConstantConditions
                 addMenuItem(R.string.testpress_leaderboard, R.drawable.leaderboard,
                         TestpressCourse.getLeaderboardFragment(this, TestpressSdk.getTestpressSession(this)));
             }
+
+            //noinspection ConstantConditions
+            addMenuItem(R.string.learn, R.drawable.learn,
+                    TestpressCourse.getCoursesListFragment(this, TestpressSdk.getTestpressSession(this)));
         } else {
             grid.setVisibility(View.GONE);
         }
-        addMenuItem(R.string.profile, R.drawable.profile_default, new MainMenuFragment());
         mBottomBarAdapter = new BottomNavBarAdapter(this, mMenuItemImageIds, mMenuItemTitleIds);
         grid.setAdapter(mBottomBarAdapter);
         grid.setNumColumns(mBottomBarAdapter.getCount());
@@ -259,7 +260,7 @@ public class MainActivity extends TestpressFragmentActivity {
     public void onFinishFetchingInstituteSettings(InstituteSettings instituteSettings) {
         this.mInstituteSettings = instituteSettings;
         // TODO: Get allowAnonymousUser flag from institute settings
-        boolean allowAnonymousUser = true; // True if users can use the app(Access posts) without login
+        boolean allowAnonymousUser = false; // True if users can use the app(Access posts) without login
         //noinspection ConstantConditions
         if (CommonUtils.isUserAuthenticated(this) || !allowAnonymousUser) {
             updateTestpressSession(); // Show login screen if user not logged in

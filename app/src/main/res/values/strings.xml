@@ -9,7 +9,7 @@
     <string name="server_client_id">1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com</string>
     <string name="share_message">Good app to prepare for IIT JEE Main &amp; Advance. Get it at https://play.google.com/store/apps/details?id=</string>
 
-    <string name="welcome_message">Welcome back, %1$s!</string>
+    <string name="welcome_message">Welcome back,\n%1$s!</string>
 
     <string name="refresh_action">Refresh</string>
 

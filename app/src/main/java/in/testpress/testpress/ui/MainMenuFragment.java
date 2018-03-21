@@ -142,13 +142,13 @@ public class MainMenuFragment extends Fragment {
         if (instituteSettings.getPostsEnabled()) {
             mMenuItemResIds.put(R.string.posts, R.drawable.posts);
         }
-        mMenuItemResIds.put(R.string.share, R.drawable.share);
-        mMenuItemResIds.put(R.string.rate_us, R.drawable.heart);
-        if (isUserAuthenticated) {
-            mMenuItemResIds.put(R.string.logout, R.drawable.logout);
-        } else {
-            mMenuItemResIds.put(R.string.login, R.drawable.login);
-        }
+//        mMenuItemResIds.put(R.string.share, R.drawable.share);
+//        mMenuItemResIds.put(R.string.rate_us, R.drawable.heart);
+//        if (isUserAuthenticated) {
+//            mMenuItemResIds.put(R.string.logout, R.drawable.logout);
+//        } else {
+//            mMenuItemResIds.put(R.string.login, R.drawable.login);
+//        }
 
         MainMenuGridAdapter adapter = new MainMenuGridAdapter(getActivity(), mMenuItemResIds);
         grid=(GridView)view.findViewById(R.id.grid);

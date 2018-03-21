@@ -162,7 +162,7 @@ public class MainActivity extends TestpressFragmentActivity {
             grid.setVisibility(View.GONE);
         }
         addMenuItem(R.string.app_name, R.drawable.profile_default, new MainMenuFragment());
-        mBottomBarAdapter = new BottomNavBarAdapter(this, mMenuItemImageIds);
+        mBottomBarAdapter = new BottomNavBarAdapter(this, mMenuItemImageIds, mMenuItemTitleIds);
         grid.setAdapter(mBottomBarAdapter);
         grid.setNumColumns(mBottomBarAdapter.getCount());
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -181,6 +181,10 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             public void onPageSelected(int position) {
                 onItemSelected(position);
+                if (!CommonUtils.isUserAuthenticated(MainActivity.this)) {
+                    serviceProvider.logout(MainActivity.this, testpressService, serviceProvider,
+                            logoutService);
+                }
             }
 
             @Override
@@ -190,6 +194,7 @@ public class MainActivity extends TestpressFragmentActivity {
         viewPager.setOffscreenPageLimit(mPagerAdapter.getCount());
         viewPager.setCurrentItem(mSelectedItem);
         viewPager.setVisibility(View.VISIBLE);
+        onItemSelected(mSelectedItem);
         progressBarLayout.setVisibility(View.GONE);
     }
 
@@ -198,9 +203,6 @@ public class MainActivity extends TestpressFragmentActivity {
         mBottomBarAdapter.setSelectedPosition(position);
         mBottomBarAdapter.notifyDataSetChanged();
         updateToolbarText(getString(mMenuItemTitleIds.get(position)));
-        if (!CommonUtils.isUserAuthenticated(this)) {
-            serviceProvider.logout(this, testpressService, serviceProvider, logoutService);
-        }
     }
 
     private void updateToolbarText(CharSequence text) {

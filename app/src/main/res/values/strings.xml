@@ -2,7 +2,7 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyEllipsis">
 
-    <string name="app_name">IITBUDS</string>
+    <string name="app_name">First Bench</string>
     <string name="host_url">online.iitbuds.com</string>
     <string name="facebook_app_id">1859188287732763</string>
     <string name="fb_login_protocol_scheme">1859188287732763</string>

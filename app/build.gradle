@@ -86,7 +86,7 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 119
+        versionCode 120
         versionName '1.0.' + versionCode
         applicationId 'in.testpress.prime_pg'
     }

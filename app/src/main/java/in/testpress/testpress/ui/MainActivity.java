@@ -209,6 +209,9 @@ public class MainActivity extends TestpressFragmentActivity {
     private void updateToolbarText(CharSequence text) {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
+            if (text.equals(getString(R.string.profile))) {
+                text = getString(R.string.app_name);
+            }
             actionBar.setTitle(text);
         }
     }

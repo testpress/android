@@ -195,6 +195,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         passwordText.setTransformationMethod(new PasswordTransformationMethod());
         callbackManager = CallbackManager.Factory.create();
         fbLoginButton.invalidate();
+        fbLoginButton.setReadPermissions("email");
         fbLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {

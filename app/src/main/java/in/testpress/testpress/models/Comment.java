@@ -9,7 +9,7 @@ public class Comment {
     private String userEmail;
     private String userUrl;
     private String comment;
-    private String submitDate;
+    private String created;
     private ContentObject contentObject;
 
     /**
@@ -138,22 +138,12 @@ public class Comment {
         this.comment = comment;
     }
 
-    /**
-     *
-     * @return
-     * The submitDate
-     */
-    public String getSubmitDate() {
-        return submitDate;
+    public String getCreated() {
+        return created;
     }
 
-    /**
-     *
-     * @param submitDate
-     * The submit_date
-     */
-    public void setSubmitDate(String submitDate) {
-        this.submitDate = submitDate;
+    public void setCreated(String created) {
+        this.created = created;
     }
 
     /**

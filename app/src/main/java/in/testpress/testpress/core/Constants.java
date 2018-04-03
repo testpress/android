@@ -36,7 +36,7 @@ public final class Constants {
         /**
          * Base URL for all requests
          */
-        public static final String URL_BASE = "https://www.weshineonlineexam.com";
+        public static final String URL_BASE = "https://weshineacademy.testpress.in/";
 
         /**
          * Check Update url

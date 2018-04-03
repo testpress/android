@@ -4,6 +4,7 @@
 
     <string name="app_name">WeShine Online Exams</string>
     <string name="host_url">www.weshineonlineexam.com</string>
+    <string name="white_labeled_host_url">www.weshineonlineexam.com</string>
     <string name="facebook_app_id">666596320396420</string>
     <string name="fb_login_protocol_scheme">666596320396420</string>
     <string name="server_client_id">1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com</string>

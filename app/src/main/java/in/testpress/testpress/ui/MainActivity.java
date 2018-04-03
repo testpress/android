@@ -147,7 +147,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 startService(intent);
             }
         }
-        addMenuItem(R.string.progress_card, R.drawable.report_card, new ProgressCardFragment());
+        addMenuItem(R.string.classroom, R.drawable.report_card, new ProgressCardFragment());
         // Show courses list if game front end is enabled, otherwise hide bottom bar
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             //noinspection ConstantConditions
@@ -163,7 +163,7 @@ public class MainActivity extends TestpressFragmentActivity {
             grid.setVisibility(View.GONE);
         }
         addMenuItem(R.string.information, R.drawable.news, new PostsListFragment());
-        addMenuItem(R.string.app_name, R.drawable.profile_default, new MainMenuFragment());
+        addMenuItem(R.string.profile, R.drawable.profile_default, new MainMenuFragment());
         mBottomBarAdapter = new BottomNavBarAdapter(this, mMenuItemImageIds, mMenuItemTitleIds);
         grid.setAdapter(mBottomBarAdapter);
         grid.setNumColumns(mBottomBarAdapter.getCount());
@@ -210,6 +210,11 @@ public class MainActivity extends TestpressFragmentActivity {
     private void updateToolbarText(CharSequence text) {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
+            if (text.equals(getString(R.string.profile))) {
+                text = getString(R.string.app_name);
+            } else if (text.equals(getString(R.string.classroom))) {
+                text = getString(R.string.progress_card);
+            }
             actionBar.setTitle(text);
         }
     }

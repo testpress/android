@@ -3,7 +3,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyEllipsis">
 
     <string name="app_name">Prime PG</string>
-    <string name="host_url">prime.pgtestseries.com</string>
+    <string name="host_url">pgtestseries.testpress.in</string>
+    <string name="white_labeled_host_url">prime.pgtestseries.com</string>
     <string name="content_column">Content</string>
     <string name="page_referrers">Referrers</string>
     <string name="facebook_app_id">1041753052596274</string>

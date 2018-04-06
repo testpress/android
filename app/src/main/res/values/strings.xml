@@ -3,7 +3,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyEllipsis">
 
     <string name="app_name">RACE</string>
-    <string name="host_url">onlinetest.raceinstitute.in</string>
+    <string name="host_url">race.testpress.in</string>
+    <string name="white_labeled_host_url">onlinetest.raceinstitute.in</string>
     <string name="facebook_app_id">642128432634881</string>
     <string name="fb_login_protocol_scheme">642128432634881</string>
     <string name="server_client_id">1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com</string>

@@ -77,6 +77,15 @@ public class TestpressFragmentActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        try {
+            super.onBackPressed();
+        } catch (IllegalStateException e) {
+            supportFinishAfterTransition();
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         eventBus.register(this);

@@ -168,8 +168,6 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         }
     }
 
-
-
     @Override
     public Loader<ProfileDetails> onCreateLoader(int id, Bundle bundle) {
         return new ThrowableLoader<ProfileDetails>(this, profileDetails) {
@@ -208,6 +206,8 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     void displayProfileDetails(ProfileDetails profileDetails) {
         //download and display image from url
         imageLoader.displayImage(profileDetails.getLargeImage(), profilePhoto, options);
+//        menu.setGroupVisible(R.id.editMode, false);
+//        menu.setGroupVisible(R.id.viewMode, false);
         setVisibility(View.VISIBLE, new View[]{displayName, editButton});
         setVisibility(View.GONE, new View[]{firstNameRow, lastNameRow, imageEditButton, datePicker});
         displayName.setText(profileDetails.getFirstName() + " " + profileDetails.getLastName());

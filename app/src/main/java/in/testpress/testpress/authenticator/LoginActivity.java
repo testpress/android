@@ -294,11 +294,13 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     private void authenticate(final String userId, String accessToken,
                               final TestpressSdk.Provider provider) {
 
-        in.testpress.model.InstituteSettings settings = new in.testpress.model.InstituteSettings(
-                instituteSettings.getBaseUrl(),
-                instituteSettings.getShowGameFrontend(),
-                instituteSettings.getCoursesEnableGamification()
-        );
+        in.testpress.models.InstituteSettings settings =
+                new in.testpress.models.InstituteSettings(instituteSettings.getBaseUrl())
+                        .setCoursesFrontend(instituteSettings.getShowGameFrontend())
+                        .setCoursesGamificationEnabled(instituteSettings.getCoursesEnableGamification())
+                        .setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled())
+                        .setAccessCodeEnabled(false);
+
         TestpressSdk.initialize(this, settings, userId, accessToken, provider,
                 new TestpressCallback<TestpressSession>() {
                     @Override

@@ -376,6 +376,9 @@ public class PostsListFragment extends Fragment implements
         } else {
             //If data is already available in the local database, then
             //notify user about the new data to view latest data.
+            if (refreshPager == null) {
+                return;
+            }
             Ln.d(MISSED_POSTS_THRESHOLD >= refreshPager.getTotalCount());
             if (MISSED_POSTS_THRESHOLD >= refreshPager.getTotalCount()) {
                 if (refreshPager.hasNext()) {

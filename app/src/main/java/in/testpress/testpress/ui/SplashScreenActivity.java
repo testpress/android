@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import junit.framework.Assert;
 
+import junit.framework.Assert;
+
 import java.util.List;
 
 import javax.inject.Inject;

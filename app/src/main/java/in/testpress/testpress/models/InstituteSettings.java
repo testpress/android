@@ -26,7 +26,7 @@ public class InstituteSettings {
     private Boolean dashboardEnabled;
     private Boolean facebookLoginEnabled;
     private Boolean googleLoginEnabled;
-    private Boolean commentsVotingEnabled;
+    private boolean commentsVotingEnabled;
 
     public InstituteSettings() {
     }
@@ -35,7 +35,7 @@ public class InstituteSettings {
         this.baseUrl = baseUrl;
     }
 
-    public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, Boolean facebookLoginEnabled, Boolean googleLoginEnabled, Boolean commentsVotingEnabled) {
+    public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, Boolean facebookLoginEnabled, Boolean googleLoginEnabled, boolean commentsVotingEnabled) {
         this.baseUrl = baseUrl;
         this.verificationMethod = verificationMethod;
         this.allowSignup = allowSignup;
@@ -219,11 +219,11 @@ public class InstituteSettings {
         this.googleLoginEnabled = googleLoginEnabled;
     }
 
-    public Boolean getCommentsVotingEnabled() {
+    public boolean getCommentsVotingEnabled() {
         return commentsVotingEnabled;
     }
 
-    public void setCommentsVotingEnabled(Boolean commentsVotingEnabled) {
+    public void setCommentsVotingEnabled(boolean commentsVotingEnabled) {
         this.commentsVotingEnabled = commentsVotingEnabled;
     }
 

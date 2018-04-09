@@ -82,7 +82,7 @@ public class MainMenuFragment extends Fragment {
                 ((TestpressApplication) getActivity().getApplicationContext()).getDaoSession();
 
         InstituteSettingsDao instituteSettingsDao = daoSession.getInstituteSettingsDao();
-        final InstituteSettings instituteSettings = instituteSettingsDao.queryBuilder()
+        InstituteSettings instituteSettings = instituteSettingsDao.queryBuilder()
                 .where(InstituteSettingsDao.Properties.BaseUrl.eq(Constants.Http.URL_BASE))
                 .list().get(0);
 
@@ -162,7 +162,7 @@ public class MainMenuFragment extends Fragment {
                         shareApp();
                         break;
                     case R.string.rate_us:
-                        //rateApp();
+                        rateApp();
                         break;
                     case R.string.logout:
                         ((MainActivity) getActivity()).logout();

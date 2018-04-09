@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 
@@ -87,12 +88,13 @@ public class TestpressGCMListenerService extends GcmListenerService {
 
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.notification_icon)
+                .setSmallIcon(R.drawable.ic_notification)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.icon))
                 .setContentTitle(title)
                 .setContentText(message)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
+                .setColor(ContextCompat.getColor(getApplicationContext(), R.color.primary))
                 .setContentIntent(pendingIntent);
 
         if (Build.VERSION.SDK_INT >= 16) {
@@ -104,21 +106,6 @@ public class TestpressGCMListenerService extends GcmListenerService {
         }
 
         Notification notification = notificationBuilder.build();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int smallIconViewId = getResources().getIdentifier("right_icon", "id", android.R.class.getPackage().getName());
-
-            if (smallIconViewId != 0) {
-                if (notification.contentIntent != null)
-                    notification.contentView.setViewVisibility(smallIconViewId, View.INVISIBLE);
-
-                if (notification.headsUpContentView != null)
-                    notification.headsUpContentView.setViewVisibility(smallIconViewId, View.INVISIBLE);
-
-                if (notification.bigContentView != null)
-                    notification.bigContentView.setViewVisibility(smallIconViewId, View.INVISIBLE);
-            }
-        }
-
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 

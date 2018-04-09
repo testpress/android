@@ -166,7 +166,6 @@ public class PostsListFragment extends Fragment implements
         adapter = new HeaderFooterListAdapter<PostsListAdapter>(listView, new PostsListAdapter
                 (getActivity(), R.layout.post_list_item));
         listView.setAdapter(adapter);
-        listView.setDividerHeight(0);
         loadingLayout = LayoutInflater.from(getActivity()).inflate(R.layout.loading_layout, null);
     }
 
@@ -313,6 +312,9 @@ public class PostsListFragment extends Fragment implements
 
     @Override
     public void onLoadFinished(Loader<List<Post>> loader, List<Post> data) {
+        if (getActivity() == null) {
+            return;
+        }
         final Exception exception = getException(loader);
         if (exception != null) {
             //Remove the swipe refresh icon and the sticky notification if any
@@ -344,14 +346,14 @@ public class PostsListFragment extends Fragment implements
         //If no data is available in the local database, directly insert
         //display from database
         Ln.e(swipeLayout.isRefreshing());
-        if ((postDao.count() == 0) || items.isEmpty()) {
+        if ((postDao.count() == 0) || items == null || items.isEmpty()) {
 
             //Remove the swipe refresh icon and the sticky notification if any
             swipeLayout.setRefreshing(false);
             mStickyView.setVisibility(View.GONE);
 
             //Return if no new posts are available
-            if (items.isEmpty()) {
+            if (items == null || items.isEmpty()) {
                 displayDataFromDB();
                 if (postDao.count() == 0) {
                     setEmptyText(R.string.no_posts, R.string.no_posts_description, R.drawable.ic_error_outline_black_18dp);
@@ -370,6 +372,9 @@ public class PostsListFragment extends Fragment implements
         } else {
             //If data is already available in the local database, then
             //notify user about the new data to view latest data.
+            if (refreshPager == null) {
+                return;
+            }
             Ln.d(MISSED_POSTS_THRESHOLD >= refreshPager.getTotalCount());
             if (MISSED_POSTS_THRESHOLD >= refreshPager.getTotalCount()) {
                 if (refreshPager.hasNext()) {
@@ -389,7 +394,7 @@ public class PostsListFragment extends Fragment implements
 
     void onNetworkLoadFinished(List<Post> items) {
 
-        if (!pager.hasMore()) {
+        if (pager != null && !pager.hasMore()) {
             if (adapter.getFootersCount() != 0) {  //if pager reached last page remove footer if
                 // footer added already
                 adapter.removeFooter(loadingLayout);
@@ -497,6 +502,9 @@ public class PostsListFragment extends Fragment implements
         new Handler().post(new Runnable() {
             @Override
             public void run() {
+                if (swipeLayout == null) {
+                    return;
+                }
                 swipeLayout.setRefreshing(true);
                 mStickyView.setVisibility(View.GONE);
                 isUserSwiped = true;
@@ -551,7 +559,7 @@ public class PostsListFragment extends Fragment implements
     }
 
     protected int getErrorMessage(Exception exception) {
-        if (exception.getCause() instanceof UnknownHostException) {
+        if (exception.getCause() instanceof IOException) {
             if (adapter.getCount() == 0) {
                 setEmptyText(R.string.network_error, R.string.no_internet,R.drawable.ic_error_outline_black_18dp);
             }
@@ -605,6 +613,12 @@ public class PostsListFragment extends Fragment implements
         } else {
             return null;
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
     }
 
     protected void showError(final int message) {

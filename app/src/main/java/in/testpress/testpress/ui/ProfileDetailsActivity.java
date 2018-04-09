@@ -178,10 +178,10 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
                 emptyView.setText(R.string.no_internet);
                 emptyView.setVisibility(View.VISIBLE);
                 Toaster.showLong(ProfileDetailsActivity.this, R.string.no_internet);
-                return;
             } else {
                 Toaster.showLong(ProfileDetailsActivity.this, exception.getMessage());
             }
+            return;
         } else {
             emptyView.setVisibility(View.GONE);
             this.profileDetails = profileDetails;
@@ -193,8 +193,8 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     void displayProfileDetails(ProfileDetails profileDetails) {
         //download and display image from url
         imageLoader.displayImage(profileDetails.getLargeImage(), profilePhoto, options);
-        menu.setGroupVisible(R.id.editMode, false);
-        menu.setGroupVisible(R.id.viewMode, false);
+//        menu.setGroupVisible(R.id.editMode, false);
+//        menu.setGroupVisible(R.id.viewMode, false);
         setVisibility(View.VISIBLE, new View[]{displayName, editButton});
         setVisibility(View.GONE, new View[]{firstNameRow, lastNameRow, imageEditButton, datePicker});
         displayName.setText(profileDetails.getFirstName() + " " + profileDetails.getLastName());
@@ -302,12 +302,15 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
                         String[] filePathColumn = {MediaStore.Images.Media.DATA};
                         //using selectedImageUri set the cursor on filepath
                         Cursor cursor = getContentResolver().query(selectedImageUri, filePathColumn, null, null, null);
-                        cursor.moveToFirst();
-                        //get the filepath from cursor
-                        String picturePath = cursor.getString(cursor.getColumnIndex(filePathColumn[0]));
-                        cursor.close();
-                        selectedImage = ImageUtils.decodeImage(picturePath, 500, 500);
-                        if (selectedImage == null) {
+                        String picturePath = null;
+                        if (cursor != null) {
+                            cursor.moveToFirst();
+                            //get the filepath from cursor
+                            picturePath = cursor.getString(cursor.getColumnIndex(filePathColumn[0]));
+                            cursor.close();
+                            selectedImage = ImageUtils.decodeImage(picturePath, 500, 500);
+                        }
+                        if (picturePath == null || selectedImage == null) {
                             new MaterialDialog.Builder(this)
                                     .title("Sorry, this file path is not suitable.\nPlease try another folder")
                                     .positiveText(R.string.ok)
@@ -541,6 +544,8 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.tick_cancel_refresh, menu);
         this.menu = menu;
+        menu.setGroupVisible(R.id.editMode, false);
+        menu.setGroupVisible(R.id.viewMode, false);
         return true;
     }
 

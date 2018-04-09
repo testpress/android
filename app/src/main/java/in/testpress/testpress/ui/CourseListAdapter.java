@@ -20,7 +20,7 @@ import java.util.List;
 
 import in.testpress.core.TestpressSdk;
 import in.testpress.course.TestpressCourse;
-import in.testpress.course.models.greendao.Course;
+import in.testpress.models.greendao.Course;
 import in.testpress.testpress.R;
 import in.testpress.util.ImageUtils;
 
@@ -91,23 +91,13 @@ class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
             holder.courseItemLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (course.getChaptersCount() > 0) {
-                        //noinspection ConstantConditions
-                        TestpressCourse.showChapters(
-                                mActivity,
-                                course.getTitle(),
-                                course.getId().intValue(),
-                                TestpressSdk.getTestpressSession(mActivity)
-                        );
-                    } else {
-                        //noinspection ConstantConditions
-                        TestpressCourse.showContents(
-                                mActivity,
-                                course.getTitle(),
-                                course.getContentsUrl(),
-                                TestpressSdk.getTestpressSession(mActivity)
-                        );
-                    }
+                    //noinspection ConstantConditions
+                    TestpressCourse.showChapters(
+                            mActivity,
+                            course.getTitle(),
+                            course.getId().intValue(),
+                            TestpressSdk.getTestpressSession(mActivity)
+                    );
                 }
             });
         } else {

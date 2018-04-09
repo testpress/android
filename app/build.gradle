@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 ext {
     supportLib = '25.3.1'
-    testpressSDK = '1.2.1'
+    testpressSDK = '1.2.2'
 }
 
 dependencies {
@@ -43,10 +43,7 @@ dependencies {
     // GreenDao for database
     compile 'de.greenrobot:greendao:2.0.0'
     
-    // Testpress exam
-    compile ('com.github.testpress:exam:' + testpressSDK + '@aar') {
-        transitive=true
-    }
+    // Testpress Course(which inbuilt has exam & core module)
     compile ('com.github.testpress:course:' + testpressSDK + '@aar') {
         transitive=true
     }

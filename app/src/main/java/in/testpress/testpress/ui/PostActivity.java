@@ -56,7 +56,7 @@ import butterknife.OnClick;
 import in.testpress.core.TestpressCallback;
 import in.testpress.core.TestpressException;
 import in.testpress.core.TestpressSdk;
-import in.testpress.model.FileDetails;
+import in.testpress.models.FileDetails;
 import in.testpress.network.TestpressApiClient;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
@@ -411,7 +411,7 @@ public class PostActivity extends TestpressFragmentActivity implements
     CommentsPager getPreviousCommentsPager() {
         if (previousCommentsPager == null) {
             previousCommentsPager = new CommentsPager(getService(), post.getId());
-            previousCommentsPager.queryParams.put(Constants.Http.ORDER, "-submit_date");
+            previousCommentsPager.queryParams.put(Constants.Http.ORDER, "-created");
             previousCommentsPager.queryParams.put(Constants.Http.UNTIL,
                     new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ").format(new Date()));
         }
@@ -426,7 +426,7 @@ public class PostActivity extends TestpressFragmentActivity implements
         if (newCommentsPager.queryParams.isEmpty() && comments.size() != 0) {
             Comment latestComment = comments.get(comments.size() - 1);
             //noinspection ConstantConditions
-            newCommentsPager.queryParams.put(Constants.Http.SINCE, latestComment.getSubmitDate());
+            newCommentsPager.queryParams.put(Constants.Http.SINCE, latestComment.getCreated());
         }
         return newCommentsPager;
     }

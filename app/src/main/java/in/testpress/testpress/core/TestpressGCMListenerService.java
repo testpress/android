@@ -5,15 +5,16 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.View;
 
 import com.google.android.gms.gcm.GcmListenerService;
 
@@ -23,6 +24,8 @@ import in.testpress.testpress.ui.SplashScreenActivity;
 public class TestpressGCMListenerService extends GcmListenerService {
 
     private static final String TAG = "MyGcmListenerService";
+
+    private static final String NOTIFICATION_ID = "notificationId";
 
     /**
      * Called when message is received.
@@ -86,6 +89,9 @@ public class TestpressGCMListenerService extends GcmListenerService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        int notificationId = prefs.getInt(NOTIFICATION_ID, 0);
+
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_notification)
@@ -105,10 +111,18 @@ public class TestpressGCMListenerService extends GcmListenerService {
             notificationBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
         }
 
+        if (Build.VERSION.SDK_INT >= 24) {
+            notificationBuilder.setPriority(NotificationManager.IMPORTANCE_HIGH);
+        }
+
         Notification notification = notificationBuilder.build();
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationManager.notify(0 /* ID of notification */, notification);
+        notificationManager.notify(notificationId, notification);
+
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(NOTIFICATION_ID, ++notificationId);
+        editor.apply();
     }
 }

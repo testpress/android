@@ -83,7 +83,7 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 144
+        versionCode 145
         versionName '1.0.' + versionCode
         applicationId 'in.raceinstitute'
     }

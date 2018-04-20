@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="UnusedResources"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <include layout="@layout/toolbar_material" />
+
+   <LinearLayout
+       android:id="@+id/qr_code_layout"
+       android:layout_below="@+id/appbar"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:orientation="vertical"
+       android:gravity="center"
+       android:visibility="gone"
+       tools:ignore="UnknownIdInLayout">
+
+       <ImageView
+           android:id="@+id/qr_code"
+           android:layout_width="300dp"
+           android:layout_height="300dp"
+           />
+
+       <TextView
+           android:id="@+id/qr_code_message"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="20dp"
+           android:layout_marginRight="20dp"
+           android:layout_marginLeft="20dp"
+           android:textSize="16sp"
+           android:gravity="center"
+           android:text="@string/my_race_enrollment_id"
+           />
+
+   </LinearLayout>
+
+    <include layout="@layout/empty_view" />
+
+    <ProgressBar
+        android:id="@+id/pb_loading"
+        android:visibility="gone"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:indeterminate="true"
+        android:layout_centerInParent="true" />
+
+</RelativeLayout>

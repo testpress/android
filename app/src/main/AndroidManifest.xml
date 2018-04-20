@@ -210,6 +210,11 @@
             android:configChanges="orientation|keyboard|screenSize"
             android:label="@string/activate" />
 
+        <activity
+            android:name=".ui.QRCodeActivity"
+            android:configChanges="orientation|keyboard|screenSize"
+            android:label="@string/qr_code" />
+
     </application>
 
 </manifest>

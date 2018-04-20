@@ -97,6 +97,7 @@ public class MainMenuFragment extends Fragment {
             }
             mMenuItemResIds.put(R.string.analytics, R.drawable.analytics);
             mMenuItemResIds.put(R.string.profile, R.drawable.ic_profile_details);
+            mMenuItemResIds.put(R.string.qr_code, R.drawable.qr_code);
         }
         if (instituteSettings.getStoreEnabled()) {
             mMenuItemResIds.put(R.string.store, R.drawable.store);
@@ -147,6 +148,10 @@ public class MainMenuFragment extends Fragment {
                         break;
                     case R.string.profile:
                         intent = new Intent(getActivity(), ProfileDetailsActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.string.qr_code:
+                        intent = new Intent(getActivity(), QRCodeActivity.class);
                         startActivity(intent);
                         break;
                     case R.string.share:

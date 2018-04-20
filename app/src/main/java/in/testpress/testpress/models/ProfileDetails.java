@@ -1,6 +1,15 @@
 package in.testpress.testpress.models;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import com.google.gson.Gson;
+
 public class ProfileDetails {
+
+    public static final String PROFILE_DETAILS_PREFERENCES = "profileDetails";
+    public static final String PROFILE_DETAILS = "profileDetails";
 
     private Integer id;
     private String url;
@@ -409,6 +418,42 @@ public class ProfileDetails {
      */
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    private static String serialize(ProfileDetails profileDetails) {
+        Gson gson = new Gson();
+        return gson.toJson(profileDetails);
+    }
+
+    private static ProfileDetails deserialize(String serializedProfileDetails) {
+        if (serializedProfileDetails != null && !serializedProfileDetails.isEmpty()) {
+            try {
+                Gson gson = new Gson();
+                return gson.fromJson(serializedProfileDetails, ProfileDetails.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    static public ProfileDetails getProfileDetailsFromPreferences(Context context) {
+        SharedPreferences prefs =
+                context.getSharedPreferences(PROFILE_DETAILS_PREFERENCES, Context.MODE_PRIVATE);
+
+        String profileDetailSerialized = prefs.getString(PROFILE_DETAILS, null);
+        return deserialize(profileDetailSerialized);
+    }
+
+    static public void saveProfileDetailsInPreferences(Context context,
+                                                       ProfileDetails profileDetails) {
+
+        SharedPreferences.Editor editor =
+                context.getSharedPreferences(PROFILE_DETAILS_PREFERENCES, Context.MODE_PRIVATE).edit();
+
+        String profileDetailSerialized = serialize(profileDetails);
+        editor.putString(PROFILE_DETAILS, profileDetailSerialized);
+        editor.apply();
     }
 
 }

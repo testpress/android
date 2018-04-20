@@ -30,6 +30,8 @@ import in.testpress.testpress.util.GCMPreference;
 import in.testpress.util.UIUtils;
 import retrofit.RestAdapter;
 
+import static in.testpress.testpress.models.ProfileDetails.PROFILE_DETAILS_PREFERENCES;
+
 public class TestpressServiceProvider {
     private RestAdapter.Builder restAdapter;
     private ApiKeyProvider keyProvider;
@@ -100,6 +102,10 @@ public class TestpressServiceProvider {
         SharedPreferences preferences = activity.getSharedPreferences(Constants.GCM_PREFERENCE_NAME,
                 Context.MODE_PRIVATE);
         preferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
+        SharedPreferences profilePreferences =
+                activity.getSharedPreferences(PROFILE_DETAILS_PREFERENCES, Context.MODE_PRIVATE);
+
+        profilePreferences.edit().clear().apply();
         CommonUtils.registerDevice(activity, testpressService, serviceProvider);
         DaoSession daoSession =
                 ((TestpressApplication) activity.getApplicationContext()).getDaoSession();

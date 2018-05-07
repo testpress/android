@@ -115,6 +115,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     @InjectView(id.et_password) protected EditText passwordText;
     @InjectView(id.b_signin) protected Button signInButton;
     @InjectView(id.or) protected TextView orLabel;
+    @InjectView(R.id.or_sample_user) protected TextView orSampleUserLabel;
     @InjectView(id.fb_login_button) protected LoginButton fbLoginButton;
     @InjectView(id.google_sign_in_button) protected Button googleLoginButton;
     @InjectView(id.social_sign_in_buttons) protected LinearLayout socialLoginLayout;
@@ -237,6 +238,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
                 .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
                 .build();
         orLabel.setTypeface(TestpressSdk.getRubikMediumFont(this));
+        orSampleUserLabel.setTypeface(TestpressSdk.getRubikMediumFont(this));
         DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
         instituteSettingsDao = daoSession.getInstituteSettingsDao();
         List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
@@ -247,6 +249,9 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             instituteSettings = instituteSettingsList.get(0);
             updateInstituteSpecificFields();
         }
+        usernameText.setText("testpress");
+        passwordText.setText("demo");
+        usernameText.setSelection(usernameText.getText().length());
     }
 
     private void getInstituteSettings() {

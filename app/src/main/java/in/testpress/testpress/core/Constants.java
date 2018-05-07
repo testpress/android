@@ -104,7 +104,7 @@ public final class Constants {
 
         public static final String URL_COMMENTS_FRAG =  "/comments/";
 
-        public static final String CHAPTERS_PATH =  "/api/v2.2/chapters/";
+        public static final String CHAPTERS_PATH =  "/api/v2.2.1/chapters/";
 
         /**
          * Handle Success & Failure of payments

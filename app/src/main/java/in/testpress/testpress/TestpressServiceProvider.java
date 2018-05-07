@@ -16,7 +16,7 @@ import java.util.List;
 import in.testpress.core.TestpressSDKDatabase;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
-import in.testpress.exam.TestpressExam;
+
 import in.testpress.testpress.authenticator.ApiKeyProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
@@ -77,12 +77,11 @@ public class TestpressServiceProvider {
                 settings = new in.testpress.models.InstituteSettings(Constants.Http.URL_BASE);
             } else {
                 InstituteSettings instituteSettings = instituteSettingsList.get(0);
-                settings = new in.testpress.models.InstituteSettings(
-                        instituteSettings.getBaseUrl(),
-                        instituteSettings.getShowGameFrontend(),
-                        instituteSettings.getCoursesEnableGamification()
-                );
-                settings.setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled());
+                settings = new in.testpress.models.InstituteSettings(instituteSettings.getBaseUrl())
+                        .setCoursesFrontend(instituteSettings.getShowGameFrontend())
+                        .setCoursesGamificationEnabled(instituteSettings.getCoursesEnableGamification())
+                        .setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled())
+                        .setAccessCodeEnabled(false);
             }
             TestpressSdk.setTestpressSession(activity, new TestpressSession(settings, authToken));
         }
@@ -116,6 +115,7 @@ public class TestpressServiceProvider {
         TestpressSDKDatabase.clearDatabase(activity.getApplicationContext());
         daoSession.clear();
         TestpressSdk.clearActiveSession(activity);
+        TestpressSDKDatabase.clearDatabase(activity);
         logoutService.logout(new Runnable() {
             @Override
             public void run() {

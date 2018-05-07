@@ -21,10 +21,10 @@ public class BottomNavBarAdapter extends BaseAdapter {
     private int selectedPosition;
 
     public BottomNavBarAdapter(Context context, ArrayList<Integer> menuItemImageId,
-            ArrayList<Integer> menuItemTitleId) {
+                               ArrayList<Integer> menuItemTitleIds) {
         mContext = context;
         mItemsImageId = menuItemImageId;
-        mMenuItemTitleIds = menuItemTitleId;
+        mMenuItemTitleIds = menuItemTitleIds;
     }
 
     @Override
@@ -60,10 +60,9 @@ public class BottomNavBarAdapter extends BaseAdapter {
             imageView.setColorFilter(ContextCompat.getColor(mContext,
                     R.color.bottom_bar_unselected_item));
             menuTitle.setTextColor(ContextCompat.getColor(mContext,
-                    R.color.bottom_bar_unselected_item));
+                    R.color.bottom_bar_unselected_item_text));
         }
         menuTitle.setTypeface(TestpressSdk.getRubikRegularFont(mContext));
-
         return convertView;
     }
 

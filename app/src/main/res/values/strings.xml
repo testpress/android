@@ -9,12 +9,15 @@
     <string name="server_client_id">1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com</string>
     <string name="share_message">Good app to prepare for online exams. Get it at https://play.google.com/store/apps/details?id=</string>
 
+    <string name="testpress_leaderboard">Toppers</string>
+
     <string name="refresh_action">Refresh</string>
 
     <string name="error_loading_products">Loading Products failed</string>
     <string name="error_loading_documents">Loading Documents failed</string>
     <string name="error_loading_orders">Loading Orders failed</string>
     <string name="error_loading_posts">Loading posts failed</string>
+    <string name="error_loading_activities">Loading activity failed</string>
     <string name="error_loading_content">Loading content failed</string>
 
     <string name="no_products">No Products</string>
@@ -25,6 +28,7 @@
     <string name="no_orders_description">Your purchased orders will be reflected here.</string>
     <string name="no_posts">No Articles</string>
     <string name="no_discussions">No Discussions</string>
+    <string name="no_activities">No Activity</string>
 
     <string name="edit">Edit</string>
     <string name="cancel">Cancel</string>
@@ -82,6 +86,8 @@
     <string name="tap_to_retry">Tap to retry</string>
 
     <string name="no_posts_description">There are no posts right now.</string>
+    <string name="no_activities_description">There are no activity right now.</string>
+    <string name="no_activities_in_filter_description">There are no activity right now in this section.</string>
     <string name="post_authentication_failed">Sorry, you don\'t have access to this article.</string>
     <string name="access_denied">Access denied</string>
     <string name="share">Share</string>
@@ -128,6 +134,8 @@
     <string name="documents">Documents</string>
     <string name="analytics">Analytics</string>
     <string name="profile">Profile</string>
+    <string name="clear">Clear</string>
+    <string name="activity">Activity</string>
     <string name="orders">Orders</string>
     <string name="rate_us">Rate Us</string>
     <string name="testpress_user_name">User Name</string>

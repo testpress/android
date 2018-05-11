@@ -25,6 +25,8 @@ import in.testpress.testpress.core.RestErrorHandler;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.core.UserAgentProvider;
 import in.testpress.testpress.ui.AccountActivateActivity;
+import in.testpress.testpress.ui.ActivityFeedListActivity;
+import in.testpress.testpress.ui.ActivityFeedListFragment;
 import in.testpress.testpress.ui.CreateForumActivity;
 import in.testpress.testpress.ui.CropImageActivity;
 import in.testpress.testpress.ui.DocumentsListActivity;
@@ -32,6 +34,7 @@ import in.testpress.testpress.ui.DocumentsListFragment;
 import in.testpress.testpress.ui.ForumActivity;
 import in.testpress.testpress.ui.ForumListActivity;
 import in.testpress.testpress.ui.ForumListFragment;
+import in.testpress.testpress.ui.MainMenuActivity;
 import in.testpress.testpress.ui.SplashScreenActivity;
 import in.testpress.testpress.ui.ZoomableImageActivity;
 import in.testpress.testpress.ui.MainActivity;
@@ -97,7 +100,10 @@ import retrofit.converter.GsonConverter;
                 ForumListActivity.class,
                 ForumListFragment.class,
                 ForumActivity.class,
-                CreateForumActivity.class
+                CreateForumActivity.class,
+                ActivityFeedListActivity.class,
+                ActivityFeedListFragment.class,
+                MainMenuActivity.class
         }
 )
 public class TestpressModule {

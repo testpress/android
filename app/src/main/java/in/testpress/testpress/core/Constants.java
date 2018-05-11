@@ -102,6 +102,8 @@ public final class Constants {
 
         public static final String URL_FORUMS_FRAG =  "api/v2.3/forum/";
 
+        public static final String URL_ACTIVITY_FEED_FRAG =  "/api/v2.4/activities/";
+
         public static final String URL_COMMENTS_FRAG =  "/comments/";
 
         public static final String CHAPTERS_PATH =  "/api/v2.2.1/chapters/";

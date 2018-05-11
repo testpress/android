@@ -233,7 +233,7 @@ public class ForumActivity extends TestpressFragmentActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.share, menu);
+//        getMenuInflater().inflate(R.clear.share, clear);
         return true;
     }
 

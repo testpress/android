@@ -112,6 +112,7 @@ public class TestpressServiceProvider {
         postDao.deleteAll();
         ForumDao forumDao = daoSession.getForumDao();
         forumDao.deleteAll();
+        clearActivityFeed(daoSession);
         TestpressSDKDatabase.clearDatabase(activity.getApplicationContext());
         daoSession.clear();
         TestpressSdk.clearActiveSession(activity);
@@ -131,5 +132,24 @@ public class TestpressServiceProvider {
                 activity.startActivity(intent);
             }
         });
+    }
+
+    public void clearActivityFeed(DaoSession daoSession) {
+        daoSession.getActivityFeedResponseDao().deleteAll();
+        daoSession.getActivityDao().deleteAll();
+        daoSession.getFeedAttachmentDao().deleteAll();
+        daoSession.getFeedChapterDao().deleteAll();
+        daoSession.getFeedContentDao().deleteAll();
+        daoSession.getFeedExamDao().deleteAll();
+        daoSession.getFeedHtmlContentDao().deleteAll();
+        daoSession.getFeedPostDao().deleteAll();
+        daoSession.getFeedVideoDao().deleteAll();
+        daoSession.getAssessmentDao().deleteAll();
+        daoSession.getAttachmentContentDao().deleteAll();
+        daoSession.getChapterContentDao().deleteAll();
+        daoSession.getChapterContentAttemptDao().deleteAll();
+        daoSession.getContentTypeDao().deleteAll();
+        daoSession.getUserDao().deleteAll();
+        daoSession.getCategoryDao().deleteAll();
     }
 }

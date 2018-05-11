@@ -195,7 +195,9 @@ public class PostActivity extends TestpressFragmentActivity implements
             @Override
             public Post call() throws Exception {
                 Map<String, Boolean> queryParams = new LinkedHashMap<>();
-                queryParams.put("short_link", true);
+                if (!shortWebUrl.contains("posts")) {
+                    queryParams.put("short_link", true);
+                }
                 Uri uri = Uri.parse(shortWebUrl);
                 return getService().getPostDetail(uri.getLastPathSegment(), queryParams);
             }

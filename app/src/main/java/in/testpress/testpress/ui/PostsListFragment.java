@@ -23,6 +23,8 @@ import android.widget.TextView;
 
 import com.github.kevinsawicki.wishlist.Toaster;
 
+import org.greenrobot.greendao.query.LazyList;
+
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.text.Format;
@@ -36,7 +38,6 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import de.greenrobot.dao.query.LazyList;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
@@ -186,7 +187,7 @@ public class PostsListFragment extends Fragment implements
         swipeLayout.setOnRefreshListener(this);
         swipeLayout.setColorSchemeResources(R.color.primary);
         swipeLayout.measure(View.MEASURED_SIZE_MASK,View.MEASURED_HEIGHT_STATE_SHIFT);
-        swipeLayout.setRefreshing(true);
+        swipeLayout.setRefreshing(false);
         getLoaderManager().initLoader(REFRESH_LOADER_ID, null, this);
         fetchCategories();
         if (categoryFilter != null) {

@@ -5,6 +5,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -15,6 +17,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -25,6 +29,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -156,6 +161,38 @@ public class MainActivity extends TestpressFragmentActivity {
         }.execute();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the clear; this adds items to the action bar if it is present.
+        if (mMenuItemTitleIds.size() > 1) {
+            getMenuInflater().inflate(R.menu.profile, menu);
+            Drawable drawable = menu.getItem(0).getIcon();
+            if(drawable != null) {
+                drawable.mutate();
+                drawable.setColorFilter(getResources().getColor(R.color.testpress_white),
+                        PorterDuff.Mode.SRC_ATOP);
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.profile) {
+            Intent intent = new Intent(this, MainMenuActivity.class);
+            startActivity(intent);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     private void initScreen() {
         SharedPreferences preferences =
                 getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
@@ -171,6 +208,7 @@ public class MainActivity extends TestpressFragmentActivity {
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             Log.e("Checking for gamified","true found");
             //noinspection ConstantConditions
+            addMenuItem(R.string.activity, R.drawable.news_feed_icon, new ActivityFeedListFragment());
             addMenuItem(R.string.learn, R.drawable.learn,
                     TestpressCourse.getCoursesListFragment(this, TestpressSdk.getTestpressSession(this)));
 
@@ -184,7 +222,7 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             grid.setVisibility(View.GONE);
         }
-        addMenuItem(R.string.profile, R.drawable.profile_default, new MainMenuFragment());
+//        addMenuItem(R.string.profile, R.drawable.profile_default, new MainMenuFragment());
         mBottomBarAdapter = new BottomNavBarAdapter(this, mMenuItemImageIds, mMenuItemTitleIds);
         grid.setAdapter(mBottomBarAdapter);
         grid.setNumColumns(mBottomBarAdapter.getCount());

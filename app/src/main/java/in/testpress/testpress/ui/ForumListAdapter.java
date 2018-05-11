@@ -17,6 +17,8 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import org.greenrobot.greendao.query.QueryBuilder;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,7 +26,6 @@ import java.util.TimeZone;
 
 import javax.inject.Inject;
 
-import de.greenrobot.dao.query.QueryBuilder;
 import in.testpress.core.TestpressSdk;
 import in.testpress.exam.models.Vote;
 import in.testpress.testpress.R;
@@ -182,6 +183,7 @@ public class ForumListAdapter extends BaseAdapter{
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(activity, ForumActivity.class);
+                Log.e("url", forum.getUrl());
                 intent.putExtra("Url", forum.getUrl());
                 activity.startActivity(intent);
             }

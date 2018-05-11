@@ -1,9 +1,23 @@
 apply plugin: 'com.android.application'
 
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral() // add repository
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2' // add plugin
+    }
+}
+
 ext {
     supportLib = '25.3.1'
     testpressSDK = '1.2.5'
 }
+
+apply plugin: 'com.android.application'
+apply plugin: 'org.greenrobot.greendao' // apply plugin
 
 dependencies {
 
@@ -43,7 +57,7 @@ dependencies {
     compile project(':CustomBrowser-release')
 
     // GreenDao for database
-    compile 'de.greenrobot:greendao:2.0.0'
+    compile 'org.greenrobot:greendao:3.2.0'
 
     // Testpress Course(which inbuilt has exam & core module)
     compile ('com.github.testpress:course:' + testpressSDK + '@aar') {
@@ -61,6 +75,8 @@ dependencies {
 
     // Flat button
     compile 'info.hoang8f:fbutton:1.0.5'
+
+    compile 'com.facebook.stetho:stetho:1.5.0'
 
 }
 
@@ -130,3 +146,7 @@ android {
 }
 
 apply plugin: 'com.google.gms.google-services'
+
+greendao {
+    schemaVersion 9
+}

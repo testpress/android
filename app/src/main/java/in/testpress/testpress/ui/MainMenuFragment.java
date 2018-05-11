@@ -104,7 +104,6 @@ public class MainMenuFragment extends Fragment {
         if (instituteSettings.getPostsEnabled()) {
 //            mMenuItemResIds.put(R.string.posts, R.drawable.posts);
         }
-        //TODO : Edit InstituteSettings DataModel and check whether forum is enabled or not
         if (isUserAuthenticated) {
 //            mMenuItemResIds.put(R.string.forum, R.drawable.discussion);
         }
@@ -165,7 +164,7 @@ public class MainMenuFragment extends Fragment {
                         //rateApp();
                         break;
                     case R.string.logout:
-                        ((MainActivity) getActivity()).logout();
+                        ((MainMenuActivity) getActivity()).logout();
                         break;
                     case R.string.login:
                         intent = new Intent(getActivity(), LoginActivity.class);

@@ -34,6 +34,8 @@ import android.widget.TextView;
 
 import com.github.kevinsawicki.wishlist.Toaster;
 
+import org.greenrobot.greendao.query.LazyList;
+
 import java.io.IOException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -46,7 +48,6 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import de.greenrobot.dao.query.LazyList;
 import in.testpress.core.TestpressSdk;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
@@ -352,7 +353,7 @@ public class ForumListFragment extends Fragment implements
         super.onCreateOptionsMenu(menu, menuInflater);
     }
 
-        @Override
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 2) {

@@ -15,6 +15,8 @@ import in.testpress.testpress.models.TestpressDataApiResponse;
 import in.testpress.testpress.util.Ln;
 import retrofit.RetrofitError;
 
+import static in.testpress.testpress.core.Constants.Http.FILTER;
+
 public class ActivityFeedPager extends DataResourcePager<ActivityFeedResponse> {
 
     TestpressDataApiResponse<ActivityFeedResponse> response;
@@ -33,6 +35,7 @@ public class ActivityFeedPager extends DataResourcePager<ActivityFeedResponse> {
         String url;
         if (response == null) {
             url = Constants.Http.URL_ACTIVITY_FEED_FRAG;
+            queryParams.put(FILTER, "admin");
         } else {
             try {
                 URL full = new URL(response.getNext());
@@ -43,7 +46,7 @@ public class ActivityFeedPager extends DataResourcePager<ActivityFeedResponse> {
             }
         }
         if (url != null) {
-            response = service.getActivityFeed(url);
+            response = service.getActivityFeed(url, queryParams);
             Log.e("Inside", "getItems");
             Log.e("Response", (response.getResults()==null)+"");
             return response.getResults();

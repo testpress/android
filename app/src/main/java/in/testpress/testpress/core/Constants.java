@@ -121,6 +121,7 @@ public final class Constants {
         public static final String SINCE = "since";
         public static final String UNTIL = "until";
         public static final String ORDER = "order";
+        public static final String FILTER = "filter";
     }
 
     public static final String SPLASH_SCREEN_PREFERENCE_NAME = "testpress." +

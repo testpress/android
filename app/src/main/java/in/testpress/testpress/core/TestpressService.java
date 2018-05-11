@@ -130,8 +130,9 @@ public class TestpressService {
         return getDevicesService().register(credentials);
     }
 
-    public TestpressDataApiResponse<ActivityFeedResponse> getActivityFeed(String url) {
-        return getFeedService().getActivityFeed();
+    public TestpressDataApiResponse<ActivityFeedResponse> getActivityFeed(String url,
+                                                                          Map<String, String> queryParams) {
+        return getFeedService().getActivityFeed(queryParams);
     }
 
     public TestpressApiResponse<Post> getPosts(String urlFrag, Map<String, String> queryParams, String latestModifiedDate) {

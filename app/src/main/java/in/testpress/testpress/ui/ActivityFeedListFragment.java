@@ -156,7 +156,7 @@ public class ActivityFeedListFragment  extends Fragment implements
         ButterKnife.inject(this, view);
         spinnerAdapter = new ExploreSpinnerAdapter(inflater, getResources(), true);
         spinnerAdapter.hideSpinner(true);
-        setHasOptionsMenu(true);
+//        setHasOptionsMenu(true);
         return view;
     }
 
@@ -210,34 +210,34 @@ public class ActivityFeedListFragment  extends Fragment implements
 //        return super.onOptionsItemSelected(item);
 //    }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
-        try {
-            Log.e("Inside", "onCreateOptionsMenu1");
-            menuInflater.inflate(R.menu.testpress_filter, menu);
-            MenuItem filterMenu = menu.findItem(R.id.filter);
-            filterMenu.setVisible(true);
-            View actionView = MenuItemCompat.getActionView(filterMenu);
-            final View circle = actionView.findViewById(in.testpress.R.id.filter_applied_sticky_tick);
-            spinner = (Spinner) actionView.findViewById(in.testpress.R.id.spinner);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                spinner.setPopupBackgroundResource(R.color.testpress_white);
-            }
-            spinnerDefaultCallback = true;
-            spinner.setAdapter(spinnerAdapter);
-            Log.e("Inside", "onCreateOptionsMenu2");
-            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> spinner, View view, int position, long itemId) {
-                    if (position == 0) {
-                        circle.setVisibility(View.GONE);
-                    } else {
-                        circle.setVisibility(View.VISIBLE);
-                    }
-                    if (spinnerDefaultCallback) {
-                        spinnerDefaultCallback = false;
-                    } else if ((selectedItemPosition != position)) { // Omit callback if position is already selected position
-                        selectedItemPosition = position;
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+//        try {
+//            Log.e("Inside", "onCreateOptionsMenu1");
+//            menuInflater.inflate(R.menu.testpress_filter, menu);
+//            MenuItem filterMenu = menu.findItem(R.id.filter);
+//            filterMenu.setVisible(true);
+//            View actionView = MenuItemCompat.getActionView(filterMenu);
+//            final View circle = actionView.findViewById(in.testpress.R.id.filter_applied_sticky_tick);
+//            spinner = (Spinner) actionView.findViewById(in.testpress.R.id.spinner);
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+//                spinner.setPopupBackgroundResource(R.color.testpress_white);
+//            }
+//            spinnerDefaultCallback = true;
+//            spinner.setAdapter(spinnerAdapter);
+//            Log.e("Inside", "onCreateOptionsMenu2");
+//            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//                @Override
+//                public void onItemSelected(AdapterView<?> spinner, View view, int position, long itemId) {
+//                    if (position == 0) {
+//                        circle.setVisibility(View.GONE);
+//                    } else {
+//                        circle.setVisibility(View.VISIBLE);
+//                    }
+//                    if (spinnerDefaultCallback) {
+//                        spinnerDefaultCallback = false;
+//                    } else if ((selectedItemPosition != position)) { // Omit callback if position is already selected position
+//                        selectedItemPosition = position;
                         //Use tag here
 //                        switch (selectedItemPosition) {
 //                            case 0 :
@@ -250,29 +250,29 @@ public class ActivityFeedListFragment  extends Fragment implements
 //                                adapter.setFilterVerb("attempted");
 //                                break;
 //                        }
-                        adapter.setFilterVerb(spinnerAdapter.getTag(selectedItemPosition));
-                        adapter.notifyDataSetChanged();
-                        if (adapter.getCount() == 0) {
-                            setEmptyText(R.string.no_activities, R.string.no_activities_in_filter_description,
-                                    R.drawable.ic_error_outline_black_18dp);
-                            retryButton.setVisibility(View.GONE);
-                        } else  {
-                            showList();
-                        }
-                    }
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-                }
-            });
-            Log.e("Inside", "onCreateOptionsMenu3");
-        } catch (Exception exp) {
-            Log.e("Exception", exp.toString());
-        }
-        addFilterItemsInSpinner();
-        super.onCreateOptionsMenu(menu, menuInflater);
-    }
+//                        adapter.setFilterVerb(spinnerAdapter.getTag(selectedItemPosition));
+//                        adapter.notifyDataSetChanged();
+//                        if (adapter.getCount() == 0) {
+//                            setEmptyText(R.string.no_activities, R.string.no_activities_in_filter_description,
+//                                    R.drawable.ic_error_outline_black_18dp);
+//                            retryButton.setVisibility(View.GONE);
+//                        } else  {
+//                            showList();
+//                        }
+//                    }
+//                }
+//
+//                @Override
+//                public void onNothingSelected(AdapterView<?> adapterView) {
+//                }
+//            });
+//            Log.e("Inside", "onCreateOptionsMenu3");
+//        } catch (Exception exp) {
+//            Log.e("Exception", exp.toString());
+//        }
+//        addFilterItemsInSpinner();
+//        super.onCreateOptionsMenu(menu, menuInflater);
+//    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {

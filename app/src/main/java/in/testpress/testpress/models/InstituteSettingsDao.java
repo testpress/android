@@ -44,6 +44,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         public final static Property FacebookLoginEnabled = new Property(18, Boolean.class, "facebookLoginEnabled", false, "FACEBOOK_LOGIN_ENABLED");
         public final static Property GoogleLoginEnabled = new Property(19, Boolean.class, "googleLoginEnabled", false, "GOOGLE_LOGIN_ENABLED");
         public final static Property CommentsVotingEnabled = new Property(20, boolean.class, "commentsVotingEnabled", false, "COMMENTS_VOTING_ENABLED");
+        public final static Property BookmarksEnabled = new Property(21, Boolean.class, "bookmarksEnabled", false, "BOOKMARKS_ENABLED");
     };
 
 
@@ -79,7 +80,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
                 "\"DASHBOARD_ENABLED\" INTEGER," + // 17: dashboardEnabled
                 "\"FACEBOOK_LOGIN_ENABLED\" INTEGER," + // 18: facebookLoginEnabled
                 "\"GOOGLE_LOGIN_ENABLED\" INTEGER," + // 19: googleLoginEnabled
-                "\"COMMENTS_VOTING_ENABLED\" INTEGER NOT NULL );"); // 20: commentsVotingEnabled
+                "\"COMMENTS_VOTING_ENABLED\" INTEGER NOT NULL ," + // 20: commentsVotingEnabled
+                "\"BOOKMARKS_ENABLED\" INTEGER);"); // 21: bookmarksEnabled
     }
 
     /** Drops the underlying database table. */
@@ -193,6 +195,11 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             stmt.bindLong(20, googleLoginEnabled ? 1L: 0L);
         }
         stmt.bindLong(21, entity.getCommentsVotingEnabled() ? 1L: 0L);
+ 
+        Boolean bookmarksEnabled = entity.getBookmarksEnabled();
+        if (bookmarksEnabled != null) {
+            stmt.bindLong(22, bookmarksEnabled ? 1L: 0L);
+        }
     }
 
     /** @inheritdoc */
@@ -225,7 +232,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             cursor.isNull(offset + 17) ? null : cursor.getShort(offset + 17) != 0, // dashboardEnabled
             cursor.isNull(offset + 18) ? null : cursor.getShort(offset + 18) != 0, // facebookLoginEnabled
             cursor.isNull(offset + 19) ? null : cursor.getShort(offset + 19) != 0, // googleLoginEnabled
-            cursor.getShort(offset + 20) != 0 // commentsVotingEnabled
+            cursor.getShort(offset + 20) != 0, // commentsVotingEnabled
+            cursor.isNull(offset + 21) ? null : cursor.getShort(offset + 21) != 0 // bookmarksEnabled
         );
         return entity;
     }
@@ -254,6 +262,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         entity.setFacebookLoginEnabled(cursor.isNull(offset + 18) ? null : cursor.getShort(offset + 18) != 0);
         entity.setGoogleLoginEnabled(cursor.isNull(offset + 19) ? null : cursor.getShort(offset + 19) != 0);
         entity.setCommentsVotingEnabled(cursor.getShort(offset + 20) != 0);
+        entity.setBookmarksEnabled(cursor.isNull(offset + 21) ? null : cursor.getShort(offset + 21) != 0);
      }
     
     /** @inheritdoc */

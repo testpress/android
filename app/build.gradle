@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 ext {
-    testpressSDK = '1.3.0'
+    testpressSDK = '1.3.1'
 }
 
 dependencies {

@@ -32,6 +32,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -77,7 +78,6 @@ import in.testpress.testpress.util.ShareUtil;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.util.ViewUtils;
 import in.testpress.util.WebViewUtils;
-import info.hoang8f.widget.FButton;
 
 import static in.testpress.testpress.util.CommonUtils.getException;
 
@@ -115,7 +115,7 @@ public class PostActivity extends TestpressFragmentActivity implements
     @InjectView(R.id.empty_container) LinearLayout emptyView;
     @InjectView(R.id.empty_title) TextView emptyTitleView;
     @InjectView(R.id.empty_description) TextView emptyDescView;
-    @InjectView(R.id.retry_button) FButton retryButton;
+    @InjectView(R.id.retry_button) Button retryButton;
     @InjectView(R.id.comments_layout) LinearLayout commentsLayout;
     @InjectView(R.id.loading_previous_comments_layout) LinearLayout previousCommentsLoadingLayout;
     @InjectView(R.id.loading_new_comments_layout) LinearLayout newCommentsLoadingLayout;

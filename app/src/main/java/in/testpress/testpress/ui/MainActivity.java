@@ -149,6 +149,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 startService(intent);
             }
         }
+        addMenuItem(R.string.dashboard, R.drawable.profile_default, new MainMenuFragment());
         // Show courses list if game front end is enabled, otherwise hide bottom bar
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             TestpressSession session = TestpressSdk.getTestpressSession(this);
@@ -166,7 +167,6 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             grid.setVisibility(View.GONE);
         }
-        addMenuItem(R.string.profile, R.drawable.profile_default, new MainMenuFragment());
         mBottomBarAdapter = new BottomNavBarAdapter(this, mMenuItemImageIds, mMenuItemTitleIds);
         grid.setAdapter(mBottomBarAdapter);
         grid.setNumColumns(mBottomBarAdapter.getCount());

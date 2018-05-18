@@ -2,7 +2,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
     xmlns:facebook="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true">
 
@@ -72,16 +71,14 @@
                     android:hint="Password"/>
             </android.support.design.widget.TextInputLayout>
 
-            <info.hoang8f.widget.FButton
+            <android.support.v7.widget.AppCompatButton
                 android:id="@+id/b_signin"
-                style="@style/TextLabelTab"
+                style="@style/Button.Tab"
+                android:background="#00ccaa"
                 android:layout_marginTop="5dp"
-                fbutton:buttonColor="@color/primary"
-                fbutton:shadowEnabled="true"
-                fbutton:shadowHeight="3dp"
-                fbutton:cornerRadius="2dp"
+                android:textSize="14sp"
                 android:text="Login"
-                android:textColor="@color/white" />
+                />
 
             <RelativeLayout
                 android:layout_width="400dp"

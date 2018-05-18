@@ -92,6 +92,9 @@ public class MainMenuFragment extends Fragment {
         if (isUserAuthenticated) {
             // Enabled my exams for RACE
             mMenuItemResIds.put(R.string.my_exams, R.drawable.exams);
+            if (instituteSettings.getBookmarksEnabled()) {
+                mMenuItemResIds.put(R.string.bookmarks, R.drawable.bookmark);
+            }
             if (instituteSettings.getDocumentsEnabled()) {
                 mMenuItemResIds.put(R.string.documents, R.drawable.documents);
             }
@@ -125,6 +128,9 @@ public class MainMenuFragment extends Fragment {
                 switch ((int) id) {
                     case R.string.my_exams:
                         checkAuthenticatedUser(R.string.my_exams);
+                        break;
+                    case R.string.bookmarks:
+                        checkAuthenticatedUser(R.string.bookmarks);
                         break;
                     case R.string.store:
                         intent = new Intent(getActivity(), ProductsListActivity.class);
@@ -198,14 +204,17 @@ public class MainMenuFragment extends Fragment {
     }
 
     void showSDK(int clickedMenuTitleResId) {
+        //noinspection ConstantConditions
         TestpressSession session = TestpressSdk.getTestpressSession(getActivity());
+        assert session != null;
         switch (clickedMenuTitleResId) {
             case R.string.my_exams:
-                //noinspection ConstantConditions
-                TestpressExam.show(getActivity(), session);
+                TestpressExam.showCategories(getActivity(), true, session);
+                break;
+            case R.string.bookmarks:
+                TestpressExam.showBookmarks(getActivity(), session);
                 break;
             case R.string.analytics:
-                //noinspection ConstantConditions
                 TestpressExam.showAnalytics(getActivity(), SUBJECT_ANALYTICS_PATH, session);
                 break;
         }

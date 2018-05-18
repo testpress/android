@@ -295,6 +295,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
         in.testpress.models.InstituteSettings settings =
                 new in.testpress.models.InstituteSettings(instituteSettings.getBaseUrl())
+                        .setBookmarksEnabled(instituteSettings.getBookmarksEnabled())
                         .setCoursesFrontend(instituteSettings.getShowGameFrontend())
                         .setCoursesGamificationEnabled(instituteSettings.getCoursesEnableGamification())
                         .setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled())

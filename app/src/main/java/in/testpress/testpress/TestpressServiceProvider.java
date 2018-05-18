@@ -75,6 +75,7 @@ public class TestpressServiceProvider {
             } else {
                 InstituteSettings instituteSettings = instituteSettingsList.get(0);
                 settings = new in.testpress.models.InstituteSettings(instituteSettings.getBaseUrl())
+                        .setBookmarksEnabled(instituteSettings.getBookmarksEnabled())
                         .setCoursesFrontend(instituteSettings.getShowGameFrontend())
                         .setCoursesGamificationEnabled(instituteSettings.getCoursesEnableGamification())
                         .setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled())

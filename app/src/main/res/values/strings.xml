@@ -133,5 +133,7 @@
     <string name="profile">Profile</string>
     <string name="orders">Orders</string>
     <string name="rate_us">Rate Us</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="bookmarks">Bookmarks</string>
 
 </resources>

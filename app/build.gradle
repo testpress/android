@@ -1,8 +1,7 @@
 apply plugin: 'com.android.application'
 
 ext {
-    supportLib = '25.3.1'
-    testpressSDK = '1.2.1'
+    testpressSDK = '1.3.2'
 }
 
 dependencies {
@@ -27,7 +26,6 @@ dependencies {
 
     // Android Support Libs
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:customtabs:' + supportLib
 
     // Material Dialog
     compile 'com.afollestad.material-dialogs:core:0.8.5.9'
@@ -43,10 +41,7 @@ dependencies {
     // GreenDao for database
     compile 'de.greenrobot:greendao:2.0.0'
     
-    // Testpress exam
-    compile ('com.github.testpress:exam:' + testpressSDK + '@aar') {
-        transitive=true
-    }
+    // Testpress Course(which inbuilt has exam & core module)
     compile ('com.github.testpress:course:' + testpressSDK + '@aar') {
         transitive=true
     }
@@ -60,8 +55,6 @@ dependencies {
     // Facebook SDK
     compile 'com.facebook.android:facebook-android-sdk:4.20.0'
 
-    // Flat button
-    compile 'info.hoang8f:fbutton:1.0.5'
 }
 
 def key_alias = "sample"
@@ -80,15 +73,20 @@ try {
 
 android {
 
-    compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    compileSdkVersion 26
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 22
         versionCode 119
         versionName '1.0.' + versionCode
         applicationId 'com.iasbaba'
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath true
+            }
+        }
     }
 
     packagingOptions {

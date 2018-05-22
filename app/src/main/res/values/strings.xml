@@ -9,6 +9,8 @@
     <string name="server_client_id">1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com</string>
     <string name="share_message">Good app to prepare for online exams. Get it at https://play.google.com/store/apps/details?id=</string>
 
+    <string name="rss_posts">Whats New</string>
+
     <string name="refresh_action">Refresh</string>
 
     <string name="error_loading_products">Loading Products failed</string>
@@ -127,5 +129,7 @@
     <string name="rate_us">Rate Us</string>
     <string name="dashboard">Dashboard</string>
     <string name="bookmarks">Bookmarks</string>
+
+    <string name="view_in_website">View in Website</string>
 
 </resources>

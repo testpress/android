@@ -4,6 +4,7 @@ import android.app.Application;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.NonNull;
 
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -17,7 +18,8 @@ import in.testpress.testpress.models.DaoSession;
 
 public class TestpressApplication extends Application {
     private static TestpressApplication instance;
-    public DaoSession daoSession;
+    public static DaoSession daoSession;
+    private static SQLiteDatabase database;
 
     /**
      * Create main application
@@ -44,15 +46,30 @@ public class TestpressApplication extends Application {
         // Perform injection
         Injector.init(getRootModule(), this);
         initImageLoader(getApplicationContext());
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "testpress-db", null);
-        SQLiteDatabase db = helper.getWritableDatabase();
+        SQLiteDatabase db = getDatabase(this);
         DaoMaster daoMaster = new DaoMaster(db);
         daoSession = daoMaster.newSession();
 
     }
 
-    public DaoSession getDaoSession() {
+    public static SQLiteDatabase getDatabase(@NonNull Context context) {
+        if (database == null) {
+            DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(
+                    context.getApplicationContext(), "testpress-db", null);
+
+            database = helper.getWritableDatabase();
+        }
+        return database;
+    }
+
+    public static DaoSession getDaoSession() {
         return daoSession;
+    }
+
+    public static void clearDatabase(@NonNull Context context) {
+        SQLiteDatabase database = getDatabase(context);
+        DaoMaster.dropAllTables(database, true);
+        DaoMaster.createAllTables(database, true);
     }
 
     public static void initImageLoader(Context context) {

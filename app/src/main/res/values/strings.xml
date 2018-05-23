@@ -16,6 +16,8 @@
     <string name="value_add_notes_url">http://ilp2018.iasbaba.com/value-add-notes</string>
     <string name="forum_url">http://ilp2018.iasbaba.com/forum</string>
 
+    <string name="rss_posts">Whats New</string>
+
     <string name="refresh_action">Refresh</string>
 
     <string name="error_loading_products">Loading Products failed</string>
@@ -135,5 +137,7 @@
     <string name="rate_us">Rate Us</string>
     <string name="dashboard">Dashboard</string>
     <string name="bookmarks">Bookmarks</string>
+
+    <string name="view_in_website">View in Website</string>
 
 </resources>

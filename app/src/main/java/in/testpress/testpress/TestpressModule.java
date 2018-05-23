@@ -30,6 +30,9 @@ import in.testpress.testpress.ui.CropImageActivity;
 import in.testpress.testpress.ui.DocumentsListActivity;
 import in.testpress.testpress.ui.DocumentsListFragment;
 import in.testpress.testpress.ui.InAppBrowserActivity;
+import in.testpress.testpress.ui.DrupalRssListActivity;
+import in.testpress.testpress.ui.DrupalRssListFragment;
+import in.testpress.testpress.ui.RssFeedDetailActivity;
 import in.testpress.testpress.ui.SplashScreenActivity;
 import in.testpress.testpress.ui.ZoomableImageActivity;
 import in.testpress.testpress.ui.MainActivity;
@@ -93,7 +96,11 @@ import retrofit.converter.GsonConverter;
                 SplashScreenActivity.class,
                 AccountActivateActivity.class,
                 InAppBrowserActivity.class,
-                CoursesListFragment.class
+                CoursesListFragment.class,
+                DrupalRssListActivity.class,
+                DrupalRssListFragment.class,
+                RssFeedDetailActivity.class,
+                AccountActivateActivity.class
         }
 )
 public class TestpressModule {

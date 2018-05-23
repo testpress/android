@@ -23,8 +23,11 @@ import in.testpress.testpress.models.ProductDetails;
 import in.testpress.testpress.models.ProfileDetails;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.ResetPassword;
+import in.testpress.testpress.models.RssFeed;
 import in.testpress.testpress.models.TestpressApiResponse;
 import in.testpress.testpress.models.Update;
+import in.testpress.testpress.network.RssConverterFactory;
+import in.testpress.testpress.network.RssFeedService;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 
@@ -87,6 +90,12 @@ public class TestpressService {
     private DeviceService getDevicesService() { return getRestAdapter().create(DeviceService.class); }
 
     private ResetPasswordService getResetPasswordService(){return getRestAdapter().create(ResetPasswordService.class);}
+
+    private RssFeedService getRssFeedService(String url) {
+        restAdapter.setEndpoint(url);
+        restAdapter.setConverter(RssConverterFactory.create());
+        return restAdapter.build().create(RssFeedService.class);
+    }
 
     private String getAuthToken() {
         return "JWT " + authToken;
@@ -244,6 +253,10 @@ public class TestpressService {
 
     public retrofit.client.Response activateAccount(String urlFrag) {
         return getAuthenticationService().activateAccount(urlFrag);
+    }
+
+    public RssFeed getRssFeed(String url) {
+        return getRssFeedService(url).getRssFeed();
     }
 
 }

@@ -52,6 +52,7 @@ import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 
 import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
+import static in.testpress.testpress.ui.DrupalRssListFragment.RSS_FEED_URL;
 
 public class MainMenuFragment extends Fragment {
 
@@ -89,6 +90,8 @@ public class MainMenuFragment extends Fragment {
 
         LinkedHashMap<Integer, Integer> mMenuItemResIds = new LinkedHashMap<>();
         final boolean isUserAuthenticated = account.length > 0;
+        // ToDo get from institute settings
+        boolean drupalRssFeedEnabled = false;
         if (isUserAuthenticated) {
             if (!instituteSettings.getShowGameFrontend()) {
                 mMenuItemResIds.put(R.string.my_exams, R.drawable.exams);
@@ -104,6 +107,9 @@ public class MainMenuFragment extends Fragment {
         }
         if (instituteSettings.getStoreEnabled()) {
             mMenuItemResIds.put(R.string.store, R.drawable.store);
+        }
+        if (drupalRssFeedEnabled) {
+            mMenuItemResIds.put(R.string.rss_posts, R.drawable.rss_feed);
         }
         if (instituteSettings.getPostsEnabled()) {
             mMenuItemResIds.put(R.string.posts, R.drawable.posts);
@@ -142,6 +148,11 @@ public class MainMenuFragment extends Fragment {
                         break;
                     case R.string.orders:
                         intent = new Intent(getActivity(), OrdersListActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.string.rss_posts:
+                        intent = new Intent(getActivity(), DrupalRssListActivity.class);
+                        intent.putExtra(RSS_FEED_URL, "https://www.wired.com/feed/");
                         startActivity(intent);
                         break;
                     case R.string.posts:

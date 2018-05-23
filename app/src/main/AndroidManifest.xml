@@ -192,6 +192,17 @@
             android:label="@string/title_activity_reset_password_verification" />
 
         <activity
+            android:name=".ui.DrupalRssListActivity"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|keyboard|screenSize"
+            android:label="@string/rss_posts" />
+
+        <activity
+            android:name=".ui.RssFeedDetailActivity"
+            android:configChanges="orientation|keyboard|screenSize"
+            android:label="@string/rss_posts" />
+
+        <activity
             android:name=".ui.ZoomableImageActivity" />
 
         <activity

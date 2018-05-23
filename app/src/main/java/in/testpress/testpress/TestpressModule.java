@@ -29,6 +29,9 @@ import in.testpress.testpress.ui.CropImageActivity;
 import in.testpress.testpress.ui.DocumentsListActivity;
 import in.testpress.testpress.ui.DocumentsListFragment;
 import in.testpress.testpress.ui.QRCodeActivity;
+import in.testpress.testpress.ui.DrupalRssListActivity;
+import in.testpress.testpress.ui.DrupalRssListFragment;
+import in.testpress.testpress.ui.RssFeedDetailActivity;
 import in.testpress.testpress.ui.SplashScreenActivity;
 import in.testpress.testpress.ui.ZoomableImageActivity;
 import in.testpress.testpress.ui.MainActivity;
@@ -91,6 +94,9 @@ import retrofit.converter.GsonConverter;
                 ZoomableImageActivity.class,
                 QRCodeActivity.class,
                 SplashScreenActivity.class,
+                DrupalRssListActivity.class,
+                DrupalRssListFragment.class,
+                RssFeedDetailActivity.class,
                 AccountActivateActivity.class
         }
 )

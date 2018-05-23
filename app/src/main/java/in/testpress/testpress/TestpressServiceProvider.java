@@ -108,11 +108,7 @@ public class TestpressServiceProvider {
 
         profilePreferences.edit().clear().apply();
         CommonUtils.registerDevice(activity, testpressService, serviceProvider);
-        DaoSession daoSession =
-                ((TestpressApplication) activity.getApplicationContext()).getDaoSession();
-        PostDao postDao = daoSession.getPostDao();
-        postDao.deleteAll();
-        daoSession.clear();
+        TestpressApplication.clearDatabase(activity);
         TestpressSdk.clearActiveSession(activity);
         TestpressSDKDatabase.clearDatabase(activity);
         logoutService.logout(new Runnable() {

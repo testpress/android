@@ -103,11 +103,7 @@ public class TestpressServiceProvider {
                 Context.MODE_PRIVATE);
         preferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
         CommonUtils.registerDevice(activity, testpressService, serviceProvider);
-        DaoSession daoSession =
-                ((TestpressApplication) activity.getApplicationContext()).getDaoSession();
-        PostDao postDao = daoSession.getPostDao();
-        postDao.deleteAll();
-        daoSession.clear();
+        TestpressApplication.clearDatabase(activity);
         TestpressSdk.clearActiveSession(activity);
         TestpressSDKDatabase.clearDatabase(activity);
         logoutService.logout(new Runnable() {

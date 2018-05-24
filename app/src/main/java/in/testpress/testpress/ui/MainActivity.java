@@ -259,7 +259,7 @@ public class MainActivity extends TestpressFragmentActivity {
     public void onFinishFetchingInstituteSettings(InstituteSettings instituteSettings) {
         this.mInstituteSettings = instituteSettings;
         // TODO: Get allowAnonymousUser flag from institute settings
-        boolean allowAnonymousUser = true; // True if users can use the app(Access posts) without login
+        boolean allowAnonymousUser = false; // True if users can use the app(Access posts) without login
         //noinspection ConstantConditions
         if (CommonUtils.isUserAuthenticated(this) || !allowAnonymousUser) {
             updateTestpressSession(); // Show login screen if user not logged in

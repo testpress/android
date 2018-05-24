@@ -91,7 +91,7 @@ public class MainMenuFragment extends Fragment {
         LinkedHashMap<Integer, Integer> mMenuItemResIds = new LinkedHashMap<>();
         final boolean isUserAuthenticated = account.length > 0;
         // ToDo get from institute settings
-        boolean drupalRssFeedEnabled = false;
+        boolean drupalRssFeedEnabled = true;
         if (isUserAuthenticated) {
             if (!instituteSettings.getShowGameFrontend()) {
                 mMenuItemResIds.put(R.string.my_exams, R.drawable.exams);
@@ -152,7 +152,7 @@ public class MainMenuFragment extends Fragment {
                         break;
                     case R.string.rss_posts:
                         intent = new Intent(getActivity(), DrupalRssListActivity.class);
-                        intent.putExtra(RSS_FEED_URL, "https://www.wired.com/feed/");
+                        intent.putExtra(RSS_FEED_URL, "http://iasexamportal.com/civilservices/node/feed");
                         startActivity(intent);
                         break;
                     case R.string.posts:

@@ -145,6 +145,61 @@
           "status": 1
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1064046661341:android:58a546c304ef9efd",
+        "android_client_info": {
+          "package_name": "com.iasexamportal.onlinetest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1064046661341-4dl811ap1n1jb5shnn0g6jpu6grotsug.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.iasexamportal.onlinetest",
+            "certificate_hash": "c53ddd6f9c8bf151f77333cb7ae1b4111e6add49"
+          }
+        },
+        {
+          "client_id": "1064046661341-2ho5os8cp38ql45q6l0ud8fdh8fg2gis.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAR0MchRzB4IRIci31KWo_6Dgjr2tE4JdY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1064046661341-nllq5ui995bd4ijhjkiondbd1qbehjp1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "in.testpress.ios-app"
+              }
+            },
+            {
+              "client_id": "1064046661341-2ho5os8cp38ql45q6l0ud8fdh8fg2gis.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
     }
   ],
   "configuration_version": "1"

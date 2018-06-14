@@ -138,4 +138,7 @@
 
     <string name="view_in_website">View in Website</string>
 
+    <string name="update_your_app">Update Your App!</string>
+    <string name="remained_later">Remind Later</string>
+
 </resources>

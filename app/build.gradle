@@ -28,7 +28,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Material Dialog
-    implementation 'com.afollestad.material-dialogs:core:0.8.5.9'
+    implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
 
     // Payu
     implementation files('libs/payusdk.jar')

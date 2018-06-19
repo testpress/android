@@ -28,6 +28,7 @@ import in.testpress.testpress.authenticator.ResetPasswordActivity;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.util.CommonUtils;
+import in.testpress.testpress.util.UpdateAppDialogManager;
 
 import static in.testpress.core.TestpressSdk.ACTION_PRESSED_HOME;
 import static in.testpress.core.TestpressSdk.COURSE_CONTENT_DETAIL_REQUEST_CODE;
@@ -54,6 +55,7 @@ public class SplashScreenActivity extends Activity {
         setContentView(R.layout.activity_splash);
         Injector.inject(this);
         ButterKnife.inject(this);
+        UpdateAppDialogManager.monitor(this);
         new Handler().postDelayed(new Runnable() {
 
             @Override

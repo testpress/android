@@ -2,7 +2,7 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyEllipsis">
 
-    <string name="app_name">Ayur Success Pro</string>
+    <string name="app_name">Ayursuccess PRO</string>
     <string name="host_url">ayursuccesspro.testpress.in</string>
     <string name="facebook_app_id">733962776688753</string>
     <string name="fb_login_protocol_scheme">733962776688753</string>

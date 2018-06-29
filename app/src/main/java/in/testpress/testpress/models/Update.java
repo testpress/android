@@ -9,7 +9,7 @@ public class Update {
     private Boolean updateRequired;
     private Boolean force;
     private String message;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Integer days;
 
     /**
      *
@@ -65,12 +65,11 @@ public class Update {
         this.message = message;
     }
 
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
+    public Integer getDays() {
+        return days;
     }
 
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
+    public void setDays(Integer days) {
+        this.days = days;
     }
-
 }

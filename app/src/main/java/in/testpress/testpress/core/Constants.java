@@ -16,12 +16,12 @@ public final class Constants {
         /**
          * Account name
          */
-        public static final String TESTPRESS_ACCOUNT_NAME = "drbharath";
+        public static final String TESTPRESS_ACCOUNT_NAME = "drbharathspharmacology";
 
         /**
          * Account type id
          */
-        public static final String TESTPRESS_ACCOUNT_TYPE = "in.testpress." + TESTPRESS_ACCOUNT_NAME;
+        public static final String TESTPRESS_ACCOUNT_TYPE = "net.crazyapp.com." + TESTPRESS_ACCOUNT_NAME;
 
         /**
          * Auth token type

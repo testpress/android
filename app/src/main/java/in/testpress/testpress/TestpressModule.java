@@ -25,7 +25,6 @@ import in.testpress.testpress.core.RestErrorHandler;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.core.UserAgentProvider;
 import in.testpress.testpress.ui.AccountActivateActivity;
-import in.testpress.testpress.ui.CropImageActivity;
 import in.testpress.testpress.ui.DocumentsListActivity;
 import in.testpress.testpress.ui.DocumentsListFragment;
 import in.testpress.testpress.ui.DrupalRssListActivity;
@@ -85,7 +84,6 @@ import retrofit.converter.GsonConverter;
                 PostsListFragment.class,
                 ProfileDetailsActivity.class,
                 ProfilePhotoActivity.class,
-                CropImageActivity.class,
                 MainMenuFragment.class,
                 ResetPasswordActivity.class,
                 DocumentsListActivity.class,

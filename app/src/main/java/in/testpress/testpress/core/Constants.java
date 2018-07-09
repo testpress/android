@@ -118,6 +118,10 @@ public final class Constants {
         public static final String ORDER = "order";
     }
 
+    public static final class RequestCode {
+        public static final int RECEIVE_SMS_PERMISSION_REQUEST_CODE = 3333;
+    }
+
     public static final String GCM_PREFERENCE_NAME = "testpress." + Auth.TESTPRESS_ACCOUNT_NAME + ".GCM";
     public static final String GCM_PROPERTY_REG_ID = "GCMRegId";
 

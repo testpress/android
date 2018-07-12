@@ -72,7 +72,7 @@ public class ImagePickerUtil {
                 // Permission granted show image picker
                 startCropImageActivity(selectedImageUri);
             } else {
-                Snackbar.make(rootLayout, R.string.action_cant_done_without_permission,
+                Snackbar.make(rootLayout, R.string.testpress_action_cant_done_without_permission,
                         Snackbar.LENGTH_SHORT).show();
             }
         }

@@ -137,4 +137,10 @@
 
     <string name="file_path_not_suitable">Oops!, can\'t access this file path. Please try another folder</string>
 
+    <string name="posts_channel">Updates/News/Posts</string>
+    <string name="contents_channel">New Contents</string>
+
+    <string name="notification_summary_content">%d new notifications</string>
+    <string name="tap_to_open">Tap to open</string>
+
 </resources>

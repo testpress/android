@@ -30,6 +30,8 @@ import in.testpress.testpress.util.GCMPreference;
 import in.testpress.util.UIUtils;
 import retrofit.RestAdapter;
 
+import static in.testpress.testpress.BuildConfig.BASE_URL;
+
 public class TestpressServiceProvider {
     private RestAdapter.Builder restAdapter;
     private ApiKeyProvider keyProvider;
@@ -64,12 +66,12 @@ public class TestpressServiceProvider {
                     ((TestpressApplication) activity.getApplicationContext()).getDaoSession();
             InstituteSettingsDao instituteSettingsDao = daoSession.getInstituteSettingsDao();
             List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
-                    .where(InstituteSettingsDao.Properties.BaseUrl.eq(Constants.Http.URL_BASE))
+                    .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
                     .list();
 
             in.testpress.models.InstituteSettings settings;
             if (instituteSettingsList.isEmpty()) {
-                settings = new in.testpress.models.InstituteSettings(Constants.Http.URL_BASE);
+                settings = new in.testpress.models.InstituteSettings(BASE_URL);
             } else {
                 InstituteSettings instituteSettings = instituteSettingsList.get(0);
                 settings = new in.testpress.models.InstituteSettings(instituteSettings.getBaseUrl())

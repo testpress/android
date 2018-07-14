@@ -50,6 +50,8 @@ import in.testpress.testpress.util.UILImageGetter;
 import in.testpress.testpress.util.ZoomableImageString;
 import in.testpress.util.UIUtils;
 
+import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
+
 public class ProductDetailsActivity extends TestpressFragmentActivity
         implements LoaderManager.LoaderCallbacks<ProductDetails> {
 
@@ -258,7 +260,7 @@ public class ProductDetailsActivity extends TestpressFragmentActivity
         }
         if (this.productDetails.getPaymentLink().isEmpty()) {
             AccountManager manager = (AccountManager) getSystemService(Context.ACCOUNT_SERVICE);
-            Account[] account = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
+            Account[] account = manager.getAccountsByType(APPLICATION_ID);
             if (account.length > 0) {
                 Intent intent = new Intent(ProductDetailsActivity.this, OrderConfirmActivity.class);
                 intent.putExtra("productDetails", productDetails);

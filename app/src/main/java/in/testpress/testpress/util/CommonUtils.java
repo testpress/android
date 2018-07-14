@@ -19,6 +19,7 @@ import in.testpress.testpress.models.Device;
 import in.testpress.testpress.ui.ThrowableLoader;
 
 import static android.content.Context.ACCOUNT_SERVICE;
+import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 
 public class CommonUtils {
 
@@ -55,7 +56,7 @@ public class CommonUtils {
 
     public static boolean isUserAuthenticated(final Activity activity) {
         AccountManager manager = (AccountManager) activity.getSystemService(ACCOUNT_SERVICE);
-        Account[] account = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
+        Account[] account = manager.getAccountsByType(APPLICATION_ID);
         return account.length > 0;
     }
 

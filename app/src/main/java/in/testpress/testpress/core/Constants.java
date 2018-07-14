@@ -4,39 +4,16 @@ package in.testpress.testpress.core;
 
 import java.util.HashMap;
 
+import static in.testpress.testpress.BuildConfig.BASE_URL;
+
 /**
  * Testpress constants
  */
 public final class Constants {
     private Constants() {}
 
-    public static final class Auth {
-        private Auth() {}
-
-        /**
-         * Account name
-         */
-        public static final String TESTPRESS_ACCOUNT_NAME = "testpress";
-
-        /**
-         * Account type id
-         */
-        public static final String TESTPRESS_ACCOUNT_TYPE = "in.testpress." + TESTPRESS_ACCOUNT_NAME;
-
-        /**
-         * Auth token type
-         */
-        public static final String AUTHTOKEN_TYPE = TESTPRESS_ACCOUNT_TYPE;
-    }
-
     public static final class Http {
         private Http() {}
-
-
-        /**
-         * Base URL for all requests
-         */
-        public static final String URL_BASE = "https://sandbox.testpress.in";
 
         /**
          * Check Update url
@@ -106,7 +83,7 @@ public final class Constants {
         /**
          * Handle Success & Failure of payments
          */
-        public static final String URL_PAYMENT_RESPONSE_HANDLER = URL_BASE + "/payments/response/payu/";
+        public static final String URL_PAYMENT_RESPONSE_HANDLER = BASE_URL + "/payments/response/payu/";
 
         /**
          * Query Params
@@ -122,7 +99,7 @@ public final class Constants {
         public static final int RECEIVE_SMS_PERMISSION_REQUEST_CODE = 3333;
     }
 
-    public static final String GCM_PREFERENCE_NAME = "testpress." + Auth.TESTPRESS_ACCOUNT_NAME + ".GCM";
+    public static final String GCM_PREFERENCE_NAME = "GCM";
     public static final String GCM_PROPERTY_REG_ID = "GCMRegId";
 
     public static final String IS_DEEP_LINK = "is_deep_link";

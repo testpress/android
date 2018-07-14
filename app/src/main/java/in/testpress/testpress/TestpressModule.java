@@ -53,6 +53,8 @@ import in.testpress.testpress.ui.paymentGateway.PaymentsActivity;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
 
+import static in.testpress.testpress.BuildConfig.BASE_URL;
+
 /**
  * Dagger module for setting up provides statements.
  * Register all of your entry points below.
@@ -157,8 +159,9 @@ public class TestpressModule {
 
     @Provides
     RestAdapter.Builder provideRestAdapter(RestErrorHandler restErrorHandler, RestAdapterRequestInterceptor restRequestInterceptor, Gson gson) {
+
         return new RestAdapter.Builder()
-                .setEndpoint(Constants.Http.URL_BASE)
+                .setEndpoint(BASE_URL)
                 .setErrorHandler(restErrorHandler)
                 .setRequestInterceptor(restRequestInterceptor)
                 .setLogLevel(RestAdapter.LogLevel.FULL)

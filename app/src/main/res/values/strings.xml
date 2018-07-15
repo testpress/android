@@ -7,11 +7,9 @@
     <string name="server_client_id">1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com</string>
 
     <string name="babapedia">Babapedia</string>
-    <string name="value_add_notes">Value Add Notes</string>
-    <string name="forum">Forum</string>
-    <string name="babapedia_url">http://babapedia2018.iasbaba.com</string>
-    <string name="value_add_notes_url">http://ilp2018.iasbaba.com/value-add-notes</string>
-    <string name="forum_url">http://ilp2018.iasbaba.com/forum</string>
+    <string name="ilp_2019">ILP 2019</string>
+    <string name="babapedia_url">http://babapedia2019.iasbaba.com</string>
+    <string name="ilp_url">http://ilp2019.iasbaba.com/</string>
 
     <string name="rss_posts">Whats New</string>
 

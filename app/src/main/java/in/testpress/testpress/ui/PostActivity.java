@@ -57,6 +57,7 @@ import butterknife.OnClick;
 import in.testpress.core.TestpressCallback;
 import in.testpress.core.TestpressException;
 import in.testpress.core.TestpressSdk;
+import in.testpress.exam.util.ImagePickerUtils;
 import in.testpress.models.FileDetails;
 import in.testpress.network.TestpressApiClient;
 import in.testpress.testpress.Injector;
@@ -72,7 +73,6 @@ import in.testpress.testpress.models.Comment;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.util.CommonUtils;
-import in.testpress.testpress.util.ImagePickerUtil;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.ShareUtil;
 import in.testpress.testpress.util.UIUtils;
@@ -99,8 +99,7 @@ public class PostActivity extends TestpressFragmentActivity implements
     ProgressDialog progressDialog;
     SimpleDateFormat simpleDateFormat;
     boolean postedNewComment;
-    ImagePickerUtil imagePickerUtil;
-    Uri selectedCommentImageUri;
+    ImagePickerUtils imagePickerUtils;
 
     @Inject protected TestpressService testpressService;
     @Inject protected TestpressServiceProvider serviceProvider;
@@ -371,7 +370,7 @@ public class PostActivity extends TestpressFragmentActivity implements
                 }
             }
         });
-        imagePickerUtil = new ImagePickerUtil(activityRootLayout, this);
+        imagePickerUtils = new ImagePickerUtils(activityRootLayout, this);
         commentsLayout.setVisibility(View.VISIBLE);
         getSupportLoaderManager().initLoader(PREVIOUS_COMMENTS_LOADER_ID, null, PostActivity.this);
     }
@@ -432,7 +431,8 @@ public class PostActivity extends TestpressFragmentActivity implements
     }
 
     @Override
-    public void onLoadFinished(Loader<List<Comment>> loader, List<Comment> comments) {
+    public void onLoadFinished(@NonNull Loader<List<Comment>> loader, List<Comment> comments) {
+        getSupportLoaderManager().destroyLoader(loader.getId());
         switch (loader.getId()) {
             case PREVIOUS_COMMENTS_LOADER_ID:
                 onPreviousCommentsLoadFinished(loader, comments);
@@ -601,16 +601,11 @@ public class PostActivity extends TestpressFragmentActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        imagePickerUtil.onActivityResult(requestCode, resultCode, data,
-                new ImagePickerUtil.ImagePickerActivityResultHandler() {
+        imagePickerUtils.onActivityResult(requestCode, resultCode, data,
+                new ImagePickerUtils.ImagePickerResultHandler() {
                     @Override
-                    public void onStoragePermissionsRequired(Uri selectedImageUri) {
-                        selectedCommentImageUri = selectedImageUri;
-                    }
-
-                    @Override
-                    public void onSuccessfullyImageCropped(String imagePath) {
-                        uploadImage(imagePath);
+                    public void onSuccessfullyImageCropped(CropImage.ActivityResult result) {
+                        uploadImage(result.getUri().getPath());
                     }
                 });
     }
@@ -619,7 +614,7 @@ public class PostActivity extends TestpressFragmentActivity implements
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         
-        imagePickerUtil.onRequestPermissionsResult(requestCode, grantResults, selectedCommentImageUri);
+        imagePickerUtils.permissionsUtils.onRequestPermissionsResult(requestCode, grantResults);
     }
 
     void uploadImage(String imagePath) {
@@ -672,6 +667,14 @@ public class PostActivity extends TestpressFragmentActivity implements
             post.update();
         }
         post.setCommentsCount(count);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (imagePickerUtils != null) {
+            imagePickerUtils.permissionsUtils.onResume();
+        }
     }
 
     String getHeader() {

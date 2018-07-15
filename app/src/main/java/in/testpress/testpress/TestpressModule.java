@@ -26,7 +26,6 @@ import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.core.UserAgentProvider;
 import in.testpress.testpress.ui.AccountActivateActivity;
 import in.testpress.testpress.ui.CoursesListFragment;
-import in.testpress.testpress.ui.CropImageActivity;
 import in.testpress.testpress.ui.DocumentsListActivity;
 import in.testpress.testpress.ui.DocumentsListFragment;
 import in.testpress.testpress.ui.InAppBrowserActivity;
@@ -55,6 +54,8 @@ import in.testpress.testpress.ui.paymentGateway.PaymentModeActivity;
 import in.testpress.testpress.ui.paymentGateway.PaymentsActivity;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
+
+import static in.testpress.testpress.BuildConfig.BASE_URL;
 
 /**
  * Dagger module for setting up provides statements.
@@ -87,7 +88,6 @@ import retrofit.converter.GsonConverter;
                 PostsListFragment.class,
                 ProfileDetailsActivity.class,
                 ProfilePhotoActivity.class,
-                CropImageActivity.class,
                 MainMenuFragment.class,
                 ResetPasswordActivity.class,
                 DocumentsListActivity.class,
@@ -164,8 +164,9 @@ public class TestpressModule {
 
     @Provides
     RestAdapter.Builder provideRestAdapter(RestErrorHandler restErrorHandler, RestAdapterRequestInterceptor restRequestInterceptor, Gson gson) {
+
         return new RestAdapter.Builder()
-                .setEndpoint(Constants.Http.URL_BASE)
+                .setEndpoint(BASE_URL)
                 .setErrorHandler(restErrorHandler)
                 .setRequestInterceptor(restRequestInterceptor)
                 .setLogLevel(RestAdapter.LogLevel.FULL)

@@ -300,13 +300,19 @@ public class PostActivity extends TestpressFragmentActivity implements
 
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    boolean wrongUrl = !url.startsWith("http://") && !url.startsWith("https://");
+                    Uri uri = Uri.parse(url);
+                    if (url.endsWith(".pdf") && !uri.getHost().equals("docs.google.com")
+                            && !uri.getHost().equals("drive.google.com") && ! wrongUrl) {
+
+                        uri = Uri.parse("https://docs.google.com/gview?embedded=true&url=" + url);
+                    }
                     CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
                     builder.setToolbarColor(ContextCompat.getColor(PostActivity.this, R.color.primary));
                     CustomTabsIntent customTabsIntent = builder.build();
                     try {
-                        customTabsIntent.launchUrl(PostActivity.this, Uri.parse(url));
+                        customTabsIntent.launchUrl(PostActivity.this, uri);
                     } catch (ActivityNotFoundException e) {
-                        boolean wrongUrl = !url.startsWith("http://") && !url.startsWith("https://");
                         int message = wrongUrl ? R.string.wrong_url : R.string.browser_not_available;
                         UIUtils.getAlertDialog(PostActivity.this, R.string.not_supported, message)
                                 .show();

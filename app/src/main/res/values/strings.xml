@@ -2,18 +2,16 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyEllipsis">
 
-    <string name="app_name">RACE</string>
-    <string name="host_url">race.testpress.in</string>
     <string name="white_labeled_host_url">onlinetest.raceinstitute.in</string>
-    <string name="facebook_app_id">642128432634881</string>
-    <string name="fb_login_protocol_scheme">642128432634881</string>
-    <string name="server_client_id">1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com</string>
-    <string name="share_message">Good app to prepare for IBPS, SBI &amp; Bank Exams. Get it at https://play.google.com/store/apps/details?id=</string>
 
     <string name="qr_code">QR Code</string>
     <string name="my_race_enrollment_id">My RACE Enrollment Id</string>
     <string name="qr_code_generation_failed">Can\'t generate QR code!</string>
     <string name="not_race_student">You are not a RACE student.</string>
+
+    <string name="facebook_app_id">642128432634881</string>
+    <string name="fb_login_protocol_scheme">642128432634881</string>
+    <string name="server_client_id">1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com</string>
 
     <string name="rss_posts">Whats New</string>
 
@@ -148,5 +146,7 @@
 
     <string name="notification_summary_content">%d new notifications</string>
     <string name="tap_to_open">Tap to open</string>
+
+    <string name="get_it_at"> Get it at https://play.google.com/store/apps/details?id=</string>
 
 </resources>

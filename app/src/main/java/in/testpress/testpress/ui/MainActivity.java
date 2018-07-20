@@ -56,6 +56,8 @@ import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.UpdateAppDialogManager;
 
+import static in.testpress.testpress.BuildConfig.BASE_URL;
+
 public class MainActivity extends TestpressFragmentActivity {
 
     private static final String SELECTED_ITEM = "selectedItem";
@@ -224,7 +226,7 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             protected void onException(Exception exception) throws RuntimeException {
                 List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
-                        .where(InstituteSettingsDao.Properties.BaseUrl.eq(Constants.Http.URL_BASE))
+                        .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
                         .list();
 
                 if (instituteSettingsList.size() > 0) {
@@ -250,7 +252,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
             @Override
             protected void onSuccess(InstituteSettings instituteSettings) throws Exception {
-                instituteSettings.setBaseUrl(Constants.Http.URL_BASE);
+                instituteSettings.setBaseUrl(BASE_URL);
                 instituteSettingsDao.insertOrReplace(instituteSettings);
                 onFinishFetchingInstituteSettings(instituteSettings);
             }

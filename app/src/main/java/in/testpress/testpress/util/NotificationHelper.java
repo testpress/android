@@ -26,6 +26,9 @@ import in.testpress.testpress.R;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.ui.SplashScreenActivity;
 
+import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
+import static in.testpress.testpress.BuildConfig.BASE_URL;
+
 /**
  * Helper class to manage notification channels, and create notifications.
  *
@@ -37,10 +40,8 @@ import in.testpress.testpress.ui.SplashScreenActivity;
  */
 public class NotificationHelper extends ContextWrapper {
 
-    private static final String POSTS_NOTIFICATION_GROUP =
-            Constants.Auth.TESTPRESS_ACCOUNT_TYPE + ".posts";
-    private static final String CONTENTS_NOTIFICATION_GROUP =
-            Constants.Auth.TESTPRESS_ACCOUNT_TYPE + ".contents";
+    private static final String POSTS_NOTIFICATION_GROUP = APPLICATION_ID + ".posts";
+    private static final String CONTENTS_NOTIFICATION_GROUP = APPLICATION_ID + ".contents";
 
     private static final int POSTS_NOTIFICATION_GROUP_SUMMARY_ID = 0;
     private static final int CONTENTS_NOTIFICATION_GROUP_SUMMARY_ID = 1;
@@ -100,7 +101,7 @@ public class NotificationHelper extends ContextWrapper {
         try {
             uri = Uri.parse(url);
             if (uri.getHost() == null) {
-                uri = Uri.parse(Constants.Http.URL_BASE + url);
+                uri = Uri.parse(BASE_URL + url);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -178,7 +179,7 @@ public class NotificationHelper extends ContextWrapper {
         if (numberOfNotifications > notificationsThreshold) {
             Uri uri = null;
             try {
-                uri = Uri.parse(Constants.Http.URL_BASE + urlPath);
+                uri = Uri.parse(BASE_URL + urlPath);
             } catch (Exception e) {
                 e.printStackTrace();
             }

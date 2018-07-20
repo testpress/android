@@ -32,7 +32,6 @@ import in.testpress.testpress.ui.DrupalRssListActivity;
 import in.testpress.testpress.ui.DrupalRssListFragment;
 import in.testpress.testpress.ui.RssFeedDetailActivity;
 import in.testpress.testpress.ui.SplashScreenActivity;
-import in.testpress.testpress.ui.ZoomableImageActivity;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.MainMenuFragment;
 import in.testpress.testpress.ui.OrderConfirmActivity;
@@ -53,6 +52,8 @@ import in.testpress.testpress.ui.paymentGateway.PaymentModeActivity;
 import in.testpress.testpress.ui.paymentGateway.PaymentsActivity;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
+
+import static in.testpress.testpress.BuildConfig.BASE_URL;
 
 /**
  * Dagger module for setting up provides statements.
@@ -89,7 +90,6 @@ import retrofit.converter.GsonConverter;
                 ResetPasswordActivity.class,
                 DocumentsListActivity.class,
                 DocumentsListFragment.class,
-                ZoomableImageActivity.class,
                 QRCodeActivity.class,
                 SplashScreenActivity.class,
                 DrupalRssListActivity.class,
@@ -159,8 +159,9 @@ public class TestpressModule {
 
     @Provides
     RestAdapter.Builder provideRestAdapter(RestErrorHandler restErrorHandler, RestAdapterRequestInterceptor restRequestInterceptor, Gson gson) {
+
         return new RestAdapter.Builder()
-                .setEndpoint(Constants.Http.URL_BASE)
+                .setEndpoint(BASE_URL)
                 .setErrorHandler(restErrorHandler)
                 .setRequestInterceptor(restRequestInterceptor)
                 .setLogLevel(RestAdapter.LogLevel.FULL)

@@ -13,10 +13,9 @@ import com.facebook.login.LoginManager;
 import java.io.IOException;
 import java.util.List;
 
+import in.testpress.core.TestpressSDKDatabase;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
-import in.testpress.course.TestpressCourse;
-import in.testpress.exam.TestpressExam;
 import in.testpress.testpress.authenticator.ApiKeyProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
@@ -30,6 +29,8 @@ import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.util.UIUtils;
 import retrofit.RestAdapter;
+
+import static in.testpress.testpress.BuildConfig.BASE_URL;
 
 public class TestpressServiceProvider {
     private RestAdapter.Builder restAdapter;
@@ -65,20 +66,20 @@ public class TestpressServiceProvider {
                     ((TestpressApplication) activity.getApplicationContext()).getDaoSession();
             InstituteSettingsDao instituteSettingsDao = daoSession.getInstituteSettingsDao();
             List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
-                    .where(InstituteSettingsDao.Properties.BaseUrl.eq(Constants.Http.URL_BASE))
+                    .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
                     .list();
 
-            in.testpress.model.InstituteSettings settings;
+            in.testpress.models.InstituteSettings settings;
             if (instituteSettingsList.isEmpty()) {
-                settings = new in.testpress.model.InstituteSettings(Constants.Http.URL_BASE);
+                settings = new in.testpress.models.InstituteSettings(BASE_URL);
             } else {
                 InstituteSettings instituteSettings = instituteSettingsList.get(0);
-                settings = new in.testpress.model.InstituteSettings(
-                        instituteSettings.getBaseUrl(),
-                        instituteSettings.getShowGameFrontend(),
-                        instituteSettings.getCoursesEnableGamification()
-                );
-                settings.setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled());
+                settings = new in.testpress.models.InstituteSettings(instituteSettings.getBaseUrl())
+                        .setBookmarksEnabled(instituteSettings.getBookmarksEnabled())
+                        .setCoursesFrontend(instituteSettings.getShowGameFrontend())
+                        .setCoursesGamificationEnabled(instituteSettings.getCoursesEnableGamification())
+                        .setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled())
+                        .setAccessCodeEnabled(false);
             }
             TestpressSdk.setTestpressSession(activity, new TestpressSession(settings, authToken));
         }
@@ -103,14 +104,9 @@ public class TestpressServiceProvider {
                 Context.MODE_PRIVATE);
         preferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
         CommonUtils.registerDevice(activity, testpressService, serviceProvider);
-        DaoSession daoSession =
-                ((TestpressApplication) activity.getApplicationContext()).getDaoSession();
-        PostDao postDao = daoSession.getPostDao();
-        postDao.deleteAll();
-        daoSession.clear();
+        TestpressApplication.clearDatabase(activity);
         TestpressSdk.clearActiveSession(activity);
-        TestpressExam.clearDatabase(activity);
-        TestpressCourse.clearDatabase(activity);
+        TestpressSDKDatabase.clearDatabase(activity);
         logoutService.logout(new Runnable() {
             @Override
             public void run() {

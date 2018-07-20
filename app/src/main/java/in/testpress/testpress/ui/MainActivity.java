@@ -5,26 +5,32 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.widget.TextView;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -46,17 +52,9 @@ import in.testpress.testpress.models.Update;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.SafeAsyncTask;
+import in.testpress.testpress.util.UpdateAppDialogManager;
 
-import com.afollestad.materialdialogs.GravityEnum;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
+import static in.testpress.testpress.BuildConfig.BASE_URL;
 
 public class MainActivity extends TestpressFragmentActivity {
 
@@ -147,6 +145,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 startService(intent);
             }
         }
+        addMenuItem(R.string.dashboard, R.drawable.profile_default, new MainMenuFragment());
         // Show courses list if game front end is enabled, otherwise hide bottom bar
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             //noinspection ConstantConditions
@@ -161,7 +160,6 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             grid.setVisibility(View.GONE);
         }
-        addMenuItem(R.string.profile, R.drawable.profile_default, new MainMenuFragment());
         mBottomBarAdapter = new BottomNavBarAdapter(this, mMenuItemImageIds, mMenuItemTitleIds);
         grid.setAdapter(mBottomBarAdapter);
         grid.setNumColumns(mBottomBarAdapter.getCount());
@@ -223,7 +221,7 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             protected void onException(Exception exception) throws RuntimeException {
                 List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
-                        .where(InstituteSettingsDao.Properties.BaseUrl.eq(Constants.Http.URL_BASE))
+                        .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
                         .list();
 
                 if (instituteSettingsList.size() > 0) {
@@ -249,7 +247,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
             @Override
             protected void onSuccess(InstituteSettings instituteSettings) throws Exception {
-                instituteSettings.setBaseUrl(Constants.Http.URL_BASE);
+                instituteSettings.setBaseUrl(BASE_URL);
                 instituteSettingsDao.insertOrReplace(instituteSettings);
                 onFinishFetchingInstituteSettings(instituteSettings);
             }
@@ -318,42 +316,14 @@ public class MainActivity extends TestpressFragmentActivity {
             protected void onSuccess(final Update update) throws Exception {
                 if(update.getUpdateRequired()) {
                     if (update.getForce()) {
-                        new MaterialDialog.Builder(MainActivity.this)
-                                .cancelable(true)
-                                .content(update.getMessage())
-                                .cancelListener(new DialogInterface.OnCancelListener() {
-                                    @Override
-                                    public void onCancel(DialogInterface dialogInterface) {
-                                        finish();
-                                    }
-                                })
-                                .neutralText("Update")
-                                .buttonsGravity(GravityEnum.CENTER)
-                                .neutralColorRes(R.color.primary)
-                                .callback(new MaterialDialog.ButtonCallback() {
-                                    @Override
-                                    public void onNeutral(MaterialDialog dialog) {
-                                        dialog.cancel();
-                                        startActivity(new Intent(Intent.ACTION_VIEW,
-                                                Uri.parse("market://details?id=" + getPackageName())));
-                                        finish();
-                                    }
-                                })
-                                .show();
+                        UpdateAppDialogManager
+                                .showDialog(MainActivity.this, true, update.getMessage());
                     } else {
                         initScreen();
-                        Snackbar snackbar = Snackbar
-                                .make(coordinatorLayout, "New update is available",
-                                        Snackbar.LENGTH_INDEFINITE)
-                                .setAction("UPDATE", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        startActivity(new Intent(Intent.ACTION_VIEW,
-                                                Uri.parse("market://details?id=" + getPackageName())));
-                                        finish();
-                                    }
-                                });
-                        snackbar.show();
+                        if (UpdateAppDialogManager.canShowDialog(MainActivity.this, update.getDays())) {
+                            UpdateAppDialogManager
+                                    .showDialog(MainActivity.this, false, update.getMessage());
+                        }
                     }
                 } else {
                     initScreen();

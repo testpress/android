@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -52,7 +53,6 @@ import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
-import info.hoang8f.widget.FButton;
 
 public class PostsListFragment extends Fragment implements
         AbsListView.OnScrollListener, SwipeRefreshLayout.OnRefreshListener, LoaderManager
@@ -72,7 +72,7 @@ public class PostsListFragment extends Fragment implements
     @InjectView(R.id.empty_container) LinearLayout emptyView;
     @InjectView(R.id.empty_title) TextView emptyTitleView;
     @InjectView(R.id.empty_description) TextView emptyDescView;
-    @InjectView(R.id.retry_button) FButton retryButton;
+    @InjectView(R.id.retry_button) Button retryButton;
     HeaderFooterListAdapter<PostsListAdapter> adapter;
     PostsPager refreshPager;
     PostsPager pager;
@@ -372,6 +372,9 @@ public class PostsListFragment extends Fragment implements
         } else {
             //If data is already available in the local database, then
             //notify user about the new data to view latest data.
+            if (refreshPager == null) {
+                return;
+            }
             Ln.d(MISSED_POSTS_THRESHOLD >= refreshPager.getTotalCount());
             if (MISSED_POSTS_THRESHOLD >= refreshPager.getTotalCount()) {
                 if (refreshPager.hasNext()) {

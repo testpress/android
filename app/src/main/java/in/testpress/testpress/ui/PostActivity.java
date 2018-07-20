@@ -2,13 +2,13 @@ package in.testpress.testpress.ui;
 
 import android.accounts.AccountsException;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -27,11 +27,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.JavascriptInterface;
-import android.webkit.WebResourceError;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -76,6 +72,7 @@ import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.ShareUtil;
 import in.testpress.testpress.util.UIUtils;
+import in.testpress.util.FullScreenChromeClient;
 import in.testpress.util.ViewUtils;
 import in.testpress.util.WebViewUtils;
 
@@ -100,6 +97,7 @@ public class PostActivity extends TestpressFragmentActivity implements
     SimpleDateFormat simpleDateFormat;
     boolean postedNewComment;
     ImagePickerUtils imagePickerUtils;
+    private FullScreenChromeClient fullScreenChromeClient;
 
     @Inject protected TestpressService testpressService;
     @Inject protected TestpressServiceProvider serviceProvider;
@@ -160,6 +158,7 @@ public class PostActivity extends TestpressFragmentActivity implements
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getResources().getString(R.string.please_wait));
         progressDialog.setCancelable(false);
+        fullScreenChromeClient = new FullScreenChromeClient(this);
         in.testpress.util.UIUtils.setIndeterminateDrawable(this, progressDialog, 4);
         ViewUtils.setTypeface(new TextView[] {loadPreviousCommentsText, commentsLabel,
                 loadNewCommentsText, title}, TestpressSdk.getRubikMediumFont(this));
@@ -231,15 +230,6 @@ public class PostActivity extends TestpressFragmentActivity implements
         }.execute();
     }
 
-    class ImageHandler {
-        @JavascriptInterface
-        public void onClickImage(String url) {
-            Intent intent = new Intent(PostActivity.this, ZoomableImageActivity.class);
-            intent.putExtra("url", url);
-            startActivity(intent);
-        }
-    }
-
     private void displayPost(Post post) {
         postDetails.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
@@ -253,68 +243,57 @@ public class PostActivity extends TestpressFragmentActivity implements
         }
         date.setText(DateUtils.getRelativeTimeSpanString(post.getPublished()));
         if (post.getContentHtml() != null) {
-            WebSettings settings = content.getSettings();
-            settings.setDefaultTextEncodingName("utf-8");
-            settings.setJavaScriptEnabled(true);
-            settings.setBuiltInZoomControls(true);
-            settings.setDisplayZoomControls(false);
-            settings.setSupportZoom(true);
-            settings.setUseWideViewPort(true);
-            settings.setLoadWithOverviewMode(true);
-            content.addJavascriptInterface(new ImageHandler(), "ImageHandler");
-            content.setWebViewClient(new WebViewClient() {
+            WebViewUtils webViewUtils = new WebViewUtils(content) {
                 @Override
-                public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                    super.onPageStarted(view, url, favicon);
+                protected void onPageStarted() {
+                    super.onPageStarted();
                     progressBar.setVisibility(View.VISIBLE);
                 }
 
                 @Override
-                public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                    super.onReceivedError(view, request, error);
-                    progressBar.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onPageFinished(WebView view, String url) {
-                    super.onPageFinished(view, url);
-                    String javascript = "javascript:var images = document.getElementsByTagName(\"img\");" +
-                            "for (i = 0; i < images.length; i++) {" +
-                            "   images[i].onclick = (" +
-                            "       function() {" +
-                            "           var src = images[i].src;" +
-                            "           return function() {" +
-                            "               ImageHandler.onClickImage(src);" +
-                            "           }" +
-                            "       }" +
-                            "   )();" +
-                            "}";
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        content.evaluateJavascript(javascript, null);
-                    } else {
-                        content.loadUrl(javascript, null);
-                    }
+                protected void onLoadFinished() {
+                    super.onLoadFinished();
                     progressBar.setVisibility(View.GONE);
                     displayComments();
                 }
 
                 @Override
-                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                public String getJavascript(Context context) {
+                    String iFrameVideoWrapper = in.testpress.util.CommonUtils
+                            .getStringFromAsset(PostActivity.this, "IFrameVideoWrapper.js");
+
+                    return super.getJavascript(context) + iFrameVideoWrapper;
+                }
+
+                @Override
+                protected void onNetworkError() {
+                    progressBar.setVisibility(View.GONE);
+                }
+
+                @Override
+                protected boolean shouldOverrideUrlLoading(Activity activity, String url) {
+                    boolean wrongUrl = !url.startsWith("http://") && !url.startsWith("https://");
+                    Uri uri = Uri.parse(url);
+                    if (url.endsWith(".pdf") && !uri.getHost().equals("docs.google.com")
+                            && !uri.getHost().equals("drive.google.com") && !wrongUrl) {
+
+                        uri = Uri.parse("https://docs.google.com/gview?embedded=true&url=" + url);
+                    }
                     CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
                     builder.setToolbarColor(ContextCompat.getColor(PostActivity.this, R.color.primary));
                     CustomTabsIntent customTabsIntent = builder.build();
                     try {
-                        customTabsIntent.launchUrl(PostActivity.this, Uri.parse(url));
+                        customTabsIntent.launchUrl(PostActivity.this, uri);
                     } catch (ActivityNotFoundException e) {
-                        boolean wrongUrl = !url.startsWith("http://") && !url.startsWith("https://");
                         int message = wrongUrl ? R.string.wrong_url : R.string.browser_not_available;
                         UIUtils.getAlertDialog(PostActivity.this, R.string.not_supported, message)
                                 .show();
                     }
                     return true;
                 }
-            });
-            content.loadDataWithBaseURL("file:///android_asset/", getHeader() + post.getContentHtml(), "text/html", "UTF-8", null);
+            };
+            webViewUtils.initWebView(getHeader() + post.getContentHtml(), this);
+            content.setWebChromeClient(fullScreenChromeClient);
         } else {
             content.setVisibility(View.GONE);
             commentsLayout.setVisibility(View.GONE);
@@ -675,12 +654,11 @@ public class PostActivity extends TestpressFragmentActivity implements
         if (imagePickerUtils != null) {
             imagePickerUtils.permissionsUtils.onResume();
         }
+        content.onResume();
     }
 
     String getHeader() {
-        return "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\" />" +
-                "<link rel=\"stylesheet\" type=\"text/css\" href=\"typebase.css\" />" +
-                "<style>img{display: inline;height: auto;max-width: 100%;}</style>";
+        return "<link rel='stylesheet' type='text/css' href='typebase.css' />";
     }
 
     @Override
@@ -719,6 +697,12 @@ public class PostActivity extends TestpressFragmentActivity implements
             Snackbar.make(activityRootLayout, R.string.testpress_network_error,
                     Snackbar.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        content.onPause();
     }
 
     @Override

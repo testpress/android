@@ -47,6 +47,7 @@ import retrofit.RetrofitError;
 
 import static android.Manifest.permission.RECEIVE_SMS;
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
+import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.authenticator.LoginActivity.REQUEST_CODE_REGISTER_USER;
 import static in.testpress.testpress.authenticator.RegisterActivity.VerificationMethod.EMAIL;
 import static in.testpress.testpress.authenticator.RegisterActivity.VerificationMethod.MOBILE;
@@ -84,7 +85,9 @@ public class RegisterActivity extends AppCompatActivity {
         DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
         InstituteSettingsDao instituteSettingsDao = daoSession.getInstituteSettingsDao();
         List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
-                .where(InstituteSettingsDao.Properties.BaseUrl.eq(Constants.Http.URL_BASE)).list();
+                .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
+                .list();
+
         if (instituteSettingsList.size() != 0) {
             InstituteSettings instituteSettings = instituteSettingsList.get(0);
             verificationMethod =

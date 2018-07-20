@@ -53,6 +53,8 @@ import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 
 import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
+import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
+import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.ui.DrupalRssListFragment.RSS_FEED_URL;
 
 public class MainMenuFragment extends Fragment {
@@ -80,13 +82,13 @@ public class MainMenuFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         fetchStarredCategories();
         AccountManager manager = (AccountManager) getActivity().getSystemService(Context.ACCOUNT_SERVICE);
-        account = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
+        account = manager.getAccountsByType(APPLICATION_ID);
         DaoSession daoSession =
                 ((TestpressApplication) getActivity().getApplicationContext()).getDaoSession();
 
         InstituteSettingsDao instituteSettingsDao = daoSession.getInstituteSettingsDao();
         InstituteSettings instituteSettings = instituteSettingsDao.queryBuilder()
-                .where(InstituteSettingsDao.Properties.BaseUrl.eq(Constants.Http.URL_BASE))
+                .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
                 .list().get(0);
 
         LinkedHashMap<Integer, Integer> mMenuItemResIds = new LinkedHashMap<>();
@@ -231,7 +233,8 @@ public class MainMenuFragment extends Fragment {
     void shareApp() {
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("text/plain");
-        share.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.share_message) + getActivity().getPackageName());
+        share.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_message) +
+                getString(R.string.get_it_at) + getActivity().getPackageName());
         startActivity(Intent.createChooser(share, "Share with"));
     }
 

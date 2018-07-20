@@ -5,11 +5,12 @@ import android.accounts.AccountManager;
 import android.accounts.AccountManagerFuture;
 import android.content.Context;
 
-import in.testpress.testpress.core.Constants;
+import javax.inject.Inject;
+
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 
-import javax.inject.Inject;
+import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 
 
 /**
@@ -46,7 +47,7 @@ public class LogoutService {
             final AccountManager accountManagerWithContext = AccountManager.get(taskContext);
             if (accountManagerWithContext != null) {
                 final Account[] accounts = accountManagerWithContext
-                        .getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
+                        .getAccountsByType(APPLICATION_ID);
                 if (accounts.length > 0) {
                     final AccountManagerFuture<Boolean> removeAccountFuture
                             = accountManagerWithContext.removeAccount(accounts[0], null, null);

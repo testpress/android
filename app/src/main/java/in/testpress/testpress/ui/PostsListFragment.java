@@ -315,6 +315,7 @@ public class PostsListFragment extends Fragment implements
         if (getActivity() == null) {
             return;
         }
+        getLoaderManager().destroyLoader(loader.getId());
         final Exception exception = getException(loader);
         if (exception != null) {
             //Remove the swipe refresh icon and the sticky notification if any

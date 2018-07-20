@@ -31,7 +31,6 @@ import in.testpress.testpress.ui.DrupalRssListActivity;
 import in.testpress.testpress.ui.DrupalRssListFragment;
 import in.testpress.testpress.ui.RssFeedDetailActivity;
 import in.testpress.testpress.ui.SplashScreenActivity;
-import in.testpress.testpress.ui.ZoomableImageActivity;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.MainMenuFragment;
 import in.testpress.testpress.ui.OrderConfirmActivity;
@@ -90,7 +89,6 @@ import static in.testpress.testpress.BuildConfig.BASE_URL;
                 ResetPasswordActivity.class,
                 DocumentsListActivity.class,
                 DocumentsListFragment.class,
-                ZoomableImageActivity.class,
                 SplashScreenActivity.class,
                 DrupalRssListActivity.class,
                 DrupalRssListFragment.class,

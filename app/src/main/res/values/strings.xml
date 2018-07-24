@@ -2,12 +2,11 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyEllipsis">
 
-    <string name="app_name">Axent Academy</string>
-    <string name="host_url">axentacademy.testpress.in</string>
     <string name="facebook_app_id">733962776688753</string>
     <string name="fb_login_protocol_scheme">733962776688753</string>
     <string name="server_client_id">1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com</string>
-    <string name="share_message">Good app to prepare for NEET, IIT-JEE(Mains &amp; Advanced), AIIMS &amp; CBSE. Get it at https://play.google.com/store/apps/details?id=</string>
+
+    <string name="rss_posts">Whats New</string>
 
     <string name="refresh_action">Refresh</string>
 
@@ -125,5 +124,22 @@
     <string name="profile">Profile</string>
     <string name="orders">Orders</string>
     <string name="rate_us">Rate Us</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="bookmarks">Bookmarks</string>
+
+    <string name="view_in_website">View in Website</string>
+
+    <string name="update_your_app">Update Your App!</string>
+    <string name="remained_later">Remind Later</string>
+
+    <string name="file_path_not_suitable">Oops!, can\'t access this file path. Please try another folder</string>
+
+    <string name="posts_channel">Updates/News/Posts</string>
+    <string name="contents_channel">New Contents</string>
+
+    <string name="notification_summary_content">%d new notifications</string>
+    <string name="tap_to_open">Tap to open</string>
+
+    <string name="get_it_at"> Get it at https://play.google.com/store/apps/details?id=</string>
 
 </resources>

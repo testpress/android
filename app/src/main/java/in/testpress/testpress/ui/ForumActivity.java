@@ -72,7 +72,6 @@ import in.testpress.testpress.models.CategoryDao;
 import in.testpress.testpress.models.Comment;
 import in.testpress.testpress.models.Forum;
 import in.testpress.testpress.models.ForumDao;
-import in.testpress.testpress.models.ProfileDetails;
 import in.testpress.testpress.models.User;
 import in.testpress.testpress.models.UserDao;
 import in.testpress.testpress.ui.view.RoundedImageView;
@@ -933,7 +932,7 @@ public class ForumActivity extends TestpressFragmentActivity implements
     public boolean onOptionsItemSelected(final MenuItem item) {
         if(item.getItemId() == R.id.share) {
             if (forum != null) {
-                ShareUtil.shareUrl(this, forum.getTitle(), forum.getUrl());
+                ShareUtil.shareUrl(this, forum.getTitle(), forum.getShortWebUrl());
             } else {
                 ShareUtil.shareUrl(this, "Check out this article", url);
             }

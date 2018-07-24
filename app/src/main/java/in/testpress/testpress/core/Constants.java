@@ -99,6 +99,7 @@ public final class Constants {
 
     public static final class RequestCode {
         public static final int RECEIVE_SMS_PERMISSION_REQUEST_CODE = 3333;
+        public static final int CREATE_POST_REQUEST_CODE = 200;
     }
 
     public static final String GCM_PREFERENCE_NAME = "GCM";

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/main_layout" >
+
+        <in.testpress.exam.ui.view.SlidingPaneLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/sliding_layout" >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:background="#fff">
+
+                <TextView
+                    android:id="@+id/filter_by"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Filter by"
+                    android:textSize="12sp"
+                    android:textAllCaps="true"
+                    android:layout_alignParentTop="true"/>
+
+                <Spinner
+                    style="@style/Widget.Testpress.HeaderBar.Spinner.Base"
+                    android:id="@+id/category_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    android:layout_below="@+id/filter_by"
+                    android:paddingBottom="30dp"/>
+
+                <TextView
+                    android:id="@+id/sort_by"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Sort By"
+                    android:textSize="12sp"
+                    android:textAllCaps="true"
+                    android:layout_below="@+id/category_spinner"/>
+
+                <Spinner
+                    style="@style/Widget.Testpress.HeaderBar.Spinner.Base"
+                    android:id="@+id/sort_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    android:layout_below="@id/sort_by"
+                    android:paddingBottom="30dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_below="@+id/sort_spinner">
+
+                    <Button
+                        android:id="@+id/apply_filter"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:textSize="16dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:background="@drawable/testpress_rounded_green_button"
+                        android:text="Apply" />
+
+                    <Button
+                        android:id="@+id/clear_filter"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:textSize="16dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:textColor="@color/testpress_green_light"
+                        android:background="@drawable/testpress_green_stroke"
+                        android:text="Clear"/>
+
+
+                </LinearLayout>
+            </RelativeLayout>
+
+            <include layout="@layout/swipe_refresh_list" />
+
+        </in.testpress.exam.ui.view.SlidingPaneLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/testpress_gradient_shadow_gray_top" />
+
+    </RelativeLayout>
+
+</LinearLayout>

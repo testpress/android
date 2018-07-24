@@ -148,16 +148,15 @@ public class MainActivity extends TestpressFragmentActivity {
         addMenuItem(R.string.dashboard, R.drawable.profile_default, new MainMenuFragment());
         // Show courses list if game front end is enabled, otherwise hide bottom bar
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
+            //noinspection ConstantConditions
+            addMenuItem(R.string.learn, R.drawable.learn,
+                    TestpressCourse.getCoursesListFragment(this, TestpressSdk.getTestpressSession(this)));
 
             if (mInstituteSettings.getCoursesEnableGamification()) {
                 //noinspection ConstantConditions
                 addMenuItem(R.string.testpress_leaderboard, R.drawable.leaderboard,
                         TestpressCourse.getLeaderboardFragment(this, TestpressSdk.getTestpressSession(this)));
             }
-
-            //noinspection ConstantConditions
-            addMenuItem(R.string.learn, R.drawable.learn,
-                    TestpressCourse.getCoursesListFragment(this, TestpressSdk.getTestpressSession(this)));
         } else {
             grid.setVisibility(View.GONE);
         }

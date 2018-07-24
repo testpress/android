@@ -36,8 +36,8 @@ import static in.testpress.core.TestpressSdk.COURSE_CONTENT_LIST_REQUEST_CODE;
 import static in.testpress.course.TestpressCourse.CHAPTER_URL;
 import static in.testpress.course.TestpressCourse.COURSE_ID;
 import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
+import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.core.Constants.Http.CHAPTERS_PATH;
-import static in.testpress.testpress.core.Constants.Http.URL_BASE;
 
 public class SplashScreenActivity extends Activity {
 
@@ -195,7 +195,7 @@ public class SplashScreenActivity extends Activity {
                 break;
             case 2:
                 // Contents list url - /chapters/chapter-slug/
-                String chapterAPI = URL_BASE + CHAPTERS_PATH + uri.getLastPathSegment() + "/";
+                String chapterAPI = BASE_URL + CHAPTERS_PATH + uri.getLastPathSegment() + "/";
                 TestpressCourse.showChapterContents(this, chapterAPI, testpressSession);
                 break;
             case 3:

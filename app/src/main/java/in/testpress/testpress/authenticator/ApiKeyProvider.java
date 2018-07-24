@@ -1,5 +1,3 @@
-
-
 package in.testpress.testpress.authenticator;
 
 import android.accounts.AccountManager;
@@ -10,11 +8,9 @@ import android.os.Bundle;
 
 import java.io.IOException;
 
-import javax.inject.Inject;
+import in.testpress.testpress.BuildConfig;
 
 import static android.accounts.AccountManager.KEY_AUTHTOKEN;
-import static in.testpress.testpress.core.Constants.Auth.AUTHTOKEN_TYPE;
-import static in.testpress.testpress.core.Constants.Auth.TESTPRESS_ACCOUNT_TYPE;
 
 /**
  * Bridge class that obtains a API key for the currently configured account
@@ -46,8 +42,8 @@ public class ApiKeyProvider {
      */
     public String getAuthKey(final Activity activity) throws AccountsException, IOException {
         final AccountManagerFuture<Bundle> accountManagerFuture
-                = accountManager.getAuthTokenByFeatures(TESTPRESS_ACCOUNT_TYPE,
-                AUTHTOKEN_TYPE, new String[0], activity, null, null, null, null);
+                = accountManager.getAuthTokenByFeatures(BuildConfig.APPLICATION_ID,
+                BuildConfig.APPLICATION_ID, new String[0], activity, null, null, null, null);
 
         return accountManagerFuture.getResult().getString(KEY_AUTHTOKEN);
     }

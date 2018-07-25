@@ -54,7 +54,9 @@ import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.UpdateAppDialogManager;
 
+import static in.testpress.testpress.BuildConfig.ALLOW_ANONYMOUS_USER;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.BuildConfig.FORUM_ENABLED;
 
 public class MainActivity extends TestpressFragmentActivity {
 
@@ -168,8 +170,9 @@ public class MainActivity extends TestpressFragmentActivity {
                 addMenuItem(R.string.testpress_leaderboard, R.drawable.leaderboard,
                         TestpressCourse.getLeaderboardFragment(this, TestpressSdk.getTestpressSession(this)));
             }
-            addMenuItem(R.string.articles, R.drawable.news, new PostsListFragment());
-            addMenuItem(R.string.discussions, R.drawable.chat_icon, new ForumListFragment());
+            if (FORUM_ENABLED) {
+                addMenuItem(R.string.discussions, R.drawable.chat_icon, new ForumListFragment());
+            }
         } else {
             grid.setVisibility(View.GONE);
         }
@@ -268,11 +271,9 @@ public class MainActivity extends TestpressFragmentActivity {
 
     public void onFinishFetchingInstituteSettings(InstituteSettings instituteSettings) {
         this.mInstituteSettings = instituteSettings;
-        // TODO: Get allowAnonymousUser flag from institute settings
-        boolean allowAnonymousUser = true; // True if users can use the app(Access posts) without login
         isUserAuthenticated = CommonUtils.isUserAuthenticated(this);
         //noinspection ConstantConditions
-        if (!isUserAuthenticated && !allowAnonymousUser ||
+        if (!isUserAuthenticated && !ALLOW_ANONYMOUS_USER ||
                 progressBarLayout.getVisibility() == View.VISIBLE) {
             // Show login screen if user not logged in else update institute settings in TestpressSDK
             updateTestpressSession();

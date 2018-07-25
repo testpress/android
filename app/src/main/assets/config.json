@@ -3,5 +3,7 @@
   "package_name": "in.testpress.testpress",
   "app_name" : "Testpress",
   "share_message": "Good app to prepare for online exams.",
-  "primary_color": "3598db"
+  "primary_color": "3598db",
+  "allow_anonymous_user" : true,
+  "forum_enabled" : false
 }

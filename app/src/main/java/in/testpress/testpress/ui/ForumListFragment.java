@@ -74,6 +74,12 @@ public class ForumListFragment extends Fragment implements
         AbsListView.OnScrollListener, SwipeRefreshLayout.OnRefreshListener, LoaderManager
         .LoaderCallbacks<List<Forum>> {
 
+    public static final String CHOOSE_A_FILTER = "Choose a filter";
+    public static final String RECENTLY_ADDED = "Recently Added";
+    public static final String MOST_VIEWED = "Most Viewed";
+    public static final String MOST_UPVOTED = "Most Upvoted";
+    public static final String OLD_TO_NEW = "Old to New";
+
     @Inject protected TestpressService testpressService;
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected LogoutService logoutService;
@@ -125,6 +131,7 @@ public class ForumListFragment extends Fragment implements
     private UserDao userDao;
     private ExploreSpinnerAdapter categorySpinnerAdapter;
     private ExploreSpinnerAdapter sortBySpinnerAdapter;
+    private SafeAsyncTask fetchCategoriesAsyncTask;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -247,7 +254,7 @@ public class ForumListFragment extends Fragment implements
                 if (sortBy.isEmpty()) {
                     adapter.getWrappedAdapter().clearSortBy();
                 } else {
-                    adapter.getWrappedAdapter().setSortBy(Long.parseLong(sortBy));
+                    adapter.getWrappedAdapter().setSortBy(sortBy);
                 }
                 listView.setVisibility(View.VISIBLE);
                 emptyView.setVisibility(View.GONE);
@@ -272,7 +279,7 @@ public class ForumListFragment extends Fragment implements
                 if (sortBy.isEmpty()) {
                     adapter.getWrappedAdapter().clearSortBy();
                 } else {
-                    adapter.getWrappedAdapter().setSortBy(Long.parseLong(sortBy));
+                    adapter.getWrappedAdapter().setSortBy(sortBy);
                 }
                 listView.setVisibility(View.VISIBLE);
                 emptyView.setVisibility(View.GONE);
@@ -353,13 +360,11 @@ public class ForumListFragment extends Fragment implements
 
     private void addSortByItemsInSpinner() {
         sortBySpinnerAdapter.clear();
-
-        sortBySpinnerAdapter.addItem("-1", "Choose a filter", false, 0);
-        sortBySpinnerAdapter.addItem("0", "Recently added", true, 0);
-        sortBySpinnerAdapter.addItem("1", "Most views", true, 0);
-        sortBySpinnerAdapter.addItem("2", "Most upvoted", true, 0);
-        sortBySpinnerAdapter.addItem("3", "Old to new", true, 0);
-
+        sortBySpinnerAdapter.addItem(CHOOSE_A_FILTER, CHOOSE_A_FILTER, false, 0);
+        sortBySpinnerAdapter.addItem(RECENTLY_ADDED, RECENTLY_ADDED, true, 0);
+        sortBySpinnerAdapter.addItem(MOST_VIEWED, MOST_VIEWED, true, 0);
+        sortBySpinnerAdapter.addItem(MOST_UPVOTED, MOST_UPVOTED, true, 0);
+        sortBySpinnerAdapter.addItem(OLD_TO_NEW, OLD_TO_NEW, true, 0);
         if (sortBySelectedPosition == -1) {
             sortBySelectedPosition = 0;
             sortBySpinnerAdapter.notifyDataSetChanged();
@@ -398,7 +403,7 @@ public class ForumListFragment extends Fragment implements
     }
 
     public void fetchCategories() {
-        new SafeAsyncTask<List<Category>>() {
+        fetchCategoriesAsyncTask = new SafeAsyncTask<List<Category>>() {
             @Override
             public List<Category> call() throws Exception {
                 do {
@@ -409,6 +414,9 @@ public class ForumListFragment extends Fragment implements
             }
 
             protected void onSuccess(final List<Category> categories) {
+                if (getActivity() == null) {
+                    return;
+                }
                 categoryDao.insertOrReplaceInTx(categories);
                 mTopLevelSpinnerAdapter.clear();
                 mTopLevelSpinnerAdapter.addItem("", getString(R.string.all_discussions), false, 0);
@@ -453,7 +461,8 @@ public class ForumListFragment extends Fragment implements
                 }
             }
 
-        }.execute();
+        };
+        fetchCategoriesAsyncTask.execute();
     }
 
     @NonNull
@@ -556,7 +565,7 @@ public class ForumListFragment extends Fragment implements
             if (items == null || items.isEmpty()) {
                 displayDataFromDB();
                 if (forumDao.count() == 0) {
-                    setEmptyText(R.string.no_posts, R.string.no_posts_description,
+                    setEmptyText(R.string.no_discussions, R.string.no_posts_description,
                             R.drawable.ic_error_outline_black_18dp);
                     retryButton.setVisibility(View.GONE);
                 }
@@ -615,7 +624,7 @@ public class ForumListFragment extends Fragment implements
         adapter.notifyDataSetChanged();
 
         if (forumDao.count() == 0 || (pager != null && !pager.hasMore() && adapter.getCount() == 0)) {
-            setEmptyText(R.string.no_posts, R.string.no_posts_description,
+            setEmptyText(R.string.no_discussions, R.string.no_posts_description,
                     R.drawable.ic_error_outline_black_18dp);
             retryButton.setVisibility(View.GONE);
         }
@@ -685,7 +694,7 @@ public class ForumListFragment extends Fragment implements
                         adapter.removeFooter(loadingLayout);
                     }
                     if (adapter.getCount() == 0) {
-                        setEmptyText(R.string.no_posts, R.string.no_posts_description,
+                        setEmptyText(R.string.no_discussions, R.string.no_posts_description,
                                 R.drawable.ic_error_outline_black_18dp);
                         retryButton.setVisibility(View.GONE);
                     }
@@ -799,6 +808,7 @@ public class ForumListFragment extends Fragment implements
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
+        fetchCategoriesAsyncTask.cancel(true);
     }
 
     @OnClick(R.id.retry_button)

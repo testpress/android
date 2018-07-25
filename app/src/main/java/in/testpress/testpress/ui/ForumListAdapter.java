@@ -30,6 +30,11 @@ import in.testpress.testpress.util.FormatDate;
 import in.testpress.util.ViewUtils;
 
 import static in.testpress.testpress.ui.ForumActivity.URL;
+import static in.testpress.testpress.ui.ForumListFragment.CHOOSE_A_FILTER;
+import static in.testpress.testpress.ui.ForumListFragment.MOST_UPVOTED;
+import static in.testpress.testpress.ui.ForumListFragment.MOST_VIEWED;
+import static in.testpress.testpress.ui.ForumListFragment.OLD_TO_NEW;
+import static in.testpress.testpress.ui.ForumListFragment.RECENTLY_ADDED;
 
 public class ForumListAdapter extends BaseAdapter{
 
@@ -40,7 +45,7 @@ public class ForumListAdapter extends BaseAdapter{
     private final int layout;
     private ForumDao forumDao;
     private long filter;
-    private long sortBy;
+    private String sortBy;
     private SimpleDateFormat simpleDateFormat;
     private ImageLoader imageLoader;
     private DisplayImageOptions options;
@@ -73,23 +78,23 @@ public class ForumListAdapter extends BaseAdapter{
     }
 
     public void clearSortBy() {
-        this.sortBy = -1;
+        this.sortBy = CHOOSE_A_FILTER;
     }
 
-    public void setSortBy(long sortBy) {
+    public void setSortBy(String sortBy) {
         this.sortBy = sortBy;
     }
 
     private QueryBuilder<Forum> getQueryMaker() {
-        switch ((int) sortBy) {
-            case -1 :
-            case 0 :
+        switch (sortBy) {
+            case CHOOSE_A_FILTER:
+            case RECENTLY_ADDED:
                 return getQueryBuilder().orderDesc(ForumDao.Properties.Published);
-            case 1 :
+            case MOST_VIEWED:
                 return getQueryBuilder().orderDesc(ForumDao.Properties.ViewsCount);
-            case 2 :
+            case MOST_UPVOTED:
                 return getQueryBuilder().orderDesc(ForumDao.Properties.Upvotes);
-            case 3 :
+            case OLD_TO_NEW:
                 return getQueryBuilder().orderAsc(ForumDao.Properties.Published);
             default :
                 return getQueryBuilder().orderDesc(ForumDao.Properties.Published);

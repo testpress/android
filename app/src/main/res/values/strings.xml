@@ -23,6 +23,7 @@
     <string name="no_orders">No transactions yet</string>
     <string name="no_orders_description">Your purchased orders will be reflected here.</string>
     <string name="no_posts">No Articles</string>
+    <string name="no_discussions">No Discussions</string>
 
     <string name="edit">Edit</string>
     <string name="cancel">Cancel</string>

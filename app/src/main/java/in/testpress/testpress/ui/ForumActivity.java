@@ -94,22 +94,8 @@ public class ForumActivity extends TestpressFragmentActivity implements
     public static final int NEW_COMMENT_SYNC_INTERVAL = 10000; // 10 sec
     private static final int PREVIOUS_COMMENTS_LOADER_ID = 0;
     private static final int NEW_COMMENTS_LOADER_ID = 1;
-
-    String url;
-    ForumDao forumDao;
-    UserDao userDao;
-    User user;
-    Forum forum;
-    CommentsPager previousCommentsPager;
-    CommentsPager newCommentsPager;
-    CommentsListAdapter commentsAdapter;
-    ProgressDialog progressDialog;
-    SimpleDateFormat simpleDateFormat;
-    boolean postedNewComment;
-    private ImagePickerUtils imagePickerUtils;
-    private FullScreenChromeClient fullScreenChromeClient;
-    private ImageLoader imageLoader;
-    private DisplayImageOptions options;
+    private static final int DOWNVOTE = -1;
+    private static final int UPVOTE = 1;
 
     @Inject protected TestpressService testpressService;
     @Inject protected TestpressServiceProvider serviceProvider;
@@ -147,19 +133,30 @@ public class ForumActivity extends TestpressFragmentActivity implements
     @InjectView(R.id.scroll_view) NestedScrollView scrollView;
     @InjectView(android.R.id.content) View activityRootLayout;
     @InjectView(R.id.new_comments_available_label) LinearLayout newCommentsAvailableLabel;
-    private static final int DOWNVOTE = -1;
-    private static final int UPVOTE = 1;
-    private static int netVote;
-    int grayColor;
-    int primaryColor;
-    private Activity activity;
 
+    private String url;
+    private ForumDao forumDao;
+    private UserDao userDao;
+    private Forum forum;
+    private CommentsPager previousCommentsPager;
+    private CommentsPager newCommentsPager;
+    private CommentsListAdapter commentsAdapter;
+    private ProgressDialog progressDialog;
+    private SimpleDateFormat simpleDateFormat;
+    private boolean postedNewComment;
+    private ImagePickerUtils imagePickerUtils;
+    private FullScreenChromeClient fullScreenChromeClient;
+    private ImageLoader imageLoader;
+    private DisplayImageOptions options;
+    private int netVote;
+    private int grayColor;
+    private int primaryColor;
+    private Activity activity;
 
     private Handler newCommentsHandler;
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            //noinspection ArraysAsListWithZeroOrOneArgument
             commentsAdapter.notifyItemRangeChanged(0, commentsAdapter.getItemCount(),
                     UPDATE_TIME_SPAN); // Update the time in comments
 
@@ -221,12 +218,6 @@ public class ForumActivity extends TestpressFragmentActivity implements
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.share, menu);
-        return true;
-    }
-
     private void fetchForum() {
         new SafeAsyncTask<Forum>() {
             @Override
@@ -242,27 +233,32 @@ public class ForumActivity extends TestpressFragmentActivity implements
                 super.onException(e);
                 progressBar.setVisibility(View.GONE);
                 if (e.getCause() instanceof IOException) {
-                    setEmptyText(R.string.network_error, R.string.no_internet_try_again, R.drawable.ic_error_outline_black_18dp);
+                    setEmptyText(R.string.network_error, R.string.no_internet_try_again,
+                            R.drawable.ic_error_outline_black_18dp);
                 } else if (e.getMessage().equals("404 NOT FOUND")) {
-                    setEmptyText(R.string.access_denied, R.string.post_authentication_failed, R.drawable.ic_error_outline_black_18dp);
+                    setEmptyText(R.string.access_denied, R.string.post_authentication_failed,
+                            R.drawable.ic_error_outline_black_18dp);
                 } else {
-                    setEmptyText(R.string.network_error, R.string.error_loading_content, R.drawable.ic_error_outline_black_18dp);
+                    setEmptyText(R.string.network_error, R.string.error_loading_content,
+                            R.drawable.ic_error_outline_black_18dp);
                 }
             }
 
             @Override
             protected void onSuccess(final Forum forum) throws Exception {
-                ForumActivity.this.forum = forum;
                 forum.setPublished(simpleDateFormat.parse(forum.getPublishedDate()).getTime());
-                forum.setModified(forum.getModified());
-                if (forumDao.queryBuilder().where(ForumDao.Properties.Id.eq(forum.getId())).count() != 0) {
+                if (forumDao.queryBuilder()
+                        .where(ForumDao.Properties.Id.eq(forum.getId())).count() != 0) {
+
+                    forum.setModified(ForumActivity.this.forum.getModified());
+                    forum.setModifiedDate(simpleDateFormat.parse(forum.getModified()).getTime());
                     if (forum.category != null) {
                         forum.setCategory(forum.category);
                         CategoryDao categoryDao =
                                 TestpressApplication.getDaoSession().getCategoryDao();
                         categoryDao.insertOrReplace(forum.category);
                     }
-                    user = forum.createdBy;
+                    User user = forum.createdBy;
                     userDao.insertOrReplace(user);
                     forum.setCreatorId(user.getId());
                     user = forum.lastCommentedBy;
@@ -272,6 +268,7 @@ public class ForumActivity extends TestpressFragmentActivity implements
                     }
                     forumDao.update(forum);
                 }
+                ForumActivity.this.forum = forum;
                 displayForum(forum);
             }
         }.execute();
@@ -283,7 +280,8 @@ public class ForumActivity extends TestpressFragmentActivity implements
         getSupportActionBar().setTitle("Discussions");
         title.setText(forum.getTitle());
         try {
-            date.setText(DateUtils.getRelativeTimeSpanString(simpleDateFormat.parse(forum.getPublishedDate()).getTime()));
+            date.setText(DateUtils.getRelativeTimeSpanString(
+                    simpleDateFormat.parse(forum.getPublishedDate()).getTime()));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -476,19 +474,19 @@ public class ForumActivity extends TestpressFragmentActivity implements
     }
 
     private void makeForumAlive(Vote<Forum> vote) {
-        this.forum = vote.getContentObject();
-        this.forum.setVoteId((long) vote.getId());
-        this.forum.setTypeOfVote(vote.getTypeOfVote());
-        user = vote.getContentObject().createdBy;
+        forum = vote.getContentObject();
+        forum.setVoteId((long) vote.getId());
+        forum.setTypeOfVote(vote.getTypeOfVote());
+        User user = vote.getContentObject().createdBy;
         userDao.insertOrReplace(user);
-        this.forum.setCreatorId(user.getId());
+        forum.setCreatorId(user.getId());
         user = vote.getContentObject().lastCommentedBy;
         if (user != null) {
             userDao.insertOrReplace(user);
-            this.forum.setCommentorId(user.getId());
+            forum.setCommentorId(user.getId());
         }
-        forumDao.update(this.forum);
-        this.forum = forumDao.queryBuilder().where(ForumDao.Properties.Id.eq(this.forum.getId())).list().get(0);
+        forumDao.update(forum);
+        forum = forumDao.queryBuilder().where(ForumDao.Properties.Id.eq(forum.getId())).list().get(0);
     }
 
     private void onVoteCasted(View view, Vote<Forum> vote) {
@@ -926,19 +924,6 @@ public class ForumActivity extends TestpressFragmentActivity implements
 
     String getHeader() {
         return "<link rel='stylesheet' type='text/css' href='typebase.css' />";
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        if(item.getItemId() == R.id.share) {
-            if (forum != null) {
-                ShareUtil.shareUrl(this, forum.getTitle(), forum.getShortWebUrl());
-            } else {
-                ShareUtil.shareUrl(this, "Check out this article", url);
-            }
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     protected void setEmptyText(final int title, final int description, final int left){

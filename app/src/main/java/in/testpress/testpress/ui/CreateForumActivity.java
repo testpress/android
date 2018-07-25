@@ -44,6 +44,7 @@ import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.Forum;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
+import in.testpress.util.UIUtils;
 import in.testpress.util.ViewUtils;
 import in.testpress.util.WebViewUtils;
 import retrofit.RetrofitError;
@@ -138,6 +139,7 @@ public class CreateForumActivity extends TestpressFragmentActivity{
             @Override
             public void onClick(View view) {
                 postTitle.requestFocus();
+                UIUtils.showSoftKeyboard(CreateForumActivity.this, postTitle);
             }
         });
 
@@ -145,6 +147,7 @@ public class CreateForumActivity extends TestpressFragmentActivity{
             @Override
             public void onClick(View view) {
                 postDetails.requestFocus();
+                UIUtils.showSoftKeyboard(CreateForumActivity.this, postDetails);
             }
         });
 

@@ -54,7 +54,9 @@ import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.UpdateAppDialogManager;
 
+import static in.testpress.testpress.BuildConfig.ALLOW_ANONYMOUS_USER;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.BuildConfig.FORUM_ENABLED;
 
 public class MainActivity extends TestpressFragmentActivity {
 
@@ -94,16 +96,25 @@ public class MainActivity extends TestpressFragmentActivity {
         if (savedInstanceState != null) {
             mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM);
         }
-        viewPager.setVisibility(View.INVISIBLE);
+        viewPager.setVisibility(View.GONE);
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 CommonUtils.registerDevice(MainActivity.this, testpressService, serviceProvider);
             }
         };
-        DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
+        DaoSession daoSession = TestpressApplication.getDaoSession();
         instituteSettingsDao = daoSession.getInstituteSettingsDao();
-        fetchInstituteSettings();
+        List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
+                .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
+                .list();
+
+        if (instituteSettingsList.size() > 0) {
+            onFinishFetchingInstituteSettings(instituteSettingsList.get(0));
+            checkUpdate();
+        } else {
+            checkUpdate();
+        }
     }
 
     private void updateTestpressSession() {
@@ -130,7 +141,9 @@ public class MainActivity extends TestpressFragmentActivity {
             protected void onSuccess(final Boolean hasAuthenticated) throws Exception {
                 super.onSuccess(hasAuthenticated);
                 isUserAuthenticated = true;
-                checkUpdate();
+                if (viewPager.getVisibility() != View.VISIBLE) {
+                    initScreen();
+                }
             }
         }.execute();
     }
@@ -155,6 +168,9 @@ public class MainActivity extends TestpressFragmentActivity {
                 //noinspection ConstantConditions
                 addMenuItem(R.string.testpress_leaderboard, R.drawable.leaderboard,
                         TestpressCourse.getLeaderboardFragment(this, TestpressSdk.getTestpressSession(this)));
+            }
+            if (FORUM_ENABLED) {
+                addMenuItem(R.string.discussions, R.drawable.chat_icon, new ForumListFragment());
             }
         } else {
             grid.setVisibility(View.GONE);
@@ -210,21 +226,18 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     private void fetchInstituteSettings() {
-        progressBarLayout.setVisibility(View.VISIBLE);
+        if (mInstituteSettings == null) {
+            progressBarLayout.setVisibility(View.VISIBLE);
+        }
         new SafeAsyncTask<InstituteSettings>() {
             @Override
-            public InstituteSettings call() throws Exception {
+            public InstituteSettings call() {
                 return testpressService.getInstituteSettings();
             }
 
             @Override
             protected void onException(Exception exception) throws RuntimeException {
-                List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
-                        .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
-                        .list();
-
-                if (instituteSettingsList.size() > 0) {
-                    onFinishFetchingInstituteSettings(instituteSettingsList.get(0));
+                if (mInstituteSettings != null) {
                     return;
                 }
                 if (exception.getCause() instanceof IOException) {
@@ -245,23 +258,27 @@ public class MainActivity extends TestpressFragmentActivity {
             }
 
             @Override
-            protected void onSuccess(InstituteSettings instituteSettings) throws Exception {
+            protected void onSuccess(InstituteSettings instituteSettings) {
                 instituteSettings.setBaseUrl(BASE_URL);
                 instituteSettingsDao.insertOrReplace(instituteSettings);
-                onFinishFetchingInstituteSettings(instituteSettings);
+                if (mInstituteSettings == null) {
+                    onFinishFetchingInstituteSettings(instituteSettings);
+                }
             }
         }.execute();
     }
 
     public void onFinishFetchingInstituteSettings(InstituteSettings instituteSettings) {
         this.mInstituteSettings = instituteSettings;
-        // TODO: Get allowAnonymousUser flag from institute settings
-        boolean allowAnonymousUser = true; // True if users can use the app(Access posts) without login
+        isUserAuthenticated = CommonUtils.isUserAuthenticated(this);
         //noinspection ConstantConditions
-        if (CommonUtils.isUserAuthenticated(this) || !allowAnonymousUser) {
-            updateTestpressSession(); // Show login screen if user not logged in
+        if (!isUserAuthenticated && !ALLOW_ANONYMOUS_USER ||
+                progressBarLayout.getVisibility() == View.VISIBLE) {
+            // Show login screen if user not logged in else update institute settings in TestpressSDK
+            updateTestpressSession();
         } else {
-            checkUpdate();
+            initScreen();
+            updateTestpressSession();
         }
     }
 
@@ -300,32 +317,36 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     private void checkUpdate() {
+        if (mInstituteSettings == null) {
+            progressBarLayout.setVisibility(View.VISIBLE);
+        }
         new SafeAsyncTask<Update>() {
             @Override
-            public Update call() throws Exception {
+            public Update call() {
                 return testpressService.checkUpdate("" + BuildConfig.VERSION_CODE);
             }
 
             @Override
             protected void onException(final Exception e) throws RuntimeException {
-                initScreen();
+                fetchInstituteSettings();
             }
 
             @Override
-            protected void onSuccess(final Update update) throws Exception {
+            protected void onSuccess(final Update update) {
+                progressBarLayout.setVisibility(View.GONE);
                 if(update.getUpdateRequired()) {
                     if (update.getForce()) {
                         UpdateAppDialogManager
                                 .showDialog(MainActivity.this, true, update.getMessage());
                     } else {
-                        initScreen();
+                        fetchInstituteSettings();
                         if (UpdateAppDialogManager.canShowDialog(MainActivity.this, update.getDays())) {
                             UpdateAppDialogManager
                                     .showDialog(MainActivity.this, false, update.getMessage());
                         }
                     }
                 } else {
-                    initScreen();
+                    fetchInstituteSettings();
                 }
             }
         }.execute();

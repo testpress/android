@@ -87,6 +87,8 @@ android {
         resValue "string", "app_name", json.app_name
         resValue "string", "share_message", json.share_message
         resValue "color", "primary", "#" + json.primary_color
+        buildConfigField "boolean", "ALLOW_ANONYMOUS_USER", "" + json.allow_anonymous_user
+        buildConfigField "boolean", "FORUM_ENABLED", "" + json.forum_enabled
 
         applicationId json.package_name
         resValue "string", "package_name", json.package_name

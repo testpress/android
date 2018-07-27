@@ -26,11 +26,15 @@ import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.core.UserAgentProvider;
 import in.testpress.testpress.ui.AccountActivateActivity;
 import in.testpress.testpress.ui.CoursesListFragment;
+import in.testpress.testpress.ui.CreateForumActivity;
 import in.testpress.testpress.ui.DocumentsListActivity;
 import in.testpress.testpress.ui.DocumentsListFragment;
 import in.testpress.testpress.ui.InAppBrowserActivity;
 import in.testpress.testpress.ui.DrupalRssListActivity;
 import in.testpress.testpress.ui.DrupalRssListFragment;
+import in.testpress.testpress.ui.ForumActivity;
+import in.testpress.testpress.ui.ForumListActivity;
+import in.testpress.testpress.ui.ForumListFragment;
 import in.testpress.testpress.ui.RssFeedDetailActivity;
 import in.testpress.testpress.ui.SplashScreenActivity;
 import in.testpress.testpress.ui.MainActivity;
@@ -98,7 +102,11 @@ import static in.testpress.testpress.BuildConfig.BASE_URL;
                 DrupalRssListActivity.class,
                 DrupalRssListFragment.class,
                 RssFeedDetailActivity.class,
-                AccountActivateActivity.class
+                AccountActivateActivity.class,
+                ForumListActivity.class,
+                ForumListFragment.class,
+                ForumActivity.class,
+                CreateForumActivity.class
         }
 )
 public class TestpressModule {

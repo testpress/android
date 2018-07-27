@@ -1,14 +1,20 @@
 package in.testpress.testpress.ui;
 
 import android.annotation.SuppressLint;
+import android.app.DownloadManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
+import android.webkit.DownloadListener;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -25,6 +31,11 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import in.testpress.testpress.R;
+import in.testpress.util.PermissionsUtils;
+
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.app.DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED;
+import static in.testpress.testpress.core.Constants.RequestCode.RECEIVE_SMS_PERMISSION_REQUEST_CODE;
 
 public class InAppBrowserActivity extends TestpressFragmentActivity {
 
@@ -39,6 +50,9 @@ public class InAppBrowserActivity extends TestpressFragmentActivity {
 
     private boolean hasError = false;
     private String url;
+    private String downloadUrl;
+    private PermissionsUtils permissionsUtils;
+    private String cookies = "";
 
     @SuppressWarnings("ConstantConditions")
     @SuppressLint("SetJavaScriptEnabled")
@@ -66,6 +80,7 @@ public class InAppBrowserActivity extends TestpressFragmentActivity {
                 loadUrl();
             }
         });
+
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -91,6 +106,7 @@ public class InAppBrowserActivity extends TestpressFragmentActivity {
                     //noinspection deprecation
                     CookieSyncManager.getInstance().sync();
                 }
+                cookies = CookieManager.getInstance().getCookie(url);
                 if(hasError) {
                     swipeRefresh.setVisibility(View.GONE);
                     emptyContainer.setVisibility(View.VISIBLE);
@@ -112,12 +128,11 @@ public class InAppBrowserActivity extends TestpressFragmentActivity {
                 swipeRefresh.setRefreshing(false);
             }
 
-
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url.endsWith(".pdf")){
                     // Load pdf in google docs
-                    String googleDocs = "https://docs.google.com/viewer?url=";
+                    String googleDocs = "https://docs.google.com/gview?embedded=true&url=";
                     view.loadUrl(googleDocs + url);
                 } else {
                     // Load all other urls normally.
@@ -126,7 +141,47 @@ public class InAppBrowserActivity extends TestpressFragmentActivity {
                 return true;
             }
         });
+        String[] permissions = new String[] { WRITE_EXTERNAL_STORAGE };
+        PermissionsUtils.PermissionRequestResultHandler permissionRequestResultHandler =
+                new PermissionsUtils.PermissionRequestResultHandler() {
+                    @Override
+                    public void onPermissionGranted() {
+                        downloadFile();
+                    }
+                };
+        permissionsUtils = new PermissionsUtils(this, swipeRefresh, permissions,
+                RECEIVE_SMS_PERMISSION_REQUEST_CODE, permissionRequestResultHandler);
+
+        webView.setDownloadListener(new DownloadListener() {
+            public void onDownloadStart(String url, String userAgent, String contentDisposition,
+                                        String mimeType, long contentLength) {
+                downloadUrl = url;
+                permissionsUtils.requestPermissions();
+            }
+        });
         loadUrl();
+    }
+
+    void downloadFile() {
+        Uri uri = Uri.parse(downloadUrl);
+        String fileName;
+        if (uri.getQueryParameterNames().contains("pdfname")) {
+            fileName = uri.getQueryParameter("pdfname");
+            fileName += ".pdf";
+        } else {
+            fileName = uri.getLastPathSegment();
+        }
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+        request.allowScanningByMediaScanner();
+        request.addRequestHeader("Cookie", cookies);
+        request.setNotificationVisibility(VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+        request.setTitle(fileName);
+        request.setDescription("Downloading...");
+        DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+        //noinspection ConstantConditions
+        dm.enqueue(request);
+        Snackbar.make(webView, "Started Downloading File", Snackbar.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.retry_button) protected void loadUrl() {
@@ -163,6 +218,7 @@ public class InAppBrowserActivity extends TestpressFragmentActivity {
     public void onResume() {
         super.onResume();
         webView.onResume();
+        permissionsUtils.onResume();
     }
 
     @Override
@@ -172,6 +228,14 @@ public class InAppBrowserActivity extends TestpressFragmentActivity {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionsUtils.onRequestPermissionsResult(requestCode, grantResults);
     }
 
     @Override

@@ -2,10 +2,6 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyEllipsis">
 
-    <string name="facebook_app_id">733962776688753</string>
-    <string name="fb_login_protocol_scheme">733962776688753</string>
-    <string name="server_client_id">1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com</string>
-
     <string name="rss_posts">Whats New</string>
 
     <string name="refresh_action">Refresh</string>

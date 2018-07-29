@@ -1,9 +1,11 @@
 {
-  "testpress_site_subdomain": "sandbox",
-  "package_name": "in.testpress.testpress",
+  "version" : "1.0",
+  "version_code" : 1,
+  "testpress_site_subdomain" : "sandbox",
+  "package_name" : "in.testpress.testpress",
   "app_name" : "Testpress",
   "share_message": "Good app to prepare for online exams.",
   "primary_color": "3598db",
   "allow_anonymous_user" : true,
-  "forum_enabled" : false
+  "screenshot_disabled" : false
 }

@@ -75,11 +75,12 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 110
-        versionName '1.0.' + versionCode
 
         def jsonFile = file('src/main/assets/config.json')
         def json = new JsonSlurper().parseText(jsonFile.text)
+
+        versionName json.version
+        versionCode json.version_code
 
         def host_url = json.testpress_site_subdomain + '.testpress.in'
         resValue "string", "host_url", host_url
@@ -88,7 +89,7 @@ android {
         resValue "string", "share_message", json.share_message
         resValue "color", "primary", "#" + json.primary_color
         buildConfigField "boolean", "ALLOW_ANONYMOUS_USER", "" + json.allow_anonymous_user
-        buildConfigField "boolean", "FORUM_ENABLED", "" + json.forum_enabled
+        buildConfigField "boolean", "SCREENSHOT_DISABLED", "" + json.screenshot_disabled
 
         applicationId json.package_name
         resValue "string", "package_name", json.package_name

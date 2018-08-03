@@ -1,0 +1,13 @@
+{
+  "version" : "1.0.110",
+  "version_code" : 110,
+  "testpress_site_subdomain" : "drpharmacologist",
+  "package_name" : "net.crazyapp.com.drbharathspharmacology",
+  "app_name" : "Dr. Bharath's Pharmacology",
+  "share_message": "Good app to prepare for Pharmacology.",
+  "primary_color": "448AFF",
+  "allow_anonymous_user" : false,
+  "screenshot_disabled" : false,
+  "facebook_app_id" : "733962776688753",
+  "server_client_id" : "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com"
+}

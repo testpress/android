@@ -15,6 +15,7 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import in.testpress.testpress.models.DaoMaster;
 import in.testpress.testpress.models.DaoSession;
+import in.testpress.testpress.util.NotificationHelper;
 
 public class TestpressApplication extends Application {
     private static TestpressApplication instance;
@@ -49,7 +50,7 @@ public class TestpressApplication extends Application {
         SQLiteDatabase db = getDatabase(this);
         DaoMaster daoMaster = new DaoMaster(db);
         daoSession = daoMaster.newSession();
-
+        NotificationHelper.createChannels(this);
     }
 
     public static SQLiteDatabase getDatabase(@NonNull Context context) {

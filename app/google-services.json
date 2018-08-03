@@ -203,6 +203,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1064046661341-umtdp6vp22i9ha56npmjd5qsmdtvuva7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "net.crazyapp.com.drbharathspharmacology",
+            "certificate_hash": "aa64e4f8285a4393adc4c5d5ca366db4a34c967c"
+          }
+        },
+        {
           "client_id": "1064046661341-2ho5os8cp38ql45q6l0ud8fdh8fg2gis.apps.googleusercontent.com",
           "client_type": 3
         },
@@ -221,8 +229,20 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1064046661341-2ho5os8cp38ql45q6l0ud8fdh8fg2gis.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1064046661341-au2upcc21m3mq2npg5avq8mqo9i1lbp7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "in.testpress.ios-app"
+              }
+            }
+          ]
         },
         "ads_service": {
           "status": 2

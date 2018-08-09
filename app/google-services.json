@@ -203,11 +203,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "1064046661341-umtdp6vp22i9ha56npmjd5qsmdtvuva7.apps.googleusercontent.com",
+          "client_id": "1064046661341-dn14uvepgnp42vdf0c1v2u1k6unpf52d.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "net.crazyapp.com.drbharathspharmacology",
-            "certificate_hash": "aa64e4f8285a4393adc4c5d5ca366db4a34c967c"
+            "certificate_hash": "407fd625061f86f97f8105f7dbbf71f76773889b"
           }
         },
         {

@@ -56,7 +56,6 @@ import in.testpress.testpress.util.UpdateAppDialogManager;
 
 import static in.testpress.testpress.BuildConfig.ALLOW_ANONYMOUS_USER;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
-import static in.testpress.testpress.BuildConfig.FORUM_ENABLED;
 
 public class MainActivity extends TestpressFragmentActivity {
 
@@ -169,7 +168,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 addMenuItem(R.string.testpress_leaderboard, R.drawable.leaderboard,
                         TestpressCourse.getLeaderboardFragment(this, TestpressSdk.getTestpressSession(this)));
             }
-            if (FORUM_ENABLED) {
+            if (mInstituteSettings.getForumEnabled()) {
                 addMenuItem(R.string.discussions, R.drawable.chat_icon, new ForumListFragment());
             }
         } else {

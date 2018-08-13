@@ -30,6 +30,8 @@ import in.testpress.util.UIUtils;
 import retrofit.RestAdapter;
 
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.BuildConfig.DISPLAY_USERNAME_ON_VIDEO;
+import static in.testpress.testpress.BuildConfig.SCREENSHOT_DISABLED;
 
 public class TestpressServiceProvider {
     private RestAdapter.Builder restAdapter;
@@ -78,6 +80,8 @@ public class TestpressServiceProvider {
                         .setCoursesFrontend(instituteSettings.getShowGameFrontend())
                         .setCoursesGamificationEnabled(instituteSettings.getCoursesEnableGamification())
                         .setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled())
+                        .setScreenshotDisabled(SCREENSHOT_DISABLED)
+                        .setDisplayUserEmailOnVideo(DISPLAY_USERNAME_ON_VIDEO)
                         .setAccessCodeEnabled(false);
             }
             TestpressSdk.setTestpressSession(activity, new TestpressSession(settings, authToken));

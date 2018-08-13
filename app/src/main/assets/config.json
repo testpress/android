@@ -1,9 +1,14 @@
 {
+  "version" : "1.0.127",
+  "version_code" : 127,
   "testpress_site_subdomain": "iasbaba",
   "package_name": "com.iasbaba",
   "app_name" : "IASbaba",
   "share_message": "Good app to prepare for UPSC, IAS.",
   "primary_color": "45576c",
   "allow_anonymous_user" : true,
-  "forum_enabled" : false
+  "screenshot_disabled" : false,
+  "facebook_app_id" : "733962776688753",
+  "server_client_id" : "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
+  "display_username_on_video": true
 }

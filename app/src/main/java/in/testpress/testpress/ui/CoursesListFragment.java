@@ -28,12 +28,12 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import in.testpress.core.TestpressException;
 import in.testpress.core.TestpressSdk;
-import in.testpress.course.network.CoursePager;
 import in.testpress.course.network.TestpressCourseApiClient;
 import in.testpress.models.greendao.Course;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
+import in.testpress.testpress.core.CoursePager;
 
 public class CoursesListFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<List<Course>> {

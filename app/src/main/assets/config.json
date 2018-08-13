@@ -1,7 +1,15 @@
 {
+  "version" : "1.0.153",
+  "version_code" : 153,
   "testpress_site_subdomain": "race",
   "package_name": "in.raceinstitute",
   "app_name" : "RACE",
   "share_message": "Good app to prepare for IBPS, SBI &amp; Bank Exams.",
-  "primary_color": "D62E4F"
+  "primary_color": "D62E4F",
+  "allow_anonymous_user" : true,
+  "screenshot_disabled" : false,
+  "facebook_app_id" : "642128432634881",
+  "server_client_id" : "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
+  "display_username_on_video": true,
+  "white_labeled_host_url": "onlinetest.raceinstitute.in"
 }

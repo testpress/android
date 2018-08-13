@@ -162,6 +162,11 @@ public class MainMenuFragment extends Fragment {
                         intent.putExtra("userAuthenticated", isUserAuthenticated);
                         startActivity(intent);
                         break;
+                    case R.string.forum:
+                        intent = new Intent(getActivity(), ForumListActivity.class);
+                        intent.putExtra("userAuthenticated", isUserAuthenticated);
+                        startActivity(intent);
+                        break;
                     case R.string.analytics:
                         checkAuthenticatedUser(R.string.analytics);
                         break;

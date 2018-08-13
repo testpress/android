@@ -23,7 +23,6 @@ import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
-import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
@@ -32,6 +31,8 @@ import retrofit.RestAdapter;
 
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.models.ProfileDetails.PROFILE_DETAILS_PREFERENCES;
+import static in.testpress.testpress.BuildConfig.DISPLAY_USERNAME_ON_VIDEO;
+import static in.testpress.testpress.BuildConfig.SCREENSHOT_DISABLED;
 
 public class TestpressServiceProvider {
     private RestAdapter.Builder restAdapter;
@@ -80,6 +81,8 @@ public class TestpressServiceProvider {
                         .setCoursesFrontend(instituteSettings.getShowGameFrontend())
                         .setCoursesGamificationEnabled(instituteSettings.getCoursesEnableGamification())
                         .setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled())
+                        .setScreenshotDisabled(SCREENSHOT_DISABLED)
+                        .setDisplayUserEmailOnVideo(DISPLAY_USERNAME_ON_VIDEO)
                         .setAccessCodeEnabled(false);
             }
             TestpressSdk.setTestpressSession(activity, new TestpressSession(settings, authToken));

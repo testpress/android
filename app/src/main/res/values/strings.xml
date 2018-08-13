@@ -2,16 +2,10 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyEllipsis">
 
-    <string name="white_labeled_host_url">onlinetest.raceinstitute.in</string>
-
     <string name="qr_code">QR Code</string>
     <string name="my_race_enrollment_id">My RACE Enrollment Id</string>
     <string name="qr_code_generation_failed">Can\'t generate QR code!</string>
     <string name="not_race_student">You are not a RACE student.</string>
-
-    <string name="facebook_app_id">642128432634881</string>
-    <string name="fb_login_protocol_scheme">642128432634881</string>
-    <string name="server_client_id">1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com</string>
 
     <string name="rss_posts">Whats New</string>
 
@@ -30,6 +24,7 @@
     <string name="no_orders">No transactions yet</string>
     <string name="no_orders_description">Your purchased orders will be reflected here.</string>
     <string name="no_posts">No Articles</string>
+    <string name="no_discussions">No Discussions</string>
 
     <string name="edit">Edit</string>
     <string name="cancel">Cancel</string>
@@ -79,6 +74,7 @@
     <string name="goto_home">Goto Home</string>
 
     <string name="all_posts">All Posts</string>
+    <string name="all_discussions">All Discussions</string>
     <string name="categories">Categories</string>
     <string name="title_activity_reset_password_verification">ResetPasswordVerificationActivity
     </string>
@@ -126,6 +122,9 @@
     <string name="my_exams">My Exams</string>
     <string name="store">Store</string>
     <string name="posts">Posts</string>
+    <string name="forum">Forum</string>
+    <string name="article">Article</string>
+    <string name="discussions">Discussions</string>
     <string name="documents">Documents</string>
     <string name="analytics">Analytics</string>
     <string name="profile">Profile</string>
@@ -148,5 +147,19 @@
     <string name="tap_to_open">Tap to open</string>
 
     <string name="get_it_at"> Get it at https://play.google.com/store/apps/details?id=</string>
+
+    <string name="testpress_new_comments">New Comments</string>
+    <string name="testpress_post_title">Post title</string>
+    <string name="testpress_pick_a_topic">Pick a topic</string>
+    <string name="testpress_post_content">Post Content</string>
+    <string name="testpress_publish">Publish</string>
+    <string name="articles">Articles</string>
+
+    <string name="title_must_be_min_3_characters">The title must be at least 3 characters.</string>
+    <string name="title_must_be_max_200_characters">The title must be less than 200 characters.</string>
+    <string name="content_field_required">The content field is required.</string>
+    <string name="image_cleared">Image cleared!</string>
+    <string name="posted_successfully">Posted successfully!</string>
+    <string name="create_post">Create Post</string>
 
 </resources>

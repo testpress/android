@@ -1,0 +1,15 @@
+{
+  "version" : "1.0.113",
+  "version_code" : 113,
+  "testpress_site_subdomain" : "a2ztraining",
+  "package_name" : "com.a2ztraining",
+  "app_name" : "A2Z-Bank Coaching",
+  "share_message": "A2Z-Bank IBPS/SBI PO/CLERK/SO,SSC &amp; TNPSC Coaching.",
+  "primary_color": "0097A7",
+  "allow_anonymous_user" : true,
+  "screenshot_disabled" : false,
+  "facebook_app_id" : "733962776688753",
+  "server_client_id" : "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
+  "display_username_on_video": true,
+  "white_labeled_host_url": null
+}

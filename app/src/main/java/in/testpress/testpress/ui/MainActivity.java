@@ -272,13 +272,14 @@ public class MainActivity extends TestpressFragmentActivity {
         this.mInstituteSettings = instituteSettings;
         isUserAuthenticated = CommonUtils.isUserAuthenticated(this);
         //noinspection ConstantConditions
-        if (!isUserAuthenticated && !ALLOW_ANONYMOUS_USER ||
-                progressBarLayout.getVisibility() == View.VISIBLE) {
+        if (!isUserAuthenticated && !ALLOW_ANONYMOUS_USER) {
             // Show login screen if user not logged in else update institute settings in TestpressSDK
             updateTestpressSession();
         } else {
             initScreen();
-            updateTestpressSession();
+            if (isUserAuthenticated) {
+                updateTestpressSession();
+            }
         }
     }
 

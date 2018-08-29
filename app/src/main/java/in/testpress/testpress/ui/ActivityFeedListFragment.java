@@ -415,7 +415,7 @@ public class ActivityFeedListFragment  extends Fragment implements
         String model = getContentTypeWithId(feedActivity.getActionObjectContentType()).getModel();
         switch (model) {
             case "post" :
-                return postDao.queryBuilder().where(PostDao.Properties.Id.eq(id)).count() != 0;
+                return postDao.queryBuilder().where(FeedPostDao.Properties.Id.eq(id)).count() != 0;
             case "chapter" :
                 return chapterDao.queryBuilder()
                         .where(FeedChapterDao.Properties.Id.eq(id)).count() != 0;
@@ -436,7 +436,7 @@ public class ActivityFeedListFragment  extends Fragment implements
         model = getContentTypeWithId(feedActivity.getTargetContentType()).getModel();
         switch (model) {
             case "post" :
-                return postDao.queryBuilder().where(PostDao.Properties.Id.eq(id)).count() != 0;
+                return postDao.queryBuilder().where(FeedPostDao.Properties.Id.eq(id)).count() != 0;
             case "chapter" :
                 return chapterDao.queryBuilder()
                         .where(FeedChapterDao.Properties.Id.eq(id)).count() != 0;

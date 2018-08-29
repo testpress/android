@@ -208,7 +208,7 @@ public class MainActivity extends TestpressFragmentActivity {
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             Log.e("Checking for gamified","true found");
             //noinspection ConstantConditions
-            addMenuItem(R.string.activity, R.drawable.news_feed_icon, new ActivityFeedListFragment());
+//            addMenuItem(R.string.activity, R.drawable.news_feed_icon, new ActivityFeedListFragment());
             addMenuItem(R.string.learn, R.drawable.learn,
                     TestpressCourse.getCoursesListFragment(this, TestpressSdk.getTestpressSession(this)));
 

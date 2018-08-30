@@ -45,7 +45,7 @@ public class ForumListAdapter extends BaseAdapter{
     private final int layout;
     private ForumDao forumDao;
     private long filter;
-    private String sortBy;
+    private String sortBy = "";
     private SimpleDateFormat simpleDateFormat;
     private ImageLoader imageLoader;
     private DisplayImageOptions options;

@@ -1,24 +1,35 @@
 {
   "project_info": {
-    "project_number": "1064046661341",
-    "project_id": "default-demo-app-bfeac"
+    "project_number": "49320958191",
+    "firebase_url": "https://entranceiq-bde28.firebaseio.com",
+    "project_id": "entranceiq-bde28",
+    "storage_bucket": "entranceiq-bde28.appspot.com"
   },
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:49320958191:android:5f9e5867d3aeaa89",
         "android_client_info": {
-          "package_name": "gcm.play.android.samples.com.gcmquickstart"
+          "package_name": "com.entranceiq.testseries"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
+          "client_id": "49320958191-0mnt1mi81f8ifemtef4ffrj3mrj45tbc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.entranceiq.testseries",
+            "certificate_hash": "c53ddd6f9c8bf151f77333cb7ae1b4111e6add49"
+          }
+        },
+        {
+          "client_id": "49320958191-vsvdcvo5sd3ss92i7mhpq375f4halb03.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAR0MchRzB4IRIci31KWo_6Dgjr2tE4JdY"
+          "current_key": "AIzaSyCeVUgqZqwTUK25ZRTOG1Osu8gxTUDyYc8"
         }
       ],
       "services": {
@@ -26,123 +37,16 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 1
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1064046661341:android:32058aba3dcf6479",
-        "android_client_info": {
-          "package_name": "in.testpress.testpress"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1064046661341-395pp52c4qu56fv4a3ftag11tju2me89.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "in.testpress.testpress",
-            "certificate_hash": "C53DDD6F9C8BF151F77333CB7AE1B4111E6ADD49"
-          }
-        },
-        {
-          "client_id": "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAR0MchRzB4IRIci31KWo_6Dgjr2tE4JdY"
-        }
-      ],
-      "services": {
-        "analytics_service": {
           "status": 2,
-          "analytics_property": {
-            "tracking_id": "UA-43289429-1"
-          }
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 1
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1064046661341:android:5e5e98bafa2e283d",
-        "android_client_info": {
-          "package_name": "in.testpress.race"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAR0MchRzB4IRIci31KWo_6Dgjr2tE4JdY"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "49320958191-vsvdcvo5sd3ss92i7mhpq375f4halb03.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
-          "status": 1
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1064046661341:android:a7c0a67448fc583c",
-        "android_client_info": {
-          "package_name": "in.raceinstitute"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1064046661341-hhqlenfj0tp414jb3k1bvdi0i5saudam.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "in.raceinstitute",
-            "certificate_hash": "C53DDD6F9C8BF151F77333CB7AE1B4111E6ADD49"
-          }
-        },
-        {
-          "client_id": "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAR0MchRzB4IRIci31KWo_6Dgjr2tE4JdY"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }

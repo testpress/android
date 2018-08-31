@@ -1,15 +1,15 @@
 {
   "version" : "1.0",
   "version_code" : 1,
-  "testpress_site_subdomain" : "sandbox",
-  "package_name" : "in.testpress.testpress",
-  "app_name" : "Testpress",
-  "share_message": "Good app to prepare for online exams.",
-  "primary_color": "3598db",
-  "allow_anonymous_user" : true,
+  "testpress_site_subdomain" : "entranceiq",
+  "package_name" : "com.entranceiq.testseries",
+  "app_name" : "Entranceiq",
+  "share_message": "Improve your Scores in NEET / AIIMS / JIPMER using Entranceiq.",
+  "primary_color": "03A95B",
+  "allow_anonymous_user" : false,
   "screenshot_disabled" : false,
-  "facebook_app_id" : "733962776688753",
-  "server_client_id" : "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
+  "facebook_app_id" : "270804713754328",
+  "server_client_id" : "49320958191-vsvdcvo5sd3ss92i7mhpq375f4halb03.apps.googleusercontent.com",
   "display_username_on_video": true,
-  "white_labeled_host_url": null
+  "white_labeled_host_url": "onlinetestseries.entranceiq.com"
 }

@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.2",
-  "version_code" : 2,
+  "version" : "1.0.3",
+  "version_code" : 3,
   "testpress_site_subdomain" : "psmsimplified",
   "package_name" : "in.testpress.psmsimplified",
   "app_name" : "PSM Simplified",

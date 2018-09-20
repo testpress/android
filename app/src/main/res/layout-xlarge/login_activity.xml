@@ -2,8 +2,9 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:facebook="http://schemas.android.com/apk/res-auto"
-    android:fillViewport="true">
+    android:background="@android:color/white"
+    android:fillViewport="true"
+    >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -146,6 +147,7 @@
                 </LinearLayout>
 
                 <com.facebook.login.widget.LoginButton
+                    xmlns:facebook="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/fb_login_button"
                     android:layout_width="400dp"
                     android:layout_height="wrap_content"

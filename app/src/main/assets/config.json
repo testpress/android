@@ -4,7 +4,7 @@
   "testpress_site_subdomain" : "drpharmacologist",
   "package_name" : "net.crazyapp.com.drbharathspharmacology",
   "app_name" : "Dr. Bharath's Pharmacology",
-  "share_message": "Good app to prepare for Pharmacology.",
+  "share_message": "An app exclusively with  Pharmacology concepts and MCQs with authentic answers, for students preparing for NEET, AIIMS, PGI, JIPMER and FMGE.",
   "primary_color": "448AFF",
   "allow_anonymous_user" : false,
   "screenshot_disabled" : true,

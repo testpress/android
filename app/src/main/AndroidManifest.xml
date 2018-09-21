@@ -115,6 +115,7 @@
         <activity
             android:name=".ui.PostActivity"
             android:label="Article"
+            android:windowSoftInputMode="stateHidden"
             android:configChanges="orientation|keyboardHidden|screenSize" />
 
         <activity

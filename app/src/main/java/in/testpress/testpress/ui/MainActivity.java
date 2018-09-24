@@ -42,7 +42,6 @@ import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
-import in.testpress.testpress.authenticator.RegistrationIntentService;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.DaoSession;
@@ -99,7 +98,7 @@ public class MainActivity extends TestpressFragmentActivity {
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                CommonUtils.registerDevice(MainActivity.this, testpressService, serviceProvider);
+
             }
         };
         DaoSession daoSession = TestpressApplication.getDaoSession();
@@ -152,9 +151,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
         if (!preferences.getBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false)) {
             if (checkPlayServices()) {
-                // Start IntentService to register this application with GCM.
-                Intent intent = new Intent(MainActivity.this, RegistrationIntentService.class);
-                startService(intent);
+                CommonUtils.registerDevice(MainActivity.this, testpressService, serviceProvider);
             }
         }
         addMenuItem(R.string.dashboard, R.drawable.profile_default, new MainMenuFragment());
@@ -208,6 +205,7 @@ public class MainActivity extends TestpressFragmentActivity {
         viewPager.setCurrentItem(mSelectedItem);
         viewPager.setVisibility(View.VISIBLE);
         onItemSelected(mSelectedItem);
+        Log.e("ssssssss", "progressBarLayout");
         progressBarLayout.setVisibility(View.GONE);
     }
 

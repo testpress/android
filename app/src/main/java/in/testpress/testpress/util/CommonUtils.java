@@ -8,7 +8,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.content.Loader;
+import android.util.Log;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.List;
 
@@ -19,7 +27,10 @@ import in.testpress.testpress.models.Device;
 import in.testpress.testpress.ui.ThrowableLoader;
 
 import static android.content.Context.ACCOUNT_SERVICE;
+import static android.content.Context.MODE_PRIVATE;
+import static android.provider.Settings.Secure.ANDROID_ID;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
+import static in.testpress.testpress.core.Constants.GCM_PREFERENCE_NAME;
 
 public class CommonUtils {
 
@@ -75,27 +86,60 @@ public class CommonUtils {
     }
 
     public static void registerDevice(final Activity activity,
+                                      final String token,
                                       final TestpressService testpressService) {
+
+        final SharedPreferences preferences =
+                activity.getSharedPreferences(GCM_PREFERENCE_NAME, MODE_PRIVATE);
+
         new SafeAsyncTask<Device>() {
             @SuppressLint("HardwareIds")
             @Override
             public Device call() throws Exception {
-                String token = GCMPreference.getRegistrationId(activity.getApplicationContext());
                 return testpressService.register(token, Settings.Secure.getString(
-                        activity.getContentResolver(), Settings.Secure.ANDROID_ID));
+                        activity.getContentResolver(), ANDROID_ID));
             }
 
             @Override
             protected void onException(Exception e) throws RuntimeException {
+                preferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
             }
 
             @Override
             protected void onSuccess(final Device device) throws Exception {
-                SharedPreferences preferences = activity.getSharedPreferences(
-                        Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
                 preferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, true).apply();
             }
         }.execute();
+    }
+
+    public static void registerDevice(final Activity activity,
+                                      final TestpressService testpressService) {
+
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.d("registerDevice", "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+                        Log.d("GCM token:", token);
+                        FirebaseMessaging.getInstance().subscribeToTopic("global")
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (!task.isSuccessful()) {
+                                            Log.d("FirebaseMessaging", "subscribeToTopic failed");
+                                        }
+                                        Log.d("FirebaseMessaging", "subscribedToTopic success");
+                                    }
+                                });
+                        registerDevice(activity, token, testpressService);
+                    }
+                });
     }
 
     public static <T> Exception getException(Loader<List<T>> loader) {

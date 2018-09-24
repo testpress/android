@@ -14,11 +14,9 @@ import dagger.Module;
 import dagger.Provides;
 import in.testpress.testpress.authenticator.ApiKeyProvider;
 import in.testpress.testpress.authenticator.RegisterActivity;
-import in.testpress.testpress.authenticator.RegistrationIntentService;
 import in.testpress.testpress.authenticator.ResetPasswordActivity;
 import in.testpress.testpress.authenticator.LoginActivity;
 import in.testpress.testpress.authenticator.CodeVerificationActivity;
-import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.PostFromAnyThreadBus;
 import in.testpress.testpress.core.RestAdapterRequestInterceptor;
 import in.testpress.testpress.core.RestErrorHandler;
@@ -83,7 +81,6 @@ import static in.testpress.testpress.BuildConfig.BASE_URL;
                 PaymentsActivity.class,
                 CreditDebitCardActivity.class,
                 NetBankingActivity.class,
-                RegistrationIntentService.class,
                 PostActivity.class,
                 PostsListActivity.class,
                 PostsListFragment.class,

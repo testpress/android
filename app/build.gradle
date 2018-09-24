@@ -43,10 +43,10 @@ dependencies {
     implementation 'com.github.testpress:course:' + testpressSDK
 
     // Gcm
-    implementation 'com.google.android.gms:play-services-gcm:11.0.2'
+    implementation 'com.google.firebase:firebase-messaging:17.3.4'
 
     // Google Sign In
-    implementation 'com.google.android.gms:play-services-auth:11.0.2'
+    implementation 'com.google.android.gms:play-services-auth:16.0.1'
 
     // Facebook SDK
     implementation 'com.facebook.android:facebook-android-sdk:4.20.0'

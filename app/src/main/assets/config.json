@@ -7,7 +7,7 @@
   "share_message": "Good app to prepare for NEET.",
   "primary_color": "00adef",
   "allow_anonymous_user" : false,
-  "screenshot_disabled" : false,
+  "screenshot_disabled" : true,
   "facebook_app_id" : "733962776688753",
   "server_client_id" : "285052552334-uf1bda2laph84tr4r2v58tjps3572r7j.apps.googleusercontent.com",
   "display_username_on_video": true,

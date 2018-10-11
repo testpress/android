@@ -260,6 +260,9 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             protected void onSuccess(InstituteSettings instituteSettings) {
                 instituteSettings.setBaseUrl(BASE_URL);
+                instituteSettings.setCoursesEnabled(true);
+                instituteSettings.setShowGameFrontend(true);
+                instituteSettings.setCoursesEnableGamification(true);
                 instituteSettingsDao.insertOrReplace(instituteSettings);
                 if (mInstituteSettings == null) {
                     onFinishFetchingInstituteSettings(instituteSettings);

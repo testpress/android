@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.116",
-  "version_code" : 116,
+  "version" : "1.0.117",
+  "version_code" : 117,
   "testpress_site_subdomain" : "medegclasses",
   "package_name" : "in.testpress.medeg",
   "app_name" : "MedEg Classes",

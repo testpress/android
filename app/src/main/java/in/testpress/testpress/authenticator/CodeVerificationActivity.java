@@ -52,6 +52,7 @@ import in.testpress.testpress.util.SafeAsyncTask;
 import retrofit.RetrofitError;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
+import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 
 public class CodeVerificationActivity extends AppCompatActivity {
     @Inject TestpressService testpressService;
@@ -242,9 +243,9 @@ public class CodeVerificationActivity extends AppCompatActivity {
             @Override
             public void onSuccess(final Boolean authSuccess) {
                 //add account in mobile
-                final Account account = new Account(username, Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
+                final Account account = new Account(username, APPLICATION_ID);
                 accountManager.addAccountExplicitly(account, password, null);
-                accountManager.setAuthToken(account, Constants.Auth.TESTPRESS_ACCOUNT_TYPE, authToken);
+                accountManager.setAuthToken(account, APPLICATION_ID, authToken);
                 updateDevice();
                 DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
                 PostDao postDao = daoSession.getPostDao();

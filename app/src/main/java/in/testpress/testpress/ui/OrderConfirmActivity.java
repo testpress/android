@@ -47,6 +47,7 @@ import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.SafeAsyncTask;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
+import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.core.Constants.Http.URL_PAYMENT_RESPONSE_HANDLER;
 import static in.testpress.testpress.ui.ProductDetailsActivity.PRODUCT_SLUG;
 
@@ -91,7 +92,7 @@ public class OrderConfirmActivity extends TestpressFragmentActivity {
             @Override
             public Order call() throws Exception {
                 AccountManager manager = AccountManager.get(OrderConfirmActivity.this);
-                Account[] accounts = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
+                Account[] accounts = manager.getAccountsByType(APPLICATION_ID);
                 if(accounts.length != 0) {
                     return serviceProvider.getService(OrderConfirmActivity.this).order(orderItems);
                 } else {

@@ -177,10 +177,13 @@ public class ProductDetailsActivity extends TestpressFragmentActivity
         FormatDate date = new FormatDate();
         ImageLoader imageLoader = ImageLoader.getInstance();
         DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
-                .cacheOnDisc(true).resetViewBeforeLoading(true)
-                .showImageForEmptyUri(R.drawable.icon)
-                .showImageOnFail(R.drawable.icon)
-                .showImageOnLoading(R.drawable.icon).build();
+                .cacheOnDisk(true)
+                .resetViewBeforeLoading(true)
+                .showImageForEmptyUri(R.mipmap.ic_launcher)
+                .showImageOnFail(R.mipmap.ic_launcher)
+                .showImageOnLoading(R.mipmap.ic_launcher)
+                .build();
+
         //download and display image from url
         imageLoader.displayImage(productDetails.getImages()[0].getOriginal(), image, options);
         titleText.setText(productDetails.getTitle());

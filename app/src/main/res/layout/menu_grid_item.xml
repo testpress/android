@@ -12,7 +12,7 @@
         android:layout_width="33dp"
         android:layout_height="33dp"
         android:layout_marginTop="15dp"
-        android:src="@drawable/icon" />
+        />
 
     <TextView
         android:id="@+id/menuName"

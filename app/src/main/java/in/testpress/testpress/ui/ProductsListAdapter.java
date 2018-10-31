@@ -19,11 +19,13 @@ public class ProductsListAdapter extends SingleTypeAdapter<Product> {
 
     ImageLoader imageLoader = ImageLoader.getInstance();
     DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
-            .cacheOnDisc(true).resetViewBeforeLoading(true)
-            .showImageForEmptyUri(R.drawable.icon)
+            .cacheOnDisk(true)
+            .resetViewBeforeLoading(true)
+            .showImageForEmptyUri(R.drawable.testpress_placeholder_icon)
             .imageScaleType(ImageScaleType.EXACTLY)
-            .showImageOnFail(R.drawable.icon)
-            .showImageOnLoading(R.drawable.icon).build();
+            .showImageOnFail(R.drawable.testpress_placeholder_icon)
+            .showImageOnLoading(R.drawable.testpress_placeholder_icon)
+            .build();
 
     /**
      * @param inflater

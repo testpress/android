@@ -2,14 +2,8 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyEllipsis">
 
-    <string name="app_name">Koncpt</string>
-    <string name="host_url">koncpt.testpress.in</string>
-    <string name="facebook_app_id">733962776688753</string>
-    <string name="fb_login_protocol_scheme">733962776688753</string>
-    <string name="server_client_id">1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com</string>
-    <string name="share_message">Good app to prepare for NEET PG. Get it at https://play.google.com/store/apps/details?id=</string>
-
     <string name="testpress_leaderboard">Toppers</string>
+    <string name="rss_posts">Whats New</string>
 
     <string name="refresh_action">Refresh</string>
 
@@ -26,6 +20,7 @@
     <string name="no_orders">No transactions yet</string>
     <string name="no_orders_description">Your purchased orders will be reflected here.</string>
     <string name="no_posts">No Articles</string>
+    <string name="no_discussions">No Discussions</string>
 
     <string name="edit">Edit</string>
     <string name="cancel">Cancel</string>
@@ -75,6 +70,7 @@
     <string name="goto_home">Goto Home</string>
 
     <string name="all_posts">All Posts</string>
+    <string name="all_discussions">All Discussions</string>
     <string name="categories">Categories</string>
     <string name="title_activity_reset_password_verification">ResetPasswordVerificationActivity
     </string>
@@ -122,10 +118,44 @@
     <string name="my_exams">My Exams</string>
     <string name="store">Store</string>
     <string name="posts">Posts</string>
+    <string name="forum">Forum</string>
+    <string name="article">Article</string>
+    <string name="discussions">Discussions</string>
     <string name="documents">Documents</string>
     <string name="analytics">Analytics</string>
     <string name="profile">Profile</string>
     <string name="orders">Orders</string>
     <string name="rate_us">Rate Us</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="bookmarks">Bookmarks</string>
+
+    <string name="view_in_website">View in Website</string>
+
+    <string name="update_your_app">Update Your App!</string>
+    <string name="remained_later">Remind Later</string>
+
+    <string name="file_path_not_suitable">Oops!, can\'t access this file path. Please try another folder</string>
+
+    <string name="posts_channel">Updates/News/Posts</string>
+    <string name="contents_channel">New Contents</string>
+
+    <string name="notification_summary_content">%d new notifications</string>
+    <string name="tap_to_open">Tap to open</string>
+
+    <string name="get_it_at"> Get it at https://play.google.com/store/apps/details?id=</string>
+
+    <string name="testpress_new_comments">New Comments</string>
+    <string name="testpress_post_title">Post title</string>
+    <string name="testpress_pick_a_topic">Pick a topic</string>
+    <string name="testpress_post_content">Post Content</string>
+    <string name="testpress_publish">Publish</string>
+    <string name="articles">Articles</string>
+
+    <string name="title_must_be_min_3_characters">The title must be at least 3 characters.</string>
+    <string name="title_must_be_max_200_characters">The title must be less than 200 characters.</string>
+    <string name="content_field_required">The content field is required.</string>
+    <string name="image_cleared">Image cleared!</string>
+    <string name="posted_successfully">Posted successfully!</string>
+    <string name="create_post">Create Post</string>
 
 </resources>

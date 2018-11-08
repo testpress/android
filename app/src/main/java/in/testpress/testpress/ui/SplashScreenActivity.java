@@ -28,17 +28,16 @@ import in.testpress.testpress.authenticator.ResetPasswordActivity;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.util.CommonUtils;
+import in.testpress.testpress.util.UpdateAppDialogManager;
 
 import static in.testpress.core.TestpressSdk.ACTION_PRESSED_HOME;
-import static in.testpress.core.TestpressSdk.COURSE_CHAPTER_REQUEST_CODE;
 import static in.testpress.core.TestpressSdk.COURSE_CONTENT_DETAIL_REQUEST_CODE;
 import static in.testpress.core.TestpressSdk.COURSE_CONTENT_LIST_REQUEST_CODE;
 import static in.testpress.course.TestpressCourse.CHAPTER_URL;
 import static in.testpress.course.TestpressCourse.COURSE_ID;
-import static in.testpress.course.TestpressCourse.PARENT_ID;
 import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
+import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.core.Constants.Http.CHAPTERS_PATH;
-import static in.testpress.testpress.core.Constants.Http.URL_BASE;
 
 public class SplashScreenActivity extends Activity {
 
@@ -56,6 +55,7 @@ public class SplashScreenActivity extends Activity {
         setContentView(R.layout.activity_splash);
         Injector.inject(this);
         ButterKnife.inject(this);
+        UpdateAppDialogManager.monitor(this);
         new Handler().postDelayed(new Runnable() {
 
             @Override
@@ -195,8 +195,8 @@ public class SplashScreenActivity extends Activity {
                 break;
             case 2:
                 // Contents list url - /chapters/chapter-slug/
-                String chapterAPI = URL_BASE + CHAPTERS_PATH + uri.getLastPathSegment();
-                TestpressCourse.showContents(this, chapterAPI, testpressSession);
+                String chapterAPI = BASE_URL + CHAPTERS_PATH + uri.getLastPathSegment() + "/";
+                TestpressCourse.showChapterContents(this, chapterAPI, testpressSession);
                 break;
             case 3:
                 // Content detail url - /chapters/chapter-slug/{content-id}/
@@ -265,20 +265,16 @@ public class SplashScreenActivity extends Activity {
                 Assert.assertNotNull("TestpressSession must not be null.", testpressSession);
                 switch (requestCode) {
                     case COURSE_CONTENT_DETAIL_REQUEST_CODE:
+                    case COURSE_CONTENT_LIST_REQUEST_CODE:
+                        int courseId = data.getIntExtra(COURSE_ID, 0);
                         String chapterUrl = data.getStringExtra(CHAPTER_URL);
                         if (chapterUrl != null) {
-                            // Show contents list on home pressed from content detail
-                            TestpressCourse.showContents(this, chapterUrl, testpressSession);
+                            // Show contents list or child chapters of the chapter url given
+                            TestpressCourse.showChapterContents(this, chapterUrl, testpressSession);
                             return;
-                        }
-                        break;
-                    case COURSE_CONTENT_LIST_REQUEST_CODE:
-                    case COURSE_CHAPTER_REQUEST_CODE:
-                        String courseId = data.getStringExtra(COURSE_ID);
-                        String parentId = data.getStringExtra(PARENT_ID);
-                        if (courseId != null) {
-                            // Show chapters list on home press from contents list or sub chapters list
-                            TestpressCourse.showChapters(this, courseId, parentId, testpressSession);
+                        } else if (courseId != 0) {
+                            // Show grand parent chapters list on home press from sub chapters list
+                            TestpressCourse.showChapters(this, null, courseId, testpressSession);
                             return;
                         }
                         break;

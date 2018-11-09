@@ -5,7 +5,12 @@ import android.accounts.AccountManager;
 import android.accounts.OperationCanceledException;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.content.Loader;
@@ -15,13 +20,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.List;
 
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.Device;
+import in.testpress.testpress.ui.SplashScreenActivity;
 import in.testpress.testpress.ui.ThrowableLoader;
 
 import static android.content.Context.ACCOUNT_SERVICE;
@@ -136,6 +141,26 @@ public class CommonUtils {
         } else {
             return null;
         }
+    }
+
+    public static void openUrlInBrowser(Activity activity, Uri uri) {
+        setDeepLinkingState(PackageManager.COMPONENT_ENABLED_STATE_DISABLED, activity);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        activity.startActivity(intent);
+        setDeepLinkingState(PackageManager.COMPONENT_ENABLED_STATE_ENABLED, activity);
+    }
+
+    private static void setDeepLinkingState(int state, Context context) {
+        ComponentName componentName = new ComponentName(context.getPackageName(),
+                SplashScreenActivity.class.getName());
+
+        context.getApplicationContext().getPackageManager().setComponentEnabledSetting(
+                componentName,
+                state,
+                PackageManager.DONT_KILL_APP);
     }
 
 }

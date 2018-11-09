@@ -88,7 +88,12 @@ public class SplashScreenActivity extends Activity {
                             break;
                         case "user":
                         case "profile":
-                            gotoActivity(ProfileDetailsActivity.class, true);
+                            if (pathSegments.size() == 1) {
+                                gotoActivity(ProfileDetailsActivity.class, true);
+                            } else {
+                                CommonUtils.openUrlInBrowser(SplashScreenActivity.this, uri);
+                                finish();
+                            }
                             break;
                         case "password":
                             gotoActivity(ResetPasswordActivity.class, false);
@@ -109,15 +114,9 @@ public class SplashScreenActivity extends Activity {
                             authenticateUser(uri);
                             break;
                         case "courses":
-                        case "orders":
                         case "learn":
                         case "leaderboard":
                         case "dashboard":
-                        case "contact":
-                        case "privacy":
-                        case "refund":
-                        case "update":
-                        case "about":
                             gotoHome();
                             break;
                         case "store":
@@ -126,7 +125,8 @@ public class SplashScreenActivity extends Activity {
                             deepLinkToProduct(uri);
                             break;
                         default:
-                            gotoProductDetails(pathSegments.get(0));
+                            CommonUtils.openUrlInBrowser(SplashScreenActivity.this, uri);
+                            finish();
                             break;
                     }
                 } else {

@@ -2,6 +2,8 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyEllipsis">
 
+    <string name="welcome_message">Welcome back, %1$s!</string>
+
     <string name="rss_posts">Whats New</string>
 
     <string name="refresh_action">Refresh</string>

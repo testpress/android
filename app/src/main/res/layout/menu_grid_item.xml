@@ -18,7 +18,8 @@
         android:layout_gravity="center"
         android:layout_width="33dp"
         android:layout_height="33dp"
-        android:src="@drawable/icon" />
+        android:layout_marginTop="15dp"
+        />
 
     <TextView
         android:id="@+id/menuName"

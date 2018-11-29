@@ -22,7 +22,7 @@ import in.testpress.testpress.TestpressServiceProvider;
  */
 public abstract class ResourcePager<E> {
 
-    TestpressService service;
+    protected TestpressService service;
 
     /**
      * Next page to request

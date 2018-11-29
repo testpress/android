@@ -4,8 +4,6 @@
     package="in.testpress.testpress">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
@@ -13,15 +11,14 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.RECEIVE_SMS" tools:node="remove"/>
-    <uses-permission android:name="android.permission.READ_SMS" tools:node="remove"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
 
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
 
     <application
         android:name=".TestpressApplication"
         android:allowBackup="true"
-        android:icon="@drawable/icon"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.Testpress.Dark">
 
@@ -64,44 +61,13 @@
                 android:resource="@xml/authenticator" />
         </service>
 
-        <!-- [START gcm_receiver] -->
-        <receiver
-            android:name="com.google.android.gms.gcm.GcmReceiver"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-
-                <category android:name="gcm.play.android.samples.com.gcmquickstart" />
-            </intent-filter>
-        </receiver>
-        <!-- [END gcm_receiver] -->
-
-
         <!-- [START gcm_listener] -->
-        <service
-            android:name=".core.TestpressGCMListenerService"
-            android:exported="false">
+        <service android:name=".core.TestpressGCMListenerService">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <!-- [END gcm_listener] -->
-
-
-        <!-- [START instanceId_listener] -->
-        <service
-            android:name=".core.TestpressInstanceIDListenerService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID" />
-            </intent-filter>
-        </service>
-        <!-- [END instanceId_listener] -->
-
-        <service
-            android:name=".authenticator.RegistrationIntentService"
-            android:exported="false" />
 
         <activity
             android:name=".authenticator.LoginActivity"
@@ -117,7 +83,20 @@
         <activity
             android:name=".ui.PostActivity"
             android:label="Article"
+            android:windowSoftInputMode="stateHidden"
             android:configChanges="orientation|keyboardHidden|screenSize" />
+
+        <activity
+            android:name=".ui.ForumActivity"
+            android:label="Article"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
+
+        <activity
+            android:name=".ui.CreateForumActivity"
+            android:label="Create Forum Post"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
 
         <activity
             android:name=".authenticator.RegisterActivity"
@@ -146,6 +125,12 @@
             android:name=".ui.PostsListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Articles" />
+
+        <activity
+            android:name=".ui.ForumListActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Discussions" />
+
         <activity
             android:name=".ui.OrdersListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -183,17 +168,22 @@
             android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboard|screenSize"
             android:label="Profile Photo" />
-        <activity
-            android:name=".ui.CropImageActivity"
-            android:configChanges="orientation|keyboard|screenSize"
-            android:label="Crop Image" />
+
         <activity
             android:name=".authenticator.ResetPasswordActivity"
             android:configChanges="orientation|keyboard|screenSize"
             android:label="@string/title_activity_reset_password_verification" />
 
         <activity
-            android:name=".ui.ZoomableImageActivity" />
+            android:name=".ui.DrupalRssListActivity"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|keyboard|screenSize"
+            android:label="@string/rss_posts" />
+
+        <activity
+            android:name=".ui.RssFeedDetailActivity"
+            android:configChanges="orientation|keyboard|screenSize"
+            android:label="@string/rss_posts" />
 
         <activity
             android:name="com.facebook.CustomTabActivity"

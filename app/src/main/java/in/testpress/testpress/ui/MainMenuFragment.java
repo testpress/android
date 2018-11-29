@@ -39,6 +39,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
+import in.testpress.core.TestpressSession;
 import in.testpress.exam.TestpressExam;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
@@ -60,6 +61,9 @@ import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.util.UIUtils;
 
 import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
+import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
+import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.ui.DrupalRssListFragment.RSS_FEED_URL;
 
 public class MainMenuFragment extends Fragment {
 
@@ -115,20 +119,25 @@ public class MainMenuFragment extends Fragment {
         fetchProfileDetails();
         welcomeMessage.setTypeface(TestpressSdk.getRubikRegularFont(getContext()));
         AccountManager manager = (AccountManager) getActivity().getSystemService(Context.ACCOUNT_SERVICE);
-        account = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
+        account = manager.getAccountsByType(APPLICATION_ID);
         DaoSession daoSession =
                 ((TestpressApplication) getActivity().getApplicationContext()).getDaoSession();
 
         InstituteSettingsDao instituteSettingsDao = daoSession.getInstituteSettingsDao();
         InstituteSettings instituteSettings = instituteSettingsDao.queryBuilder()
-                .where(InstituteSettingsDao.Properties.BaseUrl.eq(Constants.Http.URL_BASE))
+                .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
                 .list().get(0);
 
         LinkedHashMap<Integer, Integer> mMenuItemResIds = new LinkedHashMap<>();
         final boolean isUserAuthenticated = account.length > 0;
+        // ToDo get from institute settings
+        boolean drupalRssFeedEnabled = false;
         if (isUserAuthenticated) {
             if (!instituteSettings.getShowGameFrontend()) {
                 mMenuItemResIds.put(R.string.my_exams, R.drawable.exams);
+            }
+            if (instituteSettings.getBookmarksEnabled()) {
+                mMenuItemResIds.put(R.string.bookmarks, R.drawable.bookmark);
             }
             if (instituteSettings.getDocumentsEnabled()) {
                 mMenuItemResIds.put(R.string.documents, R.drawable.documents);
@@ -138,6 +147,9 @@ public class MainMenuFragment extends Fragment {
         }
         if (instituteSettings.getStoreEnabled()) {
             mMenuItemResIds.put(R.string.store, R.drawable.store);
+        }
+        if (drupalRssFeedEnabled) {
+            mMenuItemResIds.put(R.string.rss_posts, R.drawable.rss_feed);
         }
         if (instituteSettings.getPostsEnabled()) {
             mMenuItemResIds.put(R.string.posts, R.drawable.posts);
@@ -163,6 +175,9 @@ public class MainMenuFragment extends Fragment {
                     case R.string.my_exams:
                         checkAuthenticatedUser(R.string.my_exams);
                         break;
+                    case R.string.bookmarks:
+                        checkAuthenticatedUser(R.string.bookmarks);
+                        break;
                     case R.string.store:
                         intent = new Intent(getActivity(), ProductsListActivity.class);
                         startActivity(intent);
@@ -175,8 +190,18 @@ public class MainMenuFragment extends Fragment {
                         intent = new Intent(getActivity(), OrdersListActivity.class);
                         startActivity(intent);
                         break;
+                    case R.string.rss_posts:
+                        intent = new Intent(getActivity(), DrupalRssListActivity.class);
+                        intent.putExtra(RSS_FEED_URL, "https://www.wired.com/feed/");
+                        startActivity(intent);
+                        break;
                     case R.string.posts:
                         intent = new Intent(getActivity(), PostsListActivity.class);
+                        intent.putExtra("userAuthenticated", isUserAuthenticated);
+                        startActivity(intent);
+                        break;
+                    case R.string.forum:
+                        intent = new Intent(getActivity(), ForumListActivity.class);
                         intent.putExtra("userAuthenticated", isUserAuthenticated);
                         startActivity(intent);
                         break;
@@ -232,16 +257,18 @@ public class MainMenuFragment extends Fragment {
     }
 
     void showSDK(int clickedMenuTitleResId) {
+        //noinspection ConstantConditions
+        TestpressSession session = TestpressSdk.getTestpressSession(getActivity());
+        assert session != null;
         switch (clickedMenuTitleResId) {
             case R.string.my_exams:
-                //noinspection ConstantConditions
-                TestpressExam.showCategories(getActivity(), true,
-                        TestpressSdk.getTestpressSession(getActivity()));
+                TestpressExam.showCategories(getActivity(), true, session);
+                break;
+            case R.string.bookmarks:
+                TestpressExam.showBookmarks(getActivity(), session);
                 break;
             case R.string.analytics:
-                //noinspection ConstantConditions
-                TestpressExam.showAnalytics(getActivity(), SUBJECT_ANALYTICS_PATH,
-                        TestpressSdk.getTestpressSession(getActivity()));
+                TestpressExam.showAnalytics(getActivity(), SUBJECT_ANALYTICS_PATH, session);
                 break;
         }
     }
@@ -249,7 +276,8 @@ public class MainMenuFragment extends Fragment {
     void shareApp() {
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("text/plain");
-        share.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.share_message) + getActivity().getPackageName());
+        share.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_message) +
+                getString(R.string.get_it_at) + getActivity().getPackageName());
         startActivity(Intent.createChooser(share, "Share with"));
     }
 

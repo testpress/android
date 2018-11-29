@@ -28,6 +28,7 @@ import in.testpress.testpress.authenticator.ResetPasswordActivity;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.util.CommonUtils;
+import in.testpress.testpress.util.UpdateAppDialogManager;
 
 import static in.testpress.core.TestpressSdk.ACTION_PRESSED_HOME;
 import static in.testpress.core.TestpressSdk.COURSE_CONTENT_DETAIL_REQUEST_CODE;
@@ -35,8 +36,8 @@ import static in.testpress.core.TestpressSdk.COURSE_CONTENT_LIST_REQUEST_CODE;
 import static in.testpress.course.TestpressCourse.CHAPTER_URL;
 import static in.testpress.course.TestpressCourse.COURSE_ID;
 import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
+import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.core.Constants.Http.CHAPTERS_PATH;
-import static in.testpress.testpress.core.Constants.Http.URL_BASE;
 
 public class SplashScreenActivity extends Activity {
 
@@ -54,6 +55,7 @@ public class SplashScreenActivity extends Activity {
         setContentView(R.layout.activity_splash);
         Injector.inject(this);
         ButterKnife.inject(this);
+        UpdateAppDialogManager.monitor(this);
         new Handler().postDelayed(new Runnable() {
 
             @Override
@@ -86,7 +88,12 @@ public class SplashScreenActivity extends Activity {
                             break;
                         case "user":
                         case "profile":
-                            gotoActivity(ProfileDetailsActivity.class, true);
+                            if (pathSegments.size() == 1) {
+                                gotoActivity(ProfileDetailsActivity.class, true);
+                            } else {
+                                CommonUtils.openUrlInBrowser(SplashScreenActivity.this, uri);
+                                finish();
+                            }
                             break;
                         case "password":
                             gotoActivity(ResetPasswordActivity.class, false);
@@ -107,15 +114,9 @@ public class SplashScreenActivity extends Activity {
                             authenticateUser(uri);
                             break;
                         case "courses":
-                        case "orders":
                         case "learn":
                         case "leaderboard":
                         case "dashboard":
-                        case "contact":
-                        case "privacy":
-                        case "refund":
-                        case "update":
-                        case "about":
                             gotoHome();
                             break;
                         case "store":
@@ -124,7 +125,8 @@ public class SplashScreenActivity extends Activity {
                             deepLinkToProduct(uri);
                             break;
                         default:
-                            gotoProductDetails(pathSegments.get(0));
+                            CommonUtils.openUrlInBrowser(SplashScreenActivity.this, uri);
+                            finish();
                             break;
                     }
                 } else {
@@ -193,7 +195,7 @@ public class SplashScreenActivity extends Activity {
                 break;
             case 2:
                 // Contents list url - /chapters/chapter-slug/
-                String chapterAPI = URL_BASE + CHAPTERS_PATH + uri.getLastPathSegment() + "/";
+                String chapterAPI = BASE_URL + CHAPTERS_PATH + uri.getLastPathSegment() + "/";
                 TestpressCourse.showChapterContents(this, chapterAPI, testpressSession);
                 break;
             case 3:

@@ -35,22 +35,13 @@ import in.testpress.testpress.ui.RssFeedDetailActivity;
 import in.testpress.testpress.ui.SplashScreenActivity;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.MainMenuFragment;
-import in.testpress.testpress.ui.OrderConfirmActivity;
 import in.testpress.testpress.ui.OrdersListActivity;
 import in.testpress.testpress.ui.OrdersListFragment;
-import in.testpress.testpress.ui.PaymentSuccessActivity;
 import in.testpress.testpress.ui.PostActivity;
 import in.testpress.testpress.ui.PostsListActivity;
 import in.testpress.testpress.ui.PostsListFragment;
-import in.testpress.testpress.ui.ProductDetailsActivity;
-import in.testpress.testpress.ui.ProductListFragment;
-import in.testpress.testpress.ui.ProductsListActivity;
 import in.testpress.testpress.ui.ProfileDetailsActivity;
 import in.testpress.testpress.ui.ProfilePhotoActivity;
-import in.testpress.testpress.ui.paymentGateway.CreditDebitCardActivity;
-import in.testpress.testpress.ui.paymentGateway.NetBankingActivity;
-import in.testpress.testpress.ui.paymentGateway.PaymentModeActivity;
-import in.testpress.testpress.ui.paymentGateway.PaymentsActivity;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
 
@@ -70,17 +61,8 @@ import static in.testpress.testpress.BuildConfig.BASE_URL;
                 MainActivity.class,
                 RegisterActivity.class,
                 CodeVerificationActivity.class,
-                ProductsListActivity.class,
-                ProductListFragment.class,
-                ProductDetailsActivity.class,
                 OrdersListActivity.class,
                 OrdersListFragment.class,
-                PaymentSuccessActivity.class,
-                OrderConfirmActivity.class,
-                PaymentModeActivity.class,
-                PaymentsActivity.class,
-                CreditDebitCardActivity.class,
-                NetBankingActivity.class,
                 PostActivity.class,
                 PostsListActivity.class,
                 PostsListFragment.class,

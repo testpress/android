@@ -26,21 +26,15 @@ dependencies {
     implementation 'com.squareup.okhttp:okhttp:2.3.0'
     implementation 'com.squareup.retrofit:retrofit:1.9.0'
 
-    // Android Support Libs
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
     // Material Dialog
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
-
-    // Payu
-    implementation files('libs/payusdk.jar')
-    implementation project(':CustomBrowser-release')
 
     // GreenDao for database
     implementation 'de.greenrobot:greendao:2.0.0'
     
     // Testpress Course(which inbuilt has exam & core module)
     implementation 'com.github.testpress:course:' + testpressSDK
+    implementation 'com.github.testpress:store:' + testpressSDK
 
     // Gcm
     implementation 'com.google.firebase:firebase-messaging:17.3.4'

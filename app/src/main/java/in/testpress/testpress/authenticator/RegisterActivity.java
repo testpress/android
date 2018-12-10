@@ -97,15 +97,7 @@ public class RegisterActivity extends AppCompatActivity {
             finish();
         }
         String[] permissions = new String[] { RECEIVE_SMS };
-        PermissionsUtils.PermissionRequestResultHandler permissionRequestResultHandler =
-                new PermissionsUtils.PermissionRequestResultHandler() {
-                    @Override
-                    public void onPermissionGranted() {
-                        postDetails();
-                    }
-        };
-        permissionsUtils = new PermissionsUtils(this, registerLayout, permissions,
-                RECEIVE_SMS_PERMISSION_REQUEST_CODE, permissionRequestResultHandler);
+        permissionsUtils = new PermissionsUtils(this, registerLayout, permissions);
 
         confirmPasswordText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(final TextView v, final int actionId,
@@ -269,7 +261,13 @@ public class RegisterActivity extends AppCompatActivity {
                                     if (getPackageManager()
                                             .hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
 
-                                        permissionsUtils.requestPermissions();
+                                        permissionsUtils.requestPermissions(
+                                                new PermissionsUtils.PermissionRequestResultHandler() {
+                                                    @Override
+                                                    public void onPermissionGranted() {
+                                                        postDetails();
+                                                    }
+                                                });
                                     } else {
                                         postDetails();
                                     }

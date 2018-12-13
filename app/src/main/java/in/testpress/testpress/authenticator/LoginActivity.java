@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.Editable;
@@ -506,11 +507,9 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
     @OnClick(id.signup) public void signUp() {
         if(internetConnectivityChecker.isConnected()) {
-            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-            if(getIntent().getExtras() != null) {
-                intent.putExtras(getIntent().getExtras());
-            }
-            startActivityForResult(intent, REQUEST_CODE_REGISTER_USER);
+            String url = "https://forms.zohopublic.com/koncpt/form/AriseMedicalStudents/formperma/Hrv77kpSszRRjBhDw1QTatjOZyp7f5wo45OYw6lfMjk";
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(intent);
         } else {
             internetConnectivityChecker.showAlert();
         }

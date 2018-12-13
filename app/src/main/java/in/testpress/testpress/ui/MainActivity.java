@@ -1,20 +1,15 @@
 package in.testpress.testpress.ui;
 
 import android.accounts.OperationCanceledException;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -23,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.io.IOException;
@@ -42,7 +36,6 @@ import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
-import in.testpress.testpress.authenticator.RegistrationIntentService;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.DaoSession;
@@ -60,8 +53,6 @@ import static in.testpress.testpress.BuildConfig.BASE_URL;
 public class MainActivity extends TestpressFragmentActivity {
 
     private static final String SELECTED_ITEM = "selectedItem";
-    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    private static final String TAG = "MainActivity";
 
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected TestpressService testpressService;
@@ -76,7 +67,6 @@ public class MainActivity extends TestpressFragmentActivity {
     @InjectView(R.id.viewpager) ViewPager viewPager;
     @InjectView(R.id.grid) GridView grid;
 
-    private BroadcastReceiver mRegistrationBroadcastReceiver;
     private int mSelectedItem;
     private BottomNavBarAdapter mBottomBarAdapter;
     private ArrayList<Integer> mMenuItemImageIds = new ArrayList<>();
@@ -96,12 +86,6 @@ public class MainActivity extends TestpressFragmentActivity {
             mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM);
         }
         viewPager.setVisibility(View.GONE);
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                CommonUtils.registerDevice(MainActivity.this, testpressService, serviceProvider);
-            }
-        };
         DaoSession daoSession = TestpressApplication.getDaoSession();
         instituteSettingsDao = daoSession.getInstituteSettingsDao();
         List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
@@ -151,11 +135,9 @@ public class MainActivity extends TestpressFragmentActivity {
         SharedPreferences preferences =
                 getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
         if (!preferences.getBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false)) {
-            if (checkPlayServices()) {
-                // Start IntentService to register this application with GCM.
-                Intent intent = new Intent(MainActivity.this, RegistrationIntentService.class);
-                startService(intent);
-            }
+            GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+            apiAvailability.makeGooglePlayServicesAvailable(this);
+            CommonUtils.registerDevice(MainActivity.this, testpressService, serviceProvider);
         }
         addMenuItem(R.string.dashboard, R.drawable.profile_default, new MainMenuFragment());
         // Show courses list if game front end is enabled, otherwise hide bottom bar
@@ -281,40 +263,6 @@ public class MainActivity extends TestpressFragmentActivity {
                 updateTestpressSession();
             }
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(GCMPreference.REGISTRATION_COMPLETE));
-    }
-
-    @Override
-    protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
-        super.onPause();
-    }
-
-    /**
-     * Check the device to make sure it has the Google Play Services APK. If
-     * it doesn't, display a dialog that allows users to download the APK from
-     * the Google Play Store or enable it in the device's system settings.
-     */
-    private boolean checkPlayServices() {
-        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
-        if (resultCode != ConnectionResult.SUCCESS) {
-            if (apiAvailability.isUserResolvableError(resultCode)) {
-                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
-                        .show();
-            } else {
-                Log.i(TAG, "This device is not supported.");
-                finish();
-            }
-            return false;
-        }
-        return true;
     }
 
     private void checkUpdate() {

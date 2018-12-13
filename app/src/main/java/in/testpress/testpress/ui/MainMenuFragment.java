@@ -34,6 +34,7 @@ import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.exam.TestpressExam;
+import in.testpress.store.TestpressStore;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
@@ -106,9 +107,9 @@ public class MainMenuFragment extends Fragment {
             }
             mMenuItemResIds.put(R.string.analytics, R.drawable.analytics);
             mMenuItemResIds.put(R.string.profile, R.drawable.ic_profile_details);
-        }
-        if (instituteSettings.getStoreEnabled()) {
-            mMenuItemResIds.put(R.string.store, R.drawable.store);
+            if (instituteSettings.getStoreEnabled()) {
+                mMenuItemResIds.put(R.string.store, R.drawable.store);
+            }
         }
         if (drupalRssFeedEnabled) {
             mMenuItemResIds.put(R.string.rss_posts, R.drawable.rss_feed);
@@ -141,8 +142,7 @@ public class MainMenuFragment extends Fragment {
                         checkAuthenticatedUser(R.string.bookmarks);
                         break;
                     case R.string.store:
-                        intent = new Intent(getActivity(), ProductsListActivity.class);
-                        startActivity(intent);
+                        checkAuthenticatedUser(R.string.store);
                         break;
                     case R.string.documents:
                         intent = new Intent(getActivity(), DocumentsListActivity.class);
@@ -230,6 +230,9 @@ public class MainMenuFragment extends Fragment {
                 break;
             case R.string.analytics:
                 TestpressExam.showAnalytics(getActivity(), SUBJECT_ANALYTICS_PATH, session);
+                break;
+            case R.string.store:
+                TestpressStore.show(getActivity(), session);
                 break;
         }
     }

@@ -125,7 +125,7 @@ public class MainMenuFragment extends Fragment {
             mMenuItemResIds.put(R.string.login, R.drawable.login);
         }
 
-        MainMenuGridAdapter adapter = new MainMenuGridAdapter(getActivity(), mMenuItemResIds);
+        MainMenuGridAdapter adapter = new MainMenuGridAdapter(getActivity(), mMenuItemResIds, instituteSettings);
         grid=(GridView)view.findViewById(R.id.grid);
         grid.setAdapter(adapter);
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {

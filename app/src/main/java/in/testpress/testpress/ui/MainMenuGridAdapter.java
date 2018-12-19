@@ -20,11 +20,11 @@ public class MainMenuGridAdapter extends BaseAdapter {
     private ArrayList<Integer> mMenuItemTitleIds;
     private InstituteSettings instituteSettings;
 
-    public MainMenuGridAdapter(Context c, LinkedHashMap<Integer, Integer> items, InstituteSettings Settings) {
+    public MainMenuGridAdapter(Context c, LinkedHashMap<Integer, Integer> items, InstituteSettings settings) {
         mContext = c;
         mMenuItemIds = items;
         mMenuItemTitleIds = new ArrayList<>(mMenuItemIds.keySet());
-        instituteSettings = Settings;
+        instituteSettings = settings;
     }
 
     @Override

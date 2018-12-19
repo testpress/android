@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 
 import in.testpress.testpress.R;
 import in.testpress.testpress.models.InstituteSettings;
+import in.testpress.testpress.util.UIUtils;
 
 public class MainMenuGridAdapter extends BaseAdapter {
     private Context mContext;
@@ -52,10 +53,9 @@ public class MainMenuGridAdapter extends BaseAdapter {
             TextView textView = (TextView) grid.findViewById(R.id.menuName);
             ImageView imageView = (ImageView)grid.findViewById(R.id.menuIcon);
             int titleResId = mMenuItemTitleIds.get(position);
-            if (getMenuItemName(titleResId)!="") {
-                textView.setText(getMenuItemName(titleResId));
-            }
-            else {
+            if (UIUtils.getMenuItemName(titleResId, instituteSettings) != "") {
+                textView.setText(UIUtils.getMenuItemName(titleResId, instituteSettings));
+            } else {
                 textView.setText(titleResId);
             }
             imageView.setImageResource(mMenuItemIds.get(titleResId));
@@ -63,19 +63,6 @@ public class MainMenuGridAdapter extends BaseAdapter {
             grid = (View) convertView;
         }
         return grid;
-    }
-
-    private String getMenuItemName(int titleResId) {
-        switch (titleResId) {
-            case R.string.documents:
-                return instituteSettings.getDocumentsLabel();
-            case R.string.store:
-                return instituteSettings.getStoreLabel();
-            case R.string.posts:
-                return instituteSettings.getPostsLabel();
-            default:
-                return "";
-        }
     }
 
 }

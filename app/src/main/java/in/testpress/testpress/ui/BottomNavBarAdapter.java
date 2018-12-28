@@ -58,11 +58,13 @@ public class BottomNavBarAdapter extends BaseAdapter {
         imageView.setImageResource(mItemsImageId.get(position));
         TextView menuTitle = ((TextView) convertView.findViewById(R.id.menu_title));
         int titleResId = mMenuItemTitleIds.get(position);
+
         if (UIUtils.getMenuItemName(titleResId, minstituteSettings) != "") {
             menuTitle.setText(UIUtils.getMenuItemName(titleResId, minstituteSettings));
         } else {
             menuTitle.setText(titleResId);
         }
+
         if (selectedPosition == position) {
             imageView.setColorFilter(ContextCompat.getColor(mContext, R.color.primary));
             menuTitle.setTextColor(ContextCompat.getColor(mContext, R.color.primary));

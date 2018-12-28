@@ -24,6 +24,9 @@
         android:textAllCaps="true"
         android:layout_marginTop="10dp"
         android:text="TextView"
-        android:textColor="@color/black"/>
+        android:textColor="@color/black"
+        android:scrollHorizontally="true"
+        android:ellipsize="end"
+        android:maxLines="1"/>
 
 </LinearLayout>

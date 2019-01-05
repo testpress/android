@@ -5,8 +5,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import in.testpress.core.TestpressSdk;
+import in.testpress.core.TestpressSession;
 import in.testpress.testpress.core.Constants;
 
+import static android.view.WindowManager.LayoutParams.FLAG_SECURE;
 /**
  * Base activity used to support the toolbar_material & handle backpress.
  * Activity that extends this activity must needs to include the #layout/toolbar_material
@@ -17,6 +20,11 @@ public abstract class BaseToolBarActivity extends AppCompatActivity {
     @Override
     public void setContentView(final int layoutResId) {
         super.setContentView(layoutResId);
+        TestpressSession session = TestpressSdk.getTestpressSession(this);
+
+        if (session != null && session.getInstituteSettings().isScreenshotDisabled()) {
+            getWindow().setFlags(FLAG_SECURE, FLAG_SECURE);
+        }
         Toolbar toolbar = (Toolbar) findViewById(in.testpress.R.id.toolbar);
         setSupportActionBar(toolbar);
         //noinspection ConstantConditions

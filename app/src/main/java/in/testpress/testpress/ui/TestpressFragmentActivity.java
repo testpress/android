@@ -21,6 +21,9 @@ import butterknife.ButterKnife;
 import in.testpress.testpress.R;
 import in.testpress.testpress.core.Constants;
 
+import static android.view.WindowManager.LayoutParams.FLAG_SECURE;
+import static in.testpress.testpress.BuildConfig.SCREENSHOT_DISABLED;
+
 
 /**
  * Base class for all Testpress Activities that need fragments.
@@ -52,6 +55,9 @@ public class TestpressFragmentActivity extends AppCompatActivity {
     public void setContentView(final int layoutResId) {
         super.setContentView(layoutResId);
 
+        if (SCREENSHOT_DISABLED) {
+            getWindow().setFlags(FLAG_SECURE, FLAG_SECURE);
+        }
         ButterKnife.inject(this);
         Toolbar toolbar = getActionBarToolbar();
         getSupportActionBar().setDisplayShowCustomEnabled(true);

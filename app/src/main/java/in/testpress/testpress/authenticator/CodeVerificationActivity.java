@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,6 +26,13 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.auth.api.phone.SmsRetriever;
+import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+
+import java.util.Timer;
 
 import java.io.IOException;
 import java.util.List;
@@ -99,7 +107,7 @@ public class CodeVerificationActivity extends AppCompatActivity {
         username = intent.getStringExtra("username");
         password = intent.getStringExtra("password");
         String phoneNumber = intent.getStringExtra("phoneNumber");
-        if(username == null){
+        if (username == null) {
             usernameText.setVisibility(View.VISIBLE);
             verificationCodeText.setVisibility(View.VISIBLE);
             verifyButton.setVisibility(View.VISIBLE);
@@ -109,15 +117,17 @@ public class CodeVerificationActivity extends AppCompatActivity {
             welcomeText.setText("Waiting to automatically detect an sms sent to " + phoneNumber + "\nIf you get the verification code press Manually Verify");
             timer = new Timer();
             smsReceivingEvent = new SmsReceivingEvent(timer);
-            packageManager = getBaseContext().getPackageManager();
-            if (packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
-                IntentFilter filter = new IntentFilter();
-                filter.addAction("android.provider.Telephony.SMS_RECEIVED");
-                registerReceiver(smsReceivingEvent, filter); //start receiver
-                timer.start(); // Start timer
-            } else {
-                timer.onFinish();
-            }
+//            packageManager = getBaseContext().getPackageManager();
+//            if (packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
+            IntentFilter filter = new IntentFilter();
+//            filter.addAction("android.provider.Telephony.SMS_RECEIVED");
+            filter.addAction(SmsRetriever.SMS_RETRIEVED_ACTION);
+            //Register SMS broadcast receiver
+            registerReceiver(smsReceivingEvent, filter); //start receiver
+            timer.start(); // Start timer
+//            } else {
+//                timer.onFinish();
+//            }
         }
         verificationCodeText.addTextChangedListener(watcher);
         verificationCodeText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -176,9 +186,10 @@ public class CodeVerificationActivity extends AppCompatActivity {
         public void onFinish() {
             countText.setText("30s");
             progressBar.setProgress(30);
-            if (packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
-                unregisterReceiver(smsReceivingEvent); //end receiver
-            }
+//            if (packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
+//                unregisterReceiver(smsReceivingEvent); //end receiver
+//            }
+            unregisterReceiver(smsReceivingEvent); //end receiver
             if (smsReceivingEvent.code  != null) { //checking smsReceivingEvent get the code or not
                 verificationCodeText.setText(smsReceivingEvent.code);
                 handleCodeVerification(); //verify code

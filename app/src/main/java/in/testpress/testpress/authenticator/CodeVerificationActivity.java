@@ -254,6 +254,8 @@ public class CodeVerificationActivity extends AppCompatActivity {
                 new TestpressCallback<TestpressSession>() {
                     @Override
                     public void onSuccess(TestpressSession response) {
+                        authToken = response.getToken();
+                        testpressService.setAuthToken(authToken);
                         final Account account = new Account(username, APPLICATION_ID);
                         accountManager.addAccountExplicitly(account, password, null);
                         accountManager.setAuthToken(account, APPLICATION_ID, authToken);

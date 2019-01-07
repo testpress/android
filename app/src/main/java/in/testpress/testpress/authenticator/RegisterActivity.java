@@ -224,7 +224,7 @@ public class RegisterActivity extends AppCompatActivity {
            }
             if (verificationMethod.equals(MOBILE)) {
                 //Phone number verification
-                Pattern phoneNumberPattern = Pattern.compile("[789]\\d{9}");
+                Pattern phoneNumberPattern = Pattern.compile("\\d{10}");
                 Matcher phoneNumberMatcher = phoneNumberPattern.matcher(phoneText.getText()
                         .toString().trim());
                 if (!phoneNumberMatcher.matches()) {

@@ -27,12 +27,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.auth.api.phone.SmsRetriever;
-import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 
-import java.util.Timer;
 
 import java.io.IOException;
 import java.util.List;
@@ -107,7 +102,7 @@ public class CodeVerificationActivity extends AppCompatActivity {
         username = intent.getStringExtra("username");
         password = intent.getStringExtra("password");
         String phoneNumber = intent.getStringExtra("phoneNumber");
-        if (username == null) {
+        if(username == null){
             usernameText.setVisibility(View.VISIBLE);
             verificationCodeText.setVisibility(View.VISIBLE);
             verifyButton.setVisibility(View.VISIBLE);

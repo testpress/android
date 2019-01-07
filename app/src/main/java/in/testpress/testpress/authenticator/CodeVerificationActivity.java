@@ -253,6 +253,8 @@ public class CodeVerificationActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(TestpressSession response) {
                         //add account in mobile
+                        authToken = response.getToken();
+                        testpressService.setAuthToken(authToken);
                         final Account account = new Account(username, APPLICATION_ID);
                         accountManager.addAccountExplicitly(account, password, null);
                         accountManager.setAuthToken(account, APPLICATION_ID, authToken);

@@ -47,16 +47,13 @@ import in.testpress.testpress.models.RegistrationErrorDetails;
 import in.testpress.testpress.ui.TextWatcherAdapter;
 import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.SafeAsyncTask;
-import in.testpress.util.PermissionsUtils;
 import retrofit.RetrofitError;
 
-//import static android.Manifest.permission.RECEIVE_SMS;
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.authenticator.LoginActivity.REQUEST_CODE_REGISTER_USER;
 import static in.testpress.testpress.authenticator.RegisterActivity.VerificationMethod.EMAIL;
 import static in.testpress.testpress.authenticator.RegisterActivity.VerificationMethod.MOBILE;
-//import static in.testpress.testpress.core.Constants.RequestCode.RECEIVE_SMS_PERMISSION_REQUEST_CODE;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -76,7 +73,6 @@ public class RegisterActivity extends AppCompatActivity {
     private final TextWatcher watcher = validationTextWatcher();
     private RegistrationSuccessResponse registrationSuccessResponse;
     private MaterialDialog progressDialog;
-//    private PermissionsUtils permissionsUtils;
     private InternetConnectivityChecker internetConnectivityChecker = new InternetConnectivityChecker(this);
     private VerificationMethod verificationMethod;
     enum VerificationMethod { MOBILE, EMAIL }
@@ -101,8 +97,6 @@ public class RegisterActivity extends AppCompatActivity {
             // Never happen, just for a safety.
             finish();
         }
-//        String[] permissions = new String[] { RECEIVE_SMS };
-//        permissionsUtils = new PermissionsUtils(this, registerLayout, permissions);
 
         confirmPasswordText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(final TextView v, final int actionId,
@@ -262,20 +256,8 @@ public class RegisterActivity extends AppCompatActivity {
                                 "\n\nIs this OK, or would you like to edit the number?")
                         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
+
                                 if (internetConnectivityChecker.isConnected()) {
-//                                    if (getPackageManager()
-//                                            .hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
-//
-//                                        permissionsUtils.requestPermissions(
-//                                                new PermissionsUtils.PermissionRequestResultHandler() {
-//                                                    @Override
-//                                                    public void onPermissionGranted() {
-//                                                        postDetails();
-//                                                    }
-//                                                });
-//                                    } else {
-//                                    postDetails();
-//                                    }
                                     initiateSmsRetrieverClient();
                                 } else {
                                     internetConnectivityChecker.showAlert();
@@ -304,6 +286,8 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
                 //failed
+                // user have to manually enter the code
+                postDetails();
             }
         });
     }
@@ -321,17 +305,8 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-//                                           @NonNull int[] grantResults) {
-//
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        permissionsUtils.onRequestPermissionsResult(requestCode, grantResults);
-//    }
-
     @Override
     protected void onResume() {
         super.onResume();
-        //permissionsUtils.onResume();
     }
 }

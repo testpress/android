@@ -46,36 +46,13 @@ public class SmsReceivingEvent extends BroadcastReceiver {
 
                     case CommonStatusCodes.TIMEOUT:
                         // Waiting for SMS timed out (5 minutes)
-                        // Handle the error ...
                         break;
                 }
             } catch (Exception e) {
                 timer.cancel();
                 timer.onFinish();
             }
-
         }
     }
 }
-
-//    // Retrieves a map of extended data from the intent.
-//    final Bundle bundle = intent.getExtras();
-//        try {
-//        if (bundle != null) {
-//            final Object[] pdusObj = (Object[]) bundle.get("pdus");
-//            SmsMessage currentMessage = SmsMessage.createFromPdu((byte[]) pdusObj[0]);
-//            String senderNum = currentMessage.getDisplayOriginatingAddress();
-//            if (senderNum.matches(".*TSTPRS")) { //check whether TSTPRS present in senderAddress
-//                String smsContent = currentMessage.getDisplayMessageBody();
-//                //get the code from smsContent
-//                code = smsContent.replaceAll(".*(?=.*)(?<=Your authorization code is )([^\n]*)(?=.).*", "$1");
-//                timer.cancel();
-//                timer.onFinish();
-//            }
-//        } // bundle is null
-//    } catch (Exception e) {
-//        timer.cancel();
-//        timer.onFinish();
-//    }
-
 

@@ -1,114 +1,52 @@
 package in.testpress.testpress.core;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
+import android.content.SharedPreferences;
 import android.util.Log;
-import android.view.View;
 
-import com.google.android.gms.gcm.GcmListenerService;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 
-import in.testpress.testpress.R;
-import in.testpress.testpress.ui.SplashScreenActivity;
+import in.testpress.testpress.util.GCMPreference;
+import in.testpress.testpress.util.NotificationHelper;
 
-public class TestpressGCMListenerService extends GcmListenerService {
+import static in.testpress.testpress.core.Constants.GCM_PREFERENCE_NAME;
+
+public class TestpressGCMListenerService extends FirebaseMessagingService {
 
     private static final String TAG = "MyGcmListenerService";
 
     /**
      * Called when message is received.
      *
-     * @param from SenderID of the sender.
-     * @param data Data bundle containing message data as key/value pairs.
-     *             For Set of keys use data.keySet().
+     * @param remoteMessage Object representing the message received from Firebase Cloud Messaging.
      */
     // [START receive_message]
     @Override
-    public void onMessageReceived(String from, Bundle data) {
-        String message = data.getString("summary");
-        String title = data.getString("title");
-        String url = data.getString("short_url");
-        Log.d(TAG, "From: " + from);
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        String message = remoteMessage.getData().get("summary");
+        String title = remoteMessage.getData().get("title");
+        String url = remoteMessage.getData().get("short_url");
         Log.d(TAG, "Message: " + message);
 
-        if (from.startsWith("/topics/")) {
-            // message received from some topic.
-        } else {
-            // normal downstream message.
-        }
-
-        // [START_EXCLUDE]
-        /**
-         * Production applications would usually process the message here.
-         * Eg: - Syncing with server.
-         *     - Store message in local database.
-         *     - Update UI.
-         */
-
-        /**
-         * In some cases it may be useful to show a notification indicating to the user
-         * that a message was received.
-         */
         if (title != null && message != null && url != null) {
-            sendNotification(title, message, url);
+            NotificationHelper.addNotification(this, title, message, url);
         }
-        // [END_EXCLUDE]
     }
-    // [END receive_message]
 
     /**
-     * Create and show a simple notification containing the received GCM message.
-     *
-     * @param message GCM message received.
+     * Called if InstanceID token is updated. This may occur if the security of
+     * the previous token had been compromised. Note that this is called when the InstanceID token
+     * is initially generated so this is where you would retrieve the token.
      */
-    private void sendNotification(String title, String message, String url) {
-        Intent intent = new Intent(this, SplashScreenActivity.class);
-        try {
-            Uri uri = Uri.parse(url);
-            if (uri.getHost() != null) {
-                intent.setData(uri);
-            } else {
-                intent.setData(Uri.parse(Constants.Http.URL_BASE + url));
-            }
-        } catch (Exception e) {
-           e.printStackTrace();
-        }
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+    @Override
+    public void onNewToken(String token) {
+        Log.d(TAG, "Refreshed token: " + token);
 
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_notification)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.icon))
-                .setContentTitle(title)
-                .setContentText(message)
-                .setAutoCancel(true)
-                .setSound(defaultSoundUri)
-                .setColor(ContextCompat.getColor(getApplicationContext(), R.color.primary))
-                .setContentIntent(pendingIntent);
-
-        if (Build.VERSION.SDK_INT >= 16) {
-            notificationBuilder.setPriority(Notification.PRIORITY_HIGH);
-        }
-
-        if (Build.VERSION.SDK_INT >= 21) {
-            notificationBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
-        }
-
-        Notification notification = notificationBuilder.build();
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        notificationManager.notify(0 /* ID of notification */, notification);
+        // If you want to send messages to this application instance or
+        // manage this apps subscriptions on the server side, send the
+        // Instance ID token to your app server.
+        SharedPreferences gcmPreferences = getSharedPreferences(GCM_PREFERENCE_NAME, MODE_PRIVATE);
+        gcmPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
     }
+
 }

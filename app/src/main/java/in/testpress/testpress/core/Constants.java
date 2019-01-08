@@ -76,6 +76,8 @@ public final class Constants {
         public static final String URL_POSTS_FRAG =  "api/v2.2/posts/";
         public static final String URL_CATEGORIES_FRAG = URL_POSTS_FRAG + "categories/";
 
+        public static final String URL_FORUMS_FRAG =  "/api/v2.3/forum/";
+
         public static final String URL_COMMENTS_FRAG =  "/comments/";
 
         public static final String CHAPTERS_PATH =  "/api/v2.2.1/chapters/";
@@ -97,6 +99,7 @@ public final class Constants {
 
     public static final class RequestCode {
         public static final int RECEIVE_SMS_PERMISSION_REQUEST_CODE = 3333;
+        public static final int CREATE_POST_REQUEST_CODE = 200;
     }
 
     public static final String GCM_PREFERENCE_NAME = "GCM";

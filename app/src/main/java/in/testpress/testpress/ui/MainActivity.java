@@ -45,6 +45,7 @@ import in.testpress.testpress.models.Update;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.SafeAsyncTask;
+import in.testpress.testpress.util.UIUtils;
 import in.testpress.testpress.util.UpdateAppDialogManager;
 
 import static in.testpress.testpress.BuildConfig.ALLOW_ANONYMOUS_USER;
@@ -157,7 +158,7 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             grid.setVisibility(View.GONE);
         }
-        mBottomBarAdapter = new BottomNavBarAdapter(this, mMenuItemImageIds, mMenuItemTitleIds);
+        mBottomBarAdapter = new BottomNavBarAdapter(this, mMenuItemImageIds, mMenuItemTitleIds, mInstituteSettings);
         grid.setAdapter(mBottomBarAdapter);
         grid.setNumColumns(mBottomBarAdapter.getCount());
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -197,7 +198,12 @@ public class MainActivity extends TestpressFragmentActivity {
         mSelectedItem = position;
         mBottomBarAdapter.setSelectedPosition(position);
         mBottomBarAdapter.notifyDataSetChanged();
-        updateToolbarText(getString(mMenuItemTitleIds.get(position)));
+
+        if (UIUtils.getMenuItemName(mMenuItemTitleIds.get(position), mInstituteSettings) != "") {
+            updateToolbarText(UIUtils.getMenuItemName(mMenuItemTitleIds.get(position), mInstituteSettings));
+        } else {
+            updateToolbarText(getString(mMenuItemTitleIds.get(position)));
+        }
     }
 
     private void updateToolbarText(CharSequence text) {

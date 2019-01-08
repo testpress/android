@@ -57,7 +57,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import in.testpress.exam.util.ImagePickerUtils;
+import in.testpress.exam.util.ImageUtils;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -110,7 +110,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     ProfileDetails profileDetails;
     ArrayAdapter<String> genderSpinnerAdapter;
     ArrayAdapter<String> stateSpinnerAdapter;
-    ImagePickerUtils imagePickerUtils;
+    ImageUtils imagePickerUtils;
     String[] datePickerDate;
     ImageLoader imageLoader;
     DisplayImageOptions options;
@@ -146,7 +146,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
                 return false;
             }
         });
-        imagePickerUtils = new ImagePickerUtils(profileDetailsView, this);
+        imagePickerUtils = new ImageUtils(profileDetailsView, this);
         imagePickerUtils.setAspectRatio(1, 1);
         imageLoader = ImageLoader.getInstance();
         options = new DisplayImageOptions.Builder().cacheInMemory(true)
@@ -293,7 +293,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
             selectImageFromMobile();
         } else {
             imagePickerUtils.onActivityResult(requestCode, resultCode, data,
-                    new ImagePickerUtils.ImagePickerResultHandler() {
+                    new ImageUtils.ImagePickerResultHandler() {
                         @Override
                         public void onSuccessfullyImageCropped(CropImage.ActivityResult result) {
                             onImageCropped(result);

@@ -17,6 +17,7 @@ import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.TestpressService;
+import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.ui.RssFeedDetailActivity;
 
 public class UIUtils {
@@ -69,6 +70,21 @@ public class UIUtils {
             boolean wrongUrl = !url.startsWith("http://") && !url.startsWith("https://");
             int message = wrongUrl ? R.string.wrong_url : R.string.browser_not_available;
             UIUtils.getAlertDialog(context, R.string.not_supported, message).show();
+        }
+    }
+
+    public static String getMenuItemName(int titleResId, InstituteSettings instituteSettings) {
+        switch (titleResId) {
+            case R.string.documents:
+                return instituteSettings.getDocumentsLabel();
+            case R.string.store:
+                return instituteSettings.getStoreLabel();
+            case R.string.posts:
+                return instituteSettings.getPostsLabel();
+            case R.string.learn:
+                return instituteSettings.getCoursesLabel();
+            default:
+                return "";
         }
     }
 }

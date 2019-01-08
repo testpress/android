@@ -16,6 +16,10 @@ public class PostsListActivity extends TestpressFragmentActivity {
         postsListFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, postsListFragment).commitAllowingStateLoss();
+
+        if (getIntent().getStringExtra("title") != "") {
+            getSupportActionBar().setTitle(getIntent().getStringExtra("title"));
+        }
     }
 
 }

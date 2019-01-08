@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.util.Ln;
 
 import static android.accounts.AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE;
@@ -18,6 +17,7 @@ import static android.accounts.AccountManager.KEY_ACCOUNT_TYPE;
 import static android.accounts.AccountManager.KEY_AUTHTOKEN;
 import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
 import static android.accounts.AccountManager.KEY_INTENT;
+import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.authenticator.LoginActivity.PARAM_AUTHTOKEN_TYPE;
 
 
@@ -40,7 +40,7 @@ public class TestpressAccountAuthenticator extends AbstractAccountAuthenticator 
 
         final Bundle bundle = new Bundle();
         bundle.putString(KEY_ACCOUNT_NAME, account.name);
-        bundle.putString(KEY_ACCOUNT_TYPE, Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
+        bundle.putString(KEY_ACCOUNT_TYPE, APPLICATION_ID);
         bundle.putString(KEY_AUTHTOKEN, authToken);
 
         return bundle;
@@ -48,7 +48,7 @@ public class TestpressAccountAuthenticator extends AbstractAccountAuthenticator 
 
     @Override
     public String getAuthTokenLabel(final String authTokenType) {
-        return authTokenType.equals(Constants.Auth.AUTHTOKEN_TYPE) ? authTokenType : null;
+        return authTokenType.equals(APPLICATION_ID) ? authTokenType : null;
     }
 
     @Override

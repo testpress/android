@@ -1,30 +1,30 @@
 package in.testpress.testpress.ui;
 
 import android.accounts.OperationCanceledException;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.widget.TextView;
+
+import com.google.android.gms.common.GoogleApiAvailability;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -36,7 +36,6 @@ import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
-import in.testpress.testpress.authenticator.RegistrationIntentService;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.DaoSession;
@@ -46,23 +45,15 @@ import in.testpress.testpress.models.Update;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.SafeAsyncTask;
+import in.testpress.testpress.util.UIUtils;
+import in.testpress.testpress.util.UpdateAppDialogManager;
 
-import com.afollestad.materialdialogs.GravityEnum;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
+import static in.testpress.testpress.BuildConfig.ALLOW_ANONYMOUS_USER;
+import static in.testpress.testpress.BuildConfig.BASE_URL;
 
 public class MainActivity extends TestpressFragmentActivity {
 
     private static final String SELECTED_ITEM = "selectedItem";
-    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    private static final String TAG = "MainActivity";
 
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected TestpressService testpressService;
@@ -77,7 +68,6 @@ public class MainActivity extends TestpressFragmentActivity {
     @InjectView(R.id.viewpager) ViewPager viewPager;
     @InjectView(R.id.grid) GridView grid;
 
-    private BroadcastReceiver mRegistrationBroadcastReceiver;
     private int mSelectedItem;
     private BottomNavBarAdapter mBottomBarAdapter;
     private ArrayList<Integer> mMenuItemImageIds = new ArrayList<>();
@@ -96,16 +86,19 @@ public class MainActivity extends TestpressFragmentActivity {
         if (savedInstanceState != null) {
             mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM);
         }
-        viewPager.setVisibility(View.INVISIBLE);
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                CommonUtils.registerDevice(MainActivity.this, testpressService, serviceProvider);
-            }
-        };
-        DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
+        viewPager.setVisibility(View.GONE);
+        DaoSession daoSession = TestpressApplication.getDaoSession();
         instituteSettingsDao = daoSession.getInstituteSettingsDao();
-        fetchInstituteSettings();
+        List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
+                .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
+                .list();
+
+        if (instituteSettingsList.size() > 0) {
+            onFinishFetchingInstituteSettings(instituteSettingsList.get(0));
+            checkUpdate();
+        } else {
+            checkUpdate();
+        }
     }
 
     private void updateTestpressSession() {
@@ -132,7 +125,9 @@ public class MainActivity extends TestpressFragmentActivity {
             protected void onSuccess(final Boolean hasAuthenticated) throws Exception {
                 super.onSuccess(hasAuthenticated);
                 isUserAuthenticated = true;
-                checkUpdate();
+                if (viewPager.getVisibility() != View.VISIBLE) {
+                    initScreen();
+                }
             }
         }.execute();
     }
@@ -141,12 +136,11 @@ public class MainActivity extends TestpressFragmentActivity {
         SharedPreferences preferences =
                 getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
         if (!preferences.getBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false)) {
-            if (checkPlayServices()) {
-                // Start IntentService to register this application with GCM.
-                Intent intent = new Intent(MainActivity.this, RegistrationIntentService.class);
-                startService(intent);
-            }
+            GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+            apiAvailability.makeGooglePlayServicesAvailable(this);
+            CommonUtils.registerDevice(MainActivity.this, testpressService, serviceProvider);
         }
+        addMenuItem(R.string.dashboard, R.drawable.profile_default, new MainMenuFragment());
         // Show courses list if game front end is enabled, otherwise hide bottom bar
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             //noinspection ConstantConditions
@@ -158,11 +152,13 @@ public class MainActivity extends TestpressFragmentActivity {
                 addMenuItem(R.string.testpress_leaderboard, R.drawable.leaderboard,
                         TestpressCourse.getLeaderboardFragment(this, TestpressSdk.getTestpressSession(this)));
             }
+            if (mInstituteSettings.getForumEnabled()) {
+                addMenuItem(R.string.discussions, R.drawable.chat_icon, new ForumListFragment());
+            }
         } else {
             grid.setVisibility(View.GONE);
         }
-        addMenuItem(R.string.app_name, R.drawable.profile_default, new MainMenuFragment());
-        mBottomBarAdapter = new BottomNavBarAdapter(this, mMenuItemImageIds);
+        mBottomBarAdapter = new BottomNavBarAdapter(this, mMenuItemImageIds, mMenuItemTitleIds, mInstituteSettings);
         grid.setAdapter(mBottomBarAdapter);
         grid.setNumColumns(mBottomBarAdapter.getCount());
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -181,6 +177,10 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             public void onPageSelected(int position) {
                 onItemSelected(position);
+                if (!CommonUtils.isUserAuthenticated(MainActivity.this)) {
+                    serviceProvider.logout(MainActivity.this, testpressService, serviceProvider,
+                            logoutService);
+                }
             }
 
             @Override
@@ -190,6 +190,7 @@ public class MainActivity extends TestpressFragmentActivity {
         viewPager.setOffscreenPageLimit(mPagerAdapter.getCount());
         viewPager.setCurrentItem(mSelectedItem);
         viewPager.setVisibility(View.VISIBLE);
+        onItemSelected(mSelectedItem);
         progressBarLayout.setVisibility(View.GONE);
     }
 
@@ -197,9 +198,11 @@ public class MainActivity extends TestpressFragmentActivity {
         mSelectedItem = position;
         mBottomBarAdapter.setSelectedPosition(position);
         mBottomBarAdapter.notifyDataSetChanged();
-        updateToolbarText(getString(mMenuItemTitleIds.get(position)));
-        if (!CommonUtils.isUserAuthenticated(this)) {
-            serviceProvider.logout(this, testpressService, serviceProvider, logoutService);
+
+        if (UIUtils.getMenuItemName(mMenuItemTitleIds.get(position), mInstituteSettings) != "") {
+            updateToolbarText(UIUtils.getMenuItemName(mMenuItemTitleIds.get(position), mInstituteSettings));
+        } else {
+            updateToolbarText(getString(mMenuItemTitleIds.get(position)));
         }
     }
 
@@ -211,21 +214,18 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     private void fetchInstituteSettings() {
-        progressBarLayout.setVisibility(View.VISIBLE);
+        if (mInstituteSettings == null) {
+            progressBarLayout.setVisibility(View.VISIBLE);
+        }
         new SafeAsyncTask<InstituteSettings>() {
             @Override
-            public InstituteSettings call() throws Exception {
+            public InstituteSettings call() {
                 return testpressService.getInstituteSettings();
             }
 
             @Override
             protected void onException(Exception exception) throws RuntimeException {
-                List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
-                        .where(InstituteSettingsDao.Properties.BaseUrl.eq(Constants.Http.URL_BASE))
-                        .list();
-
-                if (instituteSettingsList.size() > 0) {
-                    onFinishFetchingInstituteSettings(instituteSettingsList.get(0));
+                if (mInstituteSettings != null) {
                     return;
                 }
                 if (exception.getCause() instanceof IOException) {
@@ -246,115 +246,62 @@ public class MainActivity extends TestpressFragmentActivity {
             }
 
             @Override
-            protected void onSuccess(InstituteSettings instituteSettings) throws Exception {
-                instituteSettings.setBaseUrl(Constants.Http.URL_BASE);
+            protected void onSuccess(InstituteSettings instituteSettings) {
+                instituteSettings.setBaseUrl(BASE_URL);
                 instituteSettingsDao.insertOrReplace(instituteSettings);
-                onFinishFetchingInstituteSettings(instituteSettings);
+                if (mInstituteSettings == null) {
+                    onFinishFetchingInstituteSettings(instituteSettings);
+                }
             }
         }.execute();
     }
 
     public void onFinishFetchingInstituteSettings(InstituteSettings instituteSettings) {
         this.mInstituteSettings = instituteSettings;
-        // TODO: Get allowAnonymousUser flag from institute settings
-        boolean allowAnonymousUser = true; // True if users can use the app(Access posts) without login
+        isUserAuthenticated = CommonUtils.isUserAuthenticated(this);
         //noinspection ConstantConditions
-        if (CommonUtils.isUserAuthenticated(this) || !allowAnonymousUser) {
-            updateTestpressSession(); // Show login screen if user not logged in
+        if (!isUserAuthenticated && !ALLOW_ANONYMOUS_USER) {
+            // Show login screen if user not logged in else update institute settings in TestpressSDK
+            updateTestpressSession();
         } else {
-            checkUpdate();
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(GCMPreference.REGISTRATION_COMPLETE));
-    }
-
-    @Override
-    protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
-        super.onPause();
-    }
-
-    /**
-     * Check the device to make sure it has the Google Play Services APK. If
-     * it doesn't, display a dialog that allows users to download the APK from
-     * the Google Play Store or enable it in the device's system settings.
-     */
-    private boolean checkPlayServices() {
-        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
-        if (resultCode != ConnectionResult.SUCCESS) {
-            if (apiAvailability.isUserResolvableError(resultCode)) {
-                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
-                        .show();
-            } else {
-                Log.i(TAG, "This device is not supported.");
-                finish();
+            initScreen();
+            if (isUserAuthenticated) {
+                updateTestpressSession();
             }
-            return false;
         }
-        return true;
     }
 
     private void checkUpdate() {
+        if (mInstituteSettings == null) {
+            progressBarLayout.setVisibility(View.VISIBLE);
+        }
         new SafeAsyncTask<Update>() {
             @Override
-            public Update call() throws Exception {
+            public Update call() {
                 return testpressService.checkUpdate("" + BuildConfig.VERSION_CODE);
             }
 
             @Override
             protected void onException(final Exception e) throws RuntimeException {
-                initScreen();
+                fetchInstituteSettings();
             }
 
             @Override
-            protected void onSuccess(final Update update) throws Exception {
+            protected void onSuccess(final Update update) {
+                progressBarLayout.setVisibility(View.GONE);
                 if(update.getUpdateRequired()) {
                     if (update.getForce()) {
-                        new MaterialDialog.Builder(MainActivity.this)
-                                .cancelable(true)
-                                .content(update.getMessage())
-                                .cancelListener(new DialogInterface.OnCancelListener() {
-                                    @Override
-                                    public void onCancel(DialogInterface dialogInterface) {
-                                        finish();
-                                    }
-                                })
-                                .neutralText("Update")
-                                .buttonsGravity(GravityEnum.CENTER)
-                                .neutralColorRes(R.color.primary)
-                                .callback(new MaterialDialog.ButtonCallback() {
-                                    @Override
-                                    public void onNeutral(MaterialDialog dialog) {
-                                        dialog.cancel();
-                                        startActivity(new Intent(Intent.ACTION_VIEW,
-                                                Uri.parse("market://details?id=" + getPackageName())));
-                                        finish();
-                                    }
-                                })
-                                .show();
+                        UpdateAppDialogManager
+                                .showDialog(MainActivity.this, true, update.getMessage());
                     } else {
-                        initScreen();
-                        Snackbar snackbar = Snackbar
-                                .make(coordinatorLayout, "New update is available",
-                                        Snackbar.LENGTH_INDEFINITE)
-                                .setAction("UPDATE", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        startActivity(new Intent(Intent.ACTION_VIEW,
-                                                Uri.parse("market://details?id=" + getPackageName())));
-                                        finish();
-                                    }
-                                });
-                        snackbar.show();
+                        fetchInstituteSettings();
+                        if (UpdateAppDialogManager.canShowDialog(MainActivity.this, update.getDays())) {
+                            UpdateAppDialogManager
+                                    .showDialog(MainActivity.this, false, update.getMessage());
+                        }
                     }
                 } else {
-                    initScreen();
+                    fetchInstituteSettings();
                 }
             }
         }.execute();

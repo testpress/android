@@ -41,6 +41,7 @@ import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.exam.TestpressExam;
+import in.testpress.store.TestpressStore;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
@@ -83,6 +84,8 @@ public class MainMenuFragment extends Fragment {
     @InjectView(R.id.quick_links_container)
     LinearLayout quickLinksContainer;
     Account[] account;
+
+    private InstituteSettings mInstituteSettings;
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -127,6 +130,7 @@ public class MainMenuFragment extends Fragment {
         InstituteSettings instituteSettings = instituteSettingsDao.queryBuilder()
                 .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
                 .list().get(0);
+        mInstituteSettings = instituteSettings;
 
         LinkedHashMap<Integer, Integer> mMenuItemResIds = new LinkedHashMap<>();
         final boolean isUserAuthenticated = account.length > 0;
@@ -144,9 +148,9 @@ public class MainMenuFragment extends Fragment {
             }
             mMenuItemResIds.put(R.string.analytics, R.drawable.analytics);
             mMenuItemResIds.put(R.string.profile, R.drawable.ic_profile_details);
-        }
-        if (instituteSettings.getStoreEnabled()) {
-            mMenuItemResIds.put(R.string.store, R.drawable.store);
+            if (instituteSettings.getStoreEnabled()) {
+                mMenuItemResIds.put(R.string.store, R.drawable.store);
+            }
         }
         if (drupalRssFeedEnabled) {
             mMenuItemResIds.put(R.string.rss_posts, R.drawable.rss_feed);
@@ -162,7 +166,7 @@ public class MainMenuFragment extends Fragment {
 //            mMenuItemResIds.put(R.string.login, R.drawable.login);
 //        }
 
-        MainMenuGridAdapter adapter = new MainMenuGridAdapter(getActivity(), mMenuItemResIds);
+        MainMenuGridAdapter adapter = new MainMenuGridAdapter(getActivity(), mMenuItemResIds, instituteSettings);
         grid=(GridView)view.findViewById(R.id.grid);
         grid.setAdapter(adapter);
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -171,6 +175,7 @@ public class MainMenuFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Intent intent;
+                String custom_title;
                 switch ((int) id) {
                     case R.string.my_exams:
                         checkAuthenticatedUser(R.string.my_exams);
@@ -179,11 +184,12 @@ public class MainMenuFragment extends Fragment {
                         checkAuthenticatedUser(R.string.bookmarks);
                         break;
                     case R.string.store:
-                        intent = new Intent(getActivity(), ProductsListActivity.class);
-                        startActivity(intent);
+                        checkAuthenticatedUser(R.string.store);
                         break;
                     case R.string.documents:
+                        custom_title = in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.documents, mInstituteSettings);
                         intent = new Intent(getActivity(), DocumentsListActivity.class);
+                        intent.putExtra("title", custom_title);
                         startActivity(intent);
                         break;
                     case R.string.orders:
@@ -196,8 +202,10 @@ public class MainMenuFragment extends Fragment {
                         startActivity(intent);
                         break;
                     case R.string.posts:
+                        custom_title = in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.posts, mInstituteSettings);
                         intent = new Intent(getActivity(), PostsListActivity.class);
                         intent.putExtra("userAuthenticated", isUserAuthenticated);
+                        intent.putExtra("title", custom_title);
                         startActivity(intent);
                         break;
                     case R.string.forum:
@@ -269,6 +277,9 @@ public class MainMenuFragment extends Fragment {
                 break;
             case R.string.analytics:
                 TestpressExam.showAnalytics(getActivity(), SUBJECT_ANALYTICS_PATH, session);
+                break;
+            case R.string.store:
+                TestpressStore.show(getActivity(), session);
                 break;
         }
     }

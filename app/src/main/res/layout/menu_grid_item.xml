@@ -29,8 +29,10 @@
         android:textSize="14sp"
         android:layout_marginTop="10dp"
         android:text="TextView"
-        android:letterSpacing="0.04"
-        tools:ignore="UnusedAttribute" />
+        android:textColor="@color/black"
+        android:scrollHorizontally="true"
+        android:ellipsize="end"
+        android:maxLines="1"/>
 
     </LinearLayout>
 

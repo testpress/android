@@ -10,7 +10,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.RECEIVE_SMS" />
 
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
 
@@ -105,15 +104,6 @@
             android:label="Verify" />
 
         <activity
-            android:name=".ui.ProductsListActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="Products" />
-        <activity
-            android:name=".ui.ProductDetailsActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="Product Details" />
-
-        <activity
             android:name=".ui.DocumentsListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Documents" />
@@ -132,30 +122,7 @@
             android:name=".ui.OrdersListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Orders" />
-        <activity
-            android:name=".ui.PaymentSuccessActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="Summary" />
-        <activity
-            android:name=".ui.OrderConfirmActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="Shipping Address" />
-        <activity
-            android:name=".ui.paymentGateway.PaymentModeActivity"
-            android:configChanges="orientation|keyboard|screenSize"
-            android:label="Select Payment Mode" />
-        <activity
-            android:name=".ui.paymentGateway.CreditDebitCardActivity"
-            android:configChanges="orientation|keyboard|screenSize"
-            android:label="Enter Details" />
-        <activity
-            android:name=".ui.paymentGateway.NetBankingActivity"
-            android:configChanges="orientation|keyboard|screenSize"
-            android:label="Select Bank" />
-        <activity
-            android:name=".ui.paymentGateway.PaymentsActivity"
-            android:configChanges="orientation|keyboard|screenSize"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
+
         <activity
             android:name=".ui.ProfileDetailsActivity"
             android:configChanges="orientation|keyboard|screenSize"

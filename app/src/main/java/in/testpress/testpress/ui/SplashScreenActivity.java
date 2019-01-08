@@ -20,6 +20,7 @@ import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
 import in.testpress.exam.TestpressExam;
+import in.testpress.store.TestpressStore;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -29,6 +30,7 @@ import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.UpdateAppDialogManager;
+import in.testpress.util.ViewUtils;
 
 import static in.testpress.core.TestpressSdk.ACTION_PRESSED_HOME;
 import static in.testpress.core.TestpressSdk.COURSE_CONTENT_DETAIL_REQUEST_CODE;
@@ -36,6 +38,8 @@ import static in.testpress.core.TestpressSdk.COURSE_CONTENT_LIST_REQUEST_CODE;
 import static in.testpress.course.TestpressCourse.CHAPTER_URL;
 import static in.testpress.course.TestpressCourse.COURSE_ID;
 import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
+import static in.testpress.store.TestpressStore.CONTINUE_PURCHASE;
+import static in.testpress.store.TestpressStore.STORE_REQUEST_CODE;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.core.Constants.Http.CHAPTERS_PATH;
 
@@ -122,7 +126,7 @@ public class SplashScreenActivity extends Activity {
                         case "store":
                         case "market":
                         case "products":
-                            deepLinkToProduct(uri);
+                            authenticateUser(uri);
                             break;
                         default:
                             CommonUtils.openUrlInBrowser(SplashScreenActivity.this, uri);
@@ -181,6 +185,9 @@ public class SplashScreenActivity extends Activity {
                             case "chapters":
                                 deepLinkToChapter(uri, testpressSession);
                                 break;
+                            case "products":
+                                deepLinkToProduct(uri, testpressSession);
+                                break;
                         }
                     }
                 });
@@ -205,27 +212,16 @@ public class SplashScreenActivity extends Activity {
         }
     }
 
-    private void deepLinkToProduct(Uri uri) {
+    private void deepLinkToProduct(Uri uri, TestpressSession testpressSession) {
         final List<String> pathSegments = uri.getPathSegments();
         if (pathSegments.size() == 2) {
-            gotoProductDetails(uri.getLastPathSegment());
+            // Product detail url - /products/product-slug/
+            String productSlug = uri.getLastPathSegment();
+            assert productSlug != null;
+            TestpressStore.showProduct(this, productSlug, testpressSession);
         } else {
-            Intent intent = new Intent(this, ProductsListActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            intent.putExtra(Constants.IS_DEEP_LINK, true);
-            startActivity(intent);
-            finish();
+            TestpressStore.show(this, testpressSession);
         }
-    }
-
-    private void gotoProductDetails(String productSlug) {
-        Intent productIntent =
-                new Intent(SplashScreenActivity.this, ProductDetailsActivity.class);
-        productIntent.putExtra(ProductDetailsActivity.PRODUCT_SLUG, productSlug);
-        productIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        productIntent.putExtra(Constants.IS_DEEP_LINK, true);
-        startActivity(productIntent);
-        finish();
     }
 
     private void gotoAccountActivate(String activateUrlFrag) {
@@ -257,8 +253,20 @@ public class SplashScreenActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            // Result code OK will come if attempted an exam & back press
-            gotoHome();
+            if (requestCode == STORE_REQUEST_CODE) {
+                if (data != null && data.getBooleanExtra(CONTINUE_PURCHASE, false)) {
+                    // User pressed continue purchase button.
+                    TestpressSession session = TestpressSdk.getTestpressSession(this);
+                    assert session != null;
+                    TestpressStore.show(this, session);
+                } else {
+                    // User pressed goto home button.
+                    gotoHome();
+                }
+            } else {
+                // Result code OK will come if attempted an exam & back press
+                gotoHome();
+            }
         } else if (resultCode == RESULT_CANCELED) {
             if (data != null && data.getBooleanExtra(ACTION_PRESSED_HOME, false)) {
                 TestpressSession testpressSession = TestpressSdk.getTestpressSession(this);

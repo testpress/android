@@ -1,7 +1,7 @@
 {
-  "version" : "1.0.111",
-  "version_code" : 111,
-  "testpress_site_subdomain" : "sandbox",
+  "version" : "1.0.112",
+  "version_code" : 112,
+  "testpress_site_subdomain" : "clatapult",
   "package_name" : "in.testpress.clatapult",
   "app_name" : "CLATapult",
   "share_message": "Good app to prepare for CLAT. Get it at https://play.google.com/store/apps/details?id=",

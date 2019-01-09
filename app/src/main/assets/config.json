@@ -1,0 +1,15 @@
+{
+  "version" : "1.0.110",
+  "version_code" : 110,
+  "testpress_site_subdomain" : "kitabee",
+  "package_name" : "in.testpress.kitabee",
+  "app_name" : "Kitabee Education Services",
+  "share_message": "Good app to prepare for CAT, GMAT, XAT, SNAP. Get it at https://play.google.com/store/apps/details?id=",
+  "primary_color": "E82C34",
+  "allow_anonymous_user" : false,
+  "screenshot_disabled" : false,
+  "facebook_app_id" : "733962776688753",
+  "server_client_id" : "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
+  "display_username_on_video": true,
+  "white_labeled_host_url": null
+}

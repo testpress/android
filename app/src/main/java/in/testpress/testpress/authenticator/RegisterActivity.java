@@ -2,7 +2,9 @@ package in.testpress.testpress.authenticator;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +18,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.auth.api.phone.SmsRetriever;
+import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -43,6 +50,7 @@ import in.testpress.testpress.util.SafeAsyncTask;
 import retrofit.RetrofitError;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
+import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.authenticator.LoginActivity.REQUEST_CODE_REGISTER_USER;
 import static in.testpress.testpress.authenticator.RegisterActivity.VerificationMethod.EMAIL;
 import static in.testpress.testpress.authenticator.RegisterActivity.VerificationMethod.MOBILE;
@@ -78,7 +86,9 @@ public class RegisterActivity extends AppCompatActivity {
         DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
         InstituteSettingsDao instituteSettingsDao = daoSession.getInstituteSettingsDao();
         List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
-                .where(InstituteSettingsDao.Properties.BaseUrl.eq(Constants.Http.URL_BASE)).list();
+                .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
+                .list();
+
         if (instituteSettingsList.size() != 0) {
             InstituteSettings instituteSettings = instituteSettingsList.get(0);
             verificationMethod =
@@ -87,6 +97,7 @@ public class RegisterActivity extends AppCompatActivity {
             // Never happen, just for a safety.
             finish();
         }
+
         confirmPasswordText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(final TextView v, final int actionId,
                                           final KeyEvent event) {
@@ -212,7 +223,7 @@ public class RegisterActivity extends AppCompatActivity {
            }
             if (verificationMethod.equals(MOBILE)) {
                 //Phone number verification
-                Pattern phoneNumberPattern = Pattern.compile("[789]\\d{9}");
+                Pattern phoneNumberPattern = Pattern.compile("\\d{10}");
                 Matcher phoneNumberMatcher = phoneNumberPattern.matcher(phoneText.getText()
                         .toString().trim());
                 if (!phoneNumberMatcher.matches()) {
@@ -245,8 +256,9 @@ public class RegisterActivity extends AppCompatActivity {
                                 "\n\nIs this OK, or would you like to edit the number?")
                         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                if(internetConnectivityChecker.isConnected()) {
-                                    postDetails();
+
+                                if (internetConnectivityChecker.isConnected()) {
+                                    initiateSmsRetrieverClient();
                                 } else {
                                     internetConnectivityChecker.showAlert();
                                 }
@@ -260,6 +272,25 @@ public class RegisterActivity extends AppCompatActivity {
             }
         }
     }
+    public void initiateSmsRetrieverClient() {
+        SmsRetrieverClient client = SmsRetriever.getClient(this);
+        Task<Void> task = client.startSmsRetriever();
+        task.addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                // successfully started an SMS Retriever for one SMS message
+                postDetails();
+            }
+        });
+        task.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                //failed
+                // user have to manually enter the code
+                postDetails();
+            }
+        });
+    }
 
     @OnClick(R.id.success_ok) public void verificationMailSent() {
         finish();
@@ -272,5 +303,10 @@ public class RegisterActivity extends AppCompatActivity {
             setResult(resultCode);
             finish();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 }

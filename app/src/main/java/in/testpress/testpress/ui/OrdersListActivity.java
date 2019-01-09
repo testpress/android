@@ -14,5 +14,9 @@ public class OrdersListActivity extends TestpressFragmentActivity {
         OrdersListFragment ordersListFragment = new OrdersListFragment();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, ordersListFragment).commitAllowingStateLoss();
+
+        if (getIntent().getStringExtra("title") != "") {
+            getSupportActionBar().setTitle(getIntent().getStringExtra("title"));
+        }
     }
 }

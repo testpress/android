@@ -24,6 +24,7 @@ import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.hbb20.CountryCodePicker;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -70,11 +71,13 @@ public class RegisterActivity extends AppCompatActivity {
     @InjectView(id.register_layout) LinearLayout registerLayout;
     @InjectView(R.id.success_complete) LinearLayout successContainer;
     @InjectView(R.id.success_description) TextView successDescription;
+    @InjectView(id.ccp) CountryCodePicker countryCodePicker;
 
     private final TextWatcher watcher = validationTextWatcher();
     private RegistrationSuccessResponse registrationSuccessResponse;
     private MaterialDialog progressDialog;
     private InternetConnectivityChecker internetConnectivityChecker = new InternetConnectivityChecker(this);
+    private boolean isTwilioEnabled;
     private VerificationMethod verificationMethod;
     enum VerificationMethod { MOBILE, EMAIL }
 
@@ -94,7 +97,8 @@ public class RegisterActivity extends AppCompatActivity {
             InstituteSettings instituteSettings = instituteSettingsList.get(0);
             verificationMethod =
                     instituteSettings.getVerificationMethod().equals("M") ? MOBILE : EMAIL;
-            Log.d("Twillo", ""+instituteSettings.getTwilioEnabled());
+            isTwilioEnabled = instituteSettings.getTwilioEnabled();
+
         } else {
             // Never happen, just for a safety.
             finish();
@@ -116,6 +120,10 @@ public class RegisterActivity extends AppCompatActivity {
         if (verificationMethod.equals(MOBILE)) {
             phoneText.addTextChangedListener(watcher);
             phoneLayout.setVisibility(View.VISIBLE);
+
+            if (!isTwilioEnabled) {
+                countryCodePicker.setVisibility(View.GONE);
+            }
         } else {
             phoneLayout.setVisibility(View.GONE);
         }

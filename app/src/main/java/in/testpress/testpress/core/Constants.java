@@ -34,7 +34,7 @@ public final class Constants {
         /**
          * New User Register URL
          */
-        public static final String URL_REGISTER_FRAG = "/api/v2.2/register/";
+        public static final String URL_REGISTER_FRAG = "/api/v2.3/register/";
         /**
          * Code Verification URL
          */

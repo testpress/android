@@ -10,7 +10,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -65,13 +64,13 @@ public class RegisterActivity extends AppCompatActivity {
     @InjectView(id.et_password_confirm) EditText confirmPasswordText;
     @InjectView(id.et_email) EditText emailText;
     @InjectView(id.et_phone) EditText phoneText;
+    @InjectView(id.ccp) CountryCodePicker countryCodePicker;
     @InjectView(id.phone_layout) TextInputLayout phoneLayout;
     @InjectView(id.tv_fill_all_details) TextView fillAllDetailsText;
     @InjectView(id.b_register) Button registerButton;
     @InjectView(id.register_layout) LinearLayout registerLayout;
     @InjectView(R.id.success_complete) LinearLayout successContainer;
     @InjectView(R.id.success_description) TextView successDescription;
-    @InjectView(id.ccp) CountryCodePicker countryCodePicker;
 
     private final TextWatcher watcher = validationTextWatcher();
     private RegistrationSuccessResponse registrationSuccessResponse;
@@ -98,7 +97,6 @@ public class RegisterActivity extends AppCompatActivity {
             verificationMethod =
                     instituteSettings.getVerificationMethod().equals("M") ? MOBILE : EMAIL;
             isTwilioEnabled = instituteSettings.getTwilioEnabled();
-
         } else {
             // Never happen, just for a safety.
             finish();
@@ -126,6 +124,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         } else {
             phoneLayout.setVisibility(View.GONE);
+            isTwilioEnabled=false;
         }
         confirmPasswordText.addTextChangedListener(watcher);
     }
@@ -141,7 +140,12 @@ public class RegisterActivity extends AppCompatActivity {
                 .show();
         new SafeAsyncTask<Boolean>() {
             public Boolean call() throws Exception {
-                registrationSuccessResponse = testpressService.register(usernameText.getText().toString(), emailText.getText().toString(), passwordText.getText().toString(), phoneText.getText().toString());
+
+                if(isTwilioEnabled){
+                    registrationSuccessResponse = testpressService.register(usernameText.getText().toString(), emailText.getText().toString(), passwordText.getText().toString(), phoneText.getText().toString(), countryCodePicker.getDefaultCountryCode());
+                } else {
+                    registrationSuccessResponse = testpressService.register(usernameText.getText().toString(), emailText.getText().toString(), passwordText.getText().toString(), phoneText.getText().toString(), "");
+                }
                 return true;
             }
 

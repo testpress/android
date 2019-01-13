@@ -68,7 +68,7 @@ public final class Constants {
         /**
          * Institute Settings URL
          */
-        public static final String URL_INSTITUTE_SETTINGS_FRAG =  "/api/v2.2/settings/";
+        public static final String URL_INSTITUTE_SETTINGS_FRAG =  "/api/v2.3/settings/";
 
         /**
          * Posts URL

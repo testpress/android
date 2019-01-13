@@ -48,6 +48,8 @@ dependencies {
     // Allow methods more than 64K
     implementation 'com.android.support:multidex:1.0.3'
 
+    // Country code picker
+    implementation "com.hbb20:ccp:2.1.9"
 }
 
 def key_alias = "sample"

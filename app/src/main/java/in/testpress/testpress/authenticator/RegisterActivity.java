@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -93,6 +94,7 @@ public class RegisterActivity extends AppCompatActivity {
             InstituteSettings instituteSettings = instituteSettingsList.get(0);
             verificationMethod =
                     instituteSettings.getVerificationMethod().equals("M") ? MOBILE : EMAIL;
+            Log.d("Twillo", ""+instituteSettings.getTwilioEnabled());
         } else {
             // Never happen, just for a safety.
             finish();

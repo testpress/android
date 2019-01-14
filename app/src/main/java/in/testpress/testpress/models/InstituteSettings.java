@@ -29,6 +29,7 @@ public class InstituteSettings {
     private boolean commentsVotingEnabled;
     private Boolean bookmarksEnabled;
     private Boolean forumEnabled;
+    private Boolean twilioEnabled;
 
     public InstituteSettings() {
     }
@@ -37,7 +38,7 @@ public class InstituteSettings {
         this.baseUrl = baseUrl;
     }
 
-    public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, Boolean facebookLoginEnabled, Boolean googleLoginEnabled, boolean commentsVotingEnabled, Boolean bookmarksEnabled, Boolean forumEnabled) {
+    public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, Boolean facebookLoginEnabled, Boolean googleLoginEnabled, boolean commentsVotingEnabled, Boolean bookmarksEnabled, Boolean forumEnabled, Boolean twilioEnabled) {
         this.baseUrl = baseUrl;
         this.verificationMethod = verificationMethod;
         this.allowSignup = allowSignup;
@@ -61,6 +62,7 @@ public class InstituteSettings {
         this.commentsVotingEnabled = commentsVotingEnabled;
         this.bookmarksEnabled = bookmarksEnabled;
         this.forumEnabled = forumEnabled;
+        this.twilioEnabled = twilioEnabled;
     }
 
     public String getBaseUrl() {
@@ -245,6 +247,14 @@ public class InstituteSettings {
 
     public void setForumEnabled(Boolean forumEnabled) {
         this.forumEnabled = forumEnabled;
+    }
+
+    public Boolean getTwilioEnabled() {
+        return twilioEnabled;
+    }
+
+    public void setTwilioEnabled(Boolean twilioEnabled) {
+        this.twilioEnabled = twilioEnabled;
     }
 
 }

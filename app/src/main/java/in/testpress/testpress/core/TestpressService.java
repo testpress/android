@@ -167,13 +167,14 @@ public class TestpressService {
         return getPostService().sendComments(postId, params);
     }
 
-    public RegistrationSuccessResponse register(String username,String email, String password, String phone){
+    public RegistrationSuccessResponse register(String username,String email, String password, String phone, String countryCode){
         HashMap<String, String> userDetails = new HashMap<String, String>();
         userDetails.put("username", username);
         userDetails.put("email", email);
         userDetails.put("password", password);
         if (!phone.trim().isEmpty()) {
             userDetails.put("phone", phone);
+            userDetails.put("country_code", countryCode);
         }
         return getAuthenticationService().register(userDetails);
     }

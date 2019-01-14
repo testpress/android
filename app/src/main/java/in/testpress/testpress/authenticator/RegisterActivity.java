@@ -142,7 +142,7 @@ public class RegisterActivity extends AppCompatActivity {
             public Boolean call() throws Exception {
 
                 if(isTwilioEnabled){
-                    registrationSuccessResponse = testpressService.register(usernameText.getText().toString(), emailText.getText().toString(), passwordText.getText().toString(), phoneText.getText().toString(), countryCodePicker.getDefaultCountryCode());
+                    registrationSuccessResponse = testpressService.register(usernameText.getText().toString(), emailText.getText().toString(), passwordText.getText().toString(), phoneText.getText().toString(), countryCodePicker.getSelectedCountryNameCode());
                 } else {
                     registrationSuccessResponse = testpressService.register(usernameText.getText().toString(), emailText.getText().toString(), passwordText.getText().toString(), phoneText.getText().toString(), "");
                 }

@@ -241,6 +241,10 @@ public class MainMenuFragment extends Fragment {
                 TestpressExam.showAnalytics(getActivity(), SUBJECT_ANALYTICS_PATH, session);
                 break;
             case R.string.store:
+                String title = UIUtils.getMenuItemName(R.string.store, mInstituteSettings);
+                Intent intent = new Intent();
+                intent.putExtra("title", title);
+                getActivity().setIntent(intent);
                 TestpressStore.show(getActivity(), session);
                 break;
         }

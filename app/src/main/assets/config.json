@@ -1,0 +1,15 @@
+{
+  "version" : "1.0.112",
+  "version_code" : 112,
+  "testpress_site_subdomain" : "nime",
+  "package_name" : "in.testpress.nime",
+  "app_name" : "NIME",
+  "share_message": "Good app to prepare for PG Medical Entrance. Get it at https://play.google.com/store/apps/details?id=",
+  "primary_color": "ec7726",
+  "allow_anonymous_user" : true,
+  "screenshot_disabled" : false,
+  "facebook_app_id" : "733962776688753",
+  "server_client_id" : "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
+  "display_username_on_video": true,
+  "white_labeled_host_url": null
+}

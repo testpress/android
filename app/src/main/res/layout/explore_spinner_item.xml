@@ -1,20 +1,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="@dimen/explore_spinner_width"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
 
     <TextView
         android:id="@android:id/text1"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="10dp"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:textColor="#ffffff"
+        android:layout_width="match_parent"
+        android:textColor="@color/testpress_black"
         android:textSize="16sp"
-        android:layout_gravity="end"
-        android:gravity="center_vertical"
-        android:background="@color/primary"
-        android:drawablePadding="3dp"
-        android:drawableRight="@drawable/spinner_triangle" />
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:background="@drawable/grey_bottom_border"
+        android:drawableRight="@drawable/ic_keyboard_arrow_down_black_24dp"
+        android:drawableEnd="@drawable/ic_keyboard_arrow_down_black_24dp"/>
 
 </LinearLayout>

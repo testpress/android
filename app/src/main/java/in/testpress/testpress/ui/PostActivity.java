@@ -2,13 +2,13 @@ package in.testpress.testpress.ui;
 
 import android.accounts.AccountsException;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -27,11 +27,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.JavascriptInterface;
-import android.webkit.WebResourceError;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -56,7 +53,8 @@ import butterknife.OnClick;
 import in.testpress.core.TestpressCallback;
 import in.testpress.core.TestpressException;
 import in.testpress.core.TestpressSdk;
-import in.testpress.model.FileDetails;
+import in.testpress.exam.util.ImageUtils;
+import in.testpress.models.FileDetails;
 import in.testpress.network.TestpressApiClient;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
@@ -71,13 +69,12 @@ import in.testpress.testpress.models.Comment;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.util.CommonUtils;
-import in.testpress.testpress.util.ImagePickerUtil;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.ShareUtil;
 import in.testpress.testpress.util.UIUtils;
+import in.testpress.util.FullScreenChromeClient;
 import in.testpress.util.ViewUtils;
 import in.testpress.util.WebViewUtils;
-import info.hoang8f.widget.FButton;
 
 import static in.testpress.testpress.util.CommonUtils.getException;
 
@@ -99,8 +96,8 @@ public class PostActivity extends TestpressFragmentActivity implements
     ProgressDialog progressDialog;
     SimpleDateFormat simpleDateFormat;
     boolean postedNewComment;
-    ImagePickerUtil imagePickerUtil;
-    Uri selectedCommentImageUri;
+    ImageUtils imagePickerUtils;
+    private FullScreenChromeClient fullScreenChromeClient;
 
     @Inject protected TestpressService testpressService;
     @Inject protected TestpressServiceProvider serviceProvider;
@@ -115,7 +112,7 @@ public class PostActivity extends TestpressFragmentActivity implements
     @InjectView(R.id.empty_container) LinearLayout emptyView;
     @InjectView(R.id.empty_title) TextView emptyTitleView;
     @InjectView(R.id.empty_description) TextView emptyDescView;
-    @InjectView(R.id.retry_button) FButton retryButton;
+    @InjectView(R.id.retry_button) Button retryButton;
     @InjectView(R.id.comments_layout) LinearLayout commentsLayout;
     @InjectView(R.id.loading_previous_comments_layout) LinearLayout previousCommentsLoadingLayout;
     @InjectView(R.id.loading_new_comments_layout) LinearLayout newCommentsLoadingLayout;
@@ -161,6 +158,7 @@ public class PostActivity extends TestpressFragmentActivity implements
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getResources().getString(R.string.please_wait));
         progressDialog.setCancelable(false);
+        fullScreenChromeClient = new FullScreenChromeClient(this);
         in.testpress.util.UIUtils.setIndeterminateDrawable(this, progressDialog, 4);
         ViewUtils.setTypeface(new TextView[] {loadPreviousCommentsText, commentsLabel,
                 loadNewCommentsText, title}, TestpressSdk.getRubikMediumFont(this));
@@ -232,15 +230,6 @@ public class PostActivity extends TestpressFragmentActivity implements
         }.execute();
     }
 
-    class ImageHandler {
-        @JavascriptInterface
-        public void onClickImage(String url) {
-            Intent intent = new Intent(PostActivity.this, ZoomableImageActivity.class);
-            intent.putExtra("url", url);
-            startActivity(intent);
-        }
-    }
-
     private void displayPost(Post post) {
         postDetails.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
@@ -254,58 +243,40 @@ public class PostActivity extends TestpressFragmentActivity implements
         }
         date.setText(DateUtils.getRelativeTimeSpanString(post.getPublished()));
         if (post.getContentHtml() != null) {
-            WebSettings settings = content.getSettings();
-            settings.setDefaultTextEncodingName("utf-8");
-            settings.setJavaScriptEnabled(true);
-            settings.setBuiltInZoomControls(true);
-            settings.setDisplayZoomControls(false);
-            settings.setSupportZoom(true);
-            settings.setUseWideViewPort(true);
-            settings.setLoadWithOverviewMode(true);
-            content.addJavascriptInterface(new ImageHandler(), "ImageHandler");
-            content.setWebViewClient(new WebViewClient() {
+            WebViewUtils webViewUtils = new WebViewUtils(content) {
                 @Override
-                public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                    super.onPageStarted(view, url, favicon);
+                protected void onPageStarted() {
+                    super.onPageStarted();
                     progressBar.setVisibility(View.VISIBLE);
                 }
 
                 @Override
-                public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                    super.onReceivedError(view, request, error);
-                    progressBar.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onPageFinished(WebView view, String url) {
-                    super.onPageFinished(view, url);
-                    String javascript = "javascript:var images = document.getElementsByTagName(\"img\");" +
-                            "for (i = 0; i < images.length; i++) {" +
-                            "   images[i].onclick = (" +
-                            "       function() {" +
-                            "           var src = images[i].src;" +
-                            "           return function() {" +
-                            "               ImageHandler.onClickImage(src);" +
-                            "           }" +
-                            "       }" +
-                            "   )();" +
-                            "}";
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        content.evaluateJavascript(javascript, null);
-                    } else {
-                        content.loadUrl(javascript, null);
-                    }
+                protected void onLoadFinished() {
+                    super.onLoadFinished();
                     progressBar.setVisibility(View.GONE);
                     displayComments();
                 }
 
                 @Override
-                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                public String getJavascript(Context context) {
+                    String iFrameVideoWrapper = in.testpress.util.CommonUtils
+                            .getStringFromAsset(PostActivity.this, "IFrameVideoWrapper.js");
+
+                    return super.getJavascript(context) + iFrameVideoWrapper;
+                }
+
+                @Override
+                protected void onNetworkError() {
+                    progressBar.setVisibility(View.GONE);
+                }
+
+                @Override
+                protected boolean shouldOverrideUrlLoading(Activity activity, String url) {
                     CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-                    builder.setToolbarColor(ContextCompat.getColor(PostActivity.this, R.color.primary));
+                    builder.setToolbarColor(ContextCompat.getColor(activity, R.color.primary));
                     CustomTabsIntent customTabsIntent = builder.build();
                     try {
-                        customTabsIntent.launchUrl(PostActivity.this, Uri.parse(url));
+                        customTabsIntent.launchUrl(activity, Uri.parse(url));
                     } catch (ActivityNotFoundException e) {
                         boolean wrongUrl = !url.startsWith("http://") && !url.startsWith("https://");
                         int message = wrongUrl ? R.string.wrong_url : R.string.browser_not_available;
@@ -314,8 +285,9 @@ public class PostActivity extends TestpressFragmentActivity implements
                     }
                     return true;
                 }
-            });
-            content.loadDataWithBaseURL("file:///android_asset/", getHeader() + post.getContentHtml(), "text/html", "UTF-8", null);
+            };
+            webViewUtils.initWebView(getHeader() + post.getContentHtml(), this);
+            content.setWebChromeClient(fullScreenChromeClient);
         } else {
             content.setVisibility(View.GONE);
             commentsLayout.setVisibility(View.GONE);
@@ -371,7 +343,7 @@ public class PostActivity extends TestpressFragmentActivity implements
                 }
             }
         });
-        imagePickerUtil = new ImagePickerUtil(activityRootLayout, this);
+        imagePickerUtils = new ImageUtils(activityRootLayout, this);
         commentsLayout.setVisibility(View.VISIBLE);
         getSupportLoaderManager().initLoader(PREVIOUS_COMMENTS_LOADER_ID, null, PostActivity.this);
     }
@@ -411,7 +383,7 @@ public class PostActivity extends TestpressFragmentActivity implements
     CommentsPager getPreviousCommentsPager() {
         if (previousCommentsPager == null) {
             previousCommentsPager = new CommentsPager(getService(), post.getId());
-            previousCommentsPager.queryParams.put(Constants.Http.ORDER, "-submit_date");
+            previousCommentsPager.queryParams.put(Constants.Http.ORDER, "-created");
             previousCommentsPager.queryParams.put(Constants.Http.UNTIL,
                     new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ").format(new Date()));
         }
@@ -426,13 +398,14 @@ public class PostActivity extends TestpressFragmentActivity implements
         if (newCommentsPager.queryParams.isEmpty() && comments.size() != 0) {
             Comment latestComment = comments.get(comments.size() - 1);
             //noinspection ConstantConditions
-            newCommentsPager.queryParams.put(Constants.Http.SINCE, latestComment.getSubmitDate());
+            newCommentsPager.queryParams.put(Constants.Http.SINCE, latestComment.getCreated());
         }
         return newCommentsPager;
     }
 
     @Override
-    public void onLoadFinished(Loader<List<Comment>> loader, List<Comment> comments) {
+    public void onLoadFinished(@NonNull Loader<List<Comment>> loader, List<Comment> comments) {
+        getSupportLoaderManager().destroyLoader(loader.getId());
         switch (loader.getId()) {
             case PREVIOUS_COMMENTS_LOADER_ID:
                 onPreviousCommentsLoadFinished(loader, comments);
@@ -601,16 +574,11 @@ public class PostActivity extends TestpressFragmentActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        imagePickerUtil.onActivityResult(requestCode, resultCode, data,
-                new ImagePickerUtil.ImagePickerActivityResultHandler() {
+        imagePickerUtils.onActivityResult(requestCode, resultCode, data,
+                new ImageUtils.ImagePickerResultHandler() {
                     @Override
-                    public void onStoragePermissionsRequired(Uri selectedImageUri) {
-                        selectedCommentImageUri = selectedImageUri;
-                    }
-
-                    @Override
-                    public void onSuccessfullyImageCropped(String imagePath) {
-                        uploadImage(imagePath);
+                    public void onSuccessfullyImageCropped(CropImage.ActivityResult result) {
+                        uploadImage(result.getUri().getPath());
                     }
                 });
     }
@@ -619,7 +587,7 @@ public class PostActivity extends TestpressFragmentActivity implements
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         
-        imagePickerUtil.onRequestPermissionsResult(requestCode, grantResults, selectedCommentImageUri);
+        imagePickerUtils.permissionsUtils.onRequestPermissionsResult(requestCode, grantResults);
     }
 
     void uploadImage(String imagePath) {
@@ -674,10 +642,17 @@ public class PostActivity extends TestpressFragmentActivity implements
         post.setCommentsCount(count);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (imagePickerUtils != null) {
+            imagePickerUtils.permissionsUtils.onResume();
+        }
+        content.onResume();
+    }
+
     String getHeader() {
-        return "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\" />" +
-                "<link rel=\"stylesheet\" type=\"text/css\" href=\"typebase.css\" />" +
-                "<style>img{display: inline;height: auto;max-width: 100%;}</style>";
+        return "<link rel='stylesheet' type='text/css' href='typebase.css' />";
     }
 
     @Override
@@ -716,6 +691,12 @@ public class PostActivity extends TestpressFragmentActivity implements
             Snackbar.make(activityRootLayout, R.string.testpress_network_error,
                     Snackbar.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        content.onPause();
     }
 
     @Override

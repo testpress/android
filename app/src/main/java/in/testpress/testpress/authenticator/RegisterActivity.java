@@ -124,6 +124,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         } else {
             phoneLayout.setVisibility(View.GONE);
+            countryCodePicker.setVisibility(View.GONE);
             isTwilioEnabled=false;
         }
         confirmPasswordText.addTextChangedListener(watcher);

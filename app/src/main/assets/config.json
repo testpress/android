@@ -4,7 +4,7 @@
   "testpress_site_subdomain" : "nime",
   "package_name" : "in.testpress.nime",
   "app_name" : "NIME",
-  "share_message": "Good app to prepare for PG Medical Entrance. Get it at https://play.google.com/store/apps/details?id=",
+  "share_message": "Good app to prepare for PG Medical Entrance.",
   "primary_color": "ec7726",
   "allow_anonymous_user" : true,
   "screenshot_disabled" : false,

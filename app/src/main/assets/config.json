@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.111",
-  "version_code" : 111,
+  "version" : "1.0.112",
+  "version_code" : 112,
   "testpress_site_subdomain": "reachacademy",
   "package_name": "in.testpress.reachacademy",
   "app_name" : "Reach Academy",

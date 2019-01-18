@@ -1,6 +1,6 @@
 {
-  "version" : "1.0",
-  "version_code" : 1,
+  "version" : "1.0.2",
+  "version_code" : 2,
   "testpress_site_subdomain" : "pg-testseries",
   "package_name" : "in.testpress.pgmedicaltestseries",
   "app_name" : "PG Medical Test Series",

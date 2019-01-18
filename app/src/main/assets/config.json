@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.7",
-  "version_code" : 7,
+  "version" : "1.0.8",
+  "version_code" : 8,
   "testpress_site_subdomain" : "ariseacademy",
   "package_name" : "in.testpress.arise",
   "app_name" : "Arise Medical Academy",

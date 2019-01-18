@@ -53,7 +53,7 @@ import butterknife.OnClick;
 import in.testpress.core.TestpressCallback;
 import in.testpress.core.TestpressException;
 import in.testpress.core.TestpressSdk;
-import in.testpress.exam.util.ImagePickerUtils;
+import in.testpress.exam.util.ImageUtils;
 import in.testpress.models.FileDetails;
 import in.testpress.network.TestpressApiClient;
 import in.testpress.testpress.Injector;
@@ -96,7 +96,7 @@ public class PostActivity extends TestpressFragmentActivity implements
     ProgressDialog progressDialog;
     SimpleDateFormat simpleDateFormat;
     boolean postedNewComment;
-    ImagePickerUtils imagePickerUtils;
+    ImageUtils imagePickerUtils;
     private FullScreenChromeClient fullScreenChromeClient;
 
     @Inject protected TestpressService testpressService;
@@ -343,7 +343,7 @@ public class PostActivity extends TestpressFragmentActivity implements
                 }
             }
         });
-        imagePickerUtils = new ImagePickerUtils(activityRootLayout, this);
+        imagePickerUtils = new ImageUtils(activityRootLayout, this);
         commentsLayout.setVisibility(View.VISIBLE);
         getSupportLoaderManager().initLoader(PREVIOUS_COMMENTS_LOADER_ID, null, PostActivity.this);
     }
@@ -575,7 +575,7 @@ public class PostActivity extends TestpressFragmentActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         imagePickerUtils.onActivityResult(requestCode, resultCode, data,
-                new ImagePickerUtils.ImagePickerResultHandler() {
+                new ImageUtils.ImagePickerResultHandler() {
                     @Override
                     public void onSuccessfullyImageCropped(CropImage.ActivityResult result) {
                         uploadImage(result.getUri().getPath());

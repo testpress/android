@@ -1,6 +1,5 @@
 package in.testpress.testpress.util;
 
-import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -23,7 +22,6 @@ import android.support.v4.content.ContextCompat;
 import java.util.List;
 
 import in.testpress.testpress.R;
-import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.ui.SplashScreenActivity;
 
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
@@ -80,7 +78,7 @@ public class NotificationHelper extends ContextWrapper {
     }
 
     private int getSmallIcon() {
-        return R.drawable.ic_notification;
+        return R.drawable.ic_stat_notification;
     }
 
     public static NotificationManager getManager(Context context) {
@@ -127,7 +125,7 @@ public class NotificationHelper extends ContextWrapper {
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
                 .setSmallIcon(getSmallIcon())
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.icon))
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
                 .setContentTitle(title)
                 .setContentText(content)
                 .setAutoCancel(true)
@@ -187,7 +185,7 @@ public class NotificationHelper extends ContextWrapper {
             inboxStyle.setBigContentTitle(title);
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
                     .setSmallIcon(getSmallIcon())
-                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.icon))
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
                     .setColor(ContextCompat.getColor(getApplicationContext(), R.color.primary))
                     .setContentTitle(title)
                     .setContentText(getString(R.string.tap_to_open))

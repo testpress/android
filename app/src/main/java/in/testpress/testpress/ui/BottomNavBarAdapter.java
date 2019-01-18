@@ -13,18 +13,23 @@ import java.util.ArrayList;
 
 import in.testpress.core.TestpressSdk;
 import in.testpress.testpress.R;
+import in.testpress.testpress.models.InstituteSettings;
+import in.testpress.testpress.util.UIUtils;
 
 public class BottomNavBarAdapter extends BaseAdapter {
     private Context mContext;
     private ArrayList<Integer> mItemsImageId;
     private ArrayList<Integer> mMenuItemTitleIds;
     private int selectedPosition;
+    private InstituteSettings minstituteSettings;
 
     public BottomNavBarAdapter(Context context, ArrayList<Integer> menuItemImageId,
-                               ArrayList<Integer> menuItemTitleIds) {
+                               ArrayList<Integer> menuItemTitleIds,
+                               InstituteSettings settings) {
         mContext = context;
         mItemsImageId = menuItemImageId;
         mMenuItemTitleIds = menuItemTitleIds;
+        minstituteSettings = settings;
     }
 
     @Override
@@ -52,7 +57,14 @@ public class BottomNavBarAdapter extends BaseAdapter {
         ImageView imageView = (ImageView) convertView.findViewById(R.id.menu_icon);
         imageView.setImageResource(mItemsImageId.get(position));
         TextView menuTitle = ((TextView) convertView.findViewById(R.id.menu_title));
-        menuTitle.setText(mMenuItemTitleIds.get(position));
+        int titleResId = mMenuItemTitleIds.get(position);
+
+        if (UIUtils.getMenuItemName(titleResId, minstituteSettings) != "") {
+            menuTitle.setText(UIUtils.getMenuItemName(titleResId, minstituteSettings));
+        } else {
+            menuTitle.setText(titleResId);
+        }
+
         if (selectedPosition == position) {
             imageView.setColorFilter(ContextCompat.getColor(mContext, R.color.primary));
             menuTitle.setTextColor(ContextCompat.getColor(mContext, R.color.primary));

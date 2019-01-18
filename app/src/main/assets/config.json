@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.114",
-  "version_code" : 114,
+  "version" : "1.0.115",
+  "version_code" : 115,
   "testpress_site_subdomain" : "simsprep",
   "package_name" : "in.testpress.simsprep",
   "app_name" : "SIMS PREP",

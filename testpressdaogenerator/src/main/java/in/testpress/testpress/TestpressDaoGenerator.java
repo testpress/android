@@ -60,6 +60,7 @@ public class TestpressDaoGenerator {
         instituteSettings.addBooleanProperty("commentsVotingEnabled").notNull();
         instituteSettings.addBooleanProperty("bookmarksEnabled");
         instituteSettings.addBooleanProperty("forumEnabled");
+        instituteSettings.addBooleanProperty("twilioEnabled");
 
         Entity rssFeed = schema.addEntity("RssItem");
         rssFeed.addLongProperty("id").primaryKey().autoincrement();

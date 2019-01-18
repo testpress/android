@@ -18,6 +18,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.auth.api.phone.SmsRetriever;
+import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.hbb20.CountryCodePicker;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -42,16 +48,13 @@ import in.testpress.testpress.models.RegistrationErrorDetails;
 import in.testpress.testpress.ui.TextWatcherAdapter;
 import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.SafeAsyncTask;
-import in.testpress.util.PermissionsUtils;
 import retrofit.RetrofitError;
 
-import static android.Manifest.permission.RECEIVE_SMS;
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.authenticator.LoginActivity.REQUEST_CODE_REGISTER_USER;
 import static in.testpress.testpress.authenticator.RegisterActivity.VerificationMethod.EMAIL;
 import static in.testpress.testpress.authenticator.RegisterActivity.VerificationMethod.MOBILE;
-import static in.testpress.testpress.core.Constants.RequestCode.RECEIVE_SMS_PERMISSION_REQUEST_CODE;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -61,6 +64,7 @@ public class RegisterActivity extends AppCompatActivity {
     @InjectView(id.et_password_confirm) EditText confirmPasswordText;
     @InjectView(id.et_email) EditText emailText;
     @InjectView(id.et_phone) EditText phoneText;
+    @InjectView(id.ccp) CountryCodePicker countryCodePicker;
     @InjectView(id.phone_layout) TextInputLayout phoneLayout;
     @InjectView(id.tv_fill_all_details) TextView fillAllDetailsText;
     @InjectView(id.b_register) Button registerButton;
@@ -71,8 +75,8 @@ public class RegisterActivity extends AppCompatActivity {
     private final TextWatcher watcher = validationTextWatcher();
     private RegistrationSuccessResponse registrationSuccessResponse;
     private MaterialDialog progressDialog;
-    private PermissionsUtils permissionsUtils;
     private InternetConnectivityChecker internetConnectivityChecker = new InternetConnectivityChecker(this);
+    private boolean isTwilioEnabled;
     private VerificationMethod verificationMethod;
     enum VerificationMethod { MOBILE, EMAIL }
 
@@ -92,20 +96,11 @@ public class RegisterActivity extends AppCompatActivity {
             InstituteSettings instituteSettings = instituteSettingsList.get(0);
             verificationMethod =
                     instituteSettings.getVerificationMethod().equals("M") ? MOBILE : EMAIL;
+            isTwilioEnabled = instituteSettings.getTwilioEnabled();
         } else {
             // Never happen, just for a safety.
             finish();
         }
-        String[] permissions = new String[] { RECEIVE_SMS };
-        PermissionsUtils.PermissionRequestResultHandler permissionRequestResultHandler =
-                new PermissionsUtils.PermissionRequestResultHandler() {
-                    @Override
-                    public void onPermissionGranted() {
-                        postDetails();
-                    }
-        };
-        permissionsUtils = new PermissionsUtils(this, registerLayout, permissions,
-                RECEIVE_SMS_PERMISSION_REQUEST_CODE, permissionRequestResultHandler);
 
         confirmPasswordText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(final TextView v, final int actionId,
@@ -123,8 +118,14 @@ public class RegisterActivity extends AppCompatActivity {
         if (verificationMethod.equals(MOBILE)) {
             phoneText.addTextChangedListener(watcher);
             phoneLayout.setVisibility(View.VISIBLE);
+
+            if (!isTwilioEnabled) {
+                countryCodePicker.setVisibility(View.GONE);
+            }
         } else {
             phoneLayout.setVisibility(View.GONE);
+            countryCodePicker.setVisibility(View.GONE);
+            isTwilioEnabled=false;
         }
         confirmPasswordText.addTextChangedListener(watcher);
     }
@@ -140,7 +141,12 @@ public class RegisterActivity extends AppCompatActivity {
                 .show();
         new SafeAsyncTask<Boolean>() {
             public Boolean call() throws Exception {
-                registrationSuccessResponse = testpressService.register(usernameText.getText().toString(), emailText.getText().toString(), passwordText.getText().toString(), phoneText.getText().toString());
+
+                if(isTwilioEnabled){
+                    registrationSuccessResponse = testpressService.register(usernameText.getText().toString(), emailText.getText().toString(), passwordText.getText().toString(), phoneText.getText().toString(), countryCodePicker.getSelectedCountryNameCode());
+                } else {
+                    registrationSuccessResponse = testpressService.register(usernameText.getText().toString(), emailText.getText().toString(), passwordText.getText().toString(), phoneText.getText().toString(), "");
+                }
                 return true;
             }
 
@@ -232,7 +238,7 @@ public class RegisterActivity extends AppCompatActivity {
            }
             if (verificationMethod.equals(MOBILE)) {
                 //Phone number verification
-                Pattern phoneNumberPattern = Pattern.compile("[789]\\d{9}");
+                Pattern phoneNumberPattern = Pattern.compile("\\d{10}");
                 Matcher phoneNumberMatcher = phoneNumberPattern.matcher(phoneText.getText()
                         .toString().trim());
                 if (!phoneNumberMatcher.matches()) {
@@ -265,14 +271,9 @@ public class RegisterActivity extends AppCompatActivity {
                                 "\n\nIs this OK, or would you like to edit the number?")
                         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                if(internetConnectivityChecker.isConnected()) {
-                                    if (getPackageManager()
-                                            .hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
 
-                                        permissionsUtils.requestPermissions();
-                                    } else {
-                                        postDetails();
-                                    }
+                                if (internetConnectivityChecker.isConnected()) {
+                                    initiateSmsRetrieverClient();
                                 } else {
                                     internetConnectivityChecker.showAlert();
                                 }
@@ -285,6 +286,25 @@ public class RegisterActivity extends AppCompatActivity {
                 postDetails();
             }
         }
+    }
+    public void initiateSmsRetrieverClient() {
+        SmsRetrieverClient client = SmsRetriever.getClient(this);
+        Task<Void> task = client.startSmsRetriever();
+        task.addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                // successfully started an SMS Retriever for one SMS message
+                postDetails();
+            }
+        });
+        task.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                //failed
+                // user have to manually enter the code
+                postDetails();
+            }
+        });
     }
 
     @OnClick(R.id.success_ok) public void verificationMailSent() {
@@ -301,16 +321,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        permissionsUtils.onRequestPermissionsResult(requestCode, grantResults);
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
-        permissionsUtils.onResume();
     }
 }

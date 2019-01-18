@@ -34,7 +34,7 @@ import butterknife.OnClick;
 import in.testpress.core.TestpressCallback;
 import in.testpress.core.TestpressException;
 import in.testpress.core.TestpressSdk;
-import in.testpress.exam.util.ImagePickerUtils;
+import in.testpress.exam.util.ImageUtils;
 import in.testpress.models.FileDetails;
 import in.testpress.network.TestpressApiClient;
 import in.testpress.testpress.R;
@@ -76,7 +76,7 @@ public class CreateForumActivity extends TestpressFragmentActivity{
     private ExploreSpinnerAdapter categoriesSpinnerAdapter;
     private Spinner categoriesSpinner;
     protected int selectedItemPosition = -1;
-    private ImagePickerUtils imagePickerUtils;
+    private ImageUtils imagePickerUtils;
     private String imageHtml = "";
     private ImageLoader imageLoader;
 
@@ -159,7 +159,7 @@ public class CreateForumActivity extends TestpressFragmentActivity{
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getString(R.string.please_wait));
         progressDialog.setCancelable(false);
-        imagePickerUtils = new ImagePickerUtils(activityRootLayout, this);
+        imagePickerUtils = new ImageUtils(activityRootLayout, this);
     }
 
     private void postForum(final String title, final String content, final String category) {
@@ -221,7 +221,7 @@ public class CreateForumActivity extends TestpressFragmentActivity{
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         imagePickerUtils.onActivityResult(requestCode, resultCode, data,
-                new ImagePickerUtils.ImagePickerResultHandler() {
+                new ImageUtils.ImagePickerResultHandler() {
                     @Override
                     public void onSuccessfullyImageCropped(CropImage.ActivityResult result) {
                         uploadImage(result.getUri().getPath());

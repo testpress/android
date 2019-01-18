@@ -130,7 +130,7 @@ class CommentsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private void updateTimeSpan(Comment comment, CommentsViewHolder holder) {
         //noinspection ConstantConditions
-        long submitDateMillis = FormatDate.getDate(comment.getSubmitDate(),
+        long submitDateMillis = FormatDate.getDate(comment.getCreated(),
                 "yyyy-MM-dd'T'HH:mm:ss", "UTC").getTime();
 
         holder.submitDate.setText(FormatDate.getAbbreviatedTimeSpan(submitDateMillis));

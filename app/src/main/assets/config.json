@@ -1,0 +1,15 @@
+{
+  "version" : "1.0.113",
+  "version_code" : 113,
+  "testpress_site_subdomain" : "arulinstitute",
+  "package_name" : "com.arulinstitute",
+  "app_name" : "Arul Institute",
+  "share_message": "Good app to prepare for NEET, IIT-JEE.",
+  "primary_color": "0154a7",
+  "allow_anonymous_user" : false,
+  "screenshot_disabled" : false,
+  "facebook_app_id" : "733962776688753",
+  "server_client_id" : "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
+  "display_username_on_video": true,
+  "white_labeled_host_url": "etest.arulinstitute.com"
+}

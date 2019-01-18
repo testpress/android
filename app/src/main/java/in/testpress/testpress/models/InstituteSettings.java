@@ -26,6 +26,10 @@ public class InstituteSettings {
     private Boolean dashboardEnabled;
     private Boolean facebookLoginEnabled;
     private Boolean googleLoginEnabled;
+    private boolean commentsVotingEnabled;
+    private Boolean bookmarksEnabled;
+    private Boolean forumEnabled;
+    private Boolean twilioEnabled;
 
     public InstituteSettings() {
     }
@@ -34,7 +38,7 @@ public class InstituteSettings {
         this.baseUrl = baseUrl;
     }
 
-    public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, Boolean facebookLoginEnabled, Boolean googleLoginEnabled) {
+    public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, Boolean facebookLoginEnabled, Boolean googleLoginEnabled, boolean commentsVotingEnabled, Boolean bookmarksEnabled, Boolean forumEnabled, Boolean twilioEnabled) {
         this.baseUrl = baseUrl;
         this.verificationMethod = verificationMethod;
         this.allowSignup = allowSignup;
@@ -55,6 +59,10 @@ public class InstituteSettings {
         this.dashboardEnabled = dashboardEnabled;
         this.facebookLoginEnabled = facebookLoginEnabled;
         this.googleLoginEnabled = googleLoginEnabled;
+        this.commentsVotingEnabled = commentsVotingEnabled;
+        this.bookmarksEnabled = bookmarksEnabled;
+        this.forumEnabled = forumEnabled;
+        this.twilioEnabled = twilioEnabled;
     }
 
     public String getBaseUrl() {
@@ -215,6 +223,38 @@ public class InstituteSettings {
 
     public void setGoogleLoginEnabled(Boolean googleLoginEnabled) {
         this.googleLoginEnabled = googleLoginEnabled;
+    }
+
+    public boolean getCommentsVotingEnabled() {
+        return commentsVotingEnabled;
+    }
+
+    public void setCommentsVotingEnabled(boolean commentsVotingEnabled) {
+        this.commentsVotingEnabled = commentsVotingEnabled;
+    }
+
+    public Boolean getBookmarksEnabled() {
+        return bookmarksEnabled;
+    }
+
+    public void setBookmarksEnabled(Boolean bookmarksEnabled) {
+        this.bookmarksEnabled = bookmarksEnabled;
+    }
+
+    public Boolean getForumEnabled() {
+        return forumEnabled;
+    }
+
+    public void setForumEnabled(Boolean forumEnabled) {
+        this.forumEnabled = forumEnabled;
+    }
+
+    public Boolean getTwilioEnabled() {
+        return twilioEnabled;
+    }
+
+    public void setTwilioEnabled(Boolean twilioEnabled) {
+        this.twilioEnabled = twilioEnabled;
     }
 
 }

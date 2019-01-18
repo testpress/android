@@ -1,0 +1,15 @@
+{
+  "version" : "1.0.112",
+  "version_code" : 112,
+  "testpress_site_subdomain" : "aspirelearning",
+  "package_name" : "com.aspirelearning",
+  "app_name" : "Aspire Learning",
+  "share_message": "Good app to prepare for JEE/NEET.",
+  "primary_color": "E31E24",
+  "allow_anonymous_user" : false,
+  "screenshot_disabled" : false,
+  "facebook_app_id" : "733962776688753",
+  "server_client_id" : "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
+  "display_username_on_video": true,
+  "white_labeled_host_url": null
+}

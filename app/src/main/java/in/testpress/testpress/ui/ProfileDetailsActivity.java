@@ -57,7 +57,9 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import in.testpress.exam.util.ImagePickerUtils;
+
+import in.testpress.exam.util.ImageUtils;
+
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -68,6 +70,7 @@ import in.testpress.testpress.util.FormatDate;
 import in.testpress.testpress.util.SafeAsyncTask;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
+import static in.testpress.testpress.BuildConfig.BASE_URL;
 
 public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         implements LoaderManager.LoaderCallbacks<ProfileDetails> {
@@ -109,7 +112,9 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     ProfileDetails profileDetails;
     ArrayAdapter<String> genderSpinnerAdapter;
     ArrayAdapter<String> stateSpinnerAdapter;
-    ImagePickerUtils imagePickerUtils;
+
+    ImageUtils imagePickerUtils;
+
     String[] datePickerDate;
     ImageLoader imageLoader;
     DisplayImageOptions options;
@@ -145,7 +150,8 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
                 return false;
             }
         });
-        imagePickerUtils = new ImagePickerUtils(profileDetailsView, this);
+
+        imagePickerUtils = new ImageUtils(profileDetailsView, this);
         imagePickerUtils.setAspectRatio(1, 1);
         imageLoader = ImageLoader.getInstance();
         options = new DisplayImageOptions.Builder().cacheInMemory(true)
@@ -292,7 +298,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
             selectImageFromMobile();
         } else {
             imagePickerUtils.onActivityResult(requestCode, resultCode, data,
-                    new ImagePickerUtils.ImagePickerResultHandler() {
+                    new ImageUtils.ImagePickerResultHandler() {
                         @Override
                         public void onSuccessfullyImageCropped(CropImage.ActivityResult result) {
                             onImageCropped(result);
@@ -347,13 +353,20 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
                     .show();
             new SafeAsyncTask<ProfileDetails>() {
                 public ProfileDetails call() throws Exception {
-                    return serviceProvider.getService(ProfileDetailsActivity.this).updateUserDetails(profileDetails.getUrl().replace(Constants.Http.URL_BASE + "/", ""), email.getText().toString(),
-                            firstName.getText().toString(), lastName.getText().toString(),
-                            phone.getText().toString(), Constants.genderChoices.get(gender
-                                    .getSelectedItem().toString()),
-                            dateOfBirth.getText().toString(), address.getText().toString(), city
-                                    .getText().toString(), Constants.stateChoices.get(state
-                                    .getSelectedItem().toString()), pinCode.getText().toString());
+                    return serviceProvider.getService(ProfileDetailsActivity.this)
+                            .updateUserDetails(
+                                    profileDetails.getUrl().replace(BASE_URL + "/", ""),
+                                    email.getText().toString(),
+                                    firstName.getText().toString(),
+                                    lastName.getText().toString(),
+                                    phone.getText().toString(),
+                                    Constants.genderChoices.get(gender.getSelectedItem().toString()),
+                                    dateOfBirth.getText().toString(),
+                                    address.getText().toString(),
+                                    city.getText().toString(),
+                                    Constants.stateChoices.get(state.getSelectedItem().toString()),
+                                    pinCode.getText().toString()
+                            );
                 }
 
                 @Override
@@ -396,7 +409,8 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         new SafeAsyncTask<ProfileDetails>() {
             public ProfileDetails call() throws Exception {
                 return serviceProvider.getService(ProfileDetailsActivity.this).updateProfileImage(
-                        profileDetails.getUrl().replace(Constants.Http.URL_BASE + "/", ""),
+
+                        profileDetails.getUrl().replace(BASE_URL + "/", ""),
                         encodedImage,
                         croppedImageDetails
                 );

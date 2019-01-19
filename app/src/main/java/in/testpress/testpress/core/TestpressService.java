@@ -10,9 +10,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import in.testpress.exam.models.Vote;
 import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.Comment;
 import in.testpress.testpress.models.Device;
+import in.testpress.testpress.models.Forum;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.Notes;
 import in.testpress.testpress.models.Order;
@@ -129,16 +131,30 @@ public class TestpressService {
         return getDevicesService().register(credentials);
     }
 
-    public TestpressApiResponse<Post> getPosts(String urlFrag, Map<String, String> queryParams, String latestModifiedDate) {
+    public TestpressApiResponse<Post> getPosts(String urlFrag, Map<String, String> queryParams,
+                                               String latestModifiedDate) {
+
         return getPostService().getPosts(urlFrag, queryParams, latestModifiedDate);
     }
 
-    public TestpressApiResponse<Category> getCategories(String urlFrag, Map<String, String> queryParams) {
+    public TestpressApiResponse<Forum> getForums(String urlFrag, Map<String, String> queryParams,
+                                                 String latestModifiedDate) {
+
+        return getPostService().getForums(urlFrag, queryParams, latestModifiedDate);
+    }
+
+    public TestpressApiResponse<Category> getCategories(String urlFrag,
+                                                        Map<String, String> queryParams) {
+
         return getPostService().getCategories(urlFrag, queryParams);
     }
 
     public Post getPostDetail(String url, Map<String, Boolean> queryParams) {
         return getPostService().getPostDetails(url, queryParams);
+    }
+
+    public Forum getForumDetail(String url, Map<String, Boolean> queryParams) {
+        return getPostService().getForumDetails(url, queryParams);
     }
 
     public TestpressApiResponse<Comment> getComments(long postId, Map<String, String> queryParams) {
@@ -151,13 +167,14 @@ public class TestpressService {
         return getPostService().sendComments(postId, params);
     }
 
-    public RegistrationSuccessResponse register(String username,String email, String password, String phone){
+    public RegistrationSuccessResponse register(String username,String email, String password, String phone, String countryCode){
         HashMap<String, String> userDetails = new HashMap<String, String>();
         userDetails.put("username", username);
         userDetails.put("email", email);
         userDetails.put("password", password);
         if (!phone.trim().isEmpty()) {
             userDetails.put("phone", phone);
+            userDetails.put("country_code", countryCode);
         }
         return getAuthenticationService().register(userDetails);
     }
@@ -257,6 +274,34 @@ public class TestpressService {
 
     public RssFeed getRssFeed(String url) {
         return getRssFeedService(url).getRssFeed();
+    }
+
+    public Forum postForum(String title, String content, String category) {
+        HashMap<String, String> postParameters = new HashMap<String, String>();
+        postParameters.put("title", title);
+        postParameters.put("content_html", content);
+        if (category != null) {
+            postParameters.put("category", category);
+        }
+        return getPostService().postForum(postParameters);
+    }
+
+    public Vote<Forum> castVote(Forum forum, int typeOfVote) {
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("content_object", forum);
+        params.put("type_of_vote", typeOfVote);
+        return getPostService().castVote(params);
+    }
+
+    public String deleteCommentVote(Forum forum) {
+        return getPostService().deleteCommentVote(forum.getVoteId());
+    }
+
+    public Vote<Forum> updateCommentVote(Forum forum, int typeOfVote) {
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("content_object", forum);
+        params.put("type_of_vote", typeOfVote);
+        return getPostService().updateCommentVote(forum.getVoteId(), params);
     }
 
 }

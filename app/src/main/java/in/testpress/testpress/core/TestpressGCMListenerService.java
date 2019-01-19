@@ -1,55 +1,52 @@
 package in.testpress.testpress.core;
 
-import android.os.Bundle;
+import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.google.android.gms.gcm.GcmListenerService;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 
+import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.NotificationHelper;
 
-public class TestpressGCMListenerService extends GcmListenerService {
+import static in.testpress.testpress.core.Constants.GCM_PREFERENCE_NAME;
+
+public class TestpressGCMListenerService extends FirebaseMessagingService {
 
     private static final String TAG = "MyGcmListenerService";
 
     /**
      * Called when message is received.
      *
-     * @param from SenderID of the sender.
-     * @param data Data bundle containing message data as key/value pairs.
-     *             For Set of keys use data.keySet().
+     * @param remoteMessage Object representing the message received from Firebase Cloud Messaging.
      */
     // [START receive_message]
     @Override
-    public void onMessageReceived(String from, Bundle data) {
-        String message = data.getString("summary");
-        String title = data.getString("title");
-        String url = data.getString("short_url");
-        Log.d(TAG, "From: " + from);
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        String message = remoteMessage.getData().get("summary");
+        String title = remoteMessage.getData().get("title");
+        String url = remoteMessage.getData().get("short_url");
         Log.d(TAG, "Message: " + message);
 
-        if (from.startsWith("/topics/")) {
-            // message received from some topic.
-        } else {
-            // normal downstream message.
-        }
-
-        // [START_EXCLUDE]
-        /**
-         * Production applications would usually process the message here.
-         * Eg: - Syncing with server.
-         *     - Store message in local database.
-         *     - Update UI.
-         */
-
-        /**
-         * In some cases it may be useful to show a notification indicating to the user
-         * that a message was received.
-         */
         if (title != null && message != null && url != null) {
             NotificationHelper.addNotification(this, title, message, url);
         }
-        // [END_EXCLUDE]
     }
-    // [END receive_message]
+
+    /**
+     * Called if InstanceID token is updated. This may occur if the security of
+     * the previous token had been compromised. Note that this is called when the InstanceID token
+     * is initially generated so this is where you would retrieve the token.
+     */
+    @Override
+    public void onNewToken(String token) {
+        Log.d(TAG, "Refreshed token: " + token);
+
+        // If you want to send messages to this application instance or
+        // manage this apps subscriptions on the server side, send the
+        // Instance ID token to your app server.
+        SharedPreferences gcmPreferences = getSharedPreferences(GCM_PREFERENCE_NAME, MODE_PRIVATE);
+        gcmPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
+    }
 
 }

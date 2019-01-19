@@ -3,8 +3,6 @@
     package="in.testpress.testpress" >
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
@@ -12,14 +10,13 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.RECEIVE_SMS" />
 
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
 
     <application
         android:name=".TestpressApplication"
         android:allowBackup="true"
-        android:icon="@drawable/icon"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.Testpress.Dark">
 
@@ -62,44 +59,13 @@
                 android:resource="@xml/authenticator" />
         </service>
 
-        <!-- [START gcm_receiver] -->
-        <receiver
-            android:name="com.google.android.gms.gcm.GcmReceiver"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-
-                <category android:name="gcm.play.android.samples.com.gcmquickstart" />
-            </intent-filter>
-        </receiver>
-        <!-- [END gcm_receiver] -->
-
-
         <!-- [START gcm_listener] -->
-        <service
-            android:name=".core.TestpressGCMListenerService"
-            android:exported="false">
+        <service android:name=".core.TestpressGCMListenerService">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <!-- [END gcm_listener] -->
-
-
-        <!-- [START instanceId_listener] -->
-        <service
-            android:name=".core.TestpressInstanceIDListenerService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID" />
-            </intent-filter>
-        </service>
-        <!-- [END instanceId_listener] -->
-
-        <service
-            android:name=".authenticator.RegistrationIntentService"
-            android:exported="false" />
 
         <activity
             android:name=".authenticator.LoginActivity"
@@ -140,15 +106,6 @@
             android:label="Verify" />
 
         <activity
-            android:name=".ui.ProductsListActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="Products" />
-        <activity
-            android:name=".ui.ProductDetailsActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="Product Details" />
-
-        <activity
             android:name=".ui.DocumentsListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Documents" />
@@ -167,30 +124,7 @@
             android:name=".ui.OrdersListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Orders" />
-        <activity
-            android:name=".ui.PaymentSuccessActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="Summary" />
-        <activity
-            android:name=".ui.OrderConfirmActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="Shipping Address" />
-        <activity
-            android:name=".ui.paymentGateway.PaymentModeActivity"
-            android:configChanges="orientation|keyboard|screenSize"
-            android:label="Select Payment Mode" />
-        <activity
-            android:name=".ui.paymentGateway.CreditDebitCardActivity"
-            android:configChanges="orientation|keyboard|screenSize"
-            android:label="Enter Details" />
-        <activity
-            android:name=".ui.paymentGateway.NetBankingActivity"
-            android:configChanges="orientation|keyboard|screenSize"
-            android:label="Select Bank" />
-        <activity
-            android:name=".ui.paymentGateway.PaymentsActivity"
-            android:configChanges="orientation|keyboard|screenSize"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
+
         <activity
             android:name=".ui.ProfileDetailsActivity"
             android:configChanges="orientation|keyboard|screenSize"

@@ -1,6 +1,7 @@
 package in.testpress.testpress.ui;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.DownloadManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -142,21 +143,20 @@ public class InAppBrowserActivity extends TestpressFragmentActivity {
             }
         });
         String[] permissions = new String[] { WRITE_EXTERNAL_STORAGE };
-        PermissionsUtils.PermissionRequestResultHandler permissionRequestResultHandler =
+        final PermissionsUtils.PermissionRequestResultHandler permissionRequestResultHandler =
                 new PermissionsUtils.PermissionRequestResultHandler() {
                     @Override
                     public void onPermissionGranted() {
                         downloadFile();
                     }
                 };
-        permissionsUtils = new PermissionsUtils(this, swipeRefresh, permissions,
-                RECEIVE_SMS_PERMISSION_REQUEST_CODE, permissionRequestResultHandler);
+        permissionsUtils = new PermissionsUtils(this, swipeRefresh, permissions);
 
         webView.setDownloadListener(new DownloadListener() {
             public void onDownloadStart(String url, String userAgent, String contentDisposition,
                                         String mimeType, long contentLength) {
                 downloadUrl = url;
-                permissionsUtils.requestPermissions();
+                permissionsUtils.requestPermissions(permissionRequestResultHandler);
             }
         });
         loadUrl();

@@ -1,8 +1,8 @@
 {
-  "version" : "1.0",
+  "version" : "1.0.1",
   "version_code" : 1,
   "testpress_site_subdomain" : "ssgrbcc",
-  "package_name" : "in.testpress.ssgrbcc",
+  "package_name" : "in.testpress.newssgrbcc",
   "app_name" : "SSGRBCC",
   "share_message": "Good app to prepare for banking exams.",
   "primary_color": "b30986",

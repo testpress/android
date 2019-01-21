@@ -98,6 +98,13 @@
             android:name=".authenticator.RegisterActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Register" />
+
+        <!--Customization for ssgrbcc-->
+        <activity
+            android:name=".authenticator.WebViewRegistrationActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Register" />
+
         <activity
             android:name=".authenticator.CodeVerificationActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

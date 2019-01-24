@@ -23,6 +23,8 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.greenrobot.greendao.annotation.Property;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +37,7 @@ import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
 import in.testpress.exam.TestpressExam;
+import in.testpress.models.greendao.CourseDao;
 import in.testpress.store.TestpressStore;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
@@ -116,10 +119,13 @@ public class MainMenuFragment extends Fragment {
             }
             mMenuItemResIds.put(R.string.dashboard_jobs, R.drawable.custom_jobs);
             mMenuItemResIds.put(R.string.analytics, R.drawable.analytics);
+            mMenuItemResIds.put(R.string.dashboard_results, R.drawable.custom_results);
 
-            if (instituteSettings.getPostsEnabled()) {
-                mMenuItemResIds.put(R.string.posts, R.drawable.posts);
-            }
+//            if (instituteSettings.getPostsEnabled()) {
+//                mMenuItemResIds.put(R.string.posts, R.drawable.posts);
+//            }
+
+
 
             mMenuItemResIds.put(R.string.profile, R.drawable.ic_profile_details);
 
@@ -152,6 +158,9 @@ public class MainMenuFragment extends Fragment {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                CategoryDao categoryDao = ((TestpressApplication) getActivity()
+                        .getApplicationContext()).getDaoSession().getCategoryDao();
 
                 Intent intent;
                 String custom_title;
@@ -213,9 +222,60 @@ public class MainMenuFragment extends Fragment {
                         intent.putExtra(Constants.DEEP_LINK_TO, "home");
                         startActivity(intent);
                         break;
+                    case R.string.dashboard_online_exam:
+                        TestpressCourse.show(getContext(), TestpressSdk.getTestpressSession(getActivity()));
+                        break;
+                    case R.string.dashboard_offline_solution:
+                        // Hard coded id 15 for Offline course
+                        TestpressCourse.showChapters(getActivity(), getString(R.string.dashboard_offline_solution), 15, TestpressSdk.getTestpressSession(getActivity()));
+                        break;
+                    case R.string.dashboard_notification:
+                        intent = new Intent(getContext(), PostsListActivity.class);
+                        intent.putExtra("category_filter", getCategoryId(categoryDao, "notifications"));
+                        startActivity(intent);
+                        break;
+                    case R.string.dashboard_announcement:
+                        intent = new Intent(getContext(), PostsListActivity.class);
+                        intent.putExtra("category_filter", getCategoryId(categoryDao, "announcements"));
+                        startActivity(intent);
+                        break;
+                    case R.string.dashboard_jobs:
+                        intent = new Intent(getContext(), PostsListActivity.class);
+                        intent.putExtra("category_filter", getCategoryId(categoryDao, "jobs-from-us"));
+                        startActivity(intent);
+                        break;
+                    case R.string.dashboard_results:
+                        intent = new Intent(getContext(), PostsListActivity.class);
+                        intent.putExtra("category_filter", getCategoryId(categoryDao, "results"));
+                        startActivity(intent);
+                        break;
+                    case R.string.dashboard_study_material:
+                        // Hard coded id 15 for Study material course
+                        TestpressCourse.showChapters(getActivity(), getString(R.string.dashboard_study_material), 16, TestpressSdk.getTestpressSession(getActivity()));
+                        break;
+                    case R.string.dashboard_current_affair:
+                        // Hard coded id 15 for Current affairs course
+                        TestpressCourse.showChapters(getActivity(), getString(R.string.dashboard_current_affair), 17, TestpressSdk.getTestpressSession(getActivity()));
+                        break;
+                    case R.string.dashboard_about_us:
+                        intent = new Intent(getContext(), PostActivity.class);
+                        intent.putExtra("shortWebUrl", "https://ssgrbcc.testpress.in/p/3hgq46/");
+                        startActivity(intent);
+                        break;
                 }
             }
         });
+    }
+
+    public long getCategoryId(CategoryDao categoryDao, String category_slug){
+
+        List<Category> categories =  categoryDao.queryBuilder().where(CategoryDao.Properties.Slug.eq(category_slug)).list();
+
+        if (categories.size()>0){
+            return categories.get(0).getId();
+        }
+
+        return -1; // No category found
     }
 
     void checkAuthenticatedUser(final int clickedMenuTitleResId) {

@@ -98,6 +98,7 @@ public class PostActivity extends TestpressFragmentActivity implements
     boolean postedNewComment;
     ImageUtils imagePickerUtils;
     private FullScreenChromeClient fullScreenChromeClient;
+    private String postTitle;
 
     @Inject protected TestpressService testpressService;
     @Inject protected TestpressServiceProvider serviceProvider;
@@ -150,6 +151,7 @@ public class PostActivity extends TestpressFragmentActivity implements
         ButterKnife.inject(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         postDetails.setVisibility(View.GONE);
+        date.setVisibility(View.GONE);
         progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
         postDao = ((TestpressApplication) getApplicationContext()).getDaoSession().getPostDao();
         simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -169,6 +171,7 @@ public class PostActivity extends TestpressFragmentActivity implements
             List<Post> posts = postDao.queryBuilder().where(PostDao.Properties.Short_web_url.eq(shortWebUrl)).list();
             if (!posts.isEmpty()) {
                 post = posts.get(0);
+                postTitle = post.getTitle();
                 if (post.getContentHtml() != null) {
                     displayPost(post);
                     return;
@@ -182,7 +185,27 @@ public class PostActivity extends TestpressFragmentActivity implements
         }
     }
 
-    @Override
+    private void controlCommentVisibility() {
+
+        if (postTitle.equals("About Us") ) {
+            commentsLayout.setVisibility(View.GONE);
+            date.setVisibility(View.GONE);
+        } else {
+            commentsLayout.setVisibility(View.VISIBLE);
+            date.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void controlCommentBoxVisibility() {
+        if (postTitle.equals("About Us") ) {
+            commentBoxLayout.setVisibility(View.GONE);
+        } else {
+            commentBoxLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+        @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.share, menu);
         return true;
@@ -344,7 +367,8 @@ public class PostActivity extends TestpressFragmentActivity implements
             }
         });
         imagePickerUtils = new ImageUtils(activityRootLayout, this);
-        commentsLayout.setVisibility(View.VISIBLE);
+        //commentsLayout.setVisibility(View.VISIBLE);
+        controlCommentVisibility();
         getSupportLoaderManager().initLoader(PREVIOUS_COMMENTS_LOADER_ID, null, PostActivity.this);
     }
 
@@ -425,7 +449,8 @@ public class PostActivity extends TestpressFragmentActivity implements
         if (exception != null) {
             previousCommentsLoadingLayout.setVisibility(View.GONE);
             if (post.getCommentsCount() == 0) {
-                commentBoxLayout.setVisibility(View.VISIBLE);
+                //commentBoxLayout.setVisibility(View.VISIBLE);
+                controlCommentBoxVisibility();
             } else if (exception.getCause() instanceof IOException) {
                 loadPreviousCommentsText.setText(R.string.load_comments);
                 loadPreviousCommentsLayout.setVisibility(View.VISIBLE);
@@ -453,7 +478,8 @@ public class PostActivity extends TestpressFragmentActivity implements
             loadPreviousCommentsLayout.setVisibility(View.GONE);
         }
         if (commentBoxLayout.getVisibility() == View.GONE) {
-            commentBoxLayout.setVisibility(View.VISIBLE);
+            //commentBoxLayout.setVisibility(View.VISIBLE);
+            controlCommentBoxVisibility();
         }
         previousCommentsLoadingLayout.setVisibility(View.GONE);
         if (newCommentsHandler == null) {

@@ -146,4 +146,15 @@
     <string name="posted_successfully">Posted successfully!</string>
     <string name="create_post">Create Post</string>
 
+
+    <!--Custom name for dashboard menu-->
+    <string name="dashboard_about_us">About Us</string>
+    <string name="dashboard_online_exam">Online Exams</string>
+    <string name="dashboard_offline_solution">Offline Solutions</string>
+    <string name="dashboard_notification">Notifications</string>
+    <string name="dashboard_announcement">Announcements</string>
+    <string name="dashboard_current_affair">Current Affairs</string>
+    <string name="dashboard_study_material">Study Materials</string>
+    <string name="dashboard_jobs">Jobs</string>
+
 </resources>

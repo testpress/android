@@ -33,6 +33,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
+import in.testpress.course.TestpressCourse;
 import in.testpress.exam.TestpressExam;
 import in.testpress.store.TestpressStore;
 import in.testpress.testpress.Injector;
@@ -83,7 +84,7 @@ public class MainMenuFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
-        fetchStarredCategories();
+        //fetchStarredCategories();
         AccountManager manager = (AccountManager) getActivity().getSystemService(Context.ACCOUNT_SERVICE);
         account = manager.getAccountsByType(APPLICATION_ID);
         DaoSession daoSession =
@@ -99,31 +100,46 @@ public class MainMenuFragment extends Fragment {
         final boolean isUserAuthenticated = account.length > 0;
         // ToDo get from institute settings
         boolean drupalRssFeedEnabled = false;
+
+        // Dashboard Customization for SSGRBCC
         if (isUserAuthenticated) {
-            if (!instituteSettings.getShowGameFrontend()) {
-                mMenuItemResIds.put(R.string.my_exams, R.drawable.exams);
-            }
+            mMenuItemResIds.put(R.string.dashboard_about_us, R.drawable.custom_about_us);
+            mMenuItemResIds.put(R.string.dashboard_online_exam, R.drawable.exams);
+            mMenuItemResIds.put(R.string.dashboard_offline_solution, R.drawable.custom_offline_solution);
+            mMenuItemResIds.put(R.string.dashboard_notification, R.drawable.custom_notification);
+            mMenuItemResIds.put(R.string.dashboard_announcement, R.drawable.custom_announcement);
+            mMenuItemResIds.put(R.string.dashboard_current_affair, R.drawable.custom_current_affairs);
+            mMenuItemResIds.put(R.string.dashboard_study_material, R.drawable.custom_study_material);
+
             if (instituteSettings.getBookmarksEnabled()) {
                 mMenuItemResIds.put(R.string.bookmarks, R.drawable.bookmark);
             }
+            mMenuItemResIds.put(R.string.dashboard_jobs, R.drawable.custom_jobs);
+            mMenuItemResIds.put(R.string.analytics, R.drawable.analytics);
+
+            if (instituteSettings.getPostsEnabled()) {
+                mMenuItemResIds.put(R.string.posts, R.drawable.posts);
+            }
+
+            mMenuItemResIds.put(R.string.profile, R.drawable.ic_profile_details);
+
             if (instituteSettings.getDocumentsEnabled()) {
                 mMenuItemResIds.put(R.string.documents, R.drawable.documents);
             }
-            mMenuItemResIds.put(R.string.analytics, R.drawable.analytics);
-            mMenuItemResIds.put(R.string.profile, R.drawable.ic_profile_details);
+
+//            if (!instituteSettings.getShowGameFrontend()) {
+//                mMenuItemResIds.put(R.string.my_exams, R.drawable.exams);
+//            }
+
             if (instituteSettings.getStoreEnabled()) {
                 mMenuItemResIds.put(R.string.store, R.drawable.store);
             }
-        }
-        if (drupalRssFeedEnabled) {
-            mMenuItemResIds.put(R.string.rss_posts, R.drawable.rss_feed);
-        }
-        if (instituteSettings.getPostsEnabled()) {
-            mMenuItemResIds.put(R.string.posts, R.drawable.posts);
-        }
-        mMenuItemResIds.put(R.string.share, R.drawable.share);
-        mMenuItemResIds.put(R.string.rate_us, R.drawable.heart);
-        if (isUserAuthenticated) {
+
+            if (drupalRssFeedEnabled) {
+                mMenuItemResIds.put(R.string.rss_posts, R.drawable.rss_feed);
+            }
+            mMenuItemResIds.put(R.string.share, R.drawable.share);
+            mMenuItemResIds.put(R.string.rate_us, R.drawable.heart);
             mMenuItemResIds.put(R.string.logout, R.drawable.logout);
         } else {
             mMenuItemResIds.put(R.string.login, R.drawable.login);
@@ -270,6 +286,7 @@ public class MainMenuFragment extends Fragment {
         }
     }
 
+    // Function call has been removed from 'onViewCreated'
     public void fetchStarredCategories() {
         new SafeAsyncTask<List<Category>>() {
             @Override

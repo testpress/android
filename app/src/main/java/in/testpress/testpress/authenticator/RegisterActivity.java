@@ -3,6 +3,7 @@ package in.testpress.testpress.authenticator;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.auth.api.phone.SmsRetriever;
+import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -246,7 +252,7 @@ public class RegisterActivity extends AppCompatActivity {
                         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 if(internetConnectivityChecker.isConnected()) {
-                                    postDetails();
+                                    initiateSmsRetrieverClient();
                                 } else {
                                     internetConnectivityChecker.showAlert();
                                 }
@@ -272,5 +278,25 @@ public class RegisterActivity extends AppCompatActivity {
             setResult(resultCode);
             finish();
         }
+    }
+
+    public void initiateSmsRetrieverClient() {
+        SmsRetrieverClient client = SmsRetriever.getClient(this);
+        Task<Void> task = client.startSmsRetriever();
+        task.addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                // successfully started an SMS Retriever for one SMS message
+                postDetails();
+            }
+        });
+        task.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                //failed
+                // user have to manually enter the code
+                postDetails();
+            }
+        });
     }
 }

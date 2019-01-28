@@ -8,66 +8,70 @@ ext {
 dependencies {
 
     // Dependency Injection
-    compile 'com.squareup.dagger:dagger:1.0.1'
-    compile 'com.squareup.dagger:dagger-compiler:1.0.1'
-    compile 'com.jakewharton:butterknife:6.1.0'
+    implementation 'com.squareup.dagger:dagger:1.0.1'
+    implementation 'com.squareup.dagger:dagger-compiler:1.0.1'
+    implementation 'com.jakewharton:butterknife:6.1.0'
 
-    compile 'com.github.kevinsawicki:wishlist:0.9@aar'
+    implementation 'com.github.kevinsawicki:wishlist:0.9@aar'
 
     // Event Bus
-    compile 'com.squareup:otto:1.3.5'
+    implementation 'com.squareup:otto:1.3.5'
 
     // Image Loading
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
+    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
 
     // HTTP
-    compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
-    compile 'com.squareup.okhttp:okhttp:2.3.0'
-    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    implementation 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
+    implementation 'com.squareup.okhttp:okhttp:2.3.0'
+    implementation 'com.squareup.retrofit:retrofit:1.9.0'
 
     // Android Support Libs
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:customtabs:' + supportLib
-    compile 'com.android.support:support-v4:' + supportLib
-    compile 'com.android.support:design:' + supportLib
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:customtabs:' + supportLib
+    implementation 'com.android.support:support-v4:' + supportLib
+    implementation 'com.android.support:design:' + supportLib
 
     // Material Dialog
-    compile 'com.afollestad.material-dialogs:core:0.8.5.9'
+    implementation 'com.afollestad.material-dialogs:core:0.8.5.9'
 
-    androidTestCompile 'junit:junit:4.11'
-    androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
-    androidTestCompile 'org.mockito:mockito-core:1.9.5'
+    androidTestImplementation 'junit:junit:4.11'
+    androidTestImplementation 'org.hamcrest:hamcrest-library:1.3'
+    androidTestImplementation 'org.mockito:mockito-core:1.9.5'
 
     // Payu
-    compile files('libs/payusdk.jar')
-    compile project(':CustomBrowser-release')
+    implementation files('libs/payusdk.jar')
+    implementation project(':CustomBrowser-release')
 
     // GreenDao for database
-    compile 'de.greenrobot:greendao:2.0.0'
+    implementation 'de.greenrobot:greendao:2.0.0'
     
     // Testpress Course(Which inbuilt has exam & core module)
-    compile ('com.github.testpress:course:' + testpressSDK + '@aar') {
+    implementation ('com.github.testpress:course:' + testpressSDK + '@aar') {
         transitive=true
     }
-    compile 'com.theartofdev.edmodo:android-image-cropper:2.4.5'
-    compile 'com.github.testpress:MPAndroidChart:v3.0.0-beta2'
-    compile 'com.squareup.okhttp3:okhttp:3.4.1'
-    compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
-    compile 'com.squareup.retrofit2:retrofit:2.1.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-    compile 'org.greenrobot:greendao:3.2.0'
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.4.5'
+    implementation 'com.github.testpress:MPAndroidChart:v3.0.0-beta2'
+    implementation 'com.squareup.okhttp3:okhttp:3.4.1'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.4.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.1.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
+    implementation 'org.greenrobot:greendao:3.2.0'
 
     // Gcm
-    compile 'com.google.android.gms:play-services-gcm:11.0.2'
+    implementation 'com.google.android.gms:play-services-gcm:11.0.2'
 
     // Google Sign In
-    compile 'com.google.android.gms:play-services-auth:11.0.2'
+    implementation 'com.google.android.gms:play-services-auth:11.0.2'
 
     // Facebook SDK
-    compile 'com.facebook.android:facebook-android-sdk:4.20.0'
+    implementation 'com.facebook.android:facebook-android-sdk:4.20.0'
+
+    // Allow methods more than 64K
+    implementation 'com.android.support:multidex:1.0.3'
 
     // Flat button
-    compile 'info.hoang8f:fbutton:1.0.5'
+    // implementation 'info.hoang8f:fbutton:1.0.5'
+    implementation 'com.github.jd-alexander:android-flat-button:v1.1'
 
 }
 
@@ -87,15 +91,22 @@ try {
 
 android {
 
-    compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    compileSdkVersion 27
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 22
+        minSdkVersion 17
+        targetSdkVersion 27
         versionCode 123
         versionName '1.0.' + versionCode
         applicationId 'in.testpress.dma'
+
+        multiDexEnabled true
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath true
+            }
+        }
     }
 
     packagingOptions {

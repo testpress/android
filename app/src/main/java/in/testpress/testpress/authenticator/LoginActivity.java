@@ -106,6 +106,9 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
     private AccountManager accountManager;
 
+    private boolean showWebViewRegistration = true;
+
+
     @Inject TestpressService testpressService;
 
     @Inject Bus bus;
@@ -332,7 +335,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         ViewUtils.setGone(googleLoginButton, !instituteSettings.getGoogleLoginEnabled());
         ViewUtils.setGone(socialLoginLayout, !instituteSettings.getFacebookLoginEnabled() &&
                 !instituteSettings.getGoogleLoginEnabled());
-        ViewUtils.setGone(signUpButton, true);
+        // ViewUtils.setGone(signUpButton, true);
     }
 
     private TextWatcher validationTextWatcher() {
@@ -507,9 +510,17 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
     @OnClick(id.signup) public void signUp() {
         if(internetConnectivityChecker.isConnected()) {
-            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-            if(getIntent().getExtras() != null) {
-                intent.putExtras(getIntent().getExtras());
+            Intent intent;
+            if (showWebViewRegistration){
+                // Customization for dma
+                intent = new Intent(LoginActivity.this, WebViewRegistrationActivity.class);
+                startActivity(intent);
+            } else {
+                intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                if(getIntent().getExtras() != null) {
+                    intent.putExtras(getIntent().getExtras());
+                }
+                startActivityForResult(intent, REQUEST_CODE_REGISTER_USER);
             }
             startActivityForResult(intent, REQUEST_CODE_REGISTER_USER);
         } else {

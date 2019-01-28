@@ -228,6 +228,12 @@
             android:configChanges="orientation|keyboard|screenSize"
             android:label="@string/activate" />
 
+        <!--Customization for dma-->
+        <activity
+            android:name=".authenticator.WebViewRegistrationActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Register" />
+
     </application>
 
 </manifest>

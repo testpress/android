@@ -99,7 +99,6 @@
                     android:text="@string/forgot_password" />
 
                 <TextView
-                    android:visibility="gone"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
                     android:id="@+id/signup"

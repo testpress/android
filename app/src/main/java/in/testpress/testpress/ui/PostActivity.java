@@ -187,7 +187,7 @@ public class PostActivity extends TestpressFragmentActivity implements
 
     private void controlCommentVisibility() {
 
-        if (postTitle.equals("About Us") ) {
+        if (postTitle == null || postTitle.equals("About Us")) {
             commentsLayout.setVisibility(View.GONE);
             date.setVisibility(View.GONE);
         } else {
@@ -197,7 +197,7 @@ public class PostActivity extends TestpressFragmentActivity implements
     }
 
     private void controlCommentBoxVisibility() {
-        if (postTitle.equals("About Us") ) {
+        if (postTitle == null || postTitle.equals("About Us")) {
             commentBoxLayout.setVisibility(View.GONE);
         } else {
             commentBoxLayout.setVisibility(View.VISIBLE);

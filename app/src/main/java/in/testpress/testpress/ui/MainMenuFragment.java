@@ -87,7 +87,7 @@ public class MainMenuFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
-        //fetchStarredCategories();
+        fetchStarredCategories();
         AccountManager manager = (AccountManager) getActivity().getSystemService(Context.ACCOUNT_SERVICE);
         account = manager.getAccountsByType(APPLICATION_ID);
         DaoSession daoSession =
@@ -346,7 +346,6 @@ public class MainMenuFragment extends Fragment {
         }
     }
 
-    // Function call has been removed from 'onViewCreated'
     public void fetchStarredCategories() {
         new SafeAsyncTask<List<Category>>() {
             @Override
@@ -367,15 +366,16 @@ public class MainMenuFragment extends Fragment {
                     return;
                 }
                 Ln.e("On success");
+                quickLinksContainer.setVisibility(View.GONE);
                 if (categories.isEmpty()) {
                     quickLinksContainer.setVisibility(View.GONE);
                 } else {
-                    quickLinksContainer.setVisibility(View.VISIBLE);
+//                    quickLinksContainer.setVisibility(View.VISIBLE);
                     CategoryDao categoryDao = ((TestpressApplication) getActivity()
                             .getApplicationContext()).getDaoSession().getCategoryDao();
                     categoryDao.insertOrReplaceInTx(categories);
-                    recyclerView.setAdapter(new StarredCategoryAdapter(getActivity(),
-                            categories));
+//                    recyclerView.setAdapter(new StarredCategoryAdapter(getActivity(),
+//                            categories));
                 }
             }
         }.execute();

@@ -97,7 +97,7 @@ android {
     defaultConfig {
         minSdkVersion 17
         targetSdkVersion 27
-        versionCode 123
+        versionCode 124
         versionName '1.0.' + versionCode
         applicationId 'in.testpress.dma'
 

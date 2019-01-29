@@ -1,200 +1,21 @@
 {
   "project_info": {
-    "project_number": "1064046661341",
-    "project_id": "default-demo-app-bfeac"
+    "project_number": "1008722667163",
+    "firebase_url": "https://dma-academy.firebaseio.com",
+    "project_id": "dma-academy",
+    "storage_bucket": "dma-academy.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "android_client_info": {
-          "package_name": "gcm.play.android.samples.com.gcmquickstart"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAR0MchRzB4IRIci31KWo_6Dgjr2tE4JdY"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 1
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1064046661341:android:32058aba3dcf6479",
-        "android_client_info": {
-          "package_name": "in.testpress.testpress"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1064046661341-395pp52c4qu56fv4a3ftag11tju2me89.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "in.testpress.testpress",
-            "certificate_hash": "C53DDD6F9C8BF151F77333CB7AE1B4111E6ADD49"
-          }
-        },
-        {
-          "client_id": "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAR0MchRzB4IRIci31KWo_6Dgjr2tE4JdY"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 2,
-          "analytics_property": {
-            "tracking_id": "UA-43289429-1"
-          }
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 1
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1064046661341:android:5e5e98bafa2e283d",
-        "android_client_info": {
-          "package_name": "in.testpress.race"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAR0MchRzB4IRIci31KWo_6Dgjr2tE4JdY"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 1
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1064046661341:android:a7c0a67448fc583c",
-        "android_client_info": {
-          "package_name": "in.raceinstitute"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1064046661341-hhqlenfj0tp414jb3k1bvdi0i5saudam.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "in.raceinstitute",
-            "certificate_hash": "C53DDD6F9C8BF151F77333CB7AE1B4111E6ADD49"
-          }
-        },
-        {
-          "client_id": "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAR0MchRzB4IRIci31KWo_6Dgjr2tE4JdY"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 1
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1064046661341:android:f5add917bcefd970",
-        "android_client_info": {
-          "package_name": "in.testpress.tech.lmsdemo"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1064046661341-bqva3hjthlpghucd94ug4o7jse2636f8.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "in.testpress.tech.lmsdemo",
-            "certificate_hash": "c53ddd6f9c8bf151f77333cb7ae1b4111e6add49"
-          }
-        },
-        {
-          "client_id": "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAR0MchRzB4IRIci31KWo_6Dgjr2tE4JdY"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 1
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1064046661341:android:969432b667b6b004",
+        "mobilesdk_app_id": "1:1008722667163:android:969432b667b6b004",
         "android_client_info": {
           "package_name": "eu.talentmed"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1064046661341-b5r925pasoskmsj7eb6mnu2po4q603rp.apps.googleusercontent.com",
+          "client_id": "1008722667163-e2dbr9tbd3oiuultjhpadqj81nemniri.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "eu.talentmed",
@@ -202,13 +23,13 @@
           }
         },
         {
-          "client_id": "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
+          "client_id": "1008722667163-0nslijaeb77jtf1qvnk6i44d1qgb0vom.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAR0MchRzB4IRIci31KWo_6Dgjr2tE4JdY"
+          "current_key": "AIzaSyCgqdSJ38S7K9IsGqV7m_eFOzg-LKs6YM8"
         }
       ],
       "services": {
@@ -216,11 +37,74 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1008722667163-0nslijaeb77jtf1qvnk6i44d1qgb0vom.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1008722667163-ct7adcuqapvkcbjuj0gde8dv5ubpr7ui.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "in.testpress.talentmed"
+              }
+            }
+          ]
         },
         "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1008722667163:android:ebee790aef5cc6d8",
+        "android_client_info": {
+          "package_name": "in.testpress.dma"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1008722667163-mao1feen6pi4dm4b3ecltei5l5qd2tb2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.testpress.dma",
+            "certificate_hash": "c53ddd6f9c8bf151f77333cb7ae1b4111e6add49"
+          }
+        },
+        {
+          "client_id": "1008722667163-0nslijaeb77jtf1qvnk6i44d1qgb0vom.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgqdSJ38S7K9IsGqV7m_eFOzg-LKs6YM8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
           "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1008722667163-0nslijaeb77jtf1qvnk6i44d1qgb0vom.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1008722667163-ct7adcuqapvkcbjuj0gde8dv5ubpr7ui.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "in.testpress.talentmed"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
         }
       }
     }

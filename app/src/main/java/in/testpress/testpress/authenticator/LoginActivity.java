@@ -105,6 +105,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     public static final String PARAM_AUTHTOKEN_TYPE = "authtokenType";
 
     private AccountManager accountManager;
+    private boolean showWebViewRegistration = true;
 
     @Inject TestpressService testpressService;
 
@@ -503,12 +504,19 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     }
 
     @OnClick(id.signup) public void signUp() {
-        if(internetConnectivityChecker.isConnected()) {
-            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-            if(getIntent().getExtras() != null) {
-                intent.putExtras(getIntent().getExtras());
+        if (internetConnectivityChecker.isConnected()) {
+            Intent intent;
+            if (showWebViewRegistration) {
+                // Customization for dma
+                intent = new Intent(LoginActivity.this, WebViewRegistrationActivity.class);
+                startActivity(intent);
+            } else {
+                intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                if (getIntent().getExtras() != null) {
+                    intent.putExtras(getIntent().getExtras());
+                }
+                startActivityForResult(intent, REQUEST_CODE_REGISTER_USER);
             }
-            startActivityForResult(intent, REQUEST_CODE_REGISTER_USER);
         } else {
             internetConnectivityChecker.showAlert();
         }

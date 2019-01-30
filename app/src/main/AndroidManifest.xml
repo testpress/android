@@ -172,6 +172,11 @@
             android:configChanges="orientation|keyboard|screenSize"
             android:label="@string/activate" />
 
+        <activity
+            android:name=".ui.CourseListActivity"
+            android:configChanges="orientation|keyboard|screenSize"
+            android:label="@string/dashboard_online_exam" />
+
     </application>
 
 </manifest>

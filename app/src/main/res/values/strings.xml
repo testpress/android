@@ -76,6 +76,7 @@
     <string name="or">or</string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="sign_up">Sign up with Email</string>
+
     <string name="login_with_facebook">Login with Facebook</string>
     <string name="login_with_google">Login with Google</string>
     <string name="google_sign_in_wrong_hash">Google sign in error, please contact the administrator to check key hashes.</string>
@@ -147,7 +148,7 @@
     <string name="create_post">Create Post</string>
 
 
-    <!--Custom name for dashboard menu-->
+    <!--Custom name for dashboard menu and for other places-->
     <string name="dashboard_about_us">About Us</string>
     <string name="dashboard_online_exam">Online Exams</string>
     <string name="dashboard_offline_solution">Offline Solution</string>
@@ -157,5 +158,6 @@
     <string name="dashboard_study_material">Study Material</string>
     <string name="dashboard_jobs">Jobs From Us</string>
     <string name="dashboard_results">Results</string>
+    <string name="custom_sign_up">Request Package</string>
 
 </resources>

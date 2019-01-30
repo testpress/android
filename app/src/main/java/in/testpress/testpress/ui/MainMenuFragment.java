@@ -223,7 +223,9 @@ public class MainMenuFragment extends Fragment {
                         startActivity(intent);
                         break;
                     case R.string.dashboard_online_exam:
-                        TestpressCourse.show(getContext(), TestpressSdk.getTestpressSession(getActivity()));
+                        intent = new Intent(getActivity(), CourseListActivity.class);
+                        startActivity(intent);
+                        // TestpressCourse.show(getContext(), TestpressSdk.getTestpressSession(getActivity()));
                         break;
                     case R.string.dashboard_offline_solution:
                         // Hard coded id 15 for Offline course

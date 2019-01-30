@@ -122,7 +122,7 @@
                             android:layout_height="wrap_content"
                             android:textColor="@color/text_dark_grey"
                             android:textSize="15sp"
-                            android:text="@string/testpress_user_name"/>
+                            />
 
                         <LinearLayout
                             android:layout_marginTop="10dp"

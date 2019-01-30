@@ -139,30 +139,13 @@ public class Comment {
         this.comment = comment;
     }
 
-    /**
-     *
-     * @return
-     * The submitDate
-     */
-    public String getSubmitDate() {
-        return submitDate;
-    }
-
     public String getCreated() {
         return created;
     }
 
+
     public void setCreated(String created) {
         this.created = created;
-    }
-
-    /**
-     *
-     * @param submitDate
-     * The submit_date
-     */
-    public void setSubmitDate(String submitDate) {
-        this.submitDate = submitDate;
     }
 
     /**

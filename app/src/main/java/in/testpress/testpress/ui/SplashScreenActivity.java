@@ -1,15 +1,12 @@
 package in.testpress.testpress.ui;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import junit.framework.Assert;
 
@@ -23,6 +20,7 @@ import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
 import in.testpress.exam.TestpressExam;
+import in.testpress.store.TestpressStore;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -31,18 +29,19 @@ import in.testpress.testpress.authenticator.ResetPasswordActivity;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.util.CommonUtils;
+import in.testpress.testpress.util.UpdateAppDialogManager;
 import in.testpress.util.ViewUtils;
 
 import static in.testpress.core.TestpressSdk.ACTION_PRESSED_HOME;
-import static in.testpress.core.TestpressSdk.COURSE_CHAPTER_REQUEST_CODE;
 import static in.testpress.core.TestpressSdk.COURSE_CONTENT_DETAIL_REQUEST_CODE;
 import static in.testpress.core.TestpressSdk.COURSE_CONTENT_LIST_REQUEST_CODE;
 import static in.testpress.course.TestpressCourse.CHAPTER_URL;
 import static in.testpress.course.TestpressCourse.COURSE_ID;
-import static in.testpress.course.TestpressCourse.PARENT_ID;
 import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
+import static in.testpress.store.TestpressStore.CONTINUE_PURCHASE;
+import static in.testpress.store.TestpressStore.STORE_REQUEST_CODE;
+import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.core.Constants.Http.CHAPTERS_PATH;
-import static in.testpress.testpress.core.Constants.Http.URL_BASE;
 
 public class SplashScreenActivity extends Activity {
 
@@ -52,24 +51,15 @@ public class SplashScreenActivity extends Activity {
     @InjectView(R.id.splash_image) ImageView splashImage;
 
     // Splash screen timer
-    private static int SPLASH_TIME_OUT = 2000;
+    private static final int SPLASH_TIME_OUT = 2000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        SharedPreferences sharedPreferences =
-                getSharedPreferences(Constants.SPLASH_SCREEN_PREFERENCE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        if (sharedPreferences.getBoolean(Constants.SPLASH_SCREEN_TIME_OUT_PROPERTY_NAME, true)) {
-            SPLASH_TIME_OUT = 2000;
-            editor.putBoolean(Constants.SPLASH_SCREEN_TIME_OUT_PROPERTY_NAME, false);
-            editor.apply();
-        } else {
-            SPLASH_TIME_OUT = 0;
-        }
         Injector.inject(this);
         ButterKnife.inject(this);
+        UpdateAppDialogManager.monitor(this);
         new Handler().postDelayed(new Runnable() {
 
             @Override
@@ -80,14 +70,14 @@ public class SplashScreenActivity extends Activity {
                     switch (pathSegments.get(0)) {
                         case "p":
                             Intent intent = new Intent(SplashScreenActivity.this, PostActivity.class);
-                            intent.putExtra("url", uri.toString());
+                            intent.putExtra("shortWebUrl", uri.toString());
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                                     Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             intent.putExtra(Constants.IS_DEEP_LINK, true);
                             startActivity(intent);
                             finish();
                             break;
-                        case "forums":
+                        case "posts":
                             Intent postsIntent =
                                     new Intent(SplashScreenActivity.this, PostsListActivity.class);
                             postsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
@@ -102,7 +92,12 @@ public class SplashScreenActivity extends Activity {
                             break;
                         case "user":
                         case "profile":
-                            gotoActivity(ProfileDetailsActivity.class, true);
+                            if (pathSegments.size() == 1) {
+                                gotoActivity(ProfileDetailsActivity.class, true);
+                            } else {
+                                CommonUtils.openUrlInBrowser(SplashScreenActivity.this, uri);
+                                finish();
+                            }
                             break;
                         case "password":
                             gotoActivity(ResetPasswordActivity.class, false);
@@ -123,24 +118,19 @@ public class SplashScreenActivity extends Activity {
                             authenticateUser(uri);
                             break;
                         case "courses":
-                        case "orders":
                         case "learn":
                         case "leaderboard":
                         case "dashboard":
-                        case "contact":
-                        case "privacy":
-                        case "refund":
-                        case "update":
-                        case "about":
                             gotoHome();
                             break;
                         case "store":
                         case "market":
                         case "products":
-                            deepLinkToProduct(uri);
+                            authenticateUser(uri);
                             break;
                         default:
-                            gotoProductDetails(pathSegments.get(0));
+                            CommonUtils.openUrlInBrowser(SplashScreenActivity.this, uri);
+                            finish();
                             break;
                     }
                 } else {
@@ -195,6 +185,9 @@ public class SplashScreenActivity extends Activity {
                             case "chapters":
                                 deepLinkToChapter(uri, testpressSession);
                                 break;
+                            case "products":
+                                deepLinkToProduct(uri, testpressSession);
+                                break;
                         }
                     }
                 });
@@ -209,8 +202,8 @@ public class SplashScreenActivity extends Activity {
                 break;
             case 2:
                 // Contents list url - /chapters/chapter-slug/
-                String chapterAPI = URL_BASE + CHAPTERS_PATH + uri.getLastPathSegment();
-                TestpressCourse.showContents(this, chapterAPI, testpressSession);
+                String chapterAPI = BASE_URL + CHAPTERS_PATH + uri.getLastPathSegment() + "/";
+                TestpressCourse.showChapterContents(this, chapterAPI, testpressSession);
                 break;
             case 3:
                 // Content detail url - /chapters/chapter-slug/{content-id}/
@@ -219,27 +212,16 @@ public class SplashScreenActivity extends Activity {
         }
     }
 
-    private void deepLinkToProduct(Uri uri) {
+    private void deepLinkToProduct(Uri uri, TestpressSession testpressSession) {
         final List<String> pathSegments = uri.getPathSegments();
         if (pathSegments.size() == 2) {
-            gotoProductDetails(uri.getLastPathSegment());
+            // Product detail url - /products/product-slug/
+            String productSlug = uri.getLastPathSegment();
+            assert productSlug != null;
+            TestpressStore.showProduct(this, productSlug, testpressSession);
         } else {
-            Intent intent = new Intent(this, ProductsListActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            intent.putExtra(Constants.IS_DEEP_LINK, true);
-            startActivity(intent);
-            finish();
+            TestpressStore.show(this, testpressSession);
         }
-    }
-
-    private void gotoProductDetails(String productSlug) {
-        Intent productIntent =
-                new Intent(SplashScreenActivity.this, ProductDetailsActivity.class);
-        productIntent.putExtra(ProductDetailsActivity.PRODUCT_SLUG, productSlug);
-        productIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        productIntent.putExtra(Constants.IS_DEEP_LINK, true);
-        startActivity(productIntent);
-        finish();
     }
 
     private void gotoAccountActivate(String activateUrlFrag) {
@@ -271,28 +253,36 @@ public class SplashScreenActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            // Result code OK will come if attempted an exam & back press
-            gotoHome();
+            if (requestCode == STORE_REQUEST_CODE) {
+                if (data != null && data.getBooleanExtra(CONTINUE_PURCHASE, false)) {
+                    // User pressed continue purchase button.
+                    TestpressSession session = TestpressSdk.getTestpressSession(this);
+                    assert session != null;
+                    TestpressStore.show(this, session);
+                } else {
+                    // User pressed goto home button.
+                    gotoHome();
+                }
+            } else {
+                // Result code OK will come if attempted an exam & back press
+                gotoHome();
+            }
         } else if (resultCode == RESULT_CANCELED) {
             if (data != null && data.getBooleanExtra(ACTION_PRESSED_HOME, false)) {
                 TestpressSession testpressSession = TestpressSdk.getTestpressSession(this);
                 Assert.assertNotNull("TestpressSession must not be null.", testpressSession);
                 switch (requestCode) {
                     case COURSE_CONTENT_DETAIL_REQUEST_CODE:
+                    case COURSE_CONTENT_LIST_REQUEST_CODE:
+                        int courseId = data.getIntExtra(COURSE_ID, 0);
                         String chapterUrl = data.getStringExtra(CHAPTER_URL);
                         if (chapterUrl != null) {
-                            // Show contents list on home pressed from content detail
-                            TestpressCourse.showContents(this, chapterUrl, testpressSession);
+                            // Show contents list or child chapters of the chapter url given
+                            TestpressCourse.showChapterContents(this, chapterUrl, testpressSession);
                             return;
-                        }
-                        break;
-                    case COURSE_CONTENT_LIST_REQUEST_CODE:
-                    case COURSE_CHAPTER_REQUEST_CODE:
-                        String courseId = data.getStringExtra(COURSE_ID);
-                        String parentId = data.getStringExtra(PARENT_ID);
-                        if (courseId != null) {
-                            // Show chapters list on home press from contents list or sub chapters list
-                            TestpressCourse.showChapters(this, courseId, parentId, testpressSession);
+                        } else if (courseId != 0) {
+                            // Show grand parent chapters list on home press from sub chapters list
+                            TestpressCourse.showChapters(this, null, courseId, testpressSession);
                             return;
                         }
                         break;

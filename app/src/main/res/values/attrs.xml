@@ -13,11 +13,5 @@
         <attr name="mrl_ripplePersistent" format="boolean" localization="suggested" />
         <attr name="mrl_rippleInAdapter" format="boolean" localization="suggested" />
         <attr name="mrl_rippleRoundedCorners" format="dimension" localization="suggested" />
-
-        <attr name="shadowEnabled" format="boolean" />
-        <attr name="buttonColor" format="color" />
-        <attr name="shadowColor" format="color" />
-        <attr name="shadowHeight" format="dimension" />
-        <attr name="cornerRadius" format="dimension" />
     </declare-styleable>
 </resources>

@@ -1,22 +1,23 @@
 package in.testpress.testpress.core;
 
+
+import android.annotation.SuppressLint;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.Format;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.TimeZone;
 
-import in.testpress.course.ui.ContentActivity;
 import in.testpress.testpress.models.Forum;
 import in.testpress.testpress.models.ForumDao;
 import in.testpress.testpress.models.TestpressApiResponse;
 import in.testpress.testpress.util.Ln;
 import retrofit.RetrofitError;
-
 
 public class ForumsPager extends ResourcePager<Forum> {
 
@@ -25,6 +26,7 @@ public class ForumsPager extends ResourcePager<Forum> {
     private SimpleDateFormat simpleDateFormat;
     private ForumDao forumDao;
 
+    @SuppressLint("SimpleDateFormat")
     public ForumsPager(TestpressService service, ForumDao forumDao) {
         super(service);
         simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -48,7 +50,6 @@ public class ForumsPager extends ResourcePager<Forum> {
         String url;
         if (response == null) {
             url = Constants.Http.URL_FORUMS_FRAG;
-//            url = Constants.Http.URL_POSTS_FRAG;
         } else {
             try {
                 URL full = new URL(response.getNext());
@@ -66,7 +67,7 @@ public class ForumsPager extends ResourcePager<Forum> {
     }
 
     @Override
-    public boolean next() throws IOException {
+    public boolean next() {
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         boolean emptyPage = false;
@@ -126,10 +127,7 @@ public class ForumsPager extends ResourcePager<Forum> {
 
     @Override
     public boolean hasNext() {
-        if (response == null || response.getNext() != null) {
-            return true;
-        }
-        return false;
+        return response == null || response.getNext() != null;
     }
 
     public int getTotalCount() {

@@ -120,6 +120,11 @@ public final class Constants {
         public static final String ORDER = "order";
     }
 
+    public static final class RequestCode {
+        public static final int RECEIVE_SMS_PERMISSION_REQUEST_CODE = 3333;
+        public static final int CREATE_POST_REQUEST_CODE = 200;
+    }
+
     public static final String SPLASH_SCREEN_PREFERENCE_NAME = "testpress." +
             Auth.TESTPRESS_ACCOUNT_NAME + ".SPLASH_SCREEN";
     public static final String SPLASH_SCREEN_TIME_OUT_PROPERTY_NAME = "FIRST_LAUNCH";

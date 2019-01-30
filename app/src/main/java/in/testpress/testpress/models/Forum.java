@@ -16,7 +16,9 @@ public class Forum {
     private String commentsUrl;
     private String url;
     private Long id;
-    public String modified;
+
+    private String modified;
+
     private Integer upvotes;
     private Integer downvotes;
     private String title;

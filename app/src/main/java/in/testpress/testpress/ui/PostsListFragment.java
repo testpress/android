@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -53,7 +54,6 @@ import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
-import info.hoang8f.widget.FButton;
 
 public class PostsListFragment extends Fragment implements
         AbsListView.OnScrollListener, SwipeRefreshLayout.OnRefreshListener, LoaderManager
@@ -73,7 +73,7 @@ public class PostsListFragment extends Fragment implements
     @InjectView(R.id.empty_container) LinearLayout emptyView;
     @InjectView(R.id.empty_title) TextView emptyTitleView;
     @InjectView(R.id.empty_description) TextView emptyDescView;
-    @InjectView(R.id.retry_button) FButton retryButton;
+    @InjectView(R.id.retry_button) Button retryButton;
     HeaderFooterListAdapter<PostsListAdapter> adapter;
     PostsPager refreshPager;
     PostsPager pager;
@@ -111,9 +111,6 @@ public class PostsListFragment extends Fragment implements
                 categoryFilter = getArguments().getLong("category_filter");
             }
         }
-        if (getActivity() == null) {
-            return;
-        }
         //Get the dao handles for posts and categories
         daoSession = ((TestpressApplication) getActivity().getApplicationContext()).getDaoSession();
         postDao = daoSession.getPostDao();
@@ -124,10 +121,10 @@ public class PostsListFragment extends Fragment implements
         mTopLevelSpinnerAdapter = new ExploreSpinnerAdapter(getActivity().getLayoutInflater(),
                 getActivity().getResources(), true);
         mTopLevelSpinnerAdapter.addItem("", getString(R.string.all_posts), false, 0);
-        mTopLevelSpinnerAdapter.addHeader(getString(R.string.categories));Toolbar toolbar;
+        mTopLevelSpinnerAdapter.addHeader(getString(R.string.categories));
+        Toolbar toolbar;
         if (getActivity() instanceof MainActivity) {
             toolbar = ((MainActivity) (getActivity())).getActionBarToolbar();
-//            mSpinnerContainer.setVisibility(View.GONE);
         } else {
             toolbar = ((PostsListActivity) (getActivity())).getActionBarToolbar();
         }
@@ -255,9 +252,7 @@ public class PostsListFragment extends Fragment implements
                     Ln.e("Setting visible");
                     mSpinnerContainer.setVisibility(View.VISIBLE);
                     Toolbar toolbar;
-                    if (getActivity() == null) {
-                        return;
-                    } else if (getActivity() instanceof MainActivity) {
+                    if (getActivity() instanceof MainActivity) {
                         toolbar = ((MainActivity) (getActivity())).getActionBarToolbar();
                         mSpinnerContainer.setVisibility(View.GONE);
                     } else {
@@ -335,6 +330,7 @@ public class PostsListFragment extends Fragment implements
         if (getActivity() == null) {
             return;
         }
+        getLoaderManager().destroyLoader(loader.getId());
         final Exception exception = getException(loader);
         if (exception != null) {
             //Remove the swipe refresh icon and the sticky notification if any
@@ -392,6 +388,9 @@ public class PostsListFragment extends Fragment implements
         } else {
             //If data is already available in the local database, then
             //notify user about the new data to view latest data.
+            if (refreshPager == null) {
+                return;
+            }
             Ln.d(MISSED_POSTS_THRESHOLD >= refreshPager.getTotalCount());
             if (MISSED_POSTS_THRESHOLD >= refreshPager.getTotalCount()) {
                 if (refreshPager.hasNext()) {

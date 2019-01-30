@@ -12,12 +12,16 @@ import de.greenrobot.dao.internal.DaoConfig;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.InstituteSettings;
+
+import in.testpress.testpress.models.RssItem;
 import in.testpress.testpress.models.Forum;
 import in.testpress.testpress.models.User;
 
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.models.CategoryDao;
 import in.testpress.testpress.models.InstituteSettingsDao;
+
+import in.testpress.testpress.models.RssItemDao;
 import in.testpress.testpress.models.ForumDao;
 import in.testpress.testpress.models.UserDao;
 
@@ -33,12 +37,17 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig postDaoConfig;
     private final DaoConfig categoryDaoConfig;
     private final DaoConfig instituteSettingsDaoConfig;
+
+    private final DaoConfig rssItemDaoConfig;
     private final DaoConfig forumDaoConfig;
     private final DaoConfig userDaoConfig;
 
     private final PostDao postDao;
     private final CategoryDao categoryDao;
     private final InstituteSettingsDao instituteSettingsDao;
+
+    private final RssItemDao rssItemDao;
+
     private final ForumDao forumDao;
     private final UserDao userDao;
 
@@ -55,6 +64,10 @@ public class DaoSession extends AbstractDaoSession {
         instituteSettingsDaoConfig = daoConfigMap.get(InstituteSettingsDao.class).clone();
         instituteSettingsDaoConfig.initIdentityScope(type);
 
+
+        rssItemDaoConfig = daoConfigMap.get(RssItemDao.class).clone();
+        rssItemDaoConfig.initIdentityScope(type);
+
         forumDaoConfig = daoConfigMap.get(ForumDao.class).clone();
         forumDaoConfig.initIdentityScope(type);
 
@@ -64,12 +77,18 @@ public class DaoSession extends AbstractDaoSession {
         postDao = new PostDao(postDaoConfig, this);
         categoryDao = new CategoryDao(categoryDaoConfig, this);
         instituteSettingsDao = new InstituteSettingsDao(instituteSettingsDaoConfig, this);
+
+        rssItemDao = new RssItemDao(rssItemDaoConfig, this);
+
         forumDao = new ForumDao(forumDaoConfig, this);
         userDao = new UserDao(userDaoConfig, this);
 
         registerDao(Post.class, postDao);
         registerDao(Category.class, categoryDao);
         registerDao(InstituteSettings.class, instituteSettingsDao);
+
+        registerDao(RssItem.class, rssItemDao);
+
         registerDao(Forum.class, forumDao);
         registerDao(User.class, userDao);
     }
@@ -78,6 +97,8 @@ public class DaoSession extends AbstractDaoSession {
         postDaoConfig.getIdentityScope().clear();
         categoryDaoConfig.getIdentityScope().clear();
         instituteSettingsDaoConfig.getIdentityScope().clear();
+        rssItemDaoConfig.getIdentityScope().clear();
+
         forumDaoConfig.getIdentityScope().clear();
         userDaoConfig.getIdentityScope().clear();
     }
@@ -92,6 +113,11 @@ public class DaoSession extends AbstractDaoSession {
 
     public InstituteSettingsDao getInstituteSettingsDao() {
         return instituteSettingsDao;
+    }
+
+
+    public RssItemDao getRssItemDao() {
+        return rssItemDao;
     }
 
     public ForumDao getForumDao() {

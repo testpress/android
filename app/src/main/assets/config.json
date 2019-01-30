@@ -1,0 +1,15 @@
+{
+  "version" : "1.0.15",
+  "version_code" : 15,
+  "testpress_site_subdomain" : "talentmed",
+  "package_name" : "eu.talentmed",
+  "app_name" : "TalentMed",
+  "share_message": "Good app to prepare for medical exams.",
+  "primary_color": "fec10e",
+  "allow_anonymous_user" : false,
+  "screenshot_disabled" : false,
+  "facebook_app_id" : "733962776688753",
+  "server_client_id" : "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
+  "display_username_on_video": true,
+  "white_labeled_host_url": null
+}

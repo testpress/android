@@ -8,10 +8,10 @@
     <ImageView
         android:id="@+id/menu_icon"
         android:layout_gravity="center"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
         android:layout_marginTop="7dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="3dp"
         android:src="@drawable/learn" />
 
     <TextView

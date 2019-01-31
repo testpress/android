@@ -8,6 +8,57 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:1008722667163:android:969432b667b6b004",
+        "android_client_info": {
+          "package_name": "eu.talentmed"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1008722667163-e2dbr9tbd3oiuultjhpadqj81nemniri.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "eu.talentmed",
+            "certificate_hash": "c53ddd6f9c8bf151f77333cb7ae1b4111e6add49"
+          }
+        },
+        {
+          "client_id": "1008722667163-0nslijaeb77jtf1qvnk6i44d1qgb0vom.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgqdSJ38S7K9IsGqV7m_eFOzg-LKs6YM8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1008722667163-0nslijaeb77jtf1qvnk6i44d1qgb0vom.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1008722667163-dipkamsst15ictgpc63q9tjnsv5b25na.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "eu.dma-testhub"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:1008722667163:android:ebee790aef5cc6d8",
         "android_client_info": {
           "package_name": "in.testpress.dma"
@@ -44,10 +95,10 @@
               "client_type": 3
             },
             {
-              "client_id": "1008722667163-ct7adcuqapvkcbjuj0gde8dv5ubpr7ui.apps.googleusercontent.com",
+              "client_id": "1008722667163-dipkamsst15ictgpc63q9tjnsv5b25na.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "in.testpress.talentmed"
+                "bundle_id": "eu.dma-testhub"
               }
             }
           ]

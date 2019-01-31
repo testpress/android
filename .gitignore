@@ -12,6 +12,7 @@ classes/
 # Generated files
 bin/
 gen/
+release/
 
 # Gradle files
 .gradle/

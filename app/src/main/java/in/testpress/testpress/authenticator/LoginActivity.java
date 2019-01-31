@@ -66,7 +66,6 @@ import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.ui.MainActivity;
-import in.testpress.testpress.ui.OrderConfirmActivity;
 import in.testpress.testpress.ui.PostActivity;
 import in.testpress.testpress.ui.TextWatcherAdapter;
 import in.testpress.testpress.util.CommonUtils;
@@ -82,6 +81,8 @@ import static android.accounts.AccountManager.KEY_ACCOUNT_TYPE;
 import static android.accounts.AccountManager.KEY_AUTHTOKEN;
 import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
 import static android.view.inputmethod.EditorInfo.IME_ACTION_SEND;
+import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
+import static in.testpress.testpress.BuildConfig.BASE_URL;
 
 public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     /**
@@ -244,7 +245,9 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
         instituteSettingsDao = daoSession.getInstituteSettingsDao();
         List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
-                .where(InstituteSettingsDao.Properties.BaseUrl.eq(Constants.Http.URL_BASE)).list();
+                .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
+                .list();
+
         if (instituteSettingsList.size() == 0) {
             getInstituteSettings();
         } else {
@@ -283,7 +286,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
             @Override
             protected void onSuccess(InstituteSettings instituteSettings) throws Exception {
-                instituteSettings.setBaseUrl(Constants.Http.URL_BASE);
+                instituteSettings.setBaseUrl(BASE_URL);
                 instituteSettingsDao.insertOrReplace(instituteSettings);
                 LoginActivity.this.instituteSettings = instituteSettings;
                 updateInstituteSpecificFields();
@@ -298,6 +301,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
         in.testpress.models.InstituteSettings settings =
                 new in.testpress.models.InstituteSettings(instituteSettings.getBaseUrl())
+                        .setBookmarksEnabled(instituteSettings.getBookmarksEnabled())
                         .setCoursesFrontend(instituteSettings.getShowGameFrontend())
                         .setCoursesGamificationEnabled(instituteSettings.getCoursesEnableGamification())
                         .setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled())
@@ -401,7 +405,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
      * @param result
      */
     protected void finishConfirmCredentials(final boolean result) {
-        final Account account = new Account(username, Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
+        final Account account = new Account(username, APPLICATION_ID);
         accountManager.setPassword(account, password);
 
         final Intent intent = new Intent();
@@ -423,11 +427,11 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
                 getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
         sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
         CommonUtils.registerDevice(this, testpressService);
-        final Account account = new Account(username, Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
+        final Account account = new Account(username, APPLICATION_ID);
 
         if (requestNewAccount) {
             accountManager.addAccountExplicitly(account, password, null);
-            accountManager.setAuthToken(account, Constants.Auth.TESTPRESS_ACCOUNT_TYPE, authToken);
+            accountManager.setAuthToken(account, APPLICATION_ID, authToken);
         } else {
             accountManager.setPassword(account, password);
         }
@@ -435,10 +439,10 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         PostDao postDao = daoSession.getPostDao();
         postDao.deleteAll();
         daoSession.clear();
-        if (authTokenType != null && authTokenType.equals(Constants.Auth.AUTHTOKEN_TYPE)) {
+        if (authTokenType != null && authTokenType.equals(APPLICATION_ID)) {
             final Intent intent = new Intent();
             intent.putExtra(KEY_ACCOUNT_NAME, username);
-            intent.putExtra(KEY_ACCOUNT_TYPE, Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
+            intent.putExtra(KEY_ACCOUNT_TYPE, APPLICATION_ID);
             intent.putExtra(KEY_AUTHTOKEN, authToken);
             setAccountAuthenticatorResult(intent.getExtras());
             setResult(RESULT_OK, intent);
@@ -446,11 +450,6 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             Intent intent = new Intent(this, MainActivity.class);
             if (getIntent().getStringExtra(Constants.DEEP_LINK_TO) != null) {
                 switch (getIntent().getStringExtra(Constants.DEEP_LINK_TO)) {
-                    case Constants.DEEP_LINK_TO_PAYMENTS:
-                        intent = new Intent(this, OrderConfirmActivity.class);
-                        intent.putExtra(Constants.IS_DEEP_LINK, true);
-                        intent.putExtras(getIntent().getExtras());
-                        break;
                     case Constants.DEEP_LINK_TO_POST:
                         intent = new Intent(this, PostActivity.class);
                         intent.putExtra(Constants.IS_DEEP_LINK, true);

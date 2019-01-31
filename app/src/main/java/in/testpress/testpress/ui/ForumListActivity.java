@@ -10,6 +10,7 @@ public class ForumListActivity extends TestpressFragmentActivity{
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.container_layout);
+        //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ForumListFragment postsListFragment = new ForumListFragment();
         Bundle bundle = getIntent().getExtras();

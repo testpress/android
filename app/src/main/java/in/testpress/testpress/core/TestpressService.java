@@ -27,8 +27,11 @@ import in.testpress.testpress.models.ProductDetails;
 import in.testpress.testpress.models.ProfileDetails;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.ResetPassword;
+import in.testpress.testpress.models.RssFeed;
 import in.testpress.testpress.models.TestpressApiResponse;
 import in.testpress.testpress.models.Update;
+import in.testpress.testpress.network.RssConverterFactory;
+import in.testpress.testpress.network.RssFeedService;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 
@@ -92,6 +95,12 @@ public class TestpressService {
 
     private ResetPasswordService getResetPasswordService(){return getRestAdapter().create(ResetPasswordService.class);}
 
+    private RssFeedService getRssFeedService(String url) {
+        restAdapter.setEndpoint(url);
+        restAdapter.setConverter(RssConverterFactory.create());
+        return restAdapter.build().create(RssFeedService.class);
+    }
+
     private String getAuthToken() {
         return "JWT " + authToken;
     }
@@ -124,20 +133,21 @@ public class TestpressService {
         return getDevicesService().register(credentials);
     }
 
-    public TestpressApiResponse<Post> getPosts(String urlFrag, Map<String, String> queryParams, String latestModifiedDate) {
-        Log.e("url", urlFrag);
-        Log.e("queryParams", queryParams.toString());
-        Log.e("latestModified", latestModifiedDate+"");
+    public TestpressApiResponse<Post> getPosts(String urlFrag, Map<String, String> queryParams,
+                                               String latestModifiedDate) {
+
         return getPostService().getPosts(urlFrag, queryParams, latestModifiedDate);
     }
 
-    public TestpressApiResponse<Forum> getForums(String urlFrag, Map<String, String> queryParams, String latestModifiedDate) {
+    public TestpressApiResponse<Forum> getForums(String urlFrag, Map<String, String> queryParams,
+                                                 String latestModifiedDate) {
+
         return getPostService().getForums(urlFrag, queryParams, latestModifiedDate);
     }
 
-    public TestpressApiResponse<Category> getCategories(String urlFrag, Map<String, String> queryParams) {
-        Log.e("url", urlFrag);
-        Log.e("queryParams", queryParams.toString());
+    public TestpressApiResponse<Category> getCategories(String urlFrag,
+                                                        Map<String, String> queryParams) {
+
         return getPostService().getCategories(urlFrag, queryParams);
     }
 
@@ -159,13 +169,14 @@ public class TestpressService {
         return getPostService().sendComments(postId, params);
     }
 
-    public RegistrationSuccessResponse register(String username,String email, String password, String phone){
+    public RegistrationSuccessResponse register(String username,String email, String password, String phone, String countryCode){
         HashMap<String, String> userDetails = new HashMap<String, String>();
         userDetails.put("username", username);
         userDetails.put("email", email);
         userDetails.put("password", password);
         if (!phone.trim().isEmpty()) {
             userDetails.put("phone", phone);
+            userDetails.put("country_code", countryCode);
         }
         return getAuthenticationService().register(userDetails);
     }
@@ -263,20 +274,22 @@ public class TestpressService {
         return getAuthenticationService().activateAccount(urlFrag);
     }
 
+    public RssFeed getRssFeed(String url) {
+        return getRssFeedService(url).getRssFeed();
+    }
+
     public Forum postForum(String title, String content, String category) {
-        Log.e("Rcvd Cat", category+"");
         HashMap<String, String> postParameters = new HashMap<String, String>();
         postParameters.put("title", title);
         postParameters.put("content_html", content);
         if (category != null) {
             postParameters.put("category", category);
         }
-        Log.e("Payload being send", postParameters.toString());
         return getPostService().postForum(postParameters);
     }
 
     public Vote<Forum> castVote(Forum forum, int typeOfVote) {
-        HashMap<String, Object> params = new HashMap<String, Object>();
+        HashMap<String, Object> params = new HashMap<>();
         params.put("content_object", forum);
         params.put("type_of_vote", typeOfVote);
         return getPostService().castVote(params);
@@ -287,7 +300,7 @@ public class TestpressService {
     }
 
     public Vote<Forum> updateCommentVote(Forum forum, int typeOfVote) {
-        HashMap<String, Object> params = new HashMap<String, Object>();
+        HashMap<String, Object> params = new HashMap<>();
         params.put("content_object", forum);
         params.put("type_of_vote", typeOfVote);
         return getPostService().updateCommentVote(forum.getVoteId(), params);

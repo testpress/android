@@ -26,12 +26,21 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.auth.api.phone.SmsRetriever;
+
+
+import java.io.IOException;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import in.testpress.core.TestpressCallback;
+import in.testpress.core.TestpressException;
+import in.testpress.core.TestpressSdk;
+import in.testpress.core.TestpressSession;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
@@ -40,11 +49,12 @@ import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.events.SmsReceivingEvent;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.Device;
+import in.testpress.testpress.models.InstituteSettings;
+import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.RegistrationErrorDetails;
 import in.testpress.testpress.ui.MainActivity;
-import in.testpress.testpress.ui.OrderConfirmActivity;
 import in.testpress.testpress.ui.PostActivity;
 import in.testpress.testpress.ui.TextWatcherAdapter;
 import in.testpress.testpress.util.GCMPreference;
@@ -55,6 +65,8 @@ import retrofit.RetrofitError;
 import com.google.android.gms.auth.api.phone.SmsRetriever;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
+import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
+import static in.testpress.testpress.BuildConfig.BASE_URL;
 
 public class CodeVerificationActivity extends AppCompatActivity {
     @Inject TestpressService testpressService;
@@ -78,6 +90,8 @@ public class CodeVerificationActivity extends AppCompatActivity {
     private Timer timer;
     private InternetConnectivityChecker internetConnectivityChecker = new InternetConnectivityChecker(this);
     private PackageManager packageManager;
+    private InstituteSettingsDao instituteSettingsDao;
+    private InstituteSettings instituteSettings;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -86,6 +100,7 @@ public class CodeVerificationActivity extends AppCompatActivity {
         setContentView(R.layout.code_verify_activity);
         ButterKnife.inject(this);
         final Intent intent = getIntent();
+        fetchInstituteSettingLocalDB();
         username = intent.getStringExtra("username");
         password = intent.getStringExtra("password");
         String phoneNumber = intent.getStringExtra("phoneNumber");
@@ -98,6 +113,7 @@ public class CodeVerificationActivity extends AppCompatActivity {
         } else {
             welcomeText.setText("Waiting to automatically detect an sms sent to " + phoneNumber + "\nIf you get the verification code press Manually Verify");
             timer = new Timer();
+            smsReceivingEvent = new SmsReceivingEvent(timer);
             IntentFilter filter = new IntentFilter();
             filter.addAction(SmsRetriever.SMS_RETRIEVED_ACTION);
             registerReceiver(smsReceivingEvent, filter); //Register SMS broadcast receiver
@@ -223,49 +239,49 @@ public class CodeVerificationActivity extends AppCompatActivity {
     }
 
     // check password & get authKey
-    private void autoLogin(){
-        new SafeAsyncTask<Boolean>() {
-            public Boolean call() throws Exception {
-                authToken = testpressService.authenticate(username, password);
-                return true;
-            }
+    private void autoLogin() {
+        in.testpress.models.InstituteSettings settings =
+                new in.testpress.models.InstituteSettings(instituteSettings.getBaseUrl())
+                        .setBookmarksEnabled(instituteSettings.getBookmarksEnabled())
+                        .setCoursesFrontend(instituteSettings.getShowGameFrontend())
+                        .setCoursesGamificationEnabled(instituteSettings.getCoursesEnableGamification())
+                        .setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled()).setAccessCodeEnabled(false);
 
-            @Override
-            protected void onException(final Exception e) throws RuntimeException {
-               gotoLoginScreen();
-            }
+        TestpressSdk.initialize(this, settings, username, password, TestpressSdk.Provider.TESTPRESS,
+                new TestpressCallback<TestpressSession>() {
+                    @Override
+                    public void onSuccess(TestpressSession response) {
+                        //add account in mobile
+                        authToken = response.getToken();
+                        testpressService.setAuthToken(authToken);
+                        final Account account = new Account(username, APPLICATION_ID);
+                        accountManager.addAccountExplicitly(account, password, null);
+                        accountManager.setAuthToken(account, APPLICATION_ID, authToken);
+                        updateDevice();
+                        DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
+                        PostDao postDao = daoSession.getPostDao();
+                        postDao.deleteAll();
+                        daoSession.clear();
+                        Intent intent;
+                        switch (getIntent().getExtras().getString(Constants.DEEP_LINK_TO, "")) {
+                            case Constants.DEEP_LINK_TO_POST:
+                                intent = new Intent(CodeVerificationActivity.this, PostActivity.class);
+                                intent.putExtra(Constants.IS_DEEP_LINK, true);
+                                intent.putExtras(getIntent().getExtras());
+                                break;
+                            default:
+                                intent = new Intent(CodeVerificationActivity.this, MainActivity.class);
+                                break;
+                        }
+                        startActivity(intent);
+                        finish();
+                    }
 
-            @Override
-            public void onSuccess(final Boolean authSuccess) {
-                //add account in mobile
-                final Account account = new Account(username, Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
-                accountManager.addAccountExplicitly(account, password, null);
-                accountManager.setAuthToken(account, Constants.Auth.TESTPRESS_ACCOUNT_TYPE, authToken);
-                updateDevice();
-                DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
-                PostDao postDao = daoSession.getPostDao();
-                postDao.deleteAll();
-                daoSession.clear();
-                Intent intent;
-                switch (getIntent().getExtras().getString(Constants.DEEP_LINK_TO, "")) {
-                    case Constants.DEEP_LINK_TO_PAYMENTS:
-                        intent = new Intent(CodeVerificationActivity.this, OrderConfirmActivity.class);
-                        intent.putExtra(Constants.IS_DEEP_LINK, true);
-                        intent.putExtras(getIntent().getExtras());
-                        break;
-                    case Constants.DEEP_LINK_TO_POST:
-                        intent = new Intent(CodeVerificationActivity.this, PostActivity.class);
-                        intent.putExtra(Constants.IS_DEEP_LINK, true);
-                        intent.putExtras(getIntent().getExtras());
-                        break;
-                    default:
-                        intent = new Intent(CodeVerificationActivity.this, MainActivity.class);
-                        break;
-                }
-                startActivity(intent);
-                finish();
-            }
-        }.execute();
+                    @Override
+                    public void onException(TestpressException e) {
+                        gotoLoginScreen();
+                    }
+                });
     }
 
     private void updateDevice() {
@@ -317,4 +333,45 @@ public class CodeVerificationActivity extends AppCompatActivity {
             finish();
         }
     }
+
+    private void fetchInstituteSettingLocalDB() {
+        DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
+        instituteSettingsDao = daoSession.getInstituteSettingsDao();
+        List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
+                .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
+                .list();
+        if (instituteSettingsList.size() == 0) {
+            getInstituteSettings();
+        } else {
+            instituteSettings = instituteSettingsList.get(0);
+        }
+    }
+
+    private void getInstituteSettings() {
+        progressBar.setVisibility(View.VISIBLE);
+        new SafeAsyncTask<InstituteSettings>() {
+            @Override
+            public InstituteSettings call() throws Exception {
+                return testpressService.getInstituteSettings();
+            }
+
+            @Override
+            protected void onException(Exception exception) throws RuntimeException {
+                if (exception.getCause() instanceof IOException) {
+                    internetConnectivityChecker.showAlert();
+                } else {
+                    internetConnectivityChecker.showAlert();
+                }
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            protected void onSuccess(InstituteSettings instituteSettings) throws Exception {
+                instituteSettings.setBaseUrl(BASE_URL);
+                instituteSettingsDao.insertOrReplace(instituteSettings);
+                progressBar.setVisibility(View.GONE);
+            }
+        }.execute();
+    }
+
 }

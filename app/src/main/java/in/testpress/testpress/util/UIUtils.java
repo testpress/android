@@ -82,7 +82,8 @@ public class UIUtils {
             case R.string.posts:
                 return instituteSettings.getPostsLabel();
             case R.string.learn:
-                return instituteSettings.getCoursesLabel();
+                return "";
+                // return instituteSettings.getCoursesLabel();
             default:
                 return "";
         }

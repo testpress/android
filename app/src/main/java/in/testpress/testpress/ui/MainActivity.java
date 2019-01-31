@@ -144,7 +144,6 @@ public class MainActivity extends TestpressFragmentActivity {
             apiAvailability.makeGooglePlayServicesAvailable(this);
             CommonUtils.registerDevice(MainActivity.this, testpressService, serviceProvider);
         }
-        addMenuItem(R.string.dashboard, R.drawable.profile_default, new MainMenuFragment());
         // Show courses list if game front end is enabled, otherwise hide bottom bar
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             Log.e("Checking for gamified","true found");
@@ -163,6 +162,8 @@ public class MainActivity extends TestpressFragmentActivity {
             if (mInstituteSettings.getForumEnabled()) {
                 addMenuItem(R.string.discussions, R.drawable.chat_icon, new ForumListFragment());
             }
+
+            addMenuItem(R.string.dashboard, R.drawable.profile_default, new MainMenuFragment());
         } else {
             grid.setVisibility(View.GONE);
         }

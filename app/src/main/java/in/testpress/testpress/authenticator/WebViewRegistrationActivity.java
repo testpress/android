@@ -40,7 +40,7 @@ public class WebViewRegistrationActivity extends AppCompatActivity {
     private String mCM;
     private ValueCallback<Uri> mUM;
     private ValueCallback<Uri[]> mUMA;
-    private String url = "https://ssgrbcc.testpress.in/register/";
+    private String url = "https://www.ssgrbccmockonlineexams.com/register/";
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {

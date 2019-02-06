@@ -279,7 +279,7 @@ public class ForumListFragment extends Fragment implements
                 if (sortBy.isEmpty()) {
                     adapter.getWrappedAdapter().clearSortBy();
                 } else {
-                    adapter.getWrappedAdapter().setSortBy(Long.getLong(sortBy));
+                    adapter.getWrappedAdapter().setSortBy(sortBySelectedPosition);
                 }
                 listView.setVisibility(View.VISIBLE);
                 emptyView.setVisibility(View.GONE);

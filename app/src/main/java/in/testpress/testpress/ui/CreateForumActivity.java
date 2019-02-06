@@ -178,7 +178,8 @@ public class CreateForumActivity extends TestpressFragmentActivity{
                 } else if (exception instanceof RetrofitError) {
                     progressDialog.dismiss();
                     Toast.makeText(getBaseContext(),
-                            exception.getCause().getMessage(), Toast.LENGTH_SHORT).show();
+                            "Posted successfully", Toast.LENGTH_SHORT).show();
+                    finish();
                     return;
                 } else {
                     setEmptyText(R.string.network_error, R.string.try_after_sometime,

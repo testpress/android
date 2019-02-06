@@ -254,8 +254,8 @@ public class ForumListFragment extends Fragment implements
                 if (sortBy.isEmpty()) {
                     adapter.getWrappedAdapter().clearSortBy();
                 } else {
+                    adapter.getWrappedAdapter().setSortBy(sortBySelectedPosition);
 
-                    adapter.getWrappedAdapter().setSortBy((Long.getLong(sortBy)));
                 }
                 listView.setVisibility(View.VISIBLE);
                 emptyView.setVisibility(View.GONE);
@@ -280,7 +280,7 @@ public class ForumListFragment extends Fragment implements
                 if (sortBy.isEmpty()) {
                     adapter.getWrappedAdapter().clearSortBy();
                 } else {
-                    adapter.getWrappedAdapter().setSortBy(Long.getLong(sortBy));
+                    adapter.getWrappedAdapter().setSortBy(sortBySelectedPosition);
                 }
                 listView.setVisibility(View.VISIBLE);
                 emptyView.setVisibility(View.GONE);

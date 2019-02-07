@@ -83,7 +83,7 @@
                         android:textSize="16dp"
                         android:layout_marginLeft="5dp"
                         android:layout_marginBottom="5dp"
-                        android:textColor="@color/testpress_green_light"
+                        android:textColor="@color/testpress_color_primary"
                         android:background="@drawable/testpress_green_stroke"
                         android:text="Clear"/>
 

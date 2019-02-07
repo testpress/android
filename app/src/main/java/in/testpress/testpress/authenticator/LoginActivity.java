@@ -69,6 +69,7 @@ import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.PostActivity;
 import in.testpress.testpress.ui.TextWatcherAdapter;
+import in.testpress.testpress.ui.WebViewActivity;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.InternetConnectivityChecker;
@@ -85,6 +86,8 @@ import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
 import static android.view.inputmethod.EditorInfo.IME_ACTION_SEND;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.ui.WebViewActivity.ACTIVITY_TITLE;
+import static in.testpress.testpress.ui.WebViewActivity.URL_TO_OPEN;
 
 public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     /**
@@ -119,11 +122,13 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     @InjectView(id.et_username) EditText usernameText;
     @InjectView(id.et_password) protected EditText passwordText;
     @InjectView(id.b_signin) protected Button signInButton;
+    @InjectView(id.b_resend_activation) protected Button ResendVerificationCodeButton;
     @InjectView(id.or) protected TextView orLabel;
     @InjectView(id.fb_login_button) protected LoginButton fbLoginButton;
     @InjectView(id.google_sign_in_button) protected Button googleLoginButton;
     @InjectView(id.social_sign_in_buttons) protected LinearLayout socialLoginLayout;
     @InjectView(id.signup) protected TextView signUpButton;
+
 
     @InjectView(id.pb_loading) ProgressBar progressBar;
     @InjectView(R.id.empty_container) LinearLayout emptyView;
@@ -532,6 +537,13 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             internetConnectivityChecker.showAlert();
         }
 
+    }
+
+    @OnClick(id.b_resend_activation) public void openResendVerificationCode() {
+        Intent intent = new Intent(LoginActivity.this, WebViewActivity.class);
+        intent.putExtra(URL_TO_OPEN, BASE_URL+"/resend/");
+        intent.putExtra(ACTIVITY_TITLE, "Resend Verification SMS");
+        startActivity(intent);
     }
 
     @OnClick(id.forgot_password) public void verify() {

@@ -75,7 +75,6 @@
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/b_signin"
                 style="@style/Button.Tab"
-                android:background="#00ccaa"
                 android:layout_marginTop="5dp"
                 android:textSize="14sp"
                 android:text="Login"
@@ -173,6 +172,19 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="20dp"
+                android:background="#ccc" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/b_resend_activation"
+                style="@style/Button.Tab"
+                android:layout_height="40dp"
+                android:layout_marginTop="20dp"
+                android:text="Resend Verification SMS"
+                android:textSize="14sp" />
         </LinearLayout>
     </LinearLayout>
     </RelativeLayout>

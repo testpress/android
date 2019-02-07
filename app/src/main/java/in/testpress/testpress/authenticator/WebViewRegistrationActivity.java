@@ -92,6 +92,15 @@ public class WebViewRegistrationActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(WebViewRegistrationActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, 1);
         }
 
+        Intent intent = getIntent();
+
+        if (intent.hasExtra("url") && intent.getExtras().getString("url") != "") {
+            setUrl(intent.getExtras().getString("url"));
+        } else {
+            finish();
+        }
+
+
         webView = (WebView) findViewById(R.id.registration_webview);
         assert webView != null;
 
@@ -199,6 +208,10 @@ public class WebViewRegistrationActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     // Create an image file

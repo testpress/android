@@ -117,11 +117,13 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     @InjectView(id.et_username) EditText usernameText;
     @InjectView(id.et_password) protected EditText passwordText;
     @InjectView(id.b_signin) protected Button signInButton;
+    @InjectView(id.b_resend_activation) protected Button ResendVerificationCodeButton;
     @InjectView(id.or) protected TextView orLabel;
     @InjectView(id.fb_login_button) protected LoginButton fbLoginButton;
     @InjectView(id.google_sign_in_button) protected Button googleLoginButton;
     @InjectView(id.social_sign_in_buttons) protected LinearLayout socialLoginLayout;
     @InjectView(id.signup) protected TextView signUpButton;
+
 
     @InjectView(id.pb_loading) ProgressBar progressBar;
     @InjectView(R.id.empty_container) LinearLayout emptyView;
@@ -512,6 +514,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             if (showWebViewRegistration){
                 // Customization for ssgrbcc
                 intent = new Intent(LoginActivity.this, WebViewRegistrationActivity.class);
+                intent.putExtra("url", "https://www.ssgrbccmockonlineexams.com/register/");
                 startActivity(intent);
             } else {
                 intent = new Intent(LoginActivity.this, RegisterActivity.class);
@@ -524,6 +527,12 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             internetConnectivityChecker.showAlert();
         }
 
+    }
+
+    @OnClick(id.b_resend_activation) public void openResendVerificationCode() {
+        Intent intent = new Intent(LoginActivity.this, WebViewRegistrationActivity.class);
+        intent.putExtra("url", "https://www.ssgrbccmockonlineexams.com/resend/");
+        startActivity(intent);
     }
 
     @OnClick(id.forgot_password) public void verify() {

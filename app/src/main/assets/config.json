@@ -1,9 +1,9 @@
 {
-  "version" : "1.0.1",
-  "version_code" : 1,
-  "testpress_site_subdomain" : "suresuccess",
+  "version" : "1.0.2",
+  "version_code" : 2,
+  "testpress_site_subdomain" : "suresuccessmagic",
   "package_name" : "in.testpress.suresuccess",
-  "app_name" : "Sure Success",
+  "app_name" : "Sure Success MAGIC",
   "share_message": "Good app to prepare for PGMEE exams.",
   "primary_color": "c42f33",
   "allow_anonymous_user" : false,

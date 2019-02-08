@@ -57,7 +57,7 @@ import in.testpress.core.TestpressCallback;
 import in.testpress.core.TestpressException;
 import in.testpress.core.TestpressSdk;
 import in.testpress.exam.models.Vote;
-import in.testpress.exam.util.ImagePickerUtils;
+import in.testpress.exam.util.ImageUtils;
 import in.testpress.models.FileDetails;
 import in.testpress.network.TestpressApiClient;
 import in.testpress.testpress.Injector;
@@ -89,7 +89,7 @@ import static in.testpress.testpress.util.CommonUtils.getException;
 public class ForumActivity extends TestpressFragmentActivity implements
         LoaderManager.LoaderCallbacks<List<Comment>> {
 
-    public static final String URL = "url";
+    public static final String URL = "Url";
     public static final String UPDATE_TIME_SPAN = "updateTimeSpan";
     public static final int NEW_COMMENT_SYNC_INTERVAL = 10000; // 10 sec
     private static final int PREVIOUS_COMMENTS_LOADER_ID = 0;
@@ -144,7 +144,7 @@ public class ForumActivity extends TestpressFragmentActivity implements
     private ProgressDialog progressDialog;
     private SimpleDateFormat simpleDateFormat;
     private boolean postedNewComment;
-    private ImagePickerUtils imagePickerUtils;
+    private ImageUtils imagePickerUtils;
     private FullScreenChromeClient fullScreenChromeClient;
     private ImageLoader imageLoader;
     private DisplayImageOptions options;
@@ -615,7 +615,7 @@ public class ForumActivity extends TestpressFragmentActivity implements
                 }
             }
         });
-        imagePickerUtils = new ImagePickerUtils(activityRootLayout, this);
+        imagePickerUtils = new ImageUtils(activityRootLayout, this);
         commentsLayout.setVisibility(View.VISIBLE);
         getSupportLoaderManager().initLoader(PREVIOUS_COMMENTS_LOADER_ID, null, ForumActivity.this);
     }
@@ -847,7 +847,7 @@ public class ForumActivity extends TestpressFragmentActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         imagePickerUtils.onActivityResult(requestCode, resultCode, data,
-                new ImagePickerUtils.ImagePickerResultHandler() {
+                new ImageUtils.ImagePickerResultHandler() {
                     @Override
                     public void onSuccessfullyImageCropped(CropImage.ActivityResult result) {
                         uploadImage(result.getUri().getPath());

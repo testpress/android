@@ -292,7 +292,7 @@
                                 android:layout_height="150dp"
                                 android:id="@+id/profile_photo2"
                                 android:cropToPadding="true"
-                                android:src="@drawable/icon"/>
+                                />
 
                             <ImageView
                                 android:layout_width="40dp"

@@ -66,7 +66,6 @@ import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.ui.MainActivity;
-import in.testpress.testpress.ui.OrderConfirmActivity;
 import in.testpress.testpress.ui.PostActivity;
 import in.testpress.testpress.ui.TextWatcherAdapter;
 import in.testpress.testpress.util.CommonUtils;
@@ -448,11 +447,6 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             Intent intent = new Intent(this, MainActivity.class);
             if (getIntent().getStringExtra(Constants.DEEP_LINK_TO) != null) {
                 switch (getIntent().getStringExtra(Constants.DEEP_LINK_TO)) {
-                    case Constants.DEEP_LINK_TO_PAYMENTS:
-                        intent = new Intent(this, OrderConfirmActivity.class);
-                        intent.putExtra(Constants.IS_DEEP_LINK, true);
-                        intent.putExtras(getIntent().getExtras());
-                        break;
                     case Constants.DEEP_LINK_TO_POST:
                         intent = new Intent(this, PostActivity.class);
                         intent.putExtra(Constants.IS_DEEP_LINK, true);

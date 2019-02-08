@@ -7,7 +7,7 @@ import de.greenrobot.daogenerator.Schema;
 
 public class TestpressDaoGenerator {
     public static void main(String args[]) throws Exception {
-        Schema schema = new Schema(9, "in.testpress.testpress.models");
+        Schema schema = new Schema(10, "in.testpress.testpress.models");
 
         Entity post = schema.addEntity("Post");
         post.addLongProperty("id").primaryKey();
@@ -60,6 +60,7 @@ public class TestpressDaoGenerator {
         instituteSettings.addBooleanProperty("commentsVotingEnabled").notNull();
         instituteSettings.addBooleanProperty("bookmarksEnabled");
         instituteSettings.addBooleanProperty("forumEnabled");
+        instituteSettings.addBooleanProperty("twilioEnabled");
 
         Entity rssFeed = schema.addEntity("RssItem");
         rssFeed.addLongProperty("id").primaryKey().autoincrement();

@@ -47,6 +47,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         public final static Property BookmarksEnabled = new Property(21, Boolean.class, "bookmarksEnabled", false, "BOOKMARKS_ENABLED");
         public final static Property ForumEnabled = new Property(22, Boolean.class, "forumEnabled", false, "FORUM_ENABLED");
         public final static Property TwilioEnabled = new Property(23, Boolean.class, "twilioEnabled", false, "TWILIO_ENABLED");
+        public final static Property Allow_profile_edit = new Property(24, Boolean.class, "allow_profile_edit", false, "ALLOW_PROFILE_EDIT");
     };
 
 
@@ -85,7 +86,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
                 "\"COMMENTS_VOTING_ENABLED\" INTEGER NOT NULL ," + // 20: commentsVotingEnabled
                 "\"BOOKMARKS_ENABLED\" INTEGER," + // 21: bookmarksEnabled
                 "\"FORUM_ENABLED\" INTEGER," + // 22: forumEnabled
-                "\"TWILIO_ENABLED\" INTEGER);"); // 23: twilioEnabled
+                "\"TWILIO_ENABLED\" INTEGER," + // 23: twilioEnabled
+                "\"ALLOW_PROFILE_EDIT\" INTEGER);"); // 24: allow_profile_edit
     }
 
     /** Drops the underlying database table. */
@@ -214,6 +216,11 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         if (twilioEnabled != null) {
             stmt.bindLong(24, twilioEnabled ? 1L: 0L);
         }
+ 
+        Boolean allow_profile_edit = entity.getAllow_profile_edit();
+        if (allow_profile_edit != null) {
+            stmt.bindLong(25, allow_profile_edit ? 1L: 0L);
+        }
     }
 
     /** @inheritdoc */
@@ -249,7 +256,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             cursor.getShort(offset + 20) != 0, // commentsVotingEnabled
             cursor.isNull(offset + 21) ? null : cursor.getShort(offset + 21) != 0, // bookmarksEnabled
             cursor.isNull(offset + 22) ? null : cursor.getShort(offset + 22) != 0, // forumEnabled
-            cursor.isNull(offset + 23) ? null : cursor.getShort(offset + 23) != 0 // twilioEnabled
+            cursor.isNull(offset + 23) ? null : cursor.getShort(offset + 23) != 0, // twilioEnabled
+            cursor.isNull(offset + 24) ? null : cursor.getShort(offset + 24) != 0 // allow_profile_edit
         );
         return entity;
     }
@@ -281,6 +289,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         entity.setBookmarksEnabled(cursor.isNull(offset + 21) ? null : cursor.getShort(offset + 21) != 0);
         entity.setForumEnabled(cursor.isNull(offset + 22) ? null : cursor.getShort(offset + 22) != 0);
         entity.setTwilioEnabled(cursor.isNull(offset + 23) ? null : cursor.getShort(offset + 23) != 0);
+        entity.setAllow_profile_edit(cursor.isNull(offset + 24) ? null : cursor.getShort(offset + 24) != 0);
      }
     
     /** @inheritdoc */

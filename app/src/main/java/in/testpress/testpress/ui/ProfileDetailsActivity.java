@@ -277,7 +277,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
 
     @OnClick(R.id.profile_photo)
     public void displayProfilePhoto() {
-        if (profileDetails != null && fetchInstituteSetting().getAllow_profile_edit()) {
+        if (profileDetails != null && fetchInstituteSetting().getAllowProfileEdit()) {
             Intent intent = new Intent(this, ProfilePhotoActivity.class);
             intent.putExtra("profilePhoto", profileDetails.getPhoto());
             startActivityForResult(intent, SELECT_IMAGE);

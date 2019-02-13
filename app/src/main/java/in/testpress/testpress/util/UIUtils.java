@@ -82,7 +82,13 @@ public class UIUtils {
             case R.string.posts:
                 return instituteSettings.getPostsLabel();
             case R.string.learn:
-                return instituteSettings.getCoursesLabel();
+                return instituteSettings.getLearnLabel();
+            case R.string.bookmarks:
+                return instituteSettings.getBookmarksLabel();
+            case R.string.dashboard:
+                return instituteSettings.getDashboardLabel();
+            case R.string.testpress_leaderboard:
+                return instituteSettings.getLeaderboardLabel();
             default:
                 return "";
         }

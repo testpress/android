@@ -52,13 +52,13 @@ public class Forum {
     /** Used for active entity operations. */
     private transient ForumDao myDao;
 
-    public User createdBy;
+    private User createdBy;
     private Long createdBy__resolvedKey;
 
-    public User lastCommentedBy;
+    private User lastCommentedBy;
     private Long lastCommentedBy__resolvedKey;
 
-    public Category category;
+    private Category category;
     private Long category__resolvedKey;
 
 

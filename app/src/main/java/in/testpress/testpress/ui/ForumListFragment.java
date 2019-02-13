@@ -254,7 +254,7 @@ public class ForumListFragment extends Fragment implements
                 if (sortBy.isEmpty()) {
                     adapter.getWrappedAdapter().clearSortBy();
                 } else {
-                    adapter.getWrappedAdapter().setSortBy(sortBy);
+                    adapter.getWrappedAdapter().setSortBy(sortBySelectedPosition);
                 }
                 listView.setVisibility(View.VISIBLE);
                 emptyView.setVisibility(View.GONE);
@@ -279,7 +279,7 @@ public class ForumListFragment extends Fragment implements
                 if (sortBy.isEmpty()) {
                     adapter.getWrappedAdapter().clearSortBy();
                 } else {
-                    adapter.getWrappedAdapter().setSortBy(sortBy);
+                    adapter.getWrappedAdapter().setSortBy(sortBySelectedPosition);
                 }
                 listView.setVisibility(View.VISIBLE);
                 emptyView.setVisibility(View.GONE);
@@ -753,16 +753,16 @@ public class ForumListFragment extends Fragment implements
     protected void writeToDB(List<Forum> forums) {
         List<Category> categories = new ArrayList<>();
         for (Forum forum : forums) {
-            if (forum.category != null) {
-                categories.add(forum.category);
+            if (forum.getCategory() != null) {
+                categories.add(forum.getCategory());
             }
         }
         categoryDao.insertOrReplaceInTx(categories);
         for (Forum forumTemp : forums) {
-            User user = forumTemp.createdBy;
+            User user = forumTemp.getCreatedBy();
             userDao.insertOrReplace(user);
             forumTemp.setCreatorId(user.getId());
-            user = forumTemp.lastCommentedBy;
+            user = forumTemp.getLastCommentedBy();
             if (user != null) {
                 userDao.insertOrReplace(user);
                 forumTemp.setCommentorId(user.getId());

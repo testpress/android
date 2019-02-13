@@ -7,7 +7,7 @@ import de.greenrobot.daogenerator.Schema;
 
 public class TestpressDaoGenerator {
     public static void main(String args[]) throws Exception {
-        Schema schema = new Schema(10, "in.testpress.testpress.models");
+        Schema schema = new Schema(12, "in.testpress.testpress.models");
 
         Entity post = schema.addEntity("Post");
         post.addLongProperty("id").primaryKey();
@@ -47,6 +47,13 @@ public class TestpressDaoGenerator {
         instituteSettings.addBooleanProperty("coursesEnabled");
         instituteSettings.addBooleanProperty("coursesEnableGamification");
         instituteSettings.addStringProperty("coursesLabel");
+        instituteSettings.addStringProperty("emptyCourseMessage");
+        instituteSettings.addStringProperty("contentsButtonLabel");
+        instituteSettings.addStringProperty("courseListChaptersCountLabel");
+        instituteSettings.addStringProperty("learnLabel");
+        instituteSettings.addStringProperty("courseListChaptersCountPluralLabel");
+        instituteSettings.addStringProperty("courseListContentsCountLabel");
+        instituteSettings.addStringProperty("courseListContentsCountPluralLabel");
         instituteSettings.addBooleanProperty("postsEnabled");
         instituteSettings.addStringProperty("postsLabel");
         instituteSettings.addBooleanProperty("storeEnabled");
@@ -55,12 +62,16 @@ public class TestpressDaoGenerator {
         instituteSettings.addStringProperty("documentsLabel");
         instituteSettings.addBooleanProperty("resultsEnabled");
         instituteSettings.addBooleanProperty("dashboardEnabled");
+        instituteSettings.addStringProperty("dashboardLabel");
         instituteSettings.addBooleanProperty("facebookLoginEnabled");
         instituteSettings.addBooleanProperty("googleLoginEnabled");
         instituteSettings.addBooleanProperty("commentsVotingEnabled").notNull();
         instituteSettings.addBooleanProperty("bookmarksEnabled");
+        instituteSettings.addStringProperty("bookmarksLabel");
+        instituteSettings.addStringProperty("leaderboardLabel");
         instituteSettings.addBooleanProperty("forumEnabled");
         instituteSettings.addBooleanProperty("twilioEnabled");
+        instituteSettings.addBooleanProperty("allowProfileEdit");
 
         Entity rssFeed = schema.addEntity("RssItem");
         rssFeed.addLongProperty("id").primaryKey().autoincrement();

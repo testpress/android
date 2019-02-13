@@ -33,7 +33,7 @@ public class Post {
     /** Used for active entity operations. */
     private transient PostDao myDao;
 
-    public Category category;
+    private Category category;
     private Long category__resolvedKey;
 
 

@@ -16,6 +16,13 @@ public class InstituteSettings {
     private Boolean coursesEnabled;
     private Boolean coursesEnableGamification;
     private String coursesLabel;
+    private String emptyCourseMessage;
+    private String contentsButtonLabel;
+    private String courseListChaptersCountLabel;
+    private String learnLabel;
+    private String courseListChaptersCountPluralLabel;
+    private String courseListContentsCountLabel;
+    private String courseListContentsCountPluralLabel;
     private Boolean postsEnabled;
     private String postsLabel;
     private Boolean storeEnabled;
@@ -24,9 +31,16 @@ public class InstituteSettings {
     private String documentsLabel;
     private Boolean resultsEnabled;
     private Boolean dashboardEnabled;
+    private String dashboardLabel;
     private Boolean facebookLoginEnabled;
     private Boolean googleLoginEnabled;
     private boolean commentsVotingEnabled;
+    private Boolean bookmarksEnabled;
+    private String bookmarksLabel;
+    private String leaderboardLabel;
+    private Boolean forumEnabled;
+    private Boolean twilioEnabled;
+    private Boolean allowProfileEdit;
 
     public InstituteSettings() {
     }
@@ -35,7 +49,7 @@ public class InstituteSettings {
         this.baseUrl = baseUrl;
     }
 
-    public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, Boolean facebookLoginEnabled, Boolean googleLoginEnabled, boolean commentsVotingEnabled) {
+    public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, String emptyCourseMessage, String contentsButtonLabel, String courseListChaptersCountLabel, String learnLabel, String courseListChaptersCountPluralLabel, String courseListContentsCountLabel, String courseListContentsCountPluralLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, String dashboardLabel, Boolean facebookLoginEnabled, Boolean googleLoginEnabled, boolean commentsVotingEnabled, Boolean bookmarksEnabled, String bookmarksLabel, String leaderboardLabel, Boolean forumEnabled, Boolean twilioEnabled, Boolean allowProfileEdit) {
         this.baseUrl = baseUrl;
         this.verificationMethod = verificationMethod;
         this.allowSignup = allowSignup;
@@ -46,6 +60,13 @@ public class InstituteSettings {
         this.coursesEnabled = coursesEnabled;
         this.coursesEnableGamification = coursesEnableGamification;
         this.coursesLabel = coursesLabel;
+        this.emptyCourseMessage = emptyCourseMessage;
+        this.contentsButtonLabel = contentsButtonLabel;
+        this.courseListChaptersCountLabel = courseListChaptersCountLabel;
+        this.learnLabel = learnLabel;
+        this.courseListChaptersCountPluralLabel = courseListChaptersCountPluralLabel;
+        this.courseListContentsCountLabel = courseListContentsCountLabel;
+        this.courseListContentsCountPluralLabel = courseListContentsCountPluralLabel;
         this.postsEnabled = postsEnabled;
         this.postsLabel = postsLabel;
         this.storeEnabled = storeEnabled;
@@ -54,9 +75,16 @@ public class InstituteSettings {
         this.documentsLabel = documentsLabel;
         this.resultsEnabled = resultsEnabled;
         this.dashboardEnabled = dashboardEnabled;
+        this.dashboardLabel = dashboardLabel;
         this.facebookLoginEnabled = facebookLoginEnabled;
         this.googleLoginEnabled = googleLoginEnabled;
         this.commentsVotingEnabled = commentsVotingEnabled;
+        this.bookmarksEnabled = bookmarksEnabled;
+        this.bookmarksLabel = bookmarksLabel;
+        this.leaderboardLabel = leaderboardLabel;
+        this.forumEnabled = forumEnabled;
+        this.twilioEnabled = twilioEnabled;
+        this.allowProfileEdit = allowProfileEdit;
     }
 
     public String getBaseUrl() {
@@ -139,6 +167,62 @@ public class InstituteSettings {
         this.coursesLabel = coursesLabel;
     }
 
+    public String getEmptyCourseMessage() {
+        return emptyCourseMessage;
+    }
+
+    public void setEmptyCourseMessage(String emptyCourseMessage) {
+        this.emptyCourseMessage = emptyCourseMessage;
+    }
+
+    public String getContentsButtonLabel() {
+        return contentsButtonLabel;
+    }
+
+    public void setContentsButtonLabel(String contentsButtonLabel) {
+        this.contentsButtonLabel = contentsButtonLabel;
+    }
+
+    public String getCourseListChaptersCountLabel() {
+        return courseListChaptersCountLabel;
+    }
+
+    public void setCourseListChaptersCountLabel(String courseListChaptersCountLabel) {
+        this.courseListChaptersCountLabel = courseListChaptersCountLabel;
+    }
+
+    public String getLearnLabel() {
+        return learnLabel;
+    }
+
+    public void setLearnLabel(String learnLabel) {
+        this.learnLabel = learnLabel;
+    }
+
+    public String getCourseListChaptersCountPluralLabel() {
+        return courseListChaptersCountPluralLabel;
+    }
+
+    public void setCourseListChaptersCountPluralLabel(String courseListChaptersCountPluralLabel) {
+        this.courseListChaptersCountPluralLabel = courseListChaptersCountPluralLabel;
+    }
+
+    public String getCourseListContentsCountLabel() {
+        return courseListContentsCountLabel;
+    }
+
+    public void setCourseListContentsCountLabel(String courseListContentsCountLabel) {
+        this.courseListContentsCountLabel = courseListContentsCountLabel;
+    }
+
+    public String getCourseListContentsCountPluralLabel() {
+        return courseListContentsCountPluralLabel;
+    }
+
+    public void setCourseListContentsCountPluralLabel(String courseListContentsCountPluralLabel) {
+        this.courseListContentsCountPluralLabel = courseListContentsCountPluralLabel;
+    }
+
     public Boolean getPostsEnabled() {
         return postsEnabled;
     }
@@ -203,6 +287,14 @@ public class InstituteSettings {
         this.dashboardEnabled = dashboardEnabled;
     }
 
+    public String getDashboardLabel() {
+        return dashboardLabel;
+    }
+
+    public void setDashboardLabel(String dashboardLabel) {
+        this.dashboardLabel = dashboardLabel;
+    }
+
     public Boolean getFacebookLoginEnabled() {
         return facebookLoginEnabled;
     }
@@ -225,6 +317,54 @@ public class InstituteSettings {
 
     public void setCommentsVotingEnabled(boolean commentsVotingEnabled) {
         this.commentsVotingEnabled = commentsVotingEnabled;
+    }
+
+    public Boolean getBookmarksEnabled() {
+        return bookmarksEnabled;
+    }
+
+    public void setBookmarksEnabled(Boolean bookmarksEnabled) {
+        this.bookmarksEnabled = bookmarksEnabled;
+    }
+
+    public String getBookmarksLabel() {
+        return bookmarksLabel;
+    }
+
+    public void setBookmarksLabel(String bookmarksLabel) {
+        this.bookmarksLabel = bookmarksLabel;
+    }
+
+    public String getLeaderboardLabel() {
+        return leaderboardLabel;
+    }
+
+    public void setLeaderboardLabel(String leaderboardLabel) {
+        this.leaderboardLabel = leaderboardLabel;
+    }
+
+    public Boolean getForumEnabled() {
+        return forumEnabled;
+    }
+
+    public void setForumEnabled(Boolean forumEnabled) {
+        this.forumEnabled = forumEnabled;
+    }
+
+    public Boolean getTwilioEnabled() {
+        return twilioEnabled;
+    }
+
+    public void setTwilioEnabled(Boolean twilioEnabled) {
+        this.twilioEnabled = twilioEnabled;
+    }
+
+    public Boolean getAllowProfileEdit() {
+        return allowProfileEdit;
+    }
+
+    public void setAllowProfileEdit(Boolean allowProfileEdit) {
+        this.allowProfileEdit = allowProfileEdit;
     }
 
 }

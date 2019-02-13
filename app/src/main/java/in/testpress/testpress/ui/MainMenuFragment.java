@@ -32,7 +32,9 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
+import in.testpress.core.TestpressSession;
 import in.testpress.exam.TestpressExam;
+import in.testpress.store.TestpressStore;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
@@ -46,11 +48,17 @@ import in.testpress.testpress.models.CategoryDao;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
+import in.testpress.testpress.models.TestpressApiErrorResponse;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
+import in.testpress.testpress.util.UIUtils;
+import retrofit.RetrofitError;
 
 import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
+import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
+import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.ui.DrupalRssListFragment.RSS_FEED_URL;
 
 public class MainMenuFragment extends Fragment {
 
@@ -62,6 +70,8 @@ public class MainMenuFragment extends Fragment {
     @InjectView(R.id.quick_links_container)
     LinearLayout quickLinksContainer;
     Account[] account;
+
+    private InstituteSettings mInstituteSettings;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -77,29 +87,38 @@ public class MainMenuFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         fetchStarredCategories();
         AccountManager manager = (AccountManager) getActivity().getSystemService(Context.ACCOUNT_SERVICE);
-        account = manager.getAccountsByType(Constants.Auth.TESTPRESS_ACCOUNT_TYPE);
+        account = manager.getAccountsByType(APPLICATION_ID);
         DaoSession daoSession =
                 ((TestpressApplication) getActivity().getApplicationContext()).getDaoSession();
 
         InstituteSettingsDao instituteSettingsDao = daoSession.getInstituteSettingsDao();
         InstituteSettings instituteSettings = instituteSettingsDao.queryBuilder()
-                .where(InstituteSettingsDao.Properties.BaseUrl.eq(Constants.Http.URL_BASE))
+                .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
                 .list().get(0);
+        mInstituteSettings = instituteSettings;
 
         LinkedHashMap<Integer, Integer> mMenuItemResIds = new LinkedHashMap<>();
         final boolean isUserAuthenticated = account.length > 0;
+        // ToDo get from institute settings
+        boolean drupalRssFeedEnabled = false;
         if (isUserAuthenticated) {
             if (!instituteSettings.getShowGameFrontend()) {
                 mMenuItemResIds.put(R.string.my_exams, R.drawable.exams);
+            }
+            if (instituteSettings.getBookmarksEnabled()) {
+                mMenuItemResIds.put(R.string.bookmarks, R.drawable.bookmark);
             }
             if (instituteSettings.getDocumentsEnabled()) {
                 mMenuItemResIds.put(R.string.documents, R.drawable.documents);
             }
             mMenuItemResIds.put(R.string.analytics, R.drawable.analytics);
             mMenuItemResIds.put(R.string.profile, R.drawable.ic_profile_details);
+            if (instituteSettings.getStoreEnabled()) {
+                mMenuItemResIds.put(R.string.store, R.drawable.store);
+            }
         }
-        if (instituteSettings.getStoreEnabled()) {
-            mMenuItemResIds.put(R.string.store, R.drawable.store);
+        if (drupalRssFeedEnabled) {
+            mMenuItemResIds.put(R.string.rss_posts, R.drawable.rss_feed);
         }
         if (instituteSettings.getPostsEnabled()) {
             mMenuItemResIds.put(R.string.posts, R.drawable.posts);
@@ -112,7 +131,7 @@ public class MainMenuFragment extends Fragment {
             mMenuItemResIds.put(R.string.login, R.drawable.login);
         }
 
-        MainMenuGridAdapter adapter = new MainMenuGridAdapter(getActivity(), mMenuItemResIds);
+        MainMenuGridAdapter adapter = new MainMenuGridAdapter(getActivity(), mMenuItemResIds, instituteSettings);
         grid=(GridView)view.findViewById(R.id.grid);
         grid.setAdapter(adapter);
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -121,24 +140,41 @@ public class MainMenuFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Intent intent;
+                String custom_title;
                 switch ((int) id) {
                     case R.string.my_exams:
                         checkAuthenticatedUser(R.string.my_exams);
                         break;
+                    case R.string.bookmarks:
+                        checkAuthenticatedUser(R.string.bookmarks);
+                        break;
                     case R.string.store:
-                        intent = new Intent(getActivity(), ProductsListActivity.class);
-                        startActivity(intent);
+                        checkAuthenticatedUser(R.string.store);
                         break;
                     case R.string.documents:
+                        custom_title = UIUtils.getMenuItemName(R.string.documents, mInstituteSettings);
                         intent = new Intent(getActivity(), DocumentsListActivity.class);
+                        intent.putExtra("title", custom_title);
                         startActivity(intent);
                         break;
                     case R.string.orders:
                         intent = new Intent(getActivity(), OrdersListActivity.class);
                         startActivity(intent);
                         break;
+                    case R.string.rss_posts:
+                        intent = new Intent(getActivity(), DrupalRssListActivity.class);
+                        intent.putExtra(RSS_FEED_URL, "https://www.wired.com/feed/");
+                        startActivity(intent);
+                        break;
                     case R.string.posts:
+                        custom_title = UIUtils.getMenuItemName(R.string.posts, mInstituteSettings);
                         intent = new Intent(getActivity(), PostsListActivity.class);
+                        intent.putExtra("userAuthenticated", isUserAuthenticated);
+                        intent.putExtra("title", custom_title);
+                        startActivity(intent);
+                        break;
+                    case R.string.forum:
+                        intent = new Intent(getActivity(), ForumListActivity.class);
                         intent.putExtra("userAuthenticated", isUserAuthenticated);
                         startActivity(intent);
                         break;
@@ -193,16 +229,25 @@ public class MainMenuFragment extends Fragment {
     }
 
     void showSDK(int clickedMenuTitleResId) {
+        //noinspection ConstantConditions
+        TestpressSession session = TestpressSdk.getTestpressSession(getActivity());
+        assert session != null;
         switch (clickedMenuTitleResId) {
             case R.string.my_exams:
-                //noinspection ConstantConditions
-                TestpressExam.showCategories(getActivity(), true,
-                        TestpressSdk.getTestpressSession(getActivity()));
+                TestpressExam.showCategories(getActivity(), true, session);
+                break;
+            case R.string.bookmarks:
+                TestpressExam.showBookmarks(getActivity(), session);
                 break;
             case R.string.analytics:
-                //noinspection ConstantConditions
-                TestpressExam.showAnalytics(getActivity(), SUBJECT_ANALYTICS_PATH,
-                        TestpressSdk.getTestpressSession(getActivity()));
+                TestpressExam.showAnalytics(getActivity(), SUBJECT_ANALYTICS_PATH, session);
+                break;
+            case R.string.store:
+                String title = UIUtils.getMenuItemName(R.string.store, mInstituteSettings);
+                Intent intent = new Intent();
+                intent.putExtra("title", title);
+                getActivity().setIntent(intent);
+                TestpressStore.show(getActivity(), session);
                 break;
         }
     }
@@ -210,7 +255,8 @@ public class MainMenuFragment extends Fragment {
     void shareApp() {
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("text/plain");
-        share.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.share_message) + getActivity().getPackageName());
+        share.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_message) +
+                getString(R.string.get_it_at) + getActivity().getPackageName());
         startActivity(Intent.createChooser(share, "Share with"));
     }
 
@@ -257,7 +303,24 @@ public class MainMenuFragment extends Fragment {
                             categories));
                 }
             }
+
+            protected void onException(Exception e) {
+                super.onException(e);
+
+                if (e.getMessage().equals("403 FORBIDDEN")){
+                    logoutIfExceptionContainInvalidSignature(e);
+                }
+            }
         }.execute();
+    }
+
+    public void logoutIfExceptionContainInvalidSignature(Exception e) {
+
+        TestpressApiErrorResponse testpressApiErrorResponse = (TestpressApiErrorResponse) (((RetrofitError) e).getBodyAs(TestpressApiErrorResponse.class));
+
+        if (testpressApiErrorResponse.getDetail().equals("Invalid signature")) {
+            serviceProvider.logout(getActivity(), testpressService, serviceProvider, logoutService);
+        }
     }
 
     public static class StarredCategoryAdapter

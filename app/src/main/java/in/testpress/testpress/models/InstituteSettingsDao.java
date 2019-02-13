@@ -33,17 +33,31 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         public final static Property CoursesEnabled = new Property(7, Boolean.class, "coursesEnabled", false, "COURSES_ENABLED");
         public final static Property CoursesEnableGamification = new Property(8, Boolean.class, "coursesEnableGamification", false, "COURSES_ENABLE_GAMIFICATION");
         public final static Property CoursesLabel = new Property(9, String.class, "coursesLabel", false, "COURSES_LABEL");
-        public final static Property PostsEnabled = new Property(10, Boolean.class, "postsEnabled", false, "POSTS_ENABLED");
-        public final static Property PostsLabel = new Property(11, String.class, "postsLabel", false, "POSTS_LABEL");
-        public final static Property StoreEnabled = new Property(12, Boolean.class, "storeEnabled", false, "STORE_ENABLED");
-        public final static Property StoreLabel = new Property(13, String.class, "storeLabel", false, "STORE_LABEL");
-        public final static Property DocumentsEnabled = new Property(14, Boolean.class, "documentsEnabled", false, "DOCUMENTS_ENABLED");
-        public final static Property DocumentsLabel = new Property(15, String.class, "documentsLabel", false, "DOCUMENTS_LABEL");
-        public final static Property ResultsEnabled = new Property(16, Boolean.class, "resultsEnabled", false, "RESULTS_ENABLED");
-        public final static Property DashboardEnabled = new Property(17, Boolean.class, "dashboardEnabled", false, "DASHBOARD_ENABLED");
-        public final static Property FacebookLoginEnabled = new Property(18, Boolean.class, "facebookLoginEnabled", false, "FACEBOOK_LOGIN_ENABLED");
-        public final static Property GoogleLoginEnabled = new Property(19, Boolean.class, "googleLoginEnabled", false, "GOOGLE_LOGIN_ENABLED");
-        public final static Property CommentsVotingEnabled = new Property(20, boolean.class, "commentsVotingEnabled", false, "COMMENTS_VOTING_ENABLED");
+        public final static Property EmptyCourseMessage = new Property(10, String.class, "emptyCourseMessage", false, "EMPTY_COURSE_MESSAGE");
+        public final static Property ContentsButtonLabel = new Property(11, String.class, "contentsButtonLabel", false, "CONTENTS_BUTTON_LABEL");
+        public final static Property CourseListChaptersCountLabel = new Property(12, String.class, "courseListChaptersCountLabel", false, "COURSE_LIST_CHAPTERS_COUNT_LABEL");
+        public final static Property LearnLabel = new Property(13, String.class, "learnLabel", false, "LEARN_LABEL");
+        public final static Property CourseListChaptersCountPluralLabel = new Property(14, String.class, "courseListChaptersCountPluralLabel", false, "COURSE_LIST_CHAPTERS_COUNT_PLURAL_LABEL");
+        public final static Property CourseListContentsCountLabel = new Property(15, String.class, "courseListContentsCountLabel", false, "COURSE_LIST_CONTENTS_COUNT_LABEL");
+        public final static Property CourseListContentsCountPluralLabel = new Property(16, String.class, "courseListContentsCountPluralLabel", false, "COURSE_LIST_CONTENTS_COUNT_PLURAL_LABEL");
+        public final static Property PostsEnabled = new Property(17, Boolean.class, "postsEnabled", false, "POSTS_ENABLED");
+        public final static Property PostsLabel = new Property(18, String.class, "postsLabel", false, "POSTS_LABEL");
+        public final static Property StoreEnabled = new Property(19, Boolean.class, "storeEnabled", false, "STORE_ENABLED");
+        public final static Property StoreLabel = new Property(20, String.class, "storeLabel", false, "STORE_LABEL");
+        public final static Property DocumentsEnabled = new Property(21, Boolean.class, "documentsEnabled", false, "DOCUMENTS_ENABLED");
+        public final static Property DocumentsLabel = new Property(22, String.class, "documentsLabel", false, "DOCUMENTS_LABEL");
+        public final static Property ResultsEnabled = new Property(23, Boolean.class, "resultsEnabled", false, "RESULTS_ENABLED");
+        public final static Property DashboardEnabled = new Property(24, Boolean.class, "dashboardEnabled", false, "DASHBOARD_ENABLED");
+        public final static Property DashboardLabel = new Property(25, String.class, "dashboardLabel", false, "DASHBOARD_LABEL");
+        public final static Property FacebookLoginEnabled = new Property(26, Boolean.class, "facebookLoginEnabled", false, "FACEBOOK_LOGIN_ENABLED");
+        public final static Property GoogleLoginEnabled = new Property(27, Boolean.class, "googleLoginEnabled", false, "GOOGLE_LOGIN_ENABLED");
+        public final static Property CommentsVotingEnabled = new Property(28, boolean.class, "commentsVotingEnabled", false, "COMMENTS_VOTING_ENABLED");
+        public final static Property BookmarksEnabled = new Property(29, Boolean.class, "bookmarksEnabled", false, "BOOKMARKS_ENABLED");
+        public final static Property BookmarksLabel = new Property(30, String.class, "bookmarksLabel", false, "BOOKMARKS_LABEL");
+        public final static Property LeaderboardLabel = new Property(31, String.class, "leaderboardLabel", false, "LEADERBOARD_LABEL");
+        public final static Property ForumEnabled = new Property(32, Boolean.class, "forumEnabled", false, "FORUM_ENABLED");
+        public final static Property TwilioEnabled = new Property(33, Boolean.class, "twilioEnabled", false, "TWILIO_ENABLED");
+        public final static Property AllowProfileEdit = new Property(34, Boolean.class, "allowProfileEdit", false, "ALLOW_PROFILE_EDIT");
     };
 
 
@@ -69,17 +83,31 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
                 "\"COURSES_ENABLED\" INTEGER," + // 7: coursesEnabled
                 "\"COURSES_ENABLE_GAMIFICATION\" INTEGER," + // 8: coursesEnableGamification
                 "\"COURSES_LABEL\" TEXT," + // 9: coursesLabel
-                "\"POSTS_ENABLED\" INTEGER," + // 10: postsEnabled
-                "\"POSTS_LABEL\" TEXT," + // 11: postsLabel
-                "\"STORE_ENABLED\" INTEGER," + // 12: storeEnabled
-                "\"STORE_LABEL\" TEXT," + // 13: storeLabel
-                "\"DOCUMENTS_ENABLED\" INTEGER," + // 14: documentsEnabled
-                "\"DOCUMENTS_LABEL\" TEXT," + // 15: documentsLabel
-                "\"RESULTS_ENABLED\" INTEGER," + // 16: resultsEnabled
-                "\"DASHBOARD_ENABLED\" INTEGER," + // 17: dashboardEnabled
-                "\"FACEBOOK_LOGIN_ENABLED\" INTEGER," + // 18: facebookLoginEnabled
-                "\"GOOGLE_LOGIN_ENABLED\" INTEGER," + // 19: googleLoginEnabled
-                "\"COMMENTS_VOTING_ENABLED\" INTEGER NOT NULL );"); // 20: commentsVotingEnabled
+                "\"EMPTY_COURSE_MESSAGE\" TEXT," + // 10: emptyCourseMessage
+                "\"CONTENTS_BUTTON_LABEL\" TEXT," + // 11: contentsButtonLabel
+                "\"COURSE_LIST_CHAPTERS_COUNT_LABEL\" TEXT," + // 12: courseListChaptersCountLabel
+                "\"LEARN_LABEL\" TEXT," + // 13: learnLabel
+                "\"COURSE_LIST_CHAPTERS_COUNT_PLURAL_LABEL\" TEXT," + // 14: courseListChaptersCountPluralLabel
+                "\"COURSE_LIST_CONTENTS_COUNT_LABEL\" TEXT," + // 15: courseListContentsCountLabel
+                "\"COURSE_LIST_CONTENTS_COUNT_PLURAL_LABEL\" TEXT," + // 16: courseListContentsCountPluralLabel
+                "\"POSTS_ENABLED\" INTEGER," + // 17: postsEnabled
+                "\"POSTS_LABEL\" TEXT," + // 18: postsLabel
+                "\"STORE_ENABLED\" INTEGER," + // 19: storeEnabled
+                "\"STORE_LABEL\" TEXT," + // 20: storeLabel
+                "\"DOCUMENTS_ENABLED\" INTEGER," + // 21: documentsEnabled
+                "\"DOCUMENTS_LABEL\" TEXT," + // 22: documentsLabel
+                "\"RESULTS_ENABLED\" INTEGER," + // 23: resultsEnabled
+                "\"DASHBOARD_ENABLED\" INTEGER," + // 24: dashboardEnabled
+                "\"DASHBOARD_LABEL\" TEXT," + // 25: dashboardLabel
+                "\"FACEBOOK_LOGIN_ENABLED\" INTEGER," + // 26: facebookLoginEnabled
+                "\"GOOGLE_LOGIN_ENABLED\" INTEGER," + // 27: googleLoginEnabled
+                "\"COMMENTS_VOTING_ENABLED\" INTEGER NOT NULL ," + // 28: commentsVotingEnabled
+                "\"BOOKMARKS_ENABLED\" INTEGER," + // 29: bookmarksEnabled
+                "\"BOOKMARKS_LABEL\" TEXT," + // 30: bookmarksLabel
+                "\"LEADERBOARD_LABEL\" TEXT," + // 31: leaderboardLabel
+                "\"FORUM_ENABLED\" INTEGER," + // 32: forumEnabled
+                "\"TWILIO_ENABLED\" INTEGER," + // 33: twilioEnabled
+                "\"ALLOW_PROFILE_EDIT\" INTEGER);"); // 34: allowProfileEdit
     }
 
     /** Drops the underlying database table. */
@@ -143,56 +171,126 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             stmt.bindString(10, coursesLabel);
         }
  
+        String emptyCourseMessage = entity.getEmptyCourseMessage();
+        if (emptyCourseMessage != null) {
+            stmt.bindString(11, emptyCourseMessage);
+        }
+ 
+        String contentsButtonLabel = entity.getContentsButtonLabel();
+        if (contentsButtonLabel != null) {
+            stmt.bindString(12, contentsButtonLabel);
+        }
+ 
+        String courseListChaptersCountLabel = entity.getCourseListChaptersCountLabel();
+        if (courseListChaptersCountLabel != null) {
+            stmt.bindString(13, courseListChaptersCountLabel);
+        }
+ 
+        String learnLabel = entity.getLearnLabel();
+        if (learnLabel != null) {
+            stmt.bindString(14, learnLabel);
+        }
+ 
+        String courseListChaptersCountPluralLabel = entity.getCourseListChaptersCountPluralLabel();
+        if (courseListChaptersCountPluralLabel != null) {
+            stmt.bindString(15, courseListChaptersCountPluralLabel);
+        }
+ 
+        String courseListContentsCountLabel = entity.getCourseListContentsCountLabel();
+        if (courseListContentsCountLabel != null) {
+            stmt.bindString(16, courseListContentsCountLabel);
+        }
+ 
+        String courseListContentsCountPluralLabel = entity.getCourseListContentsCountPluralLabel();
+        if (courseListContentsCountPluralLabel != null) {
+            stmt.bindString(17, courseListContentsCountPluralLabel);
+        }
+ 
         Boolean postsEnabled = entity.getPostsEnabled();
         if (postsEnabled != null) {
-            stmt.bindLong(11, postsEnabled ? 1L: 0L);
+            stmt.bindLong(18, postsEnabled ? 1L: 0L);
         }
  
         String postsLabel = entity.getPostsLabel();
         if (postsLabel != null) {
-            stmt.bindString(12, postsLabel);
+            stmt.bindString(19, postsLabel);
         }
  
         Boolean storeEnabled = entity.getStoreEnabled();
         if (storeEnabled != null) {
-            stmt.bindLong(13, storeEnabled ? 1L: 0L);
+            stmt.bindLong(20, storeEnabled ? 1L: 0L);
         }
  
         String storeLabel = entity.getStoreLabel();
         if (storeLabel != null) {
-            stmt.bindString(14, storeLabel);
+            stmt.bindString(21, storeLabel);
         }
  
         Boolean documentsEnabled = entity.getDocumentsEnabled();
         if (documentsEnabled != null) {
-            stmt.bindLong(15, documentsEnabled ? 1L: 0L);
+            stmt.bindLong(22, documentsEnabled ? 1L: 0L);
         }
  
         String documentsLabel = entity.getDocumentsLabel();
         if (documentsLabel != null) {
-            stmt.bindString(16, documentsLabel);
+            stmt.bindString(23, documentsLabel);
         }
  
         Boolean resultsEnabled = entity.getResultsEnabled();
         if (resultsEnabled != null) {
-            stmt.bindLong(17, resultsEnabled ? 1L: 0L);
+            stmt.bindLong(24, resultsEnabled ? 1L: 0L);
         }
  
         Boolean dashboardEnabled = entity.getDashboardEnabled();
         if (dashboardEnabled != null) {
-            stmt.bindLong(18, dashboardEnabled ? 1L: 0L);
+            stmt.bindLong(25, dashboardEnabled ? 1L: 0L);
+        }
+ 
+        String dashboardLabel = entity.getDashboardLabel();
+        if (dashboardLabel != null) {
+            stmt.bindString(26, dashboardLabel);
         }
  
         Boolean facebookLoginEnabled = entity.getFacebookLoginEnabled();
         if (facebookLoginEnabled != null) {
-            stmt.bindLong(19, facebookLoginEnabled ? 1L: 0L);
+            stmt.bindLong(27, facebookLoginEnabled ? 1L: 0L);
         }
  
         Boolean googleLoginEnabled = entity.getGoogleLoginEnabled();
         if (googleLoginEnabled != null) {
-            stmt.bindLong(20, googleLoginEnabled ? 1L: 0L);
+            stmt.bindLong(28, googleLoginEnabled ? 1L: 0L);
         }
-        stmt.bindLong(21, entity.getCommentsVotingEnabled() ? 1L: 0L);
+        stmt.bindLong(29, entity.getCommentsVotingEnabled() ? 1L: 0L);
+ 
+        Boolean bookmarksEnabled = entity.getBookmarksEnabled();
+        if (bookmarksEnabled != null) {
+            stmt.bindLong(30, bookmarksEnabled ? 1L: 0L);
+        }
+ 
+        String bookmarksLabel = entity.getBookmarksLabel();
+        if (bookmarksLabel != null) {
+            stmt.bindString(31, bookmarksLabel);
+        }
+ 
+        String leaderboardLabel = entity.getLeaderboardLabel();
+        if (leaderboardLabel != null) {
+            stmt.bindString(32, leaderboardLabel);
+        }
+ 
+        Boolean forumEnabled = entity.getForumEnabled();
+        if (forumEnabled != null) {
+            stmt.bindLong(33, forumEnabled ? 1L: 0L);
+        }
+ 
+        Boolean twilioEnabled = entity.getTwilioEnabled();
+        if (twilioEnabled != null) {
+            stmt.bindLong(34, twilioEnabled ? 1L: 0L);
+        }
+ 
+        Boolean allowProfileEdit = entity.getAllowProfileEdit();
+        if (allowProfileEdit != null) {
+            stmt.bindLong(35, allowProfileEdit ? 1L: 0L);
+        }
     }
 
     /** @inheritdoc */
@@ -215,17 +313,31 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             cursor.isNull(offset + 7) ? null : cursor.getShort(offset + 7) != 0, // coursesEnabled
             cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0, // coursesEnableGamification
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // coursesLabel
-            cursor.isNull(offset + 10) ? null : cursor.getShort(offset + 10) != 0, // postsEnabled
-            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // postsLabel
-            cursor.isNull(offset + 12) ? null : cursor.getShort(offset + 12) != 0, // storeEnabled
-            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // storeLabel
-            cursor.isNull(offset + 14) ? null : cursor.getShort(offset + 14) != 0, // documentsEnabled
-            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // documentsLabel
-            cursor.isNull(offset + 16) ? null : cursor.getShort(offset + 16) != 0, // resultsEnabled
-            cursor.isNull(offset + 17) ? null : cursor.getShort(offset + 17) != 0, // dashboardEnabled
-            cursor.isNull(offset + 18) ? null : cursor.getShort(offset + 18) != 0, // facebookLoginEnabled
-            cursor.isNull(offset + 19) ? null : cursor.getShort(offset + 19) != 0, // googleLoginEnabled
-            cursor.getShort(offset + 20) != 0 // commentsVotingEnabled
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // emptyCourseMessage
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // contentsButtonLabel
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // courseListChaptersCountLabel
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // learnLabel
+            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // courseListChaptersCountPluralLabel
+            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // courseListContentsCountLabel
+            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // courseListContentsCountPluralLabel
+            cursor.isNull(offset + 17) ? null : cursor.getShort(offset + 17) != 0, // postsEnabled
+            cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18), // postsLabel
+            cursor.isNull(offset + 19) ? null : cursor.getShort(offset + 19) != 0, // storeEnabled
+            cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20), // storeLabel
+            cursor.isNull(offset + 21) ? null : cursor.getShort(offset + 21) != 0, // documentsEnabled
+            cursor.isNull(offset + 22) ? null : cursor.getString(offset + 22), // documentsLabel
+            cursor.isNull(offset + 23) ? null : cursor.getShort(offset + 23) != 0, // resultsEnabled
+            cursor.isNull(offset + 24) ? null : cursor.getShort(offset + 24) != 0, // dashboardEnabled
+            cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25), // dashboardLabel
+            cursor.isNull(offset + 26) ? null : cursor.getShort(offset + 26) != 0, // facebookLoginEnabled
+            cursor.isNull(offset + 27) ? null : cursor.getShort(offset + 27) != 0, // googleLoginEnabled
+            cursor.getShort(offset + 28) != 0, // commentsVotingEnabled
+            cursor.isNull(offset + 29) ? null : cursor.getShort(offset + 29) != 0, // bookmarksEnabled
+            cursor.isNull(offset + 30) ? null : cursor.getString(offset + 30), // bookmarksLabel
+            cursor.isNull(offset + 31) ? null : cursor.getString(offset + 31), // leaderboardLabel
+            cursor.isNull(offset + 32) ? null : cursor.getShort(offset + 32) != 0, // forumEnabled
+            cursor.isNull(offset + 33) ? null : cursor.getShort(offset + 33) != 0, // twilioEnabled
+            cursor.isNull(offset + 34) ? null : cursor.getShort(offset + 34) != 0 // allowProfileEdit
         );
         return entity;
     }
@@ -243,17 +355,31 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         entity.setCoursesEnabled(cursor.isNull(offset + 7) ? null : cursor.getShort(offset + 7) != 0);
         entity.setCoursesEnableGamification(cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0);
         entity.setCoursesLabel(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setPostsEnabled(cursor.isNull(offset + 10) ? null : cursor.getShort(offset + 10) != 0);
-        entity.setPostsLabel(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
-        entity.setStoreEnabled(cursor.isNull(offset + 12) ? null : cursor.getShort(offset + 12) != 0);
-        entity.setStoreLabel(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
-        entity.setDocumentsEnabled(cursor.isNull(offset + 14) ? null : cursor.getShort(offset + 14) != 0);
-        entity.setDocumentsLabel(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
-        entity.setResultsEnabled(cursor.isNull(offset + 16) ? null : cursor.getShort(offset + 16) != 0);
-        entity.setDashboardEnabled(cursor.isNull(offset + 17) ? null : cursor.getShort(offset + 17) != 0);
-        entity.setFacebookLoginEnabled(cursor.isNull(offset + 18) ? null : cursor.getShort(offset + 18) != 0);
-        entity.setGoogleLoginEnabled(cursor.isNull(offset + 19) ? null : cursor.getShort(offset + 19) != 0);
-        entity.setCommentsVotingEnabled(cursor.getShort(offset + 20) != 0);
+        entity.setEmptyCourseMessage(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setContentsButtonLabel(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setCourseListChaptersCountLabel(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setLearnLabel(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setCourseListChaptersCountPluralLabel(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
+        entity.setCourseListContentsCountLabel(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
+        entity.setCourseListContentsCountPluralLabel(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
+        entity.setPostsEnabled(cursor.isNull(offset + 17) ? null : cursor.getShort(offset + 17) != 0);
+        entity.setPostsLabel(cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18));
+        entity.setStoreEnabled(cursor.isNull(offset + 19) ? null : cursor.getShort(offset + 19) != 0);
+        entity.setStoreLabel(cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20));
+        entity.setDocumentsEnabled(cursor.isNull(offset + 21) ? null : cursor.getShort(offset + 21) != 0);
+        entity.setDocumentsLabel(cursor.isNull(offset + 22) ? null : cursor.getString(offset + 22));
+        entity.setResultsEnabled(cursor.isNull(offset + 23) ? null : cursor.getShort(offset + 23) != 0);
+        entity.setDashboardEnabled(cursor.isNull(offset + 24) ? null : cursor.getShort(offset + 24) != 0);
+        entity.setDashboardLabel(cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25));
+        entity.setFacebookLoginEnabled(cursor.isNull(offset + 26) ? null : cursor.getShort(offset + 26) != 0);
+        entity.setGoogleLoginEnabled(cursor.isNull(offset + 27) ? null : cursor.getShort(offset + 27) != 0);
+        entity.setCommentsVotingEnabled(cursor.getShort(offset + 28) != 0);
+        entity.setBookmarksEnabled(cursor.isNull(offset + 29) ? null : cursor.getShort(offset + 29) != 0);
+        entity.setBookmarksLabel(cursor.isNull(offset + 30) ? null : cursor.getString(offset + 30));
+        entity.setLeaderboardLabel(cursor.isNull(offset + 31) ? null : cursor.getString(offset + 31));
+        entity.setForumEnabled(cursor.isNull(offset + 32) ? null : cursor.getShort(offset + 32) != 0);
+        entity.setTwilioEnabled(cursor.isNull(offset + 33) ? null : cursor.getShort(offset + 33) != 0);
+        entity.setAllowProfileEdit(cursor.isNull(offset + 34) ? null : cursor.getShort(offset + 34) != 0);
      }
     
     /** @inheritdoc */

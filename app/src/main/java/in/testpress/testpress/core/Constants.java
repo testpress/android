@@ -4,39 +4,17 @@ package in.testpress.testpress.core;
 
 import java.util.HashMap;
 
+import static in.testpress.testpress.BuildConfig.BASE_URL;
+
 /**
  * Testpress constants
  */
 public final class Constants {
     private Constants() {}
 
-    public static final class Auth {
-        private Auth() {}
-
-        /**
-         * Account name
-         */
-        public static final String TESTPRESS_ACCOUNT_NAME = "prime_pg";
-
-        /**
-         * Account type id
-         */
-        public static final String TESTPRESS_ACCOUNT_TYPE = "in.testpress." + TESTPRESS_ACCOUNT_NAME;
-
-        /**
-         * Auth token type
-         */
-        public static final String AUTHTOKEN_TYPE = TESTPRESS_ACCOUNT_TYPE;
-    }
 
     public static final class Http {
         private Http() {}
-
-
-        /**
-         * Base URL for all requests
-         */
-        public static final String URL_BASE = "https://pgtestseries.testpress.in";
 
         /**
          * Check Update url
@@ -57,7 +35,7 @@ public final class Constants {
         /**
          * New User Register URL
          */
-        public static final String URL_REGISTER_FRAG = "/api/v2.2/register/";
+        public static final String URL_REGISTER_FRAG = "/api/v2.3/register/";
         /**
          * Code Verification URL
          */
@@ -91,13 +69,15 @@ public final class Constants {
         /**
          * Institute Settings URL
          */
-        public static final String URL_INSTITUTE_SETTINGS_FRAG =  "/api/v2.2/settings/";
+        public static final String URL_INSTITUTE_SETTINGS_FRAG =  "/api/v2.3/settings/";
 
         /**
          * Posts URL
          */
         public static final String URL_POSTS_FRAG =  "api/v2.2/posts/";
         public static final String URL_CATEGORIES_FRAG = URL_POSTS_FRAG + "categories/";
+
+        public static final String URL_FORUMS_FRAG =  "/api/v2.3/forum/";
 
         public static final String URL_COMMENTS_FRAG =  "/comments/";
 
@@ -106,7 +86,7 @@ public final class Constants {
         /**
          * Handle Success & Failure of payments
          */
-        public static final String URL_PAYMENT_RESPONSE_HANDLER = URL_BASE + "/payments/response/payu/";
+        public static final String URL_PAYMENT_RESPONSE_HANDLER = BASE_URL + "/payments/response/payu/";
 
         /**
          * Query Params
@@ -118,7 +98,12 @@ public final class Constants {
         public static final String ORDER = "order";
     }
 
-    public static final String GCM_PREFERENCE_NAME = "testpress." + Auth.TESTPRESS_ACCOUNT_NAME + ".GCM";
+    public static final class RequestCode {
+        public static final int RECEIVE_SMS_PERMISSION_REQUEST_CODE = 3333;
+        public static final int CREATE_POST_REQUEST_CODE = 200;
+    }
+
+    public static final String GCM_PREFERENCE_NAME = "GCM";
     public static final String GCM_PROPERTY_REG_ID = "GCMRegId";
 
     public static final String IS_DEEP_LINK = "is_deep_link";

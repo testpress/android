@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.122",
-  "version_code" : 122,
+  "version" : "1.0.123",
+  "version_code" : 123,
   "testpress_site_subdomain" : "prime",
   "package_name" : "in.testpress.prime_pg",
   "app_name" : "Prime PG",

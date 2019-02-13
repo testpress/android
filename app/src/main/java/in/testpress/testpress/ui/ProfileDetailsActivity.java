@@ -60,8 +60,12 @@ import butterknife.OnClick;
 import in.testpress.exam.util.ImageUtils;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
+import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.core.Constants;
+import in.testpress.testpress.models.DaoSession;
+import in.testpress.testpress.models.InstituteSettings;
+import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.ProfileDetails;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.FormatDate;
@@ -273,7 +277,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
 
     @OnClick(R.id.profile_photo)
     public void displayProfilePhoto() {
-        if (profileDetails != null) {
+        if (profileDetails != null && fetchInstituteSetting().getAllowProfileEdit()) {
             Intent intent = new Intent(this, ProfilePhotoActivity.class);
             intent.putExtra("profilePhoto", profileDetails.getPhoto());
             startActivityForResult(intent, SELECT_IMAGE);
@@ -598,5 +602,20 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     @Override
     public void onLoaderReset(final Loader<ProfileDetails> loader) {
         // Intentionally left blank
+    }
+
+    public InstituteSettings fetchInstituteSetting () {
+        DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
+        InstituteSettingsDao instituteSettingsDao = daoSession.getInstituteSettingsDao();
+        List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
+                .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
+                .list();
+        if (instituteSettingsList.size() != 0) {
+            return instituteSettingsList.get(0);
+        } else {
+            finish();
+        }
+
+        return null;
     }
 }

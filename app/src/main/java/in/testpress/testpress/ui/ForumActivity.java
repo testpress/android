@@ -89,7 +89,7 @@ import static in.testpress.testpress.util.CommonUtils.getException;
 public class ForumActivity extends TestpressFragmentActivity implements
         LoaderManager.LoaderCallbacks<List<Comment>> {
 
-    public static final String URL = "url";
+    public static final String URL = "Url";
     public static final String UPDATE_TIME_SPAN = "updateTimeSpan";
     public static final int NEW_COMMENT_SYNC_INTERVAL = 10000; // 10 sec
     private static final int PREVIOUS_COMMENTS_LOADER_ID = 0;
@@ -252,16 +252,16 @@ public class ForumActivity extends TestpressFragmentActivity implements
 
                     forum.setModified(ForumActivity.this.forum.getModified());
                     forum.setModifiedDate(simpleDateFormat.parse(forum.getModified()).getTime());
-                    if (forum.category != null) {
-                        forum.setCategory(forum.category);
+                    if (forum.getCategory() != null) {
+                        forum.setCategory(forum.getCategory());
                         CategoryDao categoryDao =
                                 TestpressApplication.getDaoSession().getCategoryDao();
-                        categoryDao.insertOrReplace(forum.category);
+                        categoryDao.insertOrReplace(forum.getCategory());
                     }
-                    User user = forum.createdBy;
+                    User user = forum.getCreatedBy();
                     userDao.insertOrReplace(user);
                     forum.setCreatorId(user.getId());
-                    user = forum.lastCommentedBy;
+                    user = forum.getLastCommentedBy();
                     if (user != null) {
                         userDao.insertOrReplace(user);
                         forum.setCommentorId(user.getId());
@@ -477,10 +477,10 @@ public class ForumActivity extends TestpressFragmentActivity implements
         forum = vote.getContentObject();
         forum.setVoteId((long) vote.getId());
         forum.setTypeOfVote(vote.getTypeOfVote());
-        User user = vote.getContentObject().createdBy;
+        User user = vote.getContentObject().getCreatedBy();
         userDao.insertOrReplace(user);
         forum.setCreatorId(user.getId());
-        user = vote.getContentObject().lastCommentedBy;
+        user = vote.getContentObject().getLastCommentedBy();
         if (user != null) {
             userDao.insertOrReplace(user);
             forum.setCommentorId(user.getId());

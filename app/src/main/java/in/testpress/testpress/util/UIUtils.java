@@ -75,6 +75,12 @@ public class UIUtils {
 
     public static String getMenuItemName(int titleResId, InstituteSettings instituteSettings) {
         switch (titleResId) {
+            case R.string.dashboard:
+                return instituteSettings.getDashboardLabel();
+            case R.string.testpress_leaderboard:
+                return instituteSettings.getLeaderboardLabel();
+            case R.string.bookmarks:
+                return instituteSettings.getBookmarksLabel();
             case R.string.documents:
                 return instituteSettings.getDocumentsLabel();
             case R.string.store:
@@ -83,12 +89,6 @@ public class UIUtils {
                 return instituteSettings.getPostsLabel();
             case R.string.learn:
                 return instituteSettings.getLearnLabel();
-            case R.string.bookmarks:
-                return instituteSettings.getBookmarksLabel();
-            case R.string.dashboard:
-                return instituteSettings.getDashboardLabel();
-            case R.string.testpress_leaderboard:
-                return instituteSettings.getLeaderboardLabel();
             default:
                 return "";
         }

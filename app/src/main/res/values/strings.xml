@@ -146,4 +146,10 @@
     <string name="posted_successfully">Posted successfully!</string>
     <string name="create_post">Create Post</string>
 
+    <!--Customisation-->
+    <string name="index">Index</string>
+    <string name="updates">Updates</string>
+    <string name="free_MCQ">Free MCQ</string>
+    <string name="sambar">Sambar</string>
+
 </resources>

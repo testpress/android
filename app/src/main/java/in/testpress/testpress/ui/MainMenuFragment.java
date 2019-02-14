@@ -102,29 +102,43 @@ public class MainMenuFragment extends Fragment {
         // ToDo get from institute settings
         boolean drupalRssFeedEnabled = false;
         if (isUserAuthenticated) {
-            if (!instituteSettings.getShowGameFrontend()) {
-                mMenuItemResIds.put(R.string.my_exams, R.drawable.exams);
+
+            if (instituteSettings.getBookmarksEnabled()) {
+                mMenuItemResIds.put(R.string.index, R.drawable.index);
             }
+
             if (instituteSettings.getBookmarksEnabled()) {
                 mMenuItemResIds.put(R.string.bookmarks, R.drawable.bookmark);
             }
-            if (instituteSettings.getDocumentsEnabled()) {
-                mMenuItemResIds.put(R.string.documents, R.drawable.documents);
-            }
             mMenuItemResIds.put(R.string.analytics, R.drawable.analytics);
+        }
+
+        if (instituteSettings.getPostsEnabled()) {
+            mMenuItemResIds.put(R.string.posts, R.drawable.posts);
+        }
+
+        if (isUserAuthenticated) {
+            mMenuItemResIds.put(R.string.updates, R.drawable.updates);
+            mMenuItemResIds.put(R.string.free_MCQ, R.drawable.mcq_question);
             mMenuItemResIds.put(R.string.profile, R.drawable.ic_profile_details);
+            mMenuItemResIds.put(R.string.sambar, R.drawable.question_bank);
+
             if (instituteSettings.getStoreEnabled()) {
                 mMenuItemResIds.put(R.string.store, R.drawable.store);
+            }
+            if (!instituteSettings.getShowGameFrontend()) {
+                mMenuItemResIds.put(R.string.my_exams, R.drawable.exams);
+            }
+            if (instituteSettings.getDocumentsEnabled()) {
+                mMenuItemResIds.put(R.string.documents, R.drawable.documents);
             }
         }
         if (drupalRssFeedEnabled) {
             mMenuItemResIds.put(R.string.rss_posts, R.drawable.rss_feed);
         }
-        if (instituteSettings.getPostsEnabled()) {
-            mMenuItemResIds.put(R.string.posts, R.drawable.posts);
-        }
         mMenuItemResIds.put(R.string.share, R.drawable.share);
         mMenuItemResIds.put(R.string.rate_us, R.drawable.heart);
+
         if (isUserAuthenticated) {
             mMenuItemResIds.put(R.string.logout, R.drawable.logout);
         } else {

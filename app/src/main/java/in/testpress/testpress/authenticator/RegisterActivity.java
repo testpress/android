@@ -23,6 +23,7 @@ import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.hbb20.CountryCodePicker;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -63,6 +64,7 @@ public class RegisterActivity extends AppCompatActivity {
     @InjectView(id.et_password_confirm) EditText confirmPasswordText;
     @InjectView(id.et_email) EditText emailText;
     @InjectView(id.et_phone) EditText phoneText;
+    @InjectView(id.ccp) CountryCodePicker countryCodePicker;
     @InjectView(id.phone_layout) TextInputLayout phoneLayout;
     @InjectView(id.tv_fill_all_details) TextView fillAllDetailsText;
     @InjectView(id.b_register) Button registerButton;
@@ -74,6 +76,7 @@ public class RegisterActivity extends AppCompatActivity {
     private RegistrationSuccessResponse registrationSuccessResponse;
     private MaterialDialog progressDialog;
     private InternetConnectivityChecker internetConnectivityChecker = new InternetConnectivityChecker(this);
+    private boolean isTwilioEnabled;
     private VerificationMethod verificationMethod;
     enum VerificationMethod { MOBILE, EMAIL }
 
@@ -93,6 +96,7 @@ public class RegisterActivity extends AppCompatActivity {
             InstituteSettings instituteSettings = instituteSettingsList.get(0);
             verificationMethod =
                     instituteSettings.getVerificationMethod().equals("M") ? MOBILE : EMAIL;
+            isTwilioEnabled = instituteSettings.getTwilioEnabled();
         } else {
             // Never happen, just for a safety.
             finish();
@@ -114,8 +118,14 @@ public class RegisterActivity extends AppCompatActivity {
         if (verificationMethod.equals(MOBILE)) {
             phoneText.addTextChangedListener(watcher);
             phoneLayout.setVisibility(View.VISIBLE);
+
+            if (!isTwilioEnabled) {
+                countryCodePicker.setVisibility(View.GONE);
+            }
         } else {
             phoneLayout.setVisibility(View.GONE);
+            countryCodePicker.setVisibility(View.GONE);
+            isTwilioEnabled=false;
         }
         confirmPasswordText.addTextChangedListener(watcher);
     }
@@ -131,7 +141,12 @@ public class RegisterActivity extends AppCompatActivity {
                 .show();
         new SafeAsyncTask<Boolean>() {
             public Boolean call() throws Exception {
-                registrationSuccessResponse = testpressService.register(usernameText.getText().toString(), emailText.getText().toString(), passwordText.getText().toString(), phoneText.getText().toString());
+
+                if(isTwilioEnabled){
+                    registrationSuccessResponse = testpressService.register(usernameText.getText().toString(), emailText.getText().toString(), passwordText.getText().toString(), phoneText.getText().toString(), countryCodePicker.getSelectedCountryNameCode());
+                } else {
+                    registrationSuccessResponse = testpressService.register(usernameText.getText().toString(), emailText.getText().toString(), passwordText.getText().toString(), phoneText.getText().toString(), "");
+                }
                 return true;
             }
 

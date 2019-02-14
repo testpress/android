@@ -268,7 +268,7 @@ public class CreateForumActivity extends TestpressFragmentActivity{
                     LENGTH_SHORT).show();
         }
     }
-    
+
     private void addCategoriesItemsInSpinner() {
         categoriesSpinnerAdapter.clear();
 

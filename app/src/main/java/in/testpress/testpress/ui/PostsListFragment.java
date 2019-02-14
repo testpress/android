@@ -106,6 +106,7 @@ public class PostsListFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        fetchCategories();
         if (getArguments() != null) {
             if (getArguments().getLong("category_filter") != 0) {
                 categoryFilter = getArguments().getLong("category_filter");
@@ -185,7 +186,7 @@ public class PostsListFragment extends Fragment implements
         swipeLayout.measure(View.MEASURED_SIZE_MASK,View.MEASURED_HEIGHT_STATE_SHIFT);
         swipeLayout.setRefreshing(true);
         getLoaderManager().initLoader(REFRESH_LOADER_ID, null, this);
-        fetchCategories();
+//        fetchCategories();
         if (categoryFilter != null) {
             adapter.getWrappedAdapter().setCategoryFilter(categoryFilter);
         }

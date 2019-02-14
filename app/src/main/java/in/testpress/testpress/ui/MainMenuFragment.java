@@ -12,8 +12,10 @@ import android.graphics.drawable.shapes.OvalShape;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,8 +23,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +37,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
+import in.testpress.course.TestpressCourse;
 import in.testpress.exam.TestpressExam;
 import in.testpress.store.TestpressStore;
 import in.testpress.testpress.Injector;
@@ -42,6 +47,7 @@ import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LoginActivity;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
+import in.testpress.testpress.core.PostCategoryPager;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.CategoryDao;
@@ -71,6 +77,10 @@ public class MainMenuFragment extends Fragment {
     LinearLayout quickLinksContainer;
     Account[] account;
 
+    PostCategoryPager categoryPager;
+    List<Category> categories = new ArrayList<>();
+    private CategoryDao categoryDao;
+
     private InstituteSettings mInstituteSettings;
 
     @Override
@@ -86,6 +96,7 @@ public class MainMenuFragment extends Fragment {
         ButterKnife.inject(this, view);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         fetchStarredCategories();
+        fetchCategories();
         AccountManager manager = (AccountManager) getActivity().getSystemService(Context.ACCOUNT_SERVICE);
         account = manager.getAccountsByType(APPLICATION_ID);
         DaoSession daoSession =
@@ -96,7 +107,7 @@ public class MainMenuFragment extends Fragment {
                 .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
                 .list().get(0);
         mInstituteSettings = instituteSettings;
-
+        categoryDao = daoSession.getCategoryDao();
         LinkedHashMap<Integer, Integer> mMenuItemResIds = new LinkedHashMap<>();
         final boolean isUserAuthenticated = account.length > 0;
         // ToDo get from institute settings
@@ -152,10 +163,31 @@ public class MainMenuFragment extends Fragment {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                CategoryDao categoryDao = ((TestpressApplication) getActivity()
+                        .getApplicationContext()).getDaoSession().getCategoryDao();
 
                 Intent intent;
                 String custom_title;
                 switch ((int) id) {
+                    case R.string.index:
+                        intent = new Intent(getContext(), PostsListActivity.class);
+                        intent.putExtra("category_filter", getCategoryId(categoryDao, "index"));
+                        startActivity(intent);
+                        break;
+                    case R.string.updates:
+                        intent = new Intent(getContext(), PostsListActivity.class);
+                        intent.putExtra("category_filter", getCategoryId(categoryDao, "updates"));
+                        startActivity(intent);
+                        break;
+                    case R.string.free_MCQ:
+                        // Hard coded id 3 for Free MCQ
+                        TestpressCourse.showChapters(getActivity(), getString(R.string.free_MCQ), 3, TestpressSdk.getTestpressSession(getActivity()));
+                        break;
+                    case R.string.sambar:
+                        intent = new Intent(getContext(), PostsListActivity.class);
+                        intent.putExtra("category_filter", getCategoryId(categoryDao, "sambar"));
+                        startActivity(intent);
+                        break;
                     case R.string.my_exams:
                         checkAuthenticatedUser(R.string.my_exams);
                         break;
@@ -217,6 +249,18 @@ public class MainMenuFragment extends Fragment {
             }
         });
     }
+
+    public long getCategoryId(CategoryDao categoryDao, String category_slug){
+
+        List<Category> categories =  categoryDao.queryBuilder().where(CategoryDao.Properties.Slug.eq(category_slug)).list();
+
+        if (categories.size()>0){
+            return categories.get(0).getId();
+        }
+
+        return -1; // No category found
+    }
+
 
     void checkAuthenticatedUser(final int clickedMenuTitleResId) {
         if (!CommonUtils.isUserAuthenticated(getActivity())) {
@@ -286,6 +330,32 @@ public class MainMenuFragment extends Fragment {
         }
     }
 
+    PostCategoryPager getCategoryPager() {
+        if (categoryPager == null) {
+            categoryPager = new PostCategoryPager(testpressService);
+            return categoryPager;
+        }
+        return categoryPager;
+    }
+    // Added, as when you open any dashboard post directly for the first time it will not be able to apply the category filter. As that time no category exists in DB
+    public void fetchCategories() {
+        new SafeAsyncTask<List<Category>>() {
+            @Override
+            public List<Category> call() throws Exception {
+                do {
+                    getCategoryPager().next();
+                    categories = getCategoryPager().getResources();
+                } while (getCategoryPager().hasNext());
+                return categories;
+            }
+
+            protected void onSuccess(final List<Category> categories) throws Exception {
+                Ln.e("On success");
+                categoryDao.insertOrReplaceInTx(categories);
+            }
+
+        }.execute();
+    }
     public void fetchStarredCategories() {
         new SafeAsyncTask<List<Category>>() {
             @Override

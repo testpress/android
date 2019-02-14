@@ -2,14 +2,15 @@ package in.testpress.testpress.ui;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.graphics.PorterDuff;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.AppCompatTextView;
@@ -32,13 +33,14 @@ import android.widget.Spinner;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.kevinsawicki.wishlist.Toaster;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -55,17 +57,22 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import in.testpress.exam.util.ImageUtils;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
+import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.core.Constants;
+import in.testpress.testpress.models.DaoSession;
+import in.testpress.testpress.models.InstituteSettings;
+import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.ProfileDetails;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.FormatDate;
-import in.testpress.testpress.util.ImageUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
+import static in.testpress.testpress.BuildConfig.BASE_URL;
 
 public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         implements LoaderManager.LoaderCallbacks<ProfileDetails> {
@@ -107,15 +114,12 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     ProfileDetails profileDetails;
     ArrayAdapter<String> genderSpinnerAdapter;
     ArrayAdapter<String> stateSpinnerAdapter;
-    Bitmap selectedImage;
-    String encodedImage = "";
+    ImageUtils imagePickerUtils;
     String[] datePickerDate;
     ImageLoader imageLoader;
     DisplayImageOptions options;
     Menu menu;
     static final private int SELECT_IMAGE = 100;
-    static final private int FETCH_AND_CROP_IMAGE = 500;
-    static final private int SAVE_CROPPED_IMAGE = 999;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -146,6 +150,8 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
                 return false;
             }
         });
+        imagePickerUtils = new ImageUtils(profileDetailsView, this);
+        imagePickerUtils.setAspectRatio(1, 1);
         imageLoader = ImageLoader.getInstance();
         options = new DisplayImageOptions.Builder().cacheInMemory(true)
                 .cacheOnDisc(true).resetViewBeforeLoading(true)
@@ -172,6 +178,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
 
     public void onLoadFinished(final Loader<ProfileDetails> loader, final ProfileDetails profileDetails) {
         progressBar.setVisibility(View.GONE);
+        getSupportLoaderManager().destroyLoader(loader.getId());
         if (profileDetails == null) { //loading failed
             Exception exception = ((ThrowableLoader<ProfileDetails>) loader).clearException();
             if(exception.getCause() instanceof UnknownHostException) {
@@ -193,8 +200,8 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     void displayProfileDetails(ProfileDetails profileDetails) {
         //download and display image from url
         imageLoader.displayImage(profileDetails.getLargeImage(), profilePhoto, options);
-        menu.setGroupVisible(R.id.editMode, false);
-        menu.setGroupVisible(R.id.viewMode, false);
+//        menu.setGroupVisible(R.id.editMode, false);
+//        menu.setGroupVisible(R.id.viewMode, false);
         setVisibility(View.VISIBLE, new View[]{displayName, editButton});
         setVisibility(View.GONE, new View[]{firstNameRow, lastNameRow, imageEditButton, datePicker});
         displayName.setText(profileDetails.getFirstName() + " " + profileDetails.getLastName());
@@ -270,7 +277,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
 
     @OnClick(R.id.profile_photo)
     public void displayProfilePhoto() {
-        if (profileDetails != null) {
+        if (profileDetails != null && fetchInstituteSetting().getAllow_profile_edit()) {
             Intent intent = new Intent(this, ProfilePhotoActivity.class);
             intent.putExtra("profilePhoto", profileDetails.getPhoto());
             startActivityForResult(intent, SELECT_IMAGE);
@@ -279,69 +286,59 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
 
     @OnClick(R.id.edit_profile_photo)
     public void selectImageFromMobile() {
-        Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, FETCH_AND_CROP_IMAGE);
+        CropImage.startPickImageActivity(this);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-
-                //to handle the edit option in ProfilePhotoActivity
-                case SELECT_IMAGE:
-                    selectImageFromMobile();
-                    break;
-
-                //result handling of selected image from gallery
-                case FETCH_AND_CROP_IMAGE:
-                    if (null != data) {
-                        Uri selectedImageUri = data.getData();
-                        //get the list of images filepath
-                        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                        //using selectedImageUri set the cursor on filepath
-                        Cursor cursor = getContentResolver().query(selectedImageUri, filePathColumn, null, null, null);
-                        cursor.moveToFirst();
-                        //get the filepath from cursor
-                        String picturePath = cursor.getString(cursor.getColumnIndex(filePathColumn[0]));
-                        cursor.close();
-                        selectedImage = ImageUtils.decodeImage(picturePath, 500, 500);
-                        if (selectedImage == null) {
-                            new MaterialDialog.Builder(this)
-                                    .title("Sorry, this file path is not suitable.\nPlease try another folder")
-                                    .positiveText(R.string.ok)
-                                    .positiveColorRes(R.color.primary)
-                                    .buttonsGravity(GravityEnum.CENTER)
-                                    .show();
-                            return;
+        if (resultCode == RESULT_OK && requestCode == SELECT_IMAGE) {
+            // To handle the edit option in ProfilePhotoActivity
+            selectImageFromMobile();
+        } else {
+            imagePickerUtils.onActivityResult(requestCode, resultCode, data,
+                    new ImageUtils.ImagePickerResultHandler() {
+                        @Override
+                        public void onSuccessfullyImageCropped(CropImage.ActivityResult result) {
+                            onImageCropped(result);
                         }
-                        //crop the image
-                        Intent intent = new Intent(this, CropImageActivity.class);
-                        intent.putExtra("picturePath", picturePath);
-                        startActivityForResult(intent, SAVE_CROPPED_IMAGE);
-                    }
-                    break;
-
-                //handling result of cropped image
-                case SAVE_CROPPED_IMAGE:
-                    horizontalProgressBar.setVisibility(View.VISIBLE);
-                    int rotatedDegree = data.getIntExtra("rotatedDegree", 0);
-                    if(rotatedDegree != 0) {
-                        Matrix matrix = new Matrix();
-                        matrix.setRotate(rotatedDegree);
-                        selectedImage = Bitmap.createBitmap(selectedImage, 0, 0, selectedImage.getWidth(), selectedImage.getHeight(), matrix, true);
-                    }
-                    //encode the image as string
-                    ByteArrayOutputStream baostream = new ByteArrayOutputStream();
-                    selectedImage.compress(Bitmap.CompressFormat.JPEG, 80, baostream);
-                    byte[] byteImage = baostream.toByteArray();
-                    // Converting Image byte array into Base64 String
-                    encodedImage = Base64.encodeToString(byteImage, Base64.DEFAULT);
-                    saveProfilePhoto(data.getIntArrayExtra("croppedImageDetails"));
-                    break;
-            }
+                    });
         }
+    }
+
+    void onImageCropped(CropImage.ActivityResult result) {
+        Uri selectedImageUri;
+        int[] croppedImageDetails = null;
+        int rotatedDegree = result.getRotation();
+        if (rotatedDegree != 0) {
+            selectedImageUri = result.getUri();
+        } else {
+            selectedImageUri = result.getOriginalUri();
+            Rect rect = result.getCropRect();
+            // Details to crop in server
+            croppedImageDetails = new int[]{ rect.left, rect.top, rect.width(), rect.height()};
+        }
+        Bitmap selectedImage;
+        try {
+            selectedImage = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
+        } catch (IOException e) {
+            Snackbar.make(profileDetailsView, R.string.file_path_not_suitable, Snackbar.LENGTH_SHORT)
+                    .show();
+
+            return;
+        }
+        if(rotatedDegree != 0) {
+            croppedImageDetails =
+                    new int[] { 0, 0, selectedImage.getWidth(), selectedImage.getHeight() };
+        }
+        horizontalProgressBar.setVisibility(View.VISIBLE);
+        // Encode the image as string
+        ByteArrayOutputStream baostream = new ByteArrayOutputStream();
+        selectedImage.compress(Bitmap.CompressFormat.JPEG, 50, baostream);
+        byte[] byteImage = baostream.toByteArray();
+        // Converting Image byte array into Base64 String
+        String encodedImage = Base64.encodeToString(byteImage, Base64.DEFAULT);
+        saveProfilePhoto(croppedImageDetails, encodedImage);
     }
 
     @OnClick(R.id.save)
@@ -355,13 +352,20 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
                     .show();
             new SafeAsyncTask<ProfileDetails>() {
                 public ProfileDetails call() throws Exception {
-                    return serviceProvider.getService(ProfileDetailsActivity.this).updateUserDetails(profileDetails.getUrl().replace(Constants.Http.URL_BASE + "/", ""), email.getText().toString(),
-                            firstName.getText().toString(), lastName.getText().toString(),
-                            phone.getText().toString(), Constants.genderChoices.get(gender
-                                    .getSelectedItem().toString()),
-                            dateOfBirth.getText().toString(), address.getText().toString(), city
-                                    .getText().toString(), Constants.stateChoices.get(state
-                                    .getSelectedItem().toString()), pinCode.getText().toString());
+                    return serviceProvider.getService(ProfileDetailsActivity.this)
+                            .updateUserDetails(
+                                    profileDetails.getUrl().replace(BASE_URL + "/", ""),
+                                    email.getText().toString(),
+                                    firstName.getText().toString(),
+                                    lastName.getText().toString(),
+                                    phone.getText().toString(),
+                                    Constants.genderChoices.get(gender.getSelectedItem().toString()),
+                                    dateOfBirth.getText().toString(),
+                                    address.getText().toString(),
+                                    city.getText().toString(),
+                                    Constants.stateChoices.get(state.getSelectedItem().toString()),
+                                    pinCode.getText().toString()
+                            );
                 }
 
                 @Override
@@ -400,10 +404,14 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         }
     }
 
-    public void saveProfilePhoto(final int[] croppedImageDetails) {
+    public void saveProfilePhoto(final int[] croppedImageDetails, final String encodedImage) {
         new SafeAsyncTask<ProfileDetails>() {
             public ProfileDetails call() throws Exception {
-                return serviceProvider.getService(ProfileDetailsActivity.this).updateProfileImage(profileDetails.getUrl().replace(Constants.Http.URL_BASE + "/", ""), encodedImage, croppedImageDetails);
+                return serviceProvider.getService(ProfileDetailsActivity.this).updateProfileImage(
+                        profileDetails.getUrl().replace(BASE_URL + "/", ""),
+                        encodedImage,
+                        croppedImageDetails
+                );
             }
 
             @Override
@@ -416,9 +424,9 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
             public void onSuccess(final ProfileDetails profileDetails) {
                 //display the new image
                 horizontalProgressBar.setVisibility(View.GONE);
-                profilePhoto.setImageBitmap(Bitmap.createBitmap(selectedImage, croppedImageDetails[0], croppedImageDetails[1], croppedImageDetails[2], croppedImageDetails[3]));
+                imageLoader.displayImage(profileDetails.getLargeImage(), profilePhoto, options);
                 ProfileDetailsActivity.this.profileDetails.setPhoto(profileDetails.getPhoto());
-                ProfileDetailsActivity.this.profileDetails.setMediumImage(profileDetails.getMediumImage());
+                ProfileDetailsActivity.this.profileDetails.setLargeImage(profileDetails.getLargeImage());
                 Toaster.showLong(ProfileDetailsActivity.this, "Profile Photo Updated Successfully");
             }
         }.execute();
@@ -541,6 +549,8 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.tick_cancel_refresh, menu);
         this.menu = menu;
+        menu.setGroupVisible(R.id.editMode, false);
+        menu.setGroupVisible(R.id.viewMode, false);
         return true;
     }
 
@@ -565,6 +575,21 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+
+        imagePickerUtils.permissionsUtils.onRequestPermissionsResult(requestCode, grantResults);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (imagePickerUtils != null) {
+            imagePickerUtils.permissionsUtils.onResume();
+        }
+    }
+
+    @Override
     public void onBackPressed(){
         //if backpress from edit mode then display the existing profile detail
         if(firstNameRow.getVisibility() == View.VISIBLE) {
@@ -577,5 +602,20 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     @Override
     public void onLoaderReset(final Loader<ProfileDetails> loader) {
         // Intentionally left blank
+    }
+
+    public InstituteSettings fetchInstituteSetting () {
+        DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
+        InstituteSettingsDao instituteSettingsDao = daoSession.getInstituteSettingsDao();
+        List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
+                .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
+                .list();
+        if (instituteSettingsList.size() != 0) {
+            return instituteSettingsList.get(0);
+        } else {
+            finish();
+        }
+
+        return null;
     }
 }

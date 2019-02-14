@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:fbutton="http://schemas.android.com/apk/res-auto"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:fitsSystemWindows="true">
@@ -21,7 +20,7 @@
         android:paddingLeft="24dp"
         android:paddingRight="24dp">
 
-        <ImageView android:src="@drawable/logo"
+        <ImageView android:src="@drawable/login_screen_image"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:layout_marginBottom="24dp"
@@ -126,17 +125,12 @@
             android:layout_margin="15dp"
             android:id="@+id/tv_fill_all_details"/>
 
-        <info.hoang8f.widget.FButton
+        <android.support.v7.widget.AppCompatButton
             android:id="@+id/b_register"
-            style="@style/TextLabelTab"
-            fbutton:buttonColor="@color/primary"
-            fbutton:shadowEnabled="true"
-            fbutton:shadowHeight="3dp"
-            fbutton:cornerRadius="2dp"
+            style="@style/Button.Tab"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
             android:text="Register"
-            android:textColor="@color/white"
             />
     </LinearLayout>
 

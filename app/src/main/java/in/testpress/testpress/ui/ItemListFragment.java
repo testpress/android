@@ -248,7 +248,9 @@ public abstract class ItemListFragment<E> extends Fragment
      * @param message
      */
     protected void showError(final int message) {
-        Toaster.showLong(getActivity(), message);
+        if (getListAdapter().getCount() != 0) {
+            Toaster.showLong(getActivity(), message);
+        }
     }
 
     /**

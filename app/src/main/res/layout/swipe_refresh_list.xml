@@ -12,6 +12,8 @@
             <ListView
                 android:id="@android:id/list"
                 android:listSelector="@android:color/transparent"
+                android:divider="@color/divider"
+                android:dividerHeight="1dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
@@ -34,6 +36,17 @@
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floating_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_edit_white_24dp"
+        android:visibility="gone"
+        android:tint="@color/testpress_white"/>
 
     <include
         layout="@layout/empty_view">

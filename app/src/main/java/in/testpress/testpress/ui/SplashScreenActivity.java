@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.widget.ImageView;
 
+import junit.framework.Assert;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -15,7 +17,10 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
+import in.testpress.core.TestpressSession;
+import in.testpress.course.TestpressCourse;
 import in.testpress.exam.TestpressExam;
+import in.testpress.store.TestpressStore;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -24,10 +29,19 @@ import in.testpress.testpress.authenticator.ResetPasswordActivity;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.util.CommonUtils;
+import in.testpress.testpress.util.UpdateAppDialogManager;
+import in.testpress.util.ViewUtils;
 
-import static in.testpress.exam.TestpressExam.ACTION_PRESSED_HOME;
+import static in.testpress.core.TestpressSdk.ACTION_PRESSED_HOME;
+import static in.testpress.core.TestpressSdk.COURSE_CONTENT_DETAIL_REQUEST_CODE;
+import static in.testpress.core.TestpressSdk.COURSE_CONTENT_LIST_REQUEST_CODE;
+import static in.testpress.course.TestpressCourse.CHAPTER_URL;
+import static in.testpress.course.TestpressCourse.COURSE_ID;
 import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
-import static in.testpress.exam.ui.CarouselFragment.TEST_TAKEN_REQUEST_CODE;
+import static in.testpress.store.TestpressStore.CONTINUE_PURCHASE;
+import static in.testpress.store.TestpressStore.STORE_REQUEST_CODE;
+import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.core.Constants.Http.CHAPTERS_PATH;
 
 public class SplashScreenActivity extends Activity {
 
@@ -45,6 +59,7 @@ public class SplashScreenActivity extends Activity {
         setContentView(R.layout.activity_splash);
         Injector.inject(this);
         ButterKnife.inject(this);
+        UpdateAppDialogManager.monitor(this);
         new Handler().postDelayed(new Runnable() {
 
             @Override
@@ -77,7 +92,12 @@ public class SplashScreenActivity extends Activity {
                             break;
                         case "user":
                         case "profile":
-                            gotoActivity(ProfileDetailsActivity.class, true);
+                            if (pathSegments.size() == 1) {
+                                gotoActivity(ProfileDetailsActivity.class, true);
+                            } else {
+                                CommonUtils.openUrlInBrowser(SplashScreenActivity.this, uri);
+                                finish();
+                            }
                             break;
                         case "password":
                             gotoActivity(ResetPasswordActivity.class, false);
@@ -94,26 +114,23 @@ public class SplashScreenActivity extends Activity {
                         case "activate":
                             gotoAccountActivate(uri.getPath());
                             break;
-                        case "courses":
                         case "chapters":
-                        case "orders":
+                            authenticateUser(uri);
+                            break;
+                        case "courses":
                         case "learn":
                         case "leaderboard":
                         case "dashboard":
-                        case "contact":
-                        case "privacy":
-                        case "refund":
-                        case "update":
-                        case "about":
                             gotoHome();
                             break;
                         case "store":
                         case "market":
                         case "products":
-                            deepLinkToProduct(uri);
+                            authenticateUser(uri);
                             break;
                         default:
-                            gotoProductDetails(pathSegments.get(0));
+                            CommonUtils.openUrlInBrowser(SplashScreenActivity.this, uri);
+                            finish();
                             break;
                     }
                 } else {
@@ -131,7 +148,6 @@ public class SplashScreenActivity extends Activity {
         finish();
     }
 
-    @SuppressWarnings("ConstantConditions")
     private void authenticateUser(final Uri uri) {
         final Activity activity = SplashScreenActivity.this;
         final List<String> pathSegments = uri.getPathSegments();
@@ -139,6 +155,8 @@ public class SplashScreenActivity extends Activity {
                 new CommonUtils.CheckAuthCallBack() {
                     @Override
                     public void onSuccess(TestpressService testpressService) {
+                        TestpressSession testpressSession = TestpressSdk.getTestpressSession(activity);
+                        Assert.assertNotNull("TestpressSession must not be null.", testpressSession);
                         switch (pathSegments.get(0)) {
                             case "exams":
                                 if (pathSegments.size() == 2) {
@@ -147,47 +165,63 @@ public class SplashScreenActivity extends Activity {
                                             !pathSegments.get(1).equals("history")) {
 
                                         // If exam slug is present, directly goto the start exam screen
-                                        TestpressExam.startExam(activity, pathSegments.get(1),
-                                                TestpressSdk.getTestpressSession(activity));
+                                        TestpressExam.showExamAttemptedState(
+                                                activity,
+                                                pathSegments.get(1),
+                                                testpressSession
+                                        );
                                         return;
                                     }
                                 }
                                 // Show exams list
-                                TestpressExam.show(activity,
-                                        TestpressSdk.getTestpressSession(activity));
+                                TestpressExam.show(activity, testpressSession);
                                 finish();
                                 break;
 
                             case "analytics":
                                 TestpressExam.showAnalytics(activity, SUBJECT_ANALYTICS_PATH,
-                                        TestpressSdk.getTestpressSession(activity));
+                                        testpressSession);
+                                break;
+                            case "chapters":
+                                deepLinkToChapter(uri, testpressSession);
+                                break;
+                            case "products":
+                                deepLinkToProduct(uri, testpressSession);
                                 break;
                         }
                     }
                 });
     }
 
-    private void deepLinkToProduct(Uri uri) {
+    private void deepLinkToChapter(Uri uri, TestpressSession testpressSession) {
         final List<String> pathSegments = uri.getPathSegments();
-        if (pathSegments.size() == 2) {
-            gotoProductDetails(uri.getLastPathSegment());
-        } else {
-            Intent intent = new Intent(this, ProductsListActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            intent.putExtra(Constants.IS_DEEP_LINK, true);
-            startActivity(intent);
-            finish();
+        switch (pathSegments.size()) {
+            case 1:
+                // /chapters/
+                gotoHome();
+                break;
+            case 2:
+                // Contents list url - /chapters/chapter-slug/
+                String chapterAPI = BASE_URL + CHAPTERS_PATH + uri.getLastPathSegment() + "/";
+                TestpressCourse.showChapterContents(this, chapterAPI, testpressSession);
+                break;
+            case 3:
+                // Content detail url - /chapters/chapter-slug/{content-id}/
+                TestpressCourse.showContentDetail(this, uri.getLastPathSegment(), testpressSession);
+                break;
         }
     }
 
-    private void gotoProductDetails(String productSlug) {
-        Intent productIntent =
-                new Intent(SplashScreenActivity.this, ProductDetailsActivity.class);
-        productIntent.putExtra(ProductDetailsActivity.PRODUCT_SLUG, productSlug);
-        productIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        productIntent.putExtra(Constants.IS_DEEP_LINK, true);
-        startActivity(productIntent);
-        finish();
+    private void deepLinkToProduct(Uri uri, TestpressSession testpressSession) {
+        final List<String> pathSegments = uri.getPathSegments();
+        if (pathSegments.size() == 2) {
+            // Product detail url - /products/product-slug/
+            String productSlug = uri.getLastPathSegment();
+            assert productSlug != null;
+            TestpressStore.showProduct(this, productSlug, testpressSession);
+        } else {
+            TestpressStore.show(this, testpressSession);
+        }
     }
 
     private void gotoAccountActivate(String activateUrlFrag) {
@@ -218,15 +252,45 @@ public class SplashScreenActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == TEST_TAKEN_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                gotoHome();
-            } else if (resultCode == RESULT_CANCELED) {
-                if (data != null && data.getBooleanExtra(ACTION_PRESSED_HOME, false)) {
-                    gotoHome();
+        if (resultCode == RESULT_OK) {
+            if (requestCode == STORE_REQUEST_CODE) {
+                if (data != null && data.getBooleanExtra(CONTINUE_PURCHASE, false)) {
+                    // User pressed continue purchase button.
+                    TestpressSession session = TestpressSdk.getTestpressSession(this);
+                    assert session != null;
+                    TestpressStore.show(this, session);
                 } else {
-                    finish();
+                    // User pressed goto home button.
+                    gotoHome();
                 }
+            } else {
+                // Result code OK will come if attempted an exam & back press
+                gotoHome();
+            }
+        } else if (resultCode == RESULT_CANCELED) {
+            if (data != null && data.getBooleanExtra(ACTION_PRESSED_HOME, false)) {
+                TestpressSession testpressSession = TestpressSdk.getTestpressSession(this);
+                Assert.assertNotNull("TestpressSession must not be null.", testpressSession);
+                switch (requestCode) {
+                    case COURSE_CONTENT_DETAIL_REQUEST_CODE:
+                    case COURSE_CONTENT_LIST_REQUEST_CODE:
+                        int courseId = data.getIntExtra(COURSE_ID, 0);
+                        String chapterUrl = data.getStringExtra(CHAPTER_URL);
+                        if (chapterUrl != null) {
+                            // Show contents list or child chapters of the chapter url given
+                            TestpressCourse.showChapterContents(this, chapterUrl, testpressSession);
+                            return;
+                        } else if (courseId != 0) {
+                            // Show grand parent chapters list on home press from sub chapters list
+                            TestpressCourse.showChapters(this, null, courseId, testpressSession);
+                            return;
+                        }
+                        break;
+                }
+                // Go to home if user pressed home button & no other data passed in result intent
+                gotoHome();
+            } else {
+                finish();
             }
         }
     }

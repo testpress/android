@@ -217,11 +217,11 @@ public class PostActivity extends TestpressFragmentActivity implements
                 post.setPublished(simpleDateFormat.parse(post.getPublishedDate()).getTime());
                 if (postDao.queryBuilder().where(PostDao.Properties.Id.eq(post.getId())).count() != 0) {
                     post.setModifiedDate(simpleDateFormat.parse(post.getModified()).getTime());
-                    if (post.getCategory() != null) {
-                        post.setCategory(post.getCategory());
+                    if (post.category != null) {
+                        post.setCategory(post.category);
                         CategoryDao categoryDao = ((TestpressApplication) getApplicationContext())
                                 .getDaoSession().getCategoryDao();
-                        categoryDao.insertOrReplace(post.getCategory());
+                        categoryDao.insertOrReplace(post.category);
                     }
                     postDao.insertOrReplace(post);
                 }

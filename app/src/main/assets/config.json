@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.127",
-  "version_code" : 127,
+  "version" : "1.0.128",
+  "version_code" : 128,
   "testpress_site_subdomain" : "dma",
   "package_name" : "in.testpress.dma",
   "app_name" : "TestHub",

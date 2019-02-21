@@ -52,10 +52,10 @@ dependencies {
     }
 
     // Gcm
-    compile 'com.google.android.gms:play-services-gcm:11.0.2'
+    compile 'com.google.android.gms:play-services-gcm:16.0.0'
 
     // Google Sign In
-    compile 'com.google.android.gms:play-services-auth:11.0.2'
+    compile 'com.google.android.gms:play-services-auth:16.0.1'
 
     // Facebook SDK
     compile 'com.facebook.android:facebook-android-sdk:4.20.0'
@@ -80,13 +80,13 @@ try {
 
 android {
 
-    compileSdkVersion 25
+    compileSdkVersion 27
     buildToolsVersion '25.0.2'
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 22
-        versionCode 118
+        minSdkVersion 16
+        targetSdkVersion 27
+        versionCode 119
         versionName '1.0.' + versionCode
         applicationId 'com.extelacademy'
     }

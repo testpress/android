@@ -74,7 +74,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="40dp"
                 style="@style/Base.Widget.AppCompat.Button.Borderless"
-                fbutton:buttonColor="#00ccaa"
+                fbutton:buttonColor="@color/primary"
                 fbutton:shadowEnabled="true"
                 fbutton:shadowHeight="3dp"
                 fbutton:cornerRadius="2dp"

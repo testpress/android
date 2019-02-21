@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.auth.api.phone.SmsRetriever;
 
 import javax.inject.Inject;
 
@@ -96,15 +97,10 @@ public class CodeVerificationActivity extends AppCompatActivity {
             welcomeText.setText("Waiting to automatically detect an sms sent to " + phoneNumber + "\nIf you get the verification code press Manually Verify");
             timer = new Timer();
             smsReceivingEvent = new SmsReceivingEvent(timer);
-            packageManager = getBaseContext().getPackageManager();
-            if (packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
-                IntentFilter filter = new IntentFilter();
-                filter.addAction("android.provider.Telephony.SMS_RECEIVED");
-                registerReceiver(smsReceivingEvent, filter); //start receiver
-                timer.start(); // Start timer
-            } else {
-                timer.onFinish();
-            }
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(SmsRetriever.SMS_RETRIEVED_ACTION);
+            registerReceiver(smsReceivingEvent, filter); //Register SMS broadcast receiver
+            timer.start(); // Start timer
         }
         verificationCodeText.addTextChangedListener(watcher);
         verificationCodeText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -163,9 +159,9 @@ public class CodeVerificationActivity extends AppCompatActivity {
         public void onFinish() {
             countText.setText("30s");
             progressBar.setProgress(30);
-            if (packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
-                unregisterReceiver(smsReceivingEvent); //end receiver
-            }
+
+            unregisterReceiver(smsReceivingEvent); //end receiver
+
             if (smsReceivingEvent.code  != null) { //checking smsReceivingEvent get the code or not
                 verificationCodeText.setText(smsReceivingEvent.code);
                 handleCodeVerification(); //verify code

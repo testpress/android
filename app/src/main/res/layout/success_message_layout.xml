@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="20dp"
@@ -36,16 +35,13 @@
         android:gravity="center"
         android:text="@string/reset_success_message"/>
 
-    <info.hoang8f.widget.FButton
+    <android.support.v7.widget.AppCompatButton
+        style="@style/Button"
         android:id="@+id/success_ok"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        fbutton:buttonColor="@color/primary"
-        fbutton:shadowEnabled="true"
-        fbutton:shadowHeight="5dp"
-        fbutton:cornerRadius="2dp"
         android:layout_marginTop="20dp"
         android:text="@string/ok"
-        android:textColor="@color/white"/>
+        />
 
 </LinearLayout>

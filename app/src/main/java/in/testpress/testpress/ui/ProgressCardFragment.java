@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -28,7 +29,6 @@ import in.testpress.testpress.models.ProfileDetails;
 import in.testpress.testpress.models.ProfileDetailsDao;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.util.ViewUtils;
-import info.hoang8f.widget.FButton;
 
 import static in.testpress.testpress.ui.InAppBrowserActivity.TITLE;
 import static in.testpress.testpress.ui.InAppBrowserActivity.URL;
@@ -41,7 +41,7 @@ public class ProgressCardFragment extends Fragment {
     @InjectView(R.id.empty_container) LinearLayout emptyView;
     @InjectView(R.id.empty_title) TextView emptyTitleView;
     @InjectView(R.id.empty_description) TextView emptyDescView;
-    @InjectView(R.id.retry_button) FButton retryButton;
+    @InjectView(R.id.retry_button) Button retryButton;
     @InjectView(R.id.items_layout) ScrollView itemsLayout;
     @InjectView(R.id.forms_label) TextView forumsLabel;
     @InjectView(R.id.schedule_label) TextView scheduleLabel;

@@ -1,6 +1,7 @@
 package in.testpress.testpress.ui;
 
 import android.accounts.AccountsException;
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -52,7 +54,6 @@ import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
-import info.hoang8f.widget.FButton;
 
 public class PostsListFragment extends Fragment implements
         AbsListView.OnScrollListener, SwipeRefreshLayout.OnRefreshListener, LoaderManager
@@ -72,7 +73,7 @@ public class PostsListFragment extends Fragment implements
     @InjectView(R.id.empty_container) LinearLayout emptyView;
     @InjectView(R.id.empty_title) TextView emptyTitleView;
     @InjectView(R.id.empty_description) TextView emptyDescView;
-    @InjectView(R.id.retry_button) FButton retryButton;
+    @InjectView(R.id.retry_button) Button retryButton;
     HeaderFooterListAdapter<PostsListAdapter> adapter;
     PostsPager refreshPager;
     PostsPager pager;
@@ -120,6 +121,7 @@ public class PostsListFragment extends Fragment implements
                 getActivity().getResources(), true);
         mTopLevelSpinnerAdapter.addItem("", getString(R.string.all_posts), false, 0);
         mTopLevelSpinnerAdapter.addHeader(getString(R.string.categories));
+        Toolbar toolbar;
         if (getActivity() instanceof MainActivity) {
             toolbar = ((MainActivity) (getActivity())).getActionBarToolbar();
         } else {
@@ -248,6 +250,14 @@ public class PostsListFragment extends Fragment implements
                 if (!categories.isEmpty()) {
                     Ln.e("Setting visible");
                     mSpinnerContainer.setVisibility(View.VISIBLE);
+
+                    Toolbar toolbar;
+                    if (getActivity() instanceof MainActivity) {
+                        toolbar = ((MainActivity) (getActivity())).getActionBarToolbar();
+                        mSpinnerContainer.setVisibility(View.GONE);
+                    } else {
+                        toolbar = ((PostsListActivity) (getActivity())).getActionBarToolbar();
+                    }
                     View view = toolbar.findViewById(R.id.actionbar_spinnerwrap);
                     toolbar.removeView(view);
                     toolbar.invalidate();
@@ -260,6 +270,7 @@ public class PostsListFragment extends Fragment implements
         }.execute();
     }
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     public Loader<List<Post>> onCreateLoader(int loaderID, Bundle args) {
         switch (loaderID) {
@@ -319,6 +330,7 @@ public class PostsListFragment extends Fragment implements
         if (getActivity() == null) {
             return;
         }
+        getLoaderManager().destroyLoader(loader.getId());
         final Exception exception = getException(loader);
         if (exception != null) {
             //Remove the swipe refresh icon and the sticky notification if any
@@ -658,6 +670,7 @@ public class PostsListFragment extends Fragment implements
         super.setUserVisibleHint(visible);
         Ln.e("setUserVisibleHunt");
         if (visible && getActivity() != null) {
+            Toolbar toolbar;
             if (getActivity() instanceof MainActivity) {
                 toolbar = ((MainActivity) (getActivity())).getActionBarToolbar();
                 mSpinnerContainer.setVisibility(View.GONE);

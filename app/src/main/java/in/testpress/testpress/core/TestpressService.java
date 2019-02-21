@@ -10,10 +10,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import in.testpress.exam.models.Vote;
 import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.Comment;
 import in.testpress.testpress.models.Device;
 import in.testpress.testpress.models.Form;
+import in.testpress.testpress.models.Forum;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.Notes;
 import in.testpress.testpress.models.Order;
@@ -24,8 +26,11 @@ import in.testpress.testpress.models.ProductDetails;
 import in.testpress.testpress.models.ProfileDetails;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.ResetPassword;
+import in.testpress.testpress.models.RssFeed;
 import in.testpress.testpress.models.TestpressApiResponse;
 import in.testpress.testpress.models.Update;
+import in.testpress.testpress.network.RssConverterFactory;
+import in.testpress.testpress.network.RssFeedService;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 
@@ -79,28 +84,46 @@ public class TestpressService {
         return getRestAdapter().create(AuthenticationService.class);
     }
 
-    private ProductService getProductsService() { return getRestAdapter().create(ProductService.class); }
+    private ProductService getProductsService() {
+        return getRestAdapter().create(ProductService.class);
+    }
 
-    private DocumentsService getDocumentsService() { return getRestAdapter().create(DocumentsService.class); }
+    private DocumentsService getDocumentsService() {
+        return getRestAdapter().create(DocumentsService.class);
+    }
 
-    private PostService getPostService() { return getRestAdapter().create(PostService.class); }
+    private PostService getPostService() {
+        return getRestAdapter().create(PostService.class);
+    }
 
-    private DeviceService getDevicesService() { return getRestAdapter().create(DeviceService.class); }
+    private DeviceService getDevicesService() {
+        return getRestAdapter().create(DeviceService.class);
+    }
 
-    private ResetPasswordService getResetPasswordService(){return getRestAdapter().create(ResetPasswordService.class);}
+    private ResetPasswordService getResetPasswordService() {
+        return getRestAdapter().create(ResetPasswordService.class);
+    }
+
 
     private AuthenticationService getFormService() {
         restAdapter.setEndpoint("https://extelacademy.com");
         return restAdapter.build().create(AuthenticationService.class);
     }
 
+    private RssFeedService getRssFeedService(String url) {
+        restAdapter.setEndpoint(url);
+        restAdapter.setConverter(RssConverterFactory.create());
+        return restAdapter.build().create(RssFeedService.class);
+
+    }
+
     private String getAuthToken() {
         return "JWT " + authToken;
     }
 
-    public ResetPassword resetPassword(String email){
-        HashMap<String,String> emailcode = new HashMap<String,String>();
-        emailcode.put("email",email);
+    public ResetPassword resetPassword(String email) {
+        HashMap<String, String> emailcode = new HashMap<String, String>();
+        emailcode.put("email", email);
         return getResetPasswordService().resetPassword(emailcode);
     }
 
@@ -126,11 +149,23 @@ public class TestpressService {
         return getDevicesService().register(credentials);
     }
 
-    public TestpressApiResponse<Post> getPosts(String urlFrag, Map<String, String> queryParams, String latestModifiedDate) {
+    public TestpressApiResponse<Post> getPosts(String
+                                                       urlFrag, Map<String, String> queryParams,
+                                               String latestModifiedDate) {
+
         return getPostService().getPosts(urlFrag, queryParams, latestModifiedDate);
     }
 
-    public TestpressApiResponse<Category> getCategories(String urlFrag, Map<String, String> queryParams) {
+    public TestpressApiResponse<Forum> getForums(String
+                                                         urlFrag, Map<String, String> queryParams,
+                                                 String latestModifiedDate) {
+
+        return getPostService().getForums(urlFrag, queryParams, latestModifiedDate);
+    }
+
+    public TestpressApiResponse<Category> getCategories(String urlFrag,
+                                                        Map<String, String> queryParams) {
+
         return getPostService().getCategories(urlFrag, queryParams);
     }
 
@@ -138,7 +173,12 @@ public class TestpressService {
         return getPostService().getPostDetails(url, queryParams);
     }
 
-    public TestpressApiResponse<Comment> getComments(long postId, Map<String, String> queryParams) {
+    public Forum getForumDetail(String url, Map<String, Boolean> queryParams) {
+        return getPostService().getForumDetails(url, queryParams);
+    }
+
+    public TestpressApiResponse<Comment> getComments(long postId, Map<
+            String, String> queryParams) {
         return getPostService().getComments(postId, queryParams);
     }
 
@@ -148,18 +188,20 @@ public class TestpressService {
         return getPostService().sendComments(postId, params);
     }
 
-    public RegistrationSuccessResponse register(String username,String email, String password, String phone){
+    public RegistrationSuccessResponse register(String username, String email, String
+            password, String phone, String countryCode) {
         HashMap<String, String> userDetails = new HashMap<String, String>();
         userDetails.put("username", username);
         userDetails.put("email", email);
         userDetails.put("password", password);
         if (!phone.trim().isEmpty()) {
             userDetails.put("phone", phone);
+            userDetails.put("country_code", countryCode);
         }
         return getAuthenticationService().register(userDetails);
     }
 
-    public RegistrationSuccessResponse verifyCode(String username, String code){
+    public RegistrationSuccessResponse verifyCode(String username, String code) {
         RegistrationSuccessResponse verificationResponse;
         HashMap<String, String> codeVerificationParameters = new HashMap<String, String>();
         codeVerificationParameters.put("username", username);
@@ -168,7 +210,8 @@ public class TestpressService {
         return verificationResponse;
     }
 
-    public TestpressApiResponse<Product> getProducts(String urlFrag, Map<String, String> queryParams) {
+    public TestpressApiResponse<Product> getProducts(String
+                                                             urlFrag, Map<String, String> queryParams) {
         return getProductsService().getProducts(urlFrag, queryParams);
     }
 
@@ -176,7 +219,8 @@ public class TestpressService {
         return getProductsService().getProductDetails(productSlug);
     }
 
-    public TestpressApiResponse<Notes> getDocumentsList(String urlFrag, Map<String, String> queryParams) {
+    public TestpressApiResponse<Notes> getDocumentsList(String
+                                                                urlFrag, Map<String, String> queryParams) {
         return getDocumentsService().getDocumentsList(urlFrag, queryParams);
     }
 
@@ -190,7 +234,8 @@ public class TestpressService {
         return getProductsService().order(orderParameters);
     }
 
-    public Order orderConfirm(String confirmUrlFrag, String address, String zip, String phone, String landmark, String user, List<OrderItem> orderItems) {
+    public Order orderConfirm(String confirmUrlFrag, String address, String zip, String
+            phone, String landmark, String user, List<OrderItem> orderItems) {
         HashMap<String, Object> orderParameters = new HashMap<String, Object>();
         orderParameters.put("user", user);
         orderParameters.put("order_items", orderItems);
@@ -209,13 +254,15 @@ public class TestpressService {
         return getAuthenticationService().getProfileDetails();
     }
 
-    public ProfileDetails updateUserDetails(String url, String email, String firstName, String lastName, String phone, int gender, String birthDate, String address, String city, int state, String zip) {
+    public ProfileDetails updateUserDetails(String url, String email, String firstName, String
+            lastName, String phone, int gender, String birthDate, String address, String city,
+                                            int state, String zip) {
         HashMap<String, Object> userParameters = new HashMap<String, Object>();
         userParameters.put("email", email);
         userParameters.put("first_name", firstName);
         userParameters.put("last_name", lastName);
         userParameters.put("phone", phone);
-        if(gender == -1) { //if option is --select-- then send ""
+        if (gender == -1) { //if option is --select-- then send ""
             userParameters.put("gender", "");
         } else {
             userParameters.put("gender", gender);
@@ -223,7 +270,7 @@ public class TestpressService {
         userParameters.put("birth_date", birthDate);
         userParameters.put("address1", address);
         userParameters.put("city", city);
-        if(state == -1) {
+        if (state == -1) {
             userParameters.put("state_choices", "");
         } else {
             userParameters.put("state_choices", state);
@@ -235,7 +282,7 @@ public class TestpressService {
     public ProfileDetails updateProfileImage(String url, String image, int[] cropDetails) {
         HashMap<String, Object> userParameters = new HashMap<String, Object>();
         userParameters.put("photo", image);
-        if(cropDetails != null) {
+        if (cropDetails != null) {
             userParameters.put("x_offset", cropDetails[0]);
             userParameters.put("y_offset", cropDetails[1]);
             userParameters.put("crop_width", cropDetails[2]);
@@ -252,6 +299,7 @@ public class TestpressService {
         return getAuthenticationService().activateAccount(urlFrag);
     }
 
+
     public HashMap<Integer, Form> getForms() {
         return getFormService().getForms();
     }
@@ -266,4 +314,35 @@ public class TestpressService {
         return getFormService().requestForm(parameters);
     }
 
+    public RssFeed getRssFeed(String url) {
+        return getRssFeedService(url).getRssFeed();
+    }
+
+    public Forum postForum(String title, String content, String category) {
+        HashMap<String, String> postParameters = new HashMap<String, String>();
+        postParameters.put("title", title);
+        postParameters.put("content_html", content);
+        if (category != null) {
+            postParameters.put("category", category);
+        }
+        return getPostService().postForum(postParameters);
+    }
+
+    public Vote<Forum> castVote(Forum forum, int typeOfVote) {
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("content_object", forum);
+        params.put("type_of_vote", typeOfVote);
+        return getPostService().castVote(params);
+    }
+
+    public String deleteCommentVote(Forum forum) {
+        return getPostService().deleteCommentVote(forum.getVoteId());
+    }
+
+    public Vote<Forum> updateCommentVote(Forum forum, int typeOfVote) {
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("content_object", forum);
+        params.put("type_of_vote", typeOfVote);
+        return getPostService().updateCommentVote(forum.getVoteId(), params);
+    }
 }

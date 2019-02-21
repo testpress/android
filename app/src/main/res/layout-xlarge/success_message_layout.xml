@@ -37,15 +37,11 @@
         android:textSize="@dimen/text_size_medium"
         android:text="@string/reset_success_message"/>
 
-    <info.hoang8f.widget.FButton
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/success_ok"
-        style="@style/TextLabelTab"
-        fbutton:buttonColor="@color/primary"
-        fbutton:shadowEnabled="true"
-        fbutton:shadowHeight="5dp"
-        fbutton:cornerRadius="2dp"
+        style="@style/Button.Tab"
         android:layout_marginTop="20dp"
         android:text="@string/ok"
-        android:textColor="@color/white"/>
+        />
 
 </LinearLayout>

@@ -5,6 +5,7 @@ import android.app.Instrumentation;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.support.multidex.MultiDex;
 
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -15,6 +16,7 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import in.testpress.testpress.models.DaoMaster;
 import in.testpress.testpress.models.DaoSession;
+import in.testpress.testpress.util.NotificationHelper;
 
 public class TestpressApplication extends Application {
     private static TestpressApplication instance;
@@ -49,7 +51,7 @@ public class TestpressApplication extends Application {
         SQLiteDatabase db = getDatabase(this);
         DaoMaster daoMaster = new DaoMaster(db);
         daoSession = daoMaster.newSession();
-
+        NotificationHelper.createChannels(this);
     }
 
     public static SQLiteDatabase getDatabase(@NonNull Context context) {
@@ -84,6 +86,12 @@ public class TestpressApplication extends Application {
                 .diskCacheSize(500 * 1024 * 1024).build();
 
         ImageLoader.getInstance().init(config);
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 
     private Object getRootModule() {

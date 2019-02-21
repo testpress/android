@@ -56,10 +56,12 @@ import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.ProfileDetails;
+import in.testpress.testpress.models.TestpressApiErrorResponse;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
-import in.testpress.util.UIUtils;
+import in.testpress.testpress.util.UIUtils;
+import retrofit.RetrofitError;
 
 import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
@@ -109,11 +111,11 @@ public class MainMenuFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
-//        fetchStarredCategories();
+        fetchStarredCategories();
         ProfileDetails profileDetails = ProfileDetails.getProfileDetailsFromPreferences(getActivity());
         if (profileDetails == null) {
             gridLayout.setVisibility(View.GONE);
-            UIUtils.setIndeterminateDrawable(getActivity(), progressBar, 4);
+            in.testpress.util.UIUtils.setIndeterminateDrawable(getActivity(), progressBar, 4);
             progressBar.setVisibility(View.VISIBLE);
         } else {
             welcomeMessage.setText(String.format(getString(R.string.welcome_message),
@@ -279,6 +281,10 @@ public class MainMenuFragment extends Fragment {
                 TestpressExam.showAnalytics(getActivity(), SUBJECT_ANALYTICS_PATH, session);
                 break;
             case R.string.store:
+                String title = UIUtils.getMenuItemName(R.string.store, mInstituteSettings);
+                Intent intent = new Intent();
+                intent.putExtra("title", title);
+                getActivity().setIntent(intent);
                 TestpressStore.show(getActivity(), session);
                 break;
         }
@@ -382,19 +388,36 @@ public class MainMenuFragment extends Fragment {
                 if (getActivity() == null) {
                     return;
                 }
-                Ln.e("On success");
-                if (categories.isEmpty()) {
-                    quickLinksContainer.setVisibility(View.GONE);
-                } else {
-                    quickLinksContainer.setVisibility(View.VISIBLE);
-                    CategoryDao categoryDao = ((TestpressApplication) getActivity()
-                            .getApplicationContext()).getDaoSession().getCategoryDao();
-                    categoryDao.insertOrReplaceInTx(categories);
-                    recyclerView.setAdapter(new StarredCategoryAdapter(getActivity(),
-                            categories));
+//                Ln.e("On success");
+//                if (categories.isEmpty()) {
+//                    quickLinksContainer.setVisibility(View.GONE);
+//                } else {
+//                    quickLinksContainer.setVisibility(View.VISIBLE);
+//                    CategoryDao categoryDao = ((TestpressApplication) getActivity()
+//                            .getApplicationContext()).getDaoSession().getCategoryDao();
+//                    categoryDao.insertOrReplaceInTx(categories);
+//                    recyclerView.setAdapter(new StarredCategoryAdapter(getActivity(),
+//                            categories));
+//                }
+            }
+
+            protected void onException(Exception e) {
+                super.onException(e);
+
+                if (e.getMessage().equals("403 FORBIDDEN")){
+                    logoutIfExceptionContainInvalidSignature(e);
                 }
             }
         }.execute();
+    }
+
+    public void logoutIfExceptionContainInvalidSignature(Exception e) {
+
+        TestpressApiErrorResponse testpressApiErrorResponse = (TestpressApiErrorResponse) (((RetrofitError) e).getBodyAs(TestpressApiErrorResponse.class));
+
+        if (testpressApiErrorResponse.getDetail().equals("Invalid signature")) {
+            serviceProvider.logout(getActivity(), testpressService, serviceProvider, logoutService);
+        }
     }
 
     public static class StarredCategoryAdapter

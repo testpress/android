@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.119",
-  "version_code" : 119,
+  "version" : "1.0.120",
+  "version_code" : 120,
   "testpress_site_subdomain" : "extelacademy",
   "package_name" : "com.extelacademy",
   "app_name" : "Extel Classes",

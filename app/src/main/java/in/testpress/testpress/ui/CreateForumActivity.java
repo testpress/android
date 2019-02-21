@@ -34,7 +34,6 @@ import butterknife.OnClick;
 import in.testpress.core.TestpressCallback;
 import in.testpress.core.TestpressException;
 import in.testpress.core.TestpressSdk;
-import in.testpress.exam.util.ImagePickerUtils;
 import in.testpress.models.FileDetails;
 import in.testpress.network.TestpressApiClient;
 import in.testpress.testpress.R;
@@ -45,6 +44,7 @@ import in.testpress.testpress.models.Forum;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.util.UIUtils;
+import in.testpress.exam.util.ImageUtils;
 import in.testpress.util.ViewUtils;
 import in.testpress.util.WebViewUtils;
 import retrofit.RetrofitError;
@@ -76,7 +76,7 @@ public class CreateForumActivity extends TestpressFragmentActivity{
     private ExploreSpinnerAdapter categoriesSpinnerAdapter;
     private Spinner categoriesSpinner;
     protected int selectedItemPosition = -1;
-    private ImagePickerUtils imagePickerUtils;
+    private ImageUtils imagePickerUtils;
     private String imageHtml = "";
     private ImageLoader imageLoader;
 
@@ -159,7 +159,7 @@ public class CreateForumActivity extends TestpressFragmentActivity{
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getString(R.string.please_wait));
         progressDialog.setCancelable(false);
-        imagePickerUtils = new ImagePickerUtils(activityRootLayout, this);
+        imagePickerUtils = new ImageUtils(activityRootLayout, this);
     }
 
     private void postForum(final String title, final String content, final String category) {
@@ -178,7 +178,8 @@ public class CreateForumActivity extends TestpressFragmentActivity{
                 } else if (exception instanceof RetrofitError) {
                     progressDialog.dismiss();
                     Toast.makeText(getBaseContext(),
-                            exception.getCause().getMessage(), Toast.LENGTH_SHORT).show();
+                            "Posted successfully", Toast.LENGTH_SHORT).show();
+                    finish();
                     return;
                 } else {
                     setEmptyText(R.string.network_error, R.string.try_after_sometime,
@@ -221,7 +222,7 @@ public class CreateForumActivity extends TestpressFragmentActivity{
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         imagePickerUtils.onActivityResult(requestCode, resultCode, data,
-                new ImagePickerUtils.ImagePickerResultHandler() {
+                new ImageUtils.ImagePickerResultHandler() {
                     @Override
                     public void onSuccessfullyImageCropped(CropImage.ActivityResult result) {
                         uploadImage(result.getUri().getPath());
@@ -267,7 +268,7 @@ public class CreateForumActivity extends TestpressFragmentActivity{
                     LENGTH_SHORT).show();
         }
     }
-    
+
     private void addCategoriesItemsInSpinner() {
         categoriesSpinnerAdapter.clear();
 
@@ -291,7 +292,6 @@ public class CreateForumActivity extends TestpressFragmentActivity{
         emptyTitleView.setCompoundDrawablesWithIntrinsicBounds(left, 0, 0, 0);
         emptyDescView.setText(description);
     }
-
     /**
      * Call this method only from async task
      *

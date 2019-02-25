@@ -89,6 +89,10 @@ public class UIUtils {
                 return instituteSettings.getPostsLabel();
             case R.string.learn:
                 return instituteSettings.getLearnLabel();
+            case R.string.label_username:
+                return instituteSettings.getLoginLabel();
+            case R.string.label_password:
+                return instituteSettings.getLoginPasswordLabel();
             default:
                 return "";
         }

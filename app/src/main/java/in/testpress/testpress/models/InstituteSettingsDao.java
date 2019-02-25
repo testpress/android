@@ -52,6 +52,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         public final static Property LeaderboardLabel = new Property(26, String.class, "leaderboardLabel", false, "LEADERBOARD_LABEL");
         public final static Property DashboardLabel = new Property(27, String.class, "dashboardLabel", false, "DASHBOARD_LABEL");
         public final static Property BookmarksLabel = new Property(28, String.class, "bookmarksLabel", false, "BOOKMARKS_LABEL");
+        public final static Property LoginLabel = new Property(29, String.class, "loginLabel", false, "LOGIN_LABEL");
+        public final static Property LoginPasswordLabel = new Property(30, String.class, "loginPasswordLabel", false, "LOGIN_PASSWORD_LABEL");
     };
 
 
@@ -95,7 +97,9 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
                 "\"LEARN_LABEL\" TEXT," + // 25: learnLabel
                 "\"LEADERBOARD_LABEL\" TEXT," + // 26: leaderboardLabel
                 "\"DASHBOARD_LABEL\" TEXT," + // 27: dashboardLabel
-                "\"BOOKMARKS_LABEL\" TEXT);"); // 28: bookmarksLabel
+                "\"BOOKMARKS_LABEL\" TEXT," + // 28: bookmarksLabel
+                "\"LOGIN_LABEL\" TEXT," + // 29: loginLabel
+                "\"LOGIN_PASSWORD_LABEL\" TEXT);"); // 30: loginPasswordLabel
     }
 
     /** Drops the underlying database table. */
@@ -249,6 +253,16 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         if (bookmarksLabel != null) {
             stmt.bindString(29, bookmarksLabel);
         }
+ 
+        String loginLabel = entity.getLoginLabel();
+        if (loginLabel != null) {
+            stmt.bindString(30, loginLabel);
+        }
+ 
+        String loginPasswordLabel = entity.getLoginPasswordLabel();
+        if (loginPasswordLabel != null) {
+            stmt.bindString(31, loginPasswordLabel);
+        }
     }
 
     /** @inheritdoc */
@@ -289,7 +303,9 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25), // learnLabel
             cursor.isNull(offset + 26) ? null : cursor.getString(offset + 26), // leaderboardLabel
             cursor.isNull(offset + 27) ? null : cursor.getString(offset + 27), // dashboardLabel
-            cursor.isNull(offset + 28) ? null : cursor.getString(offset + 28) // bookmarksLabel
+            cursor.isNull(offset + 28) ? null : cursor.getString(offset + 28), // bookmarksLabel
+            cursor.isNull(offset + 29) ? null : cursor.getString(offset + 29), // loginLabel
+            cursor.isNull(offset + 30) ? null : cursor.getString(offset + 30) // loginPasswordLabel
         );
         return entity;
     }
@@ -326,6 +342,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         entity.setLeaderboardLabel(cursor.isNull(offset + 26) ? null : cursor.getString(offset + 26));
         entity.setDashboardLabel(cursor.isNull(offset + 27) ? null : cursor.getString(offset + 27));
         entity.setBookmarksLabel(cursor.isNull(offset + 28) ? null : cursor.getString(offset + 28));
+        entity.setLoginLabel(cursor.isNull(offset + 29) ? null : cursor.getString(offset + 29));
+        entity.setLoginPasswordLabel(cursor.isNull(offset + 30) ? null : cursor.getString(offset + 30));
      }
     
     /** @inheritdoc */

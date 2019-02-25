@@ -52,10 +52,12 @@ import in.testpress.testpress.models.CategoryDao;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
+import in.testpress.testpress.models.TestpressApiErrorResponse;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.UIUtils;
+import retrofit.RetrofitError;
 
 import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
@@ -380,7 +382,24 @@ public class MainMenuFragment extends Fragment {
 //                            categories));
                 }
             }
+
+            protected void onException(Exception e) {
+                super.onException(e);
+
+                if (e.getMessage().equals("403 FORBIDDEN")){
+                    logoutIfExceptionContainInvalidSignature(e);
+                }
+            }
         }.execute();
+    }
+
+    public void logoutIfExceptionContainInvalidSignature(Exception e) {
+
+        TestpressApiErrorResponse testpressApiErrorResponse = (TestpressApiErrorResponse) (((RetrofitError) e).getBodyAs(TestpressApiErrorResponse.class));
+
+        if (testpressApiErrorResponse.getDetail().equals("Invalid signature")) {
+            serviceProvider.logout(getActivity(), testpressService, serviceProvider, logoutService);
+        }
     }
 
     public static class StarredCategoryAdapter

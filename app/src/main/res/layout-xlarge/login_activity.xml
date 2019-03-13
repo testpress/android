@@ -77,7 +77,6 @@
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/b_signin"
                 style="@style/Button.Tab"
-                android:background="#00ccaa"
                 android:layout_marginTop="5dp"
                 android:textSize="14sp"
                 android:text="Login"

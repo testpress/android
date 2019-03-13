@@ -24,6 +24,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -113,10 +114,7 @@ public class WebViewActivity extends BaseToolBarActivity {
         }
 
         webView = (WebView) findViewById(R.id.web_view);
-
-        if (webView == null) {
-            finish();
-        }
+        assert webView != null;
 
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);

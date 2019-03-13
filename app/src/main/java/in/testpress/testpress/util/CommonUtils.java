@@ -163,4 +163,8 @@ public class CommonUtils {
                 PackageManager.DONT_KILL_APP);
     }
 
+    public static String getSSOLink(String hmacSignature, String payload, String nextUrl){
+        return "/sso_login/?sig=" + hmacSignature + "&sso=" + payload + "&next=" + nextUrl;
+    }
+
 }

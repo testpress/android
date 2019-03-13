@@ -16,6 +16,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -67,21 +68,22 @@ import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.ProfileDetails;
-import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.FormatDate;
+import in.testpress.testpress.util.HmacSignature;
+import in.testpress.testpress.util.Payload;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.util.CommonUtils.getSSOLink;
 
 public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         implements LoaderManager.LoaderCallbacks<ProfileDetails> {
 
     @Inject TestpressServiceProvider serviceProvider;
     @InjectView(R.id.profile_photo) ImageView profilePhoto;
-    @InjectView(R.id.edit_profile) ImageView editProfile;
     @InjectView(R.id.edit_profile_photo) ImageView imageEditButton;
     @InjectView(R.id.display_name) TextView displayName;
     @InjectView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbar;
@@ -123,8 +125,6 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     DisplayImageOptions options;
     Menu menu;
     static final private int SELECT_IMAGE = 100;
-    public String ssoUrl;
-
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -164,7 +164,6 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
                 .showImageOnFail(R.drawable.profile_image_sample)
                 .showImageOnLoading(R.drawable.profile_image_sample).build();
         getSupportLoaderManager().initLoader(0, null, this);
-        fetchSsoLink();
     }
 
     @Override
@@ -200,7 +199,6 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
             this.profileDetails = profileDetails;
         }
         profileDetailsView.setVisibility(View.VISIBLE);
-        editProfile.setVisibility(View.VISIBLE);
         displayProfileDetails(this.profileDetails);
     }
 
@@ -626,42 +624,21 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         return null;
     }
 
-    @OnClick(R.id.edit_profile)
     public void editActions(View v) {
 
         if (fetchInstituteSetting().getAllow_profile_edit() && !Strings.toString(profileDetails.getUsername()).isEmpty()) {
+            Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
+            intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Edit Profile");
+            intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + getSingleSignOnLink());
+            startActivity(intent);
 
-            if (!Strings.toString(ssoUrl).isEmpty()) {
-                Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
-                intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Edit Profile");
-                intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + ssoUrl+"&next=/settings/profile/mobile/");
-                startActivity(intent);
-            } else {
-                Toaster.showLong(ProfileDetailsActivity.this, R.string.edit_profile_error);
-            }
         }
     }
 
-    public void fetchSsoLink() {
-        new SafeAsyncTask<SsoUrl>() {
-            @Override
-            public SsoUrl call() throws Exception {
-                return serviceProvider.getService(ProfileDetailsActivity.this).getSsoUrl();
-            }
+    public String getSingleSignOnLink() {
+        String payload = Payload.getPayloadByUsername(profileDetails.getUsername());
+        String hmacSignature = HmacSignature.getHmacSignature(payload);
 
-            @Override
-            protected void onException(final Exception exception) throws RuntimeException {
-                super.onException(exception);
-
-                if (exception.getCause() instanceof UnknownHostException) {
-                    Toaster.showLong(ProfileDetailsActivity.this, R.string.no_internet);
-                }
-            }
-
-            @Override
-            protected void onSuccess(final SsoUrl ssoLink) throws Exception {
-                ssoUrl = ssoLink.getSsoUrl();
-            }
-        }.execute();
+        return getSSOLink(hmacSignature, payload, "/settings/profile");
     }
 }

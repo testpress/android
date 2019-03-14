@@ -19,6 +19,7 @@ import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.ui.RssFeedDetailActivity;
+import in.testpress.testpress.util.Strings;
 
 public class UIUtils {
 
@@ -76,23 +77,23 @@ public class UIUtils {
     public static String getMenuItemName(int titleResId, InstituteSettings instituteSettings) {
         switch (titleResId) {
             case R.string.dashboard:
-                return instituteSettings.getDashboardLabel();
+                return Strings.toString(instituteSettings.getDashboardLabel());
             case R.string.testpress_leaderboard:
-                return instituteSettings.getLeaderboardLabel();
+                return Strings.toString(instituteSettings.getLeaderboardLabel());
             case R.string.bookmarks:
-                return instituteSettings.getBookmarksLabel();
+                return Strings.toString(instituteSettings.getBookmarksLabel());
             case R.string.documents:
-                return instituteSettings.getDocumentsLabel();
+                return Strings.toString(instituteSettings.getDocumentsLabel());
             case R.string.store:
-                return instituteSettings.getStoreLabel();
+                return Strings.toString(instituteSettings.getStoreLabel());
             case R.string.posts:
-                return instituteSettings.getPostsLabel();
+                return Strings.toString(instituteSettings.getPostsLabel());
             case R.string.learn:
-                return instituteSettings.getLearnLabel();
+                return Strings.toString(instituteSettings.getLearnLabel());
             case R.string.label_username:
-                return instituteSettings.getLoginLabel();
+                return Strings.toString(instituteSettings.getLoginLabel());
             case R.string.label_password:
-                return instituteSettings.getLoginPasswordLabel();
+                return Strings.toString(instituteSettings.getLoginPasswordLabel());
             default:
                 return "";
         }

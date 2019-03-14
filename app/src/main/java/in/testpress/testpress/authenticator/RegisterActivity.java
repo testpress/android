@@ -2,7 +2,6 @@ package in.testpress.testpress.authenticator;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
@@ -38,7 +37,6 @@ import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.R.id;
 import in.testpress.testpress.TestpressApplication;
-import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
@@ -48,7 +46,7 @@ import in.testpress.testpress.models.RegistrationErrorDetails;
 import in.testpress.testpress.ui.TextWatcherAdapter;
 import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.SafeAsyncTask;
-import in.testpress.testpress.util.Validations;
+import in.testpress.testpress.util.PhoneNumberValidator;
 import retrofit.RetrofitError;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
@@ -244,15 +242,15 @@ public class RegisterActivity extends AppCompatActivity {
            }
             if (verificationMethod.equals(MOBILE)) {
                 //Phone number verification
-                boolean isPhoneValid;
+                boolean isPhoneNumberValid;
 
                 if (isTwilioEnabled) {
-                    isPhoneValid = Validations.validateInternationalPhoneNumber(countryCodePicker);
+                    isPhoneNumberValid = PhoneNumberValidator.validateInternationalPhoneNumber(countryCodePicker);
                 } else {
-                    isPhoneValid = Validations.validatePhoneNumber(phoneText.getText().toString().trim());
+                    isPhoneNumberValid = PhoneNumberValidator.validatePhoneNumber(phoneText.getText().toString().trim());
                 }
 
-                if (!isPhoneValid) {
+                if (!isPhoneNumberValid) {
                     phoneText.setError("Please enter a valid mobile number");
                     phoneText.requestFocus();
                     return false;

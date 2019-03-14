@@ -51,6 +51,13 @@ dependencies {
     // Country code picker
     // https://github.com/hbb20/CountryCodePickerProject/wiki
     implementation "com.hbb20:ccp:2.1.9"
+
+    //Unit test
+    implementation 'junit:junit:4.12'
+    implementation 'org.mockito:mockito-core:2.8.9'
+    implementation 'org.powermock:powermock-module-junit4:1.7.4'
+    implementation 'org.powermock:powermock-api-mockito2:1.7.4'
+
 }
 
 def key_alias = "sample"
@@ -146,6 +153,10 @@ android {
             // testPackageName 'in.testpress.testpress.tests'
             // testInstrumentationRunner 'android.test.InstrumentationTestRunner' // this is the default
         }
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
     }
 }
 

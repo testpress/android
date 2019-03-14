@@ -105,13 +105,13 @@ public class ForumListAdapter extends BaseAdapter{
             case 0 :
                 return getQueryBuilder().orderDesc(ForumDao.Properties.Published);
             case 1 :
-                return getQueryBuilder().orderDesc(ForumDao.Properties.ViewsCount);
-            case 2 :
-                return getQueryBuilder().orderDesc(ForumDao.Properties.Upvotes);
-            case 3 :
-                return getQueryBuilder().orderAsc(ForumDao.Properties.Published);
-            default :
                 return getQueryBuilder().orderDesc(ForumDao.Properties.Published);
+            case 2 :
+                return getQueryBuilder().orderDesc(ForumDao.Properties.ViewsCount);
+            case 3 :
+                return getQueryBuilder().orderDesc(ForumDao.Properties.Upvotes);
+            default :
+                return getQueryBuilder().orderAsc(ForumDao.Properties.Published);
         }
     }
 

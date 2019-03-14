@@ -34,8 +34,6 @@ import butterknife.OnClick;
 import in.testpress.core.TestpressCallback;
 import in.testpress.core.TestpressException;
 import in.testpress.core.TestpressSdk;
-
-import in.testpress.exam.util.ImageUtils;
 import in.testpress.models.FileDetails;
 import in.testpress.network.TestpressApiClient;
 import in.testpress.testpress.R;
@@ -46,6 +44,7 @@ import in.testpress.testpress.models.Forum;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.util.UIUtils;
+import in.testpress.exam.util.ImageUtils;
 import in.testpress.util.ViewUtils;
 import in.testpress.util.WebViewUtils;
 import retrofit.RetrofitError;
@@ -315,7 +314,6 @@ public class CreateForumActivity extends TestpressFragmentActivity {
         emptyTitleView.setCompoundDrawablesWithIntrinsicBounds(left, 0, 0, 0);
         emptyDescView.setText(description);
     }
-
     /**
      * Call this method only from async task
      *

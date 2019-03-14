@@ -255,7 +255,6 @@ public class ForumListFragment extends Fragment implements
                     adapter.getWrappedAdapter().clearSortBy();
                 } else {
                     adapter.getWrappedAdapter().setSortBy(sortBySelectedPosition);
-
                 }
                 listView.setVisibility(View.VISIBLE);
                 emptyView.setVisibility(View.GONE);
@@ -366,7 +365,6 @@ public class ForumListFragment extends Fragment implements
         sortBySpinnerAdapter.addItem(MOST_VIEWED, MOST_VIEWED, true, 0);
         sortBySpinnerAdapter.addItem(MOST_UPVOTED, MOST_UPVOTED, true, 0);
         sortBySpinnerAdapter.addItem(OLD_TO_NEW, OLD_TO_NEW, true, 0);
-
         if (sortBySelectedPosition == -1) {
             sortBySelectedPosition = 0;
             sortBySpinnerAdapter.notifyDataSetChanged();
@@ -634,6 +632,7 @@ public class ForumListFragment extends Fragment implements
 
     @Override
     public void onLoaderReset(@NonNull Loader loader) {
+
     }
 
     @Override

@@ -103,7 +103,7 @@ public class MainMenuFragment extends Fragment {
         // ToDo get from institute settings
         boolean drupalRssFeedEnabled = false;
         if (isUserAuthenticated) {
-            if (Strings.toString(instituteSettings.getAboutUs()) != "") {
+            if (!Strings.toString(instituteSettings.getAboutUs()).isEmpty()) {
                 mMenuItemResIds.put(R.string.about_us, R.drawable.about_us);
             }
             if (!instituteSettings.getShowGameFrontend()) {

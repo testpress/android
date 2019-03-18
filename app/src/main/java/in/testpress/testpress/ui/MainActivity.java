@@ -199,7 +199,7 @@ public class MainActivity extends TestpressFragmentActivity {
         mBottomBarAdapter.setSelectedPosition(position);
         mBottomBarAdapter.notifyDataSetChanged();
 
-        if (UIUtils.getMenuItemName(mMenuItemTitleIds.get(position), mInstituteSettings) != "") {
+        if (!UIUtils.getMenuItemName(mMenuItemTitleIds.get(position), mInstituteSettings).isEmpty()) {
             updateToolbarText(UIUtils.getMenuItemName(mMenuItemTitleIds.get(position), mInstituteSettings));
         } else {
             updateToolbarText(getString(mMenuItemTitleIds.get(position)));

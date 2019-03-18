@@ -52,6 +52,7 @@ import in.testpress.testpress.models.TestpressApiErrorResponse;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
+import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
 import retrofit.RetrofitError;
 
@@ -102,6 +103,9 @@ public class MainMenuFragment extends Fragment {
         // ToDo get from institute settings
         boolean drupalRssFeedEnabled = false;
         if (isUserAuthenticated) {
+            if (Strings.toString(instituteSettings.getAboutUs()) != "") {
+                mMenuItemResIds.put(R.string.about_us, R.drawable.about_us);
+            }
             if (!instituteSettings.getShowGameFrontend()) {
                 mMenuItemResIds.put(R.string.my_exams, R.drawable.exams);
             }
@@ -142,6 +146,10 @@ public class MainMenuFragment extends Fragment {
                 Intent intent;
                 String custom_title;
                 switch ((int) id) {
+                    case R.string.about_us:
+                        intent = new Intent(getActivity(), AboutUsActivity.class);
+                        startActivity(intent);
+                        break;
                     case R.string.my_exams:
                         checkAuthenticatedUser(R.string.my_exams);
                         break;

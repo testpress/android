@@ -7,5 +7,4 @@ import retrofit.http.POST;
 public interface SsoUrlService {
     @POST(Constants.Http.PRESIGNED_SSO_URL)
     SsoUrl getSsoUrl();
-
 }

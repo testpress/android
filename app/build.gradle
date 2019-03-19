@@ -91,7 +91,6 @@ android {
         def host_url = json.testpress_site_subdomain + '.testpress.in'
         resValue "string", "host_url", host_url
         buildConfigField "String", "BASE_URL", '"https://' + host_url + '"'
-        buildConfigField "String", "PRIVATE_KEY", '"'+json.private_key+'"'
         resValue "string", "app_name", json.app_name
         resValue "string", "share_message", json.share_message
         resValue "string", "facebook_app_id", json.facebook_app_id

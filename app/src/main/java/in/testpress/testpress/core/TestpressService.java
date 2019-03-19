@@ -26,7 +26,7 @@ import in.testpress.testpress.models.ProfileDetails;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.ResetPassword;
 import in.testpress.testpress.models.RssFeed;
-import in.testpress.testpress.models.SsoUrl;
+import in.testpress.testpress.models.SsoLink;
 import in.testpress.testpress.models.TestpressApiResponse;
 import in.testpress.testpress.models.Update;
 import in.testpress.testpress.network.RssConverterFactory;
@@ -99,7 +99,7 @@ public class TestpressService {
         return getRestAdapter().create(SsoUrlService.class);
     }
 
-    public SsoUrl getSsoUrl(){
+    public SsoLink getSsoUrl(){
         return getSsoUrlService().getSsoUrl();
     }
 

@@ -115,7 +115,7 @@ public class WebViewActivity extends BaseToolBarActivity {
 
         webView = (WebView) findViewById(R.id.web_view);
 
-        if(webView==null){
+        if (webView == null) {
             finish();
         }
 

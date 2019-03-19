@@ -1,6 +1,6 @@
 package in.testpress.testpress.models;
 
-public class SsoLink {
+public class SsoUrl {
     protected String ssoUrl;
 
     public String getSsoUrl() {

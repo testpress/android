@@ -1,15 +1,11 @@
 package in.testpress.testpress.network;
 
-import java.util.HashMap;
-
 import in.testpress.testpress.core.Constants;
-import in.testpress.testpress.models.SsoLink;
-import retrofit.http.Body;
+import in.testpress.testpress.models.SsoUrl;
 import retrofit.http.POST;
-import retrofit2.Call;
 
 public interface SsoUrlService {
     @POST(Constants.Http.PRESIGNED_SSO_URL)
-    SsoLink getSsoUrl();
+    SsoUrl getSsoUrl();
 
 }

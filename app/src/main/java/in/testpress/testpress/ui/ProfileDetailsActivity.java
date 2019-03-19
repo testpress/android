@@ -16,7 +16,6 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -48,7 +47,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -69,7 +67,7 @@ import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.ProfileDetails;
-import in.testpress.testpress.models.SsoLink;
+import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.FormatDate;
 import in.testpress.testpress.util.SafeAsyncTask;
@@ -77,7 +75,6 @@ import in.testpress.testpress.util.Strings;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
-import static in.testpress.testpress.util.CommonUtils.getSSOLink;
 
 public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         implements LoaderManager.LoaderCallbacks<ProfileDetails> {
@@ -630,7 +627,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     public void editActions(View v) {
 
         if (fetchInstituteSetting().getAllow_profile_edit() && !Strings.toString(profileDetails.getUsername()).isEmpty()) {
-            if (!ssoUrl.isEmpty()) {
+            if (!Strings.toString(ssoUrl).isEmpty()) {
                 Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
                 intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Edit Profile");
                 intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + ssoUrl+"&next=/settings/profile");
@@ -642,9 +639,9 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     }
 
     public void fetchSsoLink() {
-        new SafeAsyncTask<SsoLink>() {
+        new SafeAsyncTask<SsoUrl>() {
             @Override
-            public SsoLink call() throws Exception {
+            public SsoUrl call() throws Exception {
                 return serviceProvider.getService(ProfileDetailsActivity.this).getSsoUrl();
             }
 
@@ -659,7 +656,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
             }
 
             @Override
-            protected void onSuccess(final SsoLink ssoLink) throws Exception {
+            protected void onSuccess(final SsoUrl ssoLink) throws Exception {
                 ssoUrl = ssoLink.getSsoUrl();
             }
         }.execute();

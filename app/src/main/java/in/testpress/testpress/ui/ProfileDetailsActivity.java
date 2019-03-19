@@ -48,6 +48,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -68,10 +69,9 @@ import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.ProfileDetails;
+import in.testpress.testpress.models.SsoLink;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.FormatDate;
-import in.testpress.testpress.util.HmacSignature;
-import in.testpress.testpress.util.Payload;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
 
@@ -125,6 +125,8 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     DisplayImageOptions options;
     Menu menu;
     static final private int SELECT_IMAGE = 100;
+    public String ssoUrl;
+
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -164,6 +166,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
                 .showImageOnFail(R.drawable.profile_image_sample)
                 .showImageOnLoading(R.drawable.profile_image_sample).build();
         getSupportLoaderManager().initLoader(0, null, this);
+        fetchSsoLink();
     }
 
     @Override
@@ -627,18 +630,38 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     public void editActions(View v) {
 
         if (fetchInstituteSetting().getAllow_profile_edit() && !Strings.toString(profileDetails.getUsername()).isEmpty()) {
-            Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
-            intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Edit Profile");
-            intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + getSingleSignOnLink());
-            startActivity(intent);
-
+            if (!ssoUrl.isEmpty()) {
+                Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
+                intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Edit Profile");
+                intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + ssoUrl+"&next=/settings/profile");
+                startActivity(intent);
+            } else {
+                Toaster.showLong(ProfileDetailsActivity.this, R.string.edit_profile_error);
+            }
         }
     }
 
-    public String getSingleSignOnLink() {
-        String payload = Payload.getPayloadByUsername(profileDetails.getUsername());
-        String hmacSignature = HmacSignature.getHmacSignature(payload);
+    public void fetchSsoLink() {
+        new SafeAsyncTask<SsoLink>() {
+            @Override
+            public SsoLink call() throws Exception {
+                return serviceProvider.getService(ProfileDetailsActivity.this).getSsoUrl();
+            }
 
-        return getSSOLink(hmacSignature, payload, "/settings/profile");
+            @Override
+            protected void onException(final Exception exception) throws RuntimeException {
+                super.onException(exception);
+                if (exception.getCause() instanceof UnknownHostException) {
+                    Toaster.showLong(ProfileDetailsActivity.this, R.string.no_internet);
+                } else {
+                    Toaster.showLong(ProfileDetailsActivity.this, exception.getMessage());
+                }
+            }
+
+            @Override
+            protected void onSuccess(final SsoLink ssoLink) throws Exception {
+                ssoUrl = ssoLink.getSsoUrl();
+            }
+        }.execute();
     }
 }

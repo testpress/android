@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -18,9 +19,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.github.kevinsawicki.wishlist.Toaster;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,9 +41,11 @@ import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
+import in.testpress.testpress.models.CheckPermission;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
+import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.models.Update;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
@@ -76,6 +81,7 @@ public class MainActivity extends TestpressFragmentActivity {
     private InstituteSettings mInstituteSettings;
     private InstituteSettingsDao instituteSettingsDao;
     private boolean isUserAuthenticated;
+    private String ssoUrl;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -267,6 +273,7 @@ public class MainActivity extends TestpressFragmentActivity {
             initScreen();
             if (isUserAuthenticated) {
                 updateTestpressSession();
+                checkForForceUserData();
             }
         }
     }
@@ -330,6 +337,29 @@ public class MainActivity extends TestpressFragmentActivity {
                 .show();
     }
 
+    public void checkForForceUserData() {
+        if (mInstituteSettings == null) {
+            progressBarLayout.setVisibility(View.VISIBLE);
+        }
+        new SafeAsyncTask<CheckPermission>() {
+            @Override
+            public CheckPermission call() throws Exception {
+                return serviceProvider.getService(MainActivity.this).checkPermission();
+            }
+
+            @Override
+            protected void onException(final Exception e) throws RuntimeException {
+                Log.d("Exception", e.getMessage());
+            }
+
+            @Override
+            protected void onSuccess(final CheckPermission checkPermission) {
+                progressBarLayout.setVisibility(View.GONE);
+                checkPermission.getIsDataCollected();
+            }
+        }.execute();
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt(SELECTED_ITEM, mSelectedItem);
@@ -341,6 +371,36 @@ public class MainActivity extends TestpressFragmentActivity {
         emptyTitleView.setText(title);
         emptyTitleView.setCompoundDrawablesWithIntrinsicBounds(left, 0, 0, 0);
         emptyDescView.setText(description);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        checkForForceUserData();
+    }
+
+    public void fetchSsoLink() {
+        new SafeAsyncTask<SsoUrl>() {
+            @Override
+            public SsoUrl call() throws Exception {
+                return serviceProvider.getService(MainActivity.this).getSsoUrl();
+            }
+
+            @Override
+            protected void onException(final Exception exception) throws RuntimeException {
+                super.onException(exception);
+                if (exception.getCause() instanceof UnknownHostException) {
+                    Toaster.showLong(MainActivity.this, R.string.no_internet);
+                } else {
+                    Toaster.showLong(MainActivity.this, exception.getMessage());
+                }
+            }
+
+            @Override
+            protected void onSuccess(final SsoUrl ssoLink) throws Exception {
+                ssoUrl = ssoLink.getSsoUrl();
+            }
+        }.execute();
     }
 
 }

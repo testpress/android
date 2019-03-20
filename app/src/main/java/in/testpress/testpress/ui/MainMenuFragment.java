@@ -102,10 +102,12 @@ public class MainMenuFragment extends Fragment {
         final boolean isUserAuthenticated = account.length > 0;
         // ToDo get from institute settings
         boolean drupalRssFeedEnabled = false;
+
+        if (!Strings.toString(instituteSettings.getAboutUs()).isEmpty()) {
+            mMenuItemResIds.put(R.string.about_us, R.drawable.about_us);
+        }
+
         if (isUserAuthenticated) {
-            if (!Strings.toString(instituteSettings.getAboutUs()).isEmpty()) {
-                mMenuItemResIds.put(R.string.about_us, R.drawable.about_us);
-            }
             if (!instituteSettings.getShowGameFrontend()) {
                 mMenuItemResIds.put(R.string.my_exams, R.drawable.exams);
             }

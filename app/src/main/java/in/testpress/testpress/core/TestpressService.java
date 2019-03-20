@@ -12,6 +12,7 @@ import java.util.Map;
 
 import in.testpress.exam.models.Vote;
 import in.testpress.testpress.models.Category;
+import in.testpress.testpress.models.CheckPermission;
 import in.testpress.testpress.models.Comment;
 import in.testpress.testpress.models.Device;
 import in.testpress.testpress.models.Forum;
@@ -29,6 +30,7 @@ import in.testpress.testpress.models.RssFeed;
 import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.models.TestpressApiResponse;
 import in.testpress.testpress.models.Update;
+import in.testpress.testpress.network.CheckPermissionService;
 import in.testpress.testpress.network.RssConverterFactory;
 import in.testpress.testpress.network.RssFeedService;
 import in.testpress.testpress.network.SsoUrlService;
@@ -101,6 +103,14 @@ public class TestpressService {
 
     public SsoUrl getSsoUrl(){
         return getSsoUrlService().getSsoUrl();
+    }
+
+    private CheckPermissionService getCheckPermissionService() {
+        return getRestAdapter().create(CheckPermissionService.class);
+    }
+
+    public CheckPermission checkPermission(){
+        return getCheckPermissionService().getPermission();
     }
 
     private RssFeedService getRssFeedService(String url) {

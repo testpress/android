@@ -650,8 +650,6 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
                 super.onException(exception);
                 if (exception.getCause() instanceof UnknownHostException) {
                     Toaster.showLong(ProfileDetailsActivity.this, R.string.no_internet);
-                } else {
-                    Toaster.showLong(ProfileDetailsActivity.this, exception.getMessage());
                 }
             }
 

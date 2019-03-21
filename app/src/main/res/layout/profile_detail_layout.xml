@@ -40,11 +40,12 @@
                 <ImageView
                     android:id="@+id/edit_profile"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/icon_layout_height"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="bottom|right"
                     android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    android:src="@drawable/ic_edit_white_24dp"
-                    android:visibility="gone" />
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:onClick="editActions"
+                    android:src="@drawable/ic_edit_white_24dp" />
             </FrameLayout>
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -64,8 +65,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:onClick="editActions">
+            android:orientation="vertical">
 
             <ProgressBar
                 android:id="@+id/horizontal_progress_bar"

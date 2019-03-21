@@ -81,6 +81,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
 
     @Inject TestpressServiceProvider serviceProvider;
     @InjectView(R.id.profile_photo) ImageView profilePhoto;
+    @InjectView(R.id.edit_profile) ImageView editProfile;
     @InjectView(R.id.edit_profile_photo) ImageView imageEditButton;
     @InjectView(R.id.display_name) TextView displayName;
     @InjectView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbar;
@@ -199,6 +200,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
             this.profileDetails = profileDetails;
         }
         profileDetailsView.setVisibility(View.VISIBLE);
+        editProfile.setVisibility(View.VISIBLE);
         displayProfileDetails(this.profileDetails);
     }
 
@@ -628,6 +630,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     public void editActions(View v) {
 
         if (fetchInstituteSetting().getAllow_profile_edit() && !Strings.toString(profileDetails.getUsername()).isEmpty()) {
+            boolean check = !Strings.toString(profileDetails.getUsername()).isEmpty();
             if (!Strings.toString(ssoUrl).isEmpty()) {
                 Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
                 intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Edit Profile");

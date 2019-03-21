@@ -43,7 +43,6 @@
                     android:layout_height="@dimen/icon_layout_height"
                     android:layout_gravity="bottom|right"
                     android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    android:onClick="editActions"
                     android:src="@drawable/ic_edit_white_24dp" />
             </FrameLayout>
             <android.support.v7.widget.Toolbar

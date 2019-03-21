@@ -630,7 +630,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     public void editActions(View v) {
 
         if (fetchInstituteSetting().getAllow_profile_edit() && !Strings.toString(profileDetails.getUsername()).isEmpty()) {
-            boolean check = !Strings.toString(profileDetails.getUsername()).isEmpty();
+
             if (!Strings.toString(ssoUrl).isEmpty()) {
                 Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
                 intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Edit Profile");
@@ -652,6 +652,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
             @Override
             protected void onException(final Exception exception) throws RuntimeException {
                 super.onException(exception);
+
                 if (exception.getCause() instanceof UnknownHostException) {
                     Toaster.showLong(ProfileDetailsActivity.this, R.string.no_internet);
                 }

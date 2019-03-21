@@ -624,6 +624,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         return null;
     }
 
+    @OnClick(R.id.edit_profile)
     public void editActions(View v) {
 
         if (fetchInstituteSetting().getAllow_profile_edit() && !Strings.toString(profileDetails.getUsername()).isEmpty()) {

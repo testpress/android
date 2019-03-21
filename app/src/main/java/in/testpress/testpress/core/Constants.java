@@ -82,7 +82,7 @@ public final class Constants {
 
         public static final String CHAPTERS_PATH =  "/api/v2.2.1/chapters/";
 
-        public static final String URL_GENERATE_SSO_URL =  "/api/v2.3/presigned_sso_url/";
+        public static final String URL_GENERATE_SSO_LINK =  "/api/v2.3/presigned_sso_url/";
 
         /**
          * Handle Success & Failure of payments

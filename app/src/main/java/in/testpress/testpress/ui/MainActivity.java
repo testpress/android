@@ -3,6 +3,7 @@ package in.testpress.testpress.ui;
 import android.accounts.OperationCanceledException;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -50,6 +51,7 @@ import in.testpress.testpress.models.Update;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.SafeAsyncTask;
+import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.testpress.util.UpdateAppDialogManager;
 
@@ -81,7 +83,7 @@ public class MainActivity extends TestpressFragmentActivity {
     private InstituteSettings mInstituteSettings;
     private InstituteSettingsDao instituteSettingsDao;
     private boolean isUserAuthenticated;
-    private String ssoUrl;
+    public String ssoUrl;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -257,6 +259,8 @@ public class MainActivity extends TestpressFragmentActivity {
                 instituteSettingsDao.insertOrReplace(instituteSettings);
                 if (mInstituteSettings == null) {
                     onFinishFetchingInstituteSettings(instituteSettings);
+                } else {
+                    checkForForceUserData();
                 }
             }
         }.execute();
@@ -273,7 +277,10 @@ public class MainActivity extends TestpressFragmentActivity {
             initScreen();
             if (isUserAuthenticated) {
                 updateTestpressSession();
-                checkForForceUserData();
+
+                if (mInstituteSettings.getForceStudentData()) {
+                    checkForForceUserData();
+                }
             }
         }
     }
@@ -337,29 +344,6 @@ public class MainActivity extends TestpressFragmentActivity {
                 .show();
     }
 
-    public void checkForForceUserData() {
-        if (mInstituteSettings == null) {
-            progressBarLayout.setVisibility(View.VISIBLE);
-        }
-        new SafeAsyncTask<CheckPermission>() {
-            @Override
-            public CheckPermission call() throws Exception {
-                return serviceProvider.getService(MainActivity.this).checkPermission();
-            }
-
-            @Override
-            protected void onException(final Exception e) throws RuntimeException {
-                Log.d("Exception", e.getMessage());
-            }
-
-            @Override
-            protected void onSuccess(final CheckPermission checkPermission) {
-                progressBarLayout.setVisibility(View.GONE);
-                checkPermission.getIsDataCollected();
-            }
-        }.execute();
-    }
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt(SELECTED_ITEM, mSelectedItem);
@@ -374,9 +358,65 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
-        checkForForceUserData();
+        if (mInstituteSettings != null && mInstituteSettings.getForceStudentData()) {
+            checkForForceUserData();
+        }
+    }
+
+    public void callWebViewActivity(String url) {
+        if (!Strings.toString(url).isEmpty()) {
+            Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
+            intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Update Profile");
+            intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + url + "&next=/settings/force/");
+            startActivity(intent);
+        }
+    }
+
+    public void checkForForceUserData() {
+        new SafeAsyncTask<CheckPermission>() {
+            @Override
+            public CheckPermission call() throws Exception {
+                return serviceProvider.getService(MainActivity.this).checkPermission();
+            }
+
+            @Override
+            protected void onException(final Exception exception) throws RuntimeException {
+                hideMainActivityContents();
+                if (exception.getCause() instanceof IOException) {
+                    setEmptyText(R.string.network_error, R.string.no_internet_try_again,
+                            R.drawable.ic_error_outline_black_18dp);
+                } else {
+                    setEmptyText(R.string.network_error, R.string.try_after_sometime,
+                            R.drawable.ic_error_outline_black_18dp);
+                }
+                retryButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        emptyView.setVisibility(View.GONE);
+                        fetchInstituteSettings();
+                    }
+                });
+            }
+
+            @Override
+            protected void onSuccess(final CheckPermission checkPermission) {
+                progressBarLayout.setVisibility(View.GONE);
+                showMainActivityContents();
+                if (!checkPermission.getIsDataCollected()) {
+                    hideMainActivityContents();
+
+                    if (!Strings.toString(ssoUrl).isEmpty()) {
+                        callWebViewActivity(ssoUrl);
+                    } else {
+                        fetchSsoLink();
+                    }
+                } else {
+                    showMainActivityContents();
+                }
+            }
+        }.execute();
     }
 
     public void fetchSsoLink() {
@@ -388,19 +428,40 @@ public class MainActivity extends TestpressFragmentActivity {
 
             @Override
             protected void onException(final Exception exception) throws RuntimeException {
-                super.onException(exception);
-                if (exception.getCause() instanceof UnknownHostException) {
-                    Toaster.showLong(MainActivity.this, R.string.no_internet);
+                hideMainActivityContents();
+                if (exception.getCause() instanceof IOException) {
+                    setEmptyText(R.string.network_error, R.string.no_internet_try_again,
+                            R.drawable.ic_error_outline_black_18dp);
                 } else {
-                    Toaster.showLong(MainActivity.this, exception.getMessage());
+                    setEmptyText(R.string.network_error, R.string.try_after_sometime,
+                            R.drawable.ic_error_outline_black_18dp);
                 }
+                retryButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        emptyView.setVisibility(View.GONE);
+                        checkForForceUserData();
+                    }
+                });
             }
 
             @Override
             protected void onSuccess(final SsoUrl ssoLink) throws Exception {
+                showMainActivityContents();
                 ssoUrl = ssoLink.getSsoUrl();
+                callWebViewActivity(ssoLink.getSsoUrl());
             }
         }.execute();
+    }
+
+    public void hideMainActivityContents(){
+        grid.setVisibility(View.GONE);
+        viewPager.setVisibility(View.GONE);
+    }
+
+    public void showMainActivityContents(){
+        grid.setVisibility(View.VISIBLE);
+        viewPager.setVisibility(View.VISIBLE);
     }
 
 }

@@ -1,13 +1,13 @@
 package in.testpress.testpress.models;
 
 public class CheckPermission {
-    protected String isDataCollected;
+    protected Boolean isDataCollected;
 
-    public String getIsDataCollected() {
+    public Boolean getIsDataCollected() {
         return isDataCollected;
     }
 
-    public void setIsDataCollected(String isDataCollected) {
+    public void setIsDataCollected(Boolean isDataCollected) {
         this.isDataCollected = isDataCollected;
     }
 }

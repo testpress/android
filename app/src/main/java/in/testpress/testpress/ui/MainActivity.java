@@ -260,7 +260,9 @@ public class MainActivity extends TestpressFragmentActivity {
                 if (mInstituteSettings == null) {
                     onFinishFetchingInstituteSettings(instituteSettings);
                 } else {
-                    checkForForceUserData();
+                    if (mInstituteSettings.getForceStudentData()){
+                        checkForForceUserData();
+                    }
                 }
             }
         }.execute();
@@ -369,7 +371,7 @@ public class MainActivity extends TestpressFragmentActivity {
         if (!Strings.toString(url).isEmpty()) {
             Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
             intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Update Profile");
-            intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + url + "&next=/settings/force/");
+            intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + url + "&next=/settings/force/mobile/");
             startActivity(intent);
         }
     }

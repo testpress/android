@@ -277,6 +277,7 @@ public class MainActivity extends TestpressFragmentActivity {
             updateTestpressSession();
         } else {
             initScreen();
+            showMainActivityContents();
             if (isUserAuthenticated) {
                 updateTestpressSession();
 
@@ -364,13 +365,15 @@ public class MainActivity extends TestpressFragmentActivity {
         super.onResume();
         if (mInstituteSettings != null && mInstituteSettings.getForceStudentData()) {
             checkForForceUserData();
+        } else {
+            showMainActivityContents();
         }
     }
 
     public void callWebViewActivity(String url) {
         if (!Strings.toString(url).isEmpty()) {
             Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
-            intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Update Profile");
+            intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Compulsory Update");
             intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + url + "&next=/settings/force/mobile/");
             startActivity(intent);
         }
@@ -405,7 +408,6 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             protected void onSuccess(final CheckPermission checkPermission) {
                 progressBarLayout.setVisibility(View.GONE);
-                showMainActivityContents();
                 if (!checkPermission.getIsDataCollected()) {
                     hideMainActivityContents();
 

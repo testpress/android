@@ -82,6 +82,8 @@ public class MainActivity extends TestpressFragmentActivity {
     private boolean isUserAuthenticated;
     public String ssoUrl;
 
+    private boolean isInitScreenCalledOnce;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         Injector.inject(this);
@@ -138,6 +140,7 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     private void initScreen() {
+        isInitScreenCalledOnce = true;
         SharedPreferences preferences =
                 getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
         if (!preferences.getBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false)) {
@@ -468,7 +471,10 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     public void showMainActivityContents(){
-        grid.setVisibility(View.VISIBLE);
-        viewPager.setVisibility(View.VISIBLE);
+
+        if (isInitScreenCalledOnce) {
+            viewPager.setVisibility(View.VISIBLE);
+            grid.setVisibility(View.VISIBLE);
+        }
     }
 }

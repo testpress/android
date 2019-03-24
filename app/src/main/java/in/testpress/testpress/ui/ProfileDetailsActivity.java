@@ -634,7 +634,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
             if (!Strings.toString(ssoUrl).isEmpty()) {
                 Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
                 intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Edit Profile");
-                intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + ssoUrl+"&next=/settings/profile");
+                intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + ssoUrl+"&next=/settings/profile/mobile/");
                 startActivity(intent);
             } else {
                 Toaster.showLong(ProfileDetailsActivity.this, R.string.edit_profile_error);

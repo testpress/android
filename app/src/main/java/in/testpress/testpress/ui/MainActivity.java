@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -20,11 +19,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.github.kevinsawicki.wishlist.Toaster;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -257,12 +254,13 @@ public class MainActivity extends TestpressFragmentActivity {
             protected void onSuccess(InstituteSettings instituteSettings) {
                 instituteSettings.setBaseUrl(BASE_URL);
                 instituteSettingsDao.insertOrReplace(instituteSettings);
+
                 if (mInstituteSettings == null) {
                     onFinishFetchingInstituteSettings(instituteSettings);
+                } else if (mInstituteSettings.getForceStudentData()) {
+                    checkForForceUserData();
                 } else {
-                    if (mInstituteSettings.getForceStudentData()){
-                        checkForForceUserData();
-                    }
+                    showMainActivityContents();
                 }
             }
         }.execute();
@@ -278,6 +276,7 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             initScreen();
             showMainActivityContents();
+
             if (isUserAuthenticated) {
                 updateTestpressSession();
 
@@ -363,6 +362,7 @@ public class MainActivity extends TestpressFragmentActivity {
     @Override
     public void onResume() {
         super.onResume();
+
         if (mInstituteSettings != null && mInstituteSettings.getForceStudentData()) {
             checkForForceUserData();
         } else {
@@ -371,6 +371,7 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     public void callWebViewActivity(String url) {
+
         if (!Strings.toString(url).isEmpty()) {
             Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
             intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Compulsory Update");
@@ -389,6 +390,7 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             protected void onException(final Exception exception) throws RuntimeException {
                 hideMainActivityContents();
+
                 if (exception.getCause() instanceof IOException) {
                     setEmptyText(R.string.network_error, R.string.no_internet_try_again,
                             R.drawable.ic_error_outline_black_18dp);
@@ -408,6 +410,7 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             protected void onSuccess(final CheckPermission checkPermission) {
                 progressBarLayout.setVisibility(View.GONE);
+
                 if (!checkPermission.getIsDataCollected()) {
                     hideMainActivityContents();
 
@@ -433,6 +436,7 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             protected void onException(final Exception exception) throws RuntimeException {
                 hideMainActivityContents();
+
                 if (exception.getCause() instanceof IOException) {
                     setEmptyText(R.string.network_error, R.string.no_internet_try_again,
                             R.drawable.ic_error_outline_black_18dp);
@@ -467,5 +471,4 @@ public class MainActivity extends TestpressFragmentActivity {
         grid.setVisibility(View.VISIBLE);
         viewPager.setVisibility(View.VISIBLE);
     }
-
 }

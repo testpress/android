@@ -81,7 +81,6 @@ public class MainActivity extends TestpressFragmentActivity {
     private InstituteSettingsDao instituteSettingsDao;
     private boolean isUserAuthenticated;
     public String ssoUrl;
-
     private boolean isInitScreenCalledOnce;
 
     @Override

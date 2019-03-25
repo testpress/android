@@ -22,6 +22,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.CookieManager;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -172,6 +173,11 @@ public class WebViewActivity extends BaseToolBarActivity {
                 pb_loading.setVisibility(View.GONE);
             }
         });
+
+        CookieManager cookieManager = CookieManager.getInstance();
+        cookieManager.setAcceptCookie(true);
+        cookieManager.removeAllCookie();
+
         webView.loadUrl(url);
         webView.setWebChromeClient(new WebChromeClient() {
 

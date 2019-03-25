@@ -376,7 +376,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
         if (!Strings.toString(url).isEmpty()) {
             Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
-            intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Compulsory Update");
+            intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Mandatory Update");
             intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + url + "&next=/settings/force/mobile/");
             startActivity(intent);
         }

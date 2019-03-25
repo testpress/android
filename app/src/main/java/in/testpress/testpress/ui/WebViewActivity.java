@@ -3,6 +3,7 @@ package in.testpress.testpress.ui;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -15,8 +16,11 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -31,20 +35,33 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.inject.Inject;
+
+import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
+import in.testpress.testpress.TestpressServiceProvider;
+import in.testpress.testpress.authenticator.LogoutService;
+import in.testpress.testpress.core.TestpressService;
 
 public class WebViewActivity extends BaseToolBarActivity {
 
     private static final String TAG = WebViewActivity.class.getSimpleName();
     public static final String URL_TO_OPEN = "URL";
     public static final String ACTIVITY_TITLE = "TITLE";
+    public static final String SHOW_LOGOUT = "SHOW_LOGOUT";
     private final static int FILE_CHOOSER_RESULT_CODE = 1;
+
+    @Inject protected TestpressServiceProvider serviceProvider;
+    @Inject protected TestpressService testpressService;
+    @Inject protected LogoutService logoutService;
+
     private ProgressBar pb_loading;
     WebView webView;
     private String mCapturedMessage;
     private ValueCallback<Uri> mUploadMessage;
     private ValueCallback<Uri[]> mUploadMessages;
     private String url;
+    private boolean showLogout;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -90,6 +107,7 @@ public class WebViewActivity extends BaseToolBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Injector.inject(this);
         setContentView(R.layout.webview_layout);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -101,6 +119,10 @@ public class WebViewActivity extends BaseToolBarActivity {
             setUrl(intent.getExtras().getString(URL_TO_OPEN));
         } else {
             finish();
+        }
+
+        if (intent.hasExtra(SHOW_LOGOUT) && intent.getExtras().getString(SHOW_LOGOUT) != "" && Boolean.parseBoolean(intent.getExtras().getString(SHOW_LOGOUT)) == true) {
+            showLogout = true;
         }
 
         if (intent.hasExtra(ACTIVITY_TITLE) && intent.getExtras().getString(ACTIVITY_TITLE) != "") {
@@ -281,4 +303,40 @@ public class WebViewActivity extends BaseToolBarActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        if (showLogout) {
+            getMenuInflater().inflate(R.menu.logout, menu);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.logout) {
+            logout();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void logout() {
+        new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
+                .setTitle(R.string.logout)
+                .setMessage(R.string.logout_confirm_message)
+                .setPositiveButton(R.string.ok,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                                serviceProvider.logout(WebViewActivity.this, testpressService, serviceProvider, logoutService);
+                            }
+                        })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
+    }
 }

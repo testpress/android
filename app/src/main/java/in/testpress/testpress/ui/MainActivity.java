@@ -364,7 +364,6 @@ public class MainActivity extends TestpressFragmentActivity {
     @Override
     public void onResume() {
         super.onResume();
-
         if (mInstituteSettings != null && mInstituteSettings.getForceStudentData()) {
             checkForForceUserData();
         } else {
@@ -377,6 +376,7 @@ public class MainActivity extends TestpressFragmentActivity {
         if (!Strings.toString(url).isEmpty()) {
             Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
             intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Mandatory Update");
+            intent.putExtra(WebViewActivity.SHOW_LOGOUT, "true");
             intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + url + "&next=/settings/force/mobile/");
             startActivity(intent);
         }

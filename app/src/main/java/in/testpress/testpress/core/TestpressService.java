@@ -26,10 +26,12 @@ import in.testpress.testpress.models.ProfileDetails;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.ResetPassword;
 import in.testpress.testpress.models.RssFeed;
+import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.models.TestpressApiResponse;
 import in.testpress.testpress.models.Update;
 import in.testpress.testpress.network.RssConverterFactory;
 import in.testpress.testpress.network.RssFeedService;
+import in.testpress.testpress.network.SsoUrlService;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 
@@ -92,6 +94,14 @@ public class TestpressService {
     private DeviceService getDevicesService() { return getRestAdapter().create(DeviceService.class); }
 
     private ResetPasswordService getResetPasswordService(){return getRestAdapter().create(ResetPasswordService.class);}
+
+    private SsoUrlService getSsoUrlService() {
+        return getRestAdapter().create(SsoUrlService.class);
+    }
+
+    public SsoUrl getSsoUrl(){
+        return getSsoUrlService().getSsoUrl();
+    }
 
     private RssFeedService getRssFeedService(String url) {
         restAdapter.setEndpoint(url);

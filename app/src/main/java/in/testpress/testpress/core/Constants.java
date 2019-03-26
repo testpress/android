@@ -84,6 +84,8 @@ public final class Constants {
 
         public static final String URL_GENERATE_SSO_LINK =  "/api/v2.3/presigned_sso_url/";
 
+        public static final String CHECK_PERMISSION_URL =  "/api/v2.3/me/check_permission/";
+
         /**
          * Handle Success & Failure of payments
          */

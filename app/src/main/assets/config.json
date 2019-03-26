@@ -1,9 +1,9 @@
 {
   "version" : "1.0",
   "version_code" : 1,
-  "testpress_site_subdomain" : "sandbox",
-  "package_name" : "in.testpress.testpress",
-  "app_name" : "Testpress",
+  "testpress_site_subdomain" : "eeshwarpvtiti",
+  "package_name" : "in.testpress.eeshwarpvtiti",
+  "app_name" : "EESHWAR PVT ITI",
   "share_message": "Good app to prepare for online exams.",
   "primary_color": "3598db",
   "allow_anonymous_user" : false,

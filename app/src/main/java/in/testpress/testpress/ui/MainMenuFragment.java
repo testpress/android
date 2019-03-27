@@ -118,7 +118,11 @@ public class MainMenuFragment extends Fragment {
             if (instituteSettings.getDocumentsEnabled()) {
                 mMenuItemResIds.put(R.string.documents, R.drawable.documents);
             }
-            mMenuItemResIds.put(R.string.analytics, R.drawable.analytics);
+
+            if (!instituteSettings.getDisableStudentAnalytics()) {
+                mMenuItemResIds.put(R.string.analytics, R.drawable.analytics);
+            }
+
             mMenuItemResIds.put(R.string.profile, R.drawable.ic_profile_details);
             if (instituteSettings.getStoreEnabled()) {
                 mMenuItemResIds.put(R.string.store, R.drawable.store);

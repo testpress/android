@@ -3,7 +3,7 @@ import groovy.json.JsonSlurper
 apply plugin: 'com.android.application'
 
 ext {
-    testpressSDK = '1.3.28'
+    testpressSDK = '1.3.32'
 }
 
 dependencies {
@@ -47,6 +47,15 @@ dependencies {
 
     // Allow methods more than 64K
     implementation 'com.android.support:multidex:1.0.3'
+
+    // Country code picker
+    // https://github.com/hbb20/CountryCodePickerProject/wiki
+    implementation "com.hbb20:ccp:2.1.9"
+
+    //Unit test
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.powermock:powermock-module-junit4:1.7.4'
+    testImplementation 'org.powermock:powermock-api-mockito2:1.7.4'
 
 }
 
@@ -143,6 +152,10 @@ android {
             // testPackageName 'in.testpress.testpress.tests'
             // testInstrumentationRunner 'android.test.InstrumentationTestRunner' // this is the default
         }
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
     }
 }
 

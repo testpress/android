@@ -48,10 +48,13 @@ import in.testpress.testpress.models.CategoryDao;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
+import in.testpress.testpress.models.TestpressApiErrorResponse;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
+import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
+import retrofit.RetrofitError;
 
 import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
@@ -99,7 +102,13 @@ public class MainMenuFragment extends Fragment {
         final boolean isUserAuthenticated = account.length > 0;
         // ToDo get from institute settings
         boolean drupalRssFeedEnabled = false;
+
+        if (!Strings.toString(instituteSettings.getAboutUs()).isEmpty()) {
+            mMenuItemResIds.put(R.string.about_us, R.drawable.about_us);
+        }
+
         if (isUserAuthenticated) {
+
             if (!instituteSettings.getShowGameFrontend()) {
                 mMenuItemResIds.put(R.string.my_exams, R.drawable.exams);
             }
@@ -109,7 +118,11 @@ public class MainMenuFragment extends Fragment {
             if (instituteSettings.getDocumentsEnabled()) {
                 mMenuItemResIds.put(R.string.documents, R.drawable.documents);
             }
-            mMenuItemResIds.put(R.string.analytics, R.drawable.analytics);
+
+            if (!instituteSettings.getDisableStudentAnalytics()) {
+                mMenuItemResIds.put(R.string.analytics, R.drawable.analytics);
+            }
+
             mMenuItemResIds.put(R.string.profile, R.drawable.ic_profile_details);
             if (instituteSettings.getStoreEnabled()) {
                 mMenuItemResIds.put(R.string.store, R.drawable.store);
@@ -140,6 +153,10 @@ public class MainMenuFragment extends Fragment {
                 Intent intent;
                 String custom_title;
                 switch ((int) id) {
+                    case R.string.about_us:
+                        intent = new Intent(getActivity(), AboutUsActivity.class);
+                        startActivity(intent);
+                        break;
                     case R.string.my_exams:
                         checkAuthenticatedUser(R.string.my_exams);
                         break;
@@ -241,6 +258,10 @@ public class MainMenuFragment extends Fragment {
                 TestpressExam.showAnalytics(getActivity(), SUBJECT_ANALYTICS_PATH, session);
                 break;
             case R.string.store:
+                String title = UIUtils.getMenuItemName(R.string.store, mInstituteSettings);
+                Intent intent = new Intent();
+                intent.putExtra("title", title);
+                getActivity().setIntent(intent);
                 TestpressStore.show(getActivity(), session);
                 break;
         }
@@ -297,7 +318,24 @@ public class MainMenuFragment extends Fragment {
                             categories));
                 }
             }
+
+            protected void onException(Exception e) {
+                super.onException(e);
+
+                if (e.getMessage().equals("403 FORBIDDEN")){
+                    logoutIfExceptionContainInvalidSignature(e);
+                }
+            }
         }.execute();
+    }
+
+    public void logoutIfExceptionContainInvalidSignature(Exception e) {
+
+        TestpressApiErrorResponse testpressApiErrorResponse = (TestpressApiErrorResponse) (((RetrofitError) e).getBodyAs(TestpressApiErrorResponse.class));
+
+        if (testpressApiErrorResponse.getDetail().equals("Invalid signature")) {
+            serviceProvider.logout(getActivity(), testpressService, serviceProvider, logoutService);
+        }
     }
 
     public static class StarredCategoryAdapter

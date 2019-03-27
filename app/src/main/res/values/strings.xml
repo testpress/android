@@ -34,6 +34,7 @@
     <string name="no_internet_try_again">Please check your internet connection &amp; try again</string>
     <string name="try_after_sometime">Please try after sometime</string>
     <string name="something_went_wrong_please_try_after">Something went wrong, please try after sometime</string>
+    <string name="edit_profile_error">Right now edit profile is unavailable. Try again later.</string>
 
     <!-- AuthenticatorActivity -->
     <string name="label_username">Username</string>
@@ -116,6 +117,7 @@
     <string name="rate_us">Rate Us</string>
     <string name="dashboard">Dashboard</string>
     <string name="bookmarks">Bookmarks</string>
+    <string name="about_us">About Us</string>
 
     <string name="view_in_website">View in Website</string>
 

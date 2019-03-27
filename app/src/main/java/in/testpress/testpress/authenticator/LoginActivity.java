@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
@@ -74,6 +75,7 @@ import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.util.UIUtils;
+import in.testpress.testpress.util.Strings;
 import in.testpress.util.ViewUtils;
 
 import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
@@ -112,6 +114,8 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     @Inject Bus bus;
 
     @InjectView(id.login_layout) LinearLayout loginLayout;
+    @InjectView(id.username_textInput_layout) TextInputLayout usernameInputLayout;
+    @InjectView(id.password_textInput_layout) TextInputLayout passwordInputLayout;
     @InjectView(id.et_username) EditText usernameText;
     @InjectView(id.et_password) protected EditText passwordText;
     @InjectView(id.b_signin) protected Button signInButton;
@@ -250,6 +254,19 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         } else {
             instituteSettings = instituteSettingsList.get(0);
             updateInstituteSpecificFields();
+        }
+
+        setLoginLabel(instituteSettings);
+    }
+
+    public void setLoginLabel(InstituteSettings instituteSettings) {
+
+        if (!Strings.toString(in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_username, instituteSettings)).isEmpty()) {
+            usernameInputLayout.setHint(in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_username, instituteSettings));
+        }
+
+        if (!Strings.toString(in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_password, instituteSettings)).isEmpty()) {
+            passwordInputLayout.setHint(in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_password, instituteSettings));
         }
     }
 

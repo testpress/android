@@ -1,7 +1,7 @@
 {
-  "version" : "1.0.5",
-  "version_code" : 5,
-  "testpress_site_subdomain" : "demo",
+  "version" : "1.0.6",
+  "version_code" : 6,
+  "testpress_site_subdomain" : "lmsdemo",
   "package_name" : "in.testpress.demo",
   "app_name" : "Testpress LMS Demo",
   "share_message": "Good app to prepare for online exams.",

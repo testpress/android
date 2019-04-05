@@ -2,7 +2,6 @@ package in.testpress.testpress.authenticator;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
@@ -38,7 +37,6 @@ import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.R.id;
 import in.testpress.testpress.TestpressApplication;
-import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
@@ -48,6 +46,7 @@ import in.testpress.testpress.models.RegistrationErrorDetails;
 import in.testpress.testpress.ui.TextWatcherAdapter;
 import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.SafeAsyncTask;
+import in.testpress.testpress.util.PhoneNumberValidator;
 import retrofit.RetrofitError;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
@@ -128,6 +127,11 @@ public class RegisterActivity extends AppCompatActivity {
             isTwilioEnabled=false;
         }
         confirmPasswordText.addTextChangedListener(watcher);
+
+        if(isTwilioEnabled) {
+            countryCodePicker.registerCarrierNumberEditText(phoneText);
+            countryCodePicker.setNumberAutoFormattingEnabled(false);
+        }
     }
 
     void postDetails(){
@@ -238,11 +242,16 @@ public class RegisterActivity extends AppCompatActivity {
            }
             if (verificationMethod.equals(MOBILE)) {
                 //Phone number verification
-                Pattern phoneNumberPattern = Pattern.compile("\\d{10}");
-                Matcher phoneNumberMatcher = phoneNumberPattern.matcher(phoneText.getText()
-                        .toString().trim());
-                if (!phoneNumberMatcher.matches()) {
-                    phoneText.setError("Please enter 10 digit valid mobile number");
+                boolean isPhoneNumberValid;
+
+                if (isTwilioEnabled) {
+                    isPhoneNumberValid = PhoneNumberValidator.validateInternationalPhoneNumber(countryCodePicker);
+                } else {
+                    isPhoneNumberValid = PhoneNumberValidator.validatePhoneNumber(phoneText.getText().toString().trim());
+                }
+
+                if (!isPhoneNumberValid) {
+                    phoneText.setError("Please enter a valid mobile number");
                     phoneText.requestFocus();
                     return false;
                 }

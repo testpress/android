@@ -6,11 +6,13 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 
 import in.testpress.core.TestpressSDKDatabase;
@@ -32,6 +34,7 @@ import retrofit.RestAdapter;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.BuildConfig.DISPLAY_USERNAME_ON_VIDEO;
 import static in.testpress.testpress.BuildConfig.SCREENSHOT_DISABLED;
+import static in.testpress.testpress.core.TestpressService.PREF_COOKIES;
 
 public class TestpressServiceProvider {
     private RestAdapter.Builder restAdapter;
@@ -88,7 +91,7 @@ public class TestpressServiceProvider {
         }
 
         // TODO: See how that affects the testpress service.
-        return new TestpressService(restAdapter, authToken);
+        return new TestpressService(restAdapter, authToken, activity);
     }
 
     public void logout(final Activity activity, TestpressService testpressService,
@@ -106,6 +109,8 @@ public class TestpressServiceProvider {
         SharedPreferences preferences = activity.getSharedPreferences(Constants.GCM_PREFERENCE_NAME,
                 Context.MODE_PRIVATE);
         preferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
+        HashSet<String> cookies = (HashSet<String>) PreferenceManager.getDefaultSharedPreferences(activity).getStringSet(PREF_COOKIES, new HashSet<String>());
+        cookies.clear();
         CommonUtils.registerDevice(activity, testpressService, serviceProvider);
         TestpressApplication.clearDatabase(activity);
         TestpressSdk.clearActiveSession(activity);

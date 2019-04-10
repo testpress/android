@@ -1,5 +1,10 @@
 package in.testpress.testpress.core;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.util.Log;
+
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -7,10 +12,12 @@ import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 import in.testpress.exam.models.Vote;
+import in.testpress.testpress.authenticator.LoginActivity;
 import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.CheckPermission;
 import in.testpress.testpress.models.Comment;
@@ -38,8 +45,11 @@ import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 
 public class TestpressService {
+    public static final String PREF_COOKIES = "pref_cookies";
     private RestAdapter.Builder restAdapter;
     private String authToken;
+    private Context context;
+    private static int isAuthTokenAttachedOnceForAnyCall;
 
     public TestpressService() {
     }
@@ -58,6 +68,17 @@ public class TestpressService {
         this.authToken = authToken;
     }
 
+    public TestpressService(RestAdapter.Builder restAdapter, String authToken, Context context) {
+        this.restAdapter = restAdapter;
+        this.authToken = authToken;
+        this.context = context;
+    }
+
+    public TestpressService(String authToken, Context context) {
+        this.authToken = authToken;
+        this.context = context;
+    }
+
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
     }
@@ -66,20 +87,63 @@ public class TestpressService {
         authToken = null;
     }
 
-    private RestAdapter getRestAdapter() {
-        if (authToken != null) {
-            OkHttpClient client = new OkHttpClient();
-            Interceptor interceptor = new Interceptor() {
+    public OkHttpClient getOkHttpClient(){
+        OkHttpClient client = new OkHttpClient();
+        if (context != null) {
+            Interceptor addCookiesInterceptor = new Interceptor() {
                 @Override
                 public Response intercept(Chain chain) throws IOException {
-                    Request.Builder header = chain.request().newBuilder();
-                    header.addHeader("Authorization", getAuthToken());
-                    return chain.proceed(header.build());
+                    Request.Builder builder = chain.request().newBuilder();
+
+                    HashSet<String> preferences = (HashSet<String>) PreferenceManager.getDefaultSharedPreferences(context).getStringSet(PREF_COOKIES, new HashSet<String>());
+
+                    for (String cookie : preferences) {
+                        builder.addHeader("Cookie", cookie);
+                        Log.v("OkHttp", "Adding Header: " + cookie);
+                    }
+
+                    return chain.proceed(builder.build());
                 }
             };
-            client.networkInterceptors().add(interceptor);
-            restAdapter.setClient(new OkClient(client));
+
+            Interceptor receiveCookiesInterceptor = new Interceptor() {
+                @Override
+                public Response intercept(Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
+                    if (!originalResponse.headers("Set-Cookie").isEmpty()) {
+                        HashSet<String> cookies = (HashSet<String>) PreferenceManager.getDefaultSharedPreferences(context).getStringSet(PREF_COOKIES, new HashSet<String>());
+//                        cookies.clear();
+                        for (String header : originalResponse.headers("Set-Cookie")) {
+                            cookies.add(header);
+                        }
+
+                        SharedPreferences.Editor memes = PreferenceManager.getDefaultSharedPreferences(context).edit();
+                        memes.putStringSet(PREF_COOKIES, cookies).apply();
+                        memes.commit();
+                    }
+                    return originalResponse;
+                }
+            };
+            client.networkInterceptors().add(addCookiesInterceptor);
+            client.networkInterceptors().add(receiveCookiesInterceptor);
         }
+//        if (authToken != null && (isAuthTokenAttachedOnceForAnyCall < 1)) {
+//            Interceptor interceptor = new Interceptor() {
+//                @Override
+//                public Response intercept(Chain chain) throws IOException {
+//                    Request.Builder header = chain.request().newBuilder();
+//                    header.addHeader("Authorization", getAuthToken());
+//                    return chain.proceed(header.build());
+//                }
+//            };
+//            client.networkInterceptors().add(interceptor);
+//            isAuthTokenAttachedOnceForAnyCall++;
+//        }
+        return client;
+    }
+
+    private RestAdapter getRestAdapter() {
+        restAdapter.setClient(new OkClient(getOkHttpClient()));
         return restAdapter.build();
     }
 

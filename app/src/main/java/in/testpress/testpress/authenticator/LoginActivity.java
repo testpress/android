@@ -77,6 +77,11 @@ import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.util.UIUtils;
 import in.testpress.testpress.util.Strings;
 import in.testpress.util.ViewUtils;
+import com.squareup.okhttp.Call;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
 import static android.accounts.AccountManager.KEY_ACCOUNT_TYPE;
@@ -331,6 +336,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
                         }
                         authToken = response.getToken();
                         testpressService.setAuthToken(authToken);
+                        callAnySsoUrl();
                         onAuthenticationResult(true);
                     }
 
@@ -346,6 +352,40 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
                         }
                     }
                 });
+    }
+
+    private void callAnySsoUrl() {
+        TestpressService testpressService = new TestpressService(authToken, this);
+        final OkHttpClient okHttpClient = testpressService.getOkHttpClient();
+
+        new SafeAsyncTask<Void>(){
+            @Override
+            public Void call() throws Exception {
+                String url = "https://179c1eeb.ngrok.io/sso_login/?sig=67446a47253e2dcbdeac44122b5eab41a28eefc47266bc220e4b77eaa5f99ef8&sso=dXNlcm5hbWU9dGVzdHByZXNzJnRpbWU9MTU1NDg3NzQ0MA==&next=/settings/profile/mobile/";
+
+                Request request = new Request.Builder()
+                        .url(url)
+                        .build();
+                Response response = okHttpClient.newCall(request).execute();
+                Log.d("SSO_url_response", response.body().string());
+                return null;
+            }
+
+            protected void onSuccess(Void avoid) throws Exception {
+                Log.d("SSO_url_response", "Success");
+            }
+
+            protected void onException(Exception e) {
+                Log.d("SSO_url_response", "Exception");
+            }
+        }.execute();
+
+//        try {
+//
+//            Log.d("SSO_url_response", response.body().string());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     private void updateInstituteSpecificFields() {

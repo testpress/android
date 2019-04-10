@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -259,7 +260,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
                 if (mInstituteSettings == null) {
                     onFinishFetchingInstituteSettings(instituteSettings);
-                } else if (mInstituteSettings.getForceStudentData()) {
+                } else if (mInstituteSettings.getForceStudentData() && isUserAuthenticated) {
                     checkForForceUserData();
                 } else {
                     showMainActivityContents();
@@ -364,7 +365,7 @@ public class MainActivity extends TestpressFragmentActivity {
     @Override
     public void onResume() {
         super.onResume();
-        if (mInstituteSettings != null && mInstituteSettings.getForceStudentData()) {
+        if (mInstituteSettings != null && mInstituteSettings.getForceStudentData() && isUserAuthenticated) {
             checkForForceUserData();
         } else {
             showMainActivityContents();
@@ -383,6 +384,8 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     public void checkForForceUserData() {
+        Log.d("checkForForceUserData()", "Called");
+
         new SafeAsyncTask<CheckPermission>() {
             @Override
             public CheckPermission call() throws Exception {

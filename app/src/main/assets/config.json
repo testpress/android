@@ -1,9 +1,9 @@
 {
   "version" : "1.0.6",
   "version_code" : 6,
-  "testpress_site_subdomain" : "lmsdemo",
+  "testpress_site_subdomain" : "demo",
   "package_name" : "in.testpress.demo",
-  "app_name" : "Testpress LMS Demo",
+  "app_name" : "Testpress Demo",
   "share_message": "Good app to prepare for online exams.",
   "primary_color": "3598db",
   "allow_anonymous_user" : true,

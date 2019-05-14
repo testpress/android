@@ -345,7 +345,11 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
                         if (e.isNetworkError()) {
                             showAlert(getString(R.string.no_internet_try_again));
                         } else if (e.isClientError()) {
-                            showAlert(getString(R.string.invalid_username_or_password));
+                            if (!e.getMessage().isEmpty()) {
+                                showAlert(e.getMessage());
+                            } else {
+                                showAlert(getString(R.string.invalid_username_or_password));
+                            }
                         } else {
                             showAlert(getString(R.string.testpress_some_thing_went_wrong_try_again));
                         }

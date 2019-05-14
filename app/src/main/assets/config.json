@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.6",
-  "version_code" : 6,
+  "version" : "1.0.7",
+  "version_code" : 7,
   "testpress_site_subdomain" : "demo",
   "package_name" : "in.testpress.demo",
   "app_name" : "Testpress Demo",

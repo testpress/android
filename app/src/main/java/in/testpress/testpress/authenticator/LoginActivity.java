@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
@@ -68,12 +69,14 @@ import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.PostActivity;
 import in.testpress.testpress.ui.TextWatcherAdapter;
+import in.testpress.testpress.ui.WebViewActivity;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.util.UIUtils;
+import in.testpress.testpress.util.Strings;
 import in.testpress.util.ViewUtils;
 
 import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
@@ -83,6 +86,8 @@ import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
 import static android.view.inputmethod.EditorInfo.IME_ACTION_SEND;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.ui.WebViewActivity.ACTIVITY_TITLE;
+import static in.testpress.testpress.ui.WebViewActivity.URL_TO_OPEN;
 
 public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     /**
@@ -112,14 +117,18 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     @Inject Bus bus;
 
     @InjectView(id.login_layout) LinearLayout loginLayout;
+    @InjectView(id.username_textInput_layout) TextInputLayout usernameInputLayout;
+    @InjectView(id.password_textInput_layout) TextInputLayout passwordInputLayout;
     @InjectView(id.et_username) EditText usernameText;
     @InjectView(id.et_password) protected EditText passwordText;
     @InjectView(id.b_signin) protected Button signInButton;
+    @InjectView(id.b_resend_activation) protected Button ResendVerificationCodeButton;
     @InjectView(id.or) protected TextView orLabel;
     @InjectView(id.fb_login_button) protected LoginButton fbLoginButton;
     @InjectView(id.google_sign_in_button) protected Button googleLoginButton;
     @InjectView(id.social_sign_in_buttons) protected LinearLayout socialLoginLayout;
     @InjectView(id.signup) protected TextView signUpButton;
+
 
     @InjectView(id.pb_loading) ProgressBar progressBar;
     @InjectView(R.id.empty_container) LinearLayout emptyView;
@@ -251,6 +260,19 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             instituteSettings = instituteSettingsList.get(0);
             updateInstituteSpecificFields();
         }
+
+        setLoginLabel(instituteSettings);
+    }
+
+    public void setLoginLabel(InstituteSettings instituteSettings) {
+
+        if (!Strings.toString(in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_username, instituteSettings)).isEmpty()) {
+            usernameInputLayout.setHint(in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_username, instituteSettings));
+        }
+
+        if (!Strings.toString(in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_password, instituteSettings)).isEmpty()) {
+            passwordInputLayout.setHint(in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_password, instituteSettings));
+        }
     }
 
     private void getInstituteSettings() {
@@ -323,7 +345,11 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
                         if (e.isNetworkError()) {
                             showAlert(getString(R.string.no_internet_try_again));
                         } else if (e.isClientError()) {
-                            showAlert(getString(R.string.invalid_username_or_password));
+                            if (!e.getMessage().isEmpty()) {
+                                showAlert(e.getMessage());
+                            } else {
+                                showAlert(getString(R.string.invalid_username_or_password));
+                            }
                         } else {
                             showAlert(getString(R.string.testpress_some_thing_went_wrong_try_again));
                         }
@@ -515,6 +541,13 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             internetConnectivityChecker.showAlert();
         }
 
+    }
+
+    @OnClick(id.b_resend_activation) public void openResendVerificationCode() {
+        Intent intent = new Intent(LoginActivity.this, WebViewActivity.class);
+        intent.putExtra(URL_TO_OPEN, BASE_URL+"/resend/");
+        intent.putExtra(ACTIVITY_TITLE, "Resend Verification SMS");
+        startActivity(intent);
     }
 
     @OnClick(id.forgot_password) public void verify() {

@@ -11,7 +11,9 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 
 import java.io.IOException;
+import java.util.List;
 
+import in.testpress.core.TestpressSDKDatabase;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.testpress.authenticator.ApiKeyProvider;
@@ -19,12 +21,17 @@ import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.DaoSession;
-import in.testpress.testpress.models.PostDao;
+import in.testpress.testpress.models.InstituteSettings;
+import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.util.UIUtils;
 import retrofit.RestAdapter;
+
+import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.BuildConfig.DISPLAY_USERNAME_ON_VIDEO;
+import static in.testpress.testpress.BuildConfig.SCREENSHOT_DISABLED;
 
 public class TestpressServiceProvider {
     private RestAdapter.Builder restAdapter;
@@ -56,8 +63,28 @@ public class TestpressServiceProvider {
         if (authToken == null) {
             // The call to keyProvider.getAuthKey(...) is what initiates the login screen. Call that now.
             authToken = keyProvider.getAuthKey(activity);
-            TestpressSdk.setTestpressSession(activity,
-                    new TestpressSession(Constants.Http.URL_BASE, authToken));
+            DaoSession daoSession =
+                    ((TestpressApplication) activity.getApplicationContext()).getDaoSession();
+            InstituteSettingsDao instituteSettingsDao = daoSession.getInstituteSettingsDao();
+            List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
+                    .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
+                    .list();
+
+            in.testpress.models.InstituteSettings settings;
+            if (instituteSettingsList.isEmpty()) {
+                settings = new in.testpress.models.InstituteSettings(BASE_URL);
+            } else {
+                InstituteSettings instituteSettings = instituteSettingsList.get(0);
+                settings = new in.testpress.models.InstituteSettings(instituteSettings.getBaseUrl())
+                        .setBookmarksEnabled(instituteSettings.getBookmarksEnabled())
+                        .setCoursesFrontend(instituteSettings.getShowGameFrontend())
+                        .setCoursesGamificationEnabled(instituteSettings.getCoursesEnableGamification())
+                        .setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled())
+                        .setScreenshotDisabled(SCREENSHOT_DISABLED)
+                        .setDisplayUserEmailOnVideo(DISPLAY_USERNAME_ON_VIDEO)
+                        .setAccessCodeEnabled(false);
+            }
+            TestpressSdk.setTestpressSession(activity, new TestpressSession(settings, authToken));
         }
 
         // TODO: See how that affects the testpress service.
@@ -67,7 +94,9 @@ public class TestpressServiceProvider {
     public void logout(final Activity activity, TestpressService testpressService,
                        TestpressServiceProvider serviceProvider,
                        LogoutService logoutService) {
-        final ProgressDialog progressDialog = new ProgressDialog(activity);
+        final ProgressDialog progressDialog = new ProgressDialog(activity,
+                R.style.AppCompatAlertDialogStyle);
+
         progressDialog.setTitle(R.string.label_logging_out);
         progressDialog.setMessage(activity.getString(R.string.please_wait));
         progressDialog.setCancelable(false);
@@ -78,11 +107,9 @@ public class TestpressServiceProvider {
                 Context.MODE_PRIVATE);
         preferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
         CommonUtils.registerDevice(activity, testpressService, serviceProvider);
-        DaoSession daoSession =
-                ((TestpressApplication) activity.getApplicationContext()).getDaoSession();
-        PostDao postDao = daoSession.getPostDao();
-        postDao.deleteAll();
-        daoSession.clear();
+        TestpressApplication.clearDatabase(activity);
+        TestpressSdk.clearActiveSession(activity);
+        TestpressSDKDatabase.clearDatabase(activity);
         logoutService.logout(new Runnable() {
             @Override
             public void run() {

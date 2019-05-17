@@ -2,9 +2,9 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
-    xmlns:facebook="http://schemas.android.com/apk/res-auto"
-    android:fillViewport="true">
+    android:background="@android:color/white"
+    android:fillViewport="true"
+    >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -30,7 +30,7 @@
         android:orientation="vertical">
 
         <ImageView
-            android:src="@drawable/logo"
+            android:src="@drawable/login_screen_image"
             android:layout_width="wrap_content"
             android:layout_height="150dp"
             android:layout_marginBottom="50dp"
@@ -44,6 +44,7 @@
 
             <!-- Username Label -->
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/username_textInput_layout"
                 style="@style/TextLabelTab"
                 android:theme="@style/TextLabel" >
                 <android.support.v7.widget.AppCompatEditText
@@ -52,11 +53,12 @@
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:imeOptions="actionNext"
-                    android:hint="Username" />
+                    android:hint="@string/label_username" />
             </android.support.design.widget.TextInputLayout>
 
             <!-- Password Label -->
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/password_textInput_layout"
                 style="@style/TextLabelTab"
                 android:theme="@style/TextLabel"
                 android:layout_marginTop="30dp"
@@ -69,19 +71,16 @@
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:imeOptions="actionSend"
-                    android:hint="Password"/>
+                    android:hint="@string/label_password"/>
             </android.support.design.widget.TextInputLayout>
 
-            <info.hoang8f.widget.FButton
+            <android.support.v7.widget.AppCompatButton
                 android:id="@+id/b_signin"
-                style="@style/TextLabelTab"
+                style="@style/Button.Tab"
                 android:layout_marginTop="5dp"
-                fbutton:buttonColor="@color/primary"
-                fbutton:shadowEnabled="true"
-                fbutton:shadowHeight="3dp"
-                fbutton:cornerRadius="2dp"
+                android:textSize="14sp"
                 android:text="Login"
-                android:textColor="@color/white" />
+                />
 
             <RelativeLayout
                 android:layout_width="400dp"
@@ -151,6 +150,7 @@
                 </LinearLayout>
 
                 <com.facebook.login.widget.LoginButton
+                    xmlns:facebook="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/fb_login_button"
                     android:layout_width="400dp"
                     android:layout_height="wrap_content"
@@ -174,6 +174,19 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="20dp"
+                android:background="#ccc" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/b_resend_activation"
+                style="@style/Button.Tab"
+                android:layout_height="40dp"
+                android:layout_marginTop="20dp"
+                android:text="Resend Verification SMS"
+                android:textSize="14sp" />
         </LinearLayout>
     </LinearLayout>
     </RelativeLayout>

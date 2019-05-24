@@ -1,15 +1,15 @@
 {
-  "version" : "1.0",
+  "version" : "1.0.1",
   "version_code" : 1,
-  "testpress_site_subdomain" : "sandbox",
-  "package_name" : "in.testpress.testpress",
-  "app_name" : "Testpress",
-  "share_message": "Good app to prepare for online exams.",
-  "primary_color": "3598db",
-  "allow_anonymous_user" : false,
-  "screenshot_disabled" : false,
+  "testpress_site_subdomain" : "4iiteens",
+  "package_name" : "com.iiteens.test",
+  "app_name" : "4iiteens",
+  "share_message": "Excellent Coaching by Legends",
+  "primary_color": "e31414",
+  "allow_anonymous_user" : true,
+  "screenshot_disabled" : true,
   "facebook_app_id" : "733962776688753",
   "server_client_id" : "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
   "display_username_on_video": true,
-  "white_labeled_host_url": null
+  "white_labeled_host_url": "test.4iiteens.com"
 }

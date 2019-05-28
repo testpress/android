@@ -109,7 +109,7 @@ public class WebViewActivity extends BaseToolBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Injector.inject(this);
-        setContentView(R.layout.webview_layout);
+        setContentView(R.layout.generic_webview_layout);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         pb_loading = this.findViewById(R.id.pb_loading);

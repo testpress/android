@@ -42,6 +42,7 @@ import in.testpress.testpress.ui.PostsListActivity;
 import in.testpress.testpress.ui.PostsListFragment;
 import in.testpress.testpress.ui.ProfileDetailsActivity;
 import in.testpress.testpress.ui.ProfilePhotoActivity;
+import in.testpress.testpress.ui.WebViewActivity;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
 
@@ -80,7 +81,8 @@ import static in.testpress.testpress.BuildConfig.BASE_URL;
                 ForumListActivity.class,
                 ForumListFragment.class,
                 ForumActivity.class,
-                CreateForumActivity.class
+                CreateForumActivity.class,
+                WebViewActivity.class
         }
 )
 public class TestpressModule {

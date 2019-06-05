@@ -39,6 +39,7 @@
 
             <!-- Username Label -->
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/username_textInput_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:theme="@style/TextLabel"
@@ -49,11 +50,12 @@
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:imeOptions="actionNext"
-                    android:hint="Username" />
+                    android:hint="@string/label_username" />
             </android.support.design.widget.TextInputLayout>
 
             <!-- Password Label -->
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/password_textInput_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:theme="@style/TextLabel"
@@ -66,7 +68,7 @@
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:imeOptions="actionSend"
-                    android:hint="Password"/>
+                    android:hint="@string/label_password"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.v7.widget.AppCompatButton
@@ -74,7 +76,6 @@
                 android:id="@+id/b_signin"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:background="#00ccaa"
                 android:layout_marginTop="10dp"
                 android:textSize="14sp"
                 android:text="Login"
@@ -118,8 +119,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="25dp"
                     android:layout_marginBottom="25dp"
-                    android:orientation="horizontal"
-                    android:gravity="center" >
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
                     <View
                         android:layout_width="100dp"
@@ -133,10 +134,10 @@
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
                         android:gravity="center"
+                        android:text="@string/or"
                         android:textAllCaps="true"
                         android:textColor="@color/black"
-                        android:textSize="18sp"
-                        android:text="@string/or" />
+                        android:textSize="18sp" />
 
                     <View
                         android:layout_width="100dp"
@@ -172,6 +173,21 @@
                     android:layout_height="wrap_content" />
 
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="20dp"
+                android:background="#ccc" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/b_resend_activation"
+                style="@style/Button"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="20dp"
+                android:text="Resend Verification SMS"
+                android:textSize="14sp" />
 
         </LinearLayout>
 

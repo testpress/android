@@ -165,6 +165,17 @@
             android:configChanges="orientation|keyboard|screenSize"
             android:label="@string/activate" />
 
+        <activity
+            android:theme="@style/AppTheme"
+            android:name=".ui.AboutUsActivity"
+            android:configChanges="orientation|keyboard|screenSize"
+            android:label="@string/about_us" />
+
+        <activity
+            android:name=".ui.WebViewActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Web View" />
+
     </application>
 
 </manifest>

@@ -103,6 +103,58 @@
       },
       "oauth_client": [
         {
+          "client_id": "589544710202-ju9l978m3j1uge7a4eh203nnu8qk2pc9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.testpress.chanakya",
+            "certificate_hash": "c53ddd6f9c8bf151f77333cb7ae1b4111e6add49"
+          }
+        },
+        {
+          "client_id": "589544710202-n1re9gbmod6pphlkkdiln5e39t7jsh87.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1N-kW7_ubymJppVJrjnd8B3Ho4Pwr3e4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "589544710202-n1re9gbmod6pphlkkdiln5e39t7jsh87.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "589544710202-3vq8vb4tbdpitut5m0hegvj9j0n864h0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "in.testpress.suresuccess"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:589544710202:android:47341979078c569e",
+        "android_client_info": {
+          "package_name": "in.testpress.edusol"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "589544710202-dkb39p6un7m3odp3m2r8aspftt8am3ls.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.testpress.edusol",
+            "certificate_hash": "c53ddd6f9c8bf151f77333cb7ae1b4111e6add49"
+          }
+        },
+        {
           "client_id": "589544710202-n1re9gbmod6pphlkkdiln5e39t7jsh87.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -315,10 +367,54 @@
       },
       "oauth_client": [
         {
-          "client_id": "589544710202-ve4osvbp4rmf4t9170a7357frjctp56e.apps.googleusercontent.com",
+          "client_id": "589544710202-ou8rj50ut9id6v6dmo6t0i1gt90rb03q.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "in.testpress.koncptss",
+            "certificate_hash": "c53ddd6f9c8bf151f77333cb7ae1b4111e6add49"
+          }
+        },
+        {
+          "client_id": "589544710202-n1re9gbmod6pphlkkdiln5e39t7jsh87.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1N-kW7_ubymJppVJrjnd8B3Ho4Pwr3e4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "589544710202-n1re9gbmod6pphlkkdiln5e39t7jsh87.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "589544710202-3vq8vb4tbdpitut5m0hegvj9j0n864h0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "in.testpress.suresuccess"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:589544710202:android:e875dd21ab44b512",
+        "android_client_info": {
+          "package_name": "in.testpress.mjgroup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "589544710202-ctc56q0e85mb670og5d2vn6ngdja1s5c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.testpress.mjgroup",
             "certificate_hash": "c53ddd6f9c8bf151f77333cb7ae1b4111e6add49"
           }
         },

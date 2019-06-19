@@ -45,15 +45,19 @@ class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
 
     private static class ViewHolder extends RecyclerView.ViewHolder {
         TextView courseTitle;
+        TextView externalLinkTitle;
         ImageView thumbnailImage;
         LinearLayout courseItemLayout;
         LinearLayout progressBarLayout;
+
 
         ViewHolder(View convertView, Context context) {
             super(convertView);
             courseTitle = ((TextView) convertView.findViewById(R.id.course_title));
             courseTitle.setTypeface(TestpressSdk.getRubikMediumFont(context));
             thumbnailImage = ((ImageView) convertView.findViewById(R.id.thumbnail_image));
+            courseItemLayout = (LinearLayout) convertView.findViewById(R.id.course_item_layout);
+            externalLinkTitle = (TextView) convertView.findViewById(R.id.external_link_title);
             courseItemLayout = (LinearLayout) convertView.findViewById(R.id.course_item_layout);
             progressBarLayout = ((LinearLayout) convertView.findViewById(R.id.progress_bar_layout));
             progressBarLayout.setVisibility(View.GONE);
@@ -87,16 +91,13 @@ class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
                 mImageLoader.displayImage(course.getImage(), holder.thumbnailImage, mOptions);
             }
             holder.progressBarLayout.setVisibility(View.GONE);
+            setTextToTextView(course.getExternal_link_label(), holder.externalLinkTitle);
+            toggleTextViewVisibility(!course.isCourseForRegistration(), holder.externalLinkTitle);
             holder.courseItemLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //noinspection ConstantConditions
-                    TestpressCourse.showChapters(
-                            mActivity,
-                            course.getTitle(),
-                            course.getId().intValue(),
-                            TestpressSdk.getTestpressSession(mActivity)
-                    );
+                    openCourseContentsOrExternalLink(mActivity, course, !course.isCourseForRegistration());
                 }
             });
         } else {
@@ -124,4 +125,36 @@ class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
     void setCourses(List<Course> mCourses) {
         this.mCourses = mCourses;
     }
+
+    public void toggleTextViewVisibility(boolean toHide, View view) {
+        if (toHide) {
+            view.setVisibility(View.GONE);
+        } else {
+            view.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void setTextToTextView(String textViewText, TextView textView) {
+        if (!textViewText.equals("")) {
+            textView.setText(textViewText);
+        }
+    }
+
+    public void openCourseContentsOrExternalLink(Activity activity, Course course, boolean openCourseContent) {
+
+        if (openCourseContent) {
+            TestpressCourse.showChapters(
+                    mActivity,
+                    course.getTitle(),
+                    course.getId().intValue(),
+                    TestpressSdk.getTestpressSession(mActivity)
+            );
+        } else {
+            Intent intent = new Intent(activity, WebViewActivity.class);
+            intent.putExtra("URL", course.getExternal_content_link());
+            intent.putExtra("TITLE", course.getExternal_link_label());
+            activity.startActivity(intent);
+        }
+    }
+
 }

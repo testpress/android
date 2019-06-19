@@ -1,7 +1,7 @@
 {
-  "version" : "1.0.134",
-  "version_code" : 134,
-  "testpress_site_subomain": "iasbaba",
+  "version" : "1.0.136",
+  "version_code" : 136,
+  "testpress_site_subdomain": "iasbaba",
   "package_name": "com.iasbaba",
   "app_name" : "IASbaba",
   "share_message": "Good app to prepare for UPSC, IAS.",

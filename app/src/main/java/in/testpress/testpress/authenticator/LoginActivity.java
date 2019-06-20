@@ -123,6 +123,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     @InjectView(id.et_password) protected EditText passwordText;
     @InjectView(id.b_signin) protected Button signInButton;
     @InjectView(id.b_resend_activation) protected Button ResendVerificationCodeButton;
+    @InjectView(id.resend_activation_separator) protected View resendActivationSeparator;
     @InjectView(id.or) protected TextView orLabel;
     @InjectView(id.fb_login_button) protected LoginButton fbLoginButton;
     @InjectView(id.google_sign_in_button) protected Button googleLoginButton;
@@ -262,6 +263,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         }
 
         setLoginLabel(instituteSettings);
+        setVisibilityResendVerificationSMS(instituteSettings);
     }
 
     public void setLoginLabel(InstituteSettings instituteSettings) {
@@ -272,6 +274,17 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
         if (!Strings.toString(in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_password, instituteSettings)).isEmpty()) {
             passwordInputLayout.setHint(in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_password, instituteSettings));
+        }
+    }
+
+
+    public void setVisibilityResendVerificationSMS(InstituteSettings instituteSettings){
+        if (instituteSettings.getVerificationMethod().equals("M")) {
+            ResendVerificationCodeButton.setVisibility(View.VISIBLE);
+            resendActivationSeparator.setVisibility(View.VISIBLE);
+        } else {
+            ResendVerificationCodeButton.setVisibility(View.GONE);
+            resendActivationSeparator.setVisibility(View.GONE);
         }
     }
 

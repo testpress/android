@@ -1,138 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:fitsSystemWindows="true">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/white"
+    android:fitsSystemWindows="true">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <include layout="@layout/success_message_layout" />
 
-    <LinearLayout
-        android:id="@+id/register_layout"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="60dp"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp">
+        <LinearLayout
+            android:id="@+id/register_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="24dp"
+            android:paddingTop="60dp"
+            android:paddingRight="24dp">
 
-        <ImageView android:src="@drawable/login_screen_image"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:layout_marginBottom="24dp"
-                   android:layout_gravity="center_horizontal" />
-
-        <!-- Username Label -->
-        <android.support.design.widget.TextInputLayout
-            style="@style/TextLabelTab"
-            android:theme="@style/TextLabel"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="8dp">
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/et_username"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:layout_width="match_parent"
+            <ImageView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:imeOptions="actionNext"
-                android:nextFocusDown="@+id/et_email"
-                android:hint="@string/label_username" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="24dp"
+                android:src="@drawable/login_screen_image" />
 
-        <!-- Email Label -->
-        <android.support.design.widget.TextInputLayout
-            style="@style/TextLabelTab"
-            android:theme="@style/TextLabel"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/et_email"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:layout_width="match_parent"
+            <!-- Username Label -->
+            <android.support.design.widget.TextInputLayout
+                style="@style/TextLabelTab"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="8dp"
+                android:theme="@style/TextLabel">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/et_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/label_username"
+                    android:imeOptions="actionNext"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/et_email"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+
+            <!-- Email Label -->
+            <android.support.design.widget.TextInputLayout
+                style="@style/TextLabelTab"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:theme="@style/TextLabel">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/et_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/label_email"
+                    android:imeOptions="actionNext"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/et_phone"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+
+
+            <LinearLayout
+                android:layout_width="400dp"
                 android:layout_height="wrap_content"
-                android:imeOptions="actionNext"
-                android:nextFocusDown="@+id/et_phone"
-                android:inputType="textEmailAddress"
-                android:hint="@string/label_email" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-        <!-- Phone Label -->
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/phone_layout"
-            style="@style/TextLabelTab"
-            android:theme="@style/TextLabel"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/et_phone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionNext"
-                android:nextFocusDown="@+id/et_password"
-                android:inputType="number"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:hint="@string/label_phone" />
-        </android.support.design.widget.TextInputLayout>
+                <com.hbb20.CountryCodePicker
+                    android:id="@+id/ccp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    app:ccp_autoDetectCountry="true"
+                    app:ccp_defaultNameCode="IND" />
 
-        <!-- Password Label -->
-        <android.support.design.widget.TextInputLayout
-            style="@style/TextLabelTab"
-            android:theme="@style/TextLabel"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/et_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:inputType="textPassword"
-                android:imeOptions="actionNext"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:nextFocusDown="@+id/et_password_confirm"
-                android:hint="@string/label_password"/>
-        </android.support.design.widget.TextInputLayout>
+                <!-- Phone Label -->
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/phone_layout"
+                    style="@style/TextLabelTab"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center_horizontal"
+                    android:theme="@style/TextLabel">
 
-        <!-- Confirm Password Label -->
-        <android.support.design.widget.TextInputLayout
-            style="@style/TextLabelTab"
-            android:theme="@style/TextLabel"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/et_password_confirm"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:inputType="textPassword"
-                android:imeOptions="actionDone"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:hint="Confirm password"/>
-        </android.support.design.widget.TextInputLayout>
+                    <android.support.v7.widget.AppCompatEditText
+                        android:id="@+id/et_phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/label_phone"
+                        android:imeOptions="actionNext"
+                        android:inputType="number"
+                        android:maxLines="1"
+                        android:nextFocusDown="@+id/et_password"
+                        android:singleLine="true" />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
 
-        <TextView
-            style="@style/TextLabelTab"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="@string/label_fill_all_details"
-            android:textColor="@color/red"
-            android:layout_margin="15dp"
-            android:id="@+id/tv_fill_all_details"/>
+            <!-- Password Label -->
+            <android.support.design.widget.TextInputLayout
+                style="@style/TextLabelTab"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:theme="@style/TextLabel">
 
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/b_register"
-            style="@style/Button.Tab"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:text="Register"
-            />
-    </LinearLayout>
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/et_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:hint="@string/label_password"
+                    android:imeOptions="actionNext"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/et_password_confirm"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+
+            <!-- Confirm Password Label -->
+            <android.support.design.widget.TextInputLayout
+                style="@style/TextLabelTab"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:theme="@style/TextLabel">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/et_password_confirm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:hint="Confirm password"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+
+            <TextView
+                android:id="@+id/tv_fill_all_details"
+                style="@style/TextLabelTab"
+                android:layout_margin="15dp"
+                android:text="@string/label_fill_all_details"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/red" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/b_register"
+                style="@style/Button.Tab"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:text="Register" />
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>

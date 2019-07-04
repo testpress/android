@@ -5,9 +5,9 @@
     <string name="babapedia">Babapedia</string>
     <string name="ilp_2019">ILP 2019</string>
     <string name="ilp_2020">ILP 2020</string>
-    <string name="babapedia_url">http://babapedia2019.iasbaba.com</string>
-    <string name="ilp_url">http://ilp2019.iasbaba.com/</string>
-    <string name="ilp_url_2020">http://ilp2020.iasbaba.com/</string>
+    <string name="babapedia_url">https://babapedia2019.iasbaba.com</string>
+    <string name="ilp_url">https://ilp2019.iasbaba.com/</string>
+    <string name="ilp_url_2020">https://ilp2020.iasbaba.com/</string>
 
     <string name="rss_posts">Whats New</string>
 

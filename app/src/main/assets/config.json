@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.112",
-  "version_code" : 112,
+  "version" : "1.0.113",
+  "version_code" : 113,
   "testpress_site_subdomain" : "positivemedpg",
   "package_name" : "in.testpress.positivemedpg",
   "app_name" : "PositiveMedPG",

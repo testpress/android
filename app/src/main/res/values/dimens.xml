@@ -41,6 +41,7 @@
 
     <dimen name="activity_horizontal_margin">10dp</dimen>
     <dimen name="activity_vertical_margin">10dp</dimen>
+    <dimen name="icon_layout_height">80dp</dimen>
     <dimen name="collapsing_app_bar_height">300dp</dimen>
     <dimen name="text_margin">16dp</dimen>
 </resources>

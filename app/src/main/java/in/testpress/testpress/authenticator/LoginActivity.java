@@ -199,6 +199,25 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         });
 
         usernameText.addTextChangedListener(watcher);
+        usernameText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (usernameText.getText().toString().contains(" ")) {
+                    usernameText.setText(usernameText.getText().toString().replaceAll(" ", ""));
+                    usernameText.setSelection(usernameText.getText().length());
+                }
+            }
+        });
+
+
         usernameText.setSingleLine();
         passwordText.addTextChangedListener(watcher);
         passwordText.setTypeface(Typeface.DEFAULT);

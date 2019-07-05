@@ -2,7 +2,6 @@ package in.testpress.testpress.authenticator;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
@@ -23,6 +22,7 @@ import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.hbb20.CountryCodePicker;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -37,7 +37,6 @@ import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.R.id;
 import in.testpress.testpress.TestpressApplication;
-import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
@@ -47,6 +46,7 @@ import in.testpress.testpress.models.RegistrationErrorDetails;
 import in.testpress.testpress.ui.TextWatcherAdapter;
 import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.SafeAsyncTask;
+import in.testpress.testpress.util.PhoneNumberValidator;
 import retrofit.RetrofitError;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
@@ -63,6 +63,7 @@ public class RegisterActivity extends AppCompatActivity {
     @InjectView(id.et_password_confirm) EditText confirmPasswordText;
     @InjectView(id.et_email) EditText emailText;
     @InjectView(id.et_phone) EditText phoneText;
+    @InjectView(id.ccp) CountryCodePicker countryCodePicker;
     @InjectView(id.phone_layout) TextInputLayout phoneLayout;
     @InjectView(id.tv_fill_all_details) TextView fillAllDetailsText;
     @InjectView(id.b_register) Button registerButton;
@@ -74,6 +75,7 @@ public class RegisterActivity extends AppCompatActivity {
     private RegistrationSuccessResponse registrationSuccessResponse;
     private MaterialDialog progressDialog;
     private InternetConnectivityChecker internetConnectivityChecker = new InternetConnectivityChecker(this);
+    private boolean isTwilioEnabled;
     private VerificationMethod verificationMethod;
     enum VerificationMethod { MOBILE, EMAIL }
 
@@ -93,6 +95,7 @@ public class RegisterActivity extends AppCompatActivity {
             InstituteSettings instituteSettings = instituteSettingsList.get(0);
             verificationMethod =
                     instituteSettings.getVerificationMethod().equals("M") ? MOBILE : EMAIL;
+            isTwilioEnabled = instituteSettings.getTwilioEnabled();
         } else {
             // Never happen, just for a safety.
             finish();
@@ -114,10 +117,21 @@ public class RegisterActivity extends AppCompatActivity {
         if (verificationMethod.equals(MOBILE)) {
             phoneText.addTextChangedListener(watcher);
             phoneLayout.setVisibility(View.VISIBLE);
+
+            if (!isTwilioEnabled) {
+                countryCodePicker.setVisibility(View.GONE);
+            }
         } else {
             phoneLayout.setVisibility(View.GONE);
+            countryCodePicker.setVisibility(View.GONE);
+            isTwilioEnabled=false;
         }
         confirmPasswordText.addTextChangedListener(watcher);
+
+        if(isTwilioEnabled) {
+            countryCodePicker.registerCarrierNumberEditText(phoneText);
+            countryCodePicker.setNumberAutoFormattingEnabled(false);
+        }
     }
 
     void postDetails(){
@@ -131,7 +145,12 @@ public class RegisterActivity extends AppCompatActivity {
                 .show();
         new SafeAsyncTask<Boolean>() {
             public Boolean call() throws Exception {
-                registrationSuccessResponse = testpressService.register(usernameText.getText().toString(), emailText.getText().toString(), passwordText.getText().toString(), phoneText.getText().toString());
+
+                if(isTwilioEnabled){
+                    registrationSuccessResponse = testpressService.register(usernameText.getText().toString(), emailText.getText().toString(), passwordText.getText().toString(), phoneText.getText().toString(), countryCodePicker.getSelectedCountryNameCode());
+                } else {
+                    registrationSuccessResponse = testpressService.register(usernameText.getText().toString(), emailText.getText().toString(), passwordText.getText().toString(), phoneText.getText().toString(), "");
+                }
                 return true;
             }
 
@@ -223,11 +242,16 @@ public class RegisterActivity extends AppCompatActivity {
            }
             if (verificationMethod.equals(MOBILE)) {
                 //Phone number verification
-                Pattern phoneNumberPattern = Pattern.compile("\\d{10}");
-                Matcher phoneNumberMatcher = phoneNumberPattern.matcher(phoneText.getText()
-                        .toString().trim());
-                if (!phoneNumberMatcher.matches()) {
-                    phoneText.setError("Please enter 10 digit valid mobile number");
+                boolean isPhoneNumberValid;
+
+                if (isTwilioEnabled) {
+                    isPhoneNumberValid = PhoneNumberValidator.validateInternationalPhoneNumber(countryCodePicker);
+                } else {
+                    isPhoneNumberValid = PhoneNumberValidator.validatePhoneNumber(phoneText.getText().toString().trim());
+                }
+
+                if (!isPhoneNumberValid) {
+                    phoneText.setError("Please enter a valid mobile number");
                     phoneText.requestFocus();
                     return false;
                 }

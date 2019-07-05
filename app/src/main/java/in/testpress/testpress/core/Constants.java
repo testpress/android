@@ -34,7 +34,7 @@ public final class Constants {
         /**
          * New User Register URL
          */
-        public static final String URL_REGISTER_FRAG = "/api/v2.2/register/";
+        public static final String URL_REGISTER_FRAG = "/api/v2.3/register/";
         /**
          * Code Verification URL
          */
@@ -68,7 +68,7 @@ public final class Constants {
         /**
          * Institute Settings URL
          */
-        public static final String URL_INSTITUTE_SETTINGS_FRAG =  "/api/v2.2/settings/";
+        public static final String URL_INSTITUTE_SETTINGS_FRAG =  "/api/v2.3/settings/";
 
         /**
          * Posts URL
@@ -81,6 +81,10 @@ public final class Constants {
         public static final String URL_COMMENTS_FRAG =  "/comments/";
 
         public static final String CHAPTERS_PATH =  "/api/v2.2.1/chapters/";
+
+        public static final String URL_GENERATE_SSO_LINK =  "/api/v2.3/presigned_sso_url/";
+
+        public static final String CHECK_PERMISSION_URL =  "/api/v2.3/me/check_permission/";
 
         /**
          * Handle Success & Failure of payments

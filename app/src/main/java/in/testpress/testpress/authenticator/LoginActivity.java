@@ -122,8 +122,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     @InjectView(id.et_username) EditText usernameText;
     @InjectView(id.et_password) protected EditText passwordText;
     @InjectView(id.b_signin) protected Button signInButton;
-    @InjectView(id.b_resend_activation) protected Button ResendVerificationCodeButton;
-    @InjectView(id.resend_activation_separator) protected View resendActivationSeparator;
+    @InjectView(id.b_resend_activation) protected TextView ResendVerificationCodeButton;
     @InjectView(id.or) protected TextView orLabel;
     @InjectView(id.fb_login_button) protected LoginButton fbLoginButton;
     @InjectView(id.google_sign_in_button) protected Button googleLoginButton;
@@ -200,6 +199,25 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         });
 
         usernameText.addTextChangedListener(watcher);
+        usernameText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (usernameText.getText().toString().contains(" ")) {
+                    usernameText.setText(usernameText.getText().toString().replaceAll(" ", ""));
+                    usernameText.setSelection(usernameText.getText().length());
+                }
+            }
+        });
+
+
         usernameText.setSingleLine();
         passwordText.addTextChangedListener(watcher);
         passwordText.setTypeface(Typeface.DEFAULT);
@@ -281,10 +299,8 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     public void setVisibilityResendVerificationSMS(InstituteSettings instituteSettings){
         if (instituteSettings.getVerificationMethod().equals("M")) {
             ResendVerificationCodeButton.setVisibility(View.VISIBLE);
-            resendActivationSeparator.setVisibility(View.VISIBLE);
         } else {
             ResendVerificationCodeButton.setVisibility(View.GONE);
-            resendActivationSeparator.setVisibility(View.GONE);
         }
     }
 

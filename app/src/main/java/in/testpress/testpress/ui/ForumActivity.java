@@ -252,16 +252,16 @@ public class ForumActivity extends TestpressFragmentActivity implements
 
                     forum.setModified(ForumActivity.this.forum.getModified());
                     forum.setModifiedDate(simpleDateFormat.parse(forum.getModified()).getTime());
-                    if (forum.getCategory() != null) {
-                        forum.setCategory(forum.getCategory());
+                    if (forum.category != null) {
+                        forum.setCategory(forum.category);
                         CategoryDao categoryDao =
                                 TestpressApplication.getDaoSession().getCategoryDao();
-                        categoryDao.insertOrReplace(forum.getCategory());
+                        categoryDao.insertOrReplace(forum.category);
                     }
-                    User user = forum.getCreatedBy();
+                    User user = forum.createdBy;
                     userDao.insertOrReplace(user);
                     forum.setCreatorId(user.getId());
-                    user = forum.getLastCommentedBy();
+                    user = forum.lastCommentedBy;
                     if (user != null) {
                         userDao.insertOrReplace(user);
                         forum.setCommentorId(user.getId());
@@ -477,10 +477,10 @@ public class ForumActivity extends TestpressFragmentActivity implements
         forum = vote.getContentObject();
         forum.setVoteId((long) vote.getId());
         forum.setTypeOfVote(vote.getTypeOfVote());
-        User user = vote.getContentObject().getCreatedBy();
+        User user = vote.getContentObject().createdBy;
         userDao.insertOrReplace(user);
         forum.setCreatorId(user.getId());
-        user = vote.getContentObject().getLastCommentedBy();
+        user = vote.getContentObject().lastCommentedBy;
         if (user != null) {
             userDao.insertOrReplace(user);
             forum.setCommentorId(user.getId());

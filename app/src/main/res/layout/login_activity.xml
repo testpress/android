@@ -2,9 +2,9 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white"
-    android:fillViewport="true"
-    >
+    android:fillViewport="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -26,6 +26,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="24dp"
             android:paddingLeft="24dp"
+            android:layout_centerInParent="true"
             android:paddingRight="24dp"
             android:orientation="vertical" >
 
@@ -39,6 +40,7 @@
 
             <!-- Username Label -->
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/username_textInput_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:theme="@style/TextLabel"
@@ -49,14 +51,16 @@
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:imeOptions="actionNext"
-                    android:hint="Username" />
+                    android:hint="@string/label_username" />
             </android.support.design.widget.TextInputLayout>
 
             <!-- Password Label -->
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/password_textInput_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:theme="@style/TextLabel"
+                app:passwordToggleEnabled="true"
                 android:layout_marginBottom="8dp">
                 <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/et_password"
@@ -66,7 +70,7 @@
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:imeOptions="actionSend"
-                    android:hint="Password"/>
+                    android:hint="@string/label_password"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.v7.widget.AppCompatButton
@@ -90,8 +94,19 @@
                     android:layout_alignParentStart="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/blue_text_states"
+                    android:textColor="@color/primary"
                     android:text="@string/forgot_password" />
+
+                <TextView
+                    android:id="@+id/b_resend_activation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/forgot_password"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/resend_verification_sms"
+                    android:textColor="@color/primary" />
 
                 <TextView
                     android:layout_alignParentRight="true"
@@ -100,7 +115,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:textColor="@color/blue_text_states"
+                    android:textColor="@color/primary"
                     android:text="@string/sign_up" />
 
             </RelativeLayout>
@@ -117,8 +132,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="25dp"
                     android:layout_marginBottom="25dp"
-                    android:orientation="horizontal"
-                    android:gravity="center" >
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
                     <View
                         android:layout_width="100dp"
@@ -132,10 +147,10 @@
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
                         android:gravity="center"
+                        android:text="@string/or"
                         android:textAllCaps="true"
                         android:textColor="@color/black"
-                        android:textSize="18sp"
-                        android:text="@string/or" />
+                        android:textSize="18sp" />
 
                     <View
                         android:layout_width="100dp"

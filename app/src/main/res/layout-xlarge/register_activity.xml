@@ -44,14 +44,8 @@
                     android:imeOptions="actionNext"
                     android:maxLines="1"
                     android:nextFocusDown="@+id/et_email"
-                    android:paddingTop="15dp"
-                    android:paddingStart="10dp"
-                    android:layout_marginTop="5dp"
-                    android:paddingLeft="10dp"
-                    android:translationY="2dp"
-                    android:paddingBottom="15dp"
-                    android:background="@drawable/rounded_border_edittext"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    style="@style/Input"/>
             </android.support.design.widget.TextInputLayout>
 
             <!-- Email Label -->
@@ -70,14 +64,8 @@
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:nextFocusDown="@+id/et_phone"
-                    android:paddingTop="15dp"
-                    android:paddingStart="10dp"
-                    android:layout_marginTop="5dp"
-                    android:paddingLeft="10dp"
-                    android:translationY="2dp"
-                    android:paddingBottom="15dp"
-                    android:background="@drawable/rounded_border_edittext"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    style="@style/Input"/>
             </android.support.design.widget.TextInputLayout>
 
 
@@ -122,15 +110,9 @@
                         android:imeOptions="actionNext"
                         android:inputType="number"
                         android:maxLines="1"
-                        android:paddingTop="15dp"
-                        android:paddingStart="10dp"
-                        android:layout_marginTop="5dp"
-                        android:paddingLeft="10dp"
-                        android:translationY="2dp"
-                        android:paddingBottom="15dp"
-                        android:background="@drawable/rounded_border_edittext"
                         android:nextFocusDown="@+id/et_password"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        style="@style/Input"/>
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
 
@@ -151,14 +133,8 @@
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:nextFocusDown="@+id/et_password_confirm"
-                    android:paddingTop="15dp"
-                    android:paddingStart="10dp"
-                    android:layout_marginTop="5dp"
-                    android:paddingLeft="10dp"
-                    android:translationY="2dp"
-                    android:paddingBottom="15dp"
-                    android:background="@drawable/rounded_border_edittext"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    style="@style/Input"/>
             </android.support.design.widget.TextInputLayout>
 
             <!-- Confirm Password Label -->
@@ -177,14 +153,8 @@
                     android:imeOptions="actionDone"
                     android:inputType="textPassword"
                     android:maxLines="1"
-                    android:paddingTop="15dp"
-                    android:paddingStart="10dp"
-                    android:layout_marginTop="5dp"
-                    android:paddingLeft="10dp"
-                    android:translationY="2dp"
-                    android:paddingBottom="15dp"
-                    android:background="@drawable/rounded_border_edittext"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    style="@style/Input"/>
             </android.support.design.widget.TextInputLayout>
 
             <TextView

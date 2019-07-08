@@ -43,14 +43,8 @@
                 android:layout_height="wrap_content"
                 android:imeOptions="actionNext"
                 android:nextFocusDown="@+id/et_email"
-                android:paddingTop="15dp"
-                android:paddingStart="10dp"
-                android:layout_marginTop="5dp"
-                android:paddingLeft="10dp"
-                android:translationY="2dp"
-                android:paddingBottom="15dp"
-                android:background="@drawable/rounded_border_edittext"
-                android:hint="@string/label_username" />
+                android:hint="@string/label_username"
+                style="@style/Input"/>
         </android.support.design.widget.TextInputLayout>
 
         <!-- Email Label -->
@@ -69,14 +63,8 @@
                 android:imeOptions="actionNext"
                 android:nextFocusDown="@+id/et_phone"
                 android:inputType="textEmailAddress"
-                android:paddingTop="15dp"
-                android:paddingStart="10dp"
-                android:layout_marginTop="5dp"
-                android:paddingLeft="10dp"
-                android:translationY="2dp"
-                android:paddingBottom="15dp"
-                android:background="@drawable/rounded_border_edittext"
-                android:hint="@string/label_email" />
+                android:hint="@string/label_email"
+                style="@style/Input"/>
         </android.support.design.widget.TextInputLayout>
 
 
@@ -96,8 +84,8 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginEnd="5dp"
-                android:paddingBottom="10dp"
-                android:paddingTop="10dp"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp"
                 app:ccp_autoDetectCountry="true"
                 app:ccp_defaultNameCode="IND" />
 
@@ -119,14 +107,8 @@
                     android:inputType="number"
                     android:maxLines="1"
                     android:nextFocusDown="@+id/et_password"
-                    android:paddingTop="18dp"
-                    android:paddingStart="10dp"
-                    android:layout_marginTop="5dp"
-                    android:paddingLeft="10dp"
-                    android:translationY="2dp"
-                    android:paddingBottom="15dp"
-                    android:background="@drawable/rounded_border_edittext"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    style="@style/Input"/>
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
 
@@ -147,14 +129,8 @@
                 android:maxLines="1"
                 android:singleLine="true"
                 android:nextFocusDown="@+id/et_password_confirm"
-                android:paddingTop="15dp"
-                android:paddingStart="10dp"
-                android:layout_marginTop="5dp"
-                android:paddingLeft="10dp"
-                android:translationY="2dp"
-                android:paddingBottom="15dp"
-                android:background="@drawable/rounded_border_edittext"
-                android:hint="@string/label_password"/>
+                android:hint="@string/label_password"
+                style="@style/Input"/>
         </android.support.design.widget.TextInputLayout>
 
         <!-- Confirm Password Label -->
@@ -174,13 +150,7 @@
                 android:maxLines="1"
                 android:singleLine="true"
                 android:hint="Confirm password"
-                android:paddingTop="15dp"
-                android:paddingStart="10dp"
-                android:layout_marginTop="5dp"
-                android:paddingLeft="10dp"
-                android:translationY="2dp"
-                android:paddingBottom="15dp"
-                android:background="@drawable/rounded_border_edittext"/>
+                style="@style/Input"/>
         </android.support.design.widget.TextInputLayout>
 
         <TextView

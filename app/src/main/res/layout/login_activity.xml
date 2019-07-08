@@ -2,9 +2,9 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white"
-    android:fillViewport="true"
-    >
+    android:fillViewport="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -26,6 +26,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="24dp"
             android:paddingLeft="24dp"
+            android:layout_centerInParent="true"
             android:paddingRight="24dp"
             android:orientation="vertical" >
 
@@ -50,6 +51,7 @@
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:imeOptions="actionNext"
+                    style="@style/Input"
                     android:hint="@string/label_username" />
             </android.support.design.widget.TextInputLayout>
 
@@ -59,6 +61,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:theme="@style/TextLabel"
+                app:passwordToggleEnabled="true"
                 android:layout_marginBottom="8dp">
                 <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/et_password"
@@ -68,6 +71,7 @@
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:imeOptions="actionSend"
+                    style="@style/Input"
                     android:hint="@string/label_password"/>
             </android.support.design.widget.TextInputLayout>
 
@@ -92,8 +96,19 @@
                     android:layout_alignParentStart="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/blue_text_states"
+                    android:textColor="@color/primary"
                     android:text="@string/forgot_password" />
+
+                <TextView
+                    android:id="@+id/b_resend_activation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/forgot_password"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/resend_verification_sms"
+                    android:textColor="@color/primary" />
 
                 <TextView
                     android:layout_alignParentRight="true"
@@ -102,7 +117,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:textColor="@color/blue_text_states"
+                    android:textColor="@color/primary"
                     android:text="@string/sign_up" />
 
             </RelativeLayout>
@@ -173,21 +188,6 @@
                     android:layout_height="wrap_content" />
 
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="20dp"
-                android:background="#ccc" />
-
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/b_resend_activation"
-                style="@style/Button"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="20dp"
-                android:text="Resend Verification SMS"
-                android:textSize="14sp" />
 
         </LinearLayout>
 

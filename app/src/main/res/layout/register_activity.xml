@@ -43,7 +43,8 @@
                 android:layout_height="wrap_content"
                 android:imeOptions="actionNext"
                 android:nextFocusDown="@+id/et_email"
-                android:hint="@string/label_username" />
+                android:hint="@string/label_username"
+                style="@style/Input"/>
         </android.support.design.widget.TextInputLayout>
 
         <!-- Email Label -->
@@ -62,7 +63,8 @@
                 android:imeOptions="actionNext"
                 android:nextFocusDown="@+id/et_phone"
                 android:inputType="textEmailAddress"
-                android:hint="@string/label_email" />
+                android:hint="@string/label_email"
+                style="@style/Input"/>
         </android.support.design.widget.TextInputLayout>
 
 
@@ -75,6 +77,15 @@
                 android:id="@+id/ccp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/rounded_border_edittext"
+                android:translationY="2dp"
+                app:ccp_showFlag="false"
+                app:ccp_textSize="12sp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp"
                 app:ccp_autoDetectCountry="true"
                 app:ccp_defaultNameCode="IND" />
 
@@ -96,7 +107,8 @@
                     android:inputType="number"
                     android:maxLines="1"
                     android:nextFocusDown="@+id/et_password"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    style="@style/Input"/>
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
 
@@ -117,7 +129,8 @@
                 android:maxLines="1"
                 android:singleLine="true"
                 android:nextFocusDown="@+id/et_password_confirm"
-                android:hint="@string/label_password"/>
+                android:hint="@string/label_password"
+                style="@style/Input"/>
         </android.support.design.widget.TextInputLayout>
 
         <!-- Confirm Password Label -->
@@ -136,7 +149,8 @@
                 android:imeOptions="actionDone"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:hint="Confirm password"/>
+                android:hint="Confirm password"
+                style="@style/Input"/>
         </android.support.design.widget.TextInputLayout>
 
         <TextView

@@ -51,6 +51,7 @@
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:imeOptions="actionNext"
+                    style="@style/Input"
                     android:hint="@string/label_username" />
             </android.support.design.widget.TextInputLayout>
 
@@ -70,6 +71,7 @@
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:imeOptions="actionSend"
+                    style="@style/Input"
                     android:hint="@string/label_password"/>
             </android.support.design.widget.TextInputLayout>
 

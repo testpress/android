@@ -51,6 +51,13 @@
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:imeOptions="actionNext"
+                    android:paddingTop="15dp"
+                    android:paddingStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:paddingLeft="10dp"
+                    android:translationY="2dp"
+                    android:paddingBottom="15dp"
+                    android:background="@drawable/rounded_border_edittext"
                     android:hint="@string/label_username" />
             </android.support.design.widget.TextInputLayout>
 
@@ -70,6 +77,13 @@
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:imeOptions="actionSend"
+                    android:paddingTop="10dp"
+                    android:paddingStart="10dp"
+                    android:translationY="2dp"
+                    android:layout_marginTop="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingBottom="10dp"
+                    android:background="@drawable/rounded_border_edittext"
                     android:hint="@string/label_password"/>
             </android.support.design.widget.TextInputLayout>
 

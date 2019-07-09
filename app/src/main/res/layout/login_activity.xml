@@ -33,7 +33,7 @@
             <ImageView
                 android:src="@drawable/login_screen_image"
                 android:layout_width="wrap_content"
-                android:layout_height="100dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 android:layout_gravity="center_horizontal"
                 android:id="@+id/imageView2" />

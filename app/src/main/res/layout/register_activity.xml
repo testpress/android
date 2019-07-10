@@ -153,14 +153,6 @@
                 style="@style/Input"/>
         </android.support.design.widget.TextInputLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="@string/label_fill_all_details"
-            android:textColor="@color/red"
-            android:id="@+id/tv_fill_all_details"/>
-
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/b_register"
             style="@style/Button"

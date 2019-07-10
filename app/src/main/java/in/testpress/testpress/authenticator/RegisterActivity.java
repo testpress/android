@@ -8,7 +8,6 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -43,7 +42,6 @@ import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.RegistrationErrorDetails;
-import in.testpress.testpress.ui.TextWatcherAdapter;
 import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.PhoneNumberValidator;
@@ -65,13 +63,11 @@ public class RegisterActivity extends AppCompatActivity {
     @InjectView(id.et_phone) EditText phoneText;
     @InjectView(id.ccp) CountryCodePicker countryCodePicker;
     @InjectView(id.phone_layout) TextInputLayout phoneLayout;
-    @InjectView(id.tv_fill_all_details) TextView fillAllDetailsText;
     @InjectView(id.b_register) Button registerButton;
     @InjectView(id.register_layout) LinearLayout registerLayout;
     @InjectView(R.id.success_complete) LinearLayout successContainer;
     @InjectView(R.id.success_description) TextView successDescription;
 
-    private final TextWatcher watcher = validationTextWatcher();
     private RegistrationSuccessResponse registrationSuccessResponse;
     private MaterialDialog progressDialog;
     private InternetConnectivityChecker internetConnectivityChecker = new InternetConnectivityChecker(this);
@@ -111,11 +107,7 @@ public class RegisterActivity extends AppCompatActivity {
                 return false;
             }
         });
-        usernameText.addTextChangedListener(watcher);
-        passwordText.addTextChangedListener(watcher);
-        emailText.addTextChangedListener(watcher);
         if (verificationMethod.equals(MOBILE)) {
-            phoneText.addTextChangedListener(watcher);
             phoneLayout.setVisibility(View.VISIBLE);
 
             if (!isTwilioEnabled) {
@@ -126,7 +118,6 @@ public class RegisterActivity extends AppCompatActivity {
             countryCodePicker.setVisibility(View.GONE);
             isTwilioEnabled=false;
         }
-        confirmPasswordText.addTextChangedListener(watcher);
 
         if(isTwilioEnabled) {
             countryCodePicker.registerCarrierNumberEditText(phoneText);
@@ -200,45 +191,49 @@ public class RegisterActivity extends AppCompatActivity {
         }.execute();
     }
 
-    private TextWatcher validationTextWatcher() {
-        return new TextWatcherAdapter() {
-            public void afterTextChanged(final Editable EditTextBox) {
-                updateUIWithValidation();
-            }
-        };
-    }
-
-    private void updateUIWithValidation() {
-        final boolean populated = populated(usernameText) && populated(passwordText) &&
-                populated(emailText) && populated(confirmPasswordText) &&
-                (populated(phoneText) || verificationMethod.equals(EMAIL));
-        if(populated) {
-            registerButton.setEnabled(true);
-            fillAllDetailsText.setVisibility(View.GONE);
-        } else {
-            registerButton.setEnabled(false);
-            fillAllDetailsText.setVisibility(View.VISIBLE);
-        }
-    }
 
     private boolean populated(final EditText editText) {
         return editText.getText().toString().trim().length() > 0;
     }
 
     private boolean validate(){
+        boolean isValid = true;
+
+        if (!populated(passwordText)) {
+            passwordText.setError("This field cannot be empty.");
+            isValid = false;
+        }
+        if (!populated(confirmPasswordText)) {
+            confirmPasswordText.setError("This field cannot be empty.");
+            isValid = false;
+        }
+        if (!populated(emailText)) {
+            emailText.setError("This field cannot be empty.");
+            isValid = false;
+        }
+        if (!populated(usernameText)) {
+            usernameText.setError("This field cannot be empty.");
+            isValid = false;
+        }
+
+        if ((!populated(phoneText) && !verificationMethod.equals(EMAIL))) {
+            phoneText.setError("This field cannot be empty.");
+            isValid = false;
+        }
+
            //Username verification
            Pattern userNamePattern = Pattern.compile("[a-z0-9]*");
            Matcher userNameMatcher = userNamePattern.matcher(usernameText.getText().toString().trim());
-           if(!userNameMatcher.matches()) {
+           if(populated(usernameText) && !userNameMatcher.matches()) {
                usernameText.setError("This field can contain only lowercase alphabets and numbers.");
                usernameText.requestFocus();
-               return false;
+               isValid = false;
            }
            //Email verification
-           if(!android.util.Patterns.EMAIL_ADDRESS.matcher(emailText.getText().toString().trim()).matches()) {
+           if(populated(emailText) && !android.util.Patterns.EMAIL_ADDRESS.matcher(emailText.getText().toString().trim()).matches()) {
                emailText.setError("Please enter a valid email address");
                emailText.requestFocus();
-               return false;
+               isValid = false;
            }
             if (verificationMethod.equals(MOBILE)) {
                 //Phone number verification
@@ -250,28 +245,33 @@ public class RegisterActivity extends AppCompatActivity {
                     isPhoneNumberValid = PhoneNumberValidator.validatePhoneNumber(phoneText.getText().toString().trim());
                 }
 
-                if (!isPhoneNumberValid) {
+                if (populated(phoneText) && !isPhoneNumberValid) {
                     phoneText.setError("Please enter a valid mobile number");
                     phoneText.requestFocus();
-                    return false;
+                    isValid = false;
                 }
             }
            //Password verification
-           if(passwordText.getText().toString().trim().length()<6){
+           if(populated(passwordText) && passwordText.getText().toString().trim().length()<6){
                passwordText.setError("Password should contain at least 6 digits");
                passwordText.requestFocus();
-               return false;
+               isValid = false;
            }
            //ConfirmPassword verification
-           if(!passwordText.getText().toString().equals(confirmPasswordText.getText().toString().trim())){
+           if(populated(confirmPasswordText) && !passwordText.getText().toString().equals(confirmPasswordText.getText().toString().trim())){
                confirmPasswordText.setError("Passwords not matching");
                confirmPasswordText.requestFocus();
-               return false;
+               isValid = false;
            }
-           return true;
+           return isValid;
     }
 
     @OnClick(id.b_register) public void register() {
+
+        final boolean populated = populated(usernameText) && populated(passwordText) &&
+                populated(emailText) && populated(confirmPasswordText) &&
+                (populated(phoneText) || verificationMethod.equals(EMAIL));
+
         if(validate()) {
             if (verificationMethod.equals(MOBILE)) {
                 new AlertDialog.Builder(this, R.style.TestpressAppCompatAlertDialogStyle)

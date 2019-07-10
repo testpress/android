@@ -157,14 +157,6 @@
                     style="@style/Input"/>
             </android.support.design.widget.TextInputLayout>
 
-            <TextView
-                android:id="@+id/tv_fill_all_details"
-                style="@style/TextLabelTab"
-                android:layout_margin="15dp"
-                android:text="@string/label_fill_all_details"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="@color/red" />
-
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/b_register"
                 style="@style/Button.Tab"

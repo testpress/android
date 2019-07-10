@@ -68,7 +68,6 @@ import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.PostActivity;
-import in.testpress.testpress.ui.TextWatcherAdapter;
 import in.testpress.testpress.ui.WebViewActivity;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
@@ -136,7 +135,6 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     @InjectView(R.id.empty_description) TextView emptyDescView;
     @InjectView(R.id.retry_button) Button retryButton;
 
-    private final TextWatcher watcher = validationTextWatcher();
 
     private String authToken;
     private String authTokenType;
@@ -190,7 +188,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
             public boolean onEditorAction(final TextView v, final int actionId,
                                           final KeyEvent event) {
-                if (actionId == IME_ACTION_SEND && signInButton.isEnabled()) {
+                if (actionId == IME_ACTION_SEND) {
                     signIn();
                     return true;
                 }
@@ -198,7 +196,6 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             }
         });
 
-        usernameText.addTextChangedListener(watcher);
         usernameText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -219,7 +216,6 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
 
         usernameText.setSingleLine();
-        passwordText.addTextChangedListener(watcher);
         passwordText.setTypeface(Typeface.DEFAULT);
         passwordText.setTransformationMethod(new PasswordTransformationMethod());
         callbackManager = CallbackManager.Factory.create();
@@ -394,30 +390,17 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         ViewUtils.setGone(signUpButton, !instituteSettings.getAllowSignup());
     }
 
-    private TextWatcher validationTextWatcher() {
-        return new TextWatcherAdapter() {
-            public void afterTextChanged(final Editable gitDirEditText) {
-                updateUIWithValidation();
-            }
-        };
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
         bus.register(this);
-        updateUIWithValidation();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         bus.unregister(this);
-    }
-
-    private void updateUIWithValidation() {
-        final boolean populated = populated(usernameText) && populated(passwordText);
-        signInButton.setEnabled(populated);
     }
 
     private boolean populated(final EditText editText) {
@@ -552,10 +535,18 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     }
 
     @OnClick(id.b_signin) public void signIn() {
-        if(internetConnectivityChecker.isConnected()) {
-            handleLogin(signInButton);
-        } else {
-            internetConnectivityChecker.showAlert();
+        if (!populated(usernameText)) {
+            usernameText.setError("Field cannot be empty.");
+        }
+        if (!populated(passwordText)) {
+            passwordText.setError("Field cannot be empty.");
+        }
+        if (populated(usernameText) && populated(passwordText)) {
+            if(internetConnectivityChecker.isConnected()) {
+                handleLogin(signInButton);
+            } else {
+                internetConnectivityChecker.showAlert();
+            }
         }
     }
 

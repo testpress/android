@@ -96,6 +96,7 @@
         <item name="colorControlNormal">@color/white</item>
         <item name="android:textColorPrimary">@color/white</item>
         <item name="colorButtonNormal">@color/primary</item>
+        <item name="android:statusBarColor">@color/primary</item>
     </style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
@@ -110,7 +111,7 @@
         <item name="android:minHeight">0dp</item>
         <item name="android:minWidth">80dp</item>
         <item name="android:padding">12dp</item>
-        <item name="android:background">@color/primary</item>
+        <item name="android:background">@drawable/primary_rounded_button</item>
         <item name="android:textColor">@color/testpress_button_text_color</item>
     </style>
 
@@ -118,7 +119,7 @@
         <item name="android:layout_width">400dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center_horizontal</item>
-        <item name="android:background">@color/primary</item>
+        <item name="android:background">@drawable/primary_rounded_button</item>
     </style>
 
     <style name="Input">
@@ -126,7 +127,8 @@
         <item name="android:paddingStart">10dp</item>
         <item name="android:layout_marginTop">5dp</item>
         <item name="android:paddingLeft">10dp</item>
-        <item name="android:translationY">2dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
         <item name="android:paddingBottom">15dp</item>
         <item name="android:background">@drawable/rounded_border_edittext</item>
     </style>

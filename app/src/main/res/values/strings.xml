@@ -2,10 +2,12 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyEllipsis">
 
-    <string name="babapedia">Babapedia</string>
+    <string name="babapedia">Babapedia 2019</string>
+    <string name="babapedia_2020">Babapedia 2020</string>
     <string name="ilp_2019">ILP 2019</string>
     <string name="ilp_2020">ILP 2020</string>
     <string name="babapedia_url">https://babapedia2019.iasbaba.com</string>
+    <string name="babapedia_url_2020">https://babapedia2020.iasbaba.com</string>
     <string name="ilp_url">https://ilp2019.iasbaba.com/</string>
     <string name="ilp_url_2020">https://ilp2020.iasbaba.com/</string>
 

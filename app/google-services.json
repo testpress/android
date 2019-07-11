@@ -1136,6 +1136,42 @@
     },
     {
       "client_info": {
+        "mobilesdk_app_id": "1:1064046661341:android:47c2a8ec2329fdf7",
+        "android_client_info": {
+          "package_name": "in.testpress.iastutorials"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1064046661341-2ho5os8cp38ql45q6l0ud8fdh8fg2gis.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAR0MchRzB4IRIci31KWo_6Dgjr2tE4JdY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1064046661341-2ho5os8cp38ql45q6l0ud8fdh8fg2gis.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1064046661341-kacbe3ctdojfeb7ce8ghb615tanorjp5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.iasbaba"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:1064046661341:android:c782e81d8e15f730",
         "android_client_info": {
           "package_name": "in.testpress.iiipi"

@@ -152,5 +152,6 @@
     <string name="image_cleared">Image cleared!</string>
     <string name="posted_successfully">Posted successfully!</string>
     <string name="create_post">Create Post</string>
+    <string name="resend_verification_sms">Resend Verification SMS</string>
 
 </resources>

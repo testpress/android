@@ -36,6 +36,15 @@
                     android:layout_height="90dp"
                     android:layout_gravity="bottom"
                     android:background="@drawable/actionbar_gradient_dark" />
+
+                <ImageView
+                    android:id="@+id/edit_profile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/icon_layout_height"
+                    android:layout_gravity="bottom|right"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:src="@drawable/ic_edit_white_24dp"
+                    android:visibility="gone" />
             </FrameLayout>
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"

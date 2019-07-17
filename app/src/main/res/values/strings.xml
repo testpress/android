@@ -34,6 +34,7 @@
     <string name="no_internet_try_again">Please check your internet connection &amp; try again</string>
     <string name="try_after_sometime">Please try after sometime</string>
     <string name="something_went_wrong_please_try_after">Something went wrong, please try after sometime</string>
+    <string name="edit_profile_error">Right now edit profile is unavailable. Try again later.</string>
 
     <!-- AuthenticatorActivity -->
     <string name="label_username">Username</string>
@@ -117,6 +118,7 @@
     <string name="rate_us">Rate Us</string>
     <string name="dashboard">Dashboard</string>
     <string name="bookmarks">Bookmarks</string>
+    <string name="about_us">About Us</string>
 
     <string name="view_in_website">View in Website</string>
 
@@ -146,6 +148,13 @@
     <string name="image_cleared">Image cleared!</string>
     <string name="posted_successfully">Posted successfully!</string>
     <string name="create_post">Create Post</string>
+    <string name="resend_verification_sms">Resend Verification SMS</string>
+    <string name="empty_input_error">This field cannot be empty.</string>
+    <string name="username_error">This field can contain only lowercase alphabets and numbers.</string>
+    <string name="email_error">Please enter a valid email address</string>
+    <string name="phone_number_error">Please enter a valid mobile number</string>
+    <string name="password_error">Password should contain at least 6 characters</string>
+    <string name="password_mismatch_error">Passwords don\'t match</string>
 
 
     <!--Custom name for dashboard menu and for other places-->

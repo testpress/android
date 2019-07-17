@@ -5,11 +5,13 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -31,6 +33,7 @@ public class ResetPasswordActivity extends FragmentActivity {
 
     @Inject TestpressService testpressService;
     @InjectView(R.id.et_useremail) EditText email;
+    @InjectView(R.id.email_error) TextView emailError;
     @InjectView(R.id.b_reset_password) Button resetButton;
     public int resetErrorMessage;
     @InjectView(R.id.success_ok) Button okButton;
@@ -91,9 +94,15 @@ public class ResetPasswordActivity extends FragmentActivity {
     }
 
     private boolean validate() {
+        if (!populated(email)) {
+            emailError.setVisibility(View.VISIBLE);
+            emailError.setText(getString(R.string.email_error));
+            return false;
+        }
         //Email verification
         if(!android.util.Patterns.EMAIL_ADDRESS.matcher(email.getText().toString().trim()).matches()) {
-            email.setError("Please enter a valid Email address");
+            emailError.setVisibility(View.VISIBLE);
+            emailError.setText(getString(R.string.email_error));
             email.requestFocus();
             return false;
         }
@@ -103,17 +112,9 @@ public class ResetPasswordActivity extends FragmentActivity {
     private TextWatcher validationTextWatcher() {
         return new TextWatcherAdapter() {
             public void afterTextChanged(final Editable EditTextBox) {
-                updateUIWithValidation();
+                emailError.setVisibility(View.GONE);
             }
         };
-    }
-
-    private void updateUIWithValidation() {
-        if(populated(email)) {
-            resetButton.setEnabled(true);
-        } else {
-            resetButton.setEnabled(false);
-        }
     }
 
     private boolean populated(final EditText editText) {

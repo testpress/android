@@ -119,6 +119,8 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     @InjectView(id.username_textInput_layout) TextInputLayout usernameInputLayout;
     @InjectView(id.password_textInput_layout) TextInputLayout passwordInputLayout;
     @InjectView(id.et_username) EditText usernameText;
+    @InjectView(id.username_error) TextView usernameError;
+    @InjectView(id.password_error) TextView passwordError;
     @InjectView(id.et_password) protected EditText passwordText;
     @InjectView(id.b_signin) protected Button signInButton;
     @InjectView(id.b_resend_activation) protected TextView ResendVerificationCodeButton;
@@ -196,6 +198,22 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             }
         });
 
+        passwordText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                passwordError.setVisibility(View.GONE);
+                passwordInputLayout.setPasswordVisibilityToggleEnabled(s.length() > 0);
+            }
+        });
+
         usernameText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -207,6 +225,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                usernameError.setVisibility(View.GONE);
                 if (usernameText.getText().toString().contains(" ")) {
                     usernameText.setText(usernameText.getText().toString().replaceAll(" ", ""));
                     usernameText.setSelection(usernameText.getText().length());
@@ -216,6 +235,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
 
         usernameText.setSingleLine();
+        usernameText.requestFocus();
         passwordText.setTypeface(Typeface.DEFAULT);
         passwordText.setTransformationMethod(new PasswordTransformationMethod());
         callbackManager = CallbackManager.Factory.create();
@@ -536,10 +556,12 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
     @OnClick(id.b_signin) public void signIn() {
         if (!populated(usernameText)) {
-            usernameText.setError("Field cannot be empty.");
+            usernameError.setVisibility(View.VISIBLE);
+            usernameError.setText(getString(R.string.empty_input_error));
         }
         if (!populated(passwordText)) {
-            passwordText.setError("Field cannot be empty.");
+            passwordError.setVisibility(View.VISIBLE);
+            passwordError.setText(getString(R.string.empty_input_error));
         }
         if (populated(usernameText) && populated(passwordText)) {
             if(internetConnectivityChecker.isConnected()) {

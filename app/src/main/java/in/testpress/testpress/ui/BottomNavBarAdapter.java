@@ -59,7 +59,7 @@ public class BottomNavBarAdapter extends BaseAdapter {
         TextView menuTitle = ((TextView) convertView.findViewById(R.id.menu_title));
         int titleResId = mMenuItemTitleIds.get(position);
 
-        if (UIUtils.getMenuItemName(titleResId, minstituteSettings) != "") {
+        if (!UIUtils.getMenuItemName(titleResId, minstituteSettings).isEmpty()) {
             menuTitle.setText(UIUtils.getMenuItemName(titleResId, minstituteSettings));
         } else {
             menuTitle.setText(titleResId);

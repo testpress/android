@@ -107,7 +107,7 @@ public class QRCodeActivity extends BaseAuthenticatedActivity {
 
         ImageLoader imageLoader = ImageUtils.initImageLoader(this);
         final ImageView imageView = (ImageView) findViewById(R.id.qr_code);
-        final String url = "http://simbatech.in/bill/viewimageTestpress.ashx?enrollmentid=" +
+        final String url = "https://simbatech.in/bill/viewimageTestpress.ashx?enrollmentid=" +
                 profileDetails.getUsername();
 
         final TextView textView = (TextView) findViewById(R.id.qr_code_message);

@@ -68,7 +68,7 @@ import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.PostActivity;
-import in.testpress.testpress.ui.TextWatcherAdapter;
+import in.testpress.testpress.ui.WebViewActivity;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.InternetConnectivityChecker;
@@ -85,6 +85,8 @@ import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
 import static android.view.inputmethod.EditorInfo.IME_ACTION_SEND;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.ui.WebViewActivity.ACTIVITY_TITLE;
+import static in.testpress.testpress.ui.WebViewActivity.URL_TO_OPEN;
 
 public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     /**
@@ -118,13 +120,17 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     @InjectView(id.username_textInput_layout) TextInputLayout usernameInputLayout;
     @InjectView(id.password_textInput_layout) TextInputLayout passwordInputLayout;
     @InjectView(id.et_username) EditText usernameText;
+    @InjectView(id.username_error) TextView usernameError;
+    @InjectView(id.password_error) TextView passwordError;
     @InjectView(id.et_password) protected EditText passwordText;
     @InjectView(id.b_signin) protected Button signInButton;
+    @InjectView(id.b_resend_activation) protected TextView ResendVerificationCodeButton;
     @InjectView(id.or) protected TextView orLabel;
     @InjectView(id.fb_login_button) protected LoginButton fbLoginButton;
     @InjectView(id.google_sign_in_button) protected Button googleLoginButton;
     @InjectView(id.social_sign_in_buttons) protected LinearLayout socialLoginLayout;
     @InjectView(id.signup) protected TextView signUpButton;
+
 
     @InjectView(id.pb_loading) ProgressBar progressBar;
     @InjectView(R.id.empty_container) LinearLayout emptyView;
@@ -132,7 +138,6 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     @InjectView(R.id.empty_description) TextView emptyDescView;
     @InjectView(R.id.retry_button) Button retryButton;
 
-    private final TextWatcher watcher = validationTextWatcher();
 
     private String authToken;
     private String authTokenType;
@@ -186,7 +191,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
             public boolean onEditorAction(final TextView v, final int actionId,
                                           final KeyEvent event) {
-                if (actionId == IME_ACTION_SEND && signInButton.isEnabled()) {
+                if (actionId == IME_ACTION_SEND) {
                     signIn();
                     return true;
                 }
@@ -194,9 +199,44 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             }
         });
 
-        usernameText.addTextChangedListener(watcher);
+        passwordText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                passwordError.setVisibility(View.GONE);
+                passwordInputLayout.setPasswordVisibilityToggleEnabled(s.length() > 0);
+            }
+        });
+
+        usernameText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                usernameError.setVisibility(View.GONE);
+                if (usernameText.getText().toString().contains(" ")) {
+                    usernameText.setText(usernameText.getText().toString().replaceAll(" ", ""));
+                    usernameText.setSelection(usernameText.getText().length());
+                }
+            }
+        });
+
+
         usernameText.setSingleLine();
-        passwordText.addTextChangedListener(watcher);
+        usernameText.requestFocus();
         passwordText.setTypeface(Typeface.DEFAULT);
         passwordText.setTransformationMethod(new PasswordTransformationMethod());
         callbackManager = CallbackManager.Factory.create();
@@ -258,16 +298,26 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         }
 
         setLoginLabel(instituteSettings);
+        setVisibilityResendVerificationSMS(instituteSettings);
     }
 
     public void setLoginLabel(InstituteSettings instituteSettings) {
 
-        if (Strings.toString(in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_username, instituteSettings)) != "") {
+        if (!Strings.toString(in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_username, instituteSettings)).isEmpty()) {
             usernameInputLayout.setHint(in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_username, instituteSettings));
         }
 
-        if (Strings.toString(in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_password, instituteSettings)) != "") {
+        if (!Strings.toString(in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_password, instituteSettings)).isEmpty()) {
             passwordInputLayout.setHint(in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_password, instituteSettings));
+        }
+    }
+
+
+    public void setVisibilityResendVerificationSMS(InstituteSettings instituteSettings){
+        if (instituteSettings.getVerificationMethod().equals("M")) {
+            ResendVerificationCodeButton.setVisibility(View.VISIBLE);
+        } else {
+            ResendVerificationCodeButton.setVisibility(View.GONE);
         }
     }
 
@@ -341,7 +391,11 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
                         if (e.isNetworkError()) {
                             showAlert(getString(R.string.no_internet_try_again));
                         } else if (e.isClientError()) {
-                            showAlert(getString(R.string.invalid_username_or_password));
+                            if (!e.getMessage().isEmpty()) {
+                                showAlert(e.getMessage());
+                            } else {
+                                showAlert(getString(R.string.invalid_username_or_password));
+                            }
                         } else {
                             showAlert(getString(R.string.testpress_some_thing_went_wrong_try_again));
                         }
@@ -357,30 +411,17 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         ViewUtils.setGone(signUpButton, !instituteSettings.getAllowSignup());
     }
 
-    private TextWatcher validationTextWatcher() {
-        return new TextWatcherAdapter() {
-            public void afterTextChanged(final Editable gitDirEditText) {
-                updateUIWithValidation();
-            }
-        };
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
         bus.register(this);
-        updateUIWithValidation();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         bus.unregister(this);
-    }
-
-    private void updateUIWithValidation() {
-        final boolean populated = populated(usernameText) && populated(passwordText);
-        signInButton.setEnabled(populated);
     }
 
     private boolean populated(final EditText editText) {
@@ -515,10 +556,20 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     }
 
     @OnClick(id.b_signin) public void signIn() {
-        if(internetConnectivityChecker.isConnected()) {
-            handleLogin(signInButton);
-        } else {
-            internetConnectivityChecker.showAlert();
+        if (!populated(usernameText)) {
+            usernameError.setVisibility(View.VISIBLE);
+            usernameError.setText(getString(R.string.empty_input_error));
+        }
+        if (!populated(passwordText)) {
+            passwordError.setVisibility(View.VISIBLE);
+            passwordError.setText(getString(R.string.empty_input_error));
+        }
+        if (populated(usernameText) && populated(passwordText)) {
+            if(internetConnectivityChecker.isConnected()) {
+                handleLogin(signInButton);
+            } else {
+                internetConnectivityChecker.showAlert();
+            }
         }
     }
 
@@ -540,6 +591,13 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             internetConnectivityChecker.showAlert();
         }
 
+    }
+
+    @OnClick(id.b_resend_activation) public void openResendVerificationCode() {
+        Intent intent = new Intent(LoginActivity.this, WebViewActivity.class);
+        intent.putExtra(URL_TO_OPEN, BASE_URL+"/resend/");
+        intent.putExtra(ACTIVITY_TITLE, "Resend Verification SMS");
+        startActivity(intent);
     }
 
     @OnClick(id.forgot_password) public void verify() {

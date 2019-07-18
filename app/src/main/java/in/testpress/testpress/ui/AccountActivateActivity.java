@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import junit.framework.Assert;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,6 +28,7 @@ import in.testpress.testpress.authenticator.LoginActivity;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
+import in.testpress.util.Assert;
 import in.testpress.util.UIUtils;
 import retrofit.client.Response;
 

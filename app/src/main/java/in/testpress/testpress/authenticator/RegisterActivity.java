@@ -2,7 +2,6 @@ package in.testpress.testpress.authenticator;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
@@ -26,7 +25,8 @@ import com.google.android.gms.tasks.Task;
 
 import com.hbb20.CountryCodePicker;
 
-
+import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,16 +40,15 @@ import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.R.id;
 import in.testpress.testpress.TestpressApplication;
-import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.RegistrationErrorDetails;
-import in.testpress.testpress.ui.TextWatcherAdapter;
 import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.SafeAsyncTask;
+import in.testpress.testpress.util.PhoneNumberValidator;
 import retrofit.RetrofitError;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
@@ -68,13 +67,16 @@ public class RegisterActivity extends AppCompatActivity {
     @InjectView(id.et_phone) EditText phoneText;
     @InjectView(id.ccp) CountryCodePicker countryCodePicker;
     @InjectView(id.phone_layout) TextInputLayout phoneLayout;
-    @InjectView(id.tv_fill_all_details) TextView fillAllDetailsText;
     @InjectView(id.b_register) Button registerButton;
     @InjectView(id.register_layout) LinearLayout registerLayout;
     @InjectView(R.id.success_complete) LinearLayout successContainer;
     @InjectView(R.id.success_description) TextView successDescription;
+    @InjectView(id.username_error) TextView usernameError;
+    @InjectView(id.email_error) TextView emailError;
+    @InjectView(id.password_error) TextView passwordError;
+    @InjectView(id.confirm_password_error) TextView confirmPasswordError;
+    @InjectView(id.phone_error) TextView phoneError;
 
-    private final TextWatcher watcher = validationTextWatcher();
     private RegistrationSuccessResponse registrationSuccessResponse;
     private MaterialDialog progressDialog;
     private InternetConnectivityChecker internetConnectivityChecker = new InternetConnectivityChecker(this);
@@ -114,11 +116,7 @@ public class RegisterActivity extends AppCompatActivity {
                 return false;
             }
         });
-        usernameText.addTextChangedListener(watcher);
-        passwordText.addTextChangedListener(watcher);
-        emailText.addTextChangedListener(watcher);
         if (verificationMethod.equals(MOBILE)) {
-            phoneText.addTextChangedListener(watcher);
             phoneLayout.setVisibility(View.VISIBLE);
 
             if (!isTwilioEnabled) {
@@ -129,7 +127,45 @@ public class RegisterActivity extends AppCompatActivity {
             countryCodePicker.setVisibility(View.GONE);
             isTwilioEnabled=false;
         }
-        confirmPasswordText.addTextChangedListener(watcher);
+
+        if(isTwilioEnabled) {
+            countryCodePicker.registerCarrierNumberEditText(phoneText);
+            countryCodePicker.setNumberAutoFormattingEnabled(false);
+        }
+        setTextWatchers();
+        
+    }
+    
+    void setTextWatchers() {
+        Hashtable<EditText, TextView> editTextMap = new Hashtable<>();
+        editTextMap.put(usernameText, usernameError);
+        editTextMap.put(passwordText, passwordError);
+        editTextMap.put(confirmPasswordText, confirmPasswordError);
+        editTextMap.put(emailText, emailError);
+        editTextMap.put(phoneText, phoneError);
+
+        for(EditText editText: editTextMap.keySet()) {
+            hideErrorMessageOnTextChange(editText, editTextMap.get(editText));
+        }
+    }
+
+    void hideErrorMessageOnTextChange(EditText editText, final TextView errorText) {
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                errorText.setVisibility(View.GONE);
+            }
+        });
     }
 
     void postDetails(){
@@ -159,19 +195,23 @@ public class RegisterActivity extends AppCompatActivity {
                 if((e instanceof RetrofitError)) {
                     RegistrationErrorDetails registrationErrorDetails = (RegistrationErrorDetails)((RetrofitError) e).getBodyAs(RegistrationErrorDetails.class);
                     if(!registrationErrorDetails.getUsername().isEmpty()) {
-                        usernameText.setError(registrationErrorDetails.getUsername().get(0));
+                        usernameError.setVisibility(View.VISIBLE);
+                        usernameError.setText(registrationErrorDetails.getUsername().get(0));
                         usernameText.requestFocus();
                     }
                     if(!registrationErrorDetails.getEmail().isEmpty()) {
-                        emailText.setError(registrationErrorDetails.getEmail().get(0));
+                        emailError.setVisibility(View.VISIBLE);
+                        emailError.setText(registrationErrorDetails.getEmail().get(0));
                         emailText.requestFocus();
                     }
                     if(!registrationErrorDetails.getPassword().isEmpty()) {
-                        passwordText.setError(registrationErrorDetails.getPassword().get(0));
+                        passwordError.setVisibility(View.VISIBLE);
+                        passwordError.setText(registrationErrorDetails.getPassword().get(0));
                         passwordText.requestFocus();
                     }
                     if(!registrationErrorDetails.getPhone().isEmpty()) {
-                        phoneText.setError(registrationErrorDetails.getPhone().get(0));
+                        phoneError.setVisibility(View.VISIBLE);
+                        phoneError.setText(registrationErrorDetails.getPhone().get(0));
                         phoneText.requestFocus();
                     }
                 }
@@ -198,73 +238,97 @@ public class RegisterActivity extends AppCompatActivity {
         }.execute();
     }
 
-    private TextWatcher validationTextWatcher() {
-        return new TextWatcherAdapter() {
-            public void afterTextChanged(final Editable EditTextBox) {
-                updateUIWithValidation();
-            }
-        };
-    }
-
-    private void updateUIWithValidation() {
-        final boolean populated = populated(usernameText) && populated(passwordText) &&
-                populated(emailText) && populated(confirmPasswordText) &&
-                (populated(phoneText) || verificationMethod.equals(EMAIL));
-        if(populated) {
-            registerButton.setEnabled(true);
-            fillAllDetailsText.setVisibility(View.GONE);
-        } else {
-            registerButton.setEnabled(false);
-            fillAllDetailsText.setVisibility(View.VISIBLE);
-        }
-    }
 
     private boolean populated(final EditText editText) {
         return editText.getText().toString().trim().length() > 0;
     }
 
     private boolean validate(){
+        boolean isValid = true;
+
+        if (!populated(passwordText)) {
+            passwordError.setVisibility(View.VISIBLE);
+            passwordError.setText(getString(R.string.empty_input_error));
+            isValid = false;
+        }
+        if (!populated(confirmPasswordText)) {
+            confirmPasswordError.setVisibility(View.VISIBLE);
+            confirmPasswordError.setText(getString(R.string.empty_input_error));
+            isValid = false;
+        }
+        if (!populated(emailText)) {
+            emailError.setVisibility(View.VISIBLE);
+            emailError.setText(getString(R.string.empty_input_error));
+            isValid = false;
+        }
+        if (!populated(usernameText)) {
+            usernameError.setVisibility(View.VISIBLE);
+            usernameError.setText(getString(R.string.empty_input_error));
+            isValid = false;
+        }
+
+        if ((!populated(phoneText) && !verificationMethod.equals(EMAIL))) {
+            phoneError.setVisibility(View.VISIBLE);
+            phoneError.setText(getString(R.string.empty_input_error));
+            isValid = false;
+        }
+
            //Username verification
            Pattern userNamePattern = Pattern.compile("[a-z0-9]*");
            Matcher userNameMatcher = userNamePattern.matcher(usernameText.getText().toString().trim());
-           if(!userNameMatcher.matches()) {
-               usernameText.setError("This field can contain only lowercase alphabets and numbers.");
+           if(populated(usernameText) && !userNameMatcher.matches()) {
+               phoneError.setVisibility(View.VISIBLE);
+               usernameError.setText(getString(R.string.username_error));
                usernameText.requestFocus();
-               return false;
+               isValid = false;
            }
            //Email verification
-           if(!android.util.Patterns.EMAIL_ADDRESS.matcher(emailText.getText().toString().trim()).matches()) {
-               emailText.setError("Please enter a valid email address");
+           if(populated(emailText) && !android.util.Patterns.EMAIL_ADDRESS.matcher(emailText.getText().toString().trim()).matches()) {
+               emailError.setVisibility(View.VISIBLE);
+               emailError.setText(getString(R.string.email_error));
                emailText.requestFocus();
-               return false;
+               isValid = false;
            }
             if (verificationMethod.equals(MOBILE)) {
                 //Phone number verification
-                Pattern phoneNumberPattern = Pattern.compile("\\d{10}");
-                Matcher phoneNumberMatcher = phoneNumberPattern.matcher(phoneText.getText()
-                        .toString().trim());
-                if (!phoneNumberMatcher.matches()) {
-                    phoneText.setError("Please enter 10 digit valid mobile number");
+                boolean isPhoneNumberValid;
+
+                if (isTwilioEnabled) {
+                    isPhoneNumberValid = PhoneNumberValidator.validateInternationalPhoneNumber(countryCodePicker);
+                } else {
+                    isPhoneNumberValid = PhoneNumberValidator.validatePhoneNumber(phoneText.getText().toString().trim());
+                }
+
+                if (populated(phoneText) && !isPhoneNumberValid) {
+                    phoneError.setVisibility(View.VISIBLE);
+                    phoneError.setText(getString(R.string.phone_number_error));
                     phoneText.requestFocus();
-                    return false;
+                    isValid = false;
                 }
             }
            //Password verification
-           if(passwordText.getText().toString().trim().length()<6){
-               passwordText.setError("Password should contain at least 6 digits");
+           if(populated(passwordText) && passwordText.getText().toString().trim().length()<6){
+               passwordError.setVisibility(View.VISIBLE);
+               passwordError.setText(getString(R.string.password_error));
                passwordText.requestFocus();
-               return false;
+               isValid = false;
            }
            //ConfirmPassword verification
-           if(!passwordText.getText().toString().equals(confirmPasswordText.getText().toString().trim())){
-               confirmPasswordText.setError("Passwords not matching");
+           if(populated(confirmPasswordText) && !passwordText.getText().toString().equals(confirmPasswordText.getText().toString().trim())){
+               confirmPasswordError.setVisibility(View.VISIBLE);
+               confirmPasswordError.setText(getString(R.string.password_mismatch_error));
                confirmPasswordText.requestFocus();
-               return false;
+               isValid = false;
            }
-           return true;
+           return isValid;
     }
 
     @OnClick(id.b_register) public void register() {
+
+        final boolean populated = populated(usernameText) && populated(passwordText) &&
+                populated(emailText) && populated(confirmPasswordText) &&
+                (populated(phoneText) || verificationMethod.equals(EMAIL));
+
         if(validate()) {
             if (verificationMethod.equals(MOBILE)) {
                 new AlertDialog.Builder(this, R.style.TestpressAppCompatAlertDialogStyle)

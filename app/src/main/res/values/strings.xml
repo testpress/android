@@ -75,7 +75,7 @@
 
     <string name="or">or</string>
     <string name="forgot_password">Forgot Password?</string>
-    <string name="sign_up">Sign up with Email</string>
+    <string name="sign_up">Sign up</string>
     <string name="login_with_facebook">Login with Facebook</string>
     <string name="login_with_google">Login with Google</string>
     <string name="google_sign_in_wrong_hash">Google sign in error, please contact the administrator to check key hashes.</string>

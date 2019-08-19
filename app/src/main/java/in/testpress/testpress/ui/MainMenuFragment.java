@@ -117,15 +117,15 @@ public class MainMenuFragment extends Fragment {
             }
             mMenuItemResIds.put(R.string.analytics, R.drawable.analytics);
             mMenuItemResIds.put(R.string.profile, R.drawable.ic_profile_details);
-            if (instituteSettings.getStoreEnabled()) {
-                mMenuItemResIds.put(R.string.store, R.drawable.store);
-            }
         }
         if (drupalRssFeedEnabled) {
             mMenuItemResIds.put(R.string.rss_posts, R.drawable.rss_feed);
         }
         if (instituteSettings.getPostsEnabled()) {
             mMenuItemResIds.put(R.string.posts, R.drawable.posts);
+        }
+        if (instituteSettings.getStoreEnabled()) {
+            mMenuItemResIds.put(R.string.store, R.drawable.store);
         }
         mMenuItemResIds.put(R.string.share, R.drawable.share);
         mMenuItemResIds.put(R.string.rate_us, R.drawable.heart);

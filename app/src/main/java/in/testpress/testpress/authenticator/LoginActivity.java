@@ -573,7 +573,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     }
 
     @OnClick(id.signup) public void signUp() {
-        if(instituteSettings.getCustomRegistrationEnabled() != null && instituteSettings.getCustomRegistrationEnabled()) {
+        if(instituteSettings.getCustomFields() != null) {
             Intent intent = new Intent(this, WebViewActivity.class);
             intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Register");
             intent.putExtra(WebViewActivity.SHOW_LOGOUT, "false");

@@ -70,7 +70,7 @@ public class TestpressDaoGenerator {
         instituteSettings.addStringProperty("loginPasswordLabel");
         instituteSettings.addStringProperty("aboutUs");
         instituteSettings.addBooleanProperty("disableStudentAnalytics");
-        instituteSettings.addBooleanProperty("customRegistrationEnabled");
+        instituteSettings.addStringProperty("customFields");
 
         Entity rssFeed = schema.addEntity("RssItem");
         rssFeed.addLongProperty("id").primaryKey().autoincrement();

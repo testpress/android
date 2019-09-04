@@ -56,6 +56,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         public final static Property LoginPasswordLabel = new Property(30, String.class, "loginPasswordLabel", false, "LOGIN_PASSWORD_LABEL");
         public final static Property AboutUs = new Property(31, String.class, "aboutUs", false, "ABOUT_US");
         public final static Property DisableStudentAnalytics = new Property(32, Boolean.class, "disableStudentAnalytics", false, "DISABLE_STUDENT_ANALYTICS");
+        public final static Property CustomFields = new Property(33, String.class, "customFields", false, "CUSTOM_FIELDS");
     };
 
 
@@ -103,7 +104,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
                 "\"LOGIN_LABEL\" TEXT," + // 29: loginLabel
                 "\"LOGIN_PASSWORD_LABEL\" TEXT," + // 30: loginPasswordLabel
                 "\"ABOUT_US\" TEXT," + // 31: aboutUs
-                "\"DISABLE_STUDENT_ANALYTICS\" INTEGER);"); // 32: disableStudentAnalytics
+                "\"DISABLE_STUDENT_ANALYTICS\" INTEGER," + // 32: disableStudentAnalytics
+                "\"CUSTOM_FIELDS\" TEXT);"); // 33: customFields
     }
 
     /** Drops the underlying database table. */
@@ -277,6 +279,11 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         if (disableStudentAnalytics != null) {
             stmt.bindLong(33, disableStudentAnalytics ? 1L: 0L);
         }
+ 
+        String customFields = entity.getCustomFields();
+        if (customFields != null) {
+            stmt.bindString(34, customFields);
+        }
     }
 
     /** @inheritdoc */
@@ -321,7 +328,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             cursor.isNull(offset + 29) ? null : cursor.getString(offset + 29), // loginLabel
             cursor.isNull(offset + 30) ? null : cursor.getString(offset + 30), // loginPasswordLabel
             cursor.isNull(offset + 31) ? null : cursor.getString(offset + 31), // aboutUs
-            cursor.isNull(offset + 32) ? null : cursor.getShort(offset + 32) != 0 // disableStudentAnalytics
+            cursor.isNull(offset + 32) ? null : cursor.getShort(offset + 32) != 0, // disableStudentAnalytics
+            cursor.isNull(offset + 33) ? null : cursor.getString(offset + 33) // customFields
         );
         return entity;
     }
@@ -362,6 +370,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         entity.setLoginPasswordLabel(cursor.isNull(offset + 30) ? null : cursor.getString(offset + 30));
         entity.setAboutUs(cursor.isNull(offset + 31) ? null : cursor.getString(offset + 31));
         entity.setDisableStudentAnalytics(cursor.isNull(offset + 32) ? null : cursor.getShort(offset + 32) != 0);
+        entity.setCustomFields(cursor.isNull(offset + 33) ? null : cursor.getString(offset + 33));
      }
     
     /** @inheritdoc */

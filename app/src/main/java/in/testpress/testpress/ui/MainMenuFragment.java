@@ -54,6 +54,8 @@ import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
+import io.sentry.Sentry;
+import io.sentry.event.UserBuilder;
 import retrofit.RetrofitError;
 
 import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
@@ -108,6 +110,7 @@ public class MainMenuFragment extends Fragment {
         }
 
         if (isUserAuthenticated) {
+            Sentry.getContext().setUser(new UserBuilder().setUsername(account[0].name).build());
 
             if (!instituteSettings.getShowGameFrontend()) {
                 mMenuItemResIds.put(R.string.my_exams, R.drawable.exams);

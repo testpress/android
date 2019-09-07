@@ -5,6 +5,7 @@ import android.accounts.AccountManager;
 import android.accounts.OperationCanceledException;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +24,7 @@ import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.List;
 
+import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.Device;
@@ -161,6 +163,16 @@ public class CommonUtils {
                 componentName,
                 state,
                 PackageManager.DONT_KILL_APP);
+    }
+
+    public static void showAlert(Context context, String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context,
+                R.style.TestpressAppCompatAlertDialogStyle);
+
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton(R.string.testpress_ok, null);
+        builder.show();
     }
 
 }

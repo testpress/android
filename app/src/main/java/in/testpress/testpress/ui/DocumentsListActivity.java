@@ -1,5 +1,6 @@
 package in.testpress.testpress.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.github.kevinsawicki.wishlist.Toaster;
@@ -13,6 +14,7 @@ import in.testpress.testpress.authenticator.LoginActivity;
 import in.testpress.testpress.events.CustomErrorEvent;
 import in.testpress.testpress.events.UnAuthorizedErrorEvent;
 import in.testpress.testpress.util.CommonUtils;
+import in.testpress.ui.UserDevicesActivity;
 
 public class DocumentsListActivity extends BaseAuthenticatedActivity {
 
@@ -51,7 +53,8 @@ public class DocumentsListActivity extends BaseAuthenticatedActivity {
 
     @Subscribe
     public void onCustomErrorEvent(CustomErrorEvent customErrorEvent) {
-        CommonUtils.showAlert(this, "Parallel Login Restriction", customErrorEvent.getDetail());
+        Intent intent = new Intent(this, UserDevicesActivity.class);
+        startActivity(intent);
     }
 
 

@@ -138,6 +138,7 @@ public class MainMenuFragment extends Fragment {
             mMenuItemResIds.put(R.string.posts, R.drawable.posts);
         }
         mMenuItemResIds.put(R.string.share, R.drawable.share);
+        mMenuItemResIds.put(R.string.login_activity, R.drawable.lock);
         mMenuItemResIds.put(R.string.rate_us, R.drawable.heart);
         if (isUserAuthenticated) {
             mMenuItemResIds.put(R.string.logout, R.drawable.logout);

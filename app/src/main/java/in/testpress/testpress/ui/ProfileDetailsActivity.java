@@ -75,6 +75,7 @@ import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.FormatDate;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
+import in.testpress.ui.UserDevicesActivity;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
@@ -682,6 +683,6 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
 
     @Subscribe
     public void onCustomErrorEvent(CustomErrorEvent customErrorEvent) {
-        CommonUtils.showAlert(this, "Parallel Login Restriction", customErrorEvent.getDetail());
-    }
+        Intent intent = new Intent(this, UserDevicesActivity.class);
+        startActivity(intent);    }
 }

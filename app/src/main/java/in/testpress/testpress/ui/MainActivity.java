@@ -55,6 +55,7 @@ import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.testpress.util.UpdateAppDialogManager;
+import in.testpress.ui.UserDevicesActivity;
 import io.sentry.Sentry;
 import io.sentry.android.AndroidSentryClientFactory;
 
@@ -394,8 +395,8 @@ public class MainActivity extends TestpressFragmentActivity {
         if (customErrorEvent.getErrorCode() == "parallel_login_restriction") {
             title = "Parallel Login Restriction";
         }
-        CommonUtils.showAlert(this, title, customErrorEvent.getDetail());
-    }
+        Intent intent = new Intent(this, UserDevicesActivity.class);
+        startActivity(intent);    }
 
 
     public void callWebViewActivity(String url) {

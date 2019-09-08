@@ -57,6 +57,9 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         public final static Property AboutUs = new Property(31, String.class, "aboutUs", false, "ABOUT_US");
         public final static Property DisableStudentAnalytics = new Property(32, Boolean.class, "disableStudentAnalytics", false, "DISABLE_STUDENT_ANALYTICS");
         public final static Property CustomRegistrationEnabled = new Property(33, Boolean.class, "customRegistrationEnabled", false, "CUSTOM_REGISTRATION_ENABLED");
+        public final static Property EnableParallelLoginRestriction = new Property(34, Boolean.class, "enableParallelLoginRestriction", false, "ENABLE_PARALLEL_LOGIN_RESTRICTION");
+        public final static Property MaxParallelLogins = new Property(35, Integer.class, "maxParallelLogins", false, "MAX_PARALLEL_LOGINS");
+        public final static Property LockoutLimit = new Property(36, Integer.class, "lockoutLimit", false, "LOCKOUT_LIMIT");
     };
 
 
@@ -105,7 +108,10 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
                 "\"LOGIN_PASSWORD_LABEL\" TEXT," + // 30: loginPasswordLabel
                 "\"ABOUT_US\" TEXT," + // 31: aboutUs
                 "\"DISABLE_STUDENT_ANALYTICS\" INTEGER," + // 32: disableStudentAnalytics
-                "\"CUSTOM_REGISTRATION_ENABLED\" INTEGER);"); // 33: customRegistrationEnabled
+                "\"CUSTOM_REGISTRATION_ENABLED\" INTEGER," + // 33: customRegistrationEnabled
+                "\"ENABLE_PARALLEL_LOGIN_RESTRICTION\" INTEGER," + // 34: enableParallelLoginRestriction
+                "\"MAX_PARALLEL_LOGINS\" INTEGER," + // 35: maxParallelLogins
+                "\"LOCKOUT_LIMIT\" INTEGER);"); // 36: lockoutLimit
     }
 
     /** Drops the underlying database table. */
@@ -284,6 +290,21 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         if (customRegistrationEnabled != null) {
             stmt.bindLong(34, customRegistrationEnabled ? 1L: 0L);
         }
+ 
+        Boolean enableParallelLoginRestriction = entity.getEnableParallelLoginRestriction();
+        if (enableParallelLoginRestriction != null) {
+            stmt.bindLong(35, enableParallelLoginRestriction ? 1L: 0L);
+        }
+ 
+        Integer maxParallelLogins = entity.getMaxParallelLogins();
+        if (maxParallelLogins != null) {
+            stmt.bindLong(36, maxParallelLogins);
+        }
+ 
+        Integer lockoutLimit = entity.getLockoutLimit();
+        if (lockoutLimit != null) {
+            stmt.bindLong(37, lockoutLimit);
+        }
     }
 
     /** @inheritdoc */
@@ -329,7 +350,10 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             cursor.isNull(offset + 30) ? null : cursor.getString(offset + 30), // loginPasswordLabel
             cursor.isNull(offset + 31) ? null : cursor.getString(offset + 31), // aboutUs
             cursor.isNull(offset + 32) ? null : cursor.getShort(offset + 32) != 0, // disableStudentAnalytics
-            cursor.isNull(offset + 33) ? null : cursor.getShort(offset + 33) != 0 // customRegistrationEnabled
+            cursor.isNull(offset + 33) ? null : cursor.getShort(offset + 33) != 0, // customRegistrationEnabled
+            cursor.isNull(offset + 34) ? null : cursor.getShort(offset + 34) != 0, // enableParallelLoginRestriction
+            cursor.isNull(offset + 35) ? null : cursor.getInt(offset + 35), // maxParallelLogins
+            cursor.isNull(offset + 36) ? null : cursor.getInt(offset + 36) // lockoutLimit
         );
         return entity;
     }
@@ -371,6 +395,9 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         entity.setAboutUs(cursor.isNull(offset + 31) ? null : cursor.getString(offset + 31));
         entity.setDisableStudentAnalytics(cursor.isNull(offset + 32) ? null : cursor.getShort(offset + 32) != 0);
         entity.setCustomRegistrationEnabled(cursor.isNull(offset + 33) ? null : cursor.getShort(offset + 33) != 0);
+        entity.setEnableParallelLoginRestriction(cursor.isNull(offset + 34) ? null : cursor.getShort(offset + 34) != 0);
+        entity.setMaxParallelLogins(cursor.isNull(offset + 35) ? null : cursor.getInt(offset + 35));
+        entity.setLockoutLimit(cursor.isNull(offset + 36) ? null : cursor.getInt(offset + 36));
      }
     
     /** @inheritdoc */

@@ -82,7 +82,10 @@ public class TestpressServiceProvider {
                         .setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled())
                         .setScreenshotDisabled(SCREENSHOT_DISABLED)
                         .setDisplayUserEmailOnVideo(DISPLAY_USERNAME_ON_VIDEO)
-                        .setAccessCodeEnabled(false);
+                        .setAccessCodeEnabled(false)
+                        .setEnableParallelLoginRestriction(instituteSettings.getEnableParallelLoginRestriction())
+                        .setMaxParallelLogins(instituteSettings.getMaxParallelLogins())
+                        .setLockoutLimit(instituteSettings.getLockoutLimit());
             }
             TestpressSdk.setTestpressSession(activity, new TestpressSession(settings, authToken));
         }

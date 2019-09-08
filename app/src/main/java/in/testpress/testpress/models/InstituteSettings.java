@@ -40,6 +40,9 @@ public class InstituteSettings {
     private String aboutUs;
     private Boolean disableStudentAnalytics;
     private Boolean customRegistrationEnabled;
+    private Boolean enableParallelLoginRestriction;
+    private Integer maxParallelLogins;
+    private Integer lockoutLimit;
 
     public InstituteSettings() {
     }
@@ -48,7 +51,7 @@ public class InstituteSettings {
         this.baseUrl = baseUrl;
     }
 
-    public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, Boolean facebookLoginEnabled, Boolean googleLoginEnabled, boolean commentsVotingEnabled, Boolean bookmarksEnabled, Boolean forumEnabled, Boolean twilioEnabled, Boolean allow_profile_edit, String learnLabel, String leaderboardLabel, String dashboardLabel, String bookmarksLabel, String loginLabel, String loginPasswordLabel, String aboutUs, Boolean disableStudentAnalytics, Boolean customRegistrationEnabled) {
+    public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, Boolean facebookLoginEnabled, Boolean googleLoginEnabled, boolean commentsVotingEnabled, Boolean bookmarksEnabled, Boolean forumEnabled, Boolean twilioEnabled, Boolean allow_profile_edit, String learnLabel, String leaderboardLabel, String dashboardLabel, String bookmarksLabel, String loginLabel, String loginPasswordLabel, String aboutUs, Boolean disableStudentAnalytics, Boolean customRegistrationEnabled, Boolean enableParallelLoginRestriction, Integer maxParallelLogins, Integer lockoutLimit) {
         this.baseUrl = baseUrl;
         this.verificationMethod = verificationMethod;
         this.allowSignup = allowSignup;
@@ -83,6 +86,9 @@ public class InstituteSettings {
         this.aboutUs = aboutUs;
         this.disableStudentAnalytics = disableStudentAnalytics;
         this.customRegistrationEnabled = customRegistrationEnabled;
+        this.enableParallelLoginRestriction = enableParallelLoginRestriction;
+        this.maxParallelLogins = maxParallelLogins;
+        this.lockoutLimit = lockoutLimit;
     }
 
     public String getBaseUrl() {
@@ -355,6 +361,30 @@ public class InstituteSettings {
 
     public void setCustomRegistrationEnabled(Boolean customRegistrationEnabled) {
         this.customRegistrationEnabled = customRegistrationEnabled;
+    }
+
+    public Boolean getEnableParallelLoginRestriction() {
+        return enableParallelLoginRestriction;
+    }
+
+    public void setEnableParallelLoginRestriction(Boolean enableParallelLoginRestriction) {
+        this.enableParallelLoginRestriction = enableParallelLoginRestriction;
+    }
+
+    public Integer getMaxParallelLogins() {
+        return maxParallelLogins;
+    }
+
+    public void setMaxParallelLogins(Integer maxParallelLogins) {
+        this.maxParallelLogins = maxParallelLogins;
+    }
+
+    public Integer getLockoutLimit() {
+        return lockoutLimit;
+    }
+
+    public void setLockoutLimit(Integer lockoutLimit) {
+        this.lockoutLimit = lockoutLimit;
     }
 
 }

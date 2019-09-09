@@ -683,6 +683,9 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
 
     @Subscribe
     public void onCustomErrorEvent(CustomErrorEvent customErrorEvent) {
-        Intent intent = new Intent(this, UserDevicesActivity.class);
-        startActivity(intent);    }
+        if (customErrorEvent.getErrorCode().equals("parallel_login_restriction")) {
+            Intent intent = new Intent(this, UserDevicesActivity.class);
+            startActivity(intent);
+        }
+    }
 }

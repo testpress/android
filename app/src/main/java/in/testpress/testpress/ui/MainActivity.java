@@ -390,13 +390,11 @@ public class MainActivity extends TestpressFragmentActivity {
 
     @Subscribe
     public void onCustomErrorEvent(CustomErrorEvent customErrorEvent) {
-        String title = "Error";
-
-        if (customErrorEvent.getErrorCode() == "parallel_login_restriction") {
-            title = "Parallel Login Restriction";
+        if (customErrorEvent.getErrorCode().equals("parallel_login_restriction")) {
+            Intent intent = new Intent(this, UserDevicesActivity.class);
+            startActivity(intent);
         }
-        Intent intent = new Intent(this, UserDevicesActivity.class);
-        startActivity(intent);    }
+    }
 
 
     public void callWebViewActivity(String url) {

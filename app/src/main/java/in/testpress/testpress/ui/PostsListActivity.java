@@ -50,7 +50,10 @@ public class PostsListActivity extends TestpressFragmentActivity {
 
     @Subscribe
     public void onCustomErrorEvent(CustomErrorEvent customErrorEvent) {
-        Intent intent = new Intent(this, UserDevicesActivity.class);
-        startActivity(intent);    }
+        if (customErrorEvent.getErrorCode().equals("parallel_login_restriction")) {
+            Intent intent = new Intent(this, UserDevicesActivity.class);
+            startActivity(intent);
+        }
+    }
 
 }

@@ -134,7 +134,7 @@ public class TestpressFragmentActivity extends AppCompatActivity {
                 message = String.format(message, instituteSettings.getCooloffTime());
             }
 
-            in.testpress.util.UIUtils.showAlert(this, "Account Locked", message);
+            in.testpress.util.UIUtils.showAlert(TestpressFragmentActivity.this, "Account Locked", message);
         }
     }
 }

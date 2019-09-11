@@ -37,8 +37,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.kevinsawicki.wishlist.Toaster;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.ByteArrayOutputStream;
@@ -65,7 +63,6 @@ import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.core.Constants;
-import in.testpress.testpress.events.CustomErrorEvent;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
@@ -75,7 +72,6 @@ import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.FormatDate;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
-import in.testpress.ui.UserDevicesActivity;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
@@ -117,8 +113,6 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     @InjectView(R.id.save) Button saveButton;
     @InjectView(R.id.profile_details) RelativeLayout profileDetailsView;
     @InjectView(R.id.horizontal_progress_bar) ProgressBar horizontalProgressBar;
-    @Inject
-    Bus bus;
     ProgressBar progressBar;
     ProfileDetails profileDetails;
     ArrayAdapter<String> genderSpinnerAdapter;
@@ -600,7 +594,6 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         if (imagePickerUtils != null) {
             imagePickerUtils.permissionsUtils.onResume();
         }
-        bus.register(this);
     }
 
     @Override
@@ -672,20 +665,4 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         }.execute();
     }
 
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        bus.unregister(this);
-    }
-
-
-    @Subscribe
-    public void onCustomErrorEvent(CustomErrorEvent customErrorEvent) {
-        if (customErrorEvent.getErrorCode().equals("parallel_login_restriction")) {
-            Intent intent = new Intent(this, UserDevicesActivity.class);
-            startActivity(intent);
-        }
-    }
 }

@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -21,8 +20,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,7 +39,6 @@ import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
-import in.testpress.testpress.events.CustomErrorEvent;
 import in.testpress.testpress.models.CheckPermission;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
@@ -55,7 +51,6 @@ import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.testpress.util.UpdateAppDialogManager;
-import in.testpress.ui.UserDevicesActivity;
 import io.sentry.Sentry;
 import io.sentry.android.AndroidSentryClientFactory;
 
@@ -65,8 +60,6 @@ import static in.testpress.testpress.BuildConfig.BASE_URL;
 public class MainActivity extends TestpressFragmentActivity {
 
     private static final String SELECTED_ITEM = "selectedItem";
-    @Inject
-    Bus bus;
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected TestpressService testpressService;
     @Inject protected LogoutService logoutService;
@@ -378,21 +371,6 @@ public class MainActivity extends TestpressFragmentActivity {
             checkForForceUserData();
         } else {
             showMainActivityContents();
-        }
-        bus.register(this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        bus.unregister(this);
-    }
-
-    @Subscribe
-    public void onCustomErrorEvent(CustomErrorEvent customErrorEvent) {
-        if (customErrorEvent.getErrorCode().equals("parallel_login_restriction")) {
-            Intent intent = new Intent(this, UserDevicesActivity.class);
-            startActivity(intent);
         }
     }
 

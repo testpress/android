@@ -54,7 +54,7 @@ public class MainMenuGridAdapter extends BaseAdapter {
             ImageView imageView = (ImageView)grid.findViewById(R.id.menuIcon);
             int titleResId = mMenuItemTitleIds.get(position);
 
-            if (UIUtils.getMenuItemName(titleResId, instituteSettings) != "") {
+            if (!UIUtils.getMenuItemName(titleResId, instituteSettings).isEmpty()) {
                 textView.setText(UIUtils.getMenuItemName(titleResId, instituteSettings));
             } else {
                 textView.setText(titleResId);

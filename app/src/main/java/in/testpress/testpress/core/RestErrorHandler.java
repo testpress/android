@@ -1,10 +1,22 @@
 package in.testpress.testpress.core;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+import android.widget.Toast;
+
+import in.testpress.testpress.R;
+import in.testpress.testpress.events.CustomErrorEvent;
 import in.testpress.testpress.events.NetworkErrorEvent;
 import in.testpress.testpress.events.RestAdapterErrorEvent;
 import in.testpress.testpress.events.UnAuthorizedErrorEvent;
 import com.squareup.otto.Bus;
 
+
+import in.testpress.testpress.models.TestpressApiErrorResponse;
+import in.testpress.testpress.models.TestpressApiResponse;
 import retrofit.ErrorHandler;
 import retrofit.RetrofitError;
 
@@ -21,6 +33,12 @@ public class RestErrorHandler implements ErrorHandler {
 
     @Override
     public Throwable handleError(RetrofitError cause) {
+        TestpressApiErrorResponse errorResponse = (TestpressApiErrorResponse) cause.getBodyAs(TestpressApiErrorResponse.class);
+
+        if (errorResponse.getErrorCode() != null) {
+            bus.post(new CustomErrorEvent(errorResponse.getErrorCode(), errorResponse.getDetail()));
+        }
+
         if(cause != null) {
             if (cause.isNetworkError()) {
                 bus.post(new NetworkErrorEvent(cause));

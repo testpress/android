@@ -60,7 +60,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         public final static Property EnableParallelLoginRestriction = new Property(34, Boolean.class, "enableParallelLoginRestriction", false, "ENABLE_PARALLEL_LOGIN_RESTRICTION");
         public final static Property MaxParallelLogins = new Property(35, Integer.class, "maxParallelLogins", false, "MAX_PARALLEL_LOGINS");
         public final static Property LockoutLimit = new Property(36, Integer.class, "lockoutLimit", false, "LOCKOUT_LIMIT");
-        public final static Property CooloffTime = new Property(37, String.class, "CooloffTime", false, "COOLOFF_TIME");
+        public final static Property CooloffTime = new Property(37, String.class, "cooloffTime", false, "COOLOFF_TIME");
     };
 
 
@@ -113,7 +113,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
                 "\"ENABLE_PARALLEL_LOGIN_RESTRICTION\" INTEGER," + // 34: enableParallelLoginRestriction
                 "\"MAX_PARALLEL_LOGINS\" INTEGER," + // 35: maxParallelLogins
                 "\"LOCKOUT_LIMIT\" INTEGER," + // 36: lockoutLimit
-                "\"COOLOFF_TIME\" TEXT);"); // 37: CooloffTime
+                "\"COOLOFF_TIME\" TEXT);"); // 37: cooloffTime
     }
 
     /** Drops the underlying database table. */
@@ -308,9 +308,9 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             stmt.bindLong(37, lockoutLimit);
         }
  
-        String CooloffTime = entity.getCooloffTime();
-        if (CooloffTime != null) {
-            stmt.bindString(38, CooloffTime);
+        String cooloffTime = entity.getCooloffTime();
+        if (cooloffTime != null) {
+            stmt.bindString(38, cooloffTime);
         }
     }
 
@@ -361,7 +361,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             cursor.isNull(offset + 34) ? null : cursor.getShort(offset + 34) != 0, // enableParallelLoginRestriction
             cursor.isNull(offset + 35) ? null : cursor.getInt(offset + 35), // maxParallelLogins
             cursor.isNull(offset + 36) ? null : cursor.getInt(offset + 36), // lockoutLimit
-            cursor.isNull(offset + 37) ? null : cursor.getString(offset + 37) // CooloffTime
+            cursor.isNull(offset + 37) ? null : cursor.getString(offset + 37) // cooloffTime
         );
         return entity;
     }

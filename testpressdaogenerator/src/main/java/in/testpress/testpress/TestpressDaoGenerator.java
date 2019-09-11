@@ -74,6 +74,7 @@ public class TestpressDaoGenerator {
         instituteSettings.addBooleanProperty("enableParallelLoginRestriction");
         instituteSettings.addIntProperty("maxParallelLogins");
         instituteSettings.addIntProperty("lockoutLimit");
+        instituteSettings.addStringProperty("cooloffTime");
 
         Entity rssFeed = schema.addEntity("RssItem");
         rssFeed.addLongProperty("id").primaryKey().autoincrement();

@@ -20,9 +20,16 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import in.testpress.testpress.R;
+import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.events.CustomErrorEvent;
+import in.testpress.testpress.models.DaoSession;
+import in.testpress.testpress.models.InstituteSettings;
+import in.testpress.testpress.models.InstituteSettingsDao;
+import in.testpress.testpress.util.UIUtils;
 import in.testpress.ui.UserDevicesActivity;
+
+import static in.testpress.testpress.BuildConfig.BASE_URL;
 
 
 /**
@@ -110,9 +117,24 @@ public class TestpressFragmentActivity extends AppCompatActivity {
     }
 
     protected void onReceiveCustomErrorEvent(final CustomErrorEvent customErrorEvent) {
-        if (customErrorEvent.getErrorCode().equals("parallel_login_restriction")) {
+        if (customErrorEvent.getErrorCode().equals(getString(R.string.PARALLEL_LOGIN_RESTRICTION_ERROR_CODE))) {
             Intent intent = new Intent(this, UserDevicesActivity.class);
             startActivity(intent);
+        } else if (customErrorEvent.getErrorCode().equals(getString(R.string.MAX_LOGIN_EXCEEDED_ERROR_CODE))) {
+            DaoSession daoSession = TestpressApplication.getDaoSession();
+            InstituteSettingsDao instituteSettingsDao = daoSession.getInstituteSettingsDao();
+            InstituteSettings instituteSettings = instituteSettingsDao.queryBuilder()
+                    .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
+                    .list().get(0);
+
+            String message = getString(R.string.max_login_limit_exceeded_error);
+
+            if (instituteSettings.getCooloffTime() != null) {
+                message += getString(R.string.account_unlock_info) + " %s hours";
+                message = String.format(message, instituteSettings.getCooloffTime());
+            }
+
+            in.testpress.util.UIUtils.showAlert(this, "Account Locked", message);
         }
     }
 }

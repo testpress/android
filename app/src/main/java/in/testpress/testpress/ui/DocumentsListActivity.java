@@ -7,7 +7,6 @@ import in.testpress.testpress.util.CommonUtils;
 
 public class DocumentsListActivity extends BaseAuthenticatedActivity {
 
-
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,4 +23,5 @@ public class DocumentsListActivity extends BaseAuthenticatedActivity {
                     .commitAllowingStateLoss();
         }
     }
+
 }

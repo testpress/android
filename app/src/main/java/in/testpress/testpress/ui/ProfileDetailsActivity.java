@@ -664,5 +664,4 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
             }
         }.execute();
     }
-
 }

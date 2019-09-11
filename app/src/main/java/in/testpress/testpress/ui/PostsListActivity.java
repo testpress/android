@@ -6,7 +6,6 @@ import in.testpress.testpress.R;
 
 public class PostsListActivity extends TestpressFragmentActivity {
 
-
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

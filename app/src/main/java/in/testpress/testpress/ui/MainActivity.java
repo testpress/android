@@ -60,6 +60,7 @@ import static in.testpress.testpress.BuildConfig.BASE_URL;
 public class MainActivity extends TestpressFragmentActivity {
 
     private static final String SELECTED_ITEM = "selectedItem";
+
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected TestpressService testpressService;
     @Inject protected LogoutService logoutService;
@@ -373,7 +374,6 @@ public class MainActivity extends TestpressFragmentActivity {
             showMainActivityContents();
         }
     }
-
 
     public void callWebViewActivity(String url) {
 

@@ -14,12 +14,15 @@ import android.view.View;
 
 import in.testpress.testpress.Injector;
 import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import in.testpress.testpress.R;
 import in.testpress.testpress.core.Constants;
+import in.testpress.testpress.events.CustomErrorEvent;
+import in.testpress.ui.UserDevicesActivity;
 
 
 /**
@@ -31,11 +34,21 @@ public class TestpressFragmentActivity extends AppCompatActivity {
     protected Bus eventBus;
 
     protected Toolbar mActionBarToolbar;
+    protected Object busEventListener;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Injector.inject(this);
+
+        // Directly subscribing in parent class won't work, only child class subscribers will work. https://github.com/square/otto/issues/26
+        busEventListener = new Object() {
+            @Subscribe
+            public void onCustomErrorEvent(CustomErrorEvent customErrorEvent) {
+                TestpressFragmentActivity.this.onReceiveCustomErrorEvent(customErrorEvent);
+            }
+        };
+        eventBus.register(busEventListener);
     }
 
     public Toolbar getActionBarToolbar() {
@@ -94,5 +107,12 @@ public class TestpressFragmentActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         eventBus.unregister(this);
+    }
+
+    protected void onReceiveCustomErrorEvent(final CustomErrorEvent customErrorEvent) {
+        if (customErrorEvent.getErrorCode().equals("parallel_login_restriction")) {
+            Intent intent = new Intent(this, UserDevicesActivity.class);
+            startActivity(intent);
+        }
     }
 }

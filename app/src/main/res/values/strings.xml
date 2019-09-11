@@ -70,6 +70,7 @@
     <string name="post_authentication_failed">Sorry, you don\'t have access to this article.</string>
     <string name="access_denied">Access denied</string>
     <string name="share">Share</string>
+    <string name="login_activity">Login Activity</string>
     <string name="invalid_post">Invalid Article</string>
 
     <string name="learn">Learn</string>

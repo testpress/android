@@ -15,6 +15,7 @@ import in.testpress.testpress.events.UnAuthorizedErrorEvent;
 import com.squareup.otto.Bus;
 
 
+import in.testpress.testpress.events.UnAuthorizedUserErrorEvent;
 import in.testpress.testpress.models.TestpressApiErrorResponse;
 import in.testpress.testpress.models.TestpressApiResponse;
 import retrofit.ErrorHandler;
@@ -23,6 +24,7 @@ import retrofit.RetrofitError;
 public class RestErrorHandler implements ErrorHandler {
 
     public static final int HTTP_NOT_FOUND = 404;
+    public static final String HTTP_UNAUTHORIZED = "401 UNAUTHORIZED";
     public static final int INVALID_LOGIN_PARAMETERS = 101;
 
     private Bus bus;
@@ -44,7 +46,10 @@ public class RestErrorHandler implements ErrorHandler {
                 bus.post(new NetworkErrorEvent(cause));
             } else if(isUnAuthorized(cause)) {
                 bus.post(new UnAuthorizedErrorEvent(cause));
-            } else {
+            } else if(isUnAuthorizedUser(cause)) {
+                bus.post(new UnAuthorizedUserErrorEvent());
+            }
+            else {
                 bus.post(new RestAdapterErrorEvent(cause));
             }
         }
@@ -89,5 +94,9 @@ public class RestErrorHandler implements ErrorHandler {
         }
 
         return authFailed;
+    }
+
+    private boolean isUnAuthorizedUser(RetrofitError cause) {
+        return cause.getResponse().getStatus() == 401;
     }
 }

@@ -30,8 +30,10 @@ import in.testpress.testpress.events.UnAuthorizedUserErrorEvent;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
+import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.ui.UserDevicesActivity;
+import io.sentry.Sentry;
 
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 
@@ -68,8 +70,9 @@ public class TestpressFragmentActivity extends AppCompatActivity {
             public void onUnAuthorizedUserErrorEvent(UnAuthorizedUserErrorEvent unAuthorizedUserErrorEvent) {
                 try {
                     serviceProvider.logout(TestpressFragmentActivity.this, testpressService, serviceProvider, logoutService);
-                } catch (NullPointerException e) {
-                    in.testpress.util.UIUtils.showAlert(TestpressFragmentActivity.this, "Session Cleared", getString(R.string.session_cleared_message));
+                } catch (Exception e) {
+                    Ln.e("Exception : " + e.getLocalizedMessage());
+                    Sentry.capture(e);
                 }
             }
         };
@@ -155,7 +158,12 @@ public class TestpressFragmentActivity extends AppCompatActivity {
                 message = String.format(message, instituteSettings.getCooloffTime());
             }
 
-            in.testpress.util.UIUtils.showAlert(TestpressFragmentActivity.this, "Account Locked", message);
+            try {
+                in.testpress.util.UIUtils.showAlert(TestpressFragmentActivity.this, "Account Locked", message);
+            } catch (Exception e) {
+                Ln.e("Exception : " + e.getLocalizedMessage());
+                Sentry.capture(e);
+            }
         }
     }
 }

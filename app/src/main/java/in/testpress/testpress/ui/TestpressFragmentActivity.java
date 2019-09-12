@@ -14,12 +14,28 @@ import android.view.View;
 
 import in.testpress.testpress.Injector;
 import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import in.testpress.testpress.R;
+import in.testpress.testpress.TestpressApplication;
+import in.testpress.testpress.TestpressServiceProvider;
+import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
+import in.testpress.testpress.core.TestpressService;
+import in.testpress.testpress.events.CustomErrorEvent;
+import in.testpress.testpress.events.UnAuthorizedUserErrorEvent;
+import in.testpress.testpress.models.DaoSession;
+import in.testpress.testpress.models.InstituteSettings;
+import in.testpress.testpress.models.InstituteSettingsDao;
+import in.testpress.testpress.util.Ln;
+import in.testpress.testpress.util.UIUtils;
+import in.testpress.ui.UserDevicesActivity;
+import io.sentry.Sentry;
+
+import static in.testpress.testpress.BuildConfig.BASE_URL;
 
 
 /**
@@ -29,13 +45,41 @@ public class TestpressFragmentActivity extends AppCompatActivity {
 
     @Inject
     protected Bus eventBus;
+    @Inject protected TestpressServiceProvider serviceProvider;
+    @Inject protected TestpressService testpressService;
+    @Inject protected LogoutService logoutService;
 
     protected Toolbar mActionBarToolbar;
+    protected Object busEventListener, unauthorisedUserErrorBusListener;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Injector.inject(this);
+
+        // Directly subscribing in parent class won't work, only child class subscribers will work. https://github.com/square/otto/issues/26
+        busEventListener = new Object() {
+            @Subscribe
+            public void onCustomErrorEvent(CustomErrorEvent customErrorEvent) {
+                TestpressFragmentActivity.this.onReceiveCustomErrorEvent(customErrorEvent);
+            }
+        };
+
+        unauthorisedUserErrorBusListener = new Object() {
+            @Subscribe
+            public void onUnAuthorizedUserErrorEvent(UnAuthorizedUserErrorEvent unAuthorizedUserErrorEvent) {
+                try {
+                    serviceProvider.logout(TestpressFragmentActivity.this, testpressService, serviceProvider, logoutService);
+                } catch (Exception e) {
+                    Ln.e("Exception : " + e.getLocalizedMessage());
+                    Sentry.capture(e);
+                }
+            }
+        };
+
+
+        eventBus.register(busEventListener);
+        eventBus.register(unauthorisedUserErrorBusListener);
     }
 
     public Toolbar getActionBarToolbar() {
@@ -94,5 +138,32 @@ public class TestpressFragmentActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         eventBus.unregister(this);
+    }
+
+    protected void onReceiveCustomErrorEvent(final CustomErrorEvent customErrorEvent) {
+        if (customErrorEvent.getErrorCode().equals(getString(R.string.PARALLEL_LOGIN_RESTRICTION_ERROR_CODE))) {
+            Intent intent = new Intent(this, UserDevicesActivity.class);
+            startActivity(intent);
+        } else if (customErrorEvent.getErrorCode().equals(getString(R.string.MAX_LOGIN_EXCEEDED_ERROR_CODE))) {
+            DaoSession daoSession = TestpressApplication.getDaoSession();
+            InstituteSettingsDao instituteSettingsDao = daoSession.getInstituteSettingsDao();
+            InstituteSettings instituteSettings = instituteSettingsDao.queryBuilder()
+                    .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
+                    .list().get(0);
+
+            String message = getString(R.string.max_login_limit_exceeded_error);
+
+            if (instituteSettings.getCooloffTime() != null) {
+                message += getString(R.string.account_unlock_info) + " %s hours";
+                message = String.format(message, instituteSettings.getCooloffTime());
+            }
+
+            try {
+                in.testpress.util.UIUtils.showAlert(TestpressFragmentActivity.this, "Account Locked", message);
+            } catch (Exception e) {
+                Ln.e("Exception : " + e.getLocalizedMessage());
+                Sentry.capture(e);
+            }
+        }
     }
 }

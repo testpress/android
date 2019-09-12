@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.widget.ImageView;
 
-import junit.framework.Assert;
 
 import java.util.List;
 
@@ -30,6 +29,7 @@ import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.UpdateAppDialogManager;
+import in.testpress.util.Assert;
 import in.testpress.util.ViewUtils;
 
 import static in.testpress.core.TestpressSdk.ACTION_PRESSED_HOME;

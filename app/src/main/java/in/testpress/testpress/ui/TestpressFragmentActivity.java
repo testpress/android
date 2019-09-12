@@ -21,8 +21,12 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
+import in.testpress.testpress.TestpressServiceProvider;
+import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
+import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.events.CustomErrorEvent;
+import in.testpress.testpress.events.UnAuthorizedUserErrorEvent;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
@@ -39,9 +43,12 @@ public class TestpressFragmentActivity extends AppCompatActivity {
 
     @Inject
     protected Bus eventBus;
+    @Inject protected TestpressServiceProvider serviceProvider;
+    @Inject protected TestpressService testpressService;
+    @Inject protected LogoutService logoutService;
 
     protected Toolbar mActionBarToolbar;
-    protected Object busEventListener;
+    protected Object busEventListener, unauthorisedUserErrorBusListener;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -55,7 +62,21 @@ public class TestpressFragmentActivity extends AppCompatActivity {
                 TestpressFragmentActivity.this.onReceiveCustomErrorEvent(customErrorEvent);
             }
         };
+
+        unauthorisedUserErrorBusListener = new Object() {
+            @Subscribe
+            public void onUnAuthorizedUserErrorEvent(UnAuthorizedUserErrorEvent unAuthorizedUserErrorEvent) {
+                try {
+                    serviceProvider.logout(TestpressFragmentActivity.this, testpressService, serviceProvider, logoutService);
+                } catch (NullPointerException e) {
+                    in.testpress.util.UIUtils.showAlert(TestpressFragmentActivity.this, "Session Cleared", getString(R.string.session_cleared_message));
+                }
+            }
+        };
+
+
         eventBus.register(busEventListener);
+        eventBus.register(unauthorisedUserErrorBusListener);
     }
 
     public Toolbar getActionBarToolbar() {

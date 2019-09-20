@@ -72,7 +72,7 @@ public class TestpressFragmentActivity extends AppCompatActivity {
                     serviceProvider.logout(TestpressFragmentActivity.this, testpressService, serviceProvider, logoutService);
                 } catch (Exception e) {
                     Ln.e("Exception : " + e.getLocalizedMessage());
-                    Sentry.capture(e);
+//                    Sentry.capture(e);
                 }
             }
         };
@@ -162,7 +162,7 @@ public class TestpressFragmentActivity extends AppCompatActivity {
                 in.testpress.util.UIUtils.showAlert(TestpressFragmentActivity.this, "Account Locked", message);
             } catch (Exception e) {
                 Ln.e("Exception : " + e.getLocalizedMessage());
-                Sentry.capture(e);
+//                Sentry.capture(e);
             }
         }
     }

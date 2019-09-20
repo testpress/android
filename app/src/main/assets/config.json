@@ -1,6 +1,6 @@
 {
-  "version" : "1.2.1",
-  "version_code" : 132,
+  "version" : "1.2.2",
+  "version_code" : 133,
   "testpress_site_subdomain" : "koncpt",
   "package_name" : "in.testpress.koncpt",
   "app_name" : "Koncpt",

@@ -16,6 +16,8 @@ import in.testpress.testpress.Injector;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
@@ -143,19 +145,25 @@ public class TestpressFragmentActivity extends AppCompatActivity {
     protected void onReceiveCustomErrorEvent(final CustomErrorEvent customErrorEvent) {
         if (customErrorEvent.getErrorCode().equals(getString(R.string.PARALLEL_LOGIN_RESTRICTION_ERROR_CODE))) {
             Intent intent = new Intent(this, UserDevicesActivity.class);
-            startActivity(intent);
+            try {
+                startActivity(intent);
+            } catch (Exception ignore) {}
         } else if (customErrorEvent.getErrorCode().equals(getString(R.string.MAX_LOGIN_EXCEEDED_ERROR_CODE))) {
             DaoSession daoSession = TestpressApplication.getDaoSession();
             InstituteSettingsDao instituteSettingsDao = daoSession.getInstituteSettingsDao();
-            InstituteSettings instituteSettings = instituteSettingsDao.queryBuilder()
+            List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
                     .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
-                    .list().get(0);
+                    .list();
 
             String message = getString(R.string.max_login_limit_exceeded_error);
 
-            if (instituteSettings.getCooloffTime() != null) {
-                message += getString(R.string.account_unlock_info) + " %s hours";
-                message = String.format(message, instituteSettings.getCooloffTime());
+            if (instituteSettingsList.size() > 0) {
+                InstituteSettings instituteSettings = instituteSettingsList.get(0);
+
+                if (instituteSettings.getCooloffTime() != null) {
+                    message += getString(R.string.account_unlock_info) + " %s hours";
+                    message = String.format(message, instituteSettings.getCooloffTime());
+                }
             }
 
             try {

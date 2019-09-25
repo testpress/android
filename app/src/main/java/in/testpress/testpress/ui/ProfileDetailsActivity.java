@@ -60,12 +60,18 @@ import butterknife.OnClick;
 import in.testpress.exam.util.ImageUtils;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
+import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.core.Constants;
+import in.testpress.testpress.models.DaoSession;
+import in.testpress.testpress.models.InstituteSettings;
+import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.ProfileDetails;
+import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.FormatDate;
 import in.testpress.testpress.util.SafeAsyncTask;
+import in.testpress.testpress.util.Strings;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
@@ -75,6 +81,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
 
     @Inject TestpressServiceProvider serviceProvider;
     @InjectView(R.id.profile_photo) ImageView profilePhoto;
+    @InjectView(R.id.edit_profile) ImageView editProfile;
     @InjectView(R.id.edit_profile_photo) ImageView imageEditButton;
     @InjectView(R.id.display_name) TextView displayName;
     @InjectView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbar;
@@ -116,6 +123,8 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     DisplayImageOptions options;
     Menu menu;
     static final private int SELECT_IMAGE = 100;
+    public String ssoUrl;
+
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -155,6 +164,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
                 .showImageOnFail(R.drawable.profile_image_sample)
                 .showImageOnLoading(R.drawable.profile_image_sample).build();
         getSupportLoaderManager().initLoader(0, null, this);
+        fetchSsoLink();
     }
 
     @Override
@@ -190,6 +200,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
             this.profileDetails = profileDetails;
         }
         profileDetailsView.setVisibility(View.VISIBLE);
+        editProfile.setVisibility(View.VISIBLE);
         displayProfileDetails(this.profileDetails);
     }
 
@@ -273,7 +284,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
 
     @OnClick(R.id.profile_photo)
     public void displayProfilePhoto() {
-        if (profileDetails != null) {
+        if (profileDetails != null && fetchInstituteSetting().getAllow_profile_edit()) {
             Intent intent = new Intent(this, ProfilePhotoActivity.class);
             intent.putExtra("profilePhoto", profileDetails.getPhoto());
             startActivityForResult(intent, SELECT_IMAGE);
@@ -598,5 +609,59 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     @Override
     public void onLoaderReset(final Loader<ProfileDetails> loader) {
         // Intentionally left blank
+    }
+
+    public InstituteSettings fetchInstituteSetting () {
+        DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
+        InstituteSettingsDao instituteSettingsDao = daoSession.getInstituteSettingsDao();
+        List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
+                .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
+                .list();
+        if (instituteSettingsList.size() != 0) {
+            return instituteSettingsList.get(0);
+        } else {
+            finish();
+        }
+
+        return null;
+    }
+
+    @OnClick(R.id.edit_profile)
+    public void editActions(View v) {
+
+        if (fetchInstituteSetting().getAllow_profile_edit() && !Strings.toString(profileDetails.getUsername()).isEmpty()) {
+
+            if (!Strings.toString(ssoUrl).isEmpty()) {
+                Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
+                intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Edit Profile");
+                intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + ssoUrl+"&next=/settings/profile/mobile/");
+                startActivity(intent);
+            } else {
+                Toaster.showLong(ProfileDetailsActivity.this, R.string.edit_profile_error);
+            }
+        }
+    }
+
+    public void fetchSsoLink() {
+        new SafeAsyncTask<SsoUrl>() {
+            @Override
+            public SsoUrl call() throws Exception {
+                return serviceProvider.getService(ProfileDetailsActivity.this).getSsoUrl();
+            }
+
+            @Override
+            protected void onException(final Exception exception) throws RuntimeException {
+                super.onException(exception);
+
+                if (exception.getCause() instanceof UnknownHostException) {
+                    Toaster.showLong(ProfileDetailsActivity.this, R.string.no_internet);
+                }
+            }
+
+            @Override
+            protected void onSuccess(final SsoUrl ssoLink) throws Exception {
+                ssoUrl = ssoLink.getSsoUrl();
+            }
+        }.execute();
     }
 }

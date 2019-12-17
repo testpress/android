@@ -25,9 +25,9 @@ import javax.inject.Provider;
  * User-Agent inspection to provide different logic routes or analytics
  * based upon the User-Agent.
  *
- * Example of what is generated when running the Genymotion Nexus 4 Emulator:
+ * Example of what is generated when running the Xiaomi POCO F1:
  *
- *      testpress/1.0 (Android 4.2.2; Genymotion Vbox86p / Generic Galaxy Nexus - 4.2.2 - API 17 - 720x1280; )[preload=false;locale=en_US;clientidbase=]
+ *      testpress/1.1.2 (Dalvik; Android 9; Xiaomi POCO F1 Build/PKQ1.180729.001) okhttp
  *
  * The value "preload" means that the app has been preloaded by the manufacturer.
  * Instances of when this might happen is if you partner with a telecom company
@@ -52,35 +52,14 @@ public class UserAgentProvider implements Provider<String> {
         if (userAgent == null) {
             synchronized (UserAgentProvider.class) {
                 if (userAgent == null) {
-                    userAgent = String.format("%s/%s (Android %s; %s %s / %s %s; %s)",
+                    userAgent = String.format("%s/%s (Dalvik; Android %s; %s %s Build/%s) okhttp",
                             APP_NAME,
                             info.versionName,
                             Build.VERSION.RELEASE,
                             Strings.capitalize(Build.MANUFACTURER),
-                            Strings.capitalize(Build.DEVICE),
-                            Strings.capitalize(Build.BRAND),
                             Strings.capitalize(Build.MODEL),
-                            Strings.capitalize(telephonyManager == null ? "not-found" : telephonyManager.getSimOperatorName())
+                            Build.ID
                     );
-
-                    final ArrayList<String> params = new ArrayList<String>();
-                    params.add("preload=" + ((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 1)); // Determine if this app was a preloaded app
-                    params.add("locale=" + Locale.getDefault());
-
-
-                    // http://stackoverflow.com/questions/2641111/where-is-android-os-systemproperties
-                    try {
-                        final Class SystemProperties = classLoader.loadClass("android.os.SystemProperties");
-                        final Method get = SystemProperties.getMethod("get", String.class);
-                        params.add("clientidbase=" + get.invoke(SystemProperties, "ro.com.google.clientidbase"));
-                    } catch (Exception ignored) {
-                        Ln.d(ignored);
-                    }
-
-
-                    if (params.size() > 0)
-                        userAgent += "[" + Strings.join(";", params) + "]";
-
                 }
             }
         }

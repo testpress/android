@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.112",
-  "version_code" : 112,
+  "version" : "1.1.0",
+  "version_code" : 113,
   "testpress_site_subdomain" : "appoloacademy",
   "package_name" : "in.testpress.appoloacademy",
   "app_name" : "Appolo Academy",

@@ -82,7 +82,11 @@ public class TestpressServiceProvider {
                         .setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled())
                         .setScreenshotDisabled(SCREENSHOT_DISABLED)
                         .setDisplayUserEmailOnVideo(DISPLAY_USERNAME_ON_VIDEO)
-                        .setAccessCodeEnabled(false);
+                        .setAccessCodeEnabled(false)
+                        .setEnableParallelLoginRestriction(instituteSettings.getEnableParallelLoginRestriction())
+                        .setMaxParallelLogins(instituteSettings.getMaxParallelLogins())
+                        .setLockoutLimit(instituteSettings.getLockoutLimit())
+                        .setCooloffTime(instituteSettings.getCooloffTime());
             }
             TestpressSdk.setTestpressSession(activity, new TestpressSession(settings, authToken));
         }
@@ -108,7 +112,6 @@ public class TestpressServiceProvider {
         preferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
         CommonUtils.registerDevice(activity, testpressService, serviceProvider);
         TestpressApplication.clearDatabase(activity);
-        TestpressSdk.clearActiveSession(activity);
         TestpressSDKDatabase.clearDatabase(activity);
         logoutService.logout(new Runnable() {
             @Override

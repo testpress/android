@@ -2,14 +2,14 @@
   "version" : "1.0.0",
   "version_code" : 1,
   "testpress_site_subdomain" : "medpgbasics",
-  "package_name" : "in.testpress.medpgbasics",
-  "app_name" : "MEDPG BASICS",
+  "package_name" : "com.medpgbasics",
+  "app_name" : "MedPG",
   "share_message": "Good app to prepare for medical exams.",
   "primary_color": "0F6BAC",
   "allow_anonymous_user" : false,
   "screenshot_disabled" : true,
   "facebook_app_id" : "733962776688753",
-  "server_client_id" : "589544710202-n1re9gbmod6pphlkkdiln5e39t7jsh87.apps.googleusercontent.com",
+  "server_client_id" : "903167862880-hlnugko2sandqmqueh7jn2min79nqnp8.apps.googleusercontent.com",
   "display_username_on_video": true,
   "white_labeled_host_url": null
 }

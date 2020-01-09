@@ -128,13 +128,12 @@ public class MainMenuFragment extends Fragment {
 
             mMenuItemResIds.put(R.string.profile, R.drawable.ic_profile_details);
             mMenuItemResIds.put(R.string.qr_code, R.drawable.qr_code);
-        }
-        if (instituteSettings.getStoreEnabled()) {
-            mMenuItemResIds.put(R.string.store, R.drawable.store);
-        }
+            mMenuItemResIds.put(R.string.login_activity, R.drawable.warning);
 
-        mMenuItemResIds.put(R.string.login_activity, R.drawable.warning);
-
+            if (instituteSettings.getStoreEnabled()) {
+                mMenuItemResIds.put(R.string.store, R.drawable.store);
+            }
+        }
         if (drupalRssFeedEnabled) {
             mMenuItemResIds.put(R.string.rss_posts, R.drawable.rss_feed);
         }

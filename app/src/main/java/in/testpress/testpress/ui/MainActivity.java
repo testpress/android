@@ -53,6 +53,8 @@ import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.testpress.util.UpdateAppDialogManager;
+import io.sentry.Sentry;
+import io.sentry.android.AndroidSentryClientFactory;
 
 import static in.testpress.testpress.BuildConfig.ALLOW_ANONYMOUS_USER;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
@@ -91,6 +93,8 @@ public class MainActivity extends TestpressFragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         ButterKnife.inject(this);
+        Sentry.init("https://10326980de2149d3b91cb628d7c3da36@sentry.testpress.in/3", new AndroidSentryClientFactory(this));
+
         if (savedInstanceState != null) {
             mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM);
         }

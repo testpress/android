@@ -54,6 +54,9 @@ import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
+import in.testpress.ui.UserDevicesActivity;
+import io.sentry.Sentry;
+import io.sentry.event.UserBuilder;
 import retrofit.RetrofitError;
 
 import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
@@ -110,6 +113,8 @@ public class MainMenuFragment extends Fragment {
         if (isUserAuthenticated) {
             // Enabled my exams for RACE
             mMenuItemResIds.put(R.string.my_exams, R.drawable.exams);
+            Sentry.getContext().setUser(new UserBuilder().setUsername(account[0].name).build());
+
             if (instituteSettings.getBookmarksEnabled()) {
                 mMenuItemResIds.put(R.string.bookmarks, R.drawable.bookmark);
             }
@@ -126,8 +131,10 @@ public class MainMenuFragment extends Fragment {
         }
         if (instituteSettings.getStoreEnabled()) {
             mMenuItemResIds.put(R.string.store, R.drawable.store);
-
         }
+
+        mMenuItemResIds.put(R.string.login_activity, R.drawable.warning);
+
         if (drupalRssFeedEnabled) {
             mMenuItemResIds.put(R.string.rss_posts, R.drawable.rss_feed);
         }
@@ -216,6 +223,10 @@ public class MainMenuFragment extends Fragment {
                     case R.string.login:
                         intent = new Intent(getActivity(), LoginActivity.class);
                         intent.putExtra(Constants.DEEP_LINK_TO, "home");
+                        startActivity(intent);
+                        break;
+                    case R.string.login_activity:
+                        intent = new Intent(getActivity(), UserDevicesActivity.class);
                         startActivity(intent);
                         break;
                 }

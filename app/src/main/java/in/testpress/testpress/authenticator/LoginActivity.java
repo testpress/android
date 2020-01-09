@@ -573,7 +573,14 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     }
 
     @OnClick(id.signup) public void signUp() {
-        if(internetConnectivityChecker.isConnected()) {
+        if(instituteSettings.getCustomRegistrationEnabled() != null && instituteSettings.getCustomRegistrationEnabled()) {
+            Intent intent = new Intent(this, WebViewActivity.class);
+            intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Register");
+            intent.putExtra(WebViewActivity.SHOW_LOGOUT, "false");
+            intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + "/register/");
+            startActivity(intent);
+        }
+        else if(internetConnectivityChecker.isConnected()) {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             if(getIntent().getExtras() != null) {
                 intent.putExtras(getIntent().getExtras());

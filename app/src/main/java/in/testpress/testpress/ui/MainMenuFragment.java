@@ -58,6 +58,9 @@ import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
+import in.testpress.ui.UserDevicesActivity;
+import io.sentry.Sentry;
+import io.sentry.event.UserBuilder;
 import retrofit.RetrofitError;
 
 import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
@@ -116,6 +119,7 @@ public class MainMenuFragment extends Fragment {
             mMenuItemResIds.put(R.string.dashboard_announcement, R.drawable.custom_announcement);
             mMenuItemResIds.put(R.string.dashboard_current_affair, R.drawable.custom_current_affairs);
             mMenuItemResIds.put(R.string.dashboard_study_material, R.drawable.custom_study_material);
+            Sentry.getContext().setUser(new UserBuilder().setUsername(account[0].name).build());
 
             if (instituteSettings.getBookmarksEnabled()) {
                 mMenuItemResIds.put(R.string.bookmarks, R.drawable.bookmark);
@@ -150,6 +154,7 @@ public class MainMenuFragment extends Fragment {
             mMenuItemResIds.put(R.string.share, R.drawable.share);
             mMenuItemResIds.put(R.string.rate_us, R.drawable.heart);
             mMenuItemResIds.put(R.string.logout, R.drawable.logout);
+            mMenuItemResIds.put(R.string.login_activity, R.drawable.warning);
         } else {
             mMenuItemResIds.put(R.string.login, R.drawable.login);
         }
@@ -269,6 +274,8 @@ public class MainMenuFragment extends Fragment {
                     case R.string.dashboard_about_us:
                         intent = new Intent(getContext(), PostActivity.class);
                         intent.putExtra("shortWebUrl", "https://ssgrbcc.testpress.in/p/3hgq46/");
+                    case R.string.login_activity:
+                        intent = new Intent(getActivity(), UserDevicesActivity.class);
                         startActivity(intent);
                         break;
                 }

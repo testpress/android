@@ -15,12 +15,13 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-import in.testpress.R;
 import in.testpress.core.TestpressSdk;
+import in.testpress.testpress.R;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.ui.PostActivity;
 import in.testpress.testpress.ui.SplashScreenActivity;
+import in.testpress.testpress.util.UIUtils;
 import in.testpress.util.ImageUtils;
 
 public class PostCarouselAdapter extends RecyclerView.Adapter<PostCarouselAdapter.MyViewHolder> {
@@ -73,7 +74,7 @@ public class PostCarouselAdapter extends RecyclerView.Adapter<PostCarouselAdapte
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.title);
             image = (ImageView) itemView.findViewById(R.id.image_view);
-            title.setTypeface(TestpressSdk.getLatoBoldFont(context));
+            title.setTypeface(UIUtils.getLatoBoldFont(context));
         }
     }
 }

@@ -1,5 +1,6 @@
 package in.testpress.testpress.ui.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
@@ -15,9 +16,12 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-import in.testpress.R;
 import in.testpress.core.TestpressSdk;
+import in.testpress.core.TestpressSession;
+import in.testpress.course.TestpressCourse;
 import in.testpress.models.greendao.Content;
+import in.testpress.testpress.R;
+import in.testpress.testpress.util.UIUtils;
 import in.testpress.util.ImageUtils;
 
 public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarouselAdapter.MyViewHolder> {
@@ -41,14 +45,23 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
 
 
     @Override
-    public void onBindViewHolder(ContentsCarouselAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(ContentsCarouselAdapter.MyViewHolder holder, final int position) {
         imageLoader.displayImage("https://picsum.photos/500/250?random=" + position, holder.image, options);
-        if (data.get(0).getImage().isEmpty()) {
+        if (data.get(0).getImage() == null || data.get(0).getImage().isEmpty()) {
             holder.image.setColorFilter(Color.parseColor("#888888"));
         } else {
             holder.image.setColorFilter(Color.parseColor("#77000000"));
         }
         holder.title.setText(data.get(position).getName());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Activity activity = (Activity) context;
+                TestpressSession session = TestpressSdk.getTestpressSession(context);
+                TestpressCourse.showContentDetail(activity, data.get(position).getId().toString(), session);
+            }
+        });
     }
 
     @Override
@@ -62,9 +75,9 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            image =  itemView.findViewById(R.id.image_view);
+            image = (ImageView) itemView.findViewById(R.id.image_view);
             title = (TextView) itemView.findViewById(R.id.title);
-            title.setTypeface(TestpressSdk.getLatoBoldFont(context));
+            title.setTypeface(UIUtils.getLatoBoldFont(context));
         }
     }
 }

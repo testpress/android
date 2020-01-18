@@ -31,6 +31,7 @@ import in.testpress.core.TestpressException;
 import in.testpress.core.TestpressSDKDatabase;
 import in.testpress.core.TestpressSdk;
 import in.testpress.models.greendao.ContentDao;
+import in.testpress.models.greendao.CourseAttemptDao;
 import in.testpress.network.TestpressApiClient;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
@@ -149,6 +150,7 @@ public class DashboardFragment extends Fragment implements
 
     private List<DashboardSection> getSections() {
         return daoSession.getDashboardSectionDao().queryBuilder()
+                .orderAsc(DashboardSectionDao.Properties.Order)
                 .listLazy();
     }
 
@@ -197,6 +199,9 @@ public class DashboardFragment extends Fragment implements
             ContentDao contentDao = TestpressSDKDatabase.getContentDao(context);
             contentDao.insertOrReplaceInTx(pager.getResponse().getContents());
 
+            CourseAttemptDao courseAttemptDao = TestpressSDKDatabase.getCourseAttemptDao(context);
+            courseAttemptDao.insertOrReplaceInTx(pager.getResponse().getContentAttempts());
+
             PostDao postDao = daoSession.getPostDao();
             postDao.insertOrReplaceInTx(pager.getResponse().getPosts());
 
@@ -214,9 +219,9 @@ public class DashboardFragment extends Fragment implements
         if (exception != null) {
             return;
         } else {
-            adapter.setSections(items);
             dashboardSectionDao.deleteAll();
             dashboardSectionDao.insertOrReplaceInTx(items);
+            adapter.setSections(getSections());
             adapter.notifyDataSetChanged();
         }
     }

@@ -26,7 +26,6 @@ import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.DashboardSection;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.PostDao;
-import in.testpress.ui.adapters.ContentsCarouselAdapter;
 
 
 public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -53,13 +52,13 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public int getItemViewType(int position) {
         String contentType = sections.get(position).getContentType();
-        if (contentType.equals("post"))
-            return POST_CAROUSEL;
-        else if (contentType.equals("chapter_content"))
-            return CONTENT_CAROUSEL;
-        else if (contentType.equals("banner_ad"))
-            return OFFERS_CAROUSEL;
-        return 1;
+        switch (contentType) {
+            case "post": return POST_CAROUSEL;
+            case "chapter_content": return CONTENT_CAROUSEL;
+            case "banner_ad": return OFFERS_CAROUSEL;
+            case "chapter_content_attempt": return CONTENT_CAROUSEL;
+        }
+        return -1;
     }
 
     @Override
@@ -162,7 +161,10 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     private void contentsCarouselView(CarouselViewHolder holder) {
-        List<Content> contents = TestpressSDKDatabase.getContentDao(context).queryBuilder().where(ContentDao.Properties.Active.eq(true)).limit(5).list();
+        DashboardSection section = sections.get(holder.getAdapterPosition());
+
+        List<Content> contents = TestpressSDKDatabase.getContentDao(context).queryBuilder()
+                .where(ContentDao.Properties.Id.in(section.getItems())).list();
         ContentsCarouselAdapter adapter1 = new ContentsCarouselAdapter(contents, context);
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         holder.recyclerView.setAdapter(adapter1);

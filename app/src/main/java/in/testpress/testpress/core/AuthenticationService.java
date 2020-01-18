@@ -16,7 +16,6 @@ import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Path;
 
-import static in.testpress.network.TestpressApiClient.DASHBOARD_PATH;
 
 public interface AuthenticationService {
 

@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.0",
-  "version_code" : 2,
+  "version" : "1.0.1",
+  "version_code" : 3,
   "testpress_site_subdomain" : "upscaleias",
   "package_name" : "in.testpress.upscaleias",
   "app_name" : "Upscale IAS",

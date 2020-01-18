@@ -14,17 +14,17 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-import in.testpress.testpress.R;
-import in.testpress.testpress.models.Post;
+import in.testpress.R;
+import in.testpress.testpress.models.Banner;
 import in.testpress.util.ImageUtils;
 
 public class OffersCarouselAdapter extends RecyclerView.Adapter<OffersCarouselAdapter.MyViewHolder> {
 
-    ArrayList<String> data = new ArrayList<>();
+    List<Banner> data = new ArrayList<>();
     private ImageLoader imageLoader;
     private DisplayImageOptions options;
 
-    public OffersCarouselAdapter(ArrayList<String> data, Context context) {
+    public OffersCarouselAdapter(List<Banner> data, Context context) {
         this.data = data;
         imageLoader = ImageUtils.initImageLoader(context);
         options = ImageUtils.getPlaceholdersOption();
@@ -38,7 +38,7 @@ public class OffersCarouselAdapter extends RecyclerView.Adapter<OffersCarouselAd
 
     @Override
     public void onBindViewHolder(OffersCarouselAdapter.MyViewHolder holder, int position) {
-        imageLoader.displayImage(data.get(position), holder.image, options);
+        imageLoader.displayImage("https://picsum.photos/700/450?random=" + position + 101, holder.image, options);
     }
 
     @Override

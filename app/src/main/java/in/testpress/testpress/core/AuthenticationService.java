@@ -2,10 +2,12 @@ package in.testpress.testpress.core;
 
 import java.util.HashMap;
 
+import in.testpress.network.RetrofitCall;
 import in.testpress.testpress.models.AuthToken;
 import in.testpress.testpress.models.ProfileDetails;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.Update;
+import in.testpress.testpress.network.DashboardResponse;
 import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.EncodedPath;
@@ -13,6 +15,8 @@ import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Path;
+
+import static in.testpress.network.TestpressApiClient.DASHBOARD_PATH;
 
 public interface AuthenticationService {
 
@@ -45,4 +49,7 @@ public interface AuthenticationService {
     @GET("/{account_activate_url}")
     Response activateAccount(
             @Path(value = "account_activate_url", encode = false) String accountActivateUrl);
+
+    @GET("/api/v2.4/dashboard/")
+    DashboardResponse getDashboardData();
 }

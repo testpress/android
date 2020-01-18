@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import in.testpress.exam.models.Vote;
+import in.testpress.network.RetrofitCall;
 import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.CheckPermission;
 import in.testpress.testpress.models.Comment;
@@ -31,6 +32,7 @@ import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.models.TestpressApiResponse;
 import in.testpress.testpress.models.Update;
 import in.testpress.testpress.network.CheckPermissionService;
+import in.testpress.testpress.network.DashboardResponse;
 import in.testpress.testpress.network.RssConverterFactory;
 import in.testpress.testpress.network.RssFeedService;
 import in.testpress.testpress.network.SsoUrlService;
@@ -324,4 +326,7 @@ public class TestpressService {
         return getPostService().updateCommentVote(forum.getVoteId(), params);
     }
 
+    public DashboardResponse getDashboardData() {
+        return getAuthenticationService().getDashboardData();
+    }
 }

@@ -7,7 +7,7 @@ import de.greenrobot.daogenerator.Schema;
 
 public class TestpressDaoGenerator {
     public static void main(String args[]) throws Exception {
-        Schema schema = new Schema(18, "in.testpress.testpress.models");
+        Schema schema = new Schema(19, "in.testpress.testpress.models");
 
         Entity post = schema.addEntity("Post");
         post.addLongProperty("id").primaryKey();
@@ -23,9 +23,11 @@ public class TestpressDaoGenerator {
         post.addLongProperty("modifiedDate");
         post.addStringProperty("short_web_url");
         post.addStringProperty("short_url");
+        post.addStringProperty("shortLink");
         post.addStringProperty("web_url");
         post.addIntProperty("commentsCount");
         post.addStringProperty("commentsUrl");
+        post.addStringProperty("coverImage");
 
         Entity category = schema.addEntity("Category");
         category.addLongProperty("id").primaryKey();
@@ -91,7 +93,34 @@ public class TestpressDaoGenerator {
         addUserToForum(forum, user, "lastCommentedBy", "commentorId");
         addCategoryToForum(forum, category);
 
+        addBanner(schema);
+        addDashboardSections(schema);
+
+
         new DaoGenerator().generateAll(schema, "app/src/main/java/");
+    }
+
+    private static Entity addDashboardSections(Schema schema) {
+        Entity dashboardSection = schema.addEntity("DashboardSection");
+        dashboardSection.addStringProperty("slug").primaryKey();
+        dashboardSection.addStringProperty("displayName");
+        dashboardSection.addStringProperty("url");
+        dashboardSection.addStringProperty("contentType");
+        dashboardSection.addStringProperty("order");
+        dashboardSection.addStringProperty("displayType");
+        dashboardSection.addStringProperty("items").customType(
+                "in.testpress.util.IntegerList",
+                "in.testpress.util.IntegerListConverter"
+        );
+        return dashboardSection;
+    }
+
+    private static Entity addBanner(Schema schema) {
+        Entity banner = schema.addEntity("Banner");
+        banner.addLongProperty("id").primaryKey();
+        banner.addStringProperty("url");
+        banner.addStringProperty("image");
+        return banner;
     }
 
     public static void addUserToForum(Entity forum, Entity user, String name, String key) {

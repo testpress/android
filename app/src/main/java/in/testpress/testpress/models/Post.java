@@ -22,9 +22,11 @@ public class Post {
     private Long modifiedDate;
     private String short_web_url;
     private String short_url;
+    private String shortLink;
     private String web_url;
     private Integer commentsCount;
     private String commentsUrl;
+    private String coverImage;
     private Long categoryId;
 
     /** Used to resolve relations */
@@ -44,7 +46,7 @@ public class Post {
         this.id = id;
     }
 
-    public Post(Long id, String title, String summary, String contentHtml, String url, String publishedDate, Long published, String modified, Integer institute, Boolean is_active, Long modifiedDate, String short_web_url, String short_url, String web_url, Integer commentsCount, String commentsUrl, Long categoryId) {
+    public Post(Long id, String title, String summary, String contentHtml, String url, String publishedDate, Long published, String modified, Integer institute, Boolean is_active, Long modifiedDate, String short_web_url, String short_url, String shortLink, String web_url, Integer commentsCount, String commentsUrl, String coverImage, Long categoryId) {
         this.id = id;
         this.title = title;
         this.summary = summary;
@@ -58,9 +60,11 @@ public class Post {
         this.modifiedDate = modifiedDate;
         this.short_web_url = short_web_url;
         this.short_url = short_url;
+        this.shortLink = shortLink;
         this.web_url = web_url;
         this.commentsCount = commentsCount;
         this.commentsUrl = commentsUrl;
+        this.coverImage = coverImage;
         this.categoryId = categoryId;
     }
 
@@ -174,6 +178,14 @@ public class Post {
         this.short_url = short_url;
     }
 
+    public String getShortLink() {
+        return shortLink;
+    }
+
+    public void setShortLink(String shortLink) {
+        this.shortLink = shortLink;
+    }
+
     public String getWeb_url() {
         return web_url;
     }
@@ -196,6 +208,14 @@ public class Post {
 
     public void setCommentsUrl(String commentsUrl) {
         this.commentsUrl = commentsUrl;
+    }
+
+    public String getCoverImage() {
+        return coverImage;
+    }
+
+    public void setCoverImage(String coverImage) {
+        this.coverImage = coverImage;
     }
 
     public Long getCategoryId() {

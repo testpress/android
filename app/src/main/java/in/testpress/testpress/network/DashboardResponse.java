@@ -12,9 +12,9 @@ import in.testpress.testpress.models.Post;
 public class DashboardResponse {
     private List<DashboardSection> dashboardSections = new ArrayList<>();
     private List<Content> chapterContents1 = new ArrayList<>();
-    private List<CourseAttempt> chapterContentAttempts = new ArrayList<>();
+    private List<CourseAttempt> chapterContentAttempts1 = new ArrayList<>();
     private List<Post> posts = new ArrayList<>();
-    private List<Banner> banners = new ArrayList<>();
+    private List<Banner> bannerAds = new ArrayList<>();
 
     public List<DashboardSection> getDashboardSections() {
         return dashboardSections;
@@ -35,11 +35,11 @@ public class DashboardResponse {
     }
 
     public List<CourseAttempt> getContentAttempts() {
-        return chapterContentAttempts;
+        return chapterContentAttempts1;
     }
 
     public void setContentAttempts(List<CourseAttempt> contentAttempts) {
-        this.chapterContentAttempts = contentAttempts;
+        this.chapterContentAttempts1 = contentAttempts;
     }
 
     public List<Post> getPosts() {
@@ -51,10 +51,10 @@ public class DashboardResponse {
     }
 
     public List<Banner> getBanners() {
-        return banners;
+        return bannerAds;
     }
 
     public void setBanners(List<Banner> banners) {
-        this.banners = banners;
+        this.bannerAds = banners;
     }
 }

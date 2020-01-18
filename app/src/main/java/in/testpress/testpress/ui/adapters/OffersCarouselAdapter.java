@@ -14,7 +14,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-import in.testpress.R;
+import in.testpress.testpress.R;
 import in.testpress.testpress.models.Banner;
 import in.testpress.util.ImageUtils;
 
@@ -38,7 +38,7 @@ public class OffersCarouselAdapter extends RecyclerView.Adapter<OffersCarouselAd
 
     @Override
     public void onBindViewHolder(OffersCarouselAdapter.MyViewHolder holder, int position) {
-        imageLoader.displayImage("https://picsum.photos/700/450?random=" + position + 101, holder.image, options);
+        imageLoader.displayImage(data.get(position).getImage(), holder.image, options);
     }
 
     @Override

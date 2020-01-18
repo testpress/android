@@ -194,7 +194,6 @@ public class DashboardFragment extends Fragment implements
             pager.getItems(1, -1);
             DaoSession daoSession = ((TestpressApplication) context.getApplicationContext()).getDaoSession();
 
-            Log.d("DashboardFragment", "loadData: " + pager.getResponse().getContents());
             ContentDao contentDao = TestpressSDKDatabase.getContentDao(context);
             contentDao.insertOrReplaceInTx(pager.getResponse().getContents());
 

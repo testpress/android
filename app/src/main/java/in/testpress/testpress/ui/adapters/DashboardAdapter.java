@@ -15,11 +15,11 @@ import org.greenrobot.greendao.annotation.Id;
 import java.util.ArrayList;
 import java.util.List;
 
-import in.testpress.R;
 import in.testpress.core.TestpressSDKDatabase;
 import in.testpress.core.TestpressSdk;
 import in.testpress.models.greendao.Content;
 import in.testpress.models.greendao.ContentDao;
+import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.models.Banner;
 import in.testpress.testpress.models.DaoSession;
@@ -52,10 +52,13 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public int getItemViewType(int position) {
-        if (sections.get(position).getContentType().equals("post"))
+        String contentType = sections.get(position).getContentType();
+        if (contentType.equals("post"))
             return POST_CAROUSEL;
-        if (sections.get(position).getContentType().equals("chapter_content"))
+        else if (contentType.equals("chapter_content"))
             return CONTENT_CAROUSEL;
+        else if (contentType.equals("banner_ad"))
+            return OFFERS_CAROUSEL;
         return 1;
     }
 
@@ -159,7 +162,6 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     private void contentsCarouselView(CarouselViewHolder holder) {
-        Log.d("DashboardAdapter", "contentsCarouselView: " + TestpressSDKDatabase.getContentDao(context).queryBuilder().count());
         List<Content> contents = TestpressSDKDatabase.getContentDao(context).queryBuilder().where(ContentDao.Properties.Active.eq(true)).limit(5).list();
         ContentsCarouselAdapter adapter1 = new ContentsCarouselAdapter(contents, context);
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));

@@ -93,11 +93,27 @@ public class TestpressDaoGenerator {
         addUserToForum(forum, user, "lastCommentedBy", "commentorId");
         addCategoryToForum(forum, category);
 
+        Entity leaderboardItem = addLeaderboardItem(schema);
+        addUserToLeaderboardItem(leaderboardItem, user);
         addBanner(schema);
         addDashboardSections(schema);
 
 
         new DaoGenerator().generateAll(schema, "app/src/main/java/");
+    }
+
+    private static Entity addLeaderboardItem(Schema schema) {
+        Entity leaderboardItem = schema.addEntity("LeaderboardItem");
+        leaderboardItem.addLongProperty("id").primaryKey();
+        leaderboardItem.addStringProperty("trophiesCount");
+        leaderboardItem.addIntProperty("difference");
+        leaderboardItem.addIntProperty("category");
+        return leaderboardItem;
+    }
+
+    private static void addUserToLeaderboardItem(Entity leaderboardItem, Entity user) {
+        Property userId = leaderboardItem.addLongProperty("userId").getProperty();
+        leaderboardItem.addToOne(user, userId, "user");
     }
 
     private static Entity addDashboardSections(Schema schema) {
@@ -186,6 +202,9 @@ public class TestpressDaoGenerator {
         user.addStringProperty("smallImage");
         user.addStringProperty("xSmallImage");
         user.addStringProperty("miniImage");
+        user.addIntProperty("followers_count");
+        user.addIntProperty("following_count");
+        user.addIntProperty("following");
         return user;
     }
 }

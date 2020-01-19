@@ -43,7 +43,11 @@ import in.testpress.testpress.models.BannerDao;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.DashboardSection;
 import in.testpress.testpress.models.DashboardSectionDao;
+import in.testpress.testpress.models.LeaderboardItem;
+import in.testpress.testpress.models.LeaderboardItemDao;
 import in.testpress.testpress.models.PostDao;
+import in.testpress.testpress.models.User;
+import in.testpress.testpress.models.UserDao;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.adapters.DashboardAdapter;
 import in.testpress.testpress.util.CommonUtils;
@@ -204,6 +208,20 @@ public class DashboardFragment extends Fragment implements
 
             PostDao postDao = daoSession.getPostDao();
             postDao.insertOrReplaceInTx(pager.getResponse().getPosts());
+
+            LeaderboardItemDao leaderboardItemDao = daoSession.getLeaderboardItemDao();
+
+            List<User> users = new ArrayList<>();
+            List<LeaderboardItem> leaderboardItems = new ArrayList<>();
+            UserDao userDao = daoSession.getUserDao();
+
+            for (LeaderboardItem leaderboardItem:pager.getResponse().getLeaderboardItems()) {
+                users.add(leaderboardItem.getRawUser());
+                leaderboardItem.setUserId(leaderboardItem.getRawUser().getId());
+                leaderboardItems.add(leaderboardItem);
+            }
+            userDao.insertOrReplaceInTx(users);
+            leaderboardItemDao.insertOrReplaceInTx(leaderboardItems);
 
             BannerDao bannerDao = daoSession.getBannerDao();
             bannerDao.insertOrReplaceInTx(pager.getResponse().getBanners());

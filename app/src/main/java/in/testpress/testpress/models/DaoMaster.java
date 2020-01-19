@@ -14,6 +14,7 @@ import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.RssItemDao;
 import in.testpress.testpress.models.ForumDao;
 import in.testpress.testpress.models.UserDao;
+import in.testpress.testpress.models.LeaderboardItemDao;
 import in.testpress.testpress.models.BannerDao;
 import in.testpress.testpress.models.DashboardSectionDao;
 
@@ -32,6 +33,7 @@ public class DaoMaster extends AbstractDaoMaster {
         RssItemDao.createTable(db, ifNotExists);
         ForumDao.createTable(db, ifNotExists);
         UserDao.createTable(db, ifNotExists);
+        LeaderboardItemDao.createTable(db, ifNotExists);
         BannerDao.createTable(db, ifNotExists);
         DashboardSectionDao.createTable(db, ifNotExists);
     }
@@ -44,6 +46,7 @@ public class DaoMaster extends AbstractDaoMaster {
         RssItemDao.dropTable(db, ifExists);
         ForumDao.dropTable(db, ifExists);
         UserDao.dropTable(db, ifExists);
+        LeaderboardItemDao.dropTable(db, ifExists);
         BannerDao.dropTable(db, ifExists);
         DashboardSectionDao.dropTable(db, ifExists);
     }
@@ -83,6 +86,7 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(RssItemDao.class);
         registerDaoClass(ForumDao.class);
         registerDaoClass(UserDao.class);
+        registerDaoClass(LeaderboardItemDao.class);
         registerDaoClass(BannerDao.class);
         registerDaoClass(DashboardSectionDao.class);
     }

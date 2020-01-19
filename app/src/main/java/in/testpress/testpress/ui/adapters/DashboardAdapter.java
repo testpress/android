@@ -19,11 +19,15 @@ import in.testpress.core.TestpressSDKDatabase;
 import in.testpress.core.TestpressSdk;
 import in.testpress.models.greendao.Content;
 import in.testpress.models.greendao.ContentDao;
+import in.testpress.models.greendao.CourseAttempt;
+import in.testpress.models.greendao.CourseAttemptDao;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.models.Banner;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.DashboardSection;
+import in.testpress.testpress.models.LeaderboardItem;
+import in.testpress.testpress.models.LeaderboardItemDao;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.PostDao;
 
@@ -57,6 +61,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             case "chapter_content": return CONTENT_CAROUSEL;
             case "banner_ad": return OFFERS_CAROUSEL;
             case "chapter_content_attempt": return CONTENT_CAROUSEL;
+            case "trophy_leaderboard": return LEADERBOARD_LIST;
         }
         return -1;
     }
@@ -113,6 +118,9 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             offersCarouselView((CarouselViewHolder) holder);
         } else if (holder.getItemViewType() == CONTENT_CAROUSEL) {
             contentsCarouselView((CarouselViewHolder) holder);
+        } else if (holder.getItemViewType() == LEADERBOARD_LIST) {
+            Log.d("DashboardAdapter", "onBindViewHolder: ");
+            leaderboardListView((CarouselViewHolder) holder);
         }
 //        else {
 //            contentsCarouselView((CarouselViewHolder) holder);
@@ -160,11 +168,34 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         holder.title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.post, 0, 0, 0);
     }
 
+    private void leaderboardListView(CarouselViewHolder holder) {
+        DaoSession daoSession = ((TestpressApplication) context.getApplicationContext()).getDaoSession();
+        DashboardSection section = sections.get(holder.getAdapterPosition());
+        List<LeaderboardItem> leaderboardItems = daoSession.getLeaderboardItemDao().queryBuilder()
+                .where(LeaderboardItemDao.Properties.Id.in(section.getItems())).list();
+        LeaderboardListAdapter adapter = new LeaderboardListAdapter(leaderboardItems, context);
+        holder.recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+        holder.recyclerView.setAdapter(adapter);
+        holder.title.setText(sections.get(holder.getAdapterPosition()).getDisplayName());
+        holder.title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.leaderboard, 0, 0, 0);
+    }
+
     private void contentsCarouselView(CarouselViewHolder holder) {
         DashboardSection section = sections.get(holder.getAdapterPosition());
+        List<Integer> contentIds = new ArrayList<>();
+        if (section.getContentType().equals("chapter_content_attempt")) {
+            List<CourseAttempt> contentAttempts = TestpressSDKDatabase.getCourseAttemptDao(context)
+                    .queryBuilder().where(CourseAttemptDao.Properties.Id.in(section.getItems())).list();
+
+            for (CourseAttempt contentAttempt: contentAttempts) {
+                contentIds.add(contentAttempt.getChapterContentId().intValue());
+            }
+        } else if (section.getContentType().equals("chapter_content")) {
+            contentIds.addAll(section.getItems());
+        }
 
         List<Content> contents = TestpressSDKDatabase.getContentDao(context).queryBuilder()
-                .where(ContentDao.Properties.Id.in(section.getItems())).list();
+                .where(ContentDao.Properties.Id.in(contentIds)).list();
         ContentsCarouselAdapter adapter1 = new ContentsCarouselAdapter(contents, context);
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         holder.recyclerView.setAdapter(adapter1);
@@ -178,7 +209,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         CarouselViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title);
-            title.setTypeface(TestpressSdk.getRubikMediumFont(  context));
+            title.setTypeface(TestpressSdk.getRubikMediumFont(context));
             recyclerView = (RecyclerView) itemView.findViewById(R.id.inner_recyclerView);
         }
     }

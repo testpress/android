@@ -36,6 +36,9 @@ public class UserDao extends AbstractDao<User, Long> {
         public final static Property SmallImage = new Property(10, String.class, "smallImage", false, "SMALL_IMAGE");
         public final static Property XSmallImage = new Property(11, String.class, "xSmallImage", false, "X_SMALL_IMAGE");
         public final static Property MiniImage = new Property(12, String.class, "miniImage", false, "MINI_IMAGE");
+        public final static Property Followers_count = new Property(13, Integer.class, "followers_count", false, "FOLLOWERS_COUNT");
+        public final static Property Following_count = new Property(14, Integer.class, "following_count", false, "FOLLOWING_COUNT");
+        public final static Property Following = new Property(15, Integer.class, "following", false, "FOLLOWING");
     };
 
 
@@ -63,7 +66,10 @@ public class UserDao extends AbstractDao<User, Long> {
                 "\"MEDIUM_SMALL_IMAGE\" TEXT," + // 9: mediumSmallImage
                 "\"SMALL_IMAGE\" TEXT," + // 10: smallImage
                 "\"X_SMALL_IMAGE\" TEXT," + // 11: xSmallImage
-                "\"MINI_IMAGE\" TEXT);"); // 12: miniImage
+                "\"MINI_IMAGE\" TEXT," + // 12: miniImage
+                "\"FOLLOWERS_COUNT\" INTEGER," + // 13: followers_count
+                "\"FOLLOWING_COUNT\" INTEGER," + // 14: following_count
+                "\"FOLLOWING\" INTEGER);"); // 15: following
     }
 
     /** Drops the underlying database table. */
@@ -141,6 +147,21 @@ public class UserDao extends AbstractDao<User, Long> {
         if (miniImage != null) {
             stmt.bindString(13, miniImage);
         }
+ 
+        Integer followers_count = entity.getFollowers_count();
+        if (followers_count != null) {
+            stmt.bindLong(14, followers_count);
+        }
+ 
+        Integer following_count = entity.getFollowing_count();
+        if (following_count != null) {
+            stmt.bindLong(15, following_count);
+        }
+ 
+        Integer following = entity.getFollowing();
+        if (following != null) {
+            stmt.bindLong(16, following);
+        }
     }
 
     /** @inheritdoc */
@@ -165,7 +186,10 @@ public class UserDao extends AbstractDao<User, Long> {
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // mediumSmallImage
             cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // smallImage
             cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // xSmallImage
-            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12) // miniImage
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // miniImage
+            cursor.isNull(offset + 13) ? null : cursor.getInt(offset + 13), // followers_count
+            cursor.isNull(offset + 14) ? null : cursor.getInt(offset + 14), // following_count
+            cursor.isNull(offset + 15) ? null : cursor.getInt(offset + 15) // following
         );
         return entity;
     }
@@ -186,6 +210,9 @@ public class UserDao extends AbstractDao<User, Long> {
         entity.setSmallImage(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
         entity.setXSmallImage(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
         entity.setMiniImage(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setFollowers_count(cursor.isNull(offset + 13) ? null : cursor.getInt(offset + 13));
+        entity.setFollowing_count(cursor.isNull(offset + 14) ? null : cursor.getInt(offset + 14));
+        entity.setFollowing(cursor.isNull(offset + 15) ? null : cursor.getInt(offset + 15));
      }
     
     /** @inheritdoc */

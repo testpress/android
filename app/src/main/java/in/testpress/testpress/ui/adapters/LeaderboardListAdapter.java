@@ -18,18 +18,19 @@ import java.util.List;
 
 import in.testpress.models.greendao.Course;
 import in.testpress.testpress.R;
+import in.testpress.testpress.models.LeaderboardItem;
 import in.testpress.testpress.ui.temp.Reputation;
 import in.testpress.ui.view.RoundedImageView;
 import in.testpress.util.ImageUtils;
 
 public class LeaderboardListAdapter extends RecyclerView.Adapter<LeaderboardListAdapter.MyViewHolder> {
 
-    List<Reputation> data = new ArrayList<>();
+    List<LeaderboardItem> data = new ArrayList<>();
     private ImageLoader imageLoader;
     private DisplayImageOptions options;
     private Context context;
 
-    public LeaderboardListAdapter(List<Reputation> data, Context context) {
+    public LeaderboardListAdapter(List<LeaderboardItem> data, Context context) {
         this.data = data;
         imageLoader = ImageUtils.initImageLoader(context);
         options = ImageUtils.getPlaceholdersOption();
@@ -47,13 +48,13 @@ public class LeaderboardListAdapter extends RecyclerView.Adapter<LeaderboardList
     public void onBindViewHolder(LeaderboardListAdapter.MyViewHolder holder, int position) {
         String rank = position + 1 + "";
         holder.rank.setText(rank);
-        Reputation reputation = data.get(position);
+        LeaderboardItem leaderboardItem = data.get(position);
         holder.username.setText(data.get(position).getUser().getDisplayName());
         imageLoader.displayImage(data.get(position).getUser().getMediumImage(), holder.userImage, options);
         holder.trophies.setText(data.get(position).getTrophiesCount().toString());
 
-        Integer difference = reputation.getDifference() == null ?
-                reputation.getTrophiesCount() : reputation.getDifference();
+        Integer difference = leaderboardItem.getDifference() == null ?
+                0 : leaderboardItem.getDifference();
 
         holder.difference.setText(difference.toString());
         if (difference > 0) {

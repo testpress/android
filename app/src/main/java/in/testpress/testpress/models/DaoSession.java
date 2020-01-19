@@ -15,6 +15,7 @@ import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.RssItem;
 import in.testpress.testpress.models.Forum;
 import in.testpress.testpress.models.User;
+import in.testpress.testpress.models.LeaderboardItem;
 import in.testpress.testpress.models.Banner;
 import in.testpress.testpress.models.DashboardSection;
 
@@ -24,6 +25,7 @@ import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.RssItemDao;
 import in.testpress.testpress.models.ForumDao;
 import in.testpress.testpress.models.UserDao;
+import in.testpress.testpress.models.LeaderboardItemDao;
 import in.testpress.testpress.models.BannerDao;
 import in.testpress.testpress.models.DashboardSectionDao;
 
@@ -42,6 +44,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig rssItemDaoConfig;
     private final DaoConfig forumDaoConfig;
     private final DaoConfig userDaoConfig;
+    private final DaoConfig leaderboardItemDaoConfig;
     private final DaoConfig bannerDaoConfig;
     private final DaoConfig dashboardSectionDaoConfig;
 
@@ -51,6 +54,7 @@ public class DaoSession extends AbstractDaoSession {
     private final RssItemDao rssItemDao;
     private final ForumDao forumDao;
     private final UserDao userDao;
+    private final LeaderboardItemDao leaderboardItemDao;
     private final BannerDao bannerDao;
     private final DashboardSectionDao dashboardSectionDao;
 
@@ -76,6 +80,9 @@ public class DaoSession extends AbstractDaoSession {
         userDaoConfig = daoConfigMap.get(UserDao.class).clone();
         userDaoConfig.initIdentityScope(type);
 
+        leaderboardItemDaoConfig = daoConfigMap.get(LeaderboardItemDao.class).clone();
+        leaderboardItemDaoConfig.initIdentityScope(type);
+
         bannerDaoConfig = daoConfigMap.get(BannerDao.class).clone();
         bannerDaoConfig.initIdentityScope(type);
 
@@ -88,6 +95,7 @@ public class DaoSession extends AbstractDaoSession {
         rssItemDao = new RssItemDao(rssItemDaoConfig, this);
         forumDao = new ForumDao(forumDaoConfig, this);
         userDao = new UserDao(userDaoConfig, this);
+        leaderboardItemDao = new LeaderboardItemDao(leaderboardItemDaoConfig, this);
         bannerDao = new BannerDao(bannerDaoConfig, this);
         dashboardSectionDao = new DashboardSectionDao(dashboardSectionDaoConfig, this);
 
@@ -97,6 +105,7 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(RssItem.class, rssItemDao);
         registerDao(Forum.class, forumDao);
         registerDao(User.class, userDao);
+        registerDao(LeaderboardItem.class, leaderboardItemDao);
         registerDao(Banner.class, bannerDao);
         registerDao(DashboardSection.class, dashboardSectionDao);
     }
@@ -108,6 +117,7 @@ public class DaoSession extends AbstractDaoSession {
         rssItemDaoConfig.getIdentityScope().clear();
         forumDaoConfig.getIdentityScope().clear();
         userDaoConfig.getIdentityScope().clear();
+        leaderboardItemDaoConfig.getIdentityScope().clear();
         bannerDaoConfig.getIdentityScope().clear();
         dashboardSectionDaoConfig.getIdentityScope().clear();
     }
@@ -134,6 +144,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public UserDao getUserDao() {
         return userDao;
+    }
+
+    public LeaderboardItemDao getLeaderboardItemDao() {
+        return leaderboardItemDao;
     }
 
     public BannerDao getBannerDao() {

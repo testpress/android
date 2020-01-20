@@ -7,6 +7,7 @@ import in.testpress.models.greendao.Chapter;
 import in.testpress.models.greendao.Content;
 import in.testpress.models.greendao.Course;
 import in.testpress.models.greendao.CourseAttempt;
+import in.testpress.models.greendao.Exam;
 import in.testpress.testpress.models.Banner;
 import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.DashboardSection;
@@ -25,6 +26,7 @@ public class DashboardResponse {
     private List<Category> categories = new ArrayList<>();
     private List<Course> courses = new ArrayList<>();
     private List<UserStats> userStatuses = new ArrayList<>();
+    private List<Exam> exams = new ArrayList<>();
 
     public List<DashboardSection> getDashboardSections() {
         return dashboardSections;
@@ -68,5 +70,9 @@ public class DashboardResponse {
 
     public List<UserStats> getUserStatuses() {
         return userStatuses;
+    }
+
+    public List<Exam> getExams() {
+        return exams;
     }
 }

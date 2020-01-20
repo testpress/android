@@ -49,7 +49,8 @@ public class OffersCarouselAdapter extends RecyclerView.Adapter<OffersCarouselAd
                 context.startActivity(intent);
             }
         });
-        imageLoader.displayImage(data.get(position).getImage(), holder.image, options);
+        String img = "https://i.ytimg.com/vi/5dODbLB90cs/maxresdefault.jpg";
+        imageLoader.displayImage(img, holder.image, options);
     }
 
     @Override

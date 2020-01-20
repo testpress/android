@@ -3,6 +3,7 @@ package in.testpress.testpress.ui.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,12 +32,20 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
     private ImageLoader imageLoader;
     private DisplayImageOptions options;
     private Context context;
+    ArrayList<String> images = new ArrayList<>();
 
     public ContentsCarouselAdapter(List<Content> contents, Context context) {
         this.contents = contents;
         this.context = context;
         imageLoader = ImageUtils.initImageLoader(context);
         options = ImageUtils.getPlaceholdersOption();
+        images.add("https://resize.indiatvnews.com/en/resize/newbucket/1200_-/2019/12/exam-1575366183.jpg");
+        images.add("https://eutraining.eu/sites/default/files/Ad5%20booking%20hero.png");
+        images.add("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLoF3zYrDxynsxgY4QRBe0z6PmbQIPRg1oLU0RnNK4l5lXzxfEKw&s");
+        images.add("https://resize.indiatvnews.com/en/resize/newbucket/1200_-/2019/12/exam-1575366183.jpg");
+        images.add("https://resize.indiatvnews.com/en/resize/newbucket/1200_-/2019/12/exam-1575366183.jpg");
+        images.add("https://resize.indiatvnews.com/en/resize/newbucket/1200_-/2019/12/exam-1575366183.jpg");
+        images.add("https://resize.indiatvnews.com/en/resize/newbucket/1200_-/2019/12/exam-1575366183.jpg");
     }
 
     @Override
@@ -50,7 +59,7 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
     public void onBindViewHolder(ContentsCarouselAdapter.MyViewHolder holder, final int position) {
         final Content content = contents.get(position);
 
-        imageLoader.displayImage("https://picsum.photos/500/250?random=" + position, holder.image, options);
+        imageLoader.displayImage(images.get(position), holder.image, options);
         holder.image.setColorFilter(Color.parseColor("#77000000"));
 
         setIconAndChapterTitle(content, holder);
@@ -81,7 +90,11 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
             case "exam":
                 holder.contentTypeIcon.setImageResource(R.drawable.ic_exam);
                 break;
+            case "notes":
+                holder.contentTypeIcon.setImageResource(R.drawable.ic_notes);
+                break;
         }
+        holder.contentTypeIcon.setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
     }
 
     private void showOrHideVideoAccessories(Content content, ContentsCarouselAdapter.MyViewHolder holder) {
@@ -96,7 +109,7 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
         if (content.getExam() != null) {
             Exam exam = content.getExam();
             holder.infoLayout.setVisibility(View.VISIBLE);
-            holder.numberOfQuestions.setText(exam.getNumberOfQuestions());
+            holder.numberOfQuestions.setText("150");
         } else {
             holder.infoLayout.setVisibility(View.GONE);
         }

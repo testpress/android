@@ -137,7 +137,7 @@ public class DashboardFragment extends Fragment implements
         List<DashboardSection> sections = new ArrayList<>();
 
         for (DashboardSection section: dashboardSections) {
-            if (!section.getItems().isEmpty()) {
+            if (!section.getItems().isEmpty() && !section.getContentType().equals("user_stats")) {
                 sections.add(section);
             }
         }

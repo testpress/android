@@ -3,6 +3,7 @@ package in.testpress.testpress.ui.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,12 +29,21 @@ public class PostCarouselAdapter extends RecyclerView.Adapter<PostCarouselAdapte
     private ImageLoader imageLoader;
     private DisplayImageOptions options;
     private Context context;
+    ArrayList<String> images = new ArrayList<>();
 
     public PostCarouselAdapter(List<Post> data, Context context) {
         this.data = data;
         this.context = context;
         imageLoader = ImageUtils.initImageLoader(context);
         options = ImageUtils.getPlaceholdersOption();
+        images.add("https://i.ytimg.com/vi/eFRnLp3fbPs/maxresdefault.jpg");
+        images.add("https://cdn.dnaindia.com/sites/default/files/styles/full/public/2019/04/15/813119-neet-exam.jpg");
+        images.add("https://cdn.dnaindia.com/sites/default/files/styles/full/public/2016/05/21/462375-459190-neet1.jpg");
+        images.add("https://cdn.siasat.com/wp-content/uploads/2020/01/NEET.jpg");
+        images.add("https://www.dailyexcelsior.com/wp-content/uploads/2019/08/Scholarship-2.jpg");
+        images.add("https://cdn.dnaindia.com/sites/default/files/styles/full/public/2019/04/15/813119-neet-exam.jpg");
+        images.add("https://cdn.dnaindia.com/sites/default/files/styles/full/public/2019/04/15/813119-neet-exam.jpg");
+
     }
 
     @Override
@@ -44,7 +54,8 @@ public class PostCarouselAdapter extends RecyclerView.Adapter<PostCarouselAdapte
 
     @Override
     public void onBindViewHolder(PostCarouselAdapter.MyViewHolder holder, final int position) {
-        imageLoader.displayImage(data.get(position).getCoverImage(), holder.image, options);
+        imageLoader.displayImage(images.get(position), holder.image, options);
+
         holder.title.setText(data.get(position).getTitle());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

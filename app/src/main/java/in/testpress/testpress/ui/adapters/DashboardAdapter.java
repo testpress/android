@@ -1,6 +1,7 @@
 package in.testpress.testpress.ui.adapters;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,9 +10,14 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import in.testpress.testpress.R;
+import in.testpress.testpress.TestpressApplication;
+import in.testpress.testpress.models.Banner;
+import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.DashboardSection;
 import in.testpress.testpress.ui.view_holders.BaseCarouselViewHolder;
 import in.testpress.testpress.ui.view_holders.ContentsCarouselViewHolder;
+import in.testpress.testpress.ui.view_holders.LeaderboardViewHolder;
+import in.testpress.testpress.ui.view_holders.OffersViewHolder;
 import in.testpress.testpress.ui.view_holders.PostsCarouselHolder;
 
 
@@ -79,7 +85,11 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 holder = new PostsCarouselHolder(view, context);
                 break;
             case OFFERS_CAROUSEL:
+                holder = new OffersViewHolder(view, context);
+                break;
             case LEADERBOARD_LIST:
+                holder = new LeaderboardViewHolder(view, context);
+                break;
             default:
                 holder = new BaseCarouselViewHolder(view, context);
                 break;
@@ -98,6 +108,12 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 break;
             case POST_CAROUSEL:
                 ((PostsCarouselHolder) holder).display(section, context);
+                break;
+            case OFFERS_CAROUSEL:
+                ((OffersViewHolder) holder).display(sections, context);
+                break;
+            case LEADERBOARD_LIST:
+                ((LeaderboardViewHolder) holder).display(sections, context);
                 break;
         }
     }

@@ -3,6 +3,7 @@ package in.testpress.testpress.ui.adapters;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +40,7 @@ public class LeaderboardListAdapter extends RecyclerView.Adapter<LeaderboardList
 
     @Override
     public LeaderboardListAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.testpress_leaderboard_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.leaderboard_item, parent, false);
         return new MyViewHolder(view);
     }
 
@@ -50,7 +51,9 @@ public class LeaderboardListAdapter extends RecyclerView.Adapter<LeaderboardList
         LeaderboardItem leaderboardItem = data.get(position);
         holder.username.setText(data.get(position).getUser().getDisplayName());
         imageLoader.displayImage(data.get(position).getUser().getMediumImage(), holder.userImage, options);
-        holder.trophies.setText(data.get(position).getTrophiesCount().toString());
+        int trophies_count = (int) Double.parseDouble(data.get(position).getTrophiesCount());
+        Log.d("LeaderboardListAdapter", "onBindViewHolder: " + trophies_count);
+        holder.trophies.setText(String.valueOf(trophies_count));
 
         Integer difference = leaderboardItem.getDifference() == null ?
                 0 : leaderboardItem.getDifference();

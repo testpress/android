@@ -7,7 +7,7 @@ import de.greenrobot.daogenerator.Schema;
 
 public class TestpressDaoGenerator {
     public static void main(String args[]) throws Exception {
-        Schema schema = new Schema(18, "in.testpress.testpress.models");
+        Schema schema = new Schema(19, "in.testpress.testpress.models");
 
         Entity post = schema.addEntity("Post");
         post.addLongProperty("id").primaryKey();
@@ -23,9 +23,11 @@ public class TestpressDaoGenerator {
         post.addLongProperty("modifiedDate");
         post.addStringProperty("short_web_url");
         post.addStringProperty("short_url");
+        post.addStringProperty("shortLink");
         post.addStringProperty("web_url");
         post.addIntProperty("commentsCount");
         post.addStringProperty("commentsUrl");
+        post.addStringProperty("coverImage");
 
         Entity category = schema.addEntity("Category");
         category.addLongProperty("id").primaryKey();
@@ -91,7 +93,63 @@ public class TestpressDaoGenerator {
         addUserToForum(forum, user, "lastCommentedBy", "commentorId");
         addCategoryToForum(forum, category);
 
+        Entity leaderboardItem = addLeaderboardItem(schema);
+        addUserToLeaderboardItem(leaderboardItem, user);
+        addBanner(schema);
+        addDashboardSections(schema);
+        addUserStats(schema);
+
+
         new DaoGenerator().generateAll(schema, "app/src/main/java/");
+    }
+
+    private static Entity addUserStats(Schema schema) {
+        Entity userStats = schema.addEntity("UserStats");
+        userStats.addLongProperty("id").primaryKey();
+        userStats.addStringProperty("dateFrom");
+        userStats.addIntProperty("attemptsCount");
+        userStats.addIntProperty("attemptsCountDifference");
+        userStats.addStringProperty("videoWatchedDuration");
+        userStats.addStringProperty("videoWatchedDurationDifference");
+        userStats.addStringProperty("category");
+        return userStats;
+    }
+
+    private static Entity addLeaderboardItem(Schema schema) {
+        Entity leaderboardItem = schema.addEntity("LeaderboardItem");
+        leaderboardItem.addLongProperty("id").primaryKey();
+        leaderboardItem.addStringProperty("trophiesCount");
+        leaderboardItem.addIntProperty("difference");
+        leaderboardItem.addIntProperty("category");
+        return leaderboardItem;
+    }
+
+    private static void addUserToLeaderboardItem(Entity leaderboardItem, Entity user) {
+        Property userId = leaderboardItem.addLongProperty("userId").getProperty();
+        leaderboardItem.addToOne(user, userId, "user");
+    }
+
+    private static Entity addDashboardSections(Schema schema) {
+        Entity dashboardSection = schema.addEntity("DashboardSection");
+        dashboardSection.addStringProperty("slug").primaryKey();
+        dashboardSection.addStringProperty("displayName");
+        dashboardSection.addStringProperty("url");
+        dashboardSection.addStringProperty("contentType");
+        dashboardSection.addStringProperty("order");
+        dashboardSection.addStringProperty("displayType");
+        dashboardSection.addStringProperty("items").customType(
+                "in.testpress.util.IntegerList",
+                "in.testpress.util.IntegerListConverter"
+        );
+        return dashboardSection;
+    }
+
+    private static Entity addBanner(Schema schema) {
+        Entity banner = schema.addEntity("Banner");
+        banner.addLongProperty("id").primaryKey();
+        banner.addStringProperty("url");
+        banner.addStringProperty("image");
+        return banner;
     }
 
     public static void addUserToForum(Entity forum, Entity user, String name, String key) {
@@ -157,6 +215,9 @@ public class TestpressDaoGenerator {
         user.addStringProperty("smallImage");
         user.addStringProperty("xSmallImage");
         user.addStringProperty("miniImage");
+        user.addIntProperty("followers_count");
+        user.addIntProperty("following_count");
+        user.addIntProperty("following");
         return user;
     }
 }

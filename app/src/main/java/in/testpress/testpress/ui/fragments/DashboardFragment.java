@@ -37,6 +37,7 @@ import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.DashboardSection;
 import in.testpress.testpress.models.DashboardSectionDao;
+import in.testpress.testpress.ui.adapters.DashboardAdapter;
 import in.testpress.testpress.ui.loaders.DashboardLoader;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
@@ -63,6 +64,7 @@ public class DashboardFragment extends Fragment implements
 
     @Inject
     protected TestpressServiceProvider serviceProvider;
+    private DashboardAdapter adapter;
     private TestpressService testpressService;
     private DashboardPager pager;
     private DashboardSectionDao dashboardSectionDao;
@@ -129,10 +131,17 @@ public class DashboardFragment extends Fragment implements
     }
 
     private List<DashboardSection> getSections() {
-        return daoSession.getDashboardSectionDao().queryBuilder()
-                .where(DashboardSectionDao.Properties.Items.isNull())
+        List<DashboardSection> dashboardSections = daoSession.getDashboardSectionDao().queryBuilder()
                 .orderAsc(DashboardSectionDao.Properties.Order)
-                .listLazy();
+                .list();
+        List<DashboardSection> sections = new ArrayList<>();
+
+        for (DashboardSection section: dashboardSections) {
+            if (!section.getItems().isEmpty()) {
+                sections.add(section);
+            }
+        }
+        return sections;
     }
 
     @Override
@@ -147,6 +156,8 @@ public class DashboardFragment extends Fragment implements
             }
         });
 
+        adapter = new DashboardAdapter(getContext(), getSections());
+        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         if (getSections().isEmpty()) {
@@ -216,6 +227,8 @@ public class DashboardFragment extends Fragment implements
             this.exception = null;
             dashboardSectionDao.deleteAll();
             dashboardSectionDao.insertOrReplaceInTx(items);
+            adapter.setSections(getSections());
+            adapter.notifyDataSetChanged();
         }
     }
 

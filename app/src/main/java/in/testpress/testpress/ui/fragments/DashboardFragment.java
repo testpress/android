@@ -49,8 +49,6 @@ public class DashboardFragment extends Fragment implements
     private ArrayList<String> sections = new ArrayList<>();
     @InjectView(R.id.recycler_View)
     RecyclerView recyclerView;
-    @InjectView(R.id.welcome_text)
-    TextView welcomeText;
     @InjectView(R.id.empty_container)
     LinearLayout emptyView;
     @InjectView(R.id.empty_title)
@@ -141,7 +139,6 @@ public class DashboardFragment extends Fragment implements
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        welcomeText.setTypeface(TestpressSdk.getRubikMediumFont(getContext()));
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

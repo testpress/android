@@ -9,6 +9,7 @@ import in.testpress.core.TestpressException;
 import in.testpress.core.TestpressSDKDatabase;
 import in.testpress.models.greendao.ChapterDao;
 import in.testpress.models.greendao.ContentDao;
+import in.testpress.models.greendao.Course;
 import in.testpress.models.greendao.CourseAttemptDao;
 import in.testpress.models.greendao.CourseDao;
 import in.testpress.models.greendao.ExamDao;
@@ -52,7 +53,7 @@ public class DashboardLoader extends ThrowableLoader<List<DashboardSection>> {
         storeBanners();
         storeLeaderboardItemsAndUsers();
         storePosts();
-        storeCourses();
+//        storeCourses();
         storeChapters();
         storeCategories();
         storeUserStatuses();
@@ -103,6 +104,11 @@ public class DashboardLoader extends ThrowableLoader<List<DashboardSection>> {
 
     private void storeCourses() {
         CourseDao courseDao = TestpressSDKDatabase.getCourseDao(context);
+
+        for (Course course: pager.getResponse().getCourses()) {
+            course.setIsMyCourse(true);
+        }
+
         courseDao.insertOrReplaceInTx(pager.getResponse().getCourses());
     }
 

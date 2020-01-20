@@ -31,6 +31,7 @@
                 android:layout_height="48dp"
                 android:paddingBottom="10dp"
                 android:visibility="gone"
+                android:id="@+id/play_icon"
                 android:layout_gravity="center_horizontal|center_vertical"
                 android:src="@drawable/play" />
 
@@ -103,6 +104,7 @@
                 android:background="@drawable/rounded_background"
                 android:layout_marginRight="5dp"
                 android:layout_weight="0.5"
+                android:id="@+id/content_type_icon"
                 android:padding="5dp"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -110,7 +112,7 @@
                 android:id="@+id/subtitle"
                 android:background="@drawable/rounded_corner"
                 android:textColor="#666666"
-                android:text="FMGE EXAM"
+                android:text=""
                 android:gravity="center"
                 android:textAllCaps="true"
                 android:letterSpacing="0.05"

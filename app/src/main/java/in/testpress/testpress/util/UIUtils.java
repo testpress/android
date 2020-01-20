@@ -5,7 +5,9 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.graphics.Typeface;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.content.ContextCompat;
@@ -21,7 +23,11 @@ import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.ui.RssFeedDetailActivity;
 import in.testpress.testpress.util.Strings;
 
+import static in.testpress.core.TestpressSdk.getTypeface;
+
 public class UIUtils {
+    private static Typeface latoBold;
+    private static final String RUBIK_REGULAR_FONT_PATH = "Rubik-Regular.ttf";
 
     /**
      * Helps determine if the app is running in a Tablet context.
@@ -98,4 +104,12 @@ public class UIUtils {
                 return "";
         }
     }
+
+    public static Typeface getLatoBoldFont(@NonNull Context context) {
+        if (latoBold == null) {
+            latoBold = getTypeface(context, RUBIK_REGULAR_FONT_PATH);
+        }
+        return latoBold;
+    }
+
 }

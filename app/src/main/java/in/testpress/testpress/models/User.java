@@ -19,6 +19,9 @@ public class User {
     private String smallImage;
     private String xSmallImage;
     private String miniImage;
+    private Integer followers_count;
+    private Integer following_count;
+    private Integer following;
 
     public User() {
     }
@@ -27,7 +30,7 @@ public class User {
         this.id = id;
     }
 
-    public User(Long id, String url, String username, String firstName, String lastName, String displayName, String photo, String largeImage, String mediumImage, String mediumSmallImage, String smallImage, String xSmallImage, String miniImage) {
+    public User(Long id, String url, String username, String firstName, String lastName, String displayName, String photo, String largeImage, String mediumImage, String mediumSmallImage, String smallImage, String xSmallImage, String miniImage, Integer followers_count, Integer following_count, Integer following) {
         this.id = id;
         this.url = url;
         this.username = username;
@@ -41,6 +44,9 @@ public class User {
         this.smallImage = smallImage;
         this.xSmallImage = xSmallImage;
         this.miniImage = miniImage;
+        this.followers_count = followers_count;
+        this.following_count = following_count;
+        this.following = following;
     }
 
     public Long getId() {
@@ -145,6 +151,30 @@ public class User {
 
     public void setMiniImage(String miniImage) {
         this.miniImage = miniImage;
+    }
+
+    public Integer getFollowers_count() {
+        return followers_count;
+    }
+
+    public void setFollowers_count(Integer followers_count) {
+        this.followers_count = followers_count;
+    }
+
+    public Integer getFollowing_count() {
+        return following_count;
+    }
+
+    public void setFollowing_count(Integer following_count) {
+        this.following_count = following_count;
+    }
+
+    public Integer getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(Integer following) {
+        this.following = following;
     }
 
 }

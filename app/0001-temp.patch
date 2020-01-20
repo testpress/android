@@ -1,0 +1,579 @@
+From 5723ed79809a8d2cd8081aa2ea3b975d5b82dcd5 Mon Sep 17 00:00:00 2001
+From: Karthik <rajakarthik131@gmail.com>
+Date: Sun, 12 Jan 2020 21:59:06 +0530
+Subject: [PATCH] temp
+
+---
+ .../ui/adapters/DashboardAdapter.java         | 116 ++++++++++++++++++
+ .../ui/adapters/HorizontalAdapter.java        |  53 ++++++++
+ .../ui/adapters/VerticalAdapter.java          |  75 +++++++++++
+ .../ui/fragments/DashboardFragment.java       |  63 ++++++++++
+ .../testpress/ui/temp/SingleHorizontal.java   |  52 ++++++++
+ .../testpress/ui/temp/SingleVertical.java     |  41 +++++++
+ app/src/main/res/layout/dashboard_view.xml    |  13 ++
+ app/src/main/res/layout/horizontal.xml        |  26 ++++
+ .../main/res/layout/horizontal_sinle_item.xml |  49 ++++++++
+ 9 files changed, 488 insertions(+)
+ create mode 100644 app/src/main/java/in/testpress/testpress/ui/adapters/DashboardAdapter.java
+ create mode 100644 app/src/main/java/in/testpress/testpress/ui/adapters/HorizontalAdapter.java
+ create mode 100644 app/src/main/java/in/testpress/testpress/ui/adapters/VerticalAdapter.java
+ create mode 100644 app/src/main/java/in/testpress/testpress/ui/fragments/DashboardFragment.java
+ create mode 100644 app/src/main/java/in/testpress/testpress/ui/temp/SingleHorizontal.java
+ create mode 100644 app/src/main/java/in/testpress/testpress/ui/temp/SingleVertical.java
+ create mode 100644 app/src/main/res/layout/dashboard_view.xml
+ create mode 100644 app/src/main/res/layout/horizontal.xml
+ create mode 100644 app/src/main/res/layout/horizontal_sinle_item.xml
+
+diff --git a/app/src/main/java/in/testpress/testpress/ui/adapters/DashboardAdapter.java b/app/src/main/java/in/testpress/testpress/ui/adapters/DashboardAdapter.java
+new file mode 100644
+index 00000000..db113d88
+--- /dev/null
++++ b/app/src/main/java/in/testpress/testpress/ui/adapters/DashboardAdapter.java
+@@ -0,0 +1,116 @@
++package in.testpress.testpress.ui.adapters;
++
++import android.content.Context;
++import android.support.v7.widget.LinearLayoutManager;
++import android.support.v7.widget.RecyclerView;
++import android.view.LayoutInflater;
++import android.view.View;
++import android.view.ViewGroup;
++
++import java.util.ArrayList;
++import java.util.List;
++
++import in.testpress.core.TestpressSDKDatabase;
++import in.testpress.models.greendao.Content;
++import in.testpress.models.greendao.ContentDao;
++import in.testpress.testpress.R;
++import in.testpress.testpress.ui.temp.SingleHorizontal;
++import in.testpress.testpress.ui.temp.SingleVertical;
++
++import static in.testpress.testpress.ui.fragments.DashboardFragment.getHorizontalData;
++import static in.testpress.testpress.ui.fragments.DashboardFragment.getVerticalData;
++
++public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
++
++    private Context context;
++    private ArrayList<Object> items;
++    private final int VERTICAL = 1;
++    private final int HORIZONTAL = 2;
++
++    public DashboardAdapter(Context context, ArrayList<Object> items) {
++        this.context = context;
++        this.items = items;
++    }
++    //this method returns the number according to the Vertical/Horizontal object
++    @Override
++    public int getItemViewType(int position) {
++        if (items.get(position) instanceof SingleVertical)
++            return VERTICAL;
++        if (items.get(position) instanceof SingleHorizontal)
++            return HORIZONTAL;
++        return -1;
++    }
++    //this method returns the holder that we've inflated according to the viewtype.
++    @Override
++    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
++        LayoutInflater inflater = LayoutInflater.from(context);
++        View view;
++        RecyclerView.ViewHolder holder;
++        switch (viewType) {
++            case VERTICAL:
++                view = inflater.inflate(R.layout.horizontal, parent, false);
++                holder = new VerticalViewHolder(view);
++                break;
++            case HORIZONTAL:
++                view = inflater.inflate(R.layout.horizontal, parent, false);
++                holder = new HorizontalViewHolder(view);
++                break;
++
++            default:
++                view = inflater.inflate(R.layout.horizontal, parent, false);
++                holder = new HorizontalViewHolder(view);
++                break;
++        }
++
++
++        return holder;
++    }
++    //here we bind view with data according to the position that we have defined.
++    @Override
++    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
++        if (holder.getItemViewType() == VERTICAL)
++            verticalView((VerticalViewHolder) holder);
++        else if (holder.getItemViewType() == HORIZONTAL)
++            horizontalView((HorizontalViewHolder) holder);
++    }
++
++    private void verticalView(VerticalViewHolder holder) {
++        List<Content> contents = TestpressSDKDatabase.getContentDao(context).queryBuilder().where(ContentDao.Properties.Active.eq(true)).limit(5).list();
++        VerticalAdapter adapter1 = new VerticalAdapter(contents, context);
++        holder.recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
++        holder.recyclerView.setAdapter(adapter1);
++    }
++
++
++    private void horizontalView(HorizontalViewHolder holder) {
++        HorizontalAdapter adapter = new HorizontalAdapter(getHorizontalData());
++        holder.recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
++        holder.recyclerView.setAdapter(adapter);
++    }
++
++
++    @Override
++    public int getItemCount() {
++        return items.size();
++    }
++
++    public class HorizontalViewHolder extends RecyclerView.ViewHolder {
++
++        RecyclerView recyclerView;
++
++        HorizontalViewHolder(View itemView) {
++            super(itemView);
++            recyclerView = (RecyclerView) itemView.findViewById(R.id.inner_recyclerView);
++        }
++    }
++
++    public class VerticalViewHolder extends RecyclerView.ViewHolder {
++        RecyclerView recyclerView;
++
++        VerticalViewHolder(View itemView) {
++            super(itemView);
++            recyclerView = (RecyclerView) itemView.findViewById(R.id.inner_recyclerView);
++        }
++    }
++
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/in/testpress/testpress/ui/adapters/HorizontalAdapter.java b/app/src/main/java/in/testpress/testpress/ui/adapters/HorizontalAdapter.java
+new file mode 100644
+index 00000000..e657092b
+--- /dev/null
++++ b/app/src/main/java/in/testpress/testpress/ui/adapters/HorizontalAdapter.java
+@@ -0,0 +1,53 @@
++package in.testpress.testpress.ui.adapters;
++
++import android.support.v7.widget.RecyclerView;
++import android.view.LayoutInflater;
++import android.view.View;
++import android.view.ViewGroup;
++import android.widget.ImageView;
++import android.widget.TextView;
++
++import java.util.ArrayList;
++
++import in.testpress.testpress.R;
++import in.testpress.testpress.ui.temp.SingleHorizontal;
++
++public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.MyViewHolder> {
++
++    ArrayList<SingleHorizontal> data = new ArrayList<>();
++
++    public HorizontalAdapter(ArrayList<SingleHorizontal> data) {
++        this.data = data;
++
++    }
++
++    @Override
++    public HorizontalAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
++        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.horizontal_sinle_item, parent, false);
++        return new MyViewHolder(view);
++    }
++
++    @Override
++    public void onBindViewHolder(HorizontalAdapter.MyViewHolder holder, int position) {
++        holder.description.setText(data.get(position).getDesc());
++        holder.title.setText(data.get(position).getTitle());
++        holder.image.setImageResource(data.get(position).getImages());
++    }
++
++    @Override
++    public int getItemCount() {
++        return data.size();
++    }
++
++    public class MyViewHolder extends RecyclerView.ViewHolder {
++        TextView title, description, pubDate;
++        ImageView image;
++
++        public MyViewHolder(View itemView) {
++            super(itemView);
++            title = (TextView) itemView.findViewById(R.id.title);
++            description = (TextView) itemView.findViewById(R.id.description);
++            image = (ImageView) itemView.findViewById(R.id.image_view);
++        }
++    }
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/in/testpress/testpress/ui/adapters/VerticalAdapter.java b/app/src/main/java/in/testpress/testpress/ui/adapters/VerticalAdapter.java
+new file mode 100644
+index 00000000..3d30a7fb
+--- /dev/null
++++ b/app/src/main/java/in/testpress/testpress/ui/adapters/VerticalAdapter.java
+@@ -0,0 +1,75 @@
++package in.testpress.testpress.ui.adapters;
++
++import android.app.Activity;
++import android.content.Context;
++import android.graphics.Color;
++import android.support.v7.widget.RecyclerView;
++import android.util.Log;
++import android.view.LayoutInflater;
++import android.view.View;
++import android.view.ViewGroup;
++import android.widget.ImageView;
++import android.widget.TextView;
++
++import com.nostra13.universalimageloader.core.DisplayImageOptions;
++import com.nostra13.universalimageloader.core.ImageLoader;
++
++import java.util.ArrayList;
++import java.util.List;
++
++import in.testpress.models.greendao.Content;
++import in.testpress.testpress.R;
++import in.testpress.testpress.ui.temp.SingleVertical;
++import in.testpress.util.ImageUtils;
++
++public class VerticalAdapter extends RecyclerView.Adapter<VerticalAdapter.MyViewHolder> {
++    private List<Content> data = new ArrayList<>();
++    private ImageLoader mImageLoader;
++    private DisplayImageOptions mOptions;
++
++    public VerticalAdapter(List<Content> data, Context context) {
++        this.data = data;
++        mImageLoader = ImageUtils.initImageLoader(context);
++        mOptions = ImageUtils.getPlaceholdersOption();
++    }
++
++    @Override
++    public VerticalAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
++        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.horizontal_sinle_item, parent, false);
++        return new MyViewHolder(view);
++    }
++
++
++    @Override
++    public void onBindViewHolder(VerticalAdapter.MyViewHolder holder, int position) {
++        Log.d("VerticalAdapter", "onBindViewHolder: " + holder.image);
++//        mImageLoader.displayImage(data.get(0).getImage(), holder.image, mOptions);
++//        holder.image.setImageResource(data.get(position).getImage());
++        mImageLoader.displayImage(data.get(position).getImage(), holder.image, mOptions);
++        if (data.get(0).getImage().isEmpty()) {
++            holder.image.setColorFilter(Color.parseColor("#888888"));
++        } else {
++            holder.image.clearColorFilter();
++        }
++        Log.d("VerticalAdapter", "onBindViewHolder: " + data.get(position).getImage());
++        holder.title.setText(data.get(position).getName());
++        holder.description.setText(data.get(position).getDescription());
++    }
++
++    @Override
++    public int getItemCount() {
++        return data.size();
++    }
++
++    public class MyViewHolder extends RecyclerView.ViewHolder {
++        ImageView image;
++        TextView title, description;
++
++        public MyViewHolder(View itemView) {
++            super(itemView);
++            image = (ImageView) itemView.findViewById(R.id.image_view);
++            title = (TextView) itemView.findViewById(R.id.title);
++            description = (TextView) itemView.findViewById(R.id.description);
++        }
++    }
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/in/testpress/testpress/ui/fragments/DashboardFragment.java b/app/src/main/java/in/testpress/testpress/ui/fragments/DashboardFragment.java
+new file mode 100644
+index 00000000..58e596a2
+--- /dev/null
++++ b/app/src/main/java/in/testpress/testpress/ui/fragments/DashboardFragment.java
+@@ -0,0 +1,63 @@
++package in.testpress.testpress.ui.fragments;
++
++import android.os.Bundle;
++import android.support.v4.app.Fragment;
++import android.support.v7.widget.LinearLayoutManager;
++import android.support.v7.widget.RecyclerView;
++import android.view.LayoutInflater;
++import android.view.View;
++import android.view.ViewGroup;
++
++import java.util.ArrayList;
++
++import butterknife.ButterKnife;
++import butterknife.InjectView;
++import in.testpress.testpress.Injector;
++import in.testpress.testpress.R;
++import in.testpress.testpress.ui.adapters.DashboardAdapter;
++import in.testpress.testpress.ui.temp.SingleHorizontal;
++import in.testpress.testpress.ui.temp.SingleVertical;
++
++public class DashboardFragment extends Fragment {
++    private ArrayList<Object> objects = new ArrayList<>();
++    @InjectView(R.id.recycler_View)
++    RecyclerView recyclerView;
++    @Override
++    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
++        Injector.inject(this);
++        getActivity().invalidateOptionsMenu();
++        return inflater.inflate(R.layout.dashboard_view, null);
++    }
++
++    @Override
++    public void onViewCreated(final View view, final Bundle savedInstanceState) {
++        super.onViewCreated(view, savedInstanceState);
++        ButterKnife.inject(this, view);
++        DashboardAdapter adapter = new DashboardAdapter(getContext(), getObject());
++        recyclerView.setAdapter(adapter);
++        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
++    }
++
++    public static ArrayList<SingleVertical> getVerticalData() {
++        ArrayList<SingleVertical> singleVerticals = new ArrayList<>();
++        singleVerticals.add(new SingleVertical("Charlie Chaplin", "Sir Charles Spencer \"Charlie\" Chaplin, KBE was an English comic actor,....", R.mipmap.ic_launcher));
++        singleVerticals.add(new SingleVertical("Mr.Bean", "Mr. Bean is a British sitcom created by Rowan Atkinson and Richard Curtis, and starring Atkinson as the title character.", R.mipmap.ic_launcher));
++        singleVerticals.add(new SingleVertical("Jim Carrey", "James Eugene \"Jim\" Carrey is a Canadian-American actor, comedian, impressionist, screenwriter...", R.mipmap.ic_launcher));
++        return singleVerticals;
++    }
++
++    private ArrayList<Object> getObject() {
++        objects.add(getVerticalData().get(0));
++        objects.add(getHorizontalData().get(0));
++        objects.add(getHorizontalData().get(0));
++        return objects;
++    }
++
++    public static ArrayList<SingleHorizontal> getHorizontalData() {
++        ArrayList<SingleHorizontal> singleHorizontals = new ArrayList<>();
++        singleHorizontals.add(new SingleHorizontal(R.mipmap.ic_launcher, "Charlie Chaplin", "Sir Charles Spencer \"Charlie\" Chaplin, KBE was an English comic actor,....", "2010/2/1"));
++        singleHorizontals.add(new SingleHorizontal(R.mipmap.ic_launcher, "Mr.Bean", "Mr. Bean is a British sitcom created by Rowan Atkinson and Richard Curtis, and starring Atkinson as the title character.", "2010/2/1"));
++        singleHorizontals.add(new SingleHorizontal(R.mipmap.ic_launcher, "Jim Carrey", "James Eugene \"Jim\" Carrey is a Canadian-American actor, comedian, impressionist, screenwriter...", "2010/2/1"));
++        return singleHorizontals;
++    }
++}
+diff --git a/app/src/main/java/in/testpress/testpress/ui/temp/SingleHorizontal.java b/app/src/main/java/in/testpress/testpress/ui/temp/SingleHorizontal.java
+new file mode 100644
+index 00000000..f48a862b
+--- /dev/null
++++ b/app/src/main/java/in/testpress/testpress/ui/temp/SingleHorizontal.java
+@@ -0,0 +1,52 @@
++package in.testpress.testpress.ui.temp;
++
++public class SingleHorizontal {
++
++    private int images;
++    private String title;
++    private String desc;
++    public SingleHorizontal() {
++
++    }
++
++    public SingleHorizontal(int images, String title, String desc, String pubDate) {
++        this.images = images;
++        this.title = title;
++        this.desc = desc;
++        this.pubDate = pubDate;
++    }
++
++    public String getPubDate() {
++        return pubDate;
++    }
++
++    public void setPubDate(String pubDate) {
++        this.pubDate = pubDate;
++    }
++
++    public String getDesc() {
++        return desc;
++    }
++
++    public void setDesc(String desc) {
++        this.desc = desc;
++    }
++
++    private String pubDate;
++
++    public int getImages() {
++        return images;
++    }
++
++    public void setImages(int images) {
++        this.images = images;
++    }
++
++    public String getTitle() {
++        return title;
++    }
++
++    public void setTitle(String title) {
++        this.title = title;
++    }
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/in/testpress/testpress/ui/temp/SingleVertical.java b/app/src/main/java/in/testpress/testpress/ui/temp/SingleVertical.java
+new file mode 100644
+index 00000000..7b1761ca
+--- /dev/null
++++ b/app/src/main/java/in/testpress/testpress/ui/temp/SingleVertical.java
+@@ -0,0 +1,41 @@
++package in.testpress.testpress.ui.temp;
++
++public class SingleVertical {
++
++    private String header, subHeader;
++    private int image;
++
++    public SingleVertical( ) {
++
++    }
++
++    public SingleVertical(String header, String subHeader, int image) {
++        this.header = header;
++        this.subHeader = subHeader;
++        this.image = image;
++    }
++
++    public String getHeader() {
++        return header;
++    }
++
++    public void setHeader(String header) {
++        this.header = header;
++    }
++
++    public String getSubHeader() {
++        return subHeader;
++    }
++
++    public void setSubHeader(String subHeader) {
++        this.subHeader = subHeader;
++    }
++
++    public int getImage() {
++        return image;
++    }
++
++    public void setImage(int image) {
++        this.image = image;
++    }
++}
+\ No newline at end of file
+diff --git a/app/src/main/res/layout/dashboard_view.xml b/app/src/main/res/layout/dashboard_view.xml
+new file mode 100644
+index 00000000..24d8bab1
+--- /dev/null
++++ b/app/src/main/res/layout/dashboard_view.xml
+@@ -0,0 +1,13 @@
++<?xml version="1.0" encoding="utf-8"?>
++<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:id="@+id/activity_main"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent">
++
++    <android.support.v7.widget.RecyclerView
++        android:id="@+id/recycler_View"
++        android:layout_width="match_parent"
++        android:layout_height="match_parent"
++        android:background="#f4f4f4" />
++</RelativeLayout>
+\ No newline at end of file
+diff --git a/app/src/main/res/layout/horizontal.xml b/app/src/main/res/layout/horizontal.xml
+new file mode 100644
+index 00000000..4d5ae14d
+--- /dev/null
++++ b/app/src/main/res/layout/horizontal.xml
+@@ -0,0 +1,26 @@
++<?xml version="1.0" encoding="utf-8"?>
++<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    android:orientation="vertical"
++    android:layout_width="match_parent"
++    android:layout_height="wrap_content"
++    android:layout_marginBottom="10dp"
++    android:padding="10dp"
++    android:background="#fff"
++    >
++
++    <TextView
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:text="RESUME YOUR STUDY"
++        android:id="@+id/title"
++        android:textColor="#333"
++        android:textStyle="bold">
++
++    </TextView>
++    <android.support.v7.widget.RecyclerView
++        android:id="@+id/inner_recyclerView"
++        android:layout_width="match_parent"
++        android:layout_height="match_parent"
++        android:background="#fff"/>
++
++</LinearLayout>
+\ No newline at end of file
+diff --git a/app/src/main/res/layout/horizontal_sinle_item.xml b/app/src/main/res/layout/horizontal_sinle_item.xml
+new file mode 100644
+index 00000000..1c5b643a
+--- /dev/null
++++ b/app/src/main/res/layout/horizontal_sinle_item.xml
+@@ -0,0 +1,49 @@
++<?xml version="1.0" encoding="utf-8"?>
++<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:fresco="http://schemas.android.com/apk/res-auto"
++    android:layout_width="250dp"
++    android:layout_height="270dp"
++    android:layout_margin="5dp"
++    android:background="#FFFFFF"
++    android:orientation="vertical"
++    android:padding="5dp">
++
++    <LinearLayout
++        android:layout_width="match_parent"
++        android:layout_height="match_parent"
++        android:orientation="vertical">
++
++        <FrameLayout
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content">
++
++            <ImageView
++                android:id="@+id/image_view"
++                android:layout_width="match_parent"
++                android:layout_height="150dp"
++                android:scaleType="center" />
++
++
++
++            <View
++                android:layout_width="match_parent"
++                android:layout_height="100dp"
++                android:id="@+id/view" />
++
++        </FrameLayout>
++        <TextView
++            android:id="@+id/title"
++            android:layout_width="wrap_content"
++            android:layout_height="wrap_content"
++            android:layout_margin="8dp"
++            android:textColor="#000"
++            android:text="Title"
++            android:textSize="28sp" />
++        <TextView
++            android:id="@+id/description"
++            android:layout_width="wrap_content"
++            android:layout_height="wrap_content"
++            android:layout_margin="8dp"
++            android:text="this is the description" />
++    </LinearLayout>
++</android.support.v7.widget.CardView>
+\ No newline at end of file
+-- 
+2.24.1.windows.2
+

@@ -31,6 +31,7 @@ import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.models.TestpressApiResponse;
 import in.testpress.testpress.models.Update;
 import in.testpress.testpress.network.CheckPermissionService;
+import in.testpress.testpress.network.DashboardResponse;
 import in.testpress.testpress.network.RssConverterFactory;
 import in.testpress.testpress.network.RssFeedService;
 import in.testpress.testpress.network.SsoUrlService;
@@ -324,4 +325,7 @@ public class TestpressService {
         return getPostService().updateCommentVote(forum.getVoteId(), params);
     }
 
+    public DashboardResponse getDashboardData() {
+        return getAuthenticationService().getDashboardData();
+    }
 }

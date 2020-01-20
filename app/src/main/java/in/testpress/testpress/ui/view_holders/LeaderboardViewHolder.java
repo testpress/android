@@ -23,7 +23,8 @@ public class LeaderboardViewHolder extends BaseCarouselViewHolder {
         DaoSession daoSession = ((TestpressApplication) context.getApplicationContext()).getDaoSession();
         DashboardSection section = sections.get(getAdapterPosition());
         List<LeaderboardItem> leaderboardItems = daoSession.getLeaderboardItemDao().queryBuilder()
-                .where(LeaderboardItemDao.Properties.Id.in(section.getItems())).list();
+                .where(LeaderboardItemDao.Properties.Id.in(section.getItems()))
+                .orderDesc(LeaderboardItemDao.Properties.TrophiesCount).list();
         LeaderboardListAdapter adapter = new LeaderboardListAdapter(leaderboardItems, context);
         recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(adapter);

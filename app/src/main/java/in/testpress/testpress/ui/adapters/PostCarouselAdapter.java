@@ -51,8 +51,6 @@ public class PostCarouselAdapter extends RecyclerView.Adapter<PostCarouselAdapte
             public void onClick(View view) {
                 Intent intent = new Intent(context, PostActivity.class);
                 intent.putExtra("shortWebUrl", data.get(position).getShortLink());
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                        Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.putExtra(Constants.IS_DEEP_LINK, true);
                 context.startActivity(intent);
             }

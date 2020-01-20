@@ -7,10 +7,14 @@ import java.util.List;
 
 import in.testpress.core.TestpressException;
 import in.testpress.core.TestpressSDKDatabase;
+import in.testpress.models.greendao.AttemptDao;
 import in.testpress.models.greendao.ChapterDao;
 import in.testpress.models.greendao.ContentDao;
+import in.testpress.models.greendao.CourseAttempt;
 import in.testpress.models.greendao.CourseAttemptDao;
 import in.testpress.models.greendao.CourseDao;
+import in.testpress.models.greendao.ExamDao;
+import in.testpress.models.greendao.VideoAttemptDao;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.core.DashboardPager;
 import in.testpress.testpress.models.BannerDao;
@@ -46,6 +50,8 @@ public class DashboardLoader extends ThrowableLoader<List<DashboardSection>> {
     }
 
     private void storeData() {
+        storeExams();
+        storeAssessments();
         storeContents();
         storeContentAttempts();
         storeBanners();
@@ -55,6 +61,16 @@ public class DashboardLoader extends ThrowableLoader<List<DashboardSection>> {
         storeChapters();
         storeCategories();
         storeUserStatuses();
+    }
+
+    private void storeExams() {
+        ExamDao examDao = TestpressSDKDatabase.getExamDao(context);
+        examDao.insertOrReplaceInTx(pager.getResponse().getExams());
+    }
+
+    private void storeAssessments() {
+        AttemptDao attemptDao = TestpressSDKDatabase.getAttemptDao(context);
+        attemptDao.insertOrReplaceInTx(pager.getResponse().getAssessments());
     }
 
     private void storeContents() {

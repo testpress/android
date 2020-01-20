@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -20,6 +21,7 @@ import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
 import in.testpress.models.greendao.Content;
+import in.testpress.models.greendao.Exam;
 import in.testpress.testpress.R;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.util.ImageUtils;
@@ -46,23 +48,58 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
 
     @Override
     public void onBindViewHolder(ContentsCarouselAdapter.MyViewHolder holder, final int position) {
-        imageLoader.displayImage("https://picsum.photos/500/250?random=" + position, holder.image, options);
-        
-        if (contents.get(0).getImage() == null || contents.get(0).getImage().isEmpty()) {
-            holder.image.setColorFilter(Color.parseColor("#888888"));
-        } else {
-            holder.image.setColorFilter(Color.parseColor("#77000000"));
-        }
-        holder.title.setText(contents.get(position).getName());
+        final Content content = contents.get(position);
 
+        imageLoader.displayImage("https://picsum.photos/500/250?random=" + position, holder.image, options);
+        holder.image.setColorFilter(Color.parseColor("#77000000"));
+
+        setIconAndChapterTitle(content, holder);
+        showOrHideVideoAccessories(content, holder);
+        showOrHideExamAccessories(content, holder);
+
+
+        holder.title.setText(content.getName());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Activity activity = (Activity) context;
                 TestpressSession session = TestpressSdk.getTestpressSession(context);
-                TestpressCourse.showContentDetail(activity, contents.get(position).getId().toString(), session);
+                TestpressCourse.showContentDetail(activity, content.getId().toString(), session);
             }
         });
+    }
+
+    private void setIconAndChapterTitle(Content content, ContentsCarouselAdapter.MyViewHolder holder) {
+        if (content.getChapter() != null) {
+            holder.subtitle.setText(content.getChapter().getName());
+        }
+
+        switch (content.getContentType().toLowerCase()) {
+            case "video":
+                holder.contentTypeIcon.setImageResource(R.drawable.ic_video_white);
+                break;
+            case "exam":
+                holder.contentTypeIcon.setImageResource(R.drawable.ic_exam);
+                break;
+        }
+    }
+
+    private void showOrHideVideoAccessories(Content content, ContentsCarouselAdapter.MyViewHolder holder) {
+        if (content.getVideoId() != null) {
+            holder.playIcon.setVisibility(View.VISIBLE);
+        } else {
+            holder.playIcon.setVisibility(View.GONE);
+        }
+    }
+
+    private void showOrHideExamAccessories(Content content, ContentsCarouselAdapter.MyViewHolder holder) {
+        if (content.getExam() != null) {
+            Exam exam = content.getExam();
+            holder.infoLayout.setVisibility(View.VISIBLE);
+            holder.numberOfQuestions.setText(exam.getNumberOfQuestions());
+        } else {
+            holder.infoLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -71,13 +108,20 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        ImageView image;
-        TextView title;
+        ImageView image, playIcon, contentTypeIcon;
+        TextView title, numberOfQuestions, subtitle;
+        LinearLayout infoLayout;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             image = (ImageView) itemView.findViewById(R.id.image_view);
+            playIcon = (ImageView) itemView.findViewById(R.id.play_icon);
+            contentTypeIcon = (ImageView) itemView.findViewById(R.id.content_type_icon);
+            infoLayout = (LinearLayout) itemView.findViewById(R.id.info_layout);
             title = (TextView) itemView.findViewById(R.id.title);
+            subtitle = (TextView) itemView.findViewById(R.id.subtitle);
+            numberOfQuestions = (TextView) itemView.findViewById(R.id.number_of_questions);
+
             title.setTypeface(UIUtils.getLatoBoldFont(context));
         }
     }

@@ -157,5 +157,7 @@
     <string name="password_mismatch_error">Passwords don\'t match</string>
     <string name="PARALLEL_LOGIN_RESTRICTION_ERROR_CODE">parallel_login_restriction</string>
     <string name="MAX_LOGIN_EXCEEDED_ERROR_CODE">max_login_exceeded</string>
+    <string name="no_data_found">No data found</string>
+    <string name="try_after_some_time">Please check after some time</string>
 
 </resources>

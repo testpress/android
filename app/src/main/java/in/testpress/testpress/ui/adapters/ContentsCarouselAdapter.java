@@ -96,7 +96,7 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
         if (content.getExam() != null) {
             Exam exam = content.getExam();
             holder.infoLayout.setVisibility(View.VISIBLE);
-            holder.numberOfQuestions.setText(exam.getNumberOfQuestions());
+            holder.numberOfQuestions.setText(exam.getNumberOfQuestions().toString());
         } else {
             holder.infoLayout.setVisibility(View.GONE);
         }

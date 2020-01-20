@@ -37,7 +37,6 @@ import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.DashboardSection;
 import in.testpress.testpress.models.DashboardSectionDao;
-import in.testpress.testpress.ui.adapters.DashboardAdapter;
 import in.testpress.testpress.ui.loaders.DashboardLoader;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
@@ -68,7 +67,6 @@ public class DashboardFragment extends Fragment implements
     protected TestpressServiceProvider serviceProvider;
     private TestpressService testpressService;
     private DashboardPager pager;
-    private DashboardAdapter adapter;
     private DashboardSectionDao dashboardSectionDao;
     private boolean firstCallback = true;
     private DaoSession daoSession;

@@ -3,6 +3,7 @@ package in.testpress.testpress.network;
 import java.util.ArrayList;
 import java.util.List;
 
+import in.testpress.models.greendao.Attempt;
 import in.testpress.models.greendao.Chapter;
 import in.testpress.models.greendao.Content;
 import in.testpress.models.greendao.Course;
@@ -27,6 +28,7 @@ public class DashboardResponse {
     private List<Course> courses = new ArrayList<>();
     private List<UserStats> userStatuses = new ArrayList<>();
     private List<Exam> exams = new ArrayList<>();
+    private List<Attempt> assessments = new ArrayList<>();
 
     public List<DashboardSection> getDashboardSections() {
         return dashboardSections;
@@ -74,5 +76,9 @@ public class DashboardResponse {
 
     public List<Exam> getExams() {
         return exams;
+    }
+
+    public List<Attempt> getAssessments() {
+        return assessments;
     }
 }

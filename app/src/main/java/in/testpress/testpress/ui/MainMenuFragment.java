@@ -240,8 +240,8 @@ public class MainMenuFragment extends Fragment {
                         // TestpressCourse.show(getContext(), TestpressSdk.getTestpressSession(getActivity()));
                         break;
                     case R.string.dashboard_offline_solution:
-                        // Hard coded id 15 for Offline course
-                        TestpressCourse.showChapters(getActivity(), getString(R.string.dashboard_offline_solution), 15, TestpressSdk.getTestpressSession(getActivity()));
+                        // Hard coded id 126 for Offline course
+                        TestpressCourse.showChapters(getActivity(), getString(R.string.dashboard_offline_solution), 126, TestpressSdk.getTestpressSession(getActivity()));
                         break;
                     case R.string.dashboard_notification:
                         intent = new Intent(getContext(), PostsListActivity.class);
@@ -268,8 +268,8 @@ public class MainMenuFragment extends Fragment {
                         TestpressCourse.showChapters(getActivity(), getString(R.string.dashboard_study_material), 16, TestpressSdk.getTestpressSession(getActivity()));
                         break;
                     case R.string.dashboard_current_affair:
-                        // Hard coded id 15 for Current affairs course
-                        TestpressCourse.showChapters(getActivity(), getString(R.string.dashboard_current_affair), 17, TestpressSdk.getTestpressSession(getActivity()));
+                        // Hard coded id 127 for Current affairs course
+                        TestpressCourse.showChapters(getActivity(), getString(R.string.dashboard_current_affair), 127, TestpressSdk.getTestpressSession(getActivity()));
                         break;
                     case R.string.dashboard_about_us:
                         intent = new Intent(getContext(), PostActivity.class);

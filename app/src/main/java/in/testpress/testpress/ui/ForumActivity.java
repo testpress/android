@@ -252,16 +252,16 @@ public class ForumActivity extends TestpressFragmentActivity implements
 
                     forum.setModified(ForumActivity.this.forum.getModified());
                     forum.setModifiedDate(simpleDateFormat.parse(forum.getModified()).getTime());
-                    if (forum.getCategory() != null) {
-                        forum.setCategory(forum.getCategory());
+                    if (forum.getRawCategory() != null) {
+                        forum.setCategory(forum.getRawCategory());
                         CategoryDao categoryDao =
                                 TestpressApplication.getDaoSession().getCategoryDao();
-                        categoryDao.insertOrReplace(forum.getCategory());
+                        categoryDao.insertOrReplace(forum.getRawCategory());
                     }
-                    User user = forum.getCreatedBy();
+                    User user = forum.getRawCreatedBy();
                     userDao.insertOrReplace(user);
                     forum.setCreatorId(user.getId());
-                    user = forum.getLastCommentedBy();
+                    user = forum.getRawLastCommentedBy();
                     if (user != null) {
                         userDao.insertOrReplace(user);
                         forum.setCommentorId(user.getId());
@@ -300,8 +300,8 @@ public class ForumActivity extends TestpressFragmentActivity implements
             votesCount.setTextColor(primaryColor);
             downButton.setColorFilter(grayColor);
         }
-        userName.setText(forum.getCreatedBy().getFirstName() + " " + forum.getCreatedBy().getLastName());
-        imageLoader.displayImage(forum.getCreatedBy().getMediumImage(), roundedImageView, options);
+        userName.setText(forum.getRawCreatedBy().getFirstName() + " " + forum.getRawCreatedBy().getLastName());
+        imageLoader.displayImage(forum.getRawCreatedBy().getMediumImage(), roundedImageView, options);
         if (forum.getContentHtml() != null) {
             WebViewUtils webViewUtils = new WebViewUtils(content) {
                 @Override
@@ -373,7 +373,7 @@ public class ForumActivity extends TestpressFragmentActivity implements
     }
 
     private void voteForumPost(final View view, final int typeOfVote) {
-        if (isSelfVote(forum.getCreatedBy().getId())) {
+        if (isSelfVote(forum.getRawCreatedBy().getId())) {
             showSnackBar(view, R.string.testpress_self_vote_error);
             return;
         }
@@ -477,10 +477,10 @@ public class ForumActivity extends TestpressFragmentActivity implements
         forum = vote.getContentObject();
         forum.setVoteId((long) vote.getId());
         forum.setTypeOfVote(vote.getTypeOfVote());
-        User user = vote.getContentObject().getCreatedBy();
+        User user = vote.getContentObject().getRawCreatedBy();
         userDao.insertOrReplace(user);
         forum.setCreatorId(user.getId());
-        user = vote.getContentObject().getLastCommentedBy();
+        user = vote.getContentObject().getRawLastCommentedBy();
         if (user != null) {
             userDao.insertOrReplace(user);
             forum.setCommentorId(user.getId());
@@ -517,9 +517,9 @@ public class ForumActivity extends TestpressFragmentActivity implements
         } else if (exception instanceof RetrofitError) {
             if (((RetrofitError) exception).getResponse().getStatus() == 400) {
                 error = R.string.testpress_self_vote_error;
-                if (TestpressSdk.getTestpressUserId(activity) != forum.getCreatedBy().getId()) {
+                if (TestpressSdk.getTestpressUserId(activity) != forum.getRawCreatedBy().getId()) {
                     TestpressSdk.setTestpressUserId(activity,
-                            Integer.parseInt(forum.getCreatedBy().getId() + ""));
+                            Integer.parseInt(forum.getRawCreatedBy().getId() + ""));
                 }
             }
         }

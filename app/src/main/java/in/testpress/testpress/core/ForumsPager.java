@@ -80,8 +80,8 @@ public class ForumsPager extends ResourcePager<Forum> {
                     if (resource == null) {
                         continue;
                     }
-                    if(resource.getCategory() != null) {
-                        resource.setCategory(resource.getCategory());
+                    if(resource.getRawCategory() != null) {
+                        resource.setCategory(resource.getRawCategory());
                     }
                     resource.setPublished(simpleDateFormat.parse(resource.getPublishedDate()).getTime());
                     resource.setModifiedDate(simpleDateFormat.parse(resource.getModified()).getTime());

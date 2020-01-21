@@ -93,6 +93,7 @@ public class TestpressDaoGenerator {
         addUserToForum(forum, user, "lastCommentedBy", "commentorId");
         addCategoryToForum(forum, category);
 
+        schema.enableKeepSectionsByDefault();
         new DaoGenerator().generateAll(schema, "app/src/main/java/");
     }
 

@@ -36,6 +36,7 @@ import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
+import in.testpress.testpress.authenticator.LoginActivity;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
@@ -45,6 +46,7 @@ import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.models.Update;
+import in.testpress.testpress.ui.fragments.DashboardFragment;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.SafeAsyncTask;
@@ -151,7 +153,7 @@ public class MainActivity extends TestpressFragmentActivity {
             apiAvailability.makeGooglePlayServicesAvailable(this);
             CommonUtils.registerDevice(MainActivity.this, testpressService, serviceProvider);
         }
-        addMenuItem(R.string.dashboard, R.drawable.profile_default, new MainMenuFragment());
+        addMenuItem(R.string.dashboard, R.drawable.profile_default, new DashboardFragment());
         // Show courses list if game front end is enabled, otherwise hide bottom bar
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             //noinspection ConstantConditions

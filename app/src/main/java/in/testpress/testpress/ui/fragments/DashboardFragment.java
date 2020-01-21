@@ -75,7 +75,7 @@ public class DashboardFragment extends Fragment implements
     public void onCreate(@Nullable Bundle savedInstanceState) {
         Injector.inject(this);
         super.onCreate(savedInstanceState);
-        updateTestpressSession();
+        initLoader();
     }
 
     @Override
@@ -124,27 +124,6 @@ public class DashboardFragment extends Fragment implements
         if (getActivity() != null) {
             getLoaderManager().restartLoader(0, null, this);
         }
-    }
-
-    private void updateTestpressSession() {
-        new SafeAsyncTask<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                final TestpressService service = serviceProvider.getService(getActivity());
-                return service != null;
-            }
-
-            @Override
-            protected void onException(final Exception e) throws RuntimeException {
-                super.onException(e);
-            }
-
-            @Override
-            protected void onSuccess(final Boolean hasAuthenticated) throws Exception {
-                super.onSuccess(hasAuthenticated);
-                initLoader();
-            }
-        }.execute();
     }
 
     TestpressService getTestpressService() {

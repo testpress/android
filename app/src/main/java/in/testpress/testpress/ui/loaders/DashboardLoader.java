@@ -10,11 +10,8 @@ import in.testpress.core.TestpressSDKDatabase;
 import in.testpress.models.greendao.AttemptDao;
 import in.testpress.models.greendao.ChapterDao;
 import in.testpress.models.greendao.ContentDao;
-import in.testpress.models.greendao.CourseAttempt;
 import in.testpress.models.greendao.CourseAttemptDao;
-import in.testpress.models.greendao.CourseDao;
 import in.testpress.models.greendao.ExamDao;
-import in.testpress.models.greendao.VideoAttemptDao;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.core.DashboardPager;
 import in.testpress.testpress.models.BannerDao;
@@ -27,7 +24,7 @@ import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.models.User;
 import in.testpress.testpress.models.UserDao;
 import in.testpress.testpress.models.UserStatsDao;
-import in.testpress.util.ThrowableLoader;
+import in.testpress.testpress.ui.ThrowableLoader;
 
 
 public class DashboardLoader extends ThrowableLoader<List<DashboardSection>> {
@@ -43,9 +40,14 @@ public class DashboardLoader extends ThrowableLoader<List<DashboardSection>> {
     }
 
     @Override
-    public List<DashboardSection> loadData() throws TestpressException {
-        pager.getItems(1, -1);
-        storeData();
+    public List<DashboardSection> loadData() throws Exception {
+        try {
+            pager.getItems(1, -1);
+            storeData();
+        } catch (Exception e) {
+            throw e;
+        }
+
         return pager.getResponse().getDashboardSections();
     }
 

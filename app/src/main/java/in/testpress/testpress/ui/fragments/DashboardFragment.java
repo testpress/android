@@ -26,8 +26,6 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import in.testpress.core.TestpressException;
-import in.testpress.core.TestpressSdk;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
@@ -37,11 +35,10 @@ import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.DashboardSection;
 import in.testpress.testpress.models.DashboardSectionDao;
+import in.testpress.testpress.ui.ThrowableLoader;
 import in.testpress.testpress.ui.loaders.DashboardLoader;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
-
-import static in.testpress.util.ThrowableLoader.getException;
 
 public class DashboardFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<List<DashboardSection>> {
@@ -68,7 +65,7 @@ public class DashboardFragment extends Fragment implements
     private DashboardSectionDao dashboardSectionDao;
     private boolean firstCallback = true;
     private DaoSession daoSession;
-    protected TestpressException exception;
+    protected Exception exception;
 
 
     @Override
@@ -139,13 +136,6 @@ public class DashboardFragment extends Fragment implements
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swipeRefreshLayout.setEnabled(true);
-                refresh();
-            }
-        });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -153,6 +143,26 @@ public class DashboardFragment extends Fragment implements
             swipeRefreshLayout.setVisibility(View.VISIBLE);
             swipeRefreshLayout.setRefreshing(true);
         }
+        addOnClickListeners();
+    }
+
+    private void addOnClickListeners() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setEnabled(true);
+                refresh();
+            }
+        });
+        retryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                swipeRefreshLayout.setVisibility(View.VISIBLE);
+                swipeRefreshLayout.setRefreshing(true);
+                emptyView.setVisibility(View.GONE);
+                refresh();
+            }
+        });
     }
 
     public void refresh() {
@@ -176,7 +186,7 @@ public class DashboardFragment extends Fragment implements
         emptyTitleView.setText(title);
         emptyTitleView.setCompoundDrawablesWithIntrinsicBounds(icon, 0, 0, 0);
         emptyDescView.setText(description);
-        retryButton.setVisibility(View.GONE);
+        retryButton.setVisibility(View.VISIBLE);
     }
 
     private void setEmptyText() {
@@ -184,33 +194,38 @@ public class DashboardFragment extends Fragment implements
                 R.drawable.ic_error_outline_black_18dp);
     }
 
-    protected int getErrorMessage(TestpressException exception) {
-        if (exception.isUnauthenticated()) {
-            setEmptyText(R.string.authentication_failed, R.string.testpress_please_login,
-                    R.drawable.ic_error_outline_black_18dp);
+    protected int getErrorMessage(Exception exception) {
+        if (exception instanceof IOException) {
+            if (getSections().isEmpty()) {
+                setEmptyText(R.string.authentication_failed, R.string.testpress_please_login,
+                        R.drawable.ic_error_outline_black_18dp);
+            }
             return R.string.testpress_authentication_failed;
-        } else if (exception.isNetworkError()) {
-            setEmptyText(R.string.testpress_network_error, R.string.testpress_no_internet_try_again,
-                    R.drawable.ic_error_outline_black_18dp);
-            return R.string.testpress_no_internet_try_again;
         } else {
-            setEmptyText(R.string.testpress_error_loading_contents,
-                    R.string.testpress_some_thing_went_wrong_try_again,
-                    R.drawable.ic_error_outline_black_18dp);
+            if (getSections().isEmpty()) {
+                setEmptyText(R.string.testpress_error_loading_contents,
+                        R.string.testpress_some_thing_went_wrong_try_again,
+                        R.drawable.ic_error_outline_black_18dp);
+            }
         }
         return R.string.testpress_some_thing_went_wrong_try_again;
     }
 
+    protected Exception getException(final Loader<List<DashboardSection>> loader) {
+        if (loader instanceof ThrowableLoader) {
+            return ((ThrowableLoader<List<DashboardSection>>) loader).clearException();
+        } else {
+            return null;
+        }
+    }
+
     @Override
     public void onLoadFinished(@NonNull Loader<List<DashboardSection>> loader, List<DashboardSection> items) {
-        final TestpressException exception = getException(loader);
+        final Exception exception = getException(loader);
         swipeRefreshLayout.setRefreshing(false);
         if (exception != null) {
             this.exception = exception;
-            int errorMessage = getErrorMessage(exception);
-            if (!items.isEmpty()) {
-                showError(errorMessage);
-            }
+            showError(getErrorMessage(exception));
             getLoaderManager().destroyLoader(loader.getId());
         } else {
             this.exception = null;

@@ -98,9 +98,21 @@ public class TestpressDaoGenerator {
         addBanner(schema);
         addDashboardSections(schema);
         addUserStats(schema);
+        addUserStatDates(schema);
 
 
         new DaoGenerator().generateAll(schema, "app/src/main/java/");
+    }
+
+    private static Entity addUserStatDates(Schema schema) {
+        Entity userStatDates = schema.addEntity("UserStatDates");
+        userStatDates.addStringProperty("monthStart");
+        userStatDates.addStringProperty("monthEnd");
+        userStatDates.addStringProperty("yearStart");
+        userStatDates.addStringProperty("yearEnd");
+        userStatDates.addStringProperty("weekStart");
+        userStatDates.addStringProperty("weekEnd");
+        return userStatDates;
     }
 
     private static Entity addUserStats(Schema schema) {

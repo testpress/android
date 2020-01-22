@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import in.testpress.core.TestpressSdk;
@@ -28,7 +27,7 @@ import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.util.ImageUtils;
 
-public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarouselAdapter.MyViewHolder> {
+public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarouselAdapter.ItemViewHolder> {
     private DashboardResponse response;
     private List<Content> contents;
     private ImageLoader imageLoader;
@@ -44,14 +43,14 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
     }
 
     @Override
-    public ContentsCarouselAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.content_carousel_item, parent, false);
-        return new MyViewHolder(view);
+        return new ItemViewHolder(view);
     }
 
 
     @Override
-    public void onBindViewHolder(ContentsCarouselAdapter.MyViewHolder holder, final int position) {
+    public void onBindViewHolder(ItemViewHolder holder, final int position) {
         final Content content = contents.get(position);
 
         imageLoader.displayImage("https://picsum.photos/320/180?random=" + position, holder.image, options);
@@ -75,7 +74,7 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
         });
     }
 
-    private void setIconAndChapterTitle(Content content, ContentsCarouselAdapter.MyViewHolder holder) {
+    private void setIconAndChapterTitle(Content content, ItemViewHolder holder) {
         if (response.getChapterHashMap().get(content.getChapterId()) != null) {
             Chapter chapter = response.getChapterHashMap().get(content.getChapterId());
             holder.subtitle.setText(chapter.getName());
@@ -97,7 +96,7 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
         }
     }
 
-    private void showOrHideVideoAccessories(Content content, ContentsCarouselAdapter.MyViewHolder holder) {
+    private void showOrHideVideoAccessories(Content content, ItemViewHolder holder) {
         if (content.getVideoId() != null) {
             holder.playIcon.setVisibility(View.VISIBLE);
         } else {
@@ -105,7 +104,7 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
         }
     }
 
-    private void showOrHideExamAccessories(Content content, ContentsCarouselAdapter.MyViewHolder holder) {
+    private void showOrHideExamAccessories(Content content, ItemViewHolder holder) {
         if (content.getExamId() != null) {
             Exam exam = response.getExamHashMap().get(content.getExamId());
             holder.infoLayout.setVisibility(View.VISIBLE);
@@ -120,12 +119,12 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
         return contents.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class ItemViewHolder extends RecyclerView.ViewHolder {
         ImageView image, playIcon, contentTypeIcon;
         TextView title, numberOfQuestions, subtitle;
         LinearLayout infoLayout;
 
-        public MyViewHolder(View itemView) {
+        public ItemViewHolder(View itemView) {
             super(itemView);
             image = (ImageView) itemView.findViewById(R.id.image_view);
             playIcon = (ImageView) itemView.findViewById(R.id.play_icon);

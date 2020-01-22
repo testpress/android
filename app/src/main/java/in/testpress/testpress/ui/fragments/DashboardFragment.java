@@ -38,6 +38,7 @@ import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
 import in.testpress.testpress.ui.ThrowableLoader;
+import in.testpress.testpress.ui.adapters.DashboardAdapter;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
 
@@ -64,6 +65,7 @@ public class DashboardFragment extends Fragment implements
 
     @Inject
     protected TestpressServiceProvider serviceProvider;
+    private DashboardAdapter adapter;
     private TestpressService testpressService;
     private boolean firstCallback = true;
     private DaoSession daoSession;
@@ -83,6 +85,8 @@ public class DashboardFragment extends Fragment implements
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
 
+        adapter = new DashboardAdapter(getContext(), getDashboardDataPreferences(getContext()));
+        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         swipeRefreshLayout.setEnabled(true);
 
@@ -170,6 +174,8 @@ public class DashboardFragment extends Fragment implements
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String json = gson.toJson(data);
         setDashboardData(getContext(), json);
+        adapter.setResponse(data);
+        adapter.notifyDataSetChanged();
     }
 
     private void showError(final int message) {

@@ -1,6 +1,7 @@
 package in.testpress.testpress.models.pojo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import in.testpress.models.greendao.Attempt;
@@ -9,6 +10,7 @@ import in.testpress.models.greendao.Content;
 import in.testpress.models.greendao.Course;
 import in.testpress.models.greendao.CourseAttempt;
 import in.testpress.models.greendao.Exam;
+import in.testpress.models.greendao.Video;
 import in.testpress.models.greendao.VideoAttempt;
 import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.Post;
@@ -29,6 +31,10 @@ public class DashboardResponse {
     private List<Attempt> assessments = new ArrayList<>();
     private List<VideoAttempt> user_videos = new ArrayList<>();
 
+    private HashMap<Long, Chapter> chapterHashMap = new HashMap<>();
+    private HashMap<Long, Content> contentHashMap = new HashMap<>();
+    private HashMap<Long, Exam> examHashMap = new HashMap<>();
+    private HashMap<Long, Video> videoHashMap = new HashMap<>();
 
     public List<DashboardSection> getDashboardSections() {
         return dashboardSections;
@@ -80,5 +86,32 @@ public class DashboardResponse {
 
     public List<VideoAttempt> getUser_videos() {
         return user_videos;
+    }
+
+    public HashMap<Long, Chapter> getChapterHashMap() {
+        if (chapterHashMap.isEmpty()) {
+            for(Chapter chapter : chapters) {
+                chapterHashMap.put(chapter.getId(), chapter);
+            }
+        }
+        return chapterHashMap;
+    }
+
+    public HashMap<Long, Content> getContentHashMap() {
+        if (contentHashMap.isEmpty()) {
+            for(Content content : chapterContents) {
+                contentHashMap.put(content.getId(), content);
+            }
+        }
+        return contentHashMap;
+    }
+
+    public HashMap<Long, Exam> getExamHashMap() {
+        if (examHashMap.isEmpty()) {
+            for(Exam exam : exams) {
+                examHashMap.put(exam.getId(), exam);
+            }
+        }
+        return examHashMap;
     }
 }

@@ -233,7 +233,6 @@ public class PostActivity extends TestpressFragmentActivity implements
     private void displayPost(Post post) {
         postDetails.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
-        getSupportActionBar().setTitle(post.getTitle());
         title.setText(post.getTitle());
         if (post.getSummary().trim().isEmpty()) {
             summaryLayout.setVisibility(View.GONE);

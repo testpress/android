@@ -33,6 +33,7 @@ public class DashboardResponse {
 
     private HashMap<Long, Chapter> chapterHashMap = new HashMap<>();
     private HashMap<Long, Content> contentHashMap = new HashMap<>();
+    private HashMap<Long, CourseAttempt> contentAttemptHashMap = new HashMap<>();
     private HashMap<Long, Exam> examHashMap = new HashMap<>();
     private HashMap<Long, Video> videoHashMap = new HashMap<>();
 
@@ -104,6 +105,15 @@ public class DashboardResponse {
             }
         }
         return contentHashMap;
+    }
+
+    public HashMap<Long, CourseAttempt> getContentAttemptHashMap() {
+        if (contentAttemptHashMap.isEmpty()) {
+            for(CourseAttempt attempt : chapterContentAttempts) {
+                contentAttemptHashMap.put(attempt.getId(), attempt);
+            }
+        }
+        return contentAttemptHashMap;
     }
 
     public HashMap<Long, Exam> getExamHashMap() {

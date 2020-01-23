@@ -34,6 +34,7 @@ public class DashboardResponse {
     private HashMap<Long, Chapter> chapterHashMap = new HashMap<>();
     private HashMap<Long, Content> contentHashMap = new HashMap<>();
     private HashMap<Long, Post> postHashMap = new HashMap<>();
+    private HashMap<Long, Banner> bannerHashMap = new HashMap<>();
     private HashMap<Long, CourseAttempt> contentAttemptHashMap = new HashMap<>();
     private HashMap<Long, Exam> examHashMap = new HashMap<>();
     private HashMap<Long, Video> videoHashMap = new HashMap<>();
@@ -133,5 +134,14 @@ public class DashboardResponse {
             }
         }
         return postHashMap;
+    }
+
+    public HashMap<Long, Banner> getBannerHashMap() {
+        if (bannerHashMap.isEmpty()) {
+            for(Banner banner : bannerAds) {
+                bannerHashMap.put(banner.getId(), banner);
+            }
+        }
+        return bannerHashMap;
     }
 }

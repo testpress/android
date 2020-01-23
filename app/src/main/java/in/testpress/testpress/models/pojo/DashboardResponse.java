@@ -33,6 +33,7 @@ public class DashboardResponse {
 
     private HashMap<Long, Chapter> chapterHashMap = new HashMap<>();
     private HashMap<Long, Content> contentHashMap = new HashMap<>();
+    private HashMap<Long, Post> postHashMap = new HashMap<>();
     private HashMap<Long, CourseAttempt> contentAttemptHashMap = new HashMap<>();
     private HashMap<Long, Exam> examHashMap = new HashMap<>();
     private HashMap<Long, Video> videoHashMap = new HashMap<>();
@@ -123,5 +124,14 @@ public class DashboardResponse {
             }
         }
         return examHashMap;
+    }
+
+    public HashMap<Long, Post> getPostHashMap() {
+        if (postHashMap.isEmpty()) {
+            for(Post post : posts) {
+                postHashMap.put(post.getId(), post);
+            }
+        }
+        return postHashMap;
     }
 }

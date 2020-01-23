@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import in.testpress.core.TestpressSdk;
@@ -21,25 +23,44 @@ import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
 import in.testpress.models.greendao.Chapter;
 import in.testpress.models.greendao.Content;
+import in.testpress.models.greendao.CourseAttempt;
 import in.testpress.models.greendao.Exam;
 import in.testpress.testpress.R;
 import in.testpress.testpress.models.pojo.DashboardResponse;
+import in.testpress.testpress.models.pojo.DashboardSection;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.util.ImageUtils;
+import in.testpress.util.IntegerList;
 
 public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarouselAdapter.ItemViewHolder> {
     private DashboardResponse response;
-    private List<Content> contents;
+    private DashboardSection section;
+    private List<Content> contents = new ArrayList<>();
     private ImageLoader imageLoader;
     private DisplayImageOptions options;
     private Context context;
 
-    public ContentsCarouselAdapter(DashboardResponse response, Context context) {
+    public ContentsCarouselAdapter(DashboardResponse response, DashboardSection currentSection, Context context) {
         this.response = response;
-        this.contents = response.getContents();
+        this.section = currentSection;
+        populateContents();
         this.context = context;
         imageLoader = ImageUtils.initImageLoader(context);
         options = ImageUtils.getPlaceholdersOption();
+    }
+
+    private void populateContents() {
+        IntegerList items = section.getItems();
+        if (section.getContentType().equals("chapter_content")) {
+            for (Integer item : items) {
+                this.contents.add(this.response.getContentHashMap().get(Long.valueOf(item)));
+            }
+        } else {
+            for (Integer item : items) {
+                CourseAttempt attempt = this.response.getContentAttemptHashMap().get(Long.valueOf(item));
+                this.contents.add(this.response.getContentHashMap().get(attempt.getChapterContentId()));
+            }
+        }
     }
 
     @Override

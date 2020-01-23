@@ -24,9 +24,19 @@ public class ContentsCarouselViewHolder extends BaseCarouselViewHolder {
 
     public void display(DashboardResponse response, Context context) {
         List<DashboardSection> sections = response.getDashboardSections();
-        ContentsCarouselAdapter adapter = new ContentsCarouselAdapter(response, sections.get(getAdapterPosition()), context);
+        DashboardSection section = sections.get(getAdapterPosition());
+        ContentsCarouselAdapter adapter = new ContentsCarouselAdapter(response, section, context);
         recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(adapter);
         title.setText(sections.get(getAdapterPosition()).getDisplayName());
+        setTitleIcon(section);
+    }
+
+    private void setTitleIcon(DashboardSection section) {
+        if (section.getSlug().equals("completed")) {
+            title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_completed_black, 0, 0, 0);
+        } else {
+            title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_star_black, 0, 0, 0);
+        }
     }
 }

@@ -36,7 +36,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     public void setResponse(DashboardResponse response) {
         this.response = response;
-        this.sections = response.getDashboardSections();
+        this.sections = response.getAvailableSections();
     }
 
     @Override

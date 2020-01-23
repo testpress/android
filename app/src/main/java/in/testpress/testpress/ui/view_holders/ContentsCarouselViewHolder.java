@@ -23,7 +23,7 @@ public class ContentsCarouselViewHolder extends BaseCarouselViewHolder {
     }
 
     public void display(DashboardResponse response, Context context) {
-        List<DashboardSection> sections = response.getDashboardSections();
+        List<DashboardSection> sections = response.getAvailableSections();
         DashboardSection section = sections.get(getAdapterPosition());
         ContentsCarouselAdapter adapter = new ContentsCarouselAdapter(response, section, context);
         recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));

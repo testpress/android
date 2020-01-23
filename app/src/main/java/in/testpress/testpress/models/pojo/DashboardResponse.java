@@ -18,6 +18,7 @@ import in.testpress.testpress.models.Post;
 
 public class DashboardResponse {
     private List<DashboardSection> dashboardSections = new ArrayList<>();
+    private List<DashboardSection> availableSections = new ArrayList<>();
     private List<Content> chapterContents = new ArrayList<>();
     private List<CourseAttempt> chapterContentAttempts = new ArrayList<>();
     private List<Post> posts = new ArrayList<>();
@@ -143,5 +144,16 @@ public class DashboardResponse {
             }
         }
         return bannerHashMap;
+    }
+
+    public List<DashboardSection> getAvailableSections() {
+        if (availableSections.isEmpty()) {
+            for (DashboardSection section : dashboardSections) {
+                if (!section.getItems().isEmpty()) {
+                    availableSections.add(section);
+                }
+            }
+        }
+        return availableSections;
     }
 }

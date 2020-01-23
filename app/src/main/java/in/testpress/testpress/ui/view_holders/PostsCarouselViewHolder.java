@@ -16,7 +16,7 @@ public class PostsCarouselViewHolder extends BaseCarouselViewHolder {
     }
 
     public void display(DashboardResponse response, Context context) {
-        DashboardSection section = response.getDashboardSections().get(getAdapterPosition());
+        DashboardSection section = response.getAvailableSections().get(getAdapterPosition());
         PostCarouselAdapter adapter = new PostCarouselAdapter(response, section, context);
 
         if (section.getItems().size() > 8) {

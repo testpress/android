@@ -142,7 +142,7 @@ public class DashboardFragment extends Fragment implements
     }
 
     private List<DashboardSection> getSections() {
-        return getDashboardDataPreferences(getContext()).getDashboardSections();
+        return getDashboardDataPreferences(getContext()).getAvailableSections();
     }
 
     @NonNull

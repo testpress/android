@@ -81,7 +81,7 @@
         <activity
             android:name=".ui.PostActivity"
             android:theme="@style/AppTheme"
-            android:label="@string/testpress_app_name"
+            android:label="Article"
             android:windowSoftInputMode="stateHidden"
             android:configChanges="orientation|keyboardHidden|screenSize" />
 

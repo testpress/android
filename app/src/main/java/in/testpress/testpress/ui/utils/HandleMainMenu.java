@@ -55,10 +55,10 @@ public class HandleMainMenu {
                 ((MainActivity) activity).logout();
                 break;
             case R.id.bookmarks:
-                checkAuthenticatedUser(R.string.bookmarks);
+                checkAuthenticationAndOpen(R.string.bookmarks);
                 break;
             case R.id.analytics:
-                checkAuthenticatedUser(R.string.analytics);
+                checkAuthenticationAndOpen(R.string.analytics);
                 break;
             case R.id.login_activity:
                 intent = new Intent(activity, UserDevicesActivity.class);
@@ -71,11 +71,12 @@ public class HandleMainMenu {
         }
     }
 
-    void checkAuthenticatedUser(final int clickedMenuTitleResId) {
+    void checkAuthenticationAndOpen(final int clickedMenuTitleResId) {
         if (!CommonUtils.isUserAuthenticated(activity)) {
             ((MainActivity) activity).logout();
             return;
         }
+
         if (TestpressSdk.hasActiveSession(activity)) {
             showSDK(clickedMenuTitleResId);
         } else {

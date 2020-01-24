@@ -130,17 +130,6 @@ public class DashboardFragment extends Fragment implements
         }
     }
 
-    TestpressService getTestpressService() {
-        if (CommonUtils.isUserAuthenticated(getActivity())) {
-            try {
-                testpressService = serviceProvider.getService(getActivity());
-            } catch (AccountsException e) {
-            } catch (IOException e) {
-            }
-        }
-        return testpressService;
-    }
-
     private List<DashboardSection> getSections() {
         return getDashboardDataPreferences(getContext()).getAvailableSections();
     }

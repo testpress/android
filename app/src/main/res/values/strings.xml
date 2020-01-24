@@ -159,5 +159,7 @@
     <string name="MAX_LOGIN_EXCEEDED_ERROR_CODE">max_login_exceeded</string>
     <string name="no_data_available">No data available</string>
     <string name="try_after_some_time">Please try after some time</string>
+    <string name="open_drawer">Open Navigation Drawer</string>
+    <string name="close_drawer">Close Navigation Drawer</string>
 
 </resources>

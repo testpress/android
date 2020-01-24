@@ -7,10 +7,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -45,6 +50,8 @@ import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.models.Update;
+import in.testpress.testpress.ui.fragments.DashboardFragment;
+import in.testpress.testpress.ui.utils.HandleMainMenu;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.SafeAsyncTask;
@@ -73,7 +80,12 @@ public class MainActivity extends TestpressFragmentActivity {
     @InjectView(R.id.progressbar) RelativeLayout progressBarLayout;
     @InjectView(R.id.viewpager) ViewPager viewPager;
     @InjectView(R.id.grid) GridView grid;
+    @InjectView(R.id.drawer_layout)
+    DrawerLayout drawer;
+    @InjectView(R.id.navigation_view)
+    NavigationView navigationView;
 
+    private ActionBarDrawerToggle drawerToggle;
     private int mSelectedItem;
     private BottomNavBarAdapter mBottomBarAdapter;
     private ArrayList<Integer> mMenuItemImageIds = new ArrayList<>();
@@ -109,6 +121,47 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             checkUpdate();
         }
+    }
+
+    private void setUpNavigationDrawer() {
+        getSupportActionBar().setHomeButtonEnabled(true);
+        drawerToggle = setupDrawerToggle();
+        drawerToggle.setDrawerIndicatorEnabled(true);
+        drawerToggle.setHomeAsUpIndicator(R.drawable.ic_menu);
+        drawerToggle.syncState();
+
+        drawer.addDrawerListener(drawerToggle);
+        setupDrawerContent(navigationView);
+    }
+
+    private ActionBarDrawerToggle setupDrawerToggle() {
+        return new ActionBarDrawerToggle(
+                this, drawer, getActionBarToolbar(),
+                R.string.open_drawer,  R.string.close_drawer
+        );
+    }
+
+    private void setupDrawerContent(NavigationView navigationView) {
+        final HandleMainMenu handleMainMenu = new HandleMainMenu(MainActivity.this, serviceProvider);
+        navigationView.setNavigationItemSelectedListener(
+            new NavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(MenuItem menuItem) {
+                    handleMainMenu.handleMenuOptionClick(menuItem.getItemId());
+                    return true;
+                }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                drawer.openDrawer(GravityCompat.START);
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void updateTestpressSession() {
@@ -274,6 +327,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
     public void onFinishFetchingInstituteSettings(InstituteSettings instituteSettings) {
         this.mInstituteSettings = instituteSettings;
+        setUpNavigationDrawer();
         isUserAuthenticated = CommonUtils.isUserAuthenticated(this);
         //noinspection ConstantConditions
         if (!isUserAuthenticated && !ALLOW_ANONYMOUS_USER) {

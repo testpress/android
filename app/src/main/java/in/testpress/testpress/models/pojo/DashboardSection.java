@@ -7,7 +7,7 @@ public class DashboardSection {
     private String displayName;
     private String url;
     private String contentType;
-    private String order;
+    private Integer order;
     private String displayType;
     private IntegerList items;
 
@@ -27,7 +27,7 @@ public class DashboardSection {
         return contentType;
     }
 
-    public String getOrder() {
+    public Integer getOrder() {
         return order;
     }
 

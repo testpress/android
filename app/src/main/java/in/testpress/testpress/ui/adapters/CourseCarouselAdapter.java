@@ -20,6 +20,7 @@ import in.testpress.models.greendao.Product;
 import in.testpress.testpress.R;
 import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
+import in.testpress.testpress.util.UIUtils;
 import in.testpress.util.ImageUtils;
 import in.testpress.util.IntegerList;
 
@@ -85,6 +86,10 @@ public class CourseCarouselAdapter extends RecyclerView.Adapter<CourseCarouselAd
             videosCount = (TextView) itemView.findViewById(R.id.videos_count);
             notesCount = (TextView) itemView.findViewById(R.id.notes_count);
             image = (ImageView) itemView.findViewById(R.id.image_view);
+            title.setTypeface(UIUtils.getLatoSemiBoldFont(context));
+            examsCount.setTypeface(UIUtils.getLatoSemiBoldFont(context));
+            videosCount.setTypeface(UIUtils.getLatoSemiBoldFont(context));
+            notesCount.setTypeface(UIUtils.getLatoSemiBoldFont(context));
         }
     }
 }

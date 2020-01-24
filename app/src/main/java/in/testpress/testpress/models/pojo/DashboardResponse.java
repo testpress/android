@@ -43,6 +43,7 @@ public class DashboardResponse {
     private HashMap<Long, Video> videoHashMap = new HashMap<>();
     private HashMap<Long, Product> productHashMap = new HashMap<>();
     private HashMap<Long, Course> courseHashMap = new HashMap<>();
+    private HashMap<Long, LeaderboardItem> leaderboardItemHashMap = new HashMap<>();
 
     public List<DashboardSection> getDashboardSections() {
         return dashboardSections;
@@ -172,6 +173,16 @@ public class DashboardResponse {
             }
         }
         return courseHashMap;
+    }
+
+
+    public HashMap<Long, LeaderboardItem> getLeaderboardItemHashMap() {
+        if (leaderboardItemHashMap.isEmpty()) {
+            for(LeaderboardItem item : leaderboardItems) {
+                leaderboardItemHashMap.put(item.getId(), item);
+            }
+        }
+        return leaderboardItemHashMap;
     }
 
     public List<DashboardSection> getAvailableSections() {

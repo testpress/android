@@ -15,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -142,6 +143,7 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
+        hideMenuItemsForUnauthenticatedUser(navigationView.getMenu());
         final HandleMainMenu handleMainMenu = new HandleMainMenu(MainActivity.this, serviceProvider);
         navigationView.setNavigationItemSelectedListener(
             new NavigationView.OnNavigationItemSelectedListener() {
@@ -151,6 +153,18 @@ public class MainActivity extends TestpressFragmentActivity {
                     return true;
                 }
         });
+    }
+
+    private void hideMenuItemsForUnauthenticatedUser(Menu menu) {
+        if (!isUserAuthenticated) {
+            menu.findItem(R.id.logout).setVisible(false);
+            menu.findItem(R.id.login_activity).setVisible(false);
+            menu.findItem(R.id.analytics).setVisible(false);
+            menu.findItem(R.id.profile).setVisible(false);
+            menu.findItem(R.id.bookmarks).setVisible(false);
+        } else {
+            menu.findItem(R.id.login).setVisible(false);
+        }
     }
 
     @Override
@@ -327,8 +341,8 @@ public class MainActivity extends TestpressFragmentActivity {
 
     public void onFinishFetchingInstituteSettings(InstituteSettings instituteSettings) {
         this.mInstituteSettings = instituteSettings;
-        setUpNavigationDrawer();
         isUserAuthenticated = CommonUtils.isUserAuthenticated(this);
+        setUpNavigationDrawer();
         //noinspection ConstantConditions
         if (!isUserAuthenticated && !ALLOW_ANONYMOUS_USER) {
             // Show login screen if user not logged in else update institute settings in TestpressSDK

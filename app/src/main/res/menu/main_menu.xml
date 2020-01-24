@@ -27,6 +27,11 @@
             android:icon="@drawable/ic_exit_to_app_black_24dp"
             android:title="Logout"
             app:showAsAction="never"/>
+        <item
+            android:id="@+id/login"
+            android:icon="@drawable/ic_exit_to_app_black_24dp"
+            android:title="Log in"
+            app:showAsAction="never"/>
     </group>
     <group
         android:id="@+id/group_feature">

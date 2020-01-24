@@ -106,10 +106,10 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
                 holder.contentTypeIcon.setImageResource(R.drawable.ic_video_white);
                 break;
             case "exam":
-                holder.contentTypeIcon.setImageResource(R.drawable.ic_exam);
+                holder.contentTypeIcon.setImageResource(R.drawable.ic_exam_white);
                 break;
             case "notes":
-                holder.contentTypeIcon.setImageResource(R.drawable.ic_news);
+                holder.contentTypeIcon.setImageResource(R.drawable.ic_news_white);
                 break;
             case "attachment":
                 holder.contentTypeIcon.setImageResource(R.drawable.ic_attachment);

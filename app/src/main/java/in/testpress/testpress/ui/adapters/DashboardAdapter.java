@@ -13,6 +13,7 @@ import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
 import in.testpress.testpress.ui.view_holders.BaseCarouselViewHolder;
 import in.testpress.testpress.ui.view_holders.ContentsCarouselViewHolder;
+import in.testpress.testpress.ui.view_holders.CourseCarouselViewHolder;
 import in.testpress.testpress.ui.view_holders.OffersCarouselViewHolder;
 import in.testpress.testpress.ui.view_holders.PostsCarouselViewHolder;
 
@@ -54,6 +55,8 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 return CONTENT_CAROUSEL;
             case "trophy_leaderboard":
                 return LEADERBOARD_LIST;
+            case "products":
+                return COURSE_CAROUSEL;
         }
         return -1;
     }
@@ -85,6 +88,8 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 holder = new OffersCarouselViewHolder(view, context);
                 break;
             case COURSE_CAROUSEL:
+                holder = new CourseCarouselViewHolder(view, context);
+                break;
             case LEADERBOARD_LIST:
             default:
                 holder = new BaseCarouselViewHolder(view, context);
@@ -106,6 +111,8 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             case OFFERS_CAROUSEL:
                 ((OffersCarouselViewHolder) holder).display(response, context);
                 break;
+            case COURSE_CAROUSEL:
+                ((CourseCarouselViewHolder) holder).display(response, context);
         }
     }
 }

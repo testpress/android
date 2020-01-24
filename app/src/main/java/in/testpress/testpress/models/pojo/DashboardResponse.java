@@ -14,6 +14,7 @@ import in.testpress.models.greendao.Video;
 import in.testpress.models.greendao.VideoAttempt;
 import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.Post;
+import in.testpress.models.greendao.Product;
 
 
 public class DashboardResponse {
@@ -31,6 +32,7 @@ public class DashboardResponse {
     private List<Exam> exams = new ArrayList<>();
     private List<Attempt> assessments = new ArrayList<>();
     private List<VideoAttempt> user_videos = new ArrayList<>();
+    private List<Product> products = new ArrayList<>();
 
     private HashMap<Long, Chapter> chapterHashMap = new HashMap<>();
     private HashMap<Long, Content> contentHashMap = new HashMap<>();
@@ -39,6 +41,8 @@ public class DashboardResponse {
     private HashMap<Long, CourseAttempt> contentAttemptHashMap = new HashMap<>();
     private HashMap<Long, Exam> examHashMap = new HashMap<>();
     private HashMap<Long, Video> videoHashMap = new HashMap<>();
+    private HashMap<Long, Product> productHashMap = new HashMap<>();
+    private HashMap<Long, Course> courseHashMap = new HashMap<>();
 
     public List<DashboardSection> getDashboardSections() {
         return dashboardSections;
@@ -90,6 +94,11 @@ public class DashboardResponse {
 
     public List<VideoAttempt> getUser_videos() {
         return user_videos;
+    }
+
+
+    public List<Product> getProducts() {
+        return products;
     }
 
     public HashMap<Long, Chapter> getChapterHashMap() {
@@ -144,6 +153,25 @@ public class DashboardResponse {
             }
         }
         return bannerHashMap;
+    }
+
+    public HashMap<Long, Product> getProductHashMap() {
+        if (productHashMap.isEmpty()) {
+            for(Product product : products) {
+                productHashMap.put(product.getId().longValue(), product);
+            }
+        }
+        return productHashMap;
+    }
+
+
+    public HashMap<Long, Course> getCourseHashMap() {
+        if (courseHashMap.isEmpty()) {
+            for(Course course : courses) {
+                courseHashMap.put(course.getId(), course);
+            }
+        }
+        return courseHashMap;
     }
 
     public List<DashboardSection> getAvailableSections() {

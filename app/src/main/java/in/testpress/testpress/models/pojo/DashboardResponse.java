@@ -1,6 +1,7 @@
 package in.testpress.testpress.models.pojo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -46,6 +47,9 @@ public class DashboardResponse {
     private HashMap<Long, Product> productHashMap = new HashMap<>();
     private HashMap<Long, Course> courseHashMap = new HashMap<>();
     private HashMap<Long, LeaderboardItem> leaderboardItemHashMap = new HashMap<>();
+
+    List<String> acceptedContentTypes = Arrays.asList("post", "banner_ad", "chapter_content",
+            "trophy_leaderboard", "products", "chapter_content_attempt");
 
     public List<DashboardSection> getDashboardSections() {
         return dashboardSections;
@@ -190,7 +194,7 @@ public class DashboardResponse {
     public List<DashboardSection> getAvailableSections() {
         if (availableSections.isEmpty()) {
             for (DashboardSection section : dashboardSections) {
-                if (!section.getItems().isEmpty()) {
+                if (!section.getItems().isEmpty() && acceptedContentTypes.contains(section.getContentType())) {
                     availableSections.add(section);
                 }
             }

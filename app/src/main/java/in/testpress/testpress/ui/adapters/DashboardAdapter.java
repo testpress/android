@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import in.testpress.testpress.R;
+import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
 import in.testpress.testpress.ui.view_holders.BaseCarouselViewHolder;
@@ -23,6 +24,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private List<DashboardSection> sections;
     private DashboardResponse response;
     private Context context;
+    private TestpressServiceProvider serviceProvider;
 
     private final int CONTENT_CAROUSEL = 1;
     private final int COURSE_CAROUSEL = 2;
@@ -32,8 +34,9 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private final int STATS_CHART = 7;
 
 
-    public DashboardAdapter(Context context, DashboardResponse response) {
+    public DashboardAdapter(Context context, DashboardResponse response, TestpressServiceProvider serviceProvider) {
         this.context = context;
+        this.serviceProvider = serviceProvider;
         this.setResponse(response);
     }
 
@@ -112,7 +115,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 ((PostsCarouselViewHolder) holder).display(response, context);
                 break;
             case OFFERS_CAROUSEL:
-                ((OffersCarouselViewHolder) holder).display(response, context);
+                ((OffersCarouselViewHolder) holder).display(response, context, serviceProvider);
                 break;
             case COURSE_CAROUSEL:
                 ((CourseCarouselViewHolder) holder).display(response, context);

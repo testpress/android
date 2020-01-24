@@ -1,7 +1,9 @@
 package in.testpress.testpress.ui.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.testpress.testpress.R;
+import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.models.pojo.Banner;
 import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
 import in.testpress.testpress.ui.WebViewActivity;
+import in.testpress.testpress.ui.utils.DeeplinkHandler;
 import in.testpress.util.ImageUtils;
 import in.testpress.util.IntegerList;
 
@@ -28,13 +32,15 @@ public class OffersCarouselAdapter extends RecyclerView.Adapter<OffersCarouselAd
     private DashboardSection section;
     private ImageLoader imageLoader;
     private DisplayImageOptions options;
+    private TestpressServiceProvider serviceProvider;
     private Context context;
     private List<Banner> banners = new ArrayList<>();
 
-    public OffersCarouselAdapter(DashboardResponse response, DashboardSection section, Context context) {
+    public OffersCarouselAdapter(DashboardResponse response, DashboardSection section, Context context, TestpressServiceProvider serviceProvider) {
         this.response = response;
         this.section = section;
         this.context = context;
+        this.serviceProvider = serviceProvider;
         imageLoader = ImageUtils.initImageLoader(context);
         options = ImageUtils.getPlaceholdersOption();
         populateBanners();
@@ -59,9 +65,13 @@ public class OffersCarouselAdapter extends RecyclerView.Adapter<OffersCarouselAd
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, WebViewActivity.class);
-                intent.putExtra(WebViewActivity.URL_TO_OPEN, banners.get(position).getUrl());
-                context.startActivity(intent);
+                Activity activity = (Activity) context;
+                DeeplinkHandler deeplinkHandler = new DeeplinkHandler(activity, serviceProvider);
+                Uri uri = Uri.parse(banners.get(position).getUrl());
+                deeplinkHandler.handleDeepLinkUrl(uri);
+//                Intent intent = new Intent(context, WebViewActivity.class);
+//                intent.putExtra(WebViewActivity.URL_TO_OPEN, banners.get(position).getUrl());
+//                context.startActivity(intent);
             }
         });
         imageLoader.displayImage(banners.get(position).getImage(), holder.image, options);

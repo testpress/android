@@ -85,7 +85,7 @@ public class DashboardFragment extends Fragment implements
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
 
-        adapter = new DashboardAdapter(getContext(), getDashboardDataPreferences(getContext()));
+        adapter = new DashboardAdapter(getContext(), getDashboardDataPreferences(getContext()), serviceProvider);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         swipeRefreshLayout.setEnabled(true);

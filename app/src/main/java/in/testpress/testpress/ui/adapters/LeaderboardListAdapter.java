@@ -19,9 +19,13 @@ import in.testpress.testpress.R;
 import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
 import in.testpress.testpress.models.pojo.LeaderboardItem;
+import in.testpress.testpress.util.UIUtils;
 import in.testpress.ui.view.RoundedImageView;
 import in.testpress.util.ImageUtils;
 import in.testpress.util.IntegerList;
+
+import static in.testpress.testpress.util.Strings.capitalize;
+import static in.testpress.testpress.util.Strings.capitalizeEachWord;
 
 public class LeaderboardListAdapter extends RecyclerView.Adapter<LeaderboardListAdapter.MyViewHolder> {
 
@@ -61,22 +65,13 @@ public class LeaderboardListAdapter extends RecyclerView.Adapter<LeaderboardList
         String rank = position + 1 + "";
         holder.rank.setText(rank);
         LeaderboardItem leaderboardItem = leaderboardItems.get(position);
-        holder.username.setText(leaderboardItem.getUser().getDisplayName());
+        holder.username.setText(capitalizeEachWord(leaderboardItem.getUser().getDisplayName()));
         imageLoader.displayImage(leaderboardItem.getUser().getMediumImage(), holder.userImage, options);
         int trophies_count = (int) Double.parseDouble(leaderboardItem.getTrophiesCount());
         holder.trophies.setText(String.valueOf(trophies_count));
 
         Integer difference = leaderboardItem.getDifference() == null ?
                 0 : leaderboardItem.getDifference();
-
-        holder.difference.setText(difference.toString());
-        if (difference > 0) {
-            holder.difference.setTextColor(ContextCompat.getColor(context, in.testpress.course.R.color.testpress_green_light));
-            holder.differenceImage.setImageResource(in.testpress.course.R.drawable.testpress_arrow_up_green);
-        } else {
-            holder.difference.setTextColor(ContextCompat.getColor(context, in.testpress.course.R.color.testpress_red_incorrect));
-            holder.differenceImage.setImageResource(in.testpress.course.R.drawable.testpress_arrow_down_red);
-        }
     }
 
     @Override
@@ -85,7 +80,7 @@ public class LeaderboardListAdapter extends RecyclerView.Adapter<LeaderboardList
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView rank, username, trophies, difference;
+        TextView rank, username, trophies;
         ImageView differenceImage;
         RoundedImageView userImage;
 
@@ -94,9 +89,11 @@ public class LeaderboardListAdapter extends RecyclerView.Adapter<LeaderboardList
             rank = (TextView) itemView.findViewById(R.id.rank);
             username = (TextView) itemView.findViewById(R.id.username);
             trophies = (TextView) itemView.findViewById(R.id.trophies);
-            difference = (TextView) itemView.findViewById(R.id.difference);
             userImage = (RoundedImageView) itemView.findViewById(R.id.user_image);
             differenceImage = (ImageView) itemView.findViewById(R.id.difference_image);
+            rank.setTypeface(UIUtils.getLatoSemiBoldFont(context));
+            username.setTypeface(UIUtils.getLatoSemiBoldFont(context));
+            trophies.setTypeface(UIUtils.getLatoSemiBoldFont(context));
         }
     }
 }

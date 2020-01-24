@@ -24,4 +24,8 @@ public class LeaderboardItem {
     public Integer getCategory() {
         return category;
     }
+
+    public User getUser() {
+        return user;
+    }
 }

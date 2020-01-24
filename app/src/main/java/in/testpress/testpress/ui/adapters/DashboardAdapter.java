@@ -14,6 +14,7 @@ import in.testpress.testpress.models.pojo.DashboardSection;
 import in.testpress.testpress.ui.view_holders.BaseCarouselViewHolder;
 import in.testpress.testpress.ui.view_holders.ContentsCarouselViewHolder;
 import in.testpress.testpress.ui.view_holders.CourseCarouselViewHolder;
+import in.testpress.testpress.ui.view_holders.LeaderboardViewHolder;
 import in.testpress.testpress.ui.view_holders.OffersCarouselViewHolder;
 import in.testpress.testpress.ui.view_holders.PostsCarouselViewHolder;
 
@@ -91,6 +92,8 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 holder = new CourseCarouselViewHolder(view, context);
                 break;
             case LEADERBOARD_LIST:
+                holder = new LeaderboardViewHolder(view, context);
+                break;
             default:
                 holder = new BaseCarouselViewHolder(view, context);
                 break;
@@ -113,6 +116,10 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 break;
             case COURSE_CAROUSEL:
                 ((CourseCarouselViewHolder) holder).display(response, context);
+                break;
+            case LEADERBOARD_LIST:
+                ((LeaderboardViewHolder) holder).display(response, context);
+                break;
         }
     }
 }

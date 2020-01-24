@@ -12,6 +12,8 @@ import in.testpress.store.TestpressStore;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
+import in.testpress.testpress.authenticator.LoginActivity;
+import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
@@ -66,6 +68,11 @@ public class HandleMainMenu {
                 break;
             case R.id.profile:
                 intent = new Intent(activity, ProfileDetailsActivity.class);
+                activity.startActivity(intent);
+                break;
+            case R.string.login:
+                intent = new Intent(activity, LoginActivity.class);
+                intent.putExtra(Constants.DEEP_LINK_TO, "home");
                 activity.startActivity(intent);
                 break;
         }

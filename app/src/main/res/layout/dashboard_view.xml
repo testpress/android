@@ -7,6 +7,36 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_view_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:shimmer_duration="1000">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
+            <include
+                layout="@layout/carousel_placeholder">
+            </include>
+            <include
+                layout="@layout/carousel_placeholder">
+            </include>
+            <include
+                layout="@layout/carousel_placeholder">
+            </include>
+            <include
+                layout="@layout/carousel_placeholder">
+            </include>
+
+        </LinearLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
     <include
         layout="@layout/testpress_empty_view">
     </include>

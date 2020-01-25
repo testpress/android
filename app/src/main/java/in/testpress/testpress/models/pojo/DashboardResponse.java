@@ -47,6 +47,7 @@ public class DashboardResponse {
     private HashMap<Long, Product> productHashMap = new HashMap<>();
     private HashMap<Long, Course> courseHashMap = new HashMap<>();
     private HashMap<Long, LeaderboardItem> leaderboardItemHashMap = new HashMap<>();
+    private HashMap<Long, VideoAttempt> userVideoHashMap = new HashMap<>();
 
     List<String> acceptedContentTypes = Arrays.asList("post", "banner_ad", "chapter_content",
             "trophy_leaderboard", "products", "chapter_content_attempt");
@@ -189,6 +190,15 @@ public class DashboardResponse {
             }
         }
         return leaderboardItemHashMap;
+    }
+
+    public HashMap<Long, VideoAttempt> getUserVideoHashMap() {
+        if (userVideoHashMap.isEmpty()) {
+            for(VideoAttempt userVideo : user_videos) {
+                userVideoHashMap.put(userVideo.getId(), userVideo);
+            }
+        }
+        return userVideoHashMap;
     }
 
     public List<DashboardSection> getAvailableSections() {

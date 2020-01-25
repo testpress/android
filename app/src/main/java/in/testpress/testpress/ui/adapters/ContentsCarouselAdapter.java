@@ -33,7 +33,7 @@ import in.testpress.testpress.R;
 import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
 import in.testpress.testpress.util.UIUtils;
-import in.testpress.util.ImageUtils;
+import in.testpress.testpress.util.ImageUtils;
 import in.testpress.util.IntegerList;
 
 public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarouselAdapter.ItemViewHolder> {
@@ -49,7 +49,7 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
         this.section = currentSection;
         populateContents();
         this.context = context;
-        imageLoader = ImageUtils.initImageLoader(context);
+        imageLoader = in.testpress.util.ImageUtils.initImageLoader(context);
         options = ImageUtils.getPlaceholdersOption();
     }
 

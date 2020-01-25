@@ -21,8 +21,8 @@ import in.testpress.models.greendao.Product;
 import in.testpress.testpress.R;
 import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
+import in.testpress.testpress.util.ImageUtils;
 import in.testpress.testpress.util.UIUtils;
-import in.testpress.util.ImageUtils;
 import in.testpress.util.IntegerList;
 
 
@@ -41,7 +41,7 @@ public class CourseCarouselAdapter extends RecyclerView.Adapter<CourseCarouselAd
         this.response = response;
         this.context = context;
         this.section = currentSection;
-        imageLoader = ImageUtils.initImageLoader(context);
+        imageLoader = in.testpress.util.ImageUtils.initImageLoader(context);
         options = ImageUtils.getPlaceholdersOption();
         populateCourses();
         populateContentsCount();

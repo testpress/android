@@ -8,6 +8,7 @@ import java.util.List;
 
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
+import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
 import in.testpress.testpress.ui.adapters.OffersCarouselAdapter;
@@ -17,9 +18,9 @@ public class OffersCarouselViewHolder extends BaseCarouselViewHolder {
         super(itemView, context);
     }
 
-    public void display(DashboardResponse response, Context context) {
+    public void display(DashboardResponse response, Context context, TestpressServiceProvider serviceProvider) {
         DashboardSection section = response.getAvailableSections().get(getAdapterPosition());
-        OffersCarouselAdapter adapter = new OffersCarouselAdapter(response, section, context);
+        OffersCarouselAdapter adapter = new OffersCarouselAdapter(response, section, context, serviceProvider);
         recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(adapter);
         title.setText(section.getDisplayName());

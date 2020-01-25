@@ -70,7 +70,7 @@ public class HandleMainMenu {
                 intent = new Intent(activity, ProfileDetailsActivity.class);
                 activity.startActivity(intent);
                 break;
-            case R.string.login:
+            case R.id.login:
                 intent = new Intent(activity, LoginActivity.class);
                 intent.putExtra(Constants.DEEP_LINK_TO, "home");
                 activity.startActivity(intent);

@@ -22,7 +22,6 @@ import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.PostActivity;
 import in.testpress.testpress.ui.PostsListActivity;
 import in.testpress.testpress.ui.ProfileDetailsActivity;
-import in.testpress.testpress.ui.SplashScreenActivity;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.util.Assert;
 
@@ -63,7 +62,7 @@ public class DeeplinkHandler {
                     activity.finish();
                     break;
                 case "exams":
-                    authenticateUser(uri);
+                    authenticateUserAndOpen(uri);
                     break;
                 case "user":
                 case "profile":
@@ -78,7 +77,7 @@ public class DeeplinkHandler {
                     gotoActivity(ResetPasswordActivity.class, false);
                     break;
                 case "analytics":
-                    authenticateUser(uri);
+                    authenticateUserAndOpen(uri);
                     break;
                 case "documents":
                     gotoActivity(DocumentsListActivity.class, true);
@@ -90,7 +89,7 @@ public class DeeplinkHandler {
                     gotoAccountActivate(uri.getPath());
                     break;
                 case "chapters":
-                    authenticateUser(uri);
+                    authenticateUserAndOpen(uri);
                     break;
                 case "courses":
                 case "learn":
@@ -101,7 +100,7 @@ public class DeeplinkHandler {
                 case "store":
                 case "market":
                 case "products":
-                    authenticateUser(uri);
+                    authenticateUserAndOpen(uri);
                     break;
                 default:
                     CommonUtils.openUrlInBrowser(activity, uri);
@@ -113,7 +112,7 @@ public class DeeplinkHandler {
         }
     }
 
-    private void authenticateUser(final Uri uri) {
+    private void authenticateUserAndOpen(final Uri uri) {
         final List<String> pathSegments = uri.getPathSegments();
         CommonUtils.getAuth(activity, serviceProvider,
                 new CommonUtils.CheckAuthCallBack() {
@@ -121,6 +120,7 @@ public class DeeplinkHandler {
                     public void onSuccess(TestpressService testpressService) {
                         TestpressSession testpressSession = TestpressSdk.getTestpressSession(activity);
                         Assert.assertNotNull("TestpressSession must not be null.", testpressSession);
+
                         switch (pathSegments.get(0)) {
                             case "exams":
                                 if (pathSegments.size() == 2) {
@@ -128,7 +128,6 @@ public class DeeplinkHandler {
                                             !pathSegments.get(1).equals("upcoming") ||
                                             !pathSegments.get(1).equals("history")) {
 
-                                        // If exam slug is present, directly goto the start exam screen
                                         TestpressExam.showExamAttemptedState(
                                                 activity,
                                                 pathSegments.get(1),
@@ -137,7 +136,6 @@ public class DeeplinkHandler {
                                         return;
                                     }
                                 }
-                                // Show exams list
                                 TestpressExam.show(activity, testpressSession);
                                 activity.finish();
                                 break;

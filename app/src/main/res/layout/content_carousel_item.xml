@@ -30,9 +30,10 @@
             android:visibility="gone" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="155dp"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            android:id="@+id/video_progress_layout"
             android:visibility="gone">
 
             <FrameLayout
@@ -42,10 +43,11 @@
                 <ProgressBar
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="match_parent"
+                    android:id="@+id/video_progress"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="0.75dp"
+                    android:layout_marginRight="0.5dp"
                     android:max="100"
                     android:progress="25" />
 

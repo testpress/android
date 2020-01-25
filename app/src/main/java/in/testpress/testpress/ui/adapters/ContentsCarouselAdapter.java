@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -26,6 +27,7 @@ import in.testpress.models.greendao.Content;
 import in.testpress.models.greendao.CourseAttempt;
 import in.testpress.models.greendao.Exam;
 import in.testpress.models.greendao.HtmlContent;
+import in.testpress.models.greendao.VideoAttempt;
 import in.testpress.testpress.R;
 import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
@@ -83,6 +85,7 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
         showOrHideExamAccessories(content, holder);
         showReadTimeForHtmlContent(content, holder);
         showIconForAttachmentContent(content, holder);
+        showProgressBarForResumeVideos(position, holder);
 
 
         String contentName = content.getName();
@@ -111,6 +114,20 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
             holder.infoLayout.setVisibility(View.VISIBLE);
             holder.numberOfQuestions.setText(htmlContent.getReadTime());
             holder.infoSubtitle.setVisibility(View.GONE);
+        }
+    }
+    
+    private void showProgressBarForResumeVideos(int position, ItemViewHolder holder) {
+        if (section.getSlug().equals("resume")) {
+            Long attemptId = Long.valueOf(section.getItems().get(position));
+            CourseAttempt attempt = this.response.getContentAttemptHashMap().get(attemptId);
+
+            if (attempt.getUserVideoId() != null) {
+                VideoAttempt userVideo = response.getUserVideoHashMap().get(attempt.getUserVideoId());
+                int lastPosition = (int) Double.parseDouble(userVideo.getLastPosition());
+                holder.videoProgress.setProgress(lastPosition);
+                holder.videoProgressLayout.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -164,7 +181,8 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
     public class ItemViewHolder extends RecyclerView.ViewHolder {
         ImageView image, playIcon, contentTypeIcon;
         TextView title, numberOfQuestions, subtitle, infoSubtitle;
-        LinearLayout infoLayout;
+        LinearLayout infoLayout, videoProgressLayout;
+        ProgressBar videoProgress;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
@@ -172,10 +190,12 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
             playIcon = (ImageView) itemView.findViewById(R.id.play_icon);
             contentTypeIcon = (ImageView) itemView.findViewById(R.id.content_type_icon);
             infoLayout = (LinearLayout) itemView.findViewById(R.id.info_layout);
+            videoProgressLayout = (LinearLayout) itemView.findViewById(R.id.video_progress_layout);
             title = (TextView) itemView.findViewById(R.id.title);
             subtitle = (TextView) itemView.findViewById(R.id.subtitle);
             numberOfQuestions = (TextView) itemView.findViewById(R.id.number_of_questions);
             infoSubtitle = (TextView) itemView.findViewById(R.id.info_subtitle);
+            videoProgress = (ProgressBar) itemView.findViewById(R.id.video_progress);
 
             title.setTypeface(UIUtils.getLatoSemiBoldFont(context));
         }

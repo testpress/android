@@ -35,6 +35,10 @@ public class ContentsCarouselViewHolder extends BaseCarouselViewHolder {
     private void setTitleIcon(DashboardSection section) {
         if (section.getSlug().equals("completed")) {
             title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_completed_black, 0, 0, 0);
+        } else if (section.getSlug().equals("resume")) {
+            title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_redo_black, 0, 0, 0);
+        } else if (section.getSlug().equals("trending")) {
+            title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_graph_black, 0, 0, 0);
         } else {
             title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_star_black, 0, 0, 0);
         }

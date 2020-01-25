@@ -220,7 +220,7 @@ public class MainActivity extends TestpressFragmentActivity {
         }
 
         if (isUserAuthenticated) {
-            addMenuItem(R.string.dashboard, R.drawable.profile_default, new DashboardFragment());
+            addMenuItem(R.string.dashboard, R.drawable.ic_dashboard, new DashboardFragment());
         } else {
             addMenuItem(R.string.dashboard, R.drawable.profile_default, new MainMenuFragment());
         }

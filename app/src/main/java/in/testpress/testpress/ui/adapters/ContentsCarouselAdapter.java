@@ -28,6 +28,7 @@ import in.testpress.models.greendao.CourseAttempt;
 import in.testpress.models.greendao.Exam;
 import in.testpress.models.greendao.HtmlContent;
 import in.testpress.models.greendao.VideoAttempt;
+import in.testpress.models.greendao.Video;
 import in.testpress.testpress.R;
 import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
@@ -77,7 +78,11 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
     public void onBindViewHolder(ItemViewHolder holder, final int position) {
         final Content content = contents.get(position);
 
-        imageLoader.displayImage("https://picsum.photos/320/180?random=" + position, holder.image, options);
+        if (content.getCoverImage() != null) {
+            imageLoader.displayImage(content.getCoverImage(), holder.image, options);
+        } else {
+            showThumbnailForVideo(content, holder);
+        }
         holder.image.setColorFilter(Color.parseColor("#77000000"));
 
         setIconAndChapterTitle(content, holder);
@@ -99,6 +104,18 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
                 TestpressCourse.showContentDetail(activity, content.getId().toString(), session);
             }
         });
+    }
+
+    private void showThumbnailForVideo(Content content, ItemViewHolder holder) {
+        if (content.getVideoId() != null) {
+            Video video = response.getVideoHashMap().get(content.getVideoId());
+
+            if (video.getThumbnailMedium() != null) {
+                imageLoader.displayImage(content.getRawVideo().getThumbnailMedium(), holder.image, options);
+            } else {
+                holder.image.setBackgroundColor(Color.parseColor("#77000000"));
+            }
+        }
     }
 
     private void showIconForAttachmentContent(Content content, ItemViewHolder holder) {

@@ -1,5 +1,7 @@
 package in.testpress.testpress.models.pojo;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,6 +40,7 @@ public class DashboardResponse {
     private List<VideoAttempt> user_videos = new ArrayList<>();
     private List<Product> products = new ArrayList<>();
     private List<HtmlContent> contents = new ArrayList<>();
+    private List<Video> videos = new ArrayList<>();
 
     private HashMap<Long, Chapter> chapterHashMap = new HashMap<>();
     private HashMap<Long, Content> contentHashMap = new HashMap<>();
@@ -202,6 +205,15 @@ public class DashboardResponse {
             }
         }
         return userVideoHashMap;
+    }
+
+    public HashMap<Long, Video> getVideoHashMap() {
+        if (videoHashMap.isEmpty()) {
+            for(Video video : videos) {
+                videoHashMap.put(video.getId(), video);
+            }
+        }
+        return videoHashMap;
     }
 
     public HashMap<Long, HtmlContent> getHtmlContentHashMap() {

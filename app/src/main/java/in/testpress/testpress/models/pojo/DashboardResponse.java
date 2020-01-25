@@ -13,6 +13,7 @@ import in.testpress.models.greendao.Content;
 import in.testpress.models.greendao.Course;
 import in.testpress.models.greendao.CourseAttempt;
 import in.testpress.models.greendao.Exam;
+import in.testpress.models.greendao.HtmlContent;
 import in.testpress.models.greendao.Video;
 import in.testpress.models.greendao.VideoAttempt;
 import in.testpress.testpress.models.Category;
@@ -36,6 +37,7 @@ public class DashboardResponse {
     private List<Attempt> assessments = new ArrayList<>();
     private List<VideoAttempt> user_videos = new ArrayList<>();
     private List<Product> products = new ArrayList<>();
+    private List<HtmlContent> contents = new ArrayList<>();
 
     private HashMap<Long, Chapter> chapterHashMap = new HashMap<>();
     private HashMap<Long, Content> contentHashMap = new HashMap<>();
@@ -48,6 +50,7 @@ public class DashboardResponse {
     private HashMap<Long, Course> courseHashMap = new HashMap<>();
     private HashMap<Long, LeaderboardItem> leaderboardItemHashMap = new HashMap<>();
     private HashMap<Long, VideoAttempt> userVideoHashMap = new HashMap<>();
+    private HashMap<Long, HtmlContent> htmlContentHashMap = new HashMap<>();
 
     List<String> acceptedContentTypes = Arrays.asList("post", "banner_ad", "chapter_content",
             "trophy_leaderboard", "products", "chapter_content_attempt");
@@ -199,6 +202,15 @@ public class DashboardResponse {
             }
         }
         return userVideoHashMap;
+    }
+
+    public HashMap<Long, HtmlContent> getHtmlContentHashMap() {
+        if (htmlContentHashMap.isEmpty()) {
+            for(HtmlContent htmlContent : contents) {
+                htmlContentHashMap.put(htmlContent.getId(), htmlContent);
+            }
+        }
+        return htmlContentHashMap;
     }
 
     public List<DashboardSection> getAvailableSections() {

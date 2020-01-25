@@ -25,6 +25,7 @@ import in.testpress.models.greendao.Chapter;
 import in.testpress.models.greendao.Content;
 import in.testpress.models.greendao.CourseAttempt;
 import in.testpress.models.greendao.Exam;
+import in.testpress.models.greendao.HtmlContent;
 import in.testpress.testpress.R;
 import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
@@ -80,6 +81,7 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
         setIconAndChapterTitle(content, holder);
         showOrHideVideoAccessories(content, holder);
         showOrHideExamAccessories(content, holder);
+        showReadTimeForHtmlContent(content, holder);
 
 
         String contentName = content.getName();
@@ -93,6 +95,15 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
                 TestpressCourse.showContentDetail(activity, content.getId().toString(), session);
             }
         });
+    }
+
+    private void showReadTimeForHtmlContent(Content content, ItemViewHolder holder) {
+        if (content.getHtmlId() != null) {
+            HtmlContent htmlContent = response.getHtmlContentHashMap().get(content.getHtmlId());
+            holder.infoLayout.setVisibility(View.VISIBLE);
+            holder.numberOfQuestions.setText(htmlContent.getReadTime());
+            holder.infoSubtitle.setVisibility(View.GONE);
+        }
     }
 
     private void setIconAndChapterTitle(Content content, ItemViewHolder holder) {
@@ -142,7 +153,7 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
         ImageView image, playIcon, contentTypeIcon;
-        TextView title, numberOfQuestions, subtitle;
+        TextView title, numberOfQuestions, subtitle, infoSubtitle;
         LinearLayout infoLayout;
 
         public ItemViewHolder(View itemView) {
@@ -154,6 +165,7 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
             title = (TextView) itemView.findViewById(R.id.title);
             subtitle = (TextView) itemView.findViewById(R.id.subtitle);
             numberOfQuestions = (TextView) itemView.findViewById(R.id.number_of_questions);
+            infoSubtitle = (TextView) itemView.findViewById(R.id.info_subtitle);
 
             title.setTypeface(UIUtils.getLatoSemiBoldFont(context));
         }

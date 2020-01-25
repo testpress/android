@@ -21,8 +21,8 @@ import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
 import in.testpress.testpress.ui.PostActivity;
-import in.testpress.testpress.util.ImageUtils;
 import in.testpress.testpress.util.UIUtils;
+import in.testpress.util.ImageUtils;
 import in.testpress.util.IntegerList;
 
 public class PostCarouselAdapter extends RecyclerView.Adapter<PostCarouselAdapter.ItemViewHolder> {
@@ -39,7 +39,7 @@ public class PostCarouselAdapter extends RecyclerView.Adapter<PostCarouselAdapte
         this.response = response;
         this.section = section;
         this.context = context;
-        imageLoader = in.testpress.util.ImageUtils.initImageLoader(context);
+        imageLoader = ImageUtils.initImageLoader(context);
         options = ImageUtils.getPlaceholdersOption();
         populatePosts();
     }

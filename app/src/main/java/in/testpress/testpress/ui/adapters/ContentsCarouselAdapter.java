@@ -124,8 +124,10 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
 
             if (attempt.getUserVideoId() != null) {
                 VideoAttempt userVideo = response.getUserVideoHashMap().get(attempt.getUserVideoId());
-                int lastPosition = (int) Double.parseDouble(userVideo.getLastPosition());
-                holder.videoProgress.setProgress(lastPosition);
+                float lastPosition = (float) Double.parseDouble(userVideo.getLastPosition());
+                float totalDuration = (float) Double.parseDouble(userVideo.getRawVideoContent().getDuration());
+                float watchPercentage = (lastPosition / totalDuration) * 100;
+                holder.videoProgress.setProgress((int) watchPercentage);
                 holder.videoProgressLayout.setVisibility(View.VISIBLE);
             }
         }

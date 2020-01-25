@@ -82,6 +82,7 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
         showOrHideVideoAccessories(content, holder);
         showOrHideExamAccessories(content, holder);
         showReadTimeForHtmlContent(content, holder);
+        showIconForAttachmentContent(content, holder);
 
 
         String contentName = content.getName();
@@ -95,6 +96,13 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
                 TestpressCourse.showContentDetail(activity, content.getId().toString(), session);
             }
         });
+    }
+
+    private void showIconForAttachmentContent(Content content, ItemViewHolder holder) {
+        if (content.getAttachmentId() != null) {
+            holder.playIcon.setImageResource(R.drawable.ic_attachment);
+            holder.playIcon.setVisibility(View.VISIBLE);
+        }
     }
 
     private void showReadTimeForHtmlContent(Content content, ItemViewHolder holder) {
@@ -131,6 +139,7 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
     private void showOrHideVideoAccessories(Content content, ItemViewHolder holder) {
         if (content.getVideoId() != null) {
             holder.playIcon.setVisibility(View.VISIBLE);
+            holder.playIcon.setImageResource(R.drawable.play);
         } else {
             holder.playIcon.setVisibility(View.GONE);
         }

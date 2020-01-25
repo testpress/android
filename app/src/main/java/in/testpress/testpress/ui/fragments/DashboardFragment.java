@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.github.kevinsawicki.wishlist.Toaster;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -62,6 +63,8 @@ public class DashboardFragment extends Fragment implements
     Button retryButton;
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout swipeRefreshLayout;
+    @InjectView(R.id.shimmer_view_container)
+    ShimmerFrameLayout loadingPlaceholder;
 
     @Inject
     protected TestpressServiceProvider serviceProvider;
@@ -91,10 +94,15 @@ public class DashboardFragment extends Fragment implements
         swipeRefreshLayout.setEnabled(true);
 
         if (getSections().isEmpty()) {
-            swipeRefreshLayout.setVisibility(View.VISIBLE);
-            swipeRefreshLayout.setRefreshing(true);
+            loadingPlaceholder.setVisibility(View.VISIBLE);
+            loadingPlaceholder.startShimmer();
         }
         addOnClickListeners();
+    }
+
+    private void hideShimmer() {
+        loadingPlaceholder.stopShimmer();
+        loadingPlaceholder.setVisibility(View.GONE);
     }
 
     @Override
@@ -154,6 +162,7 @@ public class DashboardFragment extends Fragment implements
     public void onLoadFinished(@NonNull Loader<DashboardResponse> loader, DashboardResponse data) {
         final Exception exception = getException(loader);
         swipeRefreshLayout.setRefreshing(false);
+        hideShimmer();
         if (exception != null) {
             this.exception = exception;
             showError(getErrorMessage(exception));

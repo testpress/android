@@ -78,13 +78,7 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
     public void onBindViewHolder(ItemViewHolder holder, final int position) {
         final Content content = contents.get(position);
 
-        if (content.getCoverImage() != null) {
-            imageLoader.displayImage(content.getCoverImage(), holder.image, options);
-        } else {
-            showThumbnailForVideo(content, holder);
-        }
-        holder.image.setColorFilter(Color.parseColor("#77000000"));
-
+        showThumbnail(content, holder);
         setIconAndChapterTitle(content, holder);
         showOrHideVideoAccessories(content, holder);
         showOrHideExamAccessories(content, holder);
@@ -104,6 +98,16 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
                 TestpressCourse.showContentDetail(activity, content.getId().toString(), session);
             }
         });
+    }
+
+    private void showThumbnail(Content content, ItemViewHolder holder) {
+        if (content.getCoverImage() != null) {
+            imageLoader.displayImage(content.getCoverImage(), holder.image, options);
+        } else {
+            showThumbnailForVideo(content, holder);
+        }
+        holder.image.setColorFilter(Color.parseColor("#77000000"));
+
     }
 
     private void showThumbnailForVideo(Content content, ItemViewHolder holder) {

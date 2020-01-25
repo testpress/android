@@ -13,6 +13,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import in.testpress.course.ui.CoursePreviewActivity;
@@ -32,6 +33,9 @@ public class CourseCarouselAdapter extends RecyclerView.Adapter<CourseCarouselAd
     private ImageLoader imageLoader;
     private DisplayImageOptions options;
     private Context context;
+    private HashMap<Long, Integer> notesCountHashMap = new HashMap<>();
+    private HashMap<Long, Integer> videosCountHashMap = new HashMap<>();
+    private HashMap<Long, Integer> examsCountHashMap = new HashMap<>();
 
     public CourseCarouselAdapter(DashboardResponse response, DashboardSection currentSection, Context context) {
         this.response = response;
@@ -40,6 +44,25 @@ public class CourseCarouselAdapter extends RecyclerView.Adapter<CourseCarouselAd
         imageLoader = ImageUtils.initImageLoader(context);
         options = ImageUtils.getPlaceholdersOption();
         populateCourses();
+        populateContentsCount();
+    }
+
+    private void populateContentsCount() {
+        for (Product product: products) {
+            int notesCount = 0;
+            int videosCount = 0;
+            int examsCount = 0;
+
+            for (Integer item: product.getCourseIds()) {
+                long courseId = Long.valueOf(item);
+                notesCount += response.getCourseHashMap().get(courseId).getHtmlContentsCount();
+                videosCount += response.getCourseHashMap().get(courseId).getVideosCount();
+                examsCount += response.getCourseHashMap().get(courseId).getExamsCount();
+            }
+            notesCountHashMap.put(product.getId(), notesCount);
+            videosCountHashMap.put(product.getId(), videosCount);
+            examsCountHashMap.put(product.getId(), examsCount);
+        }
     }
 
     private void populateCourses() {
@@ -60,6 +83,7 @@ public class CourseCarouselAdapter extends RecyclerView.Adapter<CourseCarouselAd
         final Product product = products.get(position);
         imageLoader.displayImage(product.getImage(), holder.image, options);
         holder.title.setText(product.getTitle());
+        displayContentsCount(holder, product);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -68,6 +92,19 @@ public class CourseCarouselAdapter extends RecyclerView.Adapter<CourseCarouselAd
 
             }
         });
+    }
+
+    private void displayContentsCount(CourseCarouselAdapter.MyViewHolder holder, Product product) {
+        String notesCountText = context.getResources().getQuantityString(
+                R.plurals.notes_count, notesCountHashMap.get(product.getId()), notesCountHashMap.get(product.getId()));
+        String videosCountText = context.getResources().getQuantityString(
+                R.plurals.videos_count, videosCountHashMap.get(product.getId()), videosCountHashMap.get(product.getId()));
+        String examsCountText = context.getResources().getQuantityString(
+                R.plurals.exams_count, examsCountHashMap.get(product.getId()), examsCountHashMap.get(product.getId()));
+
+        holder.notesCount.setText(notesCountText);
+        holder.videosCount.setText(videosCountText);
+        holder.examsCount.setText(examsCountText);
     }
 
     @Override

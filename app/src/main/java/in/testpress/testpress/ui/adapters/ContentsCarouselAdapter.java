@@ -149,6 +149,7 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
         if (content.getExamId() != null) {
             Exam exam = response.getExamHashMap().get(content.getExamId());
             holder.infoLayout.setVisibility(View.VISIBLE);
+            holder.infoSubtitle.setVisibility(View.VISIBLE);
             holder.numberOfQuestions.setText(exam.getNumberOfQuestions().toString());
         } else {
             holder.infoLayout.setVisibility(View.GONE);

@@ -115,7 +115,7 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
             Video video = response.getVideoHashMap().get(content.getVideoId());
 
             if (video.getThumbnailMedium() != null) {
-                imageLoader.displayImage(content.getRawVideo().getThumbnailMedium(), holder.image, options);
+                imageLoader.displayImage(video.getThumbnailMedium(), holder.image, options);
             } else {
                 holder.image.setBackgroundColor(Color.parseColor("#77000000"));
             }

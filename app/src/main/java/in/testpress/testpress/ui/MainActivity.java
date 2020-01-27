@@ -1,5 +1,7 @@
 package in.testpress.testpress.ui;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.accounts.OperationCanceledException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,6 +17,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,6 +66,7 @@ import io.sentry.Sentry;
 import io.sentry.android.AndroidSentryClientFactory;
 
 import static in.testpress.testpress.BuildConfig.ALLOW_ANONYMOUS_USER;
+import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 
 public class MainActivity extends TestpressFragmentActivity {
@@ -156,6 +160,9 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     private void hideMenuItemsForUnauthenticatedUser(Menu menu) {
+        AccountManager manager = (AccountManager) this.getSystemService(Context.ACCOUNT_SERVICE);
+        Account[] account = manager.getAccountsByType(APPLICATION_ID);
+        final boolean isUserAuthenticated = account.length > 0;
         if (!isUserAuthenticated) {
             menu.findItem(R.id.logout).setVisible(false);
             menu.findItem(R.id.login_activity).setVisible(false);
@@ -163,6 +170,11 @@ public class MainActivity extends TestpressFragmentActivity {
             menu.findItem(R.id.profile).setVisible(false);
             menu.findItem(R.id.bookmarks).setVisible(false);
         } else {
+            menu.findItem(R.id.logout).setVisible(true);
+            menu.findItem(R.id.login_activity).setVisible(true);
+            menu.findItem(R.id.analytics).setVisible(true);
+            menu.findItem(R.id.profile).setVisible(true);
+            menu.findItem(R.id.bookmarks).setVisible(true);
             menu.findItem(R.id.login).setVisible(false);
         }
     }
@@ -441,6 +453,9 @@ public class MainActivity extends TestpressFragmentActivity {
     @Override
     public void onResume() {
         super.onResume();
+        if (navigationView != null) {
+            hideMenuItemsForUnauthenticatedUser(navigationView.getMenu());
+        }
         if (mInstituteSettings != null && mInstituteSettings.getForceStudentData()) {
             checkForForceUserData();
         } else {

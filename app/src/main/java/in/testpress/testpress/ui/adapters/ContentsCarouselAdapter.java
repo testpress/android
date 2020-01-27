@@ -154,6 +154,8 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
                     holder.videoProgressLayout.setVisibility(View.VISIBLE);
                 }
             }
+        } else {
+            holder.videoProgressLayout.setVisibility(View.GONE);
         }
     }
 

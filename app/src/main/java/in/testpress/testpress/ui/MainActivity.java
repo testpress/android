@@ -128,6 +128,15 @@ public class MainActivity extends TestpressFragmentActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (viewPager.getCurrentItem() != 0) {
+            viewPager.setCurrentItem(0);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     private void setUpNavigationDrawer() {
         getSupportActionBar().setHomeButtonEnabled(true);
         drawerToggle = setupDrawerToggle();

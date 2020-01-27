@@ -27,5 +27,9 @@ public class PostsCarouselViewHolder extends BaseCarouselViewHolder {
         recyclerView.setAdapter(adapter);
         title.setText(section.getDisplayName());
         title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_news_black, 0, 0, 0);
+
+        if (section.getItems().size() > 2) {
+            showPageIndicator();
+        }
     }
 }

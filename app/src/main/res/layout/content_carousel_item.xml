@@ -7,12 +7,11 @@
     android:layout_width="155dp"
     android:orientation="vertical">
 
-    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <android.support.v7.widget.CardView
         android:layout_width="155dp"
         android:layout_height="87dp"
-        card_view:cardElevation="0dp"
-        card_view:cardCornerRadius="4dp">
+        app:cardElevation="0dp"
+        app:cardCornerRadius="4dp">
 
     <FrameLayout
         android:layout_width="wrap_content"
@@ -24,8 +23,7 @@
             android:layout_width="155dp"
             android:layout_height="87dp"
             android:scaleType="centerCrop"
-            android:background="@drawable/border_rectangle_light"
-            android:tint="#000000" />
+            android:background="@drawable/border_rectangle_light" />
 
         <ImageView
             android:id="@+id/play_icon"
@@ -82,17 +80,18 @@
                 android:paddingRight="20dp"
                 android:text="15"
                 android:textColor="#FFA319"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/info_subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|center_horizontal"
                 android:text="questions"
-                android:id="@+id/info_subtitle"
                 android:textColor="#fff"
-                android:textSize="12sp" />
+                android:textSize="10sp"
+                android:layout_marginTop="5dp"/>
         </LinearLayout>
 
     </FrameLayout>

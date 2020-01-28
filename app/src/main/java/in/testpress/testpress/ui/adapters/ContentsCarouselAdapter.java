@@ -106,7 +106,7 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
         } else {
             showThumbnailForVideo(content, holder);
         }
-        holder.image.setColorFilter(Color.parseColor("#77000000"));
+        holder.image.setColorFilter(Color.parseColor("#22000000"));
 
     }
 
@@ -222,6 +222,7 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
             title = (TextView) itemView.findViewById(R.id.title);
             subtitle = (TextView) itemView.findViewById(R.id.subtitle);
             numberOfQuestions = (TextView) itemView.findViewById(R.id.number_of_questions);
+            numberOfQuestions.setTypeface(TestpressSdk.getRubikMediumFont(context));
             infoSubtitle = (TextView) itemView.findViewById(R.id.info_subtitle);
             videoProgress = (ProgressBar) itemView.findViewById(R.id.video_progress);
 

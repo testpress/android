@@ -49,10 +49,9 @@
         android:id="@+id/trophies"
         android:layout_width="45dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="start"
         android:minWidth="20dp"
         android:text="1339"
-        android:textAlignment="textStart"
+        android:gravity="center"
         android:textColor="@color/testpress_text_gray"
         android:textSize="13sp" />
 

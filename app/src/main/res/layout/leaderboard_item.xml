@@ -51,7 +51,7 @@
         android:layout_height="wrap_content"
         android:minWidth="20dp"
         android:text="1339"
-        android:gravity="center"
+        android:gravity="center|left"
         android:textColor="@color/testpress_text_gray"
         android:textSize="13sp" />
 

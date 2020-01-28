@@ -30,6 +30,10 @@ public class ContentsCarouselViewHolder extends BaseCarouselViewHolder {
         recyclerView.setAdapter(adapter);
         title.setText(sections.get(getAdapterPosition()).getDisplayName());
         setTitleIcon(section);
+
+        if (section.getItems().size() > 2) {
+            showPageIndicator();
+        }
     }
 
     private void setTitleIcon(DashboardSection section) {

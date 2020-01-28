@@ -25,6 +25,10 @@ public class CourseCarouselViewHolder extends BaseCarouselViewHolder {
         recyclerView.setAdapter(adapter);
         title.setText(sections.get(getAdapterPosition()).getDisplayName());
         title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_star_black, 0, 0, 0);
+
+        if (section.getItems().size() > 2) {
+            showPageIndicator();
+        }
     }
 
 }

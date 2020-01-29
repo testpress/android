@@ -32,6 +32,7 @@ import retrofit.RestAdapter;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.BuildConfig.DISPLAY_USERNAME_ON_VIDEO;
 import static in.testpress.testpress.BuildConfig.SCREENSHOT_DISABLED;
+import static in.testpress.testpress.util.PreferenceManager.setDashboardData;
 
 public class TestpressServiceProvider {
     private RestAdapter.Builder restAdapter;
@@ -110,6 +111,7 @@ public class TestpressServiceProvider {
         serviceProvider.invalidateAuthToken(activity);
         SharedPreferences preferences = activity.getSharedPreferences(Constants.GCM_PREFERENCE_NAME,
                 Context.MODE_PRIVATE);
+        setDashboardData(activity, "{}");
         preferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
         CommonUtils.registerDevice(activity, testpressService, serviceProvider);
         TestpressApplication.clearDatabase(activity);

@@ -30,6 +30,7 @@ import in.testpress.testpress.models.RssFeed;
 import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.models.TestpressApiResponse;
 import in.testpress.testpress.models.Update;
+import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.network.CheckPermissionService;
 import in.testpress.testpress.network.RssConverterFactory;
 import in.testpress.testpress.network.RssFeedService;
@@ -322,6 +323,10 @@ public class TestpressService {
         params.put("content_object", forum);
         params.put("type_of_vote", typeOfVote);
         return getPostService().updateCommentVote(forum.getVoteId(), params);
+    }
+
+    public DashboardResponse getDashboardData() {
+        return getAuthenticationService().getDashboardData();
     }
 
 }

@@ -21,6 +21,7 @@ public class BaseCarouselViewHolder extends RecyclerView.ViewHolder {
         title.setTypeface(TestpressSdk.getRubikMediumFont(context));
         recyclerView = (RecyclerView) itemView.findViewById(R.id.inner_recyclerView);
         recyclerIndicator = itemView.findViewById(R.id.indicator);
+        recyclerIndicator.setVisibility(View.GONE);
     }
 
     public void showPageIndicator() {

@@ -174,6 +174,12 @@ public class DashboardFragment extends Fragment implements
         adapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        refresh();
+    }
+
     private void showError(final int message) {
         Toaster.showLong(getActivity(), message);
     }

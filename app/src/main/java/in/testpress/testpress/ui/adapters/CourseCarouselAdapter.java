@@ -2,11 +2,13 @@ package in.testpress.testpress.ui.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -16,14 +18,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import in.testpress.course.ui.ChapterDetailActivity;
 import in.testpress.course.ui.CoursePreviewActivity;
 import in.testpress.models.greendao.Product;
+import in.testpress.store.ui.ProductDetailsActivity;
 import in.testpress.testpress.R;
 import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
 import in.testpress.testpress.util.ImageUtils;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.util.IntegerList;
+
+import static in.testpress.store.TestpressStore.STORE_REQUEST_CODE;
 
 
 public class CourseCarouselAdapter extends RecyclerView.Adapter<CourseCarouselAdapter.MyViewHolder> {
@@ -88,10 +94,24 @@ public class CourseCarouselAdapter extends RecyclerView.Adapter<CourseCarouselAd
             @Override
             public void onClick(View view) {
                 Activity activity = (Activity) context;
-                activity.startActivity(CoursePreviewActivity.createIntent(product.getCourseIds(), activity, product.getSlug()));
-
+                if (product.getCourseIds().size() > 1) {
+                    activity.startActivity(CoursePreviewActivity.createIntent(product.getCourseIds(), activity, product.getSlug()));
+                } else if (product.getCourseIds().size() == 1 ) {
+                    openChapters(product, activity);
+                } else {
+                    Intent intent = new Intent(activity, ProductDetailsActivity.class);
+                    intent.putExtra(ProductDetailsActivity.PRODUCT_SLUG, product.getSlug());
+                    activity.startActivityForResult(intent, STORE_REQUEST_CODE);
+                }
             }
         });
+    }
+
+    private void openChapters(Product product, Activity activity) {
+        activity.startActivity(ChapterDetailActivity.createIntent(
+                product.getTitle(),
+                product.getCourseIds().get(0).toString(),
+                activity, product.getSlug()));
     }
 
     private void displayContentsCount(CourseCarouselAdapter.MyViewHolder holder, Product product) {
@@ -105,6 +125,12 @@ public class CourseCarouselAdapter extends RecyclerView.Adapter<CourseCarouselAd
         holder.notesCount.setText(notesCountText);
         holder.videosCount.setText(videosCountText);
         holder.examsCount.setText(examsCountText);
+
+        if (product.getCourseIds().size() == 0) {
+            holder.notesCount.setText("Offline");
+            holder.videoContentLayout.setVisibility(View.GONE);
+            holder.examsContentLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -115,6 +141,7 @@ public class CourseCarouselAdapter extends RecyclerView.Adapter<CourseCarouselAd
     public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView title, examsCount, videosCount, notesCount;
         ImageView image;
+        LinearLayout examsContentLayout, notesContentLayout, videoContentLayout;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -123,6 +150,10 @@ public class CourseCarouselAdapter extends RecyclerView.Adapter<CourseCarouselAd
             videosCount = (TextView) itemView.findViewById(R.id.videos_count);
             notesCount = (TextView) itemView.findViewById(R.id.notes_count);
             image = (ImageView) itemView.findViewById(R.id.image_view);
+            examsContentLayout = itemView.findViewById(R.id.exam_content_layout);
+            notesContentLayout = itemView.findViewById(R.id.notes_content_layout);
+            videoContentLayout = itemView.findViewById(R.id.video_content_layout);
+
             title.setTypeface(UIUtils.getLatoSemiBoldFont(context));
             examsCount.setTypeface(UIUtils.getLatoSemiBoldFont(context));
             videosCount.setTypeface(UIUtils.getLatoSemiBoldFont(context));

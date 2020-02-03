@@ -20,6 +20,7 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -56,6 +57,7 @@ import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.models.Update;
 import in.testpress.testpress.ui.fragments.DashboardFragment;
 import in.testpress.testpress.ui.utils.HandleMainMenu;
+import in.testpress.testpress.ui.view.CustomViewPager;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.SafeAsyncTask;
@@ -83,7 +85,8 @@ public class MainActivity extends TestpressFragmentActivity {
 
     @InjectView(R.id.coordinator_layout) CoordinatorLayout coordinatorLayout;
     @InjectView(R.id.progressbar) RelativeLayout progressBarLayout;
-    @InjectView(R.id.viewpager) ViewPager viewPager;
+    @InjectView(R.id.viewpager)
+    CustomViewPager viewPager;
     @InjectView(R.id.grid) GridView grid;
     @InjectView(R.id.drawer_layout)
     DrawerLayout drawer;
@@ -114,6 +117,7 @@ public class MainActivity extends TestpressFragmentActivity {
             mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM);
         }
         viewPager.setVisibility(View.GONE);
+        viewPager.setPagingEnabled(false);
         DaoSession daoSession = TestpressApplication.getDaoSession();
         instituteSettingsDao = daoSession.getInstituteSettingsDao();
         List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()

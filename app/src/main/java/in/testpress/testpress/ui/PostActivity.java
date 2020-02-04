@@ -240,11 +240,11 @@ public class PostActivity extends TestpressFragmentActivity implements
                 post.setPublished(simpleDateFormat.parse(post.getPublishedDate()).getTime());
                 if (postDao.queryBuilder().where(PostDao.Properties.Id.eq(post.getId())).count() != 0) {
                     post.setModifiedDate(simpleDateFormat.parse(post.getModified()).getTime());
-                    if (post.category != null) {
-                        post.setCategory(post.category);
+                    if (post.getRawCategory() != null) {
+                        post.setCategory(post.getRawCategory());
                         CategoryDao categoryDao = ((TestpressApplication) getApplicationContext())
                                 .getDaoSession().getCategoryDao();
-                        categoryDao.insertOrReplace(post.category);
+                        categoryDao.insertOrReplace(post.getRawCategory());
                     }
                     postDao.insertOrReplace(post);
                 }
@@ -256,7 +256,7 @@ public class PostActivity extends TestpressFragmentActivity implements
     private void displayPost(Post post) {
         postDetails.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
-        getSupportActionBar().setTitle(post.getTitle());
+        getSupportActionBar().setTitle(R.string.app_name);
         title.setText(post.getTitle());
         if (post.getSummary().trim().isEmpty()) {
             summaryLayout.setVisibility(View.GONE);

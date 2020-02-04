@@ -240,16 +240,16 @@ public class MainActivity extends TestpressFragmentActivity {
             CommonUtils.registerDevice(MainActivity.this, testpressService, serviceProvider);
         }
 
-        if (isUserAuthenticated) {
-            addMenuItem(R.string.dashboard, R.drawable.ic_dashboard, new DashboardFragment());
-        } else {
+//        if (isUserAuthenticated) {
+//            addMenuItem(R.string.dashboard, R.drawable.ic_dashboard, new DashboardFragment());
+//        } else {
             addMenuItem(R.string.dashboard, R.drawable.profile_default, new MainMenuFragment());
-        }
+//        }
         // Show courses list if game front end is enabled, otherwise hide bottom bar
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             //noinspection ConstantConditions
             addMenuItem(R.string.learn, R.drawable.learn,
-                    TestpressCourse.getCoursesListFragment(this, TestpressSdk.getTestpressSession(this)));
+                    TestpressCourse.getMyCoursesFragment(this, TestpressSdk.getTestpressSession(this)));
 
             if (mInstituteSettings.getCoursesEnableGamification()) {
                 //noinspection ConstantConditions

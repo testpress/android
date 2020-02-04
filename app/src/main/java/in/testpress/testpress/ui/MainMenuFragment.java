@@ -274,6 +274,8 @@ public class MainMenuFragment extends Fragment {
                     case R.string.dashboard_about_us:
                         intent = new Intent(getContext(), PostActivity.class);
                         intent.putExtra("shortWebUrl", "https://ssgrbcc.testpress.in/p/3hgq46/");
+                        startActivity(intent);
+                        break;
                     case R.string.login_activity:
                         intent = new Intent(getActivity(), UserDevicesActivity.class);
                         startActivity(intent);

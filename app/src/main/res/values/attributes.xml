@@ -14,4 +14,7 @@
         <attr name="mrl_rippleInAdapter" format="boolean" localization="suggested" />
         <attr name="mrl_rippleRoundedCorners" format="dimension" localization="suggested" />
     </declare-styleable>
+    <declare-styleable name="RoundedCornerImageView">
+        <attr name="cornerRadius" format="float" />
+    </declare-styleable>
 </resources>

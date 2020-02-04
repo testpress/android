@@ -150,16 +150,16 @@ public class ForumListAdapter extends BaseAdapter{
         TextView viewsCount = (TextView) convertView.findViewById(R.id.viewsCount);
         TextView status = (TextView) convertView.findViewById(R.id.status);
 
-        if (forum.getCommentsCount() == 0 || forum.getLastCommentedBy() == null) {
+        if (forum.getCommentsCount() == 0 || forum.getRawLastCommentedBy() == null) {
             try {
-                status.setText(forum.getCreatedBy().getDisplayName() + " started " +
+                status.setText(forum.getRawCreatedBy().getDisplayName() + " started " +
                         FormatDate.getAbbreviatedTimeSpan(simpleDateFormat.parse(forum.getLastCommentedTime()).getTime()));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         } else {
             try {
-                status.setText(forum.getLastCommentedBy().getDisplayName() + " replied " +
+                status.setText(forum.getRawLastCommentedBy().getDisplayName() + " replied " +
                         FormatDate.getAbbreviatedTimeSpan(simpleDateFormat.parse(forum.getLastCommentedTime()).getTime()));
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -174,7 +174,7 @@ public class ForumListAdapter extends BaseAdapter{
             e.printStackTrace();
         }
 
-        imageLoader.displayImage(forum.getCreatedBy().getMediumImage(), roundedImageView, options);
+        imageLoader.displayImage(forum.getRawCreatedBy().getMediumImage(), roundedImageView, options);
 
         viewsCount.setText(forum.getViewsCount() + " views");
 

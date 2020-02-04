@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="15dp"
+    android:layout_marginBottom="15dp"
+    android:layout_width="155dp"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="155dp"
+        android:layout_height="87dp"
+        app:cardElevation="0dp"
+        app:cardCornerRadius="4dp">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/image_view"
+            android:layout_width="155dp"
+            android:layout_height="87dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/border_rectangle_light" />
+
+        <ImageView
+            android:id="@+id/play_icon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:paddingBottom="10dp"
+            android:src="@drawable/play"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="155dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:id="@+id/video_progress_layout"
+            android:visibility="gone">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="5dp">
+
+                <ProgressBar
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:id="@+id/video_progress"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="0.75dp"
+                    android:layout_marginRight="0.5dp"
+                    android:max="100"
+                    android:progress="25" />
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/info_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/number_of_questions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:background="@drawable/pill_bg"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="6dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:text="15"
+                android:textColor="#FFA319"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/info_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:text="questions"
+                android:textColor="#fff"
+                android:textSize="10sp"
+                android:layout_marginTop="5dp"/>
+        </LinearLayout>
+
+    </FrameLayout>
+    </android.support.v7.widget.CardView>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/content_type_icon"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="0.5"
+            android:background="@drawable/rounded_background"
+            android:padding="3dp"
+            android:src="@drawable/ic_video_white" />
+
+        <TextView
+            android:id="@+id/subtitle"
+            android:layout_width="wrap_content"
+            android:maxLines="1"
+            android:layout_height="15dp"
+            android:layout_weight="0.5"
+            android:background="@drawable/rounded_corner"
+            android:gravity="center_vertical"
+            android:ellipsize="end"
+            android:maxLength="24"
+            android:letterSpacing="0.1"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text=""
+            android:textAllCaps="true"
+            android:textColor="#666666"
+            android:textSize="8sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:maxLines="2"
+        android:text="Title"
+        android:textColor="#1a202c"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+</LinearLayout>

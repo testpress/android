@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group>
+        <item
+            android:id="@+id/bookmarks"
+            android:title="Bookmarks"
+            android:icon="@drawable/ic_bookmark_black_24dp"
+            app:showAsAction="never"/>
+        <item
+            android:id="@+id/analytics"
+            android:title="Analytics"
+            android:icon="@drawable/ic_pie_chart_black_24dp"
+            app:showAsAction="never"/>
+        <item
+            android:id="@+id/profile"
+            android:title="Profile"
+            android:icon="@drawable/ic_person_black_24dp"
+            app:showAsAction="never"/>
+        <item
+            android:id="@+id/login_activity"
+            android:title="Login Activity"
+            android:icon="@drawable/ic_lock_outline_black_24dp"
+            app:showAsAction="never"/>
+        <item
+            android:id="@+id/logout"
+            android:icon="@drawable/ic_exit_to_app_black_24dp"
+            android:title="Logout"
+            app:showAsAction="never"/>
+        <item
+            android:id="@+id/login"
+            android:icon="@drawable/ic_exit_to_app_black_24dp"
+            android:title="Log in"
+            app:showAsAction="never"/>
+    </group>
+    <group
+        android:id="@+id/group_feature">
+
+        <item
+            android:id="@+id/rate_us"
+            android:icon="@drawable/ic_rate_review_black_24dp"
+            android:title="Rate Us"
+            app:showAsAction="always"/>
+        <item
+            android:id="@+id/share"
+            android:icon="@drawable/ic_share_white_24dp"
+            android:title="Share"
+            app:showAsAction="always"/>
+    </group>
+</menu>

@@ -88,5 +88,25 @@
         android:layout_gravity="start"
         app:itemTextColor="@color/testpress_black"
         android:background="@android:color/white"
-        app:menu="@menu/main_menu" />
+        app:menu="@menu/main_menu" >
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/logout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="12sp"
+                android:textColor="@color/testpress_text_gray"
+                android:text="@string/version" />
+        </LinearLayout>
+
+    </android.support.design.widget.NavigationView>
 </android.support.v4.widget.DrawerLayout>

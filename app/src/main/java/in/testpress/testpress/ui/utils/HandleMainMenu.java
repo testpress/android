@@ -1,7 +1,10 @@
 package in.testpress.testpress.ui.utils;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
@@ -18,6 +21,7 @@ import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.ui.MainActivity;
+import in.testpress.testpress.ui.PostsListActivity;
 import in.testpress.testpress.ui.ProfileDetailsActivity;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
@@ -25,12 +29,15 @@ import in.testpress.testpress.util.UIUtils;
 import in.testpress.ui.UserDevicesActivity;
 
 import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
+import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 
 public class HandleMainMenu {
     private Activity activity;
     private TestpressServiceProvider serviceProvider;
     private InstituteSettings instituteSettings;
+    Account[] account;
+    boolean isUserAuthenticated;
 
     public HandleMainMenu(Activity activity, TestpressServiceProvider serviceProvider) {
         this.activity = activity;
@@ -42,6 +49,10 @@ public class HandleMainMenu {
         instituteSettings = instituteSettingsDao.queryBuilder()
                 .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
                 .list().get(0);
+
+        AccountManager manager = (AccountManager) activity.getSystemService(Context.ACCOUNT_SERVICE);
+        account = manager.getAccountsByType(APPLICATION_ID);
+        isUserAuthenticated = account.length > 0;
     }
 
     public void handleMenuOptionClick(int itemId) {
@@ -58,6 +69,13 @@ public class HandleMainMenu {
                 break;
             case R.id.bookmarks:
                 checkAuthenticationAndOpen(R.string.bookmarks);
+                break;
+            case R.id.posts:
+                String custom_title = UIUtils.getMenuItemName(R.string.posts, instituteSettings);
+                intent = new Intent(activity, PostsListActivity.class);
+                intent.putExtra("userAuthenticated", isUserAuthenticated);
+                intent.putExtra("title", custom_title);
+                activity.startActivity(intent);
                 break;
             case R.id.analytics:
                 checkAuthenticationAndOpen(R.string.analytics);

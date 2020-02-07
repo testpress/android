@@ -40,6 +40,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
 import in.testpress.course.TestpressCourse;
+import in.testpress.exam.ui.view.NonSwipeableViewPager;
 import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
@@ -83,7 +84,8 @@ public class MainActivity extends TestpressFragmentActivity {
 
     @InjectView(R.id.coordinator_layout) CoordinatorLayout coordinatorLayout;
     @InjectView(R.id.progressbar) RelativeLayout progressBarLayout;
-    @InjectView(R.id.viewpager) ViewPager viewPager;
+    @InjectView(R.id.viewpager)
+    NonSwipeableViewPager viewPager;
     @InjectView(R.id.grid) GridView grid;
     @InjectView(R.id.drawer_layout)
     DrawerLayout drawer;
@@ -114,6 +116,7 @@ public class MainActivity extends TestpressFragmentActivity {
             mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM);
         }
         viewPager.setVisibility(View.GONE);
+        viewPager.setSwipeEnabled(false);
         DaoSession daoSession = TestpressApplication.getDaoSession();
         instituteSettingsDao = daoSession.getInstituteSettingsDao();
         List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()

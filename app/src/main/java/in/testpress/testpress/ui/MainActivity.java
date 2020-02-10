@@ -263,7 +263,6 @@ public class MainActivity extends TestpressFragmentActivity {
             if (mInstituteSettings.getForumEnabled()) {
                 addMenuItem(R.string.discussions, R.drawable.chat_icon, new ForumListFragment());
             }
-            addMenuItem(R.string.dashboard, R.drawable.profile_default, new MainMenuFragment());
         } else {
             grid.setVisibility(View.GONE);
         }

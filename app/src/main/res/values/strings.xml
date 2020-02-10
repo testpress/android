@@ -70,6 +70,7 @@
     <string name="post_authentication_failed">Sorry, you don\'t have access to this article.</string>
     <string name="access_denied">Access denied</string>
     <string name="share">Share</string>
+    <string name="login_activity">Login Activity</string>
     <string name="invalid_post">Invalid Article</string>
 
     <string name="learn">Learn</string>
@@ -147,5 +148,30 @@
     <string name="image_cleared">Image cleared!</string>
     <string name="posted_successfully">Posted successfully!</string>
     <string name="create_post">Create Post</string>
+    <string name="resend_verification_sms">Resend Verification SMS</string>
+    <string name="empty_input_error">This field cannot be empty.</string>
+    <string name="username_error">This field can contain only lowercase alphabets and numbers.</string>
+    <string name="email_error">Please enter a valid email address</string>
+    <string name="phone_number_error">Please enter a valid mobile number</string>
+    <string name="password_error">Password should contain at least 6 characters</string>
+    <string name="password_mismatch_error">Passwords don\'t match</string>
+    <string name="PARALLEL_LOGIN_RESTRICTION_ERROR_CODE">parallel_login_restriction</string>
+    <string name="MAX_LOGIN_EXCEEDED_ERROR_CODE">max_login_exceeded</string>
+    <string name="no_data_available">No data available</string>
+    <string name="try_after_some_time">Please try after some time</string>
+    <string name="open_drawer">Open Navigation Drawer</string>
+    <string name="close_drawer">Close Navigation Drawer</string>
 
+    <plurals name="notes_count">
+        <item quantity="one">1 Doc</item>
+        <item quantity="other">%d Docs</item>
+    </plurals>
+    <plurals name="videos_count">
+        <item quantity="one">1 Video</item>
+        <item quantity="other">%d Videos</item>
+    </plurals>
+    <plurals name="exams_count">
+        <item quantity="one">1 Exam</item>
+        <item quantity="other">%d Exams</item>
+    </plurals>
 </resources>

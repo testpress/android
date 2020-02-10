@@ -7,7 +7,7 @@ import de.greenrobot.daogenerator.Schema;
 
 public class TestpressDaoGenerator {
     public static void main(String args[]) throws Exception {
-        Schema schema = new Schema(15, "in.testpress.testpress.models");
+        Schema schema = new Schema(19, "in.testpress.testpress.models");
 
         Entity post = schema.addEntity("Post");
         post.addLongProperty("id").primaryKey();
@@ -23,9 +23,11 @@ public class TestpressDaoGenerator {
         post.addLongProperty("modifiedDate");
         post.addStringProperty("short_web_url");
         post.addStringProperty("short_url");
+        post.addStringProperty("shortLink");
         post.addStringProperty("web_url");
         post.addIntProperty("commentsCount");
         post.addStringProperty("commentsUrl");
+        post.addStringProperty("coverImage");
 
         Entity category = schema.addEntity("Category");
         category.addLongProperty("id").primaryKey();
@@ -70,6 +72,11 @@ public class TestpressDaoGenerator {
         instituteSettings.addStringProperty("loginPasswordLabel");
         instituteSettings.addStringProperty("aboutUs");
         instituteSettings.addBooleanProperty("disableStudentAnalytics");
+        instituteSettings.addBooleanProperty("customRegistrationEnabled");
+        instituteSettings.addBooleanProperty("enableParallelLoginRestriction");
+        instituteSettings.addIntProperty("maxParallelLogins");
+        instituteSettings.addIntProperty("lockoutLimit");
+        instituteSettings.addStringProperty("cooloffTime");
 
         Entity rssFeed = schema.addEntity("RssItem");
         rssFeed.addLongProperty("id").primaryKey().autoincrement();
@@ -86,6 +93,7 @@ public class TestpressDaoGenerator {
         addUserToForum(forum, user, "lastCommentedBy", "commentorId");
         addCategoryToForum(forum, category);
 
+        schema.enableKeepSectionsByDefault();
         new DaoGenerator().generateAll(schema, "app/src/main/java/");
     }
 

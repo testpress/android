@@ -33,6 +33,7 @@ import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.models.ProfileDetails.PROFILE_DETAILS_PREFERENCES;
 import static in.testpress.testpress.BuildConfig.DISPLAY_USERNAME_ON_VIDEO;
 import static in.testpress.testpress.BuildConfig.SCREENSHOT_DISABLED;
+import static in.testpress.testpress.util.PreferenceManager.setDashboardData;
 
 public class TestpressServiceProvider {
     private RestAdapter.Builder restAdapter;
@@ -87,7 +88,8 @@ public class TestpressServiceProvider {
                         .setEnableParallelLoginRestriction(instituteSettings.getEnableParallelLoginRestriction())
                         .setMaxParallelLogins(instituteSettings.getMaxParallelLogins())
                         .setLockoutLimit(instituteSettings.getLockoutLimit())
-                        .setCooloffTime(instituteSettings.getCooloffTime());
+                        .setCooloffTime(instituteSettings.getCooloffTime())
+                        .setStoreLabel(instituteSettings.getStoreLabel());
             }
             TestpressSdk.setTestpressSession(activity, new TestpressSession(settings, authToken));
         }
@@ -110,6 +112,7 @@ public class TestpressServiceProvider {
         serviceProvider.invalidateAuthToken(activity);
         SharedPreferences preferences = activity.getSharedPreferences(Constants.GCM_PREFERENCE_NAME,
                 Context.MODE_PRIVATE);
+        setDashboardData(activity, "{}");
         preferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
         SharedPreferences profilePreferences =
                 activity.getSharedPreferences(PROFILE_DETAILS_PREFERENCES, Context.MODE_PRIVATE);

@@ -8,6 +8,11 @@
             android:icon="@drawable/ic_bookmark_black_24dp"
             app:showAsAction="never"/>
         <item
+            android:id="@+id/posts"
+            android:title="Posts"
+            android:icon="@drawable/posts"
+            app:showAsAction="never"/>
+        <item
             android:id="@+id/analytics"
             android:title="Analytics"
             android:icon="@drawable/ic_pie_chart_black_24dp"

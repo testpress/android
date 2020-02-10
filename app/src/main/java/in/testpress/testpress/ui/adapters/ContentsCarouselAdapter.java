@@ -111,6 +111,7 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
     }
 
     private void showThumbnailForVideo(Content content, ItemViewHolder holder) {
+        imageLoader.displayImage(null, holder.image, options);
         if (content.getVideoId() != null) {
             Video video = response.getVideoHashMap().get(content.getVideoId());
 
@@ -139,6 +140,7 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
     }
     
     private void showProgressBarForResumeVideos(int position, ItemViewHolder holder) {
+        holder.videoProgressLayout.setVisibility(View.GONE);
         if (section.getSlug().equals("resume")) {
             Long attemptId = Long.valueOf(section.getItems().get(position));
             CourseAttempt attempt = this.response.getContentAttemptHashMap().get(attemptId);

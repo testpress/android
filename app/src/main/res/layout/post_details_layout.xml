@@ -260,6 +260,7 @@
                     android:inputType="text|textMultiLine"
                     android:textSize="16sp"
                     android:minLines="1"
+                    android:textColor="#000"
                     android:maxLines="5"
                     android:layout_gravity="center"
                     android:gravity="left|bottom"

@@ -56,7 +56,11 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         public final static Property LoginPasswordLabel = new Property(30, String.class, "loginPasswordLabel", false, "LOGIN_PASSWORD_LABEL");
         public final static Property AboutUs = new Property(31, String.class, "aboutUs", false, "ABOUT_US");
         public final static Property DisableStudentAnalytics = new Property(32, Boolean.class, "disableStudentAnalytics", false, "DISABLE_STUDENT_ANALYTICS");
-        public final static Property CustomFields = new Property(33, String.class, "customFields", false, "CUSTOM_FIELDS");
+        public final static Property CustomRegistrationEnabled = new Property(33, Boolean.class, "customRegistrationEnabled", false, "CUSTOM_REGISTRATION_ENABLED");
+        public final static Property EnableParallelLoginRestriction = new Property(34, Boolean.class, "enableParallelLoginRestriction", false, "ENABLE_PARALLEL_LOGIN_RESTRICTION");
+        public final static Property MaxParallelLogins = new Property(35, Integer.class, "maxParallelLogins", false, "MAX_PARALLEL_LOGINS");
+        public final static Property LockoutLimit = new Property(36, Integer.class, "lockoutLimit", false, "LOCKOUT_LIMIT");
+        public final static Property CooloffTime = new Property(37, String.class, "cooloffTime", false, "COOLOFF_TIME");
     };
 
 
@@ -105,7 +109,11 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
                 "\"LOGIN_PASSWORD_LABEL\" TEXT," + // 30: loginPasswordLabel
                 "\"ABOUT_US\" TEXT," + // 31: aboutUs
                 "\"DISABLE_STUDENT_ANALYTICS\" INTEGER," + // 32: disableStudentAnalytics
-                "\"CUSTOM_FIELDS\" TEXT);"); // 33: customFields
+                "\"CUSTOM_REGISTRATION_ENABLED\" INTEGER," + // 33: customRegistrationEnabled
+                "\"ENABLE_PARALLEL_LOGIN_RESTRICTION\" INTEGER," + // 34: enableParallelLoginRestriction
+                "\"MAX_PARALLEL_LOGINS\" INTEGER," + // 35: maxParallelLogins
+                "\"LOCKOUT_LIMIT\" INTEGER," + // 36: lockoutLimit
+                "\"COOLOFF_TIME\" TEXT);"); // 37: cooloffTime
     }
 
     /** Drops the underlying database table. */
@@ -280,9 +288,29 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             stmt.bindLong(33, disableStudentAnalytics ? 1L: 0L);
         }
  
-        String customFields = entity.getCustomFields();
-        if (customFields != null) {
-            stmt.bindString(34, customFields);
+        Boolean customRegistrationEnabled = entity.getCustomRegistrationEnabled();
+        if (customRegistrationEnabled != null) {
+            stmt.bindLong(34, customRegistrationEnabled ? 1L: 0L);
+        }
+ 
+        Boolean enableParallelLoginRestriction = entity.getEnableParallelLoginRestriction();
+        if (enableParallelLoginRestriction != null) {
+            stmt.bindLong(35, enableParallelLoginRestriction ? 1L: 0L);
+        }
+ 
+        Integer maxParallelLogins = entity.getMaxParallelLogins();
+        if (maxParallelLogins != null) {
+            stmt.bindLong(36, maxParallelLogins);
+        }
+ 
+        Integer lockoutLimit = entity.getLockoutLimit();
+        if (lockoutLimit != null) {
+            stmt.bindLong(37, lockoutLimit);
+        }
+ 
+        String cooloffTime = entity.getCooloffTime();
+        if (cooloffTime != null) {
+            stmt.bindString(38, cooloffTime);
         }
     }
 
@@ -329,7 +357,11 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             cursor.isNull(offset + 30) ? null : cursor.getString(offset + 30), // loginPasswordLabel
             cursor.isNull(offset + 31) ? null : cursor.getString(offset + 31), // aboutUs
             cursor.isNull(offset + 32) ? null : cursor.getShort(offset + 32) != 0, // disableStudentAnalytics
-            cursor.isNull(offset + 33) ? null : cursor.getString(offset + 33) // customFields
+            cursor.isNull(offset + 33) ? null : cursor.getShort(offset + 33) != 0, // customRegistrationEnabled
+            cursor.isNull(offset + 34) ? null : cursor.getShort(offset + 34) != 0, // enableParallelLoginRestriction
+            cursor.isNull(offset + 35) ? null : cursor.getInt(offset + 35), // maxParallelLogins
+            cursor.isNull(offset + 36) ? null : cursor.getInt(offset + 36), // lockoutLimit
+            cursor.isNull(offset + 37) ? null : cursor.getString(offset + 37) // cooloffTime
         );
         return entity;
     }
@@ -370,7 +402,11 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         entity.setLoginPasswordLabel(cursor.isNull(offset + 30) ? null : cursor.getString(offset + 30));
         entity.setAboutUs(cursor.isNull(offset + 31) ? null : cursor.getString(offset + 31));
         entity.setDisableStudentAnalytics(cursor.isNull(offset + 32) ? null : cursor.getShort(offset + 32) != 0);
-        entity.setCustomFields(cursor.isNull(offset + 33) ? null : cursor.getString(offset + 33));
+        entity.setCustomRegistrationEnabled(cursor.isNull(offset + 33) ? null : cursor.getShort(offset + 33) != 0);
+        entity.setEnableParallelLoginRestriction(cursor.isNull(offset + 34) ? null : cursor.getShort(offset + 34) != 0);
+        entity.setMaxParallelLogins(cursor.isNull(offset + 35) ? null : cursor.getInt(offset + 35));
+        entity.setLockoutLimit(cursor.isNull(offset + 36) ? null : cursor.getInt(offset + 36));
+        entity.setCooloffTime(cursor.isNull(offset + 37) ? null : cursor.getString(offset + 37));
      }
     
     /** @inheritdoc */

@@ -277,7 +277,7 @@ public class RegisterActivity extends AppCompatActivity {
            Pattern userNamePattern = Pattern.compile("[a-z0-9]*");
            Matcher userNameMatcher = userNamePattern.matcher(usernameText.getText().toString().trim());
            if(populated(usernameText) && !userNameMatcher.matches()) {
-               phoneError.setVisibility(View.VISIBLE);
+               usernameError.setVisibility(View.VISIBLE);
                usernameError.setText(getString(R.string.username_error));
                usernameText.requestFocus();
                isValid = false;

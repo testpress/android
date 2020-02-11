@@ -3,9 +3,10 @@ package in.testpress.testpress.util;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.graphics.Typeface;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.content.ContextCompat;
@@ -14,13 +15,13 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import in.testpress.testpress.R;
-import in.testpress.testpress.TestpressServiceProvider;
-import in.testpress.testpress.authenticator.LogoutService;
-import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.InstituteSettings;
-import in.testpress.testpress.ui.RssFeedDetailActivity;
+
+import static in.testpress.core.TestpressSdk.getTypeface;
 
 public class UIUtils {
+    private static Typeface latoSemiBold;
+    private static final String LATO_SEMI_BOLD_FONT_PATH = "fonts/Lato-Semibold.ttf";
 
     /**
      * Helps determine if the app is running in a Tablet context.
@@ -76,21 +77,32 @@ public class UIUtils {
     public static String getMenuItemName(int titleResId, InstituteSettings instituteSettings) {
         switch (titleResId) {
             case R.string.dashboard:
-                return instituteSettings.getDashboardLabel();
+                return Strings.toString(instituteSettings.getDashboardLabel());
             case R.string.testpress_leaderboard:
-                return instituteSettings.getLeaderboardLabel();
+                return Strings.toString(instituteSettings.getLeaderboardLabel());
             case R.string.bookmarks:
-                return instituteSettings.getBookmarksLabel();
+                return Strings.toString(instituteSettings.getBookmarksLabel());
             case R.string.documents:
-                return instituteSettings.getDocumentsLabel();
+                return Strings.toString(instituteSettings.getDocumentsLabel());
             case R.string.store:
-                return instituteSettings.getStoreLabel();
+                return Strings.toString(instituteSettings.getStoreLabel());
             case R.string.posts:
-                return instituteSettings.getPostsLabel();
+                return Strings.toString(instituteSettings.getPostsLabel());
             case R.string.learn:
-                return instituteSettings.getLearnLabel();
+                return Strings.toString(instituteSettings.getLearnLabel());
+            case R.string.label_username:
+                return Strings.toString(instituteSettings.getLoginLabel());
+            case R.string.label_password:
+                return Strings.toString(instituteSettings.getLoginPasswordLabel());
             default:
                 return "";
         }
+    }
+
+    public static Typeface getLatoSemiBoldFont(@NonNull Context context) {
+        if (latoSemiBold == null) {
+            latoSemiBold = getTypeface(context, LATO_SEMI_BOLD_FONT_PATH);
+        }
+        return latoSemiBold;
     }
 }

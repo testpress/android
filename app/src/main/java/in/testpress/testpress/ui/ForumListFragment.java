@@ -753,16 +753,16 @@ public class ForumListFragment extends Fragment implements
     protected void writeToDB(List<Forum> forums) {
         List<Category> categories = new ArrayList<>();
         for (Forum forum : forums) {
-            if (forum.category != null) {
-                categories.add(forum.category);
+            if (forum.getRawCategory() != null) {
+                categories.add(forum.getRawCategory());
             }
         }
         categoryDao.insertOrReplaceInTx(categories);
         for (Forum forumTemp : forums) {
-            User user = forumTemp.createdBy;
+            User user = forumTemp.getRawCreatedBy();
             userDao.insertOrReplace(user);
             forumTemp.setCreatorId(user.getId());
-            user = forumTemp.lastCommentedBy;
+            user = forumTemp.getRawLastCommentedBy();
             if (user != null) {
                 userDao.insertOrReplace(user);
                 forumTemp.setCommentorId(user.getId());

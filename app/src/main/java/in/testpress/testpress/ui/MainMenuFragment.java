@@ -58,7 +58,11 @@ import in.testpress.testpress.models.TestpressApiErrorResponse;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
+import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
+import in.testpress.ui.UserDevicesActivity;
+import io.sentry.Sentry;
+import io.sentry.event.UserBuilder;
 import retrofit.RetrofitError;
 
 import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
@@ -112,37 +116,38 @@ public class MainMenuFragment extends Fragment {
         final boolean isUserAuthenticated = account.length > 0;
         // ToDo get from institute settings
         boolean drupalRssFeedEnabled = false;
-        if (isUserAuthenticated) {
 
-            if (instituteSettings.getBookmarksEnabled()) {
-                mMenuItemResIds.put(R.string.index, R.drawable.index);
+        if (!Strings.toString(instituteSettings.getAboutUs()).isEmpty()) {
+            mMenuItemResIds.put(R.string.about_us, R.drawable.about_us);
+        }
+
+        if (isUserAuthenticated) {
+            Sentry.getContext().setUser(new UserBuilder().setUsername(account[0].name).build());
+
+            if (!instituteSettings.getShowGameFrontend()) {
+                mMenuItemResIds.put(R.string.my_exams, R.drawable.exams);
             }
 
             if (instituteSettings.getBookmarksEnabled()) {
                 mMenuItemResIds.put(R.string.bookmarks, R.drawable.bookmark);
             }
-            mMenuItemResIds.put(R.string.analytics, R.drawable.analytics);
-        }
+            if (instituteSettings.getDocumentsEnabled()) {
+                mMenuItemResIds.put(R.string.documents, R.drawable.documents);
+            }
 
-        if (instituteSettings.getPostsEnabled()) {
-            mMenuItemResIds.put(R.string.posts, R.drawable.posts);
-        }
+            if (!instituteSettings.getDisableStudentAnalytics()) {
+                mMenuItemResIds.put(R.string.analytics, R.drawable.analytics);
+            }
 
-        if (isUserAuthenticated) {
-            mMenuItemResIds.put(R.string.updates, R.drawable.updates);
-            mMenuItemResIds.put(R.string.free_MCQ, R.drawable.mcq_question);
             mMenuItemResIds.put(R.string.profile, R.drawable.ic_profile_details);
             mMenuItemResIds.put(R.string.sambar, R.drawable.question_bank);
 
             if (instituteSettings.getStoreEnabled()) {
                 mMenuItemResIds.put(R.string.store, R.drawable.store);
             }
-            if (!instituteSettings.getShowGameFrontend()) {
-                mMenuItemResIds.put(R.string.my_exams, R.drawable.exams);
-            }
-            if (instituteSettings.getDocumentsEnabled()) {
-                mMenuItemResIds.put(R.string.documents, R.drawable.documents);
-            }
+
+            mMenuItemResIds.put(R.string.login_activity, R.drawable.warning);
+
         }
         if (drupalRssFeedEnabled) {
             mMenuItemResIds.put(R.string.rss_posts, R.drawable.rss_feed);
@@ -169,23 +174,8 @@ public class MainMenuFragment extends Fragment {
                 Intent intent;
                 String custom_title;
                 switch ((int) id) {
-                    case R.string.index:
-                        intent = new Intent(getContext(), PostsListActivity.class);
-                        intent.putExtra("category_filter", getCategoryId(categoryDao, "index"));
-                        startActivity(intent);
-                        break;
-                    case R.string.updates:
-                        intent = new Intent(getContext(), PostsListActivity.class);
-                        intent.putExtra("category_filter", getCategoryId(categoryDao, "updates"));
-                        startActivity(intent);
-                        break;
-                    case R.string.free_MCQ:
-                        // Hard coded id 3 for Free MCQ
-                        TestpressCourse.showChapters(getActivity(), getString(R.string.free_MCQ), 3, TestpressSdk.getTestpressSession(getActivity()));
-                        break;
-                    case R.string.sambar:
-                        intent = new Intent(getContext(), PostsListActivity.class);
-                        intent.putExtra("category_filter", getCategoryId(categoryDao, "sambar"));
+                    case R.string.about_us:
+                        intent = new Intent(getActivity(), AboutUsActivity.class);
                         startActivity(intent);
                         break;
                     case R.string.my_exams:
@@ -243,6 +233,10 @@ public class MainMenuFragment extends Fragment {
                     case R.string.login:
                         intent = new Intent(getActivity(), LoginActivity.class);
                         intent.putExtra(Constants.DEEP_LINK_TO, "home");
+                        startActivity(intent);
+                        break;
+                    case R.string.login_activity:
+                        intent = new Intent(getActivity(), UserDevicesActivity.class);
                         startActivity(intent);
                         break;
                 }

@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.0",
-  "version_code" : 1,
+  "version" : "1.0.1",
+  "version_code" : 2,
   "testpress_site_subdomain" : "bharathistudycentre",
   "package_name" : "in.testpress.bhsc",
   "app_name" : "Bharathy Study Centre",

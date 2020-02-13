@@ -243,7 +243,7 @@ public class MainActivity extends TestpressFragmentActivity {
             CommonUtils.registerDevice(MainActivity.this, testpressService, serviceProvider);
         }
 
-        if (isUserAuthenticated) {
+        if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             addMenuItem(R.string.dashboard, R.drawable.ic_dashboard, new DashboardFragment());
         } else {
             addMenuItem(R.string.dashboard, R.drawable.profile_default, new MainMenuFragment());

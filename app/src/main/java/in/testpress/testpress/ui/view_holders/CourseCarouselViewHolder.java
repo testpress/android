@@ -1,7 +1,7 @@
 package in.testpress.testpress.ui.view_holders;
 
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.View;
 
 import java.util.List;

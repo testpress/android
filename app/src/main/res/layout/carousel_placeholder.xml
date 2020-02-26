@@ -46,7 +46,7 @@
                     android:cropToPadding="true"
                     android:scaleType="centerCrop"
                     android:tint="#000000"
-                    app:cornerRadius="0.02" />
+                    app:imageCornerRadius="0.02" />
             </FrameLayout>
 
             <TextView
@@ -83,7 +83,7 @@
                         android:cropToPadding="true"
                         android:scaleType="centerCrop"
                         android:tint="#000000"
-                        app:cornerRadius="0.02" />
+                        app:imageCornerRadius="0.02" />
                 </FrameLayout>
 
                 <TextView
@@ -120,7 +120,7 @@
                             android:cropToPadding="true"
                             android:scaleType="centerCrop"
                             android:tint="#000000"
-                            app:cornerRadius="0.02" />
+                            app:imageCornerRadius="0.02" />
                     </FrameLayout>
 
                     <TextView

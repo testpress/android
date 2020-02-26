@@ -1,16 +1,12 @@
 package in.testpress.testpress.ui;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
-import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import android.view.MenuItem;
-import android.view.View;
 
 import in.testpress.testpress.Injector;
 import com.squareup.otto.Bus;
@@ -33,9 +29,7 @@ import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.util.Ln;
-import in.testpress.testpress.util.UIUtils;
 import in.testpress.ui.UserDevicesActivity;
-import io.sentry.Sentry;
 
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 

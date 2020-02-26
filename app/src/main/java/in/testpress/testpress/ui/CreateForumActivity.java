@@ -5,8 +5,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
+import androidx.annotation.NonNull;
 import android.text.Html;
 import android.text.SpannableString;
 import android.view.View;
@@ -20,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.theartofdev.edmodo.cropper.CropImage;
 
@@ -49,7 +49,8 @@ import in.testpress.util.ViewUtils;
 import in.testpress.util.WebViewUtils;
 import retrofit.RetrofitError;
 
-import static android.support.design.widget.Snackbar.LENGTH_SHORT;
+import static com.google.android.material.snackbar.Snackbar.LENGTH_SHORT;
+
 
 public class CreateForumActivity extends TestpressFragmentActivity{
 

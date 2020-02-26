@@ -1,6 +1,6 @@
 {
-  "version" : "1.1.13",
-  "version_code" : 24,
+  "version" : "1.1.14",
+  "version_code" : 25,
   "testpress_site_subdomain" : "ssgrbcc",
   "package_name" : "in.testpress.newssgrbcc",
   "app_name" : "SSGRBCC",

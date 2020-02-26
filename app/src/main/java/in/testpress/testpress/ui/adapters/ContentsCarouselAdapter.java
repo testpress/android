@@ -3,8 +3,8 @@ package in.testpress.testpress.ui.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -111,6 +111,7 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
     }
 
     private void showThumbnailForVideo(Content content, ItemViewHolder holder) {
+        imageLoader.displayImage(null, holder.image, options);
         if (content.getVideoId() != null) {
             Video video = response.getVideoHashMap().get(content.getVideoId());
 

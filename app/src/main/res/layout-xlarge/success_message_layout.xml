@@ -37,7 +37,7 @@
         android:textSize="@dimen/text_size_medium"
         android:text="@string/reset_success_message"/>
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/success_ok"
         style="@style/Button.Tab"
         android:layout_marginTop="20dp"

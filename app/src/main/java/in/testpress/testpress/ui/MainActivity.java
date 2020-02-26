@@ -8,16 +8,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
-import android.util.Log;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.GravityCompat;
+import androidx.viewpager.widget.ViewPager;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,7 +26,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.material.navigation.NavigationView;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
 import in.testpress.course.TestpressCourse;
+import in.testpress.exam.ui.view.NonSwipeableViewPager;
 import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
@@ -83,7 +85,8 @@ public class MainActivity extends TestpressFragmentActivity {
 
     @InjectView(R.id.coordinator_layout) CoordinatorLayout coordinatorLayout;
     @InjectView(R.id.progressbar) RelativeLayout progressBarLayout;
-    @InjectView(R.id.viewpager) ViewPager viewPager;
+    @InjectView(R.id.viewpager)
+    NonSwipeableViewPager viewPager;
     @InjectView(R.id.grid) GridView grid;
     @InjectView(R.id.drawer_layout)
     DrawerLayout drawer;
@@ -114,6 +117,7 @@ public class MainActivity extends TestpressFragmentActivity {
             mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM);
         }
         viewPager.setVisibility(View.GONE);
+        viewPager.setSwipeEnabled(false);
         DaoSession daoSession = TestpressApplication.getDaoSession();
         instituteSettingsDao = daoSession.getInstituteSettingsDao();
         List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
@@ -240,7 +244,7 @@ public class MainActivity extends TestpressFragmentActivity {
             CommonUtils.registerDevice(MainActivity.this, testpressService, serviceProvider);
         }
 
-        if (isUserAuthenticated) {
+        if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             addMenuItem(R.string.dashboard, R.drawable.ic_dashboard, new DashboardFragment());
         } else {
             addMenuItem(R.string.dashboard, R.drawable.profile_default, new MainMenuFragment());

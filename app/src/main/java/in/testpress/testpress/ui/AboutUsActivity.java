@@ -1,10 +1,9 @@
 package in.testpress.testpress.ui;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.webkit.WebView;
-import android.widget.TextView;
-import android.support.v7.widget.Toolbar;
+
+import androidx.appcompat.widget.Toolbar;
 
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
@@ -12,7 +11,6 @@ import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.util.Strings;
-import in.testpress.util.WebViewUtils;
 
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 

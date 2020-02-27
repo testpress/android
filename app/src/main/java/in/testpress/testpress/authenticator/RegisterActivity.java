@@ -3,10 +3,9 @@ package in.testpress.testpress.authenticator;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -22,10 +21,10 @@ import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.hbb20.CountryCodePicker;
 
 import java.util.Hashtable;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -65,7 +64,8 @@ public class RegisterActivity extends AppCompatActivity {
     @InjectView(id.et_email) EditText emailText;
     @InjectView(id.et_phone) EditText phoneText;
     @InjectView(id.ccp) CountryCodePicker countryCodePicker;
-    @InjectView(id.phone_layout) TextInputLayout phoneLayout;
+    @InjectView(id.phone_layout)
+    TextInputLayout phoneLayout;
     @InjectView(id.b_register) Button registerButton;
     @InjectView(id.register_layout) LinearLayout registerLayout;
     @InjectView(R.id.success_complete) LinearLayout successContainer;

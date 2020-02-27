@@ -47,11 +47,11 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <!-- Username Label -->
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/username_textInput_layout"
                     style="@style/TextLabelTab"
                     android:theme="@style/TextLabel" >
-                    <android.support.v7.widget.AppCompatEditText
+                    <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/et_username"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/input_height"
@@ -59,7 +59,7 @@
                         android:imeOptions="actionNext"
                         style="@style/Input"
                         android:hint="@string/label_username" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
                 <TextView
                     android:id="@+id/username_error"
                     android:layout_height="wrap_content"
@@ -72,13 +72,13 @@
                 android:layout_marginBottom="30dp"
                 android:orientation="vertical">
                 <!-- Password Label -->
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/password_textInput_layout"
                     style="@style/TextLabelTab"
                     android:theme="@style/TextLabel"
                     android:layout_marginTop="30dp"
                     app:passwordToggleEnabled="true">
-                    <android.support.v7.widget.AppCompatEditText
+                    <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/et_password"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/input_height"
@@ -88,14 +88,14 @@
                         android:imeOptions="actionSend"
                         style="@style/Input"
                         android:hint="@string/label_password"/>
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
                 <TextView
                     android:id="@+id/password_error"
                     android:layout_height="wrap_content"
                     style="@style/TabInputError"/>
             </LinearLayout>
 
-            <android.support.v7.widget.AppCompatButton
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/b_signin"
                 style="@style/Button.Tab"
                 android:layout_marginTop="5dp"
@@ -191,7 +191,7 @@
                     android:layout_marginBottom="10dp"
                     facebook:com_facebook_login_text="@string/login_with_facebook" />
 
-                <android.support.v7.widget.AppCompatButton
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/google_sign_in_button"
                     android:layout_marginTop="10dp"
                     android:text="@string/login_with_google"

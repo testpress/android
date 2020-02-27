@@ -5,10 +5,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
+import androidx.core.content.ContextCompat;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -26,22 +24,17 @@ import javax.inject.Inject;
 
 import de.greenrobot.dao.query.QueryBuilder;
 import in.testpress.core.TestpressSdk;
-import in.testpress.exam.models.Vote;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.Forum;
 import in.testpress.testpress.models.ForumDao;
-import in.testpress.testpress.models.User;
 import in.testpress.testpress.models.UserDao;
 import in.testpress.testpress.ui.view.RoundedImageView;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.FormatDate;
-import in.testpress.testpress.util.Ln;
-import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.util.ViewUtils;
-import retrofit.RetrofitError;
 
 public class ForumListAdapter extends BaseAdapter{
 

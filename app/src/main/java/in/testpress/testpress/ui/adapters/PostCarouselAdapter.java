@@ -2,7 +2,7 @@ package in.testpress.testpress.ui.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.testpress.testpress.R;
-import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;

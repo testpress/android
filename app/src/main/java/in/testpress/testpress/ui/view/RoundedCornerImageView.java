@@ -6,11 +6,10 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.support.v7.widget.AppCompatImageView;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.appcompat.widget.AppCompatImageView;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import in.testpress.testpress.R;
 
@@ -24,7 +23,7 @@ public class RoundedCornerImageView extends AppCompatImageView {
                 R.styleable.RoundedCornerImageView,
                 0, 0);
         try {
-            cornerRadius = a.getFloat(R.styleable.RoundedCornerImageView_cornerRadius, 0);
+            cornerRadius = a.getFloat(R.styleable.RoundedCornerImageView_imageCornerRadius, 0);
         } finally {
             a.recycle();
         }

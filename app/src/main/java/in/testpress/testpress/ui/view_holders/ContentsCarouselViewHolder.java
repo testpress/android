@@ -1,17 +1,11 @@
 package in.testpress.testpress.ui.view_holders;
 
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.View;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import in.testpress.core.TestpressSDKDatabase;
-import in.testpress.models.greendao.Content;
-import in.testpress.models.greendao.ContentDao;
-import in.testpress.models.greendao.CourseAttempt;
-import in.testpress.models.greendao.CourseAttemptDao;
 import in.testpress.testpress.R;
 import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;

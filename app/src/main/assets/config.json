@@ -1,15 +1,15 @@
 {
-  "version" : "1.1.2",
-  "version_code" : 3,
-  "testpress_site_subdomain" : "koncpt",
-  "package_name" : "in.testpress.sandbox",
-  "app_name" : "Testpress Sandbox",
+  "version" : "1.10.0",
+  "version_code" : 1,
+  "testpress_site_subdomain" : "brilliantpala",
+  "package_name" : "in.testpress.brilliantpala",
+  "app_name" : "Brilliant Study Centre",
   "share_message": "Good app to prepare for online exams.",
-  "primary_color": "3598db",
-  "allow_anonymous_user" : true,
+  "primary_color": "5658A8",
+  "allow_anonymous_user" : false,
   "screenshot_disabled" : true,
   "facebook_app_id" : "733962776688753",
-  "server_client_id" : "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
+  "server_client_id" : "325057965301-f2cfl0as5ld12g6o8ip3o3fkhapeu40a.apps.googleusercontent.com",
   "display_username_on_video": true,
   "white_labeled_host_url": null
 }

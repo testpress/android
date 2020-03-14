@@ -3,7 +3,7 @@ import groovy.json.JsonSlurper
 apply plugin: 'com.android.application'
 
 ext {
-    testpressSDK = '1.3.66-TEST11'
+    testpressSDK = '1.3.67-TEST2'
 }
 
 dependencies {
@@ -128,6 +128,8 @@ android {
         // Exclude file to avoid
         // Error: Duplicate files during packaging of APK
         exclude 'META-INF/services/javax.annotation.processing.Processor'
+        exclude 'META-INF/proguard/androidx-annotations.pro'
+        exclude 'META-INF/proguard/coroutines.pro'
         exclude 'LICENSE.txt'
     }
 

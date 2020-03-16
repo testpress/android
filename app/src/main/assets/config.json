@@ -1,9 +1,9 @@
 {
-  "version" : "1.10.0",
-  "version_code" : 2,
+  "version" : "1.10.1",
+  "version_code" : 3,
   "testpress_site_subdomain" : "brilliantpala2",
   "package_name" : "in.testpress.brilliantpala",
-  "app_name" : "Brilliant Study Centre",
+  "app_name" : "Brilliant Pala - Online Exam",
   "share_message": "Good app to prepare for online exams.",
   "primary_color": "5658A8",
   "allow_anonymous_user" : false,

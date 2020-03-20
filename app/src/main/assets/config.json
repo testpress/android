@@ -1,6 +1,6 @@
 {
-  "version" : "1.2.0",
-  "version_code" : 11,
+  "version" : "1.2.1",
+  "version_code" : 12,
   "testpress_site_subdomain" : "surgerysixer",
   "package_name" : "in.testpress.surgerysixer",
   "app_name" : "Surgery Sixer",

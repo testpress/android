@@ -38,7 +38,6 @@ import static in.testpress.core.TestpressSdk.COURSE_CONTENT_DETAIL_REQUEST_CODE;
 import static in.testpress.core.TestpressSdk.COURSE_CONTENT_LIST_REQUEST_CODE;
 import static in.testpress.course.TestpressCourse.CHAPTER_URL;
 import static in.testpress.course.TestpressCourse.COURSE_ID;
-import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 import static in.testpress.store.TestpressStore.CONTINUE_PURCHASE;
 import static in.testpress.store.TestpressStore.STORE_REQUEST_CODE;
 import static in.testpress.testpress.BuildConfig.BASE_URL;

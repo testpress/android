@@ -7,7 +7,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.LinkProperties;
 import android.os.Bundle;
+
+import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
 import androidx.viewpager.widget.ViewPager;
@@ -16,6 +19,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +34,8 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.navigation.NavigationView;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -64,6 +70,10 @@ import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.testpress.util.UpdateAppDialogManager;
+import io.branch.indexing.BranchUniversalObject;
+import io.branch.referral.Branch;
+import io.branch.referral.BranchError;
+import io.branch.referral.validators.IntegrationValidator;
 import io.sentry.Sentry;
 import io.sentry.android.AndroidSentryClientFactory;
 
@@ -130,6 +140,29 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             checkUpdate();
         }
+        Branch.enableDebugMode();
+        IntegrationValidator.validate(MainActivity.this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Branch.sessionBuilder(this).withCallback(branchReferralInitListener).reInit();
+    }
+
+    private Branch.BranchReferralInitListener branchReferralInitListener =
+            new Branch.BranchReferralInitListener() {
+                @Override
+                public void onInitFinished(@Nullable JSONObject referringParams, @Nullable BranchError error) {
+
+                }
+            };
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        this.setIntent(intent);
+        Branch.sessionBuilder(this).withCallback(branchReferralInitListener).reInit();
     }
 
     @Override

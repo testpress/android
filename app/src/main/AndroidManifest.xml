@@ -38,6 +38,15 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" android:host="@string/host_url"/>
                 <data android:scheme="http" android:host="@string/host_url" />
+                <data android:scheme="https" android:host="@string/white_labeled_host_url" />
+                <data android:scheme="http" android:host="@string/white_labeled_host_url" />
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="elixir.app.link" />
+                <data android:scheme="http" android:host="elixir.app.link" />
             </intent-filter>
         </activity>
         <activity
@@ -192,6 +201,10 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Web View" />
 
+        <!-- Branch init -->
+        <meta-data android:name="io.branch.sdk.BranchKey" android:value="key_live_gpOQSRWx8FvQYkoF9llbafentqlq91by" />
+        <!-- Branch testing (TestMode "true" to simulate fresh installs on dev environment) -->
+        <meta-data android:name="io.branch.sdk.TestMode" android:value="true" />
     </application>
 
 </manifest>

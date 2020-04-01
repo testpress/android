@@ -31,7 +31,7 @@
         android:text="@string/no_internet"
         android:gravity="center"/>
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         style="@style/Button"
         android:text="@string/tap_to_retry"
         android:id="@+id/retry_button"

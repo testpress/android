@@ -25,7 +25,7 @@ import in.testpress.testpress.ui.ProfileDetailsActivity;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.util.Assert;
 
-import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
+import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.core.Constants.Http.CHAPTERS_PATH;
 

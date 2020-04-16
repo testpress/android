@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
@@ -88,7 +89,8 @@ public class TestpressServiceProvider {
                         .setMaxParallelLogins(instituteSettings.getMaxParallelLogins())
                         .setLockoutLimit(instituteSettings.getLockoutLimit())
                         .setCooloffTime(instituteSettings.getCooloffTime())
-                        .setStoreLabel(instituteSettings.getStoreLabel());
+                        .setStoreLabel(instituteSettings.getStoreLabel())
+                        .setAppToolbarLogo(instituteSettings.getAppToolbarLogo());
             }
             TestpressSdk.setTestpressSession(activity, new TestpressSession(settings, authToken));
         }

@@ -47,6 +47,7 @@ public class InstituteSettings {
     private Integer maxParallelLogins;
     private Integer lockoutLimit;
     private String cooloffTime;
+    private String appToolbarLogo;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
@@ -58,7 +59,7 @@ public class InstituteSettings {
         this.baseUrl = baseUrl;
     }
 
-    public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, Boolean facebookLoginEnabled, Boolean googleLoginEnabled, boolean commentsVotingEnabled, Boolean bookmarksEnabled, Boolean forumEnabled, Boolean twilioEnabled, Boolean allow_profile_edit, String learnLabel, String leaderboardLabel, String dashboardLabel, String bookmarksLabel, String loginLabel, String loginPasswordLabel, String aboutUs, Boolean disableStudentAnalytics, Boolean customRegistrationEnabled, Boolean enableParallelLoginRestriction, Integer maxParallelLogins, Integer lockoutLimit, String cooloffTime) {
+    public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, Boolean facebookLoginEnabled, Boolean googleLoginEnabled, boolean commentsVotingEnabled, Boolean bookmarksEnabled, Boolean forumEnabled, Boolean twilioEnabled, Boolean allow_profile_edit, String learnLabel, String leaderboardLabel, String dashboardLabel, String bookmarksLabel, String loginLabel, String loginPasswordLabel, String aboutUs, Boolean disableStudentAnalytics, Boolean customRegistrationEnabled, Boolean enableParallelLoginRestriction, Integer maxParallelLogins, Integer lockoutLimit, String cooloffTime, String appToolbarLogo) {
         this.baseUrl = baseUrl;
         this.verificationMethod = verificationMethod;
         this.allowSignup = allowSignup;
@@ -97,6 +98,7 @@ public class InstituteSettings {
         this.maxParallelLogins = maxParallelLogins;
         this.lockoutLimit = lockoutLimit;
         this.cooloffTime = cooloffTime;
+        this.appToolbarLogo = appToolbarLogo;
     }
 
     public String getBaseUrl() {
@@ -401,6 +403,14 @@ public class InstituteSettings {
 
     public void setCooloffTime(String cooloffTime) {
         this.cooloffTime = cooloffTime;
+    }
+
+    public String getAppToolbarLogo() {
+        return appToolbarLogo;
+    }
+
+    public void setAppToolbarLogo(String appToolbarLogo) {
+        this.appToolbarLogo = appToolbarLogo;
     }
 
     // KEEP METHODS - put your custom methods here

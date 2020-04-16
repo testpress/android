@@ -103,8 +103,7 @@ public class DeeplinkHandler {
                     authenticateUserAndOpen(uri);
                     break;
                 default:
-                    CommonUtils.openUrlInBrowser(activity, uri);
-                    activity.finish();
+                    gotoHome();
                     break;
             }
         } else {

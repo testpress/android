@@ -282,7 +282,7 @@ public class MainMenuFragment extends Fragment {
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("text/plain");
         share.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_message) +
-                getString(R.string.get_it_at) + getActivity().getPackageName());
+                getString(R.string.get_it_at));
         startActivity(Intent.createChooser(share, "Share with"));
     }
 

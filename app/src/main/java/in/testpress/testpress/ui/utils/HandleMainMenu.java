@@ -7,6 +7,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
@@ -158,8 +159,9 @@ public class HandleMainMenu {
     void shareApp() {
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("text/plain");
+        Log.d("HandleMainMenu", "shareApp: " + activity.getString(R.string.share_message));
         share.putExtra(Intent.EXTRA_TEXT, activity.getString(R.string.share_message) +
-                activity.getString(R.string.get_it_at) + activity.getPackageName());
+                activity.getString(R.string.get_it_at));
         activity.startActivity(Intent.createChooser(share, "Share with"));
     }
 }

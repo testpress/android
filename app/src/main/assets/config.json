@@ -1,10 +1,10 @@
 {
-  "version" : "1.10.2",
-  "version_code" : 3,
+  "version" : "2.0.0",
+  "version_code" : 5,
   "testpress_site_subdomain" : "elixir",
   "package_name" : "co.elixirapp",
   "app_name" : "Elixir",
-  "share_message": "Good app to prepare for NEET exams.",
+  "share_message": "With changing pattern of NEET PG exam, the app will make an aspirant strong in both factual based and integrated clinical scenarios.\\n\\nHighlights of the app\\n✅ Clinical vignettes\\n✅ Vertical integration of all subjects\\n✅ Proven micro-learning approach (10 MCQs daily)\\n✅ Crisp explanations\\n\\n",
   "primary_color": "004ACC",
   "allow_anonymous_user" : false,
   "screenshot_disabled" : false,

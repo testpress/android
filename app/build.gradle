@@ -106,7 +106,6 @@ android {
         resValue "string", "server_client_id", json.server_client_id
         resValue "color", "primary", "#" + json.primary_color
         buildConfigField "boolean", "ALLOW_ANONYMOUS_USER", "" + json.allow_anonymous_user
-        buildConfigField "boolean", "SCREENSHOT_DISABLED", "" + json.screenshot_disabled
         if (json.display_username_on_video != null) {
             buildConfigField "boolean", "DISPLAY_USERNAME_ON_VIDEO", "" + json.display_username_on_video
         }

@@ -88,7 +88,9 @@ public class TestpressServiceProvider {
                         .setMaxParallelLogins(instituteSettings.getMaxParallelLogins())
                         .setLockoutLimit(instituteSettings.getLockoutLimit())
                         .setCooloffTime(instituteSettings.getCooloffTime())
-                        .setStoreLabel(instituteSettings.getStoreLabel());
+                        .setStoreLabel(instituteSettings.getStoreLabel())
+                        .setAppToolbarLogo(instituteSettings.getAppToolbarLogo())
+                        .setAppShareLink(instituteSettings.getAppShareLink());
             }
             TestpressSdk.setTestpressSession(activity, new TestpressSession(settings, authToken));
         }

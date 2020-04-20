@@ -90,7 +90,8 @@ public class TestpressServiceProvider {
                         .setLockoutLimit(instituteSettings.getLockoutLimit())
                         .setCooloffTime(instituteSettings.getCooloffTime())
                         .setStoreLabel(instituteSettings.getStoreLabel())
-                        .setAppToolbarLogo(instituteSettings.getAppToolbarLogo());
+                        .setAppToolbarLogo(instituteSettings.getAppToolbarLogo())
+                        .setAppShareLink(instituteSettings.getAppShareLink());
             }
             TestpressSdk.setTestpressSession(activity, new TestpressSession(settings, authToken));
         }

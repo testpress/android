@@ -159,9 +159,12 @@ public class HandleMainMenu {
     void shareApp() {
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("text/plain");
-        Log.d("HandleMainMenu", "shareApp: " + activity.getString(R.string.share_message));
+        String appLink = "https://play.google.com/store/apps/details?id=" + activity.getPackageName();
+        if (instituteSettings.getAppShareLink() != null) {
+            appLink = instituteSettings.getAppShareLink();
+        }
         share.putExtra(Intent.EXTRA_TEXT, activity.getString(R.string.share_message) +
-                activity.getString(R.string.get_it_at));
+                activity.getString(R.string.get_it_at) + appLink);
         activity.startActivity(Intent.createChooser(share, "Share with"));
     }
 }

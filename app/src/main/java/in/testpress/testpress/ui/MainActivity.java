@@ -431,7 +431,7 @@ public class MainActivity extends TestpressFragmentActivity {
         new SafeAsyncTask<Update>() {
             @Override
             public Update call() {
-                return testpressService.checkUpdate("" + BuildConfig.VERSION_CODE);
+                return testpressService.checkUpdate("" + BuildConfig.VERSION_CODE, getApplicationContext().getPackageName());
             }
 
             @Override

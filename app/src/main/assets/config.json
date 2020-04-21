@@ -1,6 +1,6 @@
 {
-  "version" : "1.4.0",
-  "version_code" : 148,
+  "version" : "1.4.1",
+  "version_code" : 149,
   "testpress_site_subdomain" : "koncpt",
   "package_name" : "in.testpress.koncpt",
   "app_name" : "Koncpt",
@@ -8,7 +8,7 @@
   "primary_color": "004D96",
   "allow_anonymous_user" : true,
   "screenshot_disabled" : true,
-  "facebook_app_id" : "733962776688753",
+  "facebook_app_id" : "1394995384026584",
   "server_client_id" : "589544710202-n1re9gbmod6pphlkkdiln5e39t7jsh87.apps.googleusercontent.com",
   "display_username_on_video": true,
   "white_labeled_host_url": null

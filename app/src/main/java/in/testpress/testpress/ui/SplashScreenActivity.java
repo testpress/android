@@ -57,6 +57,11 @@ public class SplashScreenActivity extends Activity {
 
     @InjectView(R.id.splash_image) ImageView splashImage;
 
+    // Splash screen timer
+    private static final int SPLASH_TIME_OUT = 2000;
+
+    private Handler handler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +70,13 @@ public class SplashScreenActivity extends Activity {
         ButterKnife.inject(this);
         UpdateAppDialogManager.monitor(this);
         final DeeplinkHandler deeplinkHandler = new DeeplinkHandler(this, serviceProvider);
-        IntegrationValidator.validate(SplashScreenActivity.this);
+        handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                deeplinkHandler.handleDeepLinkUrl(getIntent().getData());
+            }
+        }, SPLASH_TIME_OUT);
     }
 
 
@@ -102,11 +113,9 @@ public class SplashScreenActivity extends Activity {
                 @Override
                 public void onInitFinished(JSONObject referringParams, BranchError error) {
                     if (error == null) {
+                        handler.removeCallbacksAndMessages(null);
                         final DeeplinkHandler deeplinkHandler = new DeeplinkHandler(SplashScreenActivity.this, serviceProvider);
                         deeplinkHandler.handleDeepLinkUrl(getDeeplinkUriFromBranch(referringParams));
-                    } else {
-                        final DeeplinkHandler deeplinkHandler = new DeeplinkHandler(SplashScreenActivity.this, serviceProvider);
-                        deeplinkHandler.handleDeepLinkUrl(null);
                     }
                 }
             };

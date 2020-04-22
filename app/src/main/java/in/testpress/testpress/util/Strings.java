@@ -118,6 +118,10 @@ public class Strings {
         return toString(o).trim().length() == 0;
     }
 
+    public static boolean isNullOrEmpty(final Object o) {
+        return o == null || isEmpty(o);
+    }
+
     public static boolean notEmpty(final Object o) {
         return toString(o).trim().length() != 0;
     }

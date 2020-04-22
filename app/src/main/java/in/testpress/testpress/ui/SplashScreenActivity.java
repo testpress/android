@@ -81,24 +81,29 @@ public class SplashScreenActivity extends Activity {
         splashImage.setImageResource(R.drawable.splash_screen);
     }
 
+    private Uri getDeeplinkUriFromBranch(JSONObject branchData) {
+        Object nonBranchLink = branchData.optString("+non_branch_link");
+        Object deeplinkPath = branchData.optString("$deeplink_path");
+        Object androidDeeplinkPath = branchData.optString("$android_deeplink_path");
+
+        Uri uri = null;
+        if (!Strings.isNullOrEmpty(androidDeeplinkPath)) {
+            uri = Uri.parse(androidDeeplinkPath.toString());
+        } else if (!Strings.isNullOrEmpty(deeplinkPath)) {
+            uri = Uri.parse(deeplinkPath.toString());
+        } else if (!Strings.isNullOrEmpty(nonBranchLink)) {
+            uri = Uri.parse(nonBranchLink.toString());
+        }
+        return uri;
+    }
+
     private Branch.BranchReferralInitListener branchReferralInitListener =
             new Branch.BranchReferralInitListener() {
                 @Override
                 public void onInitFinished(JSONObject referringParams, BranchError error) {
                     if (error == null) {
-                        Object nonBranchLink = referringParams.optString("+non_branch_link");
-                        Object deeplinkPath = referringParams.optString("$deeplink_path");
-                        Object androidDeeplinkPath = referringParams.optString("$android_deeplink_path");
                         final DeeplinkHandler deeplinkHandler = new DeeplinkHandler(SplashScreenActivity.this, serviceProvider);
-                        Uri uri = null;
-                        if (!Strings.isNullOrEmpty(androidDeeplinkPath)) {
-                            uri = Uri.parse(androidDeeplinkPath.toString());
-                        } else if (!Strings.isNullOrEmpty(deeplinkPath)) {
-                            uri = Uri.parse(deeplinkPath.toString());
-                        } else if (!Strings.isNullOrEmpty(nonBranchLink)) {
-                            uri = Uri.parse(nonBranchLink.toString());
-                        }
-                        deeplinkHandler.handleDeepLinkUrl(uri);
+                        deeplinkHandler.handleDeepLinkUrl(getDeeplinkUriFromBranch(referringParams));
                     } else {
                         final DeeplinkHandler deeplinkHandler = new DeeplinkHandler(SplashScreenActivity.this, serviceProvider);
                         deeplinkHandler.handleDeepLinkUrl(null);

@@ -6,8 +6,11 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.ImageView;
 
+
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -29,9 +32,13 @@ import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.ui.utils.DeeplinkHandler;
 import in.testpress.testpress.util.CommonUtils;
+import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UpdateAppDialogManager;
 import in.testpress.util.Assert;
 import in.testpress.util.ViewUtils;
+import io.branch.referral.Branch;
+import io.branch.referral.BranchError;
+import io.branch.referral.validators.IntegrationValidator;
 
 import static in.testpress.core.TestpressSdk.ACTION_PRESSED_HOME;
 import static in.testpress.core.TestpressSdk.COURSE_CONTENT_DETAIL_REQUEST_CODE;
@@ -50,9 +57,6 @@ public class SplashScreenActivity extends Activity {
 
     @InjectView(R.id.splash_image) ImageView splashImage;
 
-    // Splash screen timer
-    private static final int SPLASH_TIME_OUT = 2000;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,13 +65,7 @@ public class SplashScreenActivity extends Activity {
         ButterKnife.inject(this);
         UpdateAppDialogManager.monitor(this);
         final DeeplinkHandler deeplinkHandler = new DeeplinkHandler(this, serviceProvider);
-        new Handler().postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                deeplinkHandler.handleDeepLinkUrl(getIntent().getData());
-            }
-        }, SPLASH_TIME_OUT);
+        IntegrationValidator.validate(SplashScreenActivity.this);
     }
 
 
@@ -81,6 +79,46 @@ public class SplashScreenActivity extends Activity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         splashImage.setImageResource(R.drawable.splash_screen);
+    }
+
+    private Branch.BranchReferralInitListener branchReferralInitListener =
+            new Branch.BranchReferralInitListener() {
+                @Override
+                public void onInitFinished(JSONObject referringParams, BranchError error) {
+                    if (error == null) {
+                        Object nonBranchLink = referringParams.optString("+non_branch_link");
+                        Object deeplinkPath = referringParams.optString("$deeplink_path");
+                        Object androidDeeplinkPath = referringParams.optString("$android_deeplink_path");
+                        final DeeplinkHandler deeplinkHandler = new DeeplinkHandler(SplashScreenActivity.this, serviceProvider);
+                        Uri uri = null;
+                        if (!Strings.isNullOrEmpty(androidDeeplinkPath)) {
+                            uri = Uri.parse(androidDeeplinkPath.toString());
+                        } else if (!Strings.isNullOrEmpty(deeplinkPath)) {
+                            uri = Uri.parse(deeplinkPath.toString());
+                        } else if (!Strings.isNullOrEmpty(nonBranchLink)) {
+                            uri = Uri.parse(nonBranchLink.toString());
+                        }
+                        deeplinkHandler.handleDeepLinkUrl(uri);
+                    } else {
+                        final DeeplinkHandler deeplinkHandler = new DeeplinkHandler(SplashScreenActivity.this, serviceProvider);
+                        deeplinkHandler.handleDeepLinkUrl(null);
+                    }
+                }
+            };
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        this.setIntent(intent);
+        Branch.sessionBuilder(this).withCallback(branchReferralInitListener).reInit();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Branch branch = Branch.getInstance();
+        branch.setRetryCount(5);
+        Branch.sessionBuilder(this).withCallback(branchReferralInitListener).withData(this.getIntent().getData()).init();
     }
 
     @Override

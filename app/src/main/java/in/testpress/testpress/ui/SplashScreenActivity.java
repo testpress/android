@@ -108,23 +108,24 @@ public class SplashScreenActivity extends Activity {
         return uri;
     }
 
-    private Branch.BranchReferralInitListener branchReferralInitListener =
-            new Branch.BranchReferralInitListener() {
-                @Override
-                public void onInitFinished(JSONObject referringParams, BranchError error) {
-                    if (error == null) {
-                        handler.removeCallbacksAndMessages(null);
-                        final DeeplinkHandler deeplinkHandler = new DeeplinkHandler(SplashScreenActivity.this, serviceProvider);
-                        deeplinkHandler.handleDeepLinkUrl(getDeeplinkUriFromBranch(referringParams));
-                    }
+    private Branch.BranchReferralInitListener getBranchReferralInitListener() {
+        return new Branch.BranchReferralInitListener() {
+            @Override
+            public void onInitFinished(JSONObject referringParams, BranchError error) {
+                if (error == null) {
+                    handler.removeCallbacksAndMessages(null);
+                    final DeeplinkHandler deeplinkHandler = new DeeplinkHandler(SplashScreenActivity.this, serviceProvider);
+                    deeplinkHandler.handleDeepLinkUrl(getDeeplinkUriFromBranch(referringParams));
                 }
-            };
+            }
+        };
+    }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         this.setIntent(intent);
-        Branch.sessionBuilder(this).withCallback(branchReferralInitListener).reInit();
+        Branch.sessionBuilder(this).withCallback(getBranchReferralInitListener()).reInit();
     }
 
     @Override
@@ -132,7 +133,7 @@ public class SplashScreenActivity extends Activity {
         super.onStart();
         Branch branch = Branch.getInstance();
         branch.setRetryCount(5);
-        Branch.sessionBuilder(this).withCallback(branchReferralInitListener).withData(this.getIntent().getData()).init();
+        Branch.sessionBuilder(this).withCallback(getBranchReferralInitListener()).withData(this.getIntent().getData()).init();
     }
 
     @Override

@@ -36,8 +36,18 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="amalgmpg"/>
                 <data android:scheme="https" android:host="@string/host_url"/>
                 <data android:scheme="http" android:host="@string/host_url" />
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="amalgm.app.link" />
+                <data android:scheme="https" android:host="amalgm-alternate.app.link" />
+                <data android:scheme="https" android:host="amalgm.test-app.link" />
+                <data android:scheme="http" android:host="amalgm.app.link" />
             </intent-filter>
         </activity>
         <activity
@@ -192,6 +202,10 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Web View" />
 
+        <!-- Branch init -->
+        <meta-data android:name="io.branch.sdk.BranchKey" android:value="key_live_giPK2oKIGYTUigpYwyqF0aoiuAnhSDKm" />
+        <meta-data android:name="io.branch.sdk.BranchKey.test" android:value="key_test_kpGJ7dUHIXVUmhp4NtudgojdyxadJwPr" />
+        <meta-data android:name="io.branch.sdk.TestMode" android:value="false" />
     </application>
 
 </manifest>

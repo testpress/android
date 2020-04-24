@@ -39,6 +39,8 @@
                 <data android:scheme="https" android:host="@string/host_url"/>
                 <data android:scheme="http" android:host="@string/host_url" />
                 <data android:scheme="https" android:host="@string/white_labeled_host_url" />
+                <data android:scheme="https" android:host="share.elixirapp.co" />
+                <data android:scheme="http" android:host="share.elixirapp.co" />
                 <data android:scheme="http" android:host="@string/white_labeled_host_url" />
             </intent-filter>
             <intent-filter android:autoVerify="true">
@@ -46,6 +48,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" android:host="elixir.app.link" />
+                <data android:scheme="https" android:host="elixir.test-app.link" />
                 <data android:scheme="http" android:host="elixir.app.link" />
             </intent-filter>
         </activity>
@@ -203,8 +206,8 @@
 
         <!-- Branch init -->
         <meta-data android:name="io.branch.sdk.BranchKey" android:value="key_live_gpOQSRWx8FvQYkoF9llbafentqlq91by" />
-        <!-- Branch testing (TestMode "true" to simulate fresh installs on dev environment) -->
-        <meta-data android:name="io.branch.sdk.TestMode" android:value="true" />
+        <meta-data android:name="io.branch.sdk.BranchKey.test" android:value="key_test_bnOLQI0w8tyNZonsYagLNlanBEeq79kK" />
+        <meta-data android:name="io.branch.sdk.TestMode" android:value="false" />
     </application>
 
 </manifest>

@@ -70,10 +70,6 @@ import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.testpress.util.UpdateAppDialogManager;
-import io.branch.indexing.BranchUniversalObject;
-import io.branch.referral.Branch;
-import io.branch.referral.BranchError;
-import io.branch.referral.validators.IntegrationValidator;
 import io.sentry.Sentry;
 import io.sentry.android.AndroidSentryClientFactory;
 
@@ -140,30 +136,13 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             checkUpdate();
         }
-        Branch.enableDebugMode();
-        IntegrationValidator.validate(MainActivity.this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Branch.sessionBuilder(this).withCallback(branchReferralInitListener).reInit();
     }
 
-    private Branch.BranchReferralInitListener branchReferralInitListener =
-            new Branch.BranchReferralInitListener() {
-                @Override
-                public void onInitFinished(@Nullable JSONObject referringParams, @Nullable BranchError error) {
-
-                }
-            };
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        this.setIntent(intent);
-        Branch.sessionBuilder(this).withCallback(branchReferralInitListener).reInit();
-    }
 
     @Override
     public void onBackPressed() {

@@ -31,7 +31,6 @@ import retrofit.RestAdapter;
 
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.BuildConfig.DISPLAY_USERNAME_ON_VIDEO;
-import static in.testpress.testpress.BuildConfig.SCREENSHOT_DISABLED;
 import static in.testpress.testpress.util.PreferenceManager.setDashboardData;
 
 public class TestpressServiceProvider {
@@ -81,7 +80,7 @@ public class TestpressServiceProvider {
                         .setCoursesFrontend(instituteSettings.getShowGameFrontend())
                         .setCoursesGamificationEnabled(instituteSettings.getCoursesEnableGamification())
                         .setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled())
-                        .setScreenshotDisabled(SCREENSHOT_DISABLED)
+                        .setScreenshotDisabled(!instituteSettings.getAllowScreenshotInApp())
                         .setDisplayUserEmailOnVideo(DISPLAY_USERNAME_ON_VIDEO)
                         .setAccessCodeEnabled(false)
                         .setEnableParallelLoginRestriction(instituteSettings.getEnableParallelLoginRestriction())

@@ -26,9 +26,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -46,6 +48,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
+import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
 import in.testpress.exam.ui.view.NonSwipeableViewPager;
 import in.testpress.testpress.BuildConfig;
@@ -76,6 +79,9 @@ import io.sentry.android.AndroidSentryClientFactory;
 import static in.testpress.testpress.BuildConfig.ALLOW_ANONYMOUS_USER;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.ui.utils.EasterEggUtils.enableOrDisableEasterEgg;
+import static in.testpress.testpress.ui.utils.EasterEggUtils.enableScreenShot;
+import static in.testpress.testpress.ui.utils.EasterEggUtils.isEasterEggEnabled;
 
 public class MainActivity extends TestpressFragmentActivity {
 
@@ -136,6 +142,7 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             checkUpdate();
         }
+        setupEasterEgg();
     }
 
     @Override
@@ -151,6 +158,43 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    private void setupEasterEgg() {
+        Menu navigationMenu = navigationView.getMenu();
+        final MenuItem rateUsButton = navigationMenu.findItem(R.id.rate_us);
+        Button button = new Button(this);
+        button.setAlpha(0);
+        rateUsButton.setActionView(button);
+        rateUsButton.getActionView().setVisibility(View.GONE);
+
+
+        findViewById(R.id.version_info).setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Toast.makeText(getApplicationContext(), "App version is " + getString(R.string.version), Toast.LENGTH_SHORT).show();
+                enableOrDisableEasterEgg(getApplicationContext(), true);
+                rateUsButton.getActionView().setVisibility(View.VISIBLE);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        rateUsButton.getActionView().setVisibility(View.GONE);
+                        enableOrDisableEasterEgg(getApplicationContext(), false);
+                    }
+                }, 7000);
+                return false;
+            }
+        });
+
+        rateUsButton.getActionView().setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (isEasterEggEnabled(getApplicationContext())) {
+                    enableScreenShot(getApplicationContext());
+                }
+                return false;
+            }
+        });
     }
 
     private void setUpNavigationDrawer() {

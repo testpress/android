@@ -7,9 +7,9 @@
   "share_message": "With changing pattern of NEET PG exam, the app will make an aspirant strong in both factual based and integrated clinical scenarios.\\n\\nHighlights of the app\\n✅ Clinical vignettes\\n✅ Vertical integration of all subjects\\n✅ Proven micro-learning approach (10 MCQs daily)\\n✅ Crisp explanations\\n\\n",
   "primary_color": "004ACC",
   "allow_anonymous_user" : false,
-  "screenshot_disabled" : false,
   "facebook_app_id" : "733962776688753",
   "server_client_id" : "325057965301-f2cfl0as5ld12g6o8ip3o3fkhapeu40a.apps.googleusercontent.com",
   "display_username_on_video": true,
-  "white_labeled_host_url": "elixirapp.co"
+  "white_labeled_host_url": "elixirapp.co",
+  "is_growth_hacks_enabled": false
 }

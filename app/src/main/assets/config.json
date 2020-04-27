@@ -7,9 +7,9 @@
   "share_message": "Good app to prepare for NEET PG exams.",
   "primary_color": "9C226B",
   "allow_anonymous_user" : false,
-  "screenshot_disabled" : true,
   "facebook_app_id" : "733962776688753",
   "server_client_id" : "903167862880-hlnugko2sandqmqueh7jn2min79nqnp8.apps.googleusercontent.com",
   "display_username_on_video": true,
-  "white_labeled_host_url": null
+  "white_labeled_host_url": null,
+  "is_growth_hacks_enabled": false
 }

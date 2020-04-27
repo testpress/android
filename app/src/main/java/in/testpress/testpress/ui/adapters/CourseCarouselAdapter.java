@@ -3,7 +3,7 @@ package in.testpress.testpress.ui.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import in.testpress.course.ui.ChapterDetailActivity;
 import in.testpress.course.ui.CoursePreviewActivity;
 import in.testpress.models.greendao.Product;
 import in.testpress.store.ui.ProductDetailsActivity;
@@ -93,8 +94,10 @@ public class CourseCarouselAdapter extends RecyclerView.Adapter<CourseCarouselAd
             @Override
             public void onClick(View view) {
                 Activity activity = (Activity) context;
-                if (product.getCourseIds().size() > 0) {
+                if (product.getCourseIds().size() > 1) {
                     activity.startActivity(CoursePreviewActivity.createIntent(product.getCourseIds(), activity, product.getSlug()));
+                } else if (product.getCourseIds().size() == 1 ) {
+                    openChapters(product, activity);
                 } else {
                     Intent intent = new Intent(activity, ProductDetailsActivity.class);
                     intent.putExtra(ProductDetailsActivity.PRODUCT_SLUG, product.getSlug());
@@ -102,6 +105,13 @@ public class CourseCarouselAdapter extends RecyclerView.Adapter<CourseCarouselAd
                 }
             }
         });
+    }
+
+    private void openChapters(Product product, Activity activity) {
+        activity.startActivity(ChapterDetailActivity.createIntent(
+                product.getTitle(),
+                product.getCourseIds().get(0).toString(),
+                activity, product.getSlug()));
     }
 
     private void displayContentsCount(CourseCarouselAdapter.MyViewHolder holder, Product product) {

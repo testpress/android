@@ -63,6 +63,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         public final static Property CooloffTime = new Property(37, String.class, "cooloffTime", false, "COOLOFF_TIME");
         public final static Property AppToolbarLogo = new Property(38, String.class, "appToolbarLogo", false, "APP_TOOLBAR_LOGO");
         public final static Property AppShareLink = new Property(39, String.class, "appShareLink", false, "APP_SHARE_LINK");
+        public final static Property AllowScreenshotInApp = new Property(40, Boolean.class, "allowScreenshotInApp", false, "ALLOW_SCREENSHOT_IN_APP");
     };
 
 
@@ -117,7 +118,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
                 "\"LOCKOUT_LIMIT\" INTEGER," + // 36: lockoutLimit
                 "\"COOLOFF_TIME\" TEXT," + // 37: cooloffTime
                 "\"APP_TOOLBAR_LOGO\" TEXT," + // 38: appToolbarLogo
-                "\"APP_SHARE_LINK\" TEXT);"); // 39: appShareLink
+                "\"APP_SHARE_LINK\" TEXT," + // 39: appShareLink
+                "\"ALLOW_SCREENSHOT_IN_APP\" INTEGER);"); // 40: allowScreenshotInApp
     }
 
     /** Drops the underlying database table. */
@@ -326,6 +328,11 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         if (appShareLink != null) {
             stmt.bindString(40, appShareLink);
         }
+ 
+        Boolean allowScreenshotInApp = entity.getAllowScreenshotInApp();
+        if (allowScreenshotInApp != null) {
+            stmt.bindLong(41, allowScreenshotInApp ? 1L: 0L);
+        }
     }
 
     /** @inheritdoc */
@@ -377,7 +384,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             cursor.isNull(offset + 36) ? null : cursor.getInt(offset + 36), // lockoutLimit
             cursor.isNull(offset + 37) ? null : cursor.getString(offset + 37), // cooloffTime
             cursor.isNull(offset + 38) ? null : cursor.getString(offset + 38), // appToolbarLogo
-            cursor.isNull(offset + 39) ? null : cursor.getString(offset + 39) // appShareLink
+            cursor.isNull(offset + 39) ? null : cursor.getString(offset + 39), // appShareLink
+            cursor.isNull(offset + 40) ? null : cursor.getShort(offset + 40) != 0 // allowScreenshotInApp
         );
         return entity;
     }
@@ -425,6 +433,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         entity.setCooloffTime(cursor.isNull(offset + 37) ? null : cursor.getString(offset + 37));
         entity.setAppToolbarLogo(cursor.isNull(offset + 38) ? null : cursor.getString(offset + 38));
         entity.setAppShareLink(cursor.isNull(offset + 39) ? null : cursor.getString(offset + 39));
+        entity.setAllowScreenshotInApp(cursor.isNull(offset + 40) ? null : cursor.getShort(offset + 40) != 0);
      }
     
     /** @inheritdoc */

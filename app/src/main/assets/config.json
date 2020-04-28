@@ -11,5 +11,6 @@
   "facebook_app_id" : "733962776688753",
   "server_client_id" : "325057965301-f2cfl0as5ld12g6o8ip3o3fkhapeu40a.apps.googleusercontent.com",
   "display_username_on_video": true,
-  "white_labeled_host_url": null
+  "white_labeled_host_url": null,
+  "is_growth_hacks_enabled": false
 }

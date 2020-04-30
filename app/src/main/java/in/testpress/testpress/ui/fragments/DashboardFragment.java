@@ -162,6 +162,7 @@ public class DashboardFragment extends Fragment implements
             this.exception = exception;
             showError(getErrorMessage(exception));
             getLoaderManager().destroyLoader(loader.getId());
+            adapter.setResponse(getDashboardDataPreferences(getContext()));
             return;
         }
         Gson gson = new GsonBuilder().setPrettyPrinting().create();

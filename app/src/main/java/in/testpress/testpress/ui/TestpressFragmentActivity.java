@@ -1,25 +1,37 @@
 package in.testpress.testpress.ui;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
-import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import android.view.MenuItem;
-import android.view.View;
 
 import in.testpress.testpress.Injector;
 import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import in.testpress.testpress.R;
+import in.testpress.testpress.TestpressApplication;
+import in.testpress.testpress.TestpressServiceProvider;
+import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
+import in.testpress.testpress.core.TestpressService;
+import in.testpress.testpress.events.CustomErrorEvent;
+import in.testpress.testpress.events.UnAuthorizedUserErrorEvent;
+import in.testpress.testpress.models.DaoSession;
+import in.testpress.testpress.models.InstituteSettings;
+import in.testpress.testpress.models.InstituteSettingsDao;
+import in.testpress.testpress.util.Ln;
+import in.testpress.ui.UserDevicesActivity;
+
+import static in.testpress.testpress.BuildConfig.BASE_URL;
 
 
 /**
@@ -29,13 +41,41 @@ public class TestpressFragmentActivity extends AppCompatActivity {
 
     @Inject
     protected Bus eventBus;
+    @Inject protected TestpressServiceProvider serviceProvider;
+    @Inject protected TestpressService testpressService;
+    @Inject protected LogoutService logoutService;
 
     protected Toolbar mActionBarToolbar;
+    protected Object busEventListener, unauthorisedUserErrorBusListener;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Injector.inject(this);
+
+        // Directly subscribing in parent class won't work, only child class subscribers will work. https://github.com/square/otto/issues/26
+        busEventListener = new Object() {
+            @Subscribe
+            public void onCustomErrorEvent(CustomErrorEvent customErrorEvent) {
+                TestpressFragmentActivity.this.onReceiveCustomErrorEvent(customErrorEvent);
+            }
+        };
+
+        unauthorisedUserErrorBusListener = new Object() {
+            @Subscribe
+            public void onUnAuthorizedUserErrorEvent(UnAuthorizedUserErrorEvent unAuthorizedUserErrorEvent) {
+                try {
+                    serviceProvider.logout(TestpressFragmentActivity.this, testpressService, serviceProvider, logoutService);
+                } catch (Exception e) {
+                    Ln.e("Exception : " + e.getLocalizedMessage());
+//                    Sentry.capture(e);
+                }
+            }
+        };
+
+
+        eventBus.register(busEventListener);
+        eventBus.register(unauthorisedUserErrorBusListener);
     }
 
     public Toolbar getActionBarToolbar() {
@@ -94,5 +134,42 @@ public class TestpressFragmentActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         eventBus.unregister(this);
+    }
+
+    protected void onReceiveCustomErrorEvent(final CustomErrorEvent customErrorEvent) {
+        if (customErrorEvent.getErrorCode().equals(getString(R.string.PARALLEL_LOGIN_RESTRICTION_ERROR_CODE))) {
+            Intent intent = new Intent(this, UserDevicesActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                    Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+
+            try {
+                startActivity(intent);
+            } catch (Exception ignore) {}
+        } else if (customErrorEvent.getErrorCode().equals(getString(R.string.MAX_LOGIN_EXCEEDED_ERROR_CODE))) {
+            DaoSession daoSession = TestpressApplication.getDaoSession();
+            InstituteSettingsDao instituteSettingsDao = daoSession.getInstituteSettingsDao();
+            List<InstituteSettings> instituteSettingsList = instituteSettingsDao.queryBuilder()
+                    .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
+                    .list();
+
+            String message = getString(R.string.max_login_limit_exceeded_error);
+
+            if (instituteSettingsList.size() > 0) {
+                InstituteSettings instituteSettings = instituteSettingsList.get(0);
+
+                if (instituteSettings.getCooloffTime() != null) {
+                    message += getString(R.string.account_unlock_info) + " %s hours";
+                    message = String.format(message, instituteSettings.getCooloffTime());
+                }
+            }
+
+            try {
+                in.testpress.util.UIUtils.showAlert(TestpressFragmentActivity.this, "Account Locked", message);
+            } catch (Exception e) {
+                Ln.e("Exception : " + e.getLocalizedMessage());
+//                Sentry.capture(e);
+            }
+        }
     }
 }

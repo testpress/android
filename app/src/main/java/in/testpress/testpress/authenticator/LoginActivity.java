@@ -8,8 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputLayout;
+import androidx.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
@@ -39,6 +38,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.material.textfield.TextInputLayout;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -116,7 +116,8 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     @Inject Bus bus;
 
     @InjectView(id.login_layout) LinearLayout loginLayout;
-    @InjectView(id.username_textInput_layout) TextInputLayout usernameInputLayout;
+    @InjectView(id.username_textInput_layout)
+    TextInputLayout usernameInputLayout;
     @InjectView(id.password_textInput_layout) TextInputLayout passwordInputLayout;
     @InjectView(id.et_username) EditText usernameText;
     @InjectView(id.username_error) TextView usernameError;
@@ -573,7 +574,14 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     }
 
     @OnClick(id.signup) public void signUp() {
-        if(internetConnectivityChecker.isConnected()) {
+        if(instituteSettings.getCustomRegistrationEnabled() != null && instituteSettings.getCustomRegistrationEnabled()) {
+            Intent intent = new Intent(this, WebViewActivity.class);
+            intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Register");
+            intent.putExtra(WebViewActivity.SHOW_LOGOUT, "false");
+            intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + "/register/");
+            startActivity(intent);
+        }
+        else if(internetConnectivityChecker.isConnected()) {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             if(getIntent().getExtras() != null) {
                 intent.putExtras(getIntent().getExtras());

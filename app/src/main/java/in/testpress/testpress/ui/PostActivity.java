@@ -11,22 +11,20 @@ import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.customtabs.CustomTabsIntent;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.Loader;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.loader.app.LoaderManager;
+import androidx.core.content.ContextCompat;
+import androidx.loader.content.Loader;
+import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,6 +33,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.IOException;
@@ -217,11 +216,11 @@ public class PostActivity extends TestpressFragmentActivity implements
                 post.setPublished(simpleDateFormat.parse(post.getPublishedDate()).getTime());
                 if (postDao.queryBuilder().where(PostDao.Properties.Id.eq(post.getId())).count() != 0) {
                     post.setModifiedDate(simpleDateFormat.parse(post.getModified()).getTime());
-                    if (post.category != null) {
-                        post.setCategory(post.category);
+                    if (post.getRawCategory() != null) {
+                        post.setCategory(post.getRawCategory());
                         CategoryDao categoryDao = ((TestpressApplication) getApplicationContext())
                                 .getDaoSession().getCategoryDao();
-                        categoryDao.insertOrReplace(post.category);
+                        categoryDao.insertOrReplace(post.getRawCategory());
                     }
                     postDao.insertOrReplace(post);
                 }
@@ -233,7 +232,7 @@ public class PostActivity extends TestpressFragmentActivity implements
     private void displayPost(Post post) {
         postDetails.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
-        getSupportActionBar().setTitle(post.getTitle());
+        getSupportActionBar().setTitle(R.string.app_name);
         title.setText(post.getTitle());
         if (post.getSummary().trim().isEmpty()) {
             summaryLayout.setVisibility(View.GONE);

@@ -27,6 +27,7 @@ import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
+import in.testpress.util.EventsTrackerFacade;
 import in.testpress.util.UIUtils;
 import retrofit.RestAdapter;
 
@@ -100,6 +101,11 @@ public class TestpressServiceProvider {
             }
             settings.setAppShareText(SHARE_MESSAGE + activity.getString(R.string.get_it_at) + appLink);
             settings.setGrowthHackEnabled(GROWTH_HACKS_ENABLED);
+            settings.setIsFacebookEventTrackingEnabled(true);
+            settings.setFacebookAppId(activity.getString(R.string.facebook_app_id));
+            settings.setFirebaseEventTrackingEnabled(true);
+            settings.setBranchEventTrackingEnabled(true);
+            EventsTrackerFacade.Companion.init(activity.getApplication());
             TestpressSdk.setTestpressSession(activity, new TestpressSession(settings, authToken));
         }
 

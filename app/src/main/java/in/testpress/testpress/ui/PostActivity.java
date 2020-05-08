@@ -74,6 +74,7 @@ import in.testpress.testpress.util.ShareUtil;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.util.EventsTrackerFacade;
 import in.testpress.util.FullScreenChromeClient;
+import in.testpress.util.StringUtils;
 import in.testpress.util.ViewUtils;
 import in.testpress.util.WebViewUtils;
 
@@ -83,12 +84,14 @@ public class PostActivity extends TestpressFragmentActivity implements
         LoaderManager.LoaderCallbacks<List<Comment>> {
 
     public static final String SHORT_WEB_URL = "shortWebUrl";
+    public static final String DETAIL_URL = "detail_url";
     public static final String UPDATE_TIME_SPAN = "updateTimeSpan";
     public static final int NEW_COMMENT_SYNC_INTERVAL = 10000; // 10 sec
     private static final int PREVIOUS_COMMENTS_LOADER_ID = 0;
     private static final int NEW_COMMENTS_LOADER_ID = 1;
 
     String shortWebUrl;
+    String detailUrl;
     PostDao postDao;
     Post post;
     CommentsPager previousCommentsPager;
@@ -156,6 +159,7 @@ public class PostActivity extends TestpressFragmentActivity implements
         simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         shortWebUrl = getIntent().getStringExtra(SHORT_WEB_URL);
+        detailUrl = getIntent().getStringExtra(DETAIL_URL);
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getResources().getString(R.string.please_wait));
         progressDialog.setCancelable(false);
@@ -166,8 +170,11 @@ public class PostActivity extends TestpressFragmentActivity implements
         ViewUtils.setTypeface(new TextView[] {date, summary, commentsEmptyView, commentsEditText},
                 TestpressSdk.getRubikRegularFont(this));
 
-        if(shortWebUrl != null) {
-            List<Post> posts = postDao.queryBuilder().where(PostDao.Properties.Short_web_url.eq(shortWebUrl)).list();
+        if(shortWebUrl == null && detailUrl == null) {
+            setEmptyText(R.string.invalid_post, R.string.try_after_sometime, R.drawable.ic_error_outline_black_18dp);
+        } else {
+            List<Post> posts = getPostFromDB();
+
             if (!posts.isEmpty()) {
                 post = posts.get(0);
                 if (post.getContentHtml() != null) {
@@ -178,8 +185,6 @@ public class PostActivity extends TestpressFragmentActivity implements
             // If there is no post in this url in db or
             // If it content_html is null then fetch the post
             fetchPost();
-        } else {
-            setEmptyText(R.string.invalid_post, R.string.try_after_sometime, R.drawable.ic_error_outline_black_18dp);
         }
     }
 
@@ -189,13 +194,28 @@ public class PostActivity extends TestpressFragmentActivity implements
         return true;
     }
 
+    private List<Post> getPostFromDB() {
+        List<Post> posts;
+        if (shortWebUrl != null) {
+            posts = postDao.queryBuilder().where(PostDao.Properties.Short_web_url.eq(shortWebUrl)).list();
+        } else {
+            List<String> pathSegments = Uri.parse(detailUrl).getPathSegments();
+            String slug = pathSegments.get(1);
+            posts = postDao.queryBuilder().where(PostDao.Properties.Slug.eq(slug)).list();
+        }
+        return posts;
+    }
+
     private void fetchPost() {
         new SafeAsyncTask<Post>() {
             @Override
             public Post call() throws Exception {
                 Map<String, Boolean> queryParams = new LinkedHashMap<>();
-                queryParams.put("short_link", true);
-                Uri uri = Uri.parse(shortWebUrl);
+                String url = StringUtils.isNullOrEmpty(detailUrl) ? shortWebUrl : detailUrl;
+                if (shortWebUrl != null) {
+                    queryParams.put("short_link", true);
+                }
+                Uri uri = Uri.parse(url);
                 return getService().getPostDetail(uri.getLastPathSegment(), queryParams);
             }
 

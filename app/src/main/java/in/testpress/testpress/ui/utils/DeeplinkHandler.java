@@ -3,6 +3,7 @@ package in.testpress.testpress.ui.utils;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 
 import java.util.List;
 
@@ -28,6 +29,7 @@ import in.testpress.util.Assert;
 import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.core.Constants.Http.CHAPTERS_PATH;
+import static in.testpress.testpress.ui.PostActivity.DETAIL_URL;
 
 public class DeeplinkHandler {
     private Activity activity;
@@ -52,8 +54,14 @@ public class DeeplinkHandler {
                     activity.finish();
                     break;
                 case "posts":
-                    Intent postsIntent =
-                            new Intent(activity, PostsListActivity.class);
+                    Intent postsIntent;
+                    if (isPostsDetail(uri)) {
+                        postsIntent = new Intent(activity, PostActivity.class);
+                        postsIntent.putExtra(DETAIL_URL, uri.toString());
+                    } else {
+                        postsIntent = new Intent(activity, PostsListActivity.class);
+                    }
+
                     postsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                             Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
@@ -109,6 +117,11 @@ public class DeeplinkHandler {
         } else {
             gotoHome();
         }
+    }
+
+    private boolean isPostsDetail(Uri uri) {
+        List<String> pathSegments = uri.getPathSegments();
+        return pathSegments.get(0).equals("posts") && pathSegments.size() > 1;
     }
 
     private void authenticateUserAndOpen(final Uri uri) {

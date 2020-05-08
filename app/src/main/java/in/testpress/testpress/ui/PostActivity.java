@@ -39,6 +39,7 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +72,7 @@ import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.ShareUtil;
 import in.testpress.testpress.util.UIUtils;
+import in.testpress.util.EventsTrackerFacade;
 import in.testpress.util.FullScreenChromeClient;
 import in.testpress.util.ViewUtils;
 import in.testpress.util.WebViewUtils;
@@ -232,6 +234,7 @@ public class PostActivity extends TestpressFragmentActivity implements
     private void displayPost(Post post) {
         postDetails.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
+        logEvent();
         getSupportActionBar().setTitle(R.string.app_name);
         title.setText(post.getTitle());
         if (post.getSummary().trim().isEmpty()) {
@@ -291,6 +294,14 @@ public class PostActivity extends TestpressFragmentActivity implements
             content.setVisibility(View.GONE);
             commentsLayout.setVisibility(View.GONE);
         }
+    }
+
+    private void logEvent() {
+        EventsTrackerFacade eventsTrackerFacade = new EventsTrackerFacade(getApplicationContext());
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("id", post.getId());
+        params.put("title", post.getTitle());
+        eventsTrackerFacade.logEvent(EventsTrackerFacade.VIEWED_POST_EVENT, params);
     }
 
     void displayComments() {

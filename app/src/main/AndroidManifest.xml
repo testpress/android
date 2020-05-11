@@ -42,6 +42,7 @@
                 <data android:scheme="https" android:host="share.elixirapp.co" />
                 <data android:scheme="http" android:host="share.elixirapp.co" />
                 <data android:scheme="http" android:host="@string/white_labeled_host_url" />
+                <data android:scheme="https" android:host="www.elixirapp.co" />
             </intent-filter>
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />

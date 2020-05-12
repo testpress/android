@@ -48,6 +48,7 @@ import in.testpress.testpress.models.RegistrationErrorDetails;
 import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.PhoneNumberValidator;
+import in.testpress.util.EventTracker;
 import in.testpress.util.EventsTrackerFacade;
 import retrofit.RetrofitError;
 
@@ -223,7 +224,9 @@ public class RegisterActivity extends AppCompatActivity {
                 EventsTrackerFacade eventsTrackerFacade = new EventsTrackerFacade(getApplicationContext());
                 HashMap<String, Object> params = new HashMap<>();
                 params.put("username", registrationSuccessResponse.getUsername());
-                eventsTrackerFacade.logEvent(EventsTrackerFacade.ACCOUNT_REGISTERED, params);
+                eventsTrackerFacade.logEvent(EventsTrackerFacade.ACCOUNT_REGISTERED, params, EventTracker.FB_EVENTS_TRACKER);
+                eventsTrackerFacade.logEvent(EventsTrackerFacade.ACCOUNT_REGISTERED, params, EventTracker.FIREBASE_EVENTS_TRACKER);
+                eventsTrackerFacade.logEvent(EventsTrackerFacade.ACCOUNT_REGISTERED, params, EventTracker.BRANCH_EVENTS_TRACKER);
             }
 
             @Override

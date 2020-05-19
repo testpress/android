@@ -13,10 +13,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -109,7 +109,7 @@ public class WebViewActivity extends BaseToolBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Injector.inject(this);
-        setContentView(R.layout.webview_layout);
+        setContentView(R.layout.generic_webview_layout);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         pb_loading = this.findViewById(R.id.pb_loading);

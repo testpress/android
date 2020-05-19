@@ -80,8 +80,8 @@ public class PostsPager extends ResourcePager<Post> {
                     resource = register(resource);
                     if (resource == null)
                         continue;
-                    if(resource.category != null) {
-                        resource.setCategory(resource.category);
+                    if(resource.getRawCategory() != null) {
+                        resource.setCategory(resource.getRawCategory());
                     }
                     Ln.d("Category ID " + resource.getCategoryId());
                     resource.setPublished(simpleDateFormat.parse(resource.getPublishedDate()).getTime());

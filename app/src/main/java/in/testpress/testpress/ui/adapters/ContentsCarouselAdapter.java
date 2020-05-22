@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,7 +89,11 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
 
 
         String contentName = content.getName();
-        String capitalizedContentName = contentName.substring(0,1).toUpperCase() + contentName.substring(1).toLowerCase();
+        Log.d("ContentsCarousel", "ContentName : " + contentName);
+        String capitalizedContentName = contentName;
+        if (contentName.length() > 1) {
+            capitalizedContentName = contentName.substring(0,1).toUpperCase() + contentName.substring(1).toLowerCase();
+        }
         holder.title.setText(capitalizedContentName);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

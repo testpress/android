@@ -35,7 +35,7 @@
         android:gravity="center"
         android:text="@string/reset_success_message"/>
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         style="@style/Button"
         android:id="@+id/success_ok"
         android:layout_width="fill_parent"

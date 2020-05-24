@@ -44,7 +44,8 @@ public class PostDao extends AbstractDao<Post, Long> {
         public final static Property CommentsCount = new Property(15, Integer.class, "commentsCount", false, "COMMENTS_COUNT");
         public final static Property CommentsUrl = new Property(16, String.class, "commentsUrl", false, "COMMENTS_URL");
         public final static Property CoverImage = new Property(17, String.class, "coverImage", false, "COVER_IMAGE");
-        public final static Property CategoryId = new Property(18, Long.class, "categoryId", false, "CATEGORY_ID");
+        public final static Property Slug = new Property(18, String.class, "slug", false, "SLUG");
+        public final static Property CategoryId = new Property(19, Long.class, "categoryId", false, "CATEGORY_ID");
     };
 
     private DaoSession daoSession;
@@ -81,7 +82,8 @@ public class PostDao extends AbstractDao<Post, Long> {
                 "\"COMMENTS_COUNT\" INTEGER," + // 15: commentsCount
                 "\"COMMENTS_URL\" TEXT," + // 16: commentsUrl
                 "\"COVER_IMAGE\" TEXT," + // 17: coverImage
-                "\"CATEGORY_ID\" INTEGER);"); // 18: categoryId
+                "\"SLUG\" TEXT," + // 18: slug
+                "\"CATEGORY_ID\" INTEGER);"); // 19: categoryId
     }
 
     /** Drops the underlying database table. */
@@ -185,9 +187,14 @@ public class PostDao extends AbstractDao<Post, Long> {
             stmt.bindString(18, coverImage);
         }
  
+        String slug = entity.getSlug();
+        if (slug != null) {
+            stmt.bindString(19, slug);
+        }
+ 
         Long categoryId = entity.getCategoryId();
         if (categoryId != null) {
-            stmt.bindLong(19, categoryId);
+            stmt.bindLong(20, categoryId);
         }
     }
 
@@ -225,7 +232,8 @@ public class PostDao extends AbstractDao<Post, Long> {
             cursor.isNull(offset + 15) ? null : cursor.getInt(offset + 15), // commentsCount
             cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // commentsUrl
             cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17), // coverImage
-            cursor.isNull(offset + 18) ? null : cursor.getLong(offset + 18) // categoryId
+            cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18), // slug
+            cursor.isNull(offset + 19) ? null : cursor.getLong(offset + 19) // categoryId
         );
         return entity;
     }
@@ -251,7 +259,8 @@ public class PostDao extends AbstractDao<Post, Long> {
         entity.setCommentsCount(cursor.isNull(offset + 15) ? null : cursor.getInt(offset + 15));
         entity.setCommentsUrl(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
         entity.setCoverImage(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
-        entity.setCategoryId(cursor.isNull(offset + 18) ? null : cursor.getLong(offset + 18));
+        entity.setSlug(cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18));
+        entity.setCategoryId(cursor.isNull(offset + 19) ? null : cursor.getLong(offset + 19));
      }
     
     /** @inheritdoc */

@@ -24,7 +24,7 @@
                 android:scaleType="centerCrop"
                 android:background="@drawable/border_rectangle_light"
                 android:cropToPadding="true"
-                app:cornerRadius="0.02"/>
+                app:imageCornerRadius="0.02"/>
         </FrameLayout>
 
         <TextView

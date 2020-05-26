@@ -117,7 +117,6 @@ public class MainMenuFragment extends Fragment {
             mMenuItemResIds.put(R.string.dashboard_offline_solution, R.drawable.custom_offline_solution);
             mMenuItemResIds.put(R.string.dashboard_notification, R.drawable.custom_notification);
             mMenuItemResIds.put(R.string.dashboard_announcement, R.drawable.custom_announcement);
-            mMenuItemResIds.put(R.string.dashboard_current_affair, R.drawable.custom_current_affairs);
             mMenuItemResIds.put(R.string.dashboard_study_material, R.drawable.custom_study_material);
             Sentry.getContext().setUser(new UserBuilder().setUsername(account[0].name).build());
 

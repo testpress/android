@@ -3,7 +3,7 @@ import groovy.json.JsonSlurper
 apply plugin: 'com.android.application'
 
 ext {
-    testpressSDK = '1.3.66-TEST11'
+    testpressSDK = '1.3.80'
 }
 
 dependencies {
@@ -38,17 +38,19 @@ dependencies {
     implementation 'com.github.testpress:store:' + testpressSDK
 
     // Gcm
-    implementation 'com.google.firebase:firebase-messaging:17.3.4'
+    implementation 'com.google.firebase:firebase-core:17.1.0'
+    implementation 'com.google.firebase:firebase-messaging:19.0.1'
     implementation 'org.greenrobot:eventbus:3.1.1'
 
     // Google Sign In
-    implementation 'com.google.android.gms:play-services-auth:16.0.1'
+    implementation 'com.google.android.gms:play-services-auth:18.0.0'
 
     // Facebook SDK
     implementation 'com.facebook.android:facebook-android-sdk:4.20.0'
 
     // Allow methods more than 64K
-    implementation 'androidx.multidex:multidex:2.0.0'
+    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation "androidx.fragment:fragment:1.2.4"
 
     // Country code picker
     // https://github.com/hbb20/CountryCodePickerProject/wiki
@@ -105,7 +107,8 @@ android {
         resValue "string", "server_client_id", json.server_client_id
         resValue "color", "primary", "#" + json.primary_color
         buildConfigField "boolean", "ALLOW_ANONYMOUS_USER", "" + json.allow_anonymous_user
-        buildConfigField "boolean", "SCREENSHOT_DISABLED", "" + json.screenshot_disabled
+        buildConfigField "boolean", "GROWTH_HACKS_ENABLED", "" + json.is_growth_hacks_enabled
+        buildConfigField "String", "SHARE_MESSAGE", '"' + json.share_message + '"'
         if (json.display_username_on_video != null) {
             buildConfigField "boolean", "DISPLAY_USERNAME_ON_VIDEO", "" + json.display_username_on_video
         }

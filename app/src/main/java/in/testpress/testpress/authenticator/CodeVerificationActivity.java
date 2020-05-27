@@ -67,6 +67,7 @@ import static in.testpress.testpress.BuildConfig.BASE_URL;
 public class CodeVerificationActivity extends AppCompatActivity {
     @Inject TestpressService testpressService;
     @InjectView(R.id.welcome) TextView welcomeText;
+    @InjectView(R.id.verification_code_error) TextView verificationCodeError;
     @InjectView(R.id.et_username) EditText usernameText;
     @InjectView(R.id.et_verificationCode) EditText verificationCodeText;
     @InjectView(R.id.b_verify) Button verifyButton;
@@ -216,7 +217,8 @@ public class CodeVerificationActivity extends AppCompatActivity {
                 if((e instanceof RetrofitError)) {
                     RegistrationErrorDetails registrationErrorDetails = (RegistrationErrorDetails)((RetrofitError) e).getBodyAs(RegistrationErrorDetails.class);
                     if(!registrationErrorDetails.getNonFieldErrors().isEmpty()) {
-                        verificationCodeText.setError(registrationErrorDetails.getNonFieldErrors().get(0));
+                        verificationCodeError.setText(registrationErrorDetails.getNonFieldErrors().get(0));
+                        verificationCodeError.setVisibility(View.VISIBLE);
                         verificationCodeText.requestFocus();
                     }
                 }

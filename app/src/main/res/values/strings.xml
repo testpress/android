@@ -133,7 +133,7 @@
     <string name="notification_summary_content">%d new notifications</string>
     <string name="tap_to_open">Tap to open</string>
 
-    <string name="get_it_at"> Get it at https://play.google.com/store/apps/details?id=</string>
+    <string name="get_it_at"> Get it at \t </string>
 
     <string name="testpress_new_comments">New Comments</string>
     <string name="testpress_post_title">Post title</string>

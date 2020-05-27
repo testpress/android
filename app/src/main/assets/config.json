@@ -1,9 +1,9 @@
 {
-  "version" : "1.10.2",
-  "version_code" : 4,
+  "version" : "1.10.3",
+  "version_code" : 5,
   "testpress_site_subdomain" : "brilliantpala2",
   "package_name" : "in.testpress.brilliantpala",
-  "app_name" : "Brilliant Pala - Online Exam",
+  "app_name" : "Medical Online Exams - Brilliant Pala",
   "share_message": "Good app to prepare for online exams.",
   "primary_color": "5658A8",
   "allow_anonymous_user" : false,

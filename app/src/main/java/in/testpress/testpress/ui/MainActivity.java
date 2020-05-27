@@ -8,15 +8,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.GravityCompat;
+import androidx.viewpager.widget.ViewPager;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,11 +24,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.material.navigation.NavigationView;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,6 +44,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
+import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
 import in.testpress.exam.ui.view.NonSwipeableViewPager;
 import in.testpress.testpress.BuildConfig;
@@ -69,6 +75,9 @@ import io.sentry.android.AndroidSentryClientFactory;
 import static in.testpress.testpress.BuildConfig.ALLOW_ANONYMOUS_USER;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.ui.utils.EasterEggUtils.enableOrDisableEasterEgg;
+import static in.testpress.testpress.ui.utils.EasterEggUtils.enableScreenShot;
+import static in.testpress.testpress.ui.utils.EasterEggUtils.isEasterEggEnabled;
 
 public class MainActivity extends TestpressFragmentActivity {
 
@@ -129,6 +138,7 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             checkUpdate();
         }
+        setupEasterEgg();
     }
 
     @Override
@@ -138,6 +148,43 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    private void setupEasterEgg() {
+        Menu navigationMenu = navigationView.getMenu();
+        final MenuItem rateUsButton = navigationMenu.findItem(R.id.rate_us);
+        Button button = new Button(this);
+        button.setAlpha(0);
+        rateUsButton.setActionView(button);
+        rateUsButton.getActionView().setVisibility(View.GONE);
+
+
+        findViewById(R.id.version_info).setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Toast.makeText(getApplicationContext(), "App version is " + getString(R.string.version), Toast.LENGTH_SHORT).show();
+                enableOrDisableEasterEgg(getApplicationContext(), true);
+                rateUsButton.getActionView().setVisibility(View.VISIBLE);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        rateUsButton.getActionView().setVisibility(View.GONE);
+                        enableOrDisableEasterEgg(getApplicationContext(), false);
+                    }
+                }, 7000);
+                return false;
+            }
+        });
+
+        rateUsButton.getActionView().setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (isEasterEggEnabled(getApplicationContext())) {
+                    enableScreenShot(getApplicationContext());
+                }
+                return false;
+            }
+        });
     }
 
     private void setUpNavigationDrawer() {
@@ -243,7 +290,7 @@ public class MainActivity extends TestpressFragmentActivity {
             CommonUtils.registerDevice(MainActivity.this, testpressService, serviceProvider);
         }
 
-        if (isUserAuthenticated) {
+        if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             addMenuItem(R.string.dashboard, R.drawable.ic_dashboard, new DashboardFragment());
         } else {
             addMenuItem(R.string.dashboard, R.drawable.profile_default, new MainMenuFragment());
@@ -397,7 +444,7 @@ public class MainActivity extends TestpressFragmentActivity {
         new SafeAsyncTask<Update>() {
             @Override
             public Update call() {
-                return testpressService.checkUpdate("" + BuildConfig.VERSION_CODE);
+                return testpressService.checkUpdate("" + BuildConfig.VERSION_CODE, getApplicationContext().getPackageName());
             }
 
             @Override

@@ -1,6 +1,6 @@
 {
   "version" : "1.10.3",
-  "version_code" : 5,
+  "version_code" : 6,
   "testpress_site_subdomain" : "brilliantpala2",
   "package_name" : "in.testpress.brilliantpala",
   "app_name" : "Medical Online Exams - Brilliant Pala",

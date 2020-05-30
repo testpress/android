@@ -1,9 +1,9 @@
 {
-  "version" : "1.10.1",
-  "version_code" : 2,
+  "version" : "1.10.2",
+  "version_code" : 3,
   "testpress_site_subdomain" : "brilliantpalaclasses",
   "package_name" : "in.testpress.brilliantpalaclasses",
-  "app_name" : "Brilliant Pala - Online Class",
+  "app_name" : "Online Classes: Brilliant Pala",
   "share_message": "Good app to prepare for online exams.",
   "primary_color": "5658A8",
   "allow_anonymous_user" : false,

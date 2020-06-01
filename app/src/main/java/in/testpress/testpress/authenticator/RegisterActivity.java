@@ -24,6 +24,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.hbb20.CountryCodePicker;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -47,6 +48,7 @@ import in.testpress.testpress.models.RegistrationErrorDetails;
 import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.PhoneNumberValidator;
+import in.testpress.util.EventsTrackerFacade;
 import retrofit.RetrofitError;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
@@ -217,9 +219,17 @@ public class RegisterActivity extends AppCompatActivity {
                 progressDialog.dismiss();
             }
 
+            private void logEvent() {
+                EventsTrackerFacade eventsTrackerFacade = new EventsTrackerFacade(getApplicationContext());
+                HashMap<String, Object> params = new HashMap<>();
+                params.put("username", registrationSuccessResponse.getUsername());
+                eventsTrackerFacade.logEvent(EventsTrackerFacade.ACCOUNT_REGISTERED, params);
+            }
+
             @Override
             public void onSuccess(final Boolean authSuccess) {
                 progressDialog.dismiss();
+                logEvent();
                 if (verificationMethod.equals(MOBILE)) {
                     Intent intent = new Intent(RegisterActivity.this, CodeVerificationActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

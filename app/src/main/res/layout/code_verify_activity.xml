@@ -56,11 +56,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
-                    android:inputType="textPassword"
+                    android:inputType="numberSigned"
                     android:imeOptions="actionDone"
                     android:visibility="gone"
+                    style="@style/Input"
                     android:hint="@string/label_ask_code"/>
             </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:id="@+id/verification_code_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                style="@style/InputError"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/b_verify"

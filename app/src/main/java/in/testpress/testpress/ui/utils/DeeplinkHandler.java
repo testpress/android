@@ -3,7 +3,6 @@ package in.testpress.testpress.ui.utils;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 
 import java.util.List;
 
@@ -111,15 +110,15 @@ public class DeeplinkHandler {
                     authenticateUserAndOpen(uri);
                     break;
                 default:
-                    openBrowerOrGotoHome(uri, fromSplashScreen);
+                    openBrowserOrGotoHome(uri, fromSplashScreen);
                     break;
             }
         } else {
-            openBrowerOrGotoHome(uri, fromSplashScreen);
+            openBrowserOrGotoHome(uri, fromSplashScreen);
         }
     }
 
-    private void openBrowerOrGotoHome(Uri uri, boolean fromSplashScreen) {
+    private void openBrowserOrGotoHome(Uri uri, boolean fromSplashScreen) {
         if (fromSplashScreen) {
             gotoHome();
         } else {

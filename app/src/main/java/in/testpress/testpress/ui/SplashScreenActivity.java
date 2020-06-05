@@ -65,7 +65,7 @@ public class SplashScreenActivity extends Activity {
 
             @Override
             public void run() {
-                deeplinkHandler.handleDeepLinkUrl(getIntent().getData());
+                deeplinkHandler.handleDeepLinkUrl(getIntent().getData(), true);
             }
         }, SPLASH_TIME_OUT);
     }

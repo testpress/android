@@ -3,7 +3,6 @@ package in.testpress.testpress.ui.utils;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 
 import java.util.List;
 
@@ -40,7 +39,7 @@ public class DeeplinkHandler {
         this.serviceProvider = serviceProvider;
     }
 
-    public void handleDeepLinkUrl(Uri uri) {
+    public void handleDeepLinkUrl(Uri uri, boolean fromSplashScreen) {
         if (uri != null && uri.getPathSegments().size() > 0) {
             List<String> pathSegments = uri.getPathSegments();
             switch (pathSegments.get(0)) {
@@ -111,11 +110,19 @@ public class DeeplinkHandler {
                     authenticateUserAndOpen(uri);
                     break;
                 default:
-                    gotoHome();
+                    openBrowserOrGotoHome(uri, fromSplashScreen);
                     break;
             }
         } else {
+            openBrowserOrGotoHome(uri, fromSplashScreen);
+        }
+    }
+
+    private void openBrowserOrGotoHome(Uri uri, boolean fromSplashScreen) {
+        if (fromSplashScreen) {
             gotoHome();
+        } else {
+            CommonUtils.openUrlInBrowser(activity, uri);
         }
     }
 

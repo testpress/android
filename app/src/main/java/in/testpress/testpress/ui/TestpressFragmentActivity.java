@@ -100,7 +100,7 @@ public class TestpressFragmentActivity extends AppCompatActivity {
     }
 
     private boolean isFromDeeplink() {
-        return getIntent().getBooleanExtra(Constants.IS_DEEP_LINK, false)
+        return getIntent().getBooleanExtra(Constants.IS_DEEP_LINK, false);
     }
 
     private void goToHome() {

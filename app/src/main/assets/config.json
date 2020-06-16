@@ -1,6 +1,6 @@
 {
-  "version" : "1.10.5",
-  "version_code" : 10,
+  "version" : "1.10.6",
+  "version_code" : 11,
   "testpress_site_subdomain" : "medpgbasics",
   "package_name" : "com.medpgbasics",
   "app_name" : "Iris NEET PG",

@@ -1,6 +1,6 @@
 {
-  "version" : "2.1.7",
-  "version_code" : 19,
+  "version" : "2.1.8",
+  "version_code" : 20,
   "testpress_site_subdomain" : "elixir",
   "package_name" : "co.elixirapp",
   "app_name" : "Elixir",

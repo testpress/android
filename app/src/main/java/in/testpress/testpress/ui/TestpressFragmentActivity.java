@@ -99,14 +99,22 @@ public class TestpressFragmentActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
     }
 
+    private boolean isFromDeeplink() {
+        return getIntent().getBooleanExtra(Constants.IS_DEEP_LINK, false);
+    }
+
+    private void goToHome() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         if(item.getItemId() == android.R.id.home) {
-            if (getIntent().getBooleanExtra(Constants.IS_DEEP_LINK, false)) {
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
+            if (isFromDeeplink()) {
+                goToHome();
             } else {
                 onBackPressed();
             }
@@ -118,7 +126,11 @@ public class TestpressFragmentActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         try {
-            super.onBackPressed();
+            if (isFromDeeplink()) {
+                goToHome();
+            } else {
+                super.onBackPressed();
+            }
         } catch (IllegalStateException e) {
             supportFinishAfterTransition();
         }

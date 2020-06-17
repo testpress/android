@@ -1,14 +1,14 @@
 {
   "version" : "1.0.0",
-  "version_code" : 1,
+  "version_code" : 2,
   "testpress_site_subdomain" : "rcreddyiasstudycircle",
-  "package_name" : "in.testpress.rcreddyiasstudycircle",
+  "package_name" : "com.rcreddyiasstudycircle",
   "app_name" : "R.C.Reddy IAS Study Circle",
   "share_message": "Good app to prepare for UPSC Civil Services Exam.",
   "primary_color": "266A35",
   "allow_anonymous_user" : false,
   "facebook_app_id" : "733962776688753",
-  "server_client_id" : "234956709117-9jd0f90q0262bb41moodkff4pf7of7lq.apps.googleusercontent.com",
+  "server_client_id" : "555473025966-07f711msikcvoafqdlcibqa6tjbeq3r0.apps.googleusercontent.com",
   "display_username_on_video": true,
   "white_labeled_host_url": null,
   "is_growth_hacks_enabled": false

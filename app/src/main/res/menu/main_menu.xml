@@ -45,6 +45,7 @@
             android:id="@+id/rate_us"
             android:icon="@drawable/ic_rate_review_black_24dp"
             android:title="Rate Us"
+            android:visible="false"
             app:showAsAction="always"/>
         <item
             android:id="@+id/share"

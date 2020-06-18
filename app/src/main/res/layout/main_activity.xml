@@ -99,7 +99,7 @@
             android:padding="16dp">
 
             <TextView
-                android:id="@+id/logout"
+                android:id="@+id/version_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"

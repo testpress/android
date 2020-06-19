@@ -115,7 +115,7 @@ public class SplashScreenActivity extends Activity {
                     if (error == null) {
                         handler.removeCallbacksAndMessages(null);
                         final DeeplinkHandler deeplinkHandler = new DeeplinkHandler(SplashScreenActivity.this, serviceProvider);
-                        deeplinkHandler.handleDeepLinkUrl(getDeeplinkUriFromBranch(referringParams));
+                        deeplinkHandler.handleDeepLinkUrl(getDeeplinkUriFromBranch(referringParams), true);
                     }
                 }
             };

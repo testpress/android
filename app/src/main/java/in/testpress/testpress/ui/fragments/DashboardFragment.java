@@ -89,10 +89,21 @@ public class DashboardFragment extends Fragment implements
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         swipeRefreshLayout.setEnabled(true);
+        showDataFromCacheIfAvailable();
+        addOnClickListeners();
+    }
 
+    private void showDataFromCacheIfAvailable() {
+        if (!getSections().isEmpty()) {
+            adapter.setResponse(getDashboardDataPreferences(requireContext()));
+        } else {
+            showLoading();
+        }
+    }
+
+    private void showLoading() {
         loadingPlaceholder.setVisibility(View.VISIBLE);
         loadingPlaceholder.startShimmer();
-        addOnClickListeners();
     }
 
     private void hideShimmer() {

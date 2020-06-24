@@ -18,6 +18,7 @@ import com.squareup.otto.Bus;
 import in.testpress.testpress.events.UnAuthorizedUserErrorEvent;
 import in.testpress.testpress.models.TestpressApiErrorResponse;
 import in.testpress.testpress.models.TestpressApiResponse;
+import io.sentry.Sentry;
 import retrofit.ErrorHandler;
 import retrofit.RetrofitError;
 
@@ -35,8 +36,14 @@ public class RestErrorHandler implements ErrorHandler {
 
     @Override
     public Throwable handleError(RetrofitError cause) {
+        Log.d("RestErrorHandler", "Error Occurred " + cause);
         TestpressApiErrorResponse errorResponse = (TestpressApiErrorResponse) cause.getBodyAs(TestpressApiErrorResponse.class);
-
+        if (cause != null) {
+            Sentry.capture(cause.getMessage());
+            if (errorResponse != null) {
+                Sentry.capture(errorResponse.getDetail());
+            }
+        }
         if (errorResponse.getErrorCode() != null) {
             bus.post(new CustomErrorEvent(errorResponse.getErrorCode(), errorResponse.getDetail()));
         }

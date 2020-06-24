@@ -1,5 +1,6 @@
 package in.testpress.testpress.core;
 
+import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -78,6 +79,7 @@ public class TestpressService {
                     return chain.proceed(header.build());
                 }
             };
+            client.networkInterceptors().add(new StethoInterceptor());
             client.networkInterceptors().add(interceptor);
             restAdapter.setClient(new OkClient(client));
         }

@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
+import com.facebook.stetho.Stetho;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.navigation.NavigationView;
 
@@ -119,8 +120,8 @@ public class MainActivity extends TestpressFragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         ButterKnife.inject(this);
-        Sentry.init("https://10326980de2149d3b91cb628d7c3da36@sentry.testpress.in/3", new AndroidSentryClientFactory(this));
-
+        Sentry.init("https://d45a945b941945e2ab762377bf6e76c0@sentry.testpress.in/4", new AndroidSentryClientFactory(this));
+        Stetho.initializeWithDefaults(this);
         if (savedInstanceState != null) {
             mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM);
         }

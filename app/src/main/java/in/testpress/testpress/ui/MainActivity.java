@@ -38,8 +38,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.navigation.NavigationView;
 
-import org.json.JSONObject;
-
+import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +50,7 @@ import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
+import in.testpress.course.ui.ChaptersListFragment;
 import in.testpress.exam.ui.view.NonSwipeableViewPager;
 import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.Injector;
@@ -309,17 +309,11 @@ public class MainActivity extends TestpressFragmentActivity {
         // Show courses list if game front end is enabled, otherwise hide bottom bar
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             //noinspection ConstantConditions
-            addMenuItem(R.string.learn, R.drawable.learn,
+            addMenuItem(R.string.qbank, R.drawable.ic_question_circle_regular,getChaptersListFragment("5"));
+            addMenuItem(R.string.tests, R.drawable.ic_file_alt_regular,getChaptersListFragment("4"));
+            addMenuItem(R.string.mycourses, R.drawable.learn,
                     TestpressCourse.getCoursesListFragment(this, TestpressSdk.getTestpressSession(this)));
 
-            if (mInstituteSettings.getCoursesEnableGamification()) {
-                //noinspection ConstantConditions
-                addMenuItem(R.string.testpress_leaderboard, R.drawable.leaderboard,
-                        TestpressCourse.getLeaderboardFragment(this, TestpressSdk.getTestpressSession(this)));
-            }
-            if (mInstituteSettings.getForumEnabled()) {
-                addMenuItem(R.string.discussions, R.drawable.chat_icon, new ForumListFragment());
-            }
         } else {
             grid.setVisibility(View.GONE);
         }
@@ -357,6 +351,15 @@ public class MainActivity extends TestpressFragmentActivity {
         viewPager.setVisibility(View.VISIBLE);
         onItemSelected(mSelectedItem);
         progressBarLayout.setVisibility(View.GONE);
+    }
+
+    @NotNull
+    private ChaptersListFragment getChaptersListFragment(String courseId) {
+        Bundle bundle = new Bundle();
+        bundle.putString("courseId", courseId);
+        ChaptersListFragment fragment = new ChaptersListFragment();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     private void onItemSelected(int position) {

@@ -176,7 +176,7 @@ public class SplashScreenActivity extends Activity {
                 // Go to home if user pressed home button & no other data passed in result intent
                 gotoHome();
             } else {
-                finish();
+                gotoHome();
             }
         }
     }

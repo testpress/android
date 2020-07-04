@@ -59,7 +59,7 @@ import io.sentry.Sentry;
 import io.sentry.event.UserBuilder;
 import retrofit.RetrofitError;
 
-import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
+import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.ui.DrupalRssListFragment.RSS_FEED_URL;

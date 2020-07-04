@@ -89,10 +89,21 @@ public class DashboardFragment extends Fragment implements
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         swipeRefreshLayout.setEnabled(true);
+        showDataFromCacheIfAvailable();
+        addOnClickListeners();
+    }
 
+    private void showDataFromCacheIfAvailable() {
+        if (!getSections().isEmpty()) {
+            adapter.setResponse(getDashboardDataPreferences(requireContext()));
+        } else {
+            showLoading();
+        }
+    }
+
+    private void showLoading() {
         loadingPlaceholder.setVisibility(View.VISIBLE);
         loadingPlaceholder.startShimmer();
-        addOnClickListeners();
     }
 
     private void hideShimmer() {
@@ -162,6 +173,7 @@ public class DashboardFragment extends Fragment implements
             this.exception = exception;
             showError(getErrorMessage(exception));
             getLoaderManager().destroyLoader(loader.getId());
+            adapter.setResponse(getDashboardDataPreferences(getContext()));
             return;
         }
         Gson gson = new GsonBuilder().setPrettyPrinting().create();

@@ -25,9 +25,10 @@ import in.testpress.testpress.ui.ProfileDetailsActivity;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.util.Assert;
 
-import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
+import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.core.Constants.Http.CHAPTERS_PATH;
+import static in.testpress.testpress.ui.PostActivity.DETAIL_URL;
 
 public class DeeplinkHandler {
     private Activity activity;
@@ -38,7 +39,7 @@ public class DeeplinkHandler {
         this.serviceProvider = serviceProvider;
     }
 
-    public void handleDeepLinkUrl(Uri uri) {
+    public void handleDeepLinkUrl(Uri uri, boolean fromSplashScreen) {
         if (uri != null && uri.getPathSegments().size() > 0) {
             List<String> pathSegments = uri.getPathSegments();
             switch (pathSegments.get(0)) {
@@ -52,8 +53,14 @@ public class DeeplinkHandler {
                     activity.finish();
                     break;
                 case "posts":
-                    Intent postsIntent =
-                            new Intent(activity, PostsListActivity.class);
+                    Intent postsIntent;
+                    if (isPostsDetail(uri)) {
+                        postsIntent = new Intent(activity, PostActivity.class);
+                        postsIntent.putExtra(DETAIL_URL, uri.toString());
+                    } else {
+                        postsIntent = new Intent(activity, PostsListActivity.class);
+                    }
+
                     postsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                             Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
@@ -103,13 +110,25 @@ public class DeeplinkHandler {
                     authenticateUserAndOpen(uri);
                     break;
                 default:
-                    CommonUtils.openUrlInBrowser(activity, uri);
-                    activity.finish();
+                    openBrowserOrGotoHome(uri, fromSplashScreen);
                     break;
             }
         } else {
-            gotoHome();
+            openBrowserOrGotoHome(uri, fromSplashScreen);
         }
+    }
+
+    private void openBrowserOrGotoHome(Uri uri, boolean fromSplashScreen) {
+        if (fromSplashScreen) {
+            gotoHome();
+        } else {
+            CommonUtils.openUrlInBrowser(activity, uri);
+        }
+    }
+
+    private boolean isPostsDetail(Uri uri) {
+        List<String> pathSegments = uri.getPathSegments();
+        return pathSegments.get(0).equals("posts") && pathSegments.size() > 1;
     }
 
     private void authenticateUserAndOpen(final Uri uri) {

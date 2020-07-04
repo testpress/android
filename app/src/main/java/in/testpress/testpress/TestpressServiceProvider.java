@@ -32,7 +32,8 @@ import retrofit.RestAdapter;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.models.ProfileDetails.PROFILE_DETAILS_PREFERENCES;
 import static in.testpress.testpress.BuildConfig.DISPLAY_USERNAME_ON_VIDEO;
-import static in.testpress.testpress.BuildConfig.SCREENSHOT_DISABLED;
+import static in.testpress.testpress.BuildConfig.GROWTH_HACKS_ENABLED;
+import static in.testpress.testpress.BuildConfig.SHARE_MESSAGE;
 import static in.testpress.testpress.util.PreferenceManager.setDashboardData;
 
 public class TestpressServiceProvider {
@@ -73,8 +74,11 @@ public class TestpressServiceProvider {
                     .list();
 
             in.testpress.models.InstituteSettings settings;
+            String appLink = "https://play.google.com/store/apps/details?id=" + activity.getPackageName();
+
             if (instituteSettingsList.isEmpty()) {
                 settings = new in.testpress.models.InstituteSettings(BASE_URL);
+                settings.setScreenshotDisabled(true);
             } else {
                 InstituteSettings instituteSettings = instituteSettingsList.get(0);
                 settings = new in.testpress.models.InstituteSettings(instituteSettings.getBaseUrl())
@@ -82,15 +86,20 @@ public class TestpressServiceProvider {
                         .setCoursesFrontend(instituteSettings.getShowGameFrontend())
                         .setCoursesGamificationEnabled(instituteSettings.getCoursesEnableGamification())
                         .setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled())
-                        .setScreenshotDisabled(SCREENSHOT_DISABLED)
+                        .setScreenshotDisabled(!instituteSettings.getAllowScreenshotInApp())
                         .setDisplayUserEmailOnVideo(DISPLAY_USERNAME_ON_VIDEO)
                         .setAccessCodeEnabled(false)
                         .setEnableParallelLoginRestriction(instituteSettings.getEnableParallelLoginRestriction())
                         .setMaxParallelLogins(instituteSettings.getMaxParallelLogins())
                         .setLockoutLimit(instituteSettings.getLockoutLimit())
                         .setCooloffTime(instituteSettings.getCooloffTime())
-                        .setStoreLabel(instituteSettings.getStoreLabel());
+                        .setStoreLabel(instituteSettings.getStoreLabel())
+                        .setAppToolbarLogo(instituteSettings.getAppToolbarLogo())
+                        .setAppShareLink(instituteSettings.getAppShareLink());
+                appLink = instituteSettings.getAppShareLink();
             }
+            settings.setAppShareText(SHARE_MESSAGE + activity.getString(R.string.get_it_at) + appLink);
+            settings.setGrowthHackEnabled(GROWTH_HACKS_ENABLED);
             TestpressSdk.setTestpressSession(activity, new TestpressSession(settings, authToken));
         }
 

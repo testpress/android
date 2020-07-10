@@ -62,10 +62,10 @@ public class RegisterActivity extends AppCompatActivity {
     @Inject TestpressService testpressService;
     @InjectView(id.et_username) EditText usernameText;
     @InjectView(id.et_password) EditText passwordText;
-    @InjectView(id.password_textInput_layout)
+    @InjectView(id.password_text_input_layout)
     TextInputLayout passwordInputLayout;
     @InjectView(id.et_password_confirm) EditText confirmPasswordText;
-    @InjectView(id.confirm_password_textInput_layout)
+    @InjectView(id.confirm_password_text_input_layout)
     TextInputLayout confirmPasswordInputLayout;
     @InjectView(id.et_email) EditText emailText;
     @InjectView(id.et_phone) EditText phoneText;

@@ -148,7 +148,7 @@
             android:layout_marginBottom="8dp"
             android:orientation="vertical">
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/password_textInput_layout"
+                android:id="@+id/password_text_input_layout"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/input_height"
                 android:theme="@style/TextLabel"
@@ -181,7 +181,7 @@
             android:layout_marginBottom="10dp"
             android:orientation="vertical">
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/confirm_password_textInput_layout"
+                android:id="@+id/confirm_password_text_input_layout"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/input_height"
                 android:theme="@style/TextLabel"

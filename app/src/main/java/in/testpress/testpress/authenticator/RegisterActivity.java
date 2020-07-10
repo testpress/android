@@ -62,7 +62,11 @@ public class RegisterActivity extends AppCompatActivity {
     @Inject TestpressService testpressService;
     @InjectView(id.et_username) EditText usernameText;
     @InjectView(id.et_password) EditText passwordText;
+    @InjectView(id.password_textInput_layout)
+    TextInputLayout passwordInputLayout;
     @InjectView(id.et_password_confirm) EditText confirmPasswordText;
+    @InjectView(id.confirm_password_textInput_layout)
+    TextInputLayout confirmPasswordInputLayout;
     @InjectView(id.et_email) EditText emailText;
     @InjectView(id.et_phone) EditText phoneText;
     @InjectView(id.ccp) CountryCodePicker countryCodePicker;
@@ -134,7 +138,43 @@ public class RegisterActivity extends AppCompatActivity {
             countryCodePicker.setNumberAutoFormattingEnabled(false);
         }
         setTextWatchers();
+        setPasswordToggleVisibility();
         
+    }
+
+    void setPasswordToggleVisibility() {
+        passwordText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                passwordError.setVisibility(View.GONE);
+                passwordInputLayout.setPasswordVisibilityToggleEnabled(s.length() > 0);
+            }
+        });
+
+        confirmPasswordText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                confirmPasswordError.setVisibility(View.GONE);
+                confirmPasswordInputLayout.setPasswordVisibilityToggleEnabled(s.length() > 0);
+            }
+        });
+
     }
     
     void setTextWatchers() {

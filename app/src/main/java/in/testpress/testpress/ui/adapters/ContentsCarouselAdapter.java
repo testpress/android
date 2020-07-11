@@ -73,6 +73,13 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
         return new ItemViewHolder(view);
     }
 
+    private String getCapitalizedName(Content content) {
+        String contentName = content.getName();
+        if (content.getName().length() > 0) {
+            contentName = contentName.substring(0,1).toUpperCase() + contentName.substring(1).toLowerCase();
+        }
+        return contentName;
+    }
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, final int position) {
@@ -87,9 +94,7 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
         showProgressBarForResumeVideos(position, holder);
 
 
-        String contentName = content.getName();
-        String capitalizedContentName = contentName.substring(0,1).toUpperCase() + contentName.substring(1).toLowerCase();
-        holder.title.setText(capitalizedContentName);
+        holder.title.setText(getCapitalizedName(content));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

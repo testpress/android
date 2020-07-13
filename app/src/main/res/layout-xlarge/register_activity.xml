@@ -100,7 +100,7 @@
                     android:orientation="horizontal">
 
                     <com.hbb20.CountryCodePicker
-                        android:id="@+id/ccp"
+                        android:id="@+id/country_code_picker"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/input_height"
                         android:layout_gravity="center_vertical"

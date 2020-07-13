@@ -323,7 +323,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
            //Username verification
-           Pattern userNamePattern = Pattern.compile("[a-z0-9]*");
+           Pattern userNamePattern = Pattern.compile("^[a-zA-Z0-9]([._](?![._])|[a-zA-Z0-9]){3,18}[a-zA-Z0-9]$");
            Matcher userNameMatcher = userNamePattern.matcher(usernameText.getText().toString().trim());
            if(populated(usernameText) && !userNameMatcher.matches()) {
                usernameError.setVisibility(View.VISIBLE);

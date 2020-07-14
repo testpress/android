@@ -56,25 +56,10 @@ import java.io.IOException
 import javax.inject.Inject
 
 class LoginActivity: ActionBarAccountAuthenticatorActivity() {
+
     companion object {
-        /**
-         * PARAM_CONFIRM_CREDENTIALS
-         */
         const val PARAM_CONFIRM_CREDENTIALS = "confirmCredentials"
-
-        /**
-         * PARAM_PASSWORD
-         */
-        const val PARAM_PASSWORD = "password"
-
-        /**
-         * PARAM_USERNAME
-         */
         const val PARAM_USERNAME = "username"
-
-        /**
-         * PARAM_AUTHTOKEN_TYPE
-         */
         const val PARAM_AUTHTOKEN_TYPE = "authtokenType"
 
         const val REQUEST_CODE_REGISTER_USER = 1111
@@ -83,30 +68,18 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
         private lateinit var accountManager: AccountManager
     }
 
-
     @Inject lateinit var testPressService: TestpressService
 
     @Inject lateinit var bus: Bus
 
-
     private lateinit var authToken: String
     private var authTokenType: String? = null
     private var internetConnectivityChecker = InternetConnectivityChecker(this)
-    /**
-     * If set we are just checking that the user knows their credentials; this
-     * doesn't cause the user's password to be changed on the device.
-     */
+
     private var confirmCredentials: Boolean? = null
-
     private var username: String? = null
-
     private var password: String? = null
-
-    /**
-     * Was the original caller asking for an entirely new account?
-     */
     private var requestNewAccount = false
-
 
     private lateinit var callbackManager: CallbackManager
     private lateinit var googleApiClient: GoogleApiClient
@@ -115,14 +88,14 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
 
     override fun onCreate(bundle: Bundle?) {
         super.onCreate(bundle)
-
         Injector.inject(this)
 
         accountManager = AccountManager.get(this)
+        callbackManager = CallbackManager.Factory.create()
 
         getDataFromIntent()
 
-        requestNewAccount = username == null
+        requestNewAccount = (username == null)
 
         if (AccessToken.getCurrentAccessToken() != null) {
             LoginManager.getInstance().logOut()
@@ -133,14 +106,44 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
         ButterKnife.inject(this)
         UIUtils.setIndeterminateDrawable(this, pb_loading, 4)
 
-        et_password.setOnEditorActionListener { v, actionId, event ->
+        setEditorActionListener()
+        initializeViews()
+        setTextChangedListener()
+        initFacebookSignIn()
+        initGoogleSignIn()
+        setUpInstituteSettings()
+        setLoginLabel(instituteSettings)
+        setVisibilityResendVerificationSMS(instituteSettings)
+        setOnClickListeners()
+
+    }
+
+    private fun getDataFromIntent() {
+        val intent = intent
+        username = intent.getStringExtra(PARAM_USERNAME)
+        authTokenType = intent.getStringExtra(PARAM_AUTHTOKEN_TYPE)
+        confirmCredentials = intent.getBooleanExtra(PARAM_CONFIRM_CREDENTIALS, false)
+    }
+
+    private fun setEditorActionListener() {
+        et_password.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == IME_ACTION_SEND) {
                 signIn()
                 return@setOnEditorActionListener true
             }
             return@setOnEditorActionListener false
         }
+    }
 
+    private fun initializeViews() {
+        et_username.setSingleLine()
+        et_username.requestFocus()
+        et_password.typeface = Typeface.DEFAULT
+        et_password.transformationMethod = PasswordTransformationMethod()
+        or.typeface = TestpressSdk.getRubikMediumFont(this)
+    }
+
+    private fun setTextChangedListener() {
         et_password.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 password_error.visibility = View.GONE
@@ -173,12 +176,9 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
             }
 
         })
+    }
 
-        et_username.setSingleLine()
-        et_username.requestFocus()
-        et_password.typeface = Typeface.DEFAULT
-        et_password.transformationMethod = PasswordTransformationMethod()
-        callbackManager = CallbackManager.Factory.create()
+    private fun  initFacebookSignIn() {
         fb_login_button.run {
             fb_login_button.invalidate()
             fb_login_button.setPermissions("email")
@@ -208,35 +208,6 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
 
             })
         }
-
-        initGoogleSignIn()
-
-        or.typeface = TestpressSdk.getRubikMediumFont(this)
-        val daoSession = TestpressApplication.getDaoSession()
-        instituteSettingsDao = daoSession.instituteSettingsDao
-        val instituteSettingsList = instituteSettingsDao.queryBuilder()
-                .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
-                .list()
-
-        if (instituteSettingsList.size == 0) {
-            getInstituteSettings()
-        } else {
-            instituteSettings = instituteSettingsList[0]
-            updateInstituteSpecificFields()
-        }
-
-        setLoginLabel(instituteSettings)
-        setVisibilityResendVerificationSMS(instituteSettings)
-
-        setOnClickListeners()
-
-    }
-
-    private fun getDataFromIntent() {
-        val intent = intent
-        username = intent.getStringExtra(PARAM_USERNAME)
-        authTokenType = intent.getStringExtra(PARAM_AUTHTOKEN_TYPE)
-        confirmCredentials = intent.getBooleanExtra(PARAM_CONFIRM_CREDENTIALS, false)
     }
 
     private fun initGoogleSignIn() {
@@ -256,6 +227,21 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
                 }
                 .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
                 .build()
+    }
+
+    private fun setUpInstituteSettings() {
+        val daoSession = TestpressApplication.getDaoSession()
+        instituteSettingsDao = daoSession.instituteSettingsDao
+        val instituteSettingsList = instituteSettingsDao.queryBuilder()
+                .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
+                .list()
+
+        if (instituteSettingsList.size == 0) {
+            getInstituteSettings()
+        } else {
+            instituteSettings = instituteSettingsList[0]
+            updateInstituteSpecificFields()
+        }
     }
 
     private fun setLoginLabel(instituteSettings: InstituteSettings) {
@@ -313,6 +299,13 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
         }.execute()
     }
 
+    private fun setEmptyText(title: Int, description: Int, left: Int) {
+        empty_container.visibility = View.VISIBLE
+        empty_title.setText(title)
+        empty_title.setCompoundDrawablesWithIntrinsicBounds(left, 0, 0, 0)
+        empty_description.setText(description)
+    }
+
     private fun authenticate(userId: String, accessToken: String,
                              provider: TestpressSdk.Provider) {
 
@@ -354,6 +347,88 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
                 })
     }
 
+    fun onAuthenticationResult(result: Boolean) {
+        if (result) {
+            if (confirmCredentials == false) {
+                finishLogin()
+            } else {
+                finishConfirmCredentials(true)
+            }
+        } else {
+            Ln.d("onAuthenticationResult: failed to authenticate");
+            if (requestNewAccount) {
+                Toaster.showLong(this, R.string.message_auth_failed_new_account);
+            } else {
+                Toaster.showLong(this, R.string.message_auth_failed);
+            }
+        }
+    }
+
+    private fun finishLogin() {
+        val sharedPreferences = getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE)
+        sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply()
+
+        CommonUtils.registerDevice(this, testPressService)
+        val account = Account(username, APPLICATION_ID)
+
+        if (requestNewAccount) {
+            accountManager.addAccountExplicitly(account, password, null)
+            accountManager.setAuthToken(account, APPLICATION_ID, authToken)
+        } else {
+            accountManager.setPassword(account, password)
+        }
+
+        val daoSession = TestpressApplication.getDaoSession()
+        val postDao = daoSession.postDao
+        postDao.deleteAll()
+        daoSession.clear()
+        if (authTokenType != null && authTokenType == APPLICATION_ID) {
+            navigateToWebViewActivity()
+        } else {
+            navigateToMainActivity()
+        }
+        finish()
+    }
+
+    private fun navigateToWebViewActivity() {
+        val intent = Intent()
+        intent.putExtra(KEY_ACCOUNT_NAME, username)
+        intent.putExtra(KEY_ACCOUNT_TYPE, APPLICATION_ID)
+        intent.putExtra(KEY_AUTHTOKEN, authToken)
+        setAccountAuthenticatorResult(intent.extras)
+        setResult(WebViewActivity.RESULT_OK, intent)
+    }
+
+    private fun navigateToMainActivity() {
+        var intent = Intent(this, MainActivity::class.java)
+        if (getIntent().getStringExtra(Constants.DEEP_LINK_TO) != null) {
+            when (getIntent().getStringExtra(Constants.DEEP_LINK_TO)) {
+                Constants.DEEP_LINK_TO_POST -> {
+                    intent =  Intent(this, PostActivity::class.java)
+                    intent.putExtra(Constants.IS_DEEP_LINK, true)
+                    intent.putExtras(getIntent().extras)
+                }
+                else -> {
+                    intent =  Intent(this, MainActivity::class.java)
+                }
+
+            }
+        }
+        intent.flags = (Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+    }
+
+    private fun finishConfirmCredentials(result: Boolean) {
+        val account = Account(username, APPLICATION_ID)
+        accountManager.setPassword(account, password)
+
+        val intent = Intent()
+        intent.putExtra(KEY_BOOLEAN_RESULT, result)
+        setAccountAuthenticatorResult(intent.extras)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
+    }
+
     private fun updateInstituteSpecificFields() {
         ViewUtils.setGone(fb_login_button, !instituteSettings.facebookLoginEnabled)
         ViewUtils.setGone(google_sign_in_button, !instituteSettings.googleLoginEnabled)
@@ -381,128 +456,6 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
     private fun onUnAuthorizedErrorEvent(unAuthorizedErrorEvent: UnAuthorizedErrorEvent) {
         // Could not authorize for some reason.
         Toaster.showLong(this, R.string.message_bad_credentials)
-    }
-
-    /**
-     * Handles onClick event on the Submit button. Sends username/password to
-     * the server for authentication.
-     * <p/>
-     * Specified by android:onClick="handleLogin" in the layout xml
-     *
-     * @param view
-     */
-    private fun handleLogin(view: View) {
-        if (requestNewAccount) {
-            username = et_username.text.toString()
-        }
-
-        password = et_password.text.toString()
-
-        username?.let { userName ->
-            password?.let { password ->
-                authenticate(userName, password, TestpressSdk.Provider.TESTPRESS)
-            }
-        }
-    }
-
-    /**
-     * Called when response is received from the server for confirm credentials
-     * request. See onAuthenticationResult(). Sets the
-     * AccountAuthenticatorResult which is sent back to the caller.
-     *
-     * @param result
-     */
-    private fun finishConfirmCredentials(result: Boolean) {
-        val account = Account(username, APPLICATION_ID)
-        accountManager.setPassword(account, password)
-
-        val intent = Intent()
-        intent.putExtra(KEY_BOOLEAN_RESULT, result)
-        setAccountAuthenticatorResult(intent.extras)
-        setResult(Activity.RESULT_OK, intent)
-        finish()
-    }
-
-    /**
-     * Called when response is received from the server for authentication
-     * request. See onAuthenticationResult(). Sets the
-     * AccountAuthenticatorResult which is sent back to the caller. Also sets
-     * the authToken in AccountManager for this account.
-     */
-
-    private fun finishLogin() {
-        val sharedPreferences = getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE)
-        sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply()
-        CommonUtils.registerDevice(this, testPressService)
-        val account = Account(username, APPLICATION_ID)
-
-        if (requestNewAccount) {
-            accountManager.addAccountExplicitly(account, password, null)
-            accountManager.setAuthToken(account, APPLICATION_ID, authToken)
-        } else {
-            accountManager.setPassword(account, password)
-        }
-        val daoSession = TestpressApplication.getDaoSession()
-        val postDao = daoSession.postDao
-        postDao.deleteAll()
-        daoSession.clear()
-        if (authTokenType != null && authTokenType == APPLICATION_ID) {
-            val intent = Intent()
-            intent.putExtra(KEY_ACCOUNT_NAME, username)
-            intent.putExtra(KEY_ACCOUNT_TYPE, APPLICATION_ID)
-            intent.putExtra(KEY_AUTHTOKEN, authToken)
-            setAccountAuthenticatorResult(intent.extras)
-            setResult(RESULT_OK, intent)
-        } else {
-            var intent = Intent(this, MainActivity::class.java)
-            if (getIntent().getStringExtra(Constants.DEEP_LINK_TO) != null) {
-                when (getIntent().getStringExtra(Constants.DEEP_LINK_TO)) {
-                    Constants.DEEP_LINK_TO_POST -> {
-                        intent =  Intent(this, PostActivity::class.java)
-                        intent.putExtra(Constants.IS_DEEP_LINK, true)
-                        intent.putExtras(getIntent().extras)
-                    }
-                    else -> {
-                        intent =  Intent(this, MainActivity::class.java)
-                    }
-
-                }
-            }
-            intent.flags = (Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            startActivity(intent)
-        }
-        finish()
-    }
-
-    /**
-     * Called when the authentication process completes (see attemptLogin()).
-     *
-     * @param result
-     */
-    fun onAuthenticationResult(result: Boolean) {
-        if (result) {
-            if (confirmCredentials == false) {
-                finishLogin()
-            } else {
-                finishConfirmCredentials(true)
-            }
-        } else {
-            Ln.d("onAuthenticationResult: failed to authenticate");
-            if (requestNewAccount) {
-                Toaster.showLong(this, R.string.message_auth_failed_new_account);
-            } else {
-                Toaster.showLong(this, R.string.message_auth_failed);
-            }
-        }
-    }
-
-    fun showAlert(alertMessage: String) {
-        MaterialDialog.Builder(this)
-                .content(alertMessage)
-                .neutralText(R.string.ok)
-                .neutralColorRes(R.color.primary)
-                .buttonsGravity(GravityEnum.END)
-                .show()
     }
 
     private fun setOnClickListeners() {
@@ -537,6 +490,20 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
                 handleLogin(b_signin)
             } else {
                 internetConnectivityChecker.showAlert();
+            }
+        }
+    }
+
+    private fun handleLogin(view: View) {
+        if (requestNewAccount) {
+            username = et_username.text.toString()
+        }
+
+        password = et_password.text.toString()
+
+        username?.let { userName ->
+            password?.let { password ->
+                authenticate(userName, password, TestpressSdk.Provider.TESTPRESS)
             }
         }
     }
@@ -617,10 +584,12 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
         }
     }
 
-    private fun setEmptyText(title: Int, description: Int, left: Int) {
-        empty_container.visibility = View.VISIBLE
-        empty_title.setText(title)
-        empty_title.setCompoundDrawablesWithIntrinsicBounds(left, 0, 0, 0)
-        empty_description.setText(description)
+    fun showAlert(alertMessage: String) {
+        MaterialDialog.Builder(this)
+                .content(alertMessage)
+                .neutralText(R.string.ok)
+                .neutralColorRes(R.color.primary)
+                .buttonsGravity(GravityEnum.END)
+                .show()
     }
 }

@@ -1,4 +1,4 @@
-package `in`.testpress.testpress.authenticator;
+package `in`.testpress.testpress.authenticator
 
 import `in`.testpress.core.TestpressCallback
 import `in`.testpress.core.TestpressException
@@ -355,11 +355,11 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
                 finishConfirmCredentials(true)
             }
         } else {
-            Ln.d("onAuthenticationResult: failed to authenticate");
+            Ln.d("onAuthenticationResult: failed to authenticate")
             if (requestNewAccount) {
-                Toaster.showLong(this, R.string.message_auth_failed_new_account);
+                Toaster.showLong(this, R.string.message_auth_failed_new_account)
             } else {
-                Toaster.showLong(this, R.string.message_auth_failed);
+                Toaster.showLong(this, R.string.message_auth_failed)
             }
         }
     }
@@ -489,7 +489,7 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
             if(internetConnectivityChecker.isConnected) {
                 handleLogin(b_signin)
             } else {
-                internetConnectivityChecker.showAlert();
+                internetConnectivityChecker.showAlert()
             }
         }
     }
@@ -529,7 +529,7 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
 
     fun openResendVerificationCode() {
         val intent = Intent(this, WebViewActivity::class.java)
-        intent.putExtra(URL_TO_OPEN, "$BASE_URL/resend/");
+        intent.putExtra(URL_TO_OPEN, "$BASE_URL/resend/")
         intent.putExtra(ACTIVITY_TITLE, "Resend Verification SMS")
         startActivity(intent)
     }
@@ -555,7 +555,7 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
                 finish()
             }
         } else if (requestCode == REQUEST_CODE_GOOGLE_SIGN_IN) {
-            val result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            val result = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
             if (result != null && result.isSuccess) {
                 //noinspection ConstantConditions
                 username = if (result.signInAccount?.givenName == null ||
@@ -572,15 +572,15 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
             } else if (result?.status?.statusCode == CommonStatusCodes.NETWORK_ERROR) {
                 showAlert(getString(R.string.no_internet_try_again))
             } else if (result?.status?.statusCode == CommonStatusCodes.DEVELOPER_ERROR) {
-                showAlert(getString(R.string.google_sign_in_wrong_hash));
+                showAlert(getString(R.string.google_sign_in_wrong_hash))
             } else if (result?.status?.statusCode == 12501) {
-                Log.e("Google sign in error", "Might be wrong app certificate SHA1");
-                showAlert(getString(R.string.something_went_wrong_please_try_after));
+                Log.e("Google sign in error", "Might be wrong app certificate SHA1")
+                showAlert(getString(R.string.something_went_wrong_please_try_after))
             } else {
-                Log.e("Google sign in error", result?.status.toString());
+                Log.e("Google sign in error", result?.status.toString())
             }
         } else {
-            callbackManager.onActivityResult(requestCode, resultCode, data);
+            callbackManager.onActivityResult(requestCode, resultCode, data)
         }
     }
 

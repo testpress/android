@@ -4,7 +4,7 @@ import `in`.testpress.testpress.BuildConfig.BASE_URL
 import `in`.testpress.testpress.Injector
 import `in`.testpress.testpress.R
 import `in`.testpress.testpress.TestpressApplication
-import `in`.testpress.testpress.authenticator.LoginActivity.REQUEST_CODE_REGISTER_USER
+import `in`.testpress.testpress.authenticator.LoginActivity.Companion.REQUEST_CODE_REGISTER_USER
 import `in`.testpress.testpress.core.TestpressService
 import `in`.testpress.testpress.models.InstituteSettingsDao
 import `in`.testpress.testpress.models.RegistrationErrorDetails
@@ -25,12 +25,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import butterknife.ButterKnife
-import butterknife.InjectView
-import butterknife.OnClick
 import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.gms.auth.api.phone.SmsRetriever
-import com.hbb20.CountryCodePicker
-import kotlinx.android.synthetic.main.code_verify_activity.*
 import kotlinx.android.synthetic.main.register_activity.*
 import kotlinx.android.synthetic.main.register_activity.et_username
 import kotlinx.android.synthetic.main.success_message_layout.*
@@ -102,6 +98,7 @@ class RegisterActivity: AppCompatActivity() {
             country_code_picker.setNumberAutoFormattingEnabled(false)
         }
         setTextWatchers()
+        setOnClickListeners()
     }
 
     private fun setTextWatchers() {
@@ -296,7 +293,15 @@ class RegisterActivity: AppCompatActivity() {
         return isValid
     }
 
-    @OnClick(R.id.b_register)
+    private fun setOnClickListeners() {
+        b_register.setOnClickListener {
+            register()
+        }
+        success_ok.setOnClickListener {
+            verificationMailSent()
+        }
+    }
+
     fun register() {
         val populated = populated(et_username) && populated(et_password) &&
                 populated(et_email) && populated(et_password_confirm) &&
@@ -336,8 +341,7 @@ class RegisterActivity: AppCompatActivity() {
         }
     }
 
-    @OnClick(R.id.success_ok)
-    fun verificationMailSent() {
+    private fun verificationMailSent() {
         finish()
     }
 

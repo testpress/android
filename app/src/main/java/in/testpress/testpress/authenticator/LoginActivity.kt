@@ -46,6 +46,7 @@ import com.facebook.login.LoginResult
 import com.github.kevinsawicki.wishlist.Toaster
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.auth.api.signin.GoogleSignInResult
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.GoogleApiClient
 import com.squareup.otto.Bus
@@ -60,27 +61,27 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
     companion object {
         const val PARAM_CONFIRM_CREDENTIALS = "confirmCredentials"
         const val PARAM_USERNAME = "username"
-        const val PARAM_AUTHTOKEN_TYPE = "authtokenType"
-
+        const val PARAM_AUTH_TOKEN_TYPE = "authTokenType"
         const val REQUEST_CODE_REGISTER_USER = 1111
         const val REQUEST_CODE_GOOGLE_SIGN_IN = 2222
-
+        const val GOOGLE_SIGN_IN_ERROR = 12501
+        const val CONNECTION_FAILURE = "CONNECTION_FAILURE"
+        const val MOBILE_VERIFICATION = "M"
+        const val EMAIL = "email"
         private lateinit var accountManager: AccountManager
     }
 
-    @Inject lateinit var testPressService: TestpressService
-
-    @Inject lateinit var bus: Bus
-
+    @Inject
+    lateinit var testPressService: TestpressService
+    @Inject
+    lateinit var bus: Bus
     private lateinit var authToken: String
     private var authTokenType: String? = null
     private var internetConnectivityChecker = InternetConnectivityChecker(this)
-
     private var confirmCredentials: Boolean? = null
     private var username: String? = null
     private var password: String? = null
     private var requestNewAccount = false
-
     private lateinit var callbackManager: CallbackManager
     private lateinit var googleApiClient: GoogleApiClient
     private lateinit var instituteSettingsDao: InstituteSettingsDao
@@ -89,24 +90,16 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
     override fun onCreate(bundle: Bundle?) {
         super.onCreate(bundle)
         Injector.inject(this)
-
-        accountManager = AccountManager.get(this)
+        accountManager = get(this)
         callbackManager = CallbackManager.Factory.create()
-
-        getDataFromIntent()
-
         requestNewAccount = (username == null)
-
         if (AccessToken.getCurrentAccessToken() != null) {
             LoginManager.getInstance().logOut()
         }
-
+        getDataFromIntent()
         setContentView(R.layout.login_activity)
-
         ButterKnife.inject(this)
-        UIUtils.setIndeterminateDrawable(this, pb_loading, 4)
-
-        setEditorActionListener()
+        UIUtils.setIndeterminateDrawable(this, progressLoading, 4)
         initializeViews()
         setTextChangedListener()
         initFacebookSignIn()
@@ -115,40 +108,41 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
         setLoginLabel(instituteSettings)
         setVisibilityResendVerificationSMS(instituteSettings)
         setOnClickListeners()
+        setEditorActionListener()
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        bus.register(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        bus.unregister(this)
     }
 
     private fun getDataFromIntent() {
         val intent = intent
         username = intent.getStringExtra(PARAM_USERNAME)
-        authTokenType = intent.getStringExtra(PARAM_AUTHTOKEN_TYPE)
+        authTokenType = intent.getStringExtra(PARAM_AUTH_TOKEN_TYPE)
         confirmCredentials = intent.getBooleanExtra(PARAM_CONFIRM_CREDENTIALS, false)
     }
 
-    private fun setEditorActionListener() {
-        et_password.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == IME_ACTION_SEND) {
-                signIn()
-                return@setOnEditorActionListener true
-            }
-            return@setOnEditorActionListener false
-        }
-    }
-
     private fun initializeViews() {
-        et_username.setSingleLine()
-        et_username.requestFocus()
-        et_password.typeface = Typeface.DEFAULT
-        et_password.transformationMethod = PasswordTransformationMethod()
-        or.typeface = TestpressSdk.getRubikMediumFont(this)
+        editTextUserName.setSingleLine()
+        editTextUserName.requestFocus()
+        editTextPassword.typeface = Typeface.DEFAULT
+        editTextPassword.transformationMethod = PasswordTransformationMethod()
+        textViewOr.typeface = TestpressSdk.getRubikMediumFont(this)
     }
 
     private fun setTextChangedListener() {
-        et_password.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                password_error.visibility = View.GONE
-                s?.let {
-                    password_textInput_layout.isPasswordVisibilityToggleEnabled = s.isNotEmpty()
+        editTextPassword.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(editable: Editable?) {
+                passwordErrorText.visibility = View.GONE
+                editable?.let {
+                    password_textInput_layout.isPasswordVisibilityToggleEnabled = it.isNotEmpty()
                 }
             }
 
@@ -160,31 +154,29 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
 
         })
 
-        et_username.addTextChangedListener(object : TextWatcher {
+        editTextUserName.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                username_error.visibility = View.GONE
-                if (et_username.text.toString().contains(" ")) {
-                    et_username.setText((et_username.text.toString().replace(" ", "")))
-                    et_username.text?.length?.let { et_username.setSelection(it) }
+                usernameErrorText.visibility = View.GONE
+                if (editTextUserName.text.toString().contains(" ")) {
+                    editTextUserName.setText((editTextUserName.text.toString().replace(" ", "")))
+                    editTextUserName.text?.length?.let { editTextUserName.setSelection(it) }
                 }
             }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
         })
     }
 
     private fun  initFacebookSignIn() {
-        fb_login_button.run {
-            fb_login_button.invalidate()
-            fb_login_button.setPermissions("email")
-            fb_login_button.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
+        facebookLoginButton.run {
+            facebookLoginButton.invalidate()
+            facebookLoginButton.setPermissions(EMAIL)
+            facebookLoginButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
                 override fun onSuccess(result: LoginResult?) {
-                    login_layout.visibility = View.GONE
+                    loginLayout.visibility = View.GONE
                     result?.accessToken?.userId?.let {
                         username = it
                     }
@@ -198,7 +190,7 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
                 }
 
                 override fun onError(error: FacebookException?) {
-                    if (error?.message?.contains("CONNECTION_FAILURE") == true) {
+                    if (error?.message?.contains(CONNECTION_FAILURE) == true) {
                         showAlert(getString(R.string.no_internet_try_again))
                     } else {
                         Log.e("Facebook sign in error", "check hashes")
@@ -244,45 +236,16 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
         }
     }
 
-    private fun setLoginLabel(instituteSettings: InstituteSettings) {
-        if (Strings.toString(getMenuItemName(R.string.label_username, instituteSettings)).isNotEmpty()) {
-            username_textInput_layout.hint = getMenuItemName(R.string.label_username, instituteSettings)
-        }
-
-        if (Strings.toString(getMenuItemName(R.string.label_password, instituteSettings)).isNotEmpty()) {
-            password_textInput_layout.hint = getMenuItemName(R.string.label_password, instituteSettings)
-        }
-    }
-
-    private fun setVisibilityResendVerificationSMS(instituteSettings: InstituteSettings) {
-        if (instituteSettings.verificationMethod == "M") {
-            b_resend_activation.visibility = View.VISIBLE
-        } else {
-            b_resend_activation.visibility = View.GONE
-        }
-    }
-
     private fun getInstituteSettings() {
-        pb_loading.visibility = View.VISIBLE
-        login_layout.visibility = View.GONE
+        progressLoading.visibility = View.VISIBLE
+        loginLayout.visibility = View.GONE
         object : SafeAsyncTask<InstituteSettings>() {
             override fun call(): InstituteSettings {
                 return testPressService.instituteSettings
             }
 
             override fun onException(exception: java.lang.Exception?) {
-                if (exception?.cause is IOException) {
-                    setEmptyText(R.string.network_error, R.string.no_internet_try_again,
-                            R.drawable.ic_error_outline_black_18dp)
-                } else {
-                    setEmptyText(R.string.network_error, R.string.try_after_sometime,
-                            R.drawable.ic_error_outline_black_18dp)
-                }
-                pb_loading.visibility = View.GONE
-                retry_button.setOnClickListener {
-                    empty_container.visibility = View.GONE
-                    getInstituteSettings()
-                }
+                setExceptionView(exception)
             }
 
             override fun onSuccess(instituteSettings: InstituteSettings?) {
@@ -293,10 +256,24 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
                     this@LoginActivity.instituteSettings = it
                 }
                 updateInstituteSpecificFields()
-                login_layout.visibility = View.VISIBLE
-                pb_loading.visibility = View.GONE
+                loginLayout.visibility = View.VISIBLE
+                progressLoading.visibility = View.GONE
             }
         }.execute()
+    }
+
+    private fun setExceptionView(exception: java.lang.Exception?) {
+        if (exception?.cause is IOException) {
+            setEmptyText(R.string.network_error, R.string.no_internet_try_again,
+                    R.drawable.ic_error_outline_black_18dp)
+        } else {
+            setEmptyText(R.string.network_error, R.string.try_after_sometime,
+                    R.drawable.ic_error_outline_black_18dp)
+        }
+        progressLoading.visibility = View.GONE
+        retry_button.setOnClickListener {
+           onRetryButtonClicked()
+        }
     }
 
     private fun setEmptyText(title: Int, description: Int, left: Int) {
@@ -304,6 +281,29 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
         empty_title.setText(title)
         empty_title.setCompoundDrawablesWithIntrinsicBounds(left, 0, 0, 0)
         empty_description.setText(description)
+    }
+
+    private fun onRetryButtonClicked() {
+        empty_container.visibility = View.GONE
+        getInstituteSettings()
+    }
+
+    private fun setLoginLabel(instituteSettings: InstituteSettings) {
+        if (Strings.toString(getMenuItemName(R.string.label_username, instituteSettings)).isNotEmpty()) {
+            usernameTextInputLayout.hint = getMenuItemName(R.string.label_username, instituteSettings)
+        }
+
+        if (Strings.toString(getMenuItemName(R.string.label_password, instituteSettings)).isNotEmpty()) {
+            password_textInput_layout.hint = getMenuItemName(R.string.label_password, instituteSettings)
+        }
+    }
+
+    private fun setVisibilityResendVerificationSMS(instituteSettings: InstituteSettings) {
+        if (instituteSettings.verificationMethod == MOBILE_VERIFICATION) {
+            TextViewResendVerification.visibility = View.VISIBLE
+        } else {
+            TextViewResendVerification.visibility = View.GONE
+        }
     }
 
     private fun authenticate(userId: String, accessToken: String,
@@ -331,7 +331,7 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
                     }
 
                     override fun onException(exception: TestpressException?) {
-                        login_layout.visibility = View.VISIBLE
+                        loginLayout.visibility = View.VISIBLE
                         if (exception?.isNetworkError == true) {
                             showAlert(getString(R.string.no_internet_try_again))
                         } else if (exception?.isClientError == true) {
@@ -365,7 +365,9 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
     }
 
     private fun finishLogin() {
-        val sharedPreferences = getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE)
+        val sharedPreferences = getSharedPreferences(
+                                Constants.GCM_PREFERENCE_NAME,
+                                Context.MODE_PRIVATE)
         sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply()
 
         CommonUtils.registerDevice(this, testPressService)
@@ -385,7 +387,7 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
         if (authTokenType != null && authTokenType == APPLICATION_ID) {
             navigateToWebViewActivity()
         } else {
-            navigateToMainActivity()
+            navigateToDeepLinkActivity()
         }
         finish()
     }
@@ -399,19 +401,20 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
         setResult(WebViewActivity.RESULT_OK, intent)
     }
 
-    private fun navigateToMainActivity() {
+    private fun navigateToDeepLinkActivity() {
         var intent = Intent(this, MainActivity::class.java)
         if (getIntent().getStringExtra(Constants.DEEP_LINK_TO) != null) {
-            when (getIntent().getStringExtra(Constants.DEEP_LINK_TO)) {
+            when (intent.getStringExtra(Constants.DEEP_LINK_TO)) {
                 Constants.DEEP_LINK_TO_POST -> {
-                    intent =  Intent(this, PostActivity::class.java)
+                    intent = Intent(this, PostActivity::class.java)
                     intent.putExtra(Constants.IS_DEEP_LINK, true)
-                    intent.putExtras(getIntent().extras)
+                    intent.extras?.let {
+                        intent.putExtras(it)
+                    }
                 }
                 else -> {
                     intent =  Intent(this, MainActivity::class.java)
                 }
-
             }
         }
         intent.flags = (Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -430,64 +433,48 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
     }
 
     private fun updateInstituteSpecificFields() {
-        ViewUtils.setGone(fb_login_button, !instituteSettings.facebookLoginEnabled)
-        ViewUtils.setGone(google_sign_in_button, !instituteSettings.googleLoginEnabled)
+        ViewUtils.setGone(facebookLoginButton, !instituteSettings.facebookLoginEnabled)
+        ViewUtils.setGone(googleSignInButton, !instituteSettings.googleLoginEnabled)
         ViewUtils.setGone(social_sign_in_buttons, !instituteSettings.facebookLoginEnabled &&
                 !instituteSettings.googleLoginEnabled)
-        ViewUtils.setGone(signup, !instituteSettings.allowSignup)
+        ViewUtils.setGone(signUpWithEmail, !instituteSettings.allowSignup)
     }
 
-
-    override fun onResume() {
-        super.onResume()
-        bus.register(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        bus.unregister(this)
-    }
 
     private fun populated(editText: EditText): Boolean {
         return editText.length() > 0
     }
 
-    @Subscribe
-    private fun onUnAuthorizedErrorEvent(unAuthorizedErrorEvent: UnAuthorizedErrorEvent) {
-        // Could not authorize for some reason.
-        Toaster.showLong(this, R.string.message_bad_credentials)
-    }
-
     private fun setOnClickListeners() {
-        b_signin.setOnClickListener {
+        buttonSignIn.setOnClickListener {
             signIn()
         }
-        signup.setOnClickListener {
+        signUpWithEmail.setOnClickListener {
             signUp()
         }
-        b_resend_activation.setOnClickListener {
+        TextViewResendVerification.setOnClickListener {
             openResendVerificationCode()
         }
-        forgot_password.setOnClickListener {
+        forgotPassword.setOnClickListener {
             verify()
         }
-        google_sign_in_button.setOnClickListener {
+        googleSignInButton.setOnClickListener {
             googleSignIn()
         }
     }
 
     fun signIn() {
-        if (!populated(et_username)) {
-            username_error.visibility = View.VISIBLE
-            username_error.text = getString(R.string.empty_input_error)
+        if (!populated(editTextUserName)) {
+            usernameErrorText.visibility = View.VISIBLE
+            usernameErrorText.text = getString(R.string.empty_input_error)
         }
-        if (!populated(et_password)) {
-            password_error.visibility = View.VISIBLE
-            password_error.text = getString(R.string.empty_input_error)
+        if (!populated(editTextPassword)) {
+            passwordErrorText.visibility = View.VISIBLE
+            passwordErrorText.text = getString(R.string.empty_input_error)
         }
-        if (populated(et_username) && populated(et_password)) {
+        if (populated(editTextUserName) && populated(editTextPassword)) {
             if(internetConnectivityChecker.isConnected) {
-                handleLogin(b_signin)
+                handleLogin(buttonSignIn)
             } else {
                 internetConnectivityChecker.showAlert()
             }
@@ -496,10 +483,10 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
 
     private fun handleLogin(view: View) {
         if (requestNewAccount) {
-            username = et_username.text.toString()
+            username = editTextUserName.text.toString()
         }
 
-        password = et_password.text.toString()
+        password = editTextPassword.text.toString()
 
         username?.let { userName ->
             password?.let { password ->
@@ -510,21 +497,29 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
 
     fun signUp() {
         if(instituteSettings.customRegistrationEnabled != null && instituteSettings.customRegistrationEnabled) {
-            val intent = Intent(this@LoginActivity, WebViewActivity::class.java)
-            intent.putExtra(ACTIVITY_TITLE, "Register")
-            intent.putExtra(SHOW_LOGOUT, "false")
-            intent.putExtra(URL_TO_OPEN, "$BASE_URL/register/")
-            startActivity(intent)
+            navigateToCustomRegistration()
         }
         else if(internetConnectivityChecker.isConnected) {
-            val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
-            getIntent()?.extras?.let {
-                intent.putExtras(it)
-            }
-            startActivityForResult(intent, REQUEST_CODE_REGISTER_USER)
+            navigateToRegisterActivity()
         } else {
             internetConnectivityChecker.showAlert()
         }
+    }
+
+    private fun navigateToCustomRegistration() {
+        val intent = Intent(this@LoginActivity, WebViewActivity::class.java)
+        intent.putExtra(ACTIVITY_TITLE, "Register")
+        intent.putExtra(SHOW_LOGOUT, "false")
+        intent.putExtra(URL_TO_OPEN, "$BASE_URL/register/")
+        startActivity(intent)
+    }
+
+    private fun navigateToRegisterActivity() {
+        val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
+        getIntent()?.extras?.let {
+            intent.putExtras(it)
+        }
+        startActivityForResult(intent, REQUEST_CODE_REGISTER_USER)
     }
 
     fun openResendVerificationCode() {
@@ -548,6 +543,22 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
         startActivityForResult(signInIntent, REQUEST_CODE_GOOGLE_SIGN_IN)
     }
 
+    private fun setEditorActionListener() {
+        editTextPassword.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == IME_ACTION_SEND) {
+                signIn()
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
+        }
+    }
+
+    @Subscribe
+    private fun onUnAuthorizedErrorEvent(unAuthorizedErrorEvent: UnAuthorizedErrorEvent) {
+        // Could not authorize for some reason.
+        Toaster.showLong(this, R.string.message_bad_credentials)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_REGISTER_USER) {
@@ -558,12 +569,7 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
             val result = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
             if (result != null && result.isSuccess) {
                 //noinspection ConstantConditions
-                username = if (result.signInAccount?.givenName == null ||
-                        result.signInAccount!!.givenName!!.isEmpty()) {
-                    result.signInAccount?.givenName.toString()
-                } else {
-                    result.signInAccount!!.email.toString()
-                }
+                username = getUserNameFromGoogleSignInResult(result)
                 result.signInAccount?.idToken?.let {idToken ->
                     result.signInAccount?.id?.let { id ->
                         authenticate(id, idToken, TestpressSdk.Provider.GOOGLE)
@@ -573,7 +579,7 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
                 showAlert(getString(R.string.no_internet_try_again))
             } else if (result?.status?.statusCode == CommonStatusCodes.DEVELOPER_ERROR) {
                 showAlert(getString(R.string.google_sign_in_wrong_hash))
-            } else if (result?.status?.statusCode == 12501) {
+            } else if (result?.status?.statusCode == GOOGLE_SIGN_IN_ERROR) {
                 Log.e("Google sign in error", "Might be wrong app certificate SHA1")
                 showAlert(getString(R.string.something_went_wrong_please_try_after))
             } else {
@@ -581,6 +587,15 @@ class LoginActivity: ActionBarAccountAuthenticatorActivity() {
             }
         } else {
             callbackManager.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    private fun getUserNameFromGoogleSignInResult(result: GoogleSignInResult): String {
+        return if (result.signInAccount?.givenName == null ||
+                result.signInAccount!!.givenName!!.isEmpty()) {
+            result.signInAccount?.givenName.toString()
+        } else {
+            result.signInAccount!!.email.toString()
         }
     }
 

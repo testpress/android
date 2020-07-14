@@ -92,6 +92,7 @@
     <string name="activate_incomplete_title">Activation problem</string>
     <string name="activate_incomplete_message">It seems that the activation key is invalid. Please check the url again.</string>
     <string name="login">Login</string>
+    <string name="verify_phone">Verify Phone</string>
 
     <string name="comments_title">Comments</string>
     <string name="write_a_comment">Write a comment...</string>

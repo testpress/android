@@ -11,9 +11,9 @@
         android:layout_height="wrap_content">
 
         <ProgressBar
+            android:id="@+id/progressLoading"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:id="@+id/pb_loading"
             android:indeterminate="true"
             android:visibility="gone"
             android:layout_centerInParent="true"/>
@@ -21,7 +21,7 @@
         <include layout="@layout/empty_view" />
 
         <LinearLayout
-            android:id="@+id/login_layout"
+            android:id="@+id/loginLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="24dp"
@@ -45,13 +45,13 @@
                 android:layout_marginBottom="10dp"
                 android:orientation="vertical">
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/username_textInput_layout"
+                    android:id="@+id/usernameTextInputLayout"
                     android:layout_width="match_parent"
                     android:paddingBottom="2dp"
                     android:layout_height="@dimen/input_height"
                     android:theme="@style/TextLabel">
                     <androidx.appcompat.widget.AppCompatEditText
-                        android:id="@+id/et_username"
+                        android:id="@+id/editTextUserName"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/input_height"
                         android:maxLines="1"
@@ -60,7 +60,7 @@
                         android:hint="@string/label_username" />
                 </com.google.android.material.textfield.TextInputLayout>
                 <TextView
-                    android:id="@+id/username_error"
+                    android:id="@+id/usernameErrorText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/InputError"/>
@@ -79,7 +79,7 @@
                 android:theme="@style/TextLabel"
                 app:passwordToggleEnabled="true">
                 <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/et_password"
+                    android:id="@+id/editTextPassword"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/input_height"
                     android:fontFamily="sans-serif"
@@ -90,7 +90,7 @@
                     android:hint="@string/label_password"/>
             </com.google.android.material.textfield.TextInputLayout>
             <TextView
-                android:id="@+id/password_error"
+                android:id="@+id/passwordErrorText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/InputError"/>
@@ -98,7 +98,7 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 style="@style/Button"
-                android:id="@+id/b_signin"
+                android:id="@+id/buttonSignIn"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginTop="10dp"
@@ -112,7 +112,7 @@
                 android:layout_marginTop="15dp" >
 
                 <TextView
-                    android:id="@+id/forgot_password"
+                    android:id="@+id/forgotPassword"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_width="wrap_content"
@@ -121,10 +121,10 @@
                     android:text="@string/forgot_password" />
 
                 <TextView
-                    android:id="@+id/b_resend_activation"
+                    android:id="@+id/TextViewResendVerification"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/forgot_password"
+                    android:layout_below="@id/forgotPassword"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentLeft="true"
                     android:layout_marginTop="5dp"
@@ -132,9 +132,9 @@
                     android:textColor="@color/primary" />
 
                 <TextView
+                    android:id="@+id/signUpWithEmail"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
-                    android:id="@+id/signup"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -164,7 +164,7 @@
                         android:background="#ccc" />
 
                     <TextView
-                        android:id="@+id/or"
+                        android:id="@+id/textViewOr"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -184,7 +184,7 @@
 
                 <com.facebook.login.widget.LoginButton
                     xmlns:facebook="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/fb_login_button"
+                    android:id="@+id/facebookLoginButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="12dp"
@@ -196,7 +196,7 @@
                     facebook:com_facebook_login_text="@string/login_with_facebook" />
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/google_sign_in_button"
+                    android:id="@+id/googleSignInButton"
                     android:layout_marginTop="10dp"
                     android:text="@string/login_with_google"
                     android:textAllCaps="false"

@@ -8,9 +8,7 @@ import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
 import in.testpress.testpress.util.Ln;
-
 import static android.accounts.AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE;
 import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
 import static android.accounts.AccountManager.KEY_ACCOUNT_TYPE;
@@ -18,7 +16,7 @@ import static android.accounts.AccountManager.KEY_AUTHTOKEN;
 import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
 import static android.accounts.AccountManager.KEY_INTENT;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
-import static in.testpress.testpress.authenticator.LoginActivity.PARAM_AUTHTOKEN_TYPE;
+import static in.testpress.testpress.authenticator.LoginActivity.PARAM_AUTH_TOKEN_TYPE;
 
 
 public class TestpressAccountAuthenticator extends AbstractAccountAuthenticator {
@@ -67,7 +65,7 @@ public class TestpressAccountAuthenticator extends AbstractAccountAuthenticator 
                              final Bundle options) throws NetworkErrorException {
         //TODO Restrict to one account
         final Intent intent = new Intent(context, LoginActivity.class);
-        intent.putExtra(PARAM_AUTHTOKEN_TYPE, authTokenType);
+        intent.putExtra(PARAM_AUTH_TOKEN_TYPE, authTokenType);
         intent.putExtra(KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
 
         final Bundle bundle = new Bundle();

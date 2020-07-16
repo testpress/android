@@ -28,7 +28,8 @@ class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
 
     private static final int[][] webLinks = {
             { R.string.babapedia_2020 , R.drawable.book, R.string.babapedia_url_2020 },
-            { R.string.ilp_2020, R.drawable.paper_airplane, R.string.ilp_url_2020}
+            { R.string.ilp_2020, R.drawable.paper_airplane, R.string.ilp_url_2020},
+            { R.string.ilp_2021, R.drawable.paper_airplane, R.string.ilp_url_2021}
     };
 
     private Activity mActivity;

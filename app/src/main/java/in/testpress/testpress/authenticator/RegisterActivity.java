@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.auth.api.phone.SmsRetriever;
 import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
@@ -23,15 +22,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.hbb20.CountryCodePicker;
-
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.inject.Inject;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -47,10 +43,9 @@ import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.RegistrationErrorDetails;
 import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.SafeAsyncTask;
-import in.testpress.testpress.util.PhoneNumberValidator;
+import in.testpress.testpress.util.Validator;
 import in.testpress.util.EventsTrackerFacade;
 import retrofit.RetrofitError;
-
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.authenticator.LoginActivity.REQUEST_CODE_REGISTER_USER;
@@ -303,9 +298,9 @@ public class RegisterActivity extends AppCompatActivity {
                 boolean isPhoneNumberValid;
 
                 if (isTwilioEnabled) {
-                    isPhoneNumberValid = PhoneNumberValidator.validateInternationalPhoneNumber(countryCodePicker);
+                    isPhoneNumberValid = Validator.validateInternationalPhoneNumber(countryCodePicker);
                 } else {
-                    isPhoneNumberValid = PhoneNumberValidator.validatePhoneNumber(phoneText.getText().toString().trim());
+                    isPhoneNumberValid = Validator.validatePhoneNumber(phoneText.getText().toString().trim());
                 }
 
                 if (populated(phoneText) && !isPhoneNumberValid) {

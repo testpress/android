@@ -3,6 +3,7 @@ package in.testpress.testpress.util;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import static in.testpress.testpress.util.Validator.isUsernameValid;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -10,57 +11,57 @@ import static org.junit.Assert.assertTrue;
 public class UserNameValidatorTests {
 
     @Test
-    public void usernameValidator_AlphaNumericUsername_ReturnsTrue() {
-        assertTrue(Validator.isUsernameValid("name05"));
+    public void alphaNumericUsernameReturnsTrue() {
+        assertTrue(isUsernameValid("name05"));
     }
 
     @Test
-    public void usernameValidator_OnlyAlphabetsUsername_ReturnsTrue() {
-        assertTrue(Validator.isUsernameValid("name"));
+    public void onlyAlphabetsUsernameReturnsTrue() {
+        assertTrue(isUsernameValid("name"));
     }
 
     @Test
-    public void usernameValidator_UsernameWithHyphen_ReturnsTrue() {
-        assertTrue(Validator.isUsernameValid("name-name"));
+    public void usernameWithHyphenReturnsTrue() {
+        assertTrue(isUsernameValid("name-name"));
     }
 
     @Test
-    public void usernameValidator_UsernameWithPeriod_ReturnsTrue() {
-        assertTrue(Validator.isUsernameValid("name.name"));
+    public void usernameWithPeriodReturnsTrue() {
+        assertTrue(isUsernameValid("name.name"));
     }
 
     @Test
-    public void usernameValidator_UsernameWithPlus_ReturnsTrue() {
-        assertTrue(Validator.isUsernameValid("+name"));
+    public void usernameWithPlusReturnsTrue() {
+        assertTrue(isUsernameValid("+name"));
     }
 
     @Test
-    public void usernameValidator_UsernameWithUnderscore_ReturnsTrue() {
-        assertTrue(Validator.isUsernameValid("name_05"));
+    public void usernameWithUnderscoreReturnsTrue() {
+        assertTrue(isUsernameValid("name_05"));
     }
 
     @Test
-    public void usernameValidator_UsernameWithAtSign_ReturnsTrue() {
-        assertTrue(Validator.isUsernameValid("name@s"));
+    public void usernameWithAtSignReturnsTrue() {
+        assertTrue(isUsernameValid("name@s"));
     }
 
     @Test
-    public void usernameValidator_UsernameWithAsterisk_ReturnsFalse() {
-        assertFalse(Validator.isUsernameValid("name*"));
+    public void usernameWithAlphaNumericAndSpecialCharactersReturnsTrue() {
+        assertTrue(isUsernameValid("name@123.s+76-sa0"));
     }
 
     @Test
-    public void usernameValidator_UsernameWithSpecialCharacter_ReturnsFalse() {
-        assertFalse(Validator.isUsernameValid("^name%"));
+    public void usernameWithAsteriskReturnsFalse() {
+        assertFalse(isUsernameValid("name*"));
     }
 
     @Test
-    public void usernameValidator_UsernameWithBraces_ReturnsFalse() {
-        assertFalse(Validator.isUsernameValid("[name)"));
+    public void usernameWithSpecialCharacterReturnsFalse() {
+        assertFalse(isUsernameValid("^name%"));
     }
 
     @Test
-    public void usernameValidator_UsernameWithAlphaNumericAndSpecialCharacters_ReturnsTrue() {
-        assertTrue(Validator.isUsernameValid("name@123.s+76-sa0"));
+    public void usernameWithBracketsReturnsFalse() {
+        assertFalse(isUsernameValid("[name)"));
     }
 }

@@ -3,44 +3,45 @@ package in.testpress.testpress.util;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import static org.junit.Assert.assertEquals;
+import static in.testpress.testpress.util.Validator.validatePhoneNumber;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 
 @RunWith(PowerMockRunner.class)
 public class PhoneNumberValidatorTests {
     @Test
-    public void ValidatePhoneNumber_ShouldReturnTrue_ForValidPhoneNumber() {
-        assertEquals(true, PhoneNumberValidator.validatePhoneNumber("1234567890"));
-        assertEquals(true, PhoneNumberValidator.validatePhoneNumber("9900990099"));
+    public void validPhoneNumberReturnsTrue() {
+        assertTrue(validatePhoneNumber("1234567890"));
+        assertTrue(validatePhoneNumber("9900990099"));
     }
 
     @Test
-    public void ValidatePhoneNumber_ShouldReturnFalse_ForPhoneNumberLengthLessThanTen() {
-        assertEquals(false, PhoneNumberValidator.validatePhoneNumber("123456789"));
+    public void phoneNumberLengthLessThanTenReturnsFalse() {
+        assertFalse(validatePhoneNumber("123456789"));
     }
 
     @Test
-    public void ValidatePhoneNumber_ShouldReturnFalse_ForPhoneNumberLengthGreaterThanTen() {
-        assertEquals(false, PhoneNumberValidator.validatePhoneNumber("12345678901"));
+    public void phoneNumberLengthGreaterThanTenReturnsFalse() {
+        assertFalse(validatePhoneNumber("12345678901"));
     }
 
     @Test
-    public void ValidatePhoneNumber_ShouldReturnFalse_ForPhoneNumberContainingCharacter() {
-        assertEquals(false, PhoneNumberValidator.validatePhoneNumber("12345a7890"));
-        assertEquals(false, PhoneNumberValidator.validatePhoneNumber("123456789q"));
-        assertEquals(false, PhoneNumberValidator.validatePhoneNumber("w234567890"));
+    public void phoneNumberContainingCharacterReturnsFalse() {
+        assertFalse(validatePhoneNumber("12345a7890"));
+        assertFalse(validatePhoneNumber("123456789q"));
+        assertFalse(validatePhoneNumber("w234567890"));
     }
 
     @Test
-    public void ValidatePhoneNumber_ShouldReturnFalse_ForPhoneNumberContainingSpecialCharacter() {
-        assertEquals(false, PhoneNumberValidator.validatePhoneNumber("12345@7890"));
-        assertEquals(false, PhoneNumberValidator.validatePhoneNumber("123457890_"));
-        assertEquals(false, PhoneNumberValidator.validatePhoneNumber("!123457890"));
+    public void phoneNumberContainingSpecialCharacterReturnsFalse() {
+        assertFalse(validatePhoneNumber("12345@7890"));
+        assertFalse(validatePhoneNumber("123457890_"));
+        assertFalse(validatePhoneNumber("!123457890"));
     }
 
     @Test
-    public void ValidatePhoneNumber_ShouldReturnFalse_ForPhoneNumberStartingWithZero() {
-        assertEquals(false, PhoneNumberValidator.validatePhoneNumber("0234567891"));
+    public void phoneNumberStartingWithZeroReturnsFalse() {
+        assertFalse(validatePhoneNumber("0234567891"));
     }
 }

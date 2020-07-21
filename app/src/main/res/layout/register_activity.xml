@@ -158,10 +158,12 @@
                 android:orientation="vertical">
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/passwordInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/input_height"
                     android:layout_marginTop="8dp"
-                    android:theme="@style/TextLabel">
+                    android:theme="@style/TextLabel"
+                    app:passwordToggleEnabled="false">
 
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/editTextPassword"
@@ -192,11 +194,13 @@
                 android:orientation="vertical">
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/confirmPasswordInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/input_height"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:theme="@style/TextLabel">
+                    android:theme="@style/TextLabel"
+                    app:passwordToggleEnabled="false">
 
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/editTextConfirmPassword"

@@ -150,7 +150,7 @@
     <string name="create_post">Create Post</string>
     <string name="resend_verification_sms">Resend Verification SMS</string>
     <string name="empty_input_error">This field cannot be empty.</string>
-    <string name="username_error">This field can contain only lowercase alphabets and numbers.</string>
+    <string name="username_error">This value may contain only letters, numbers and @/./+/-/_ characters.</string>
     <string name="email_error">Please enter a valid email address</string>
     <string name="phone_number_error">Please enter a valid mobile number</string>
     <string name="password_error">Password should contain at least 6 characters</string>

@@ -8,7 +8,12 @@ import `in`.testpress.testpress.models.RegistrationErrorDetails
 import `in`.testpress.testpress.models.RegistrationSuccessResponse
 import `in`.testpress.testpress.ui.utils.ShowProgressUtil.progressDialog
 import `in`.testpress.testpress.ui.utils.ShowProgressUtil.showProgressDialog
-import `in`.testpress.testpress.util.*
+import `in`.testpress.testpress.util.InternetConnectivityChecker
+import `in`.testpress.testpress.util.PhoneNumberValidator
+import `in`.testpress.testpress.util.SafeAsyncTask
+import `in`.testpress.testpress.util.TextChangeUtil.hideErrorMessageOnTextChange
+import `in`.testpress.testpress.util.TextChangeUtil.showPasswordToggleOnTextChange
+import `in`.testpress.testpress.util.Validator
 import `in`.testpress.testpress.viewmodels.RegisterViewModel
 import `in`.testpress.util.EventsTrackerFacade
 import android.content.Intent
@@ -47,7 +52,7 @@ class RegisterActivity : AppCompatActivity() {
         Injector.inject(this)
         initViewModel()
         getVerificationMethod()
-        setPhoneVerificationVisibility()
+        setViewVisibility()
         setTextWatchers()
         initListeners()
     }
@@ -74,6 +79,11 @@ class RegisterActivity : AppCompatActivity() {
         isTwilioEnabled = viewModel.isTwilioEnabled
     }
 
+    private fun setViewVisibility() {
+        setPhoneVerificationVisibility()
+        setPasswordToggleVisibility()
+    }
+
     private fun setPhoneVerificationVisibility() {
         if (verificationMethod == VerificationMethod.MOBILE) {
             phoneLayout.visibility = View.VISIBLE
@@ -95,6 +105,11 @@ class RegisterActivity : AppCompatActivity() {
         countryCodePicker.setNumberAutoFormattingEnabled(false)
     }
 
+    private fun setPasswordToggleVisibility() {
+        showPasswordToggleOnTextChange(editTextPassword, passwordErrorText, passwordInputLayout)
+        showPasswordToggleOnTextChange(editTextConfirmPassword, confirmPasswordErrorText, confirmPasswordInputLayout)
+    }
+
     private fun setTextWatchers() {
         val editTextMap = Hashtable<EditText, TextView>()
         editTextMap[editTextUsername] = usernameErrorText
@@ -103,7 +118,7 @@ class RegisterActivity : AppCompatActivity() {
         editTextMap[editTextEmail] = emailErrorText
         editTextMap[editTextPhone] = phoneErrorText
         for (editText in editTextMap.keys()) {
-            editTextMap[editText]?.let { TextChangeUtil().hideErrorMessageOnTextChange(editText, it) }
+            editTextMap[editText]?.let { hideErrorMessageOnTextChange(editText, it) }
         }
     }
 

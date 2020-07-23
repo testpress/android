@@ -65,7 +65,7 @@ public class SplashScreenActivity extends Activity {
 
             @Override
             public void run() {
-                deeplinkHandler.handleDeepLinkUrl(getIntent().getData());
+                deeplinkHandler.handleDeepLinkUrl(getIntent().getData(), true);
             }
         }, SPLASH_TIME_OUT);
     }
@@ -124,7 +124,7 @@ public class SplashScreenActivity extends Activity {
                 // Go to home if user pressed home button & no other data passed in result intent
                 gotoHome();
             } else {
-                finish();
+                gotoHome();
             }
         }
     }

@@ -27,9 +27,9 @@ import in.testpress.util.ImageUtils;
 class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
 
     private static final int[][] webLinks = {
+            { R.string.ilp_2021, R.drawable.man_in_hands, R.string.ilp_url_2021},
             { R.string.babapedia_2020 , R.drawable.book, R.string.babapedia_url_2020 },
-            { R.string.ilp_2020, R.drawable.paper_airplane, R.string.ilp_url_2020},
-            { R.string.ilp_2021, R.drawable.paper_airplane, R.string.ilp_url_2021}
+            { R.string.ilp_2020, R.drawable.paper_airplane, R.string.ilp_url_2020}
     };
 
     private Activity mActivity;
@@ -82,27 +82,8 @@ class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         final ViewHolder holder = (ViewHolder) viewHolder;
-        if (mCourses.size() > position) {
-            final Course course = mCourses.get(position);
-            holder.courseTitle.setText(course.getTitle());
-            if (course.getImage() == null || course.getImage().isEmpty()) {
-                holder.thumbnailImage.setVisibility(View.GONE);
-            } else {
-                holder.thumbnailImage.setVisibility(View.VISIBLE);
-                mImageLoader.displayImage(course.getImage(), holder.thumbnailImage, mOptions);
-            }
-            holder.progressBarLayout.setVisibility(View.GONE);
-            setTextToTextView(course.getExternal_link_label(), holder.externalLinkTitle);
-            toggleTextViewVisibility(!course.isCourseForRegistration(), holder.externalLinkTitle);
-            holder.courseItemLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //noinspection ConstantConditions
-                    openCourseContentsOrExternalLink(mActivity, course, !course.isCourseForRegistration());
-                }
-            });
-        } else {
-            final int webLinkPosition = position - mCourses.size();
+        if (position < webLinks.length) {
+            final int webLinkPosition = position;
             holder.courseTitle.setText(webLinks[webLinkPosition][0]);
             holder.thumbnailImage.setVisibility(View.VISIBLE);
             holder.thumbnailImage.setImageResource(webLinks[webLinkPosition][1]);
@@ -118,6 +99,25 @@ class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
                             mActivity.getString(webLinks[webLinkPosition][2]));
 
                     mActivity.startActivity(intent);
+                }
+            });
+        } else {
+            final Course course = mCourses.get(position - webLinks.length);
+            holder.courseTitle.setText(course.getTitle());
+            if (course.getImage() == null || course.getImage().isEmpty()) {
+                holder.thumbnailImage.setVisibility(View.GONE);
+            } else {
+                holder.thumbnailImage.setVisibility(View.VISIBLE);
+                mImageLoader.displayImage(course.getImage(), holder.thumbnailImage, mOptions);
+            }
+            holder.progressBarLayout.setVisibility(View.GONE);
+            setTextToTextView(course.getExternal_link_label(), holder.externalLinkTitle);
+            toggleTextViewVisibility(!course.isCourseForRegistration(), holder.externalLinkTitle);
+            holder.courseItemLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //noinspection ConstantConditions
+                    openCourseContentsOrExternalLink(mActivity, course, !course.isCourseForRegistration());
                 }
             });
         }

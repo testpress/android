@@ -70,8 +70,7 @@ import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.testpress.util.UpdateAppDialogManager;
-import io.sentry.Sentry;
-import io.sentry.android.AndroidSentryClientFactory;
+import io.sentry.android.core.SentryAndroid;
 
 import static in.testpress.testpress.BuildConfig.ALLOW_ANONYMOUS_USER;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
@@ -421,7 +420,12 @@ public class MainActivity extends TestpressFragmentActivity {
         this.mInstituteSettings = instituteSettings;
         isUserAuthenticated = CommonUtils.isUserAuthenticated(this);
         setUpNavigationDrawer();
-        Sentry.init(instituteSettings.getAndroidSentryDns(), new AndroidSentryClientFactory(this));
+        SentryAndroid.init(
+                this,
+                options -> {
+                    options.setDsn(instituteSettings.getAndroidSentryDns());
+                    options.setEnableSessionTracking(true);
+                });
         //noinspection ConstantConditions
         if (!isUserAuthenticated && !ALLOW_ANONYMOUS_USER) {
             // Show login screen if user not logged in else update institute settings in TestpressSDK

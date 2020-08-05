@@ -120,7 +120,6 @@ public class MainActivity extends TestpressFragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         ButterKnife.inject(this);
-        Sentry.init("https://10326980de2149d3b91cb628d7c3da36@sentry.testpress.in/3", new AndroidSentryClientFactory(this));
 
         if (savedInstanceState != null) {
             mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM);
@@ -422,6 +421,7 @@ public class MainActivity extends TestpressFragmentActivity {
         this.mInstituteSettings = instituteSettings;
         isUserAuthenticated = CommonUtils.isUserAuthenticated(this);
         setUpNavigationDrawer();
+        Sentry.init(instituteSettings.getAndroidSentryDns(), new AndroidSentryClientFactory(this));
         //noinspection ConstantConditions
         if (!isUserAuthenticated && !ALLOW_ANONYMOUS_USER) {
             // Show login screen if user not logged in else update institute settings in TestpressSDK

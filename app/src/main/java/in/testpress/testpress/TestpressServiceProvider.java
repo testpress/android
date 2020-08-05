@@ -94,7 +94,8 @@ public class TestpressServiceProvider {
                         .setCooloffTime(instituteSettings.getCooloffTime())
                         .setStoreLabel(instituteSettings.getStoreLabel())
                         .setAppToolbarLogo(instituteSettings.getAppToolbarLogo())
-                        .setAppShareLink(instituteSettings.getAppShareLink());
+                        .setAppShareLink(instituteSettings.getAppShareLink())
+                        .setServerTime(instituteSettings.serverTime());
                 appLink = instituteSettings.getAppShareLink();
             }
             settings.setAppShareText(SHARE_MESSAGE + activity.getString(R.string.get_it_at) + appLink);

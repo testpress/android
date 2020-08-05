@@ -188,7 +188,6 @@ public class DashboardFragment extends Fragment implements
         hideShimmer();
         if (exception != null) {
             this.exception = exception;
-            showError(getErrorMessage(exception));
             getLoaderManager().destroyLoader(loader.getId());
             adapter.setResponse(getDashboardDataPreferences(getContext()));
             return;
@@ -204,10 +203,6 @@ public class DashboardFragment extends Fragment implements
     public void onResume() {
         super.onResume();
         refresh();
-    }
-
-    private void showError(final int message) {
-        Toaster.showLong(getActivity(), message);
     }
 
     private void setEmptyText() {

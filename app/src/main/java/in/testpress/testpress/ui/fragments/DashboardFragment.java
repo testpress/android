@@ -1,5 +1,8 @@
 package in.testpress.testpress.ui.fragments;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,7 +42,10 @@ import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
 import in.testpress.testpress.ui.ThrowableLoader;
 import in.testpress.testpress.ui.adapters.DashboardAdapter;
+import io.sentry.core.Sentry;
+import io.sentry.core.protocol.User;
 
+import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.util.PreferenceManager.getDashboardDataPreferences;
 import static in.testpress.testpress.util.PreferenceManager.setDashboardData;
 
@@ -78,6 +84,17 @@ public class DashboardFragment extends Fragment implements
         Injector.inject(this);
         super.onCreate(savedInstanceState);
         initLoader();
+        setUsernameInSentry();
+    }
+
+    private void setUsernameInSentry() {
+        AccountManager manager = (AccountManager) getActivity().getSystemService(Context.ACCOUNT_SERVICE);
+        Account[] account = manager.getAccountsByType(APPLICATION_ID);
+        if (account.length > 0) {
+            User user = new User();
+            user.setUsername(account[0].name);
+            Sentry.setUser(user);
+        }
     }
 
     @Override

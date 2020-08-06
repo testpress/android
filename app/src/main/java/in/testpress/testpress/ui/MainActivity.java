@@ -81,28 +81,19 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private static final String SELECTED_ITEM = "selectedItem";
 
-    @Inject
-    protected TestpressServiceProvider serviceProvider;
-    @Inject
-    protected TestpressService testpressService;
-    @Inject
-    protected LogoutService logoutService;
-    @InjectView(R.id.empty_container)
-    LinearLayout emptyView;
-    @InjectView(R.id.empty_title)
-    TextView emptyTitleView;
-    @InjectView(R.id.empty_description)
-    TextView emptyDescView;
-    @InjectView(R.id.retry_button)
-    Button retryButton;
-    @InjectView(R.id.coordinator_layout)
-    CoordinatorLayout coordinatorLayout;
-    @InjectView(R.id.progressbar)
-    RelativeLayout progressBarLayout;
+    @Inject protected TestpressServiceProvider serviceProvider;
+    @Inject protected TestpressService testpressService;
+    @Inject protected LogoutService logoutService;
+    @InjectView(R.id.empty_container) LinearLayout emptyView;
+    @InjectView(R.id.empty_title) TextView emptyTitleView;
+    @InjectView(R.id.empty_description) TextView emptyDescView;
+    @InjectView(R.id.retry_button) Button retryButton;
+
+    @InjectView(R.id.coordinator_layout) CoordinatorLayout coordinatorLayout;
+    @InjectView(R.id.progressbar) RelativeLayout progressBarLayout;
     @InjectView(R.id.viewpager)
     NonSwipeableViewPager viewPager;
-    @InjectView(R.id.grid)
-    GridView grid;
+    @InjectView(R.id.grid) GridView grid;
     @InjectView(R.id.drawer_layout)
     DrawerLayout drawer;
     @InjectView(R.id.navigation_view)
@@ -131,6 +122,7 @@ public class MainActivity extends TestpressFragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         ButterKnife.inject(this);
+
         initializeViewModel();
         if (savedInstanceState != null) {
             mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM);
@@ -275,13 +267,13 @@ public class MainActivity extends TestpressFragmentActivity {
         hideMenuItemsForUnauthenticatedUser(navigationView.getMenu());
         final HandleMainMenu handleMainMenu = new HandleMainMenu(MainActivity.this, serviceProvider);
         navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        handleMainMenu.handleMenuOptionClick(menuItem.getItemId());
-                        return true;
-                    }
-                });
+            new NavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(MenuItem menuItem) {
+                    handleMainMenu.handleMenuOptionClick(menuItem.getItemId());
+                    return true;
+                }
+        });
     }
 
     private void hideMenuItemsForUnauthenticatedUser(Menu menu) {
@@ -529,7 +521,7 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             protected void onSuccess(final Update update) {
                 progressBarLayout.setVisibility(View.GONE);
-                if (update.getUpdateRequired()) {
+                if(update.getUpdateRequired()) {
                     if (update.getForce()) {
                         UpdateAppDialogManager
                                 .showDialog(MainActivity.this, true, update.getMessage());
@@ -689,12 +681,12 @@ public class MainActivity extends TestpressFragmentActivity {
         }.execute();
     }
 
-    public void hideMainActivityContents() {
+    public void hideMainActivityContents(){
         grid.setVisibility(View.GONE);
         viewPager.setVisibility(View.GONE);
     }
 
-    public void showMainActivityContents() {
+    public void showMainActivityContents(){
 
         if (isInitScreenCalledOnce) {
             viewPager.setVisibility(View.VISIBLE);

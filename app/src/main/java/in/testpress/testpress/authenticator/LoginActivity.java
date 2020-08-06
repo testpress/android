@@ -297,8 +297,10 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             updateInstituteSpecificFields();
         }
 
-        setLoginLabel(instituteSettings);
-        setVisibilityResendVerificationSMS(instituteSettings);
+       if (instituteSettings != null) {
+           setLoginLabel(instituteSettings);
+           setVisibilityResendVerificationSMS(instituteSettings);
+       }
     }
 
     public void setLoginLabel(InstituteSettings instituteSettings) {

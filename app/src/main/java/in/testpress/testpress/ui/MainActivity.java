@@ -7,44 +7,42 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.view.GravityCompat;
-import androidx.viewpager.widget.ViewPager;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
-
 import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager.widget.ViewPager;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.navigation.NavigationView;
-
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
-import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
 import in.testpress.course.fragments.DownloadsFragment;
 import in.testpress.exam.ui.view.NonSwipeableViewPager;
@@ -60,6 +58,7 @@ import in.testpress.testpress.models.CheckPermission;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
+import in.testpress.testpress.models.ProfileDetails;
 import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.models.Update;
 import in.testpress.testpress.ui.fragments.DashboardFragment;
@@ -71,7 +70,6 @@ import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.testpress.util.UpdateAppDialogManager;
 import io.sentry.android.core.SentryAndroid;
-
 import static in.testpress.testpress.BuildConfig.ALLOW_ANONYMOUS_USER;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
@@ -83,23 +81,35 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private static final String SELECTED_ITEM = "selectedItem";
 
-    @Inject protected TestpressServiceProvider serviceProvider;
-    @Inject protected TestpressService testpressService;
-    @Inject protected LogoutService logoutService;
-    @InjectView(R.id.empty_container) LinearLayout emptyView;
-    @InjectView(R.id.empty_title) TextView emptyTitleView;
-    @InjectView(R.id.empty_description) TextView emptyDescView;
-    @InjectView(R.id.retry_button) Button retryButton;
-
-    @InjectView(R.id.coordinator_layout) CoordinatorLayout coordinatorLayout;
-    @InjectView(R.id.progressbar) RelativeLayout progressBarLayout;
+    @Inject
+    protected TestpressServiceProvider serviceProvider;
+    @Inject
+    protected TestpressService testpressService;
+    @Inject
+    protected LogoutService logoutService;
+    @InjectView(R.id.empty_container)
+    LinearLayout emptyView;
+    @InjectView(R.id.empty_title)
+    TextView emptyTitleView;
+    @InjectView(R.id.empty_description)
+    TextView emptyDescView;
+    @InjectView(R.id.retry_button)
+    Button retryButton;
+    @InjectView(R.id.coordinator_layout)
+    CoordinatorLayout coordinatorLayout;
+    @InjectView(R.id.progressbar)
+    RelativeLayout progressBarLayout;
     @InjectView(R.id.viewpager)
     NonSwipeableViewPager viewPager;
-    @InjectView(R.id.grid) GridView grid;
+    @InjectView(R.id.grid)
+    GridView grid;
     @InjectView(R.id.drawer_layout)
     DrawerLayout drawer;
     @InjectView(R.id.navigation_view)
     NavigationView navigationView;
+    LinearLayout navigationHeader;
+    TextView username;
+    ImageView profilePicture;
 
     private ActionBarDrawerToggle drawerToggle;
     private int mSelectedItem;
@@ -112,6 +122,8 @@ public class MainActivity extends TestpressFragmentActivity {
     private boolean isUserAuthenticated;
     public String ssoUrl;
     private boolean isInitScreenCalledOnce;
+    private ProfileDetails profileDetails;
+    private ProfileDetailsViewModel profileDetailsViewModel;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -119,7 +131,7 @@ public class MainActivity extends TestpressFragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         ButterKnife.inject(this);
-
+        initializeViewModel();
         if (savedInstanceState != null) {
             mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM);
         }
@@ -138,6 +150,7 @@ public class MainActivity extends TestpressFragmentActivity {
             checkUpdate();
         }
         setupEasterEgg();
+        getProfileDetailsFromViewModel();
     }
 
     @Override
@@ -149,14 +162,19 @@ public class MainActivity extends TestpressFragmentActivity {
         }
     }
 
+    private void initializeViewModel() {
+        profileDetailsViewModel = new ViewModelProvider(this)
+                .get(ProfileDetailsViewModel.class);
+    }
+
     private void setupEasterEgg() {
         Menu navigationMenu = navigationView.getMenu();
+        initializeNavigationHeaderView();
         final MenuItem rateUsButton = navigationMenu.findItem(R.id.rate_us);
         Button button = new Button(this);
         button.setAlpha(0);
         rateUsButton.setActionView(button);
         rateUsButton.getActionView().setVisibility(View.GONE);
-
 
         findViewById(R.id.version_info).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -186,13 +204,62 @@ public class MainActivity extends TestpressFragmentActivity {
         });
     }
 
+    private void initializeNavigationHeaderView() {
+        View headerView = navigationView.getHeaderView(0);
+        navigationHeader = headerView.findViewById(R.id.navigation_header_container);
+        username = headerView.findViewById(R.id.tv_profile);
+        profilePicture = headerView.findViewById(R.id.img_profile);
+    }
+
+    private void getProfileDetailsFromViewModel() {
+        profileDetailsViewModel.get(serviceProvider, this).observe(this, new Observer<ProfileDetails>() {
+            @Override
+            public void onChanged(ProfileDetails profileDetails) {
+                MainActivity.this.profileDetails = profileDetails;
+                setProfileDetailsOnDrawer();
+            }
+        });
+    }
+
+    private void setProfileDetailsOnDrawer() {
+        if (profileDetails == null) {
+            hideNavigationHeader();
+        } else {
+            navigationHeader.setVisibility(View.VISIBLE);
+            username.setText(profileDetails.getDisplayName());
+            getBitmapFromString();
+        }
+    }
+
+    private void hideNavigationHeader() {
+        navigationHeader.setVisibility(View.GONE);
+    }
+
+    private void getBitmapFromString() {
+        ImageLoader.getInstance().loadImage(profileDetails.getPhoto(), new SimpleImageLoadingListener() {
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                hideNavigationHeader();
+            }
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                setProfilePicture(loadedImage);
+            }
+        });
+    }
+
+    private void setProfilePicture(Bitmap profileBitmap) {
+        navigationHeader.setVisibility(View.VISIBLE);
+        profilePicture.setImageBitmap(profileBitmap);
+    }
+
     private void setUpNavigationDrawer() {
         getSupportActionBar().setHomeButtonEnabled(true);
         drawerToggle = setupDrawerToggle();
         drawerToggle.setDrawerIndicatorEnabled(true);
         drawerToggle.setHomeAsUpIndicator(R.drawable.ic_menu);
         drawerToggle.syncState();
-
         drawer.addDrawerListener(drawerToggle);
         setupDrawerContent(navigationView);
     }
@@ -200,7 +267,7 @@ public class MainActivity extends TestpressFragmentActivity {
     private ActionBarDrawerToggle setupDrawerToggle() {
         return new ActionBarDrawerToggle(
                 this, drawer, getActionBarToolbar(),
-                R.string.open_drawer,  R.string.close_drawer
+                R.string.open_drawer, R.string.close_drawer
         );
     }
 
@@ -208,13 +275,13 @@ public class MainActivity extends TestpressFragmentActivity {
         hideMenuItemsForUnauthenticatedUser(navigationView.getMenu());
         final HandleMainMenu handleMainMenu = new HandleMainMenu(MainActivity.this, serviceProvider);
         navigationView.setNavigationItemSelectedListener(
-            new NavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(MenuItem menuItem) {
-                    handleMainMenu.handleMenuOptionClick(menuItem.getItemId());
-                    return true;
-                }
-        });
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        handleMainMenu.handleMenuOptionClick(menuItem.getItemId());
+                        return true;
+                    }
+                });
     }
 
     private void hideMenuItemsForUnauthenticatedUser(Menu menu) {
@@ -462,7 +529,7 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             protected void onSuccess(final Update update) {
                 progressBarLayout.setVisibility(View.GONE);
-                if(update.getUpdateRequired()) {
+                if (update.getUpdateRequired()) {
                     if (update.getForce()) {
                         UpdateAppDialogManager
                                 .showDialog(MainActivity.this, true, update.getMessage());
@@ -622,12 +689,12 @@ public class MainActivity extends TestpressFragmentActivity {
         }.execute();
     }
 
-    public void hideMainActivityContents(){
+    public void hideMainActivityContents() {
         grid.setVisibility(View.GONE);
         viewPager.setVisibility(View.GONE);
     }
 
-    public void showMainActivityContents(){
+    public void showMainActivityContents() {
 
         if (isInitScreenCalledOnce) {
             viewPager.setVisibility(View.VISIBLE);

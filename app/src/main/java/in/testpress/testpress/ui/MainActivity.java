@@ -47,6 +47,7 @@ import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
+import in.testpress.course.fragments.DownloadsFragment;
 import in.testpress.exam.ui.view.NonSwipeableViewPager;
 import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.Injector;
@@ -70,8 +71,7 @@ import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.testpress.util.UpdateAppDialogManager;
-import io.sentry.Sentry;
-import io.sentry.android.AndroidSentryClientFactory;
+import io.sentry.android.core.SentryAndroid;
 
 import static in.testpress.testpress.BuildConfig.ALLOW_ANONYMOUS_USER;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
@@ -120,8 +120,6 @@ public class MainActivity extends TestpressFragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         ButterKnife.inject(this);
-        Sentry.init("https://d45a945b941945e2ab762377bf6e76c0@sentry.testpress.in/4", new AndroidSentryClientFactory(this));
-        Stetho.initializeWithDefaults(this);
         if (savedInstanceState != null) {
             mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM);
         }
@@ -310,6 +308,8 @@ public class MainActivity extends TestpressFragmentActivity {
             if (mInstituteSettings.getForumEnabled()) {
                 addMenuItem(R.string.discussions, R.drawable.chat_icon, new ForumListFragment());
             }
+            DownloadsFragment downloadsFragment = new DownloadsFragment();
+            addMenuItem(R.string.downloads, R.drawable.ic_downloads, downloadsFragment);
         } else {
             grid.setVisibility(View.GONE);
         }
@@ -420,6 +420,12 @@ public class MainActivity extends TestpressFragmentActivity {
         this.mInstituteSettings = instituteSettings;
         isUserAuthenticated = CommonUtils.isUserAuthenticated(this);
         setUpNavigationDrawer();
+        SentryAndroid.init(
+                this,
+                options -> {
+                    options.setDsn(instituteSettings.getAndroidSentryDns());
+                    options.setEnableSessionTracking(true);
+                });
         //noinspection ConstantConditions
         if (!isUserAuthenticated && !ALLOW_ANONYMOUS_USER) {
             // Show login screen if user not logged in else update institute settings in TestpressSDK

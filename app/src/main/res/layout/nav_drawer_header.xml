@@ -5,6 +5,7 @@
     android:id="@+id/navigation_header_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:visibility="gone"
     android:background="@color/testpress_blue_light_background_transparent"
     android:orientation="vertical">
 

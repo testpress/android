@@ -138,11 +138,11 @@ public class MainActivity extends TestpressFragmentActivity {
         if (instituteSettingsList.size() > 0) {
             onFinishFetchingInstituteSettings(instituteSettingsList.get(0));
             checkUpdate();
+            getProfileDetailsFromViewModel();
         } else {
             checkUpdate();
         }
         setupEasterEgg();
-        getProfileDetailsFromViewModel();
     }
 
     @Override
@@ -204,13 +204,15 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     private void getProfileDetailsFromViewModel() {
-        profileDetailsViewModel.get(serviceProvider, this).observe(this, new Observer<ProfileDetails>() {
-            @Override
-            public void onChanged(ProfileDetails profileDetails) {
-                MainActivity.this.profileDetails = profileDetails;
-                setProfileDetailsOnDrawer();
-            }
-        });
+        if (isUserAuthenticated) {
+            profileDetailsViewModel.get(serviceProvider, this).observe(this, new Observer<ProfileDetails>() {
+                @Override
+                public void onChanged(ProfileDetails profileDetails) {
+                    MainActivity.this.profileDetails = profileDetails;
+                    setProfileDetailsOnDrawer();
+                }
+            });
+        }
     }
 
     private void setProfileDetailsOnDrawer() {
@@ -220,6 +222,7 @@ public class MainActivity extends TestpressFragmentActivity {
             navigationHeader.setVisibility(View.VISIBLE);
             username.setText(profileDetails.getDisplayName());
             getBitmapFromString();
+            setOnClickListener();
         }
     }
 
@@ -244,6 +247,16 @@ public class MainActivity extends TestpressFragmentActivity {
     private void setProfilePicture(Bitmap profileBitmap) {
         navigationHeader.setVisibility(View.VISIBLE);
         profilePicture.setImageBitmap(profileBitmap);
+    }
+
+    private void setOnClickListener() {
+        profilePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, ProfileDetailsActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void setUpNavigationDrawer() {

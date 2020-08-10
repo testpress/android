@@ -337,12 +337,12 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         if (serverTime != null) {
             stmt.bindString(41, serverTime);
         }
- 
+
         Boolean allowScreenshotInApp = entity.getAllowScreenshotInApp();
         if (allowScreenshotInApp != null) {
             stmt.bindLong(42, allowScreenshotInApp ? 1L: 0L);
         }
- 
+
         String androidSentryDns = entity.getAndroidSentryDns();
         if (androidSentryDns != null) {
             stmt.bindString(43, androidSentryDns);

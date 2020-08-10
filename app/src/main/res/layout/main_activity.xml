@@ -33,8 +33,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            >
+            android:layout_weight="1" >
 
             <in.testpress.exam.ui.view.NonSwipeableViewPager
                 android:id="@+id/viewpager"
@@ -88,6 +87,7 @@
         android:layout_gravity="start"
         app:itemTextColor="@color/testpress_black"
         android:background="@android:color/white"
+        app:headerLayout="@layout/nav_drawer_header"
         app:menu="@menu/main_menu" >
 
 

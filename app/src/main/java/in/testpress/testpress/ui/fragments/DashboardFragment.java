@@ -1,5 +1,8 @@
 package in.testpress.testpress.ui.fragments;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,7 +42,10 @@ import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
 import in.testpress.testpress.ui.ThrowableLoader;
 import in.testpress.testpress.ui.adapters.DashboardAdapter;
+import io.sentry.core.Sentry;
+import io.sentry.core.protocol.User;
 
+import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.util.PreferenceManager.getDashboardDataPreferences;
 import static in.testpress.testpress.util.PreferenceManager.setDashboardData;
 
@@ -78,6 +84,17 @@ public class DashboardFragment extends Fragment implements
         Injector.inject(this);
         super.onCreate(savedInstanceState);
         initLoader();
+        setUsernameInSentry();
+    }
+
+    private void setUsernameInSentry() {
+        AccountManager manager = (AccountManager) getActivity().getSystemService(Context.ACCOUNT_SERVICE);
+        Account[] account = manager.getAccountsByType(APPLICATION_ID);
+        if (account.length > 0) {
+            User user = new User();
+            user.setUsername(account[0].name);
+            Sentry.setUser(user);
+        }
     }
 
     @Override
@@ -89,10 +106,21 @@ public class DashboardFragment extends Fragment implements
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         swipeRefreshLayout.setEnabled(true);
+        showDataFromCacheIfAvailable();
+        addOnClickListeners();
+    }
 
+    private void showDataFromCacheIfAvailable() {
+        if (!getSections().isEmpty()) {
+            adapter.setResponse(getDashboardDataPreferences(requireContext()));
+        } else {
+            showLoading();
+        }
+    }
+
+    private void showLoading() {
         loadingPlaceholder.setVisibility(View.VISIBLE);
         loadingPlaceholder.startShimmer();
-        addOnClickListeners();
     }
 
     private void hideShimmer() {
@@ -160,7 +188,6 @@ public class DashboardFragment extends Fragment implements
         hideShimmer();
         if (exception != null) {
             this.exception = exception;
-            showError(getErrorMessage(exception));
             getLoaderManager().destroyLoader(loader.getId());
             adapter.setResponse(getDashboardDataPreferences(getContext()));
             return;
@@ -176,10 +203,6 @@ public class DashboardFragment extends Fragment implements
     public void onResume() {
         super.onResume();
         refresh();
-    }
-
-    private void showError(final int message) {
-        Toaster.showLong(getActivity(), message);
     }
 
     private void setEmptyText() {

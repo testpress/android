@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.0",
-  "version_code" : 1,
+  "version" : "1.1.0",
+  "version_code" : 2,
   "testpress_site_subdomain" : "jobsecura",
   "package_name" : "in.testpress.jobsecura",
   "app_name" : "Job Secura",

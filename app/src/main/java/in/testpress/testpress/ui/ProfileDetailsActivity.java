@@ -8,13 +8,11 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -35,6 +33,8 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.kevinsawicki.wishlist.Toaster;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.snackbar.Snackbar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -67,9 +67,11 @@ import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.ProfileDetails;
+import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.FormatDate;
 import in.testpress.testpress.util.SafeAsyncTask;
+import in.testpress.testpress.util.Strings;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
@@ -79,9 +81,11 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
 
     @Inject TestpressServiceProvider serviceProvider;
     @InjectView(R.id.profile_photo) ImageView profilePhoto;
+    @InjectView(R.id.edit_profile) ImageView editProfile;
     @InjectView(R.id.edit_profile_photo) ImageView imageEditButton;
     @InjectView(R.id.display_name) TextView displayName;
-    @InjectView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbar;
+    @InjectView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbar;
     @InjectView(R.id.first_name) EditText firstName;
     @InjectView(R.id.last_name) EditText lastName;
     @InjectView(R.id.email) AppCompatTextView email;
@@ -120,6 +124,8 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     DisplayImageOptions options;
     Menu menu;
     static final private int SELECT_IMAGE = 100;
+    public String ssoUrl;
+
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -159,6 +165,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
                 .showImageOnFail(R.drawable.profile_image_sample)
                 .showImageOnLoading(R.drawable.profile_image_sample).build();
         getSupportLoaderManager().initLoader(0, null, this);
+        fetchSsoLink();
     }
 
     @Override
@@ -194,6 +201,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
             this.profileDetails = profileDetails;
         }
         profileDetailsView.setVisibility(View.VISIBLE);
+        editProfile.setVisibility(View.VISIBLE);
         displayProfileDetails(this.profileDetails);
     }
 
@@ -226,10 +234,10 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         if (detail != null) {
             viewRow.setVisibility(View.VISIBLE);
             switch (widget.getClass().getName()) {
-                case "android.support.v7.widget.AppCompatEditText":
+                case "androidx.appcompat.widget.AppCompatEditText":
                     ((EditText)widget).setText(detail);
                     break;
-                case "android.support.v7.widget.AppCompatSpinner":
+                case "androidx.appcompat.widget.AppCompatSpinner":
                     if(widget == gender) {
                         ((Spinner) widget).setSelection(genderSpinnerAdapter.getPosition(detail));
                     } else if(widget == state){
@@ -617,5 +625,44 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         }
 
         return null;
+    }
+
+    @OnClick(R.id.edit_profile)
+    public void editActions(View v) {
+
+        if (fetchInstituteSetting().getAllow_profile_edit() && !Strings.toString(profileDetails.getUsername()).isEmpty()) {
+
+            if (!Strings.toString(ssoUrl).isEmpty()) {
+                Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
+                intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Edit Profile");
+                intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + ssoUrl+"&next=/settings/profile/mobile/");
+                startActivity(intent);
+            } else {
+                Toaster.showLong(ProfileDetailsActivity.this, R.string.edit_profile_error);
+            }
+        }
+    }
+
+    public void fetchSsoLink() {
+        new SafeAsyncTask<SsoUrl>() {
+            @Override
+            public SsoUrl call() throws Exception {
+                return serviceProvider.getService(ProfileDetailsActivity.this).getSsoUrl();
+            }
+
+            @Override
+            protected void onException(final Exception exception) throws RuntimeException {
+                super.onException(exception);
+
+                if (exception.getCause() instanceof UnknownHostException) {
+                    Toaster.showLong(ProfileDetailsActivity.this, R.string.no_internet);
+                }
+            }
+
+            @Override
+            protected void onSuccess(final SsoUrl ssoLink) throws Exception {
+                ssoUrl = ssoLink.getSsoUrl();
+            }
+        }.execute();
     }
 }

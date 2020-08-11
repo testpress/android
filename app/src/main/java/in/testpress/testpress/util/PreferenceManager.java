@@ -2,8 +2,13 @@ package in.testpress.testpress.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
+
+import com.google.gson.Gson;
 
 import java.util.Date;
+
+import in.testpress.testpress.models.pojo.DashboardResponse;
 
 public class PreferenceManager {
 
@@ -13,7 +18,15 @@ public class PreferenceManager {
 
     private static final String PREF_KEY_LAUNCHED_TIMES = "launchedTimes";
 
+    public static final String DASHBOARD_DATA = "dashboardData";
+
     private PreferenceManager() {
+    }
+
+    public static DashboardResponse getDashboardDataPreferences(Context context) {
+        String json = context.getSharedPreferences(DASHBOARD_DATA, Context.MODE_PRIVATE).getString(DASHBOARD_DATA, "{}");
+        Log.d("PreferenceManger", "getDashboardDataPreferences: " + json);
+        return new Gson().fromJson(json, DashboardResponse.class);
     }
 
     private static SharedPreferences getUpdateAppDialogPreferences(Context context) {
@@ -42,6 +55,12 @@ public class PreferenceManager {
     static void setLaunchedTimes(Context context, int launchedTimes) {
         SharedPreferences.Editor editor = getUpdateAppDialogPreferencesEditor(context);
         editor.putInt(PREF_KEY_LAUNCHED_TIMES, launchedTimes);
+        editor.apply();
+    }
+
+    public static void setDashboardData(Context context, String data) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(DASHBOARD_DATA, Context.MODE_PRIVATE).edit();
+        editor.putString(DASHBOARD_DATA, data);
         editor.apply();
     }
 

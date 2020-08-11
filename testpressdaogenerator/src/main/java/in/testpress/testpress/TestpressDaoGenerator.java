@@ -7,7 +7,7 @@ import de.greenrobot.daogenerator.Schema;
 
 public class TestpressDaoGenerator {
     public static void main(String args[]) throws Exception {
-        Schema schema = new Schema(14, "in.testpress.testpress.models");
+        Schema schema = new Schema(25, "in.testpress.testpress.models");
 
         Entity post = schema.addEntity("Post");
         post.addLongProperty("id").primaryKey();
@@ -23,9 +23,12 @@ public class TestpressDaoGenerator {
         post.addLongProperty("modifiedDate");
         post.addStringProperty("short_web_url");
         post.addStringProperty("short_url");
+        post.addStringProperty("shortLink");
         post.addStringProperty("web_url");
         post.addIntProperty("commentsCount");
         post.addStringProperty("commentsUrl");
+        post.addStringProperty("coverImage");
+        post.addStringProperty("slug");
 
         Entity category = schema.addEntity("Category");
         category.addLongProperty("id").primaryKey();
@@ -69,6 +72,17 @@ public class TestpressDaoGenerator {
         instituteSettings.addStringProperty("loginLabel");
         instituteSettings.addStringProperty("loginPasswordLabel");
         instituteSettings.addStringProperty("aboutUs");
+        instituteSettings.addBooleanProperty("disableStudentAnalytics");
+        instituteSettings.addBooleanProperty("customRegistrationEnabled");
+        instituteSettings.addBooleanProperty("enableParallelLoginRestriction");
+        instituteSettings.addIntProperty("maxParallelLogins");
+        instituteSettings.addIntProperty("lockoutLimit");
+        instituteSettings.addStringProperty("cooloffTime");
+        instituteSettings.addStringProperty("appToolbarLogo");
+        instituteSettings.addStringProperty("appShareLink");
+        instituteSettings.addStringProperty("serverTime");
+        instituteSettings.addBooleanProperty("allowScreenshotInApp");
+        instituteSettings.addStringProperty("androidSentryDns");
 
         Entity rssFeed = schema.addEntity("RssItem");
         rssFeed.addLongProperty("id").primaryKey().autoincrement();
@@ -85,6 +99,7 @@ public class TestpressDaoGenerator {
         addUserToForum(forum, user, "lastCommentedBy", "commentorId");
         addCategoryToForum(forum, category);
 
+        schema.enableKeepSectionsByDefault();
         new DaoGenerator().generateAll(schema, "app/src/main/java/");
     }
 

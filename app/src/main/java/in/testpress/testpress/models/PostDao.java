@@ -39,10 +39,13 @@ public class PostDao extends AbstractDao<Post, Long> {
         public final static Property ModifiedDate = new Property(10, Long.class, "modifiedDate", false, "MODIFIED_DATE");
         public final static Property Short_web_url = new Property(11, String.class, "short_web_url", false, "SHORT_WEB_URL");
         public final static Property Short_url = new Property(12, String.class, "short_url", false, "SHORT_URL");
-        public final static Property Web_url = new Property(13, String.class, "web_url", false, "WEB_URL");
-        public final static Property CommentsCount = new Property(14, Integer.class, "commentsCount", false, "COMMENTS_COUNT");
-        public final static Property CommentsUrl = new Property(15, String.class, "commentsUrl", false, "COMMENTS_URL");
-        public final static Property CategoryId = new Property(16, Long.class, "categoryId", false, "CATEGORY_ID");
+        public final static Property ShortLink = new Property(13, String.class, "shortLink", false, "SHORT_LINK");
+        public final static Property Web_url = new Property(14, String.class, "web_url", false, "WEB_URL");
+        public final static Property CommentsCount = new Property(15, Integer.class, "commentsCount", false, "COMMENTS_COUNT");
+        public final static Property CommentsUrl = new Property(16, String.class, "commentsUrl", false, "COMMENTS_URL");
+        public final static Property CoverImage = new Property(17, String.class, "coverImage", false, "COVER_IMAGE");
+        public final static Property Slug = new Property(18, String.class, "slug", false, "SLUG");
+        public final static Property CategoryId = new Property(19, Long.class, "categoryId", false, "CATEGORY_ID");
     };
 
     private DaoSession daoSession;
@@ -74,10 +77,13 @@ public class PostDao extends AbstractDao<Post, Long> {
                 "\"MODIFIED_DATE\" INTEGER," + // 10: modifiedDate
                 "\"SHORT_WEB_URL\" TEXT," + // 11: short_web_url
                 "\"SHORT_URL\" TEXT," + // 12: short_url
-                "\"WEB_URL\" TEXT," + // 13: web_url
-                "\"COMMENTS_COUNT\" INTEGER," + // 14: commentsCount
-                "\"COMMENTS_URL\" TEXT," + // 15: commentsUrl
-                "\"CATEGORY_ID\" INTEGER);"); // 16: categoryId
+                "\"SHORT_LINK\" TEXT," + // 13: shortLink
+                "\"WEB_URL\" TEXT," + // 14: web_url
+                "\"COMMENTS_COUNT\" INTEGER," + // 15: commentsCount
+                "\"COMMENTS_URL\" TEXT," + // 16: commentsUrl
+                "\"COVER_IMAGE\" TEXT," + // 17: coverImage
+                "\"SLUG\" TEXT," + // 18: slug
+                "\"CATEGORY_ID\" INTEGER);"); // 19: categoryId
     }
 
     /** Drops the underlying database table. */
@@ -156,24 +162,39 @@ public class PostDao extends AbstractDao<Post, Long> {
             stmt.bindString(13, short_url);
         }
  
+        String shortLink = entity.getShortLink();
+        if (shortLink != null) {
+            stmt.bindString(14, shortLink);
+        }
+ 
         String web_url = entity.getWeb_url();
         if (web_url != null) {
-            stmt.bindString(14, web_url);
+            stmt.bindString(15, web_url);
         }
  
         Integer commentsCount = entity.getCommentsCount();
         if (commentsCount != null) {
-            stmt.bindLong(15, commentsCount);
+            stmt.bindLong(16, commentsCount);
         }
  
         String commentsUrl = entity.getCommentsUrl();
         if (commentsUrl != null) {
-            stmt.bindString(16, commentsUrl);
+            stmt.bindString(17, commentsUrl);
+        }
+ 
+        String coverImage = entity.getCoverImage();
+        if (coverImage != null) {
+            stmt.bindString(18, coverImage);
+        }
+ 
+        String slug = entity.getSlug();
+        if (slug != null) {
+            stmt.bindString(19, slug);
         }
  
         Long categoryId = entity.getCategoryId();
         if (categoryId != null) {
-            stmt.bindLong(17, categoryId);
+            stmt.bindLong(20, categoryId);
         }
     }
 
@@ -206,10 +227,13 @@ public class PostDao extends AbstractDao<Post, Long> {
             cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10), // modifiedDate
             cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // short_web_url
             cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // short_url
-            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // web_url
-            cursor.isNull(offset + 14) ? null : cursor.getInt(offset + 14), // commentsCount
-            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // commentsUrl
-            cursor.isNull(offset + 16) ? null : cursor.getLong(offset + 16) // categoryId
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // shortLink
+            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // web_url
+            cursor.isNull(offset + 15) ? null : cursor.getInt(offset + 15), // commentsCount
+            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // commentsUrl
+            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17), // coverImage
+            cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18), // slug
+            cursor.isNull(offset + 19) ? null : cursor.getLong(offset + 19) // categoryId
         );
         return entity;
     }
@@ -230,10 +254,13 @@ public class PostDao extends AbstractDao<Post, Long> {
         entity.setModifiedDate(cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10));
         entity.setShort_web_url(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
         entity.setShort_url(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
-        entity.setWeb_url(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
-        entity.setCommentsCount(cursor.isNull(offset + 14) ? null : cursor.getInt(offset + 14));
-        entity.setCommentsUrl(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
-        entity.setCategoryId(cursor.isNull(offset + 16) ? null : cursor.getLong(offset + 16));
+        entity.setShortLink(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setWeb_url(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
+        entity.setCommentsCount(cursor.isNull(offset + 15) ? null : cursor.getInt(offset + 15));
+        entity.setCommentsUrl(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
+        entity.setCoverImage(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
+        entity.setSlug(cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18));
+        entity.setCategoryId(cursor.isNull(offset + 19) ? null : cursor.getLong(offset + 19));
      }
     
     /** @inheritdoc */

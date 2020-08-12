@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -187,7 +187,7 @@
 
                 </LinearLayout>
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/comments_list_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -221,7 +221,7 @@
             </LinearLayout>
 
         </RelativeLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
         <LinearLayout
             android:id="@+id/comment_box_layout"
@@ -260,6 +260,7 @@
                     android:inputType="text|textMultiLine"
                     android:textSize="16sp"
                     android:minLines="1"
+                    android:textColor="#000"
                     android:maxLines="5"
                     android:layout_gravity="center"
                     android:gravity="left|bottom"

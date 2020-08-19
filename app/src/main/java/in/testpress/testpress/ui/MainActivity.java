@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
@@ -28,9 +29,16 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.navigation.NavigationView;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.squareup.picasso.Picasso;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,12 +61,14 @@ import in.testpress.testpress.models.CheckPermission;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
+import in.testpress.testpress.models.ProfileDetails;
 import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.models.Update;
 import in.testpress.testpress.ui.fragments.DashboardFragment;
 import in.testpress.testpress.ui.utils.HandleMainMenu;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
+import in.testpress.testpress.util.ProfileDetailViewModelFactory;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
@@ -109,6 +119,8 @@ public class MainActivity extends TestpressFragmentActivity {
     private boolean isUserAuthenticated;
     public String ssoUrl;
     private boolean isInitScreenCalledOnce;
+    private ProfileDetails profileDetails;
+    private ProfileDetailsViewModel profileDetailsViewModel;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -134,8 +146,10 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             checkUpdate();
         }
-        initializeNavigationHeader();
+        initializeViewModel();
         setupEasterEgg();
+        initializeNavigationHeader();
+        getProfileDetailsFromViewModel();
         setOnClickListener();
     }
 
@@ -146,6 +160,12 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    private void initializeViewModel() {
+        profileDetailsViewModel = new ViewModelProvider(this,
+                 new ProfileDetailViewModelFactory(this,serviceProvider))
+                .get(ProfileDetailsViewModel.class);
     }
 
     private void setupEasterEgg() {
@@ -191,6 +211,29 @@ public class MainActivity extends TestpressFragmentActivity {
         displayName = headerView.findViewById(R.id.displayName);
         profileImage = headerView.findViewById(R.id.profileImage);
         settingsImage = headerView.findViewById(R.id.settingsImage);
+    }
+
+    private void getProfileDetailsFromViewModel() {
+        if (isUserAuthenticated) {
+            profileDetailsViewModel.get().observe(this, new Observer<ProfileDetails>() {
+                @Override
+                public void onChanged(ProfileDetails profileDetails) {
+                    MainActivity.this.profileDetails = profileDetails;
+                    setProfileDetailsOnDrawer();
+                }
+            });
+        }
+    }
+
+    private void setProfileDetailsOnDrawer() {
+        if (profileDetails != null){
+            navigationHeader.setVisibility(View.VISIBLE);
+            displayName.setText(profileDetails.getDisplayName());
+            username.setText(profileDetails.getUsername());
+            Picasso.get().load(profileDetails.getPhoto())
+                    .error(R.drawable.profile_image_place_holder)
+                    .into(profileImage);
+        }
     }
 
     private void setOnClickListener() {

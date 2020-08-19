@@ -7,8 +7,10 @@ import android.app.Activity
 import androidx.lifecycle.MutableLiveData
 
 class ProfileDetailRepository(val serviceProvider: TestpressServiceProvider, val activity: Activity) {
+
     var profileDetails = MutableLiveData<ProfileDetails?>()
-    fun get() {
+
+    fun get(): MutableLiveData<ProfileDetails?> {
         object : SafeAsyncTask<ProfileDetails>() {
             override fun call(): ProfileDetails {
                 return serviceProvider.getService(activity).profileDetails
@@ -22,5 +24,6 @@ class ProfileDetailRepository(val serviceProvider: TestpressServiceProvider, val
                 profileDetails.postValue(null)
             }
         }.execute()
+        return profileDetails
     }
 }

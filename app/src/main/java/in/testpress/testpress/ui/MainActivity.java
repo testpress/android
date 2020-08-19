@@ -8,43 +8,36 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.view.GravityCompat;
-import androidx.viewpager.widget.ViewPager;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
-
 import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-
+import androidx.viewpager.widget.ViewPager;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.navigation.NavigationView;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
-import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
 import in.testpress.course.fragments.DownloadsFragment;
 import in.testpress.exam.ui.view.NonSwipeableViewPager;
@@ -71,7 +64,6 @@ import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.testpress.util.UpdateAppDialogManager;
 import io.sentry.android.core.SentryAndroid;
-
 import static in.testpress.testpress.BuildConfig.ALLOW_ANONYMOUS_USER;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
@@ -100,6 +92,11 @@ public class MainActivity extends TestpressFragmentActivity {
     DrawerLayout drawer;
     @InjectView(R.id.navigation_view)
     NavigationView navigationView;
+    ConstraintLayout navigationHeader;
+    ImageView settingsImage;
+    TextView username;
+    TextView displayName;
+    ImageView profileImage;
 
     private ActionBarDrawerToggle drawerToggle;
     private int mSelectedItem;
@@ -137,7 +134,9 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             checkUpdate();
         }
+        initializeNavigationHeader();
         setupEasterEgg();
+        setOnClickListener();
     }
 
     @Override
@@ -156,7 +155,6 @@ public class MainActivity extends TestpressFragmentActivity {
         button.setAlpha(0);
         rateUsButton.setActionView(button);
         rateUsButton.getActionView().setVisibility(View.GONE);
-
 
         findViewById(R.id.version_info).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -184,6 +182,29 @@ public class MainActivity extends TestpressFragmentActivity {
                 return false;
             }
         });
+    }
+
+    private void initializeNavigationHeader() {
+        View headerView = navigationView.getHeaderView(0);
+        navigationHeader = headerView.findViewById(R.id.navigation_header_container);
+        username = headerView.findViewById(R.id.userName);
+        displayName = headerView.findViewById(R.id.displayName);
+        profileImage = headerView.findViewById(R.id.profileImage);
+        settingsImage = headerView.findViewById(R.id.settingsImage);
+    }
+
+    private void setOnClickListener() {
+        settingsImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               navigateToProfileDetailsActivity();
+            }
+        });
+    }
+
+    private void navigateToProfileDetailsActivity() {
+        Intent intent = new Intent(this, ProfileDetailsActivity.class);
+        startActivity(intent);
     }
 
     private void setUpNavigationDrawer() {

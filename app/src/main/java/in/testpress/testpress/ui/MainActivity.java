@@ -93,7 +93,6 @@ public class MainActivity extends TestpressFragmentActivity {
     @InjectView(R.id.navigation_view)
     NavigationView navigationView;
     ConstraintLayout navigationHeader;
-    ImageView settingsImage;
     TextView username;
     TextView displayName;
     ImageView profileImage;
@@ -187,14 +186,13 @@ public class MainActivity extends TestpressFragmentActivity {
     private void initializeNavigationHeader() {
         View headerView = navigationView.getHeaderView(0);
         navigationHeader = headerView.findViewById(R.id.navigation_header_container);
-        username = headerView.findViewById(R.id.userName);
+        username = headerView.findViewById(R.id.email);
         displayName = headerView.findViewById(R.id.displayName);
         profileImage = headerView.findViewById(R.id.profileImage);
-        settingsImage = headerView.findViewById(R.id.settingsImage);
     }
 
     private void setOnClickListener() {
-        settingsImage.setOnClickListener(new View.OnClickListener() {
+        profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                navigateToProfileDetailsActivity();

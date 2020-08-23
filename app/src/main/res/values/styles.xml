@@ -111,6 +111,10 @@
         <item name="colorButtonNormal">@color/primary</item>
         <item name="android:statusBarColor">@color/primary</item>
         <item name="android:textAppearanceLargePopupMenu">@style/popupMenuTextAppearance</item>
+        <item name="colorNavigationItem">@color/navigation_color_selector</item>
+        <item name="colorNavigationItemSelected">@color/testpress_white</item>
+        <item name="drawableNavigationItemBackground">@drawable/menu_background_color_state</item>
+
     </style>
 
     <style name="popupMenuTextAppearance" parent="@android:style/TextAppearance.DeviceDefault.Widget.PopupMenu.Large">
@@ -129,7 +133,7 @@
         <item name="android:minHeight">0dp</item>
         <item name="android:minWidth">80dp</item>
         <item name="android:padding">12dp</item>
-        <item name="android:background">@drawable/primary_rounded_button</item>
+        <item name="android:background">@drawable/navigation_rounded_background</item>
         <item name="android:textColor">@color/testpress_button_text_color</item>
     </style>
 
@@ -171,6 +175,12 @@
     <style name="TabInputError" parent="InputError">
         <item name="android:layout_width">@dimen/tab_input_width</item>
         <item name="android:layout_gravity">center_horizontal</item>
+    </style>
+
+    <style name="Widget.Custom.NavigationView" parent="Widget.Design.NavigationView">
+        <item name="itemIconTint">?attr/colorNavigationItem</item>
+        <item name="itemTextColor">?attr/colorNavigationItem</item>
+        <item name="itemBackground">?attr/drawableNavigationItemBackground</item>
     </style>
 
 </resources>

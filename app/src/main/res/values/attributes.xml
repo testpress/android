@@ -13,6 +13,9 @@
         <attr name="mrl_ripplePersistent" format="boolean" localization="suggested" />
         <attr name="mrl_rippleInAdapter" format="boolean" localization="suggested" />
         <attr name="mrl_rippleRoundedCorners" format="dimension" localization="suggested" />
+        <attr name="colorNavigationItem" format="color" />
+        <attr name="colorNavigationItemSelected" format="color" />
+        <attr name="drawableNavigationItemBackground" format="reference" />
     </declare-styleable>
     <declare-styleable name="RoundedCornerImageView">
         <attr name="imageCornerRadius" format="float" />

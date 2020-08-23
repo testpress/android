@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:focusable="true">
 
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -86,10 +87,9 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:itemTextColor="@color/testpress_black"
-        android:background="@android:color/white"
+        app:headerLayout="@layout/navigation_drawer_header"
+        style="@style/Widget.Custom.NavigationView"
         app:menu="@menu/main_menu" >
-
 
         <LinearLayout
             android:layout_width="match_parent"

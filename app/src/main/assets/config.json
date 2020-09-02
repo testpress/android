@@ -1,6 +1,6 @@
 {
-  "version" : "1.10.5",
-  "version_code" : 5,
+  "version" : "1.11.0",
+  "version_code" : 7,
   "testpress_site_subdomain" : "amalgmpg",
   "package_name" : "in.testpress.amalgmpg",
   "app_name" : "Amalgm PG - NEET MDS",

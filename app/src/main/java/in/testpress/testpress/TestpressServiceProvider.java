@@ -10,13 +10,18 @@ import android.util.Log;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
+import com.google.android.exoplayer2.offline.DownloadService;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import in.testpress.core.TestpressSDKDatabase;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
+import in.testpress.course.services.VideoDownloadService;
+import in.testpress.database.TestpressDatabase;
 import in.testpress.testpress.authenticator.ApiKeyProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
@@ -96,7 +101,8 @@ public class TestpressServiceProvider {
                         .setCooloffTime(instituteSettings.getCooloffTime())
                         .setStoreLabel(instituteSettings.getStoreLabel())
                         .setAppToolbarLogo(instituteSettings.getAppToolbarLogo())
-                        .setAppShareLink(instituteSettings.getAppShareLink());
+                        .setAppShareLink(instituteSettings.getAppShareLink())
+                        .setServerTime(instituteSettings.serverTime());
                 appLink = instituteSettings.getAppShareLink();
             }
             settings.setAppShareText(SHARE_MESSAGE + activity.getString(R.string.get_it_at) + appLink);
@@ -124,6 +130,7 @@ public class TestpressServiceProvider {
         progressDialog.setCancelable(false);
         UIUtils.setIndeterminateDrawable(activity, progressDialog, 4);
         progressDialog.show();
+        deleteDownloadedVideos(activity);
         serviceProvider.invalidateAuthToken(activity);
         SharedPreferences preferences = activity.getSharedPreferences(Constants.GCM_PREFERENCE_NAME,
                 Context.MODE_PRIVATE);
@@ -147,5 +154,11 @@ public class TestpressServiceProvider {
                 activity.startActivity(intent);
             }
         });
+    }
+
+    private void deleteDownloadedVideos(Activity activity) {
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> TestpressDatabase.Companion.invoke(activity).clearAllTables());
+        DownloadService.sendRemoveAllDownloads(activity, VideoDownloadService.class, false);
     }
 }

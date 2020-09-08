@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import in.testpress.course.network.Resource;
 import in.testpress.exam.models.Vote;
 import in.testpress.testpress.models.Category;
 import in.testpress.testpress.models.CheckPermission;

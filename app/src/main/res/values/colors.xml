@@ -63,4 +63,6 @@
     <color name="testpress_vote_indicator">#298cdd</color>
     <color name="light_grey">#efefef</color>
 
+    <color name="divider_color">#dedede</color>
+
 </resources>

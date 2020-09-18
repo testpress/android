@@ -30,6 +30,7 @@ public class Post {
     private Integer commentsCount;
     private String commentsUrl;
     private String coverImage;
+    private String slug;
     private Long categoryId;
 
     /** Used to resolve relations */
@@ -52,7 +53,7 @@ public class Post {
         this.id = id;
     }
 
-    public Post(Long id, String title, String summary, String contentHtml, String url, String publishedDate, Long published, String modified, Integer institute, Boolean is_active, Long modifiedDate, String short_web_url, String short_url, String shortLink, String web_url, Integer commentsCount, String commentsUrl, String coverImage, Long categoryId) {
+    public Post(Long id, String title, String summary, String contentHtml, String url, String publishedDate, Long published, String modified, Integer institute, Boolean is_active, Long modifiedDate, String short_web_url, String short_url, String shortLink, String web_url, Integer commentsCount, String commentsUrl, String coverImage, String slug, Long categoryId) {
         this.id = id;
         this.title = title;
         this.summary = summary;
@@ -71,6 +72,7 @@ public class Post {
         this.commentsCount = commentsCount;
         this.commentsUrl = commentsUrl;
         this.coverImage = coverImage;
+        this.slug = slug;
         this.categoryId = categoryId;
     }
 
@@ -222,6 +224,14 @@ public class Post {
 
     public void setCoverImage(String coverImage) {
         this.coverImage = coverImage;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 
     public Long getCategoryId() {

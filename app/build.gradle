@@ -3,7 +3,7 @@ import groovy.json.JsonSlurper
 apply plugin: 'com.android.application'
 
 ext {
-    testpressSDK = '1.3.95-TEST1'
+    testpressSDK = '1.3.108'
 }
 
 dependencies {

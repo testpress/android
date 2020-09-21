@@ -61,6 +61,11 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         public final static Property MaxParallelLogins = new Property(35, Integer.class, "maxParallelLogins", false, "MAX_PARALLEL_LOGINS");
         public final static Property LockoutLimit = new Property(36, Integer.class, "lockoutLimit", false, "LOCKOUT_LIMIT");
         public final static Property CooloffTime = new Property(37, String.class, "cooloffTime", false, "COOLOFF_TIME");
+        public final static Property AppToolbarLogo = new Property(38, String.class, "appToolbarLogo", false, "APP_TOOLBAR_LOGO");
+        public final static Property AppShareLink = new Property(39, String.class, "appShareLink", false, "APP_SHARE_LINK");
+        public final static Property ServerTime = new Property(40, String.class, "serverTime", false, "SERVER_TIME");
+        public final static Property AllowScreenshotInApp = new Property(41, Boolean.class, "allowScreenshotInApp", false, "ALLOW_SCREENSHOT_IN_APP");
+        public final static Property AndroidSentryDns = new Property(42, String.class, "androidSentryDns", false, "ANDROID_SENTRY_DNS");
     };
 
 
@@ -113,7 +118,12 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
                 "\"ENABLE_PARALLEL_LOGIN_RESTRICTION\" INTEGER," + // 34: enableParallelLoginRestriction
                 "\"MAX_PARALLEL_LOGINS\" INTEGER," + // 35: maxParallelLogins
                 "\"LOCKOUT_LIMIT\" INTEGER," + // 36: lockoutLimit
-                "\"COOLOFF_TIME\" TEXT);"); // 37: cooloffTime
+                "\"COOLOFF_TIME\" TEXT," + // 37: cooloffTime
+                "\"APP_TOOLBAR_LOGO\" TEXT," + // 38: appToolbarLogo
+                "\"APP_SHARE_LINK\" TEXT," + // 39: appShareLink
+                "\"SERVER_TIME\" TEXT," + // 40: serverTime
+                "\"ALLOW_SCREENSHOT_IN_APP\" INTEGER," + // 41: allowScreenshotInApp
+                "\"ANDROID_SENTRY_DNS\" TEXT);"); // 42: androidSentryDns
     }
 
     /** Drops the underlying database table. */
@@ -312,6 +322,31 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         if (cooloffTime != null) {
             stmt.bindString(38, cooloffTime);
         }
+ 
+        String appToolbarLogo = entity.getAppToolbarLogo();
+        if (appToolbarLogo != null) {
+            stmt.bindString(39, appToolbarLogo);
+        }
+ 
+        String appShareLink = entity.getAppShareLink();
+        if (appShareLink != null) {
+            stmt.bindString(40, appShareLink);
+        }
+ 
+        String serverTime = entity.getServerTime();
+        if (serverTime != null) {
+            stmt.bindString(41, serverTime);
+        }
+ 
+        Boolean allowScreenshotInApp = entity.getAllowScreenshotInApp();
+        if (allowScreenshotInApp != null) {
+            stmt.bindLong(42, allowScreenshotInApp ? 1L: 0L);
+        }
+ 
+        String androidSentryDns = entity.getAndroidSentryDns();
+        if (androidSentryDns != null) {
+            stmt.bindString(43, androidSentryDns);
+        }
     }
 
     /** @inheritdoc */
@@ -361,7 +396,12 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             cursor.isNull(offset + 34) ? null : cursor.getShort(offset + 34) != 0, // enableParallelLoginRestriction
             cursor.isNull(offset + 35) ? null : cursor.getInt(offset + 35), // maxParallelLogins
             cursor.isNull(offset + 36) ? null : cursor.getInt(offset + 36), // lockoutLimit
-            cursor.isNull(offset + 37) ? null : cursor.getString(offset + 37) // cooloffTime
+            cursor.isNull(offset + 37) ? null : cursor.getString(offset + 37), // cooloffTime
+            cursor.isNull(offset + 38) ? null : cursor.getString(offset + 38), // appToolbarLogo
+            cursor.isNull(offset + 39) ? null : cursor.getString(offset + 39), // appShareLink
+            cursor.isNull(offset + 40) ? null : cursor.getString(offset + 40), // serverTime
+            cursor.isNull(offset + 41) ? null : cursor.getShort(offset + 41) != 0, // allowScreenshotInApp
+            cursor.isNull(offset + 42) ? null : cursor.getString(offset + 42) // androidSentryDns
         );
         return entity;
     }
@@ -407,6 +447,11 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         entity.setMaxParallelLogins(cursor.isNull(offset + 35) ? null : cursor.getInt(offset + 35));
         entity.setLockoutLimit(cursor.isNull(offset + 36) ? null : cursor.getInt(offset + 36));
         entity.setCooloffTime(cursor.isNull(offset + 37) ? null : cursor.getString(offset + 37));
+        entity.setAppToolbarLogo(cursor.isNull(offset + 38) ? null : cursor.getString(offset + 38));
+        entity.setAppShareLink(cursor.isNull(offset + 39) ? null : cursor.getString(offset + 39));
+        entity.setServerTime(cursor.isNull(offset + 40) ? null : cursor.getString(offset + 40));
+        entity.setAllowScreenshotInApp(cursor.isNull(offset + 41) ? null : cursor.getShort(offset + 41) != 0);
+        entity.setAndroidSentryDns(cursor.isNull(offset + 42) ? null : cursor.getString(offset + 42));
      }
     
     /** @inheritdoc */

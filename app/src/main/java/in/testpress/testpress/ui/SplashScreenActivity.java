@@ -9,8 +9,6 @@ import android.os.Handler;
 import android.widget.ImageView;
 
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
@@ -18,20 +16,13 @@ import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
-import in.testpress.exam.TestpressExam;
 import in.testpress.store.TestpressStore;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
-import in.testpress.testpress.authenticator.LoginActivity;
-import in.testpress.testpress.authenticator.ResetPasswordActivity;
-import in.testpress.testpress.core.Constants;
-import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.ui.utils.DeeplinkHandler;
-import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.UpdateAppDialogManager;
 import in.testpress.util.Assert;
-import in.testpress.util.ViewUtils;
 
 import static in.testpress.core.TestpressSdk.ACTION_PRESSED_HOME;
 import static in.testpress.core.TestpressSdk.COURSE_CONTENT_DETAIL_REQUEST_CODE;
@@ -41,7 +32,6 @@ import static in.testpress.course.TestpressCourse.COURSE_ID;
 import static in.testpress.store.TestpressStore.CONTINUE_PURCHASE;
 import static in.testpress.store.TestpressStore.STORE_REQUEST_CODE;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
-import static in.testpress.testpress.core.Constants.Http.CHAPTERS_PATH;
 
 public class SplashScreenActivity extends Activity {
 
@@ -60,6 +50,12 @@ public class SplashScreenActivity extends Activity {
         Injector.inject(this);
         ButterKnife.inject(this);
         UpdateAppDialogManager.monitor(this);
+
+        if (isNotificationPresent()) {
+            openNotification();
+            return;
+        }
+
         final DeeplinkHandler deeplinkHandler = new DeeplinkHandler(this, serviceProvider);
         new Handler().postDelayed(new Runnable() {
 
@@ -68,6 +64,24 @@ public class SplashScreenActivity extends Activity {
                 deeplinkHandler.handleDeepLinkUrl(getIntent().getData(), true);
             }
         }, SPLASH_TIME_OUT);
+    }
+
+    private boolean isNotificationPresent() {
+        return getIntent().getExtras() != null && getIntent().getExtras().getString("short_url") != null;
+    }
+
+    private void openNotification() {
+        String url = getIntent().getExtras().getString("short_url");
+        try {
+            Uri uri = Uri.parse(url);
+            if (uri.getHost() == null) {
+                uri = Uri.parse(BASE_URL + url);
+            }
+            final DeeplinkHandler deeplinkHandler = new DeeplinkHandler(this, serviceProvider);
+            deeplinkHandler.handleDeepLinkUrl(uri, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.0",
-  "version_code" : 1,
+  "version" : "1.0.1",
+  "version_code" : 2,
   "testpress_site_subdomain" : "balakrishnaandco",
   "package_name" : "in.testpress.balakrishnaandco",
   "app_name" : "Balakrishna and Co | CA",
@@ -11,5 +11,6 @@
   "facebook_app_id" : "733962776688753",
   "server_client_id" : "589544710202-n1re9gbmod6pphlkkdiln5e39t7jsh87.apps.googleusercontent.com",
   "display_username_on_video": true,
-  "white_labeled_host_url": null
+  "white_labeled_host_url": null,
+  "is_growth_hacks_enabled": false
 }

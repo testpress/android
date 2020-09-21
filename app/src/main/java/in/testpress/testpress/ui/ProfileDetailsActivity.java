@@ -8,13 +8,11 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -35,6 +33,8 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.kevinsawicki.wishlist.Toaster;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.snackbar.Snackbar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -84,7 +84,8 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     @InjectView(R.id.edit_profile) ImageView editProfile;
     @InjectView(R.id.edit_profile_photo) ImageView imageEditButton;
     @InjectView(R.id.display_name) TextView displayName;
-    @InjectView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbar;
+    @InjectView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbar;
     @InjectView(R.id.first_name) EditText firstName;
     @InjectView(R.id.last_name) EditText lastName;
     @InjectView(R.id.email) AppCompatTextView email;
@@ -233,10 +234,10 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         if (detail != null) {
             viewRow.setVisibility(View.VISIBLE);
             switch (widget.getClass().getName()) {
-                case "android.support.v7.widget.AppCompatEditText":
+                case "androidx.appcompat.widget.AppCompatEditText":
                     ((EditText)widget).setText(detail);
                     break;
-                case "android.support.v7.widget.AppCompatSpinner":
+                case "androidx.appcompat.widget.AppCompatSpinner":
                     if(widget == gender) {
                         ((Spinner) widget).setSelection(genderSpinnerAdapter.getPosition(detail));
                     } else if(widget == state){

@@ -34,12 +34,12 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:orientation="vertical">
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/input_height"
                 android:theme="@style/TextLabel"
                 android:layout_marginTop="8dp">
-                <android.support.v7.widget.AppCompatEditText
+                <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/et_username"
                     android:maxLines="1"
                     android:singleLine="true"
@@ -49,7 +49,7 @@
                     android:nextFocusDown="@+id/et_email"
                     android:hint="@string/label_username"
                     style="@style/Input"/>
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
             <TextView
                 android:id="@+id/username_error"
                 android:layout_width="wrap_content"
@@ -63,12 +63,12 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:orientation="vertical">
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/input_height"
                 android:theme="@style/TextLabel"
                 android:layout_marginTop="8dp">
-                <android.support.v7.widget.AppCompatEditText
+                <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/et_email"
                     android:maxLines="1"
                     android:singleLine="true"
@@ -79,7 +79,7 @@
                     android:inputType="textEmailAddress"
                     android:hint="@string/label_email"
                     style="@style/Input"/>
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
             <TextView
                 android:id="@+id/email_error"
                 android:layout_width="wrap_content"
@@ -112,7 +112,7 @@
                     app:ccp_defaultNameCode="IND" />
 
                 <!-- Phone Label -->
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/phone_layout"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/input_height"
@@ -120,7 +120,7 @@
                     android:layout_marginBottom="8dp"
                     android:theme="@style/TextLabel">
 
-                    <android.support.v7.widget.AppCompatEditText
+                    <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/et_phone"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/input_height"
@@ -131,7 +131,7 @@
                         android:nextFocusDown="@+id/et_password"
                         android:singleLine="true"
                             style="@style/Input"/>
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
             <TextView
@@ -147,12 +147,12 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:orientation="vertical">
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/input_height"
                 android:theme="@style/TextLabel"
                 android:layout_marginTop="8dp">
-                <android.support.v7.widget.AppCompatEditText
+                <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/et_password"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/input_height"
@@ -164,7 +164,7 @@
                     android:nextFocusDown="@+id/et_password_confirm"
                     android:hint="@string/label_password"
                     style="@style/Input"/>
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
             <TextView
                 android:id="@+id/password_error"
                 android:layout_width="wrap_content"
@@ -178,13 +178,13 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:orientation="vertical">
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/input_height"
                 android:theme="@style/TextLabel"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp">
-                <android.support.v7.widget.AppCompatEditText
+                <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/et_password_confirm"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/input_height"
@@ -195,7 +195,7 @@
                     android:singleLine="true"
                     android:hint="Confirm password"
                     style="@style/Input"/>
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
             <TextView
                 android:id="@+id/confirm_password_error"
                 android:layout_width="wrap_content"
@@ -203,7 +203,7 @@
                 style="@style/InputError"/>
         </LinearLayout>
 
-        <android.support.v7.widget.AppCompatButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/b_register"
             style="@style/Button"
             android:layout_width="fill_parent"

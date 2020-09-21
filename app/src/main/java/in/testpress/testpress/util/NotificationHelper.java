@@ -60,8 +60,7 @@ public class NotificationHelper extends ContextWrapper {
     }
 
     public static void createChannels(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
-                getManager(context).getNotificationChannels().isEmpty()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createChannel(context, POSTS_CHANNEL, R.string.posts_channel);
             createChannel(context, CONTENTS_CHANNEL, R.string.contents_channel);
         }

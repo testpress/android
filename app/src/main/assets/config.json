@@ -1,6 +1,6 @@
 {
-  "version" : "1.3.1",
-  "version_code" : 183,
+  "version" : "1.3.2",
+  "version_code" : 184,
   "testpress_site_subdomain": "race",
   "package_name": "in.raceinstitute",
   "app_name" : "RACE",

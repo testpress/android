@@ -1,7 +1,7 @@
 package in.testpress.testpress.ui;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,7 +59,7 @@ public class BottomNavBarAdapter extends BaseAdapter {
         TextView menuTitle = ((TextView) convertView.findViewById(R.id.menu_title));
         int titleResId = mMenuItemTitleIds.get(position);
 
-        if (UIUtils.getMenuItemName(titleResId, minstituteSettings) != "") {
+        if (!UIUtils.getMenuItemName(titleResId, minstituteSettings).isEmpty()) {
             menuTitle.setText(UIUtils.getMenuItemName(titleResId, minstituteSettings));
         } else {
             menuTitle.setText(titleResId);

@@ -10,21 +10,18 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
-import android.support.customtabs.CustomTabsIntent;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.Loader;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
+import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.loader.app.LoaderManager;
+import androidx.core.content.ContextCompat;
+import androidx.loader.content.Loader;
+import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.format.DateUtils;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
@@ -35,6 +32,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -77,7 +75,6 @@ import in.testpress.testpress.models.UserDao;
 import in.testpress.testpress.ui.view.RoundedImageView;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
-import in.testpress.testpress.util.ShareUtil;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.util.FullScreenChromeClient;
 import in.testpress.util.ViewUtils;
@@ -89,7 +86,7 @@ import static in.testpress.testpress.util.CommonUtils.getException;
 public class ForumActivity extends TestpressFragmentActivity implements
         LoaderManager.LoaderCallbacks<List<Comment>> {
 
-    public static final String URL = "url";
+    public static final String URL = "Url";
     public static final String UPDATE_TIME_SPAN = "updateTimeSpan";
     public static final int NEW_COMMENT_SYNC_INTERVAL = 10000; // 10 sec
     private static final int PREVIOUS_COMMENTS_LOADER_ID = 0;
@@ -252,16 +249,16 @@ public class ForumActivity extends TestpressFragmentActivity implements
 
                     forum.setModified(ForumActivity.this.forum.getModified());
                     forum.setModifiedDate(simpleDateFormat.parse(forum.getModified()).getTime());
-                    if (forum.category != null) {
-                        forum.setCategory(forum.category);
+                    if (forum.getRawCategory() != null) {
+                        forum.setCategory(forum.getRawCategory());
                         CategoryDao categoryDao =
                                 TestpressApplication.getDaoSession().getCategoryDao();
-                        categoryDao.insertOrReplace(forum.category);
+                        categoryDao.insertOrReplace(forum.getRawCategory());
                     }
-                    User user = forum.createdBy;
+                    User user = forum.getRawCreatedBy();
                     userDao.insertOrReplace(user);
                     forum.setCreatorId(user.getId());
-                    user = forum.lastCommentedBy;
+                    user = forum.getRawLastCommentedBy();
                     if (user != null) {
                         userDao.insertOrReplace(user);
                         forum.setCommentorId(user.getId());
@@ -300,8 +297,8 @@ public class ForumActivity extends TestpressFragmentActivity implements
             votesCount.setTextColor(primaryColor);
             downButton.setColorFilter(grayColor);
         }
-        userName.setText(forum.getCreatedBy().getFirstName() + " " + forum.getCreatedBy().getLastName());
-        imageLoader.displayImage(forum.getCreatedBy().getMediumImage(), roundedImageView, options);
+        userName.setText(forum.getRawCreatedBy().getFirstName() + " " + forum.getRawCreatedBy().getLastName());
+        imageLoader.displayImage(forum.getRawCreatedBy().getMediumImage(), roundedImageView, options);
         if (forum.getContentHtml() != null) {
             WebViewUtils webViewUtils = new WebViewUtils(content) {
                 @Override
@@ -373,7 +370,7 @@ public class ForumActivity extends TestpressFragmentActivity implements
     }
 
     private void voteForumPost(final View view, final int typeOfVote) {
-        if (isSelfVote(forum.getCreatedBy().getId())) {
+        if (isSelfVote(forum.getRawCreatedBy().getId())) {
             showSnackBar(view, R.string.testpress_self_vote_error);
             return;
         }
@@ -477,10 +474,10 @@ public class ForumActivity extends TestpressFragmentActivity implements
         forum = vote.getContentObject();
         forum.setVoteId((long) vote.getId());
         forum.setTypeOfVote(vote.getTypeOfVote());
-        User user = vote.getContentObject().createdBy;
+        User user = vote.getContentObject().getRawCreatedBy();
         userDao.insertOrReplace(user);
         forum.setCreatorId(user.getId());
-        user = vote.getContentObject().lastCommentedBy;
+        user = vote.getContentObject().getRawLastCommentedBy();
         if (user != null) {
             userDao.insertOrReplace(user);
             forum.setCommentorId(user.getId());
@@ -517,9 +514,9 @@ public class ForumActivity extends TestpressFragmentActivity implements
         } else if (exception instanceof RetrofitError) {
             if (((RetrofitError) exception).getResponse().getStatus() == 400) {
                 error = R.string.testpress_self_vote_error;
-                if (TestpressSdk.getTestpressUserId(activity) != forum.getCreatedBy().getId()) {
+                if (TestpressSdk.getTestpressUserId(activity) != forum.getRawCreatedBy().getId()) {
                     TestpressSdk.setTestpressUserId(activity,
-                            Integer.parseInt(forum.getCreatedBy().getId() + ""));
+                            Integer.parseInt(forum.getRawCreatedBy().getId() + ""));
                 }
             }
         }

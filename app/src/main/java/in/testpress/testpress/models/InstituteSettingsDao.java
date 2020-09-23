@@ -47,6 +47,25 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         public final static Property BookmarksEnabled = new Property(21, Boolean.class, "bookmarksEnabled", false, "BOOKMARKS_ENABLED");
         public final static Property ForumEnabled = new Property(22, Boolean.class, "forumEnabled", false, "FORUM_ENABLED");
         public final static Property TwilioEnabled = new Property(23, Boolean.class, "twilioEnabled", false, "TWILIO_ENABLED");
+        public final static Property Allow_profile_edit = new Property(24, Boolean.class, "allow_profile_edit", false, "ALLOW_PROFILE_EDIT");
+        public final static Property LearnLabel = new Property(25, String.class, "learnLabel", false, "LEARN_LABEL");
+        public final static Property LeaderboardLabel = new Property(26, String.class, "leaderboardLabel", false, "LEADERBOARD_LABEL");
+        public final static Property DashboardLabel = new Property(27, String.class, "dashboardLabel", false, "DASHBOARD_LABEL");
+        public final static Property BookmarksLabel = new Property(28, String.class, "bookmarksLabel", false, "BOOKMARKS_LABEL");
+        public final static Property LoginLabel = new Property(29, String.class, "loginLabel", false, "LOGIN_LABEL");
+        public final static Property LoginPasswordLabel = new Property(30, String.class, "loginPasswordLabel", false, "LOGIN_PASSWORD_LABEL");
+        public final static Property AboutUs = new Property(31, String.class, "aboutUs", false, "ABOUT_US");
+        public final static Property DisableStudentAnalytics = new Property(32, Boolean.class, "disableStudentAnalytics", false, "DISABLE_STUDENT_ANALYTICS");
+        public final static Property CustomRegistrationEnabled = new Property(33, Boolean.class, "customRegistrationEnabled", false, "CUSTOM_REGISTRATION_ENABLED");
+        public final static Property EnableParallelLoginRestriction = new Property(34, Boolean.class, "enableParallelLoginRestriction", false, "ENABLE_PARALLEL_LOGIN_RESTRICTION");
+        public final static Property MaxParallelLogins = new Property(35, Integer.class, "maxParallelLogins", false, "MAX_PARALLEL_LOGINS");
+        public final static Property LockoutLimit = new Property(36, Integer.class, "lockoutLimit", false, "LOCKOUT_LIMIT");
+        public final static Property CooloffTime = new Property(37, String.class, "cooloffTime", false, "COOLOFF_TIME");
+        public final static Property AppToolbarLogo = new Property(38, String.class, "appToolbarLogo", false, "APP_TOOLBAR_LOGO");
+        public final static Property AppShareLink = new Property(39, String.class, "appShareLink", false, "APP_SHARE_LINK");
+        public final static Property ServerTime = new Property(40, String.class, "serverTime", false, "SERVER_TIME");
+        public final static Property AllowScreenshotInApp = new Property(41, Boolean.class, "allowScreenshotInApp", false, "ALLOW_SCREENSHOT_IN_APP");
+        public final static Property AndroidSentryDns = new Property(42, String.class, "androidSentryDns", false, "ANDROID_SENTRY_DNS");
     };
 
 
@@ -85,7 +104,26 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
                 "\"COMMENTS_VOTING_ENABLED\" INTEGER NOT NULL ," + // 20: commentsVotingEnabled
                 "\"BOOKMARKS_ENABLED\" INTEGER," + // 21: bookmarksEnabled
                 "\"FORUM_ENABLED\" INTEGER," + // 22: forumEnabled
-                "\"TWILIO_ENABLED\" INTEGER);"); // 23: twilioEnabled
+                "\"TWILIO_ENABLED\" INTEGER," + // 23: twilioEnabled
+                "\"ALLOW_PROFILE_EDIT\" INTEGER," + // 24: allow_profile_edit
+                "\"LEARN_LABEL\" TEXT," + // 25: learnLabel
+                "\"LEADERBOARD_LABEL\" TEXT," + // 26: leaderboardLabel
+                "\"DASHBOARD_LABEL\" TEXT," + // 27: dashboardLabel
+                "\"BOOKMARKS_LABEL\" TEXT," + // 28: bookmarksLabel
+                "\"LOGIN_LABEL\" TEXT," + // 29: loginLabel
+                "\"LOGIN_PASSWORD_LABEL\" TEXT," + // 30: loginPasswordLabel
+                "\"ABOUT_US\" TEXT," + // 31: aboutUs
+                "\"DISABLE_STUDENT_ANALYTICS\" INTEGER," + // 32: disableStudentAnalytics
+                "\"CUSTOM_REGISTRATION_ENABLED\" INTEGER," + // 33: customRegistrationEnabled
+                "\"ENABLE_PARALLEL_LOGIN_RESTRICTION\" INTEGER," + // 34: enableParallelLoginRestriction
+                "\"MAX_PARALLEL_LOGINS\" INTEGER," + // 35: maxParallelLogins
+                "\"LOCKOUT_LIMIT\" INTEGER," + // 36: lockoutLimit
+                "\"COOLOFF_TIME\" TEXT," + // 37: cooloffTime
+                "\"APP_TOOLBAR_LOGO\" TEXT," + // 38: appToolbarLogo
+                "\"APP_SHARE_LINK\" TEXT," + // 39: appShareLink
+                "\"SERVER_TIME\" TEXT," + // 40: serverTime
+                "\"ALLOW_SCREENSHOT_IN_APP\" INTEGER," + // 41: allowScreenshotInApp
+                "\"ANDROID_SENTRY_DNS\" TEXT);"); // 42: androidSentryDns
     }
 
     /** Drops the underlying database table. */
@@ -214,6 +252,101 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         if (twilioEnabled != null) {
             stmt.bindLong(24, twilioEnabled ? 1L: 0L);
         }
+ 
+        Boolean allow_profile_edit = entity.getAllow_profile_edit();
+        if (allow_profile_edit != null) {
+            stmt.bindLong(25, allow_profile_edit ? 1L: 0L);
+        }
+ 
+        String learnLabel = entity.getLearnLabel();
+        if (learnLabel != null) {
+            stmt.bindString(26, learnLabel);
+        }
+ 
+        String leaderboardLabel = entity.getLeaderboardLabel();
+        if (leaderboardLabel != null) {
+            stmt.bindString(27, leaderboardLabel);
+        }
+ 
+        String dashboardLabel = entity.getDashboardLabel();
+        if (dashboardLabel != null) {
+            stmt.bindString(28, dashboardLabel);
+        }
+ 
+        String bookmarksLabel = entity.getBookmarksLabel();
+        if (bookmarksLabel != null) {
+            stmt.bindString(29, bookmarksLabel);
+        }
+ 
+        String loginLabel = entity.getLoginLabel();
+        if (loginLabel != null) {
+            stmt.bindString(30, loginLabel);
+        }
+ 
+        String loginPasswordLabel = entity.getLoginPasswordLabel();
+        if (loginPasswordLabel != null) {
+            stmt.bindString(31, loginPasswordLabel);
+        }
+ 
+        String aboutUs = entity.getAboutUs();
+        if (aboutUs != null) {
+            stmt.bindString(32, aboutUs);
+        }
+ 
+        Boolean disableStudentAnalytics = entity.getDisableStudentAnalytics();
+        if (disableStudentAnalytics != null) {
+            stmt.bindLong(33, disableStudentAnalytics ? 1L: 0L);
+        }
+ 
+        Boolean customRegistrationEnabled = entity.getCustomRegistrationEnabled();
+        if (customRegistrationEnabled != null) {
+            stmt.bindLong(34, customRegistrationEnabled ? 1L: 0L);
+        }
+ 
+        Boolean enableParallelLoginRestriction = entity.getEnableParallelLoginRestriction();
+        if (enableParallelLoginRestriction != null) {
+            stmt.bindLong(35, enableParallelLoginRestriction ? 1L: 0L);
+        }
+ 
+        Integer maxParallelLogins = entity.getMaxParallelLogins();
+        if (maxParallelLogins != null) {
+            stmt.bindLong(36, maxParallelLogins);
+        }
+ 
+        Integer lockoutLimit = entity.getLockoutLimit();
+        if (lockoutLimit != null) {
+            stmt.bindLong(37, lockoutLimit);
+        }
+ 
+        String cooloffTime = entity.getCooloffTime();
+        if (cooloffTime != null) {
+            stmt.bindString(38, cooloffTime);
+        }
+ 
+        String appToolbarLogo = entity.getAppToolbarLogo();
+        if (appToolbarLogo != null) {
+            stmt.bindString(39, appToolbarLogo);
+        }
+ 
+        String appShareLink = entity.getAppShareLink();
+        if (appShareLink != null) {
+            stmt.bindString(40, appShareLink);
+        }
+ 
+        String serverTime = entity.getServerTime();
+        if (serverTime != null) {
+            stmt.bindString(41, serverTime);
+        }
+ 
+        Boolean allowScreenshotInApp = entity.getAllowScreenshotInApp();
+        if (allowScreenshotInApp != null) {
+            stmt.bindLong(42, allowScreenshotInApp ? 1L: 0L);
+        }
+ 
+        String androidSentryDns = entity.getAndroidSentryDns();
+        if (androidSentryDns != null) {
+            stmt.bindString(43, androidSentryDns);
+        }
     }
 
     /** @inheritdoc */
@@ -249,7 +382,26 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             cursor.getShort(offset + 20) != 0, // commentsVotingEnabled
             cursor.isNull(offset + 21) ? null : cursor.getShort(offset + 21) != 0, // bookmarksEnabled
             cursor.isNull(offset + 22) ? null : cursor.getShort(offset + 22) != 0, // forumEnabled
-            cursor.isNull(offset + 23) ? null : cursor.getShort(offset + 23) != 0 // twilioEnabled
+            cursor.isNull(offset + 23) ? null : cursor.getShort(offset + 23) != 0, // twilioEnabled
+            cursor.isNull(offset + 24) ? null : cursor.getShort(offset + 24) != 0, // allow_profile_edit
+            cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25), // learnLabel
+            cursor.isNull(offset + 26) ? null : cursor.getString(offset + 26), // leaderboardLabel
+            cursor.isNull(offset + 27) ? null : cursor.getString(offset + 27), // dashboardLabel
+            cursor.isNull(offset + 28) ? null : cursor.getString(offset + 28), // bookmarksLabel
+            cursor.isNull(offset + 29) ? null : cursor.getString(offset + 29), // loginLabel
+            cursor.isNull(offset + 30) ? null : cursor.getString(offset + 30), // loginPasswordLabel
+            cursor.isNull(offset + 31) ? null : cursor.getString(offset + 31), // aboutUs
+            cursor.isNull(offset + 32) ? null : cursor.getShort(offset + 32) != 0, // disableStudentAnalytics
+            cursor.isNull(offset + 33) ? null : cursor.getShort(offset + 33) != 0, // customRegistrationEnabled
+            cursor.isNull(offset + 34) ? null : cursor.getShort(offset + 34) != 0, // enableParallelLoginRestriction
+            cursor.isNull(offset + 35) ? null : cursor.getInt(offset + 35), // maxParallelLogins
+            cursor.isNull(offset + 36) ? null : cursor.getInt(offset + 36), // lockoutLimit
+            cursor.isNull(offset + 37) ? null : cursor.getString(offset + 37), // cooloffTime
+            cursor.isNull(offset + 38) ? null : cursor.getString(offset + 38), // appToolbarLogo
+            cursor.isNull(offset + 39) ? null : cursor.getString(offset + 39), // appShareLink
+            cursor.isNull(offset + 40) ? null : cursor.getString(offset + 40), // serverTime
+            cursor.isNull(offset + 41) ? null : cursor.getShort(offset + 41) != 0, // allowScreenshotInApp
+            cursor.isNull(offset + 42) ? null : cursor.getString(offset + 42) // androidSentryDns
         );
         return entity;
     }
@@ -281,6 +433,25 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         entity.setBookmarksEnabled(cursor.isNull(offset + 21) ? null : cursor.getShort(offset + 21) != 0);
         entity.setForumEnabled(cursor.isNull(offset + 22) ? null : cursor.getShort(offset + 22) != 0);
         entity.setTwilioEnabled(cursor.isNull(offset + 23) ? null : cursor.getShort(offset + 23) != 0);
+        entity.setAllow_profile_edit(cursor.isNull(offset + 24) ? null : cursor.getShort(offset + 24) != 0);
+        entity.setLearnLabel(cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25));
+        entity.setLeaderboardLabel(cursor.isNull(offset + 26) ? null : cursor.getString(offset + 26));
+        entity.setDashboardLabel(cursor.isNull(offset + 27) ? null : cursor.getString(offset + 27));
+        entity.setBookmarksLabel(cursor.isNull(offset + 28) ? null : cursor.getString(offset + 28));
+        entity.setLoginLabel(cursor.isNull(offset + 29) ? null : cursor.getString(offset + 29));
+        entity.setLoginPasswordLabel(cursor.isNull(offset + 30) ? null : cursor.getString(offset + 30));
+        entity.setAboutUs(cursor.isNull(offset + 31) ? null : cursor.getString(offset + 31));
+        entity.setDisableStudentAnalytics(cursor.isNull(offset + 32) ? null : cursor.getShort(offset + 32) != 0);
+        entity.setCustomRegistrationEnabled(cursor.isNull(offset + 33) ? null : cursor.getShort(offset + 33) != 0);
+        entity.setEnableParallelLoginRestriction(cursor.isNull(offset + 34) ? null : cursor.getShort(offset + 34) != 0);
+        entity.setMaxParallelLogins(cursor.isNull(offset + 35) ? null : cursor.getInt(offset + 35));
+        entity.setLockoutLimit(cursor.isNull(offset + 36) ? null : cursor.getInt(offset + 36));
+        entity.setCooloffTime(cursor.isNull(offset + 37) ? null : cursor.getString(offset + 37));
+        entity.setAppToolbarLogo(cursor.isNull(offset + 38) ? null : cursor.getString(offset + 38));
+        entity.setAppShareLink(cursor.isNull(offset + 39) ? null : cursor.getString(offset + 39));
+        entity.setServerTime(cursor.isNull(offset + 40) ? null : cursor.getString(offset + 40));
+        entity.setAllowScreenshotInApp(cursor.isNull(offset + 41) ? null : cursor.getShort(offset + 41) != 0);
+        entity.setAndroidSentryDns(cursor.isNull(offset + 42) ? null : cursor.getString(offset + 42));
      }
     
     /** @inheritdoc */

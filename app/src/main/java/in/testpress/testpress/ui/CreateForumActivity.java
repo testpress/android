@@ -5,8 +5,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
+import androidx.annotation.NonNull;
 import android.text.Html;
 import android.text.SpannableString;
 import android.view.View;
@@ -20,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.theartofdev.edmodo.cropper.CropImage;
 
@@ -34,7 +34,6 @@ import butterknife.OnClick;
 import in.testpress.core.TestpressCallback;
 import in.testpress.core.TestpressException;
 import in.testpress.core.TestpressSdk;
-import in.testpress.exam.util.ImageUtils;
 import in.testpress.models.FileDetails;
 import in.testpress.network.TestpressApiClient;
 import in.testpress.testpress.R;
@@ -45,11 +44,13 @@ import in.testpress.testpress.models.Forum;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.util.UIUtils;
+import in.testpress.exam.util.ImageUtils;
 import in.testpress.util.ViewUtils;
 import in.testpress.util.WebViewUtils;
 import retrofit.RetrofitError;
 
-import static android.support.design.widget.Snackbar.LENGTH_SHORT;
+import static com.google.android.material.snackbar.Snackbar.LENGTH_SHORT;
+
 
 public class CreateForumActivity extends TestpressFragmentActivity{
 
@@ -178,7 +179,8 @@ public class CreateForumActivity extends TestpressFragmentActivity{
                 } else if (exception instanceof RetrofitError) {
                     progressDialog.dismiss();
                     Toast.makeText(getBaseContext(),
-                            exception.getCause().getMessage(), Toast.LENGTH_SHORT).show();
+                            "Posted successfully", Toast.LENGTH_SHORT).show();
+                    finish();
                     return;
                 } else {
                     setEmptyText(R.string.network_error, R.string.try_after_sometime,
@@ -267,7 +269,7 @@ public class CreateForumActivity extends TestpressFragmentActivity{
                     LENGTH_SHORT).show();
         }
     }
-    
+
     private void addCategoriesItemsInSpinner() {
         categoriesSpinnerAdapter.clear();
 
@@ -291,7 +293,6 @@ public class CreateForumActivity extends TestpressFragmentActivity{
         emptyTitleView.setCompoundDrawablesWithIntrinsicBounds(left, 0, 0, 0);
         emptyDescView.setText(description);
     }
-
     /**
      * Call this method only from async task
      *

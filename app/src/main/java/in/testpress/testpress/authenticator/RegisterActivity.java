@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.auth.api.phone.SmsRetriever;
 import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
@@ -56,6 +55,7 @@ import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.authenticator.LoginActivity.REQUEST_CODE_REGISTER_USER;
 import static in.testpress.testpress.authenticator.RegisterActivity.VerificationMethod.EMAIL;
 import static in.testpress.testpress.authenticator.RegisterActivity.VerificationMethod.MOBILE;
+import static in.testpress.testpress.authenticator.RegisterActivity.VerificationMethod.NONE;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -83,7 +83,7 @@ public class RegisterActivity extends AppCompatActivity {
     private InternetConnectivityChecker internetConnectivityChecker = new InternetConnectivityChecker(this);
     private boolean isTwilioEnabled;
     private VerificationMethod verificationMethod;
-    enum VerificationMethod { MOBILE, EMAIL }
+    enum VerificationMethod { MOBILE, EMAIL, NONE }
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -99,8 +99,12 @@ public class RegisterActivity extends AppCompatActivity {
 
         if (instituteSettingsList.size() != 0) {
             InstituteSettings instituteSettings = instituteSettingsList.get(0);
-            verificationMethod =
-                    instituteSettings.getVerificationMethod().equals("M") ? MOBILE : EMAIL;
+            if (instituteSettings.getVerificationMethod().equals("NV")) {
+                verificationMethod = NONE;
+            } else {
+                verificationMethod =
+                        instituteSettings.getVerificationMethod().equals("M") ? MOBILE : EMAIL;
+            }
             isTwilioEnabled = instituteSettings.getTwilioEnabled();
         } else {
             // Never happen, just for a safety.
@@ -238,9 +242,13 @@ public class RegisterActivity extends AppCompatActivity {
                     intent.putExtra("phoneNumber", registrationSuccessResponse.getPhone());
                     intent.putExtras(getIntent().getExtras());
                     startActivityForResult(intent, REQUEST_CODE_REGISTER_USER);
-                } else {
+                } else if (verificationMethod.equals(EMAIL)) {
                     registerLayout.setVisibility(View.GONE);
                     successDescription.setText(R.string.activation_email_sent_message);
+                    successContainer.setVisibility(View.VISIBLE);
+                } else {
+                    registerLayout.setVisibility(View.GONE);
+                    successDescription.setText(R.string.register_success_message);
                     successContainer.setVisibility(View.VISIBLE);
                 }
             }
@@ -276,7 +284,7 @@ public class RegisterActivity extends AppCompatActivity {
             isValid = false;
         }
 
-        if ((!populated(phoneText) && !verificationMethod.equals(EMAIL))) {
+        if ((!populated(phoneText) && verificationMethod.equals(MOBILE))) {
             phoneError.setVisibility(View.VISIBLE);
             phoneError.setText(getString(R.string.empty_input_error));
             isValid = false;

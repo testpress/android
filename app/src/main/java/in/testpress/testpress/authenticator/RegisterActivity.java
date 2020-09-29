@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.auth.api.phone.SmsRetriever;
 import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
@@ -83,7 +82,7 @@ public class RegisterActivity extends AppCompatActivity {
     private InternetConnectivityChecker internetConnectivityChecker = new InternetConnectivityChecker(this);
     private boolean isTwilioEnabled;
     private VerificationMethod verificationMethod;
-    enum VerificationMethod { MOBILE, EMAIL }
+    public enum VerificationMethod { MOBILE, EMAIL, NONE }
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -238,6 +237,10 @@ public class RegisterActivity extends AppCompatActivity {
                     intent.putExtra("phoneNumber", registrationSuccessResponse.getPhone());
                     intent.putExtras(getIntent().getExtras());
                     startActivityForResult(intent, REQUEST_CODE_REGISTER_USER);
+                } else if (verificationMethod.equals(EMAIL)) {
+                    registerLayout.setVisibility(View.GONE);
+                    successDescription.setText(R.string.activation_email_sent_message);
+                    successContainer.setVisibility(View.VISIBLE);
                 } else {
                     registerLayout.setVisibility(View.GONE);
                     successDescription.setText(R.string.activation_email_sent_message);
@@ -276,7 +279,7 @@ public class RegisterActivity extends AppCompatActivity {
             isValid = false;
         }
 
-        if ((!populated(phoneText) && !verificationMethod.equals(EMAIL))) {
+        if ((!populated(phoneText) && verificationMethod.equals(MOBILE))) {
             phoneError.setVisibility(View.VISIBLE);
             phoneError.setText(getString(R.string.empty_input_error));
             isValid = false;

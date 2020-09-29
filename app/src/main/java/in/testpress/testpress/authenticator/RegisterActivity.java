@@ -47,6 +47,7 @@ import in.testpress.testpress.models.RegistrationErrorDetails;
 import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.PhoneNumberValidator;
+import in.testpress.testpress.util.VerificationType;
 import in.testpress.util.EventsTrackerFacade;
 import retrofit.RetrofitError;
 
@@ -98,8 +99,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         if (instituteSettingsList.size() != 0) {
             InstituteSettings instituteSettings = instituteSettingsList.get(0);
-            verificationMethod =
-                    instituteSettings.getVerificationMethod().equals("M") ? MOBILE : EMAIL;
+            verificationMethod = new VerificationType().get(instituteSettings);
             isTwilioEnabled = instituteSettings.getTwilioEnabled();
         } else {
             // Never happen, just for a safety.

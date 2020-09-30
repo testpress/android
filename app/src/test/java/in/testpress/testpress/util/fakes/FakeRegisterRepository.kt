@@ -1,21 +1,22 @@
 package `in`.testpress.testpress.util.fakes
 
 import `in`.testpress.enums.Status
+import `in`.testpress.testpress.core.Resource
+import `in`.testpress.testpress.models.RegistrationSuccessResponse
+import androidx.lifecycle.MutableLiveData
 import retrofit.RetrofitError
 import java.io.IOException
 
 class FakeRegisterRepository {
 
     var apiStatus = Status.SUCCESS
-    var isRegisterSuccessful: Boolean = false
-    var exception: Exception? = null
+    lateinit var result: Resource<RegistrationSuccessResponse>
 
     fun register(userDetails: HashMap<String, String>) {
         if (apiStatus == Status.SUCCESS) {
-            isRegisterSuccessful = true
+            result = Resource.success(RegistrationSuccessResponse())
         } else {
-            isRegisterSuccessful = false
-            exception = RetrofitError.networkError("", IOException("Something went wrong"))
+            result = Resource.error(IOException("Something went wrong"), null)
         }
     }
 }

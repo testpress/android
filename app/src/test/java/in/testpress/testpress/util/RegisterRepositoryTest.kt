@@ -24,7 +24,7 @@ class RegisterRepositoryTest  {
         runBlocking {
             repository.apiStatus = Status.SUCCESS
             repository.register(userDetails = hashMapOf())
-            assertEquals(repository.isRegisterSuccessful, true)
+            assertEquals(repository.result.status, Status.SUCCESS)
         }
     }
 
@@ -33,8 +33,7 @@ class RegisterRepositoryTest  {
         runBlocking {
             repository.apiStatus = Status.ERROR
             repository.register(hashMapOf())
-            assertEquals(repository.isRegisterSuccessful, false)
-            assertTrue(repository.exception != null)
+            assertEquals(repository.result.status, Status.ERROR)
         }
     }
 }

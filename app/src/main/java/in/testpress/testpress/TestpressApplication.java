@@ -4,6 +4,8 @@ import android.app.Application;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.multidex.MultiDex;
 
@@ -14,9 +16,16 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
+import java.util.List;
+
 import in.testpress.testpress.models.DaoMaster;
 import in.testpress.testpress.models.DaoSession;
+import in.testpress.testpress.models.InstituteSettings;
+import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.util.NotificationHelper;
+import io.branch.referral.Branch;
+
+import static in.testpress.testpress.BuildConfig.BASE_URL;
 
 public class TestpressApplication extends Application {
     private static TestpressApplication instance;
@@ -52,6 +61,7 @@ public class TestpressApplication extends Application {
         DaoMaster daoMaster = new DaoMaster(db);
         daoSession = daoMaster.newSession();
         NotificationHelper.createChannels(this);
+        Branch.getAutoInstance(this);
     }
 
     public static SQLiteDatabase getDatabase(@NonNull Context context) {

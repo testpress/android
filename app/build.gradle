@@ -25,6 +25,8 @@ dependencies {
     // Event Bus
     implementation 'com.squareup:otto:1.3.5'
 
+    implementation 'io.branch.sdk.android:library:4.4.0'
+
     // Image Loading
     implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
 

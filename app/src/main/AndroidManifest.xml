@@ -41,8 +41,16 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="ranjitharpathology"/>
                 <data android:scheme="https" android:host="@string/host_url"/>
                 <data android:scheme="http" android:host="@string/host_url" />
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="ranjitharpathology.app.link" />
+                <data android:scheme="http" android:host="ranjitharpathology.app.link" />
             </intent-filter>
         </activity>
         <activity
@@ -197,6 +205,10 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Web View" />
 
+        <!-- Branch init -->
+        <meta-data android:name="io.branch.sdk.BranchKey" android:value="key_live_bdV7IGKnYOKLAtGE8G5BjkglAybvdKjO" />
+        <meta-data android:name="io.branch.sdk.BranchKey.test" android:value="key_test_dnQ8RKJg1PRJwvTNnKa22gdawCdxaSi5" />
+        <meta-data android:name="io.branch.sdk.TestMode" android:value="false" />
     </application>
 
 </manifest>

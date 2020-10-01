@@ -9,6 +9,10 @@ import android.os.Handler;
 import android.widget.ImageView;
 
 
+import org.json.JSONObject;
+
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
@@ -19,10 +23,17 @@ import in.testpress.course.TestpressCourse;
 import in.testpress.store.TestpressStore;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
+import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
+import in.testpress.testpress.models.DaoSession;
+import in.testpress.testpress.models.InstituteSettings;
+import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.ui.utils.DeeplinkHandler;
+import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UpdateAppDialogManager;
 import in.testpress.util.Assert;
+import io.branch.referral.Branch;
+import io.branch.referral.BranchError;
 
 import static in.testpress.core.TestpressSdk.ACTION_PRESSED_HOME;
 import static in.testpress.core.TestpressSdk.COURSE_CONTENT_DETAIL_REQUEST_CODE;
@@ -43,6 +54,8 @@ public class SplashScreenActivity extends Activity {
     // Splash screen timer
     private static final int SPLASH_TIME_OUT = 2000;
 
+    private Handler handler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,8 +70,8 @@ public class SplashScreenActivity extends Activity {
         }
 
         final DeeplinkHandler deeplinkHandler = new DeeplinkHandler(this, serviceProvider);
-        new Handler().postDelayed(new Runnable() {
-
+        handler = new Handler();
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 deeplinkHandler.handleDeepLinkUrl(getIntent().getData(), true);
@@ -95,6 +108,49 @@ public class SplashScreenActivity extends Activity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         splashImage.setImageResource(R.drawable.splash_screen);
+    }
+
+    private Uri getDeeplinkUriFromBranch(JSONObject branchData) {
+        Object nonBranchLink = branchData.optString("+non_branch_link");
+        Object deeplinkPath = branchData.optString("$deeplink_path");
+        Object androidDeeplinkPath = branchData.optString("$android_deeplink_path");
+
+        Uri uri = null;
+        if (!Strings.isNullOrEmpty(androidDeeplinkPath)) {
+            uri = Uri.parse(androidDeeplinkPath.toString());
+        } else if (!Strings.isNullOrEmpty(deeplinkPath)) {
+            uri = Uri.parse(deeplinkPath.toString());
+        } else if (!Strings.isNullOrEmpty(nonBranchLink)) {
+            uri = Uri.parse(nonBranchLink.toString());
+        }
+        return uri;
+    }
+
+    private Branch.BranchReferralInitListener branchReferralInitListener =
+            new Branch.BranchReferralInitListener() {
+                @Override
+                public void onInitFinished(JSONObject referringParams, BranchError error) {
+                    if (error == null) {
+                        handler.removeCallbacksAndMessages(null);
+                        final DeeplinkHandler deeplinkHandler = new DeeplinkHandler(SplashScreenActivity.this, serviceProvider);
+                        deeplinkHandler.handleDeepLinkUrl(getDeeplinkUriFromBranch(referringParams), true);
+                    }
+                }
+            };
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        this.setIntent(intent);
+        Branch.sessionBuilder(this).withCallback(branchReferralInitListener).reInit();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Branch branch = Branch.getInstance();
+        branch.setRetryCount(5);
+        Branch.sessionBuilder(this).withCallback(branchReferralInitListener).withData(this.getIntent().getData()).init();
     }
 
     @Override

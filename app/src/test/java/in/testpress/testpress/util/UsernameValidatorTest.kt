@@ -19,33 +19,33 @@ class UserNameValidatorTest {
     }
 
     @Test
-    fun usernameWithHyphenReturnsTrue() {
-        Assert.assertTrue(isUsernameValid("name-name"))
-    }
-
-    @Test
-    fun usernameWithPeriodReturnsTrue() {
-        Assert.assertTrue(isUsernameValid("name.name"))
-    }
-
-    @Test
-    fun usernameWithPlusReturnsTrue() {
-        Assert.assertTrue(isUsernameValid("+name"))
-    }
-
-    @Test
     fun usernameWithUnderscoreReturnsTrue() {
         Assert.assertTrue(isUsernameValid("name_05"))
     }
 
     @Test
-    fun usernameWithAtSignReturnsTrue() {
-        Assert.assertTrue(isUsernameValid("name@s"))
+    fun usernameWithHyphenReturnsFalse() {
+        Assert.assertFalse(isUsernameValid("name-name"))
     }
 
     @Test
-    fun usernameWithAlphaNumericAndSpecialCharactersReturnsTrue() {
-        Assert.assertTrue(isUsernameValid("name@123.s+76-sa0"))
+    fun usernameWithPeriodReturnsFalse() {
+        Assert.assertFalse(isUsernameValid("name.name"))
+    }
+
+    @Test
+    fun usernameWithPlusReturnsFalse() {
+        Assert.assertFalse(isUsernameValid("+name"))
+    }
+
+    @Test
+    fun usernameWithAtSignReturnsFalse() {
+        Assert.assertFalse(isUsernameValid("name@s"))
+    }
+
+    @Test
+    fun usernameWithAlphaNumericAndSpecialCharactersReturnsFalse() {
+        Assert.assertFalse(isUsernameValid("name@123.s+76-sa0"))
     }
 
     @Test

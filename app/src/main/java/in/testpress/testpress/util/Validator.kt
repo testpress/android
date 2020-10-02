@@ -14,7 +14,7 @@ object Validator {
     }
 
     fun isUsernameValid(username: String?): Boolean {
-        val usernameRegex = "^[A-Za-z0-9_@.+-]*"
+        val usernameRegex = "^[A-Za-z0-9_]*"
         val pattern = Pattern.compile(usernameRegex)
         return if (username == null) {
             false

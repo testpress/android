@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 
 open class RegisterRepository(val testpressService: TestpressService) {
 
-    var isRegisterSuccessful = MutableLiveData<Boolean>()
+    var result = MutableLiveData<Boolean>()
     var exception: Exception? = null
 
     fun register(userDetails: HashMap<String, String>) {
@@ -24,12 +24,12 @@ open class RegisterRepository(val testpressService: TestpressService) {
             override fun onException(e: Exception?) {
                 super.onException(e)
                 exception = e
-                isRegisterSuccessful.postValue(false)
+                result.postValue(false)
             }
 
             override fun onSuccess(authSuccess: Boolean?) {
                 super.onSuccess(authSuccess)
-                isRegisterSuccessful.postValue(true)
+                result.postValue(true)
             }
         }.execute()
     }

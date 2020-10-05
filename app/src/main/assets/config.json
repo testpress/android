@@ -4,7 +4,7 @@
   "testpress_site_subdomain" : "ranjitharpathology",
   "package_name" : "in.testpress.ranjitharpathology",
   "app_name" : "Pathology by Ranjith AR",
-  "share_message": "Hey checkout Pathology by Ranjith AR.",
+  "share_message": "Hey checkout Pathology by Ranjith AR",
   "primary_color": "c1adfb",
   "allow_anonymous_user" : false,
   "facebook_app_id" : "733962776688753",

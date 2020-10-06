@@ -15,9 +15,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.service.notification.StatusBarNotification;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
 import java.util.List;
 
@@ -60,8 +60,7 @@ public class NotificationHelper extends ContextWrapper {
     }
 
     public static void createChannels(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
-                getManager(context).getNotificationChannels().isEmpty()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createChannel(context, POSTS_CHANNEL, R.string.posts_channel);
             createChannel(context, CONTENTS_CHANNEL, R.string.contents_channel);
         }

@@ -1,2 +1,3 @@
 include ':app', ':CustomBrowser-release', ':testpressdaogenerator', ':course', ':exam', ':core'
 // include ':integration-tests'
+include ':commonlib', ':mobilertc'

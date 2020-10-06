@@ -14,6 +14,11 @@
         <item name="android:textCursorDrawable">@drawable/edit_text_cursor</item>
         <item name="android:textSize">20sp</item>
     </style>
+    <style name="ZMEditText" parent="android:Widget.EditText">
+        <item name="android:textColorHint">@color/testpress_gray_light</item>
+        <item name="android:textColor">@color/testpress_black</item>
+<!--        <item name="android:background">@drawable/zm_edit_text</item>-->
+    </style>
 
     <style name="ShadowText">
         <item name="android:shadowColor">@color/text_shadow</item>
@@ -105,6 +110,11 @@
         <item name="android:textColorPrimary">@color/white</item>
         <item name="colorButtonNormal">@color/primary</item>
         <item name="android:statusBarColor">@color/primary</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/popupMenuTextAppearance</item>
+    </style>
+
+    <style name="popupMenuTextAppearance" parent="@android:style/TextAppearance.DeviceDefault.Widget.PopupMenu.Large">
+        <item name="android:textColor">@color/testpress_black</item>
     </style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

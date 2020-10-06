@@ -1,16 +1,18 @@
 package in.testpress.testpress.ui.fragments;
 
-import android.accounts.AccountsException;
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,9 +42,10 @@ import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
 import in.testpress.testpress.ui.ThrowableLoader;
 import in.testpress.testpress.ui.adapters.DashboardAdapter;
-import in.testpress.testpress.util.CommonUtils;
-import in.testpress.testpress.util.SafeAsyncTask;
+import io.sentry.core.Sentry;
+import io.sentry.core.protocol.User;
 
+import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.util.PreferenceManager.getDashboardDataPreferences;
 import static in.testpress.testpress.util.PreferenceManager.setDashboardData;
 
@@ -81,6 +84,17 @@ public class DashboardFragment extends Fragment implements
         Injector.inject(this);
         super.onCreate(savedInstanceState);
         initLoader();
+        setUsernameInSentry();
+    }
+
+    private void setUsernameInSentry() {
+        AccountManager manager = (AccountManager) getActivity().getSystemService(Context.ACCOUNT_SERVICE);
+        Account[] account = manager.getAccountsByType(APPLICATION_ID);
+        if (account.length > 0) {
+            User user = new User();
+            user.setUsername(account[0].name);
+            Sentry.setUser(user);
+        }
     }
 
     @Override
@@ -92,10 +106,21 @@ public class DashboardFragment extends Fragment implements
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         swipeRefreshLayout.setEnabled(true);
+        showDataFromCacheIfAvailable();
+        addOnClickListeners();
+    }
 
+    private void showDataFromCacheIfAvailable() {
+        if (!getSections().isEmpty()) {
+            adapter.setResponse(getDashboardDataPreferences(requireContext()));
+        } else {
+            showLoading();
+        }
+    }
+
+    private void showLoading() {
         loadingPlaceholder.setVisibility(View.VISIBLE);
         loadingPlaceholder.startShimmer();
-        addOnClickListeners();
     }
 
     private void hideShimmer() {
@@ -163,8 +188,8 @@ public class DashboardFragment extends Fragment implements
         hideShimmer();
         if (exception != null) {
             this.exception = exception;
-            showError(getErrorMessage(exception));
             getLoaderManager().destroyLoader(loader.getId());
+            adapter.setResponse(getDashboardDataPreferences(getContext()));
             return;
         }
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -178,10 +203,6 @@ public class DashboardFragment extends Fragment implements
     public void onResume() {
         super.onResume();
         refresh();
-    }
-
-    private void showError(final int message) {
-        Toaster.showLong(getActivity(), message);
     }
 
     private void setEmptyText() {

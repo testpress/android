@@ -132,9 +132,10 @@ public class TestpressService {
         return getResetPasswordService().resetPassword(emailcode);
     }
 
-    public Update checkUpdate(String version) {
+    public Update checkUpdate(String version, String package_name) {
         HashMap<String, String> versioncode = new HashMap<String, String>();
         versioncode.put("version_code", version);
+        versioncode.put("package_name", package_name);
         return getAuthenticationService().checkUpdate(versioncode);
     }
 

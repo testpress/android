@@ -1,9 +1,9 @@
 {
-  "version" : "1.4.2",
-  "version_code" : 150,
+  "version" : "1.4.3",
+  "version_code" : 151,
   "testpress_site_subdomain" : "koncpt",
   "package_name" : "in.testpress.koncpt",
-  "app_name" : "Koncpt",
+  "app_name" : " RRM\\'s Next Neet PG",
   "share_message": "Good app to prepare for NEET PG.",
   "primary_color": "004D96",
   "allow_anonymous_user" : true,

@@ -1,6 +1,6 @@
 package `in`.testpress.testpress.util
 
-import `in`.testpress.testpress.authenticator.RegisterActivity
+import `in`.testpress.testpress.enums.VerificationMethod
 import `in`.testpress.testpress.models.UserDetails
 import `in`.testpress.testpress.util.fakes.FakeRegisterFormUserInputValidation
 import org.junit.Assert
@@ -19,7 +19,7 @@ class RegisterFormUserInputValidationTest {
                 "9876543210",
                 "1234567",
                 "1234567"
-        ), RegisterActivity.VerificationMethod.MOBILE)
+        ), VerificationMethod.MOBILE)
 
         Assert.assertTrue(registerFormUserInputValidation.isValid())
     }
@@ -32,7 +32,7 @@ class RegisterFormUserInputValidationTest {
                 "9876543210",
                 "1234567",
                 "1234567"
-        ), RegisterActivity.VerificationMethod.MOBILE)
+        ), VerificationMethod.MOBILE)
 
         Assert.assertEquals(false,registerFormUserInputValidation.isValid())
     }
@@ -45,7 +45,7 @@ class RegisterFormUserInputValidationTest {
                 "9876543210",
                 "1234567",
                 "1234567"
-        ), RegisterActivity.VerificationMethod.MOBILE)
+        ), VerificationMethod.MOBILE)
 
         Assert.assertEquals(false,registerFormUserInputValidation.isValid())
     }
@@ -58,7 +58,7 @@ class RegisterFormUserInputValidationTest {
                 "9876543210",
                 "password",
                 "password"
-        ), RegisterActivity.VerificationMethod.MOBILE)
+        ), VerificationMethod.MOBILE)
 
         Assert.assertEquals(false,registerFormUserInputValidation.isValid())
     }

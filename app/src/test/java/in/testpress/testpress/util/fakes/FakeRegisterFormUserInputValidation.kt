@@ -1,6 +1,6 @@
 package `in`.testpress.testpress.util.fakes
 
-import `in`.testpress.testpress.authenticator.RegisterActivity.VerificationMethod
+import `in`.testpress.testpress.enums.VerificationMethod
 import `in`.testpress.testpress.models.UserDetails
 import `in`.testpress.testpress.util.Validator
 

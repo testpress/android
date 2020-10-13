@@ -1,8 +1,8 @@
 package in.testpress.testpress.ui.adapters;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +24,6 @@ import in.testpress.ui.view.RoundedImageView;
 import in.testpress.util.ImageUtils;
 import in.testpress.util.IntegerList;
 
-import static in.testpress.testpress.util.Strings.capitalize;
 import static in.testpress.testpress.util.Strings.capitalizeEachWord;
 
 public class LeaderboardListAdapter extends RecyclerView.Adapter<LeaderboardListAdapter.MyViewHolder> {

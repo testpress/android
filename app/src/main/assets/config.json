@@ -1,6 +1,6 @@
 {
-  "version" : "1.1.1",
-  "version_code" : 7,
+  "version" : "1.2.1",
+  "version_code" : 8,
   "testpress_site_subdomain" : "4iiteens",
   "package_name" : "com.iiteens.test",
   "app_name" : "4iiteens",
@@ -11,5 +11,6 @@
   "facebook_app_id" : "733962776688753",
   "server_client_id" : "589544710202-n1re9gbmod6pphlkkdiln5e39t7jsh87.apps.googleusercontent.com",
   "display_username_on_video": true,
-  "white_labeled_host_url": "test.4iiteens.com"
+  "white_labeled_host_url": "test.4iiteens.com",
+  "is_growth_hacks_enabled": false
 }

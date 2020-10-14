@@ -1,9 +1,9 @@
 {
-  "version" : "1.1.9",
-  "version_code" : 124,
+  "version" : "1.1.10",
+  "version_code" : 125,
   "testpress_site_subdomain" : "koncptss",
   "package_name" : "in.testpress.koncptss",
-  "app_name" : " RRM Next\\'s Neetss",
+  "app_name" : " RRM Next\\'s Neet SS",
   "share_message": "Good app to prepare for Surgical Specialist. Get it at https://play.google.com/store/apps/details?id=",
   "primary_color": "004D96",
   "allow_anonymous_user" : false,

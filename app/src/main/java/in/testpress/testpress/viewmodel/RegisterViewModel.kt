@@ -9,43 +9,38 @@ import `in`.testpress.testpress.repository.RegisterRepository
 import `in`.testpress.testpress.util.RegisterFormUserInputValidation
 import android.view.View
 import android.widget.TextView
-import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class RegisterViewModel(
         private val repository: RegisterRepository,
-        private val binding: RegisterActivityBinding
-        ) : ViewModel() {
+        private val binding: RegisterActivityBinding) : ViewModel() {
 
-    val result = repository.result
+    val registrationResponse = repository.result
 
     private val daoSession: DaoSession = TestpressApplication.getDaoSession()
     private val instituteSettingsDao: InstituteSettingsDao = daoSession.instituteSettingsDao
-    val instituteSettingsList: MutableList<InstituteSettings> = instituteSettingsDao.queryBuilder()
+    private val instituteSettingsList: MutableList<InstituteSettings> = instituteSettingsDao.queryBuilder()
             .where(InstituteSettingsDao.Properties.BaseUrl.eq(BuildConfig.BASE_URL))
             .list()
-
     val verificationMethod: VerificationMethod = InstituteSettings().getVerificationType(instituteSettingsList[0])
     val isTwilioEnabled: Boolean = instituteSettingsList[0].twilioEnabled
 
-    var initRegistration = MutableLiveData<Boolean>(false)
-    private val registrationForm = RegisterFormUserInputValidation(binding, verificationMethod, isTwilioEnabled)
+    var allowToRegister = MutableLiveData<Boolean>()
 
-    val username = ObservableField<String>()
-    val email = ObservableField<String>()
-    val phoneNumber = ObservableField<String>()
-    val password = ObservableField<String>()
-    val confirmPassword = ObservableField<String>()
+    val username = MutableLiveData<String>()
+    val email = MutableLiveData<String>()
+    val phoneNumber = MutableLiveData<String>()
+    val password = MutableLiveData<String>()
+    val confirmPassword = MutableLiveData<String>()
 
-    fun isValid(): Boolean {
-        val isValid = registrationForm.isValid()
-        if (isValid) {
-            initRegistration.postValue(true)
+    fun isUserDetailsValid() {
+        val registrationForm = RegisterFormUserInputValidation(binding, verificationMethod, isTwilioEnabled)
+        if (registrationForm.isValid()) {
+            allowToRegister.postValue(true)
         } else {
-            initRegistration.postValue(false)
+            allowToRegister.postValue(false)
         }
-        return isValid
     }
 
     fun register() {
@@ -54,11 +49,10 @@ class RegisterViewModel(
 
     private fun getUserDetails(): UserDetails {
         return UserDetails(
-                binding.editTextUsername.text.toString(),
-                binding.editTextEmail.text.toString(),
-                binding.editTextPassword.text.toString(),
-                binding.editTextConfirmPassword.text.toString(),
-                binding.editTextPhone.text.toString()
+                username = username.value!!,
+                email = email.value!!,
+                password = password.value!!,
+                phoneNumber = phoneNumber.value!!
         )
     }
 

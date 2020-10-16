@@ -3,8 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
 
-        <import type="android.view.View" />
-
         <variable
             name="viewModel"
             type="in.testpress.testpress.viewmodel.RegisterViewModel" />
@@ -246,8 +244,13 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="20dp"
                     android:text="Register"
-                    android:onClick="@{() -> viewModel.isValid()}"/>
+                    android:onClick="@{() -> viewModel.isUserDetailsValid()}"/>
             </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
     </ScrollView>

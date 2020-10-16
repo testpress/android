@@ -32,7 +32,7 @@ open class RegisterRepository(val testpressService: TestpressService) {
 
             override fun onSuccess(authSuccess: Boolean?) {
                 super.onSuccess(authSuccess)
-                result.postValue(Resource.success(registrationSuccessResponse))
+                result.value = Resource.success(registrationSuccessResponse)
             }
         }.execute()
     }

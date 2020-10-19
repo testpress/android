@@ -10,6 +10,8 @@ import `in`.testpress.testpress.enums.VerificationMethod
 import `in`.testpress.testpress.models.DaoSession
 import `in`.testpress.testpress.models.InstituteSettings
 import `in`.testpress.testpress.models.InstituteSettingsDao
+import `in`.testpress.testpress.ui.fragments.AutoLoginFragment
+import `in`.testpress.testpress.ui.fragments.EmailVerificationFragment
 import `in`.testpress.testpress.ui.fragments.PhoneVerificationFragment
 import android.content.Intent
 import android.os.Bundle
@@ -45,17 +47,24 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun navigateToPhoneVerificationFragment() {
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.container, PhoneVerificationFragment(), "PhoneVerificationFragment")
-        transaction.commit()
+        supportFragmentManager.beginTransaction().apply {
+            add(R.id.container, PhoneVerificationFragment(), "PhoneVerificationFragment")
+            commit()
+        }
     }
 
     private fun navigateToEmailVerificationFragment() {
-
+        supportFragmentManager.beginTransaction().apply {
+            add(R.id.container, EmailVerificationFragment(), "EmailVerificationFragment")
+            commit()
+        }
     }
 
     private fun navigateToAutoLoginFragment() {
-
+        supportFragmentManager.beginTransaction().apply {
+            add(R.id.container, AutoLoginFragment(), "AutoLoginFragment")
+            commit()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

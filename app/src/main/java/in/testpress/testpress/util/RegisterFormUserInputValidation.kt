@@ -73,7 +73,7 @@ class RegisterFormUserInputValidation(
     }
 
     private fun ifConfirmPasswordNotValidSetError() {
-        val confirmPassword = binding.editTextPassword.text.toString().trim()
+        val confirmPassword = binding.editTextConfirmPassword.text.toString().trim()
         if (confirmPassword.isNotEmpty() &&
                 confirmPassword != binding.editTextPassword.text.toString()) {
             setErrorText(binding.confirmPasswordErrorText, "Passwords don\'t match", false)

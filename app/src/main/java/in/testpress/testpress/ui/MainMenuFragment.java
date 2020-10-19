@@ -55,8 +55,8 @@ import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.ui.UserDevicesActivity;
-import io.sentry.Sentry;
-import io.sentry.event.UserBuilder;
+import io.sentry.core.Sentry;
+import io.sentry.core.protocol.User;
 import retrofit.RetrofitError;
 
 import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
@@ -111,10 +111,13 @@ public class MainMenuFragment extends Fragment {
         }
 
         if (isUserAuthenticated) {
-            // Enabled my exams for RACE
-            mMenuItemResIds.put(R.string.my_exams, R.drawable.exams);
-            Sentry.getContext().setUser(new UserBuilder().setUsername(account[0].name).build());
+            User user = new User();
+            user.setUsername(account[0].name);
+            Sentry.setUser(user);
 
+            if (!instituteSettings.getShowGameFrontend()) {
+                mMenuItemResIds.put(R.string.my_exams, R.drawable.exams);
+            }
             if (instituteSettings.getBookmarksEnabled()) {
                 mMenuItemResIds.put(R.string.bookmarks, R.drawable.bookmark);
             }

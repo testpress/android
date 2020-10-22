@@ -5,9 +5,6 @@ import `in`.testpress.testpress.core.TestpressService
 import `in`.testpress.testpress.models.RegistrationSuccessResponse
 import `in`.testpress.testpress.util.SafeAsyncTask
 import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 open class RegisterRepository(val testpressService: TestpressService) {
 
@@ -19,18 +16,12 @@ open class RegisterRepository(val testpressService: TestpressService) {
 
         object : SafeAsyncTask<Boolean>() {
             override fun call(): Boolean {
-                try {
-                    registrationSuccessResponse = testpressService.register(userDetails["username"],
-                            userDetails["email"],
-                            userDetails["password"],
-                            userDetails["phone"],
-                            userDetails["country_code"]
-                    )
-                } catch (e: Exception) {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        result.postValue(Resource.error(e, null))
-                    }
-                }
+                registrationSuccessResponse = testpressService.register(userDetails["username"],
+                        userDetails["email"],
+                        userDetails["password"],
+                        userDetails["phone"],
+                        userDetails["country_code"]
+                )
                 return true
             }
 

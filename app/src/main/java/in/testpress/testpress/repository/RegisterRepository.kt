@@ -36,7 +36,7 @@ open class RegisterRepository(val testpressService: TestpressService) {
 
             override fun onException(e: Exception) {
                 super.onException(e)
-                result.value = (Resource.error(e, null))
+                result.value = Resource.error(e, null)
             }
 
             override fun onSuccess(authSuccess: Boolean?) {

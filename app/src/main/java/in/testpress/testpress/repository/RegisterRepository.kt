@@ -19,18 +19,12 @@ open class RegisterRepository(val testpressService: TestpressService) {
 
         object : SafeAsyncTask<Boolean>() {
             override fun call(): Boolean {
-                try {
-                    registrationSuccessResponse = testpressService.register(userDetails["username"],
-                            userDetails["email"],
-                            userDetails["password"],
-                            userDetails["phone"],
-                            userDetails["country_code"]
-                    )
-                } catch (e: Exception) {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        result.postValue(Resource.error(e, null))
-                    }
-                }
+                registrationSuccessResponse = testpressService.register(userDetails["username"],
+                        userDetails["email"],
+                        userDetails["password"],
+                        userDetails["phone"],
+                        userDetails["country_code"]
+                )
                 return true
             }
 

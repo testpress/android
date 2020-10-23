@@ -5,7 +5,7 @@ import `in`.testpress.testpress.authenticator.LoginActivity
 import `in`.testpress.testpress.models.InstituteSettings
 import `in`.testpress.testpress.ui.MainActivity
 import `in`.testpress.testpress.util.ProgressUtil
-import `in`.testpress.testpress.viewmodel.LoginViewModel
+import `in`.testpress.testpress.viewmodel.AutoLoginViewModel
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -17,8 +17,8 @@ class AutoLoginFragment: RegistrationBaseFragment() {
 
     private lateinit var instituteSettings: InstituteSettings
 
-    private val loginViewModel by lazy {
-        ViewModelProvider(this).get(LoginViewModel::class.java)
+    private val autoLoginViewModel by lazy {
+        ViewModelProvider(this).get(AutoLoginViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -42,7 +42,7 @@ class AutoLoginFragment: RegistrationBaseFragment() {
             }
         })
 
-        loginViewModel.result.observe(viewLifecycleOwner, Observer {
+        autoLoginViewModel.result.observe(viewLifecycleOwner, Observer {
             when (it.status) {
                 Status.SUCCESS -> navigateToMainActivity()
                 Status.ERROR -> navigateToLoginActivity()
@@ -57,7 +57,7 @@ class AutoLoginFragment: RegistrationBaseFragment() {
 
     private fun autoLogin() {
         instituteSettings = viewModel.instituteSettings
-        loginViewModel.initializeTestPressSession(activity,instituteSettings,
+        autoLoginViewModel.initializeTestPressSession(activity,instituteSettings,
                 editTextUsername.text.toString(), editTextPassword.text.toString())
     }
 

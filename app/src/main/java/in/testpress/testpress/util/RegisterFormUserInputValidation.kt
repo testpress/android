@@ -5,9 +5,10 @@ import `in`.testpress.testpress.enums.VerificationMethod
 import android.view.View
 import android.widget.TextView
 import androidx.databinding.BaseObservable
+import kotlinx.android.synthetic.main.register_activity.view.*
 
 class RegisterFormUserInputValidation(
-        private val binding: RegisterActivityBinding,
+        private var binding: RegisterActivityBinding,
         private val verificationMethod: VerificationMethod,
         private val isTwilioEnabled: Boolean
 ) : BaseObservable() {
@@ -36,8 +37,9 @@ class RegisterFormUserInputValidation(
         val username = binding.editTextUsername.text.toString().trim()
         val isUsernameValid = Validator.isUsernameValid(username)
         if (username.isNotEmpty() && !isUsernameValid) {
-            setErrorText(binding.usernameErrorText, "This field can contain only lowercase alphabets, numbers and underscore.", false)
             binding.editTextUsername.requestFocus()
+            binding.editTextUsername.setText("")
+            setErrorText(binding.usernameErrorText, "This field can contain only lowercase alphabets, numbers and underscore.", false)
         }
     }
 
@@ -45,8 +47,9 @@ class RegisterFormUserInputValidation(
         val email = binding.editTextEmail.text.toString().trim()
         val isEmailValid = Validator.isEmailValid(email)
         if (email.isNotEmpty() && !isEmailValid) {
-            setErrorText(binding.emailErrorText, "Please enter a valid email address", false)
             binding.editTextEmail.requestFocus()
+            binding.editTextEmail.setText("")
+            setErrorText(binding.emailErrorText, "Please enter a valid email address", false)
         }
     }
 
@@ -59,16 +62,18 @@ class RegisterFormUserInputValidation(
         }
 
         if (phoneNumber.trim().isNotEmpty() && !isPhoneNumberValid) {
-            setErrorText(binding.phoneErrorText, "Please enter a valid mobile number", false)
             binding.editTextPhone.requestFocus()
+            binding.editTextPhone.setText("")
+            setErrorText(binding.phoneErrorText, "Please enter a valid mobile number", false)
         }
     }
 
     private fun ifPasswordNotValidSetError() {
         val password = binding.editTextPassword.text.toString().trim()
         if (password.isNotEmpty() && password.length < 6) {
-            setErrorText(binding.passwordErrorText, "Password should contain at least 6 characters", false)
             binding.editTextPassword.requestFocus()
+            binding.editTextPassword.setText("")
+            setErrorText(binding.passwordErrorText, "Password should contain at least 6 characters", false)
         }
     }
 
@@ -76,8 +81,9 @@ class RegisterFormUserInputValidation(
         val confirmPassword = binding.editTextConfirmPassword.text.toString().trim()
         if (confirmPassword.isNotEmpty() &&
                 confirmPassword != binding.editTextPassword.text.toString()) {
-            setErrorText(binding.confirmPasswordErrorText, "Passwords don\'t match", false)
             binding.editTextConfirmPassword.requestFocus()
+            binding.editTextConfirmPassword.setText("")
+            setErrorText(binding.confirmPasswordErrorText, "Passwords don\'t match", false)
         }
     }
 

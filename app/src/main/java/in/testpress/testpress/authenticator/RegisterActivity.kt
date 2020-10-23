@@ -1,14 +1,15 @@
 package `in`.testpress.testpress.authenticator
 
 import `in`.testpress.enums.Status
-import `in`.testpress.testpress.BuildConfig
 import `in`.testpress.testpress.Injector
 import `in`.testpress.testpress.R
-import `in`.testpress.testpress.TestpressApplication
 import `in`.testpress.testpress.authenticator.LoginActivity.REQUEST_CODE_REGISTER_USER
 import `in`.testpress.testpress.core.TestpressService
 import `in`.testpress.testpress.databinding.RegisterActivityBinding
-import `in`.testpress.testpress.models.*
+import `in`.testpress.testpress.enums.VerificationMethod
+import `in`.testpress.testpress.models.InstituteSettings
+import `in`.testpress.testpress.models.RegistrationErrorDetails
+import `in`.testpress.testpress.models.UserDetails
 import `in`.testpress.testpress.repository.RegisterRepository
 import `in`.testpress.testpress.util.InternetConnectivityChecker
 import `in`.testpress.testpress.util.ProgressUtil.progressDialog
@@ -42,79 +43,72 @@ class RegisterActivity : AppCompatActivity() {
     lateinit var testPressService: TestpressService
     private var isTwilioEnabled = false
     private lateinit var verificationMethod: VerificationMethod
-    private val daoSession: DaoSession = TestpressApplication.getDaoSession()
-    private val instituteSettingsDao: InstituteSettingsDao = daoSession.instituteSettingsDao
     private var internetConnectivityChecker = InternetConnectivityChecker(this)
-    private lateinit var viewModel: RegisterViewModel
+    private lateinit var viewModel : RegisterViewModel
     private var userDetails = UserDetails()
     private lateinit var binding: RegisterActivityBinding
-
-    private val instituteSettingsList: MutableList<InstituteSettings> = instituteSettingsDao.queryBuilder()
-            .where(InstituteSettingsDao.Properties.BaseUrl.eq(BuildConfig.BASE_URL))
-            .list()
-
-    enum class VerificationMethod { MOBILE, EMAIL, NONE }
+    private var instituteSettingsList: MutableList<InstituteSettings> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Injector.inject(this)
         binding = DataBindingUtil.setContentView(this, R.layout.register_activity)
-        getVerificationMethod()
-        setIsTwilioEnabled()
         initViewModel()
-        initObservers()
-        setViewVisibility()
+        initializeData()
+        finishActivityWhenInstituteSettingsEmpty()
+        setPhoneVerification()
+        setPasswordToggleVisibility()
         setCountryCodePicker()
         setTextWatchers()
+        initObservers()
         initListeners()
     }
 
     private fun initViewModel() {
         viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return RegisterViewModel(RegisterRepository(testPressService), binding, verificationMethod, isTwilioEnabled) as T
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                return RegisterViewModel(RegisterRepository(testPressService), binding) as T
             }
         }).get(RegisterViewModel::class.java)
+    }
 
+    private fun initializeData() {
         binding.viewModel = viewModel
+        instituteSettingsList = viewModel.instituteSettingsList
+        verificationMethod = viewModel.verificationMethod
+        isTwilioEnabled = viewModel.isTwilioEnabled
     }
 
-    private fun initObservers() {
-        viewModel.initRegistration.observe(this, androidx.lifecycle.Observer { canRegister ->
-            if (canRegister) {
-                initRegistration()
-            }
-        })
-    }
-
-    private fun getVerificationMethod() {
-        if (instituteSettingsList.size != 0) {
-            verificationMethod = InstituteSettings().getVerificationType(instituteSettingsList[0])
-        } else {
+    private fun finishActivityWhenInstituteSettingsEmpty() {
+        if (instituteSettingsList.size == 0) {
             finish()
         }
     }
 
-    private fun setIsTwilioEnabled() {
-        isTwilioEnabled = instituteSettingsList[0].twilioEnabled
-    }
-
-    private fun setViewVisibility() {
-        setPhoneVerificationVisibility()
-        setPasswordToggleVisibility()
-    }
-
-    private fun setPhoneVerificationVisibility() {
+    private fun setPhoneVerification() {
         if (verificationMethod == VerificationMethod.MOBILE) {
-            phoneLayout.visibility = View.VISIBLE
-            if (!isTwilioEnabled) {
-                countryCodePicker.visibility = View.GONE
-            }
+            showPhoneVerification()
         } else {
-            phoneLayout.visibility = View.GONE
-            countryCodePicker.visibility = View.GONE
-            isTwilioEnabled = false
+            hidePhoneVerification()
         }
+    }
+
+    private fun showPhoneVerification() {
+        phoneLayout.visibility = View.VISIBLE
+        if (isTwilioEnabled) {
+            countryCodePicker.visibility = View.VISIBLE
+        }
+    }
+
+    private fun hidePhoneVerification() {
+        phoneLayout.visibility = View.GONE
+        countryCodePicker.visibility = View.GONE
+        isTwilioEnabled = false
+    }
+
+    private fun setPasswordToggleVisibility() {
+        showPasswordToggleOnTextChange(editTextPassword, passwordErrorText, passwordInputLayout)
+        showPasswordToggleOnTextChange(editTextConfirmPassword, confirmPasswordErrorText, confirmPasswordInputLayout)
     }
 
     private fun setCountryCodePicker() {
@@ -122,11 +116,6 @@ class RegisterActivity : AppCompatActivity() {
             countryCodePicker.registerCarrierNumberEditText(editTextPhone)
             countryCodePicker.setNumberAutoFormattingEnabled(false)
         }
-    }
-
-    private fun setPasswordToggleVisibility() {
-        showPasswordToggleOnTextChange(editTextPassword, passwordErrorText, passwordInputLayout)
-        showPasswordToggleOnTextChange(editTextConfirmPassword, confirmPasswordErrorText, confirmPasswordInputLayout)
     }
 
     private fun setTextWatchers() {
@@ -141,21 +130,12 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun initListeners() {
-        setEditorActionListener()
-        setOnClickListeners()
-    }
-
-    private fun setEditorActionListener() {
-        editTextConfirmPassword.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == IME_ACTION_DONE && buttonRegister.isEnabled) {
-                if (viewModel.isValid()) {
-                    initRegistration()
-                }
-                return@setOnEditorActionListener true
+    private fun initObservers() {
+        viewModel.initRegistration.observe(this, androidx.lifecycle.Observer { canRegister ->
+            if (canRegister) {
+                initRegistration()
             }
-            return@setOnEditorActionListener false
-        }
+        })
     }
 
     private fun initRegistration() {
@@ -191,15 +171,13 @@ class RegisterActivity : AppCompatActivity() {
             register()
         }
         task.addOnFailureListener {
-            // user have to manually enter the code
-            register()
+            register()  // user have to manually enter the code
         }
     }
 
     private fun register() {
         buttonRegister.isEnabled = false
         showLoadingDialog(this)
-        viewModel.register()
         viewModel.result.observe(this, androidx.lifecycle.Observer {
             when (it.status) {
                 Status.SUCCESS -> {
@@ -210,34 +188,7 @@ class RegisterActivity : AppCompatActivity() {
                 Status.ERROR -> setPostDetailsException(it.exception)
             }
         })
-    }
-
-    private fun setPostDetailsException(e: Exception?) {
-        buttonRegister.isEnabled = true
-        progressDialog.dismiss()
-        if ((e is RetrofitError)) {
-            val registrationErrorDetails = e.getBodyAs(RegistrationErrorDetails::class.java) as RegistrationErrorDetails
-            handleRegistrationErrorDetails(registrationErrorDetails)
-        }
-    }
-
-    private fun handleRegistrationErrorDetails(registrationErrorDetails: RegistrationErrorDetails) {
-        if (registrationErrorDetails.username.isNotEmpty()) {
-            setErrorText(usernameErrorText, registrationErrorDetails.username[0], null)
-            editTextUsername.requestFocus()
-        }
-        if (registrationErrorDetails.email.isNotEmpty()) {
-            setErrorText(emailErrorText, registrationErrorDetails.email[0], null)
-            editTextEmail.requestFocus()
-        }
-        if (registrationErrorDetails.password.isNotEmpty()) {
-            setErrorText(passwordErrorText, registrationErrorDetails.password[0], null)
-            editTextPassword.requestFocus()
-        }
-        if (registrationErrorDetails.phone.isNotEmpty()) {
-            setErrorText(phoneErrorText, registrationErrorDetails.phone[0], null)
-            editTextPhone.requestFocus()
-        }
+        viewModel.register()
     }
 
     private fun setPostDetailsSuccess() {
@@ -248,6 +199,13 @@ class RegisterActivity : AppCompatActivity() {
             VerificationMethod.EMAIL -> showVerifyEmailLayout()
             VerificationMethod.NONE -> showVerifyEmailLayout()
         }
+    }
+
+    private fun logEvent() {
+        val eventsTrackerFacade = EventsTrackerFacade(applicationContext)
+        val params = HashMap<String, Any>()
+        params["username"] = editTextUsername.text.toString()
+        eventsTrackerFacade.logEvent(EventsTrackerFacade.ACCOUNT_REGISTERED, params)
     }
 
     private fun navigateToCodeVerificationActivity() {
@@ -266,11 +224,18 @@ class RegisterActivity : AppCompatActivity() {
         success_complete.visibility = View.VISIBLE
     }
 
-    private fun logEvent() {
-        val eventsTrackerFacade = EventsTrackerFacade(applicationContext)
-        val params = HashMap<String, Any>()
-        params["username"] = editTextUsername.text.toString()
-        eventsTrackerFacade.logEvent(EventsTrackerFacade.ACCOUNT_REGISTERED, params)
+    private fun setPostDetailsException(e: Exception?) {
+        buttonRegister.isEnabled = true
+        progressDialog.dismiss()
+        if ((e is RetrofitError)) {
+            val registrationErrorDetails = e.getBodyAs(RegistrationErrorDetails::class.java) as RegistrationErrorDetails
+            viewModel.handleErrorResponse(registrationErrorDetails)
+        }
+    }
+
+    private fun initListeners() {
+        setOnClickListeners()
+        setEditorActionListener()
     }
 
     private fun setOnClickListeners() {
@@ -279,9 +244,16 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun setErrorText(errorTextView: TextView, errorText: String = getString(R.string.empty_input_error), isValid: Boolean?) {
-        errorTextView.visibility = View.VISIBLE
-        errorTextView.text = errorText
+    private fun setEditorActionListener() {
+        editTextConfirmPassword.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == IME_ACTION_DONE && buttonRegister.isEnabled) {
+                if (viewModel.isValid()) {
+                    initRegistration()
+                }
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

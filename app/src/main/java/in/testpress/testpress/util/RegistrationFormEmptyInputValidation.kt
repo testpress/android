@@ -1,7 +1,7 @@
 package `in`.testpress.testpress.util
 
-import `in`.testpress.testpress.authenticator.RegisterActivity.VerificationMethod
 import `in`.testpress.testpress.databinding.RegisterActivityBinding
+import `in`.testpress.testpress.enums.VerificationMethod
 import android.view.View
 import android.widget.TextView
 import androidx.databinding.BaseObservable

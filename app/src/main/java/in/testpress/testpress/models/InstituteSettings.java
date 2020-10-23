@@ -5,7 +5,7 @@ package in.testpress.testpress.models;
 // KEEP INCLUDES - put your custom includes here
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import in.testpress.testpress.authenticator.RegisterActivity.VerificationMethod;
+import in.testpress.testpress.enums.VerificationMethod;
 // KEEP INCLUDES END
 /**
  * Entity mapped to table "INSTITUTE_SETTINGS".

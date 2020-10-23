@@ -129,7 +129,8 @@
                             app:ccp_autoDetectCountry="true"
                             app:ccp_defaultNameCode="IND"
                             app:ccp_showFlag="false"
-                            app:ccp_textSize="12sp" />
+                            app:ccp_textSize="12sp"
+                            android:visibility="gone"/>
 
                         <!-- Phone Label -->
                         <com.google.android.material.textfield.TextInputLayout

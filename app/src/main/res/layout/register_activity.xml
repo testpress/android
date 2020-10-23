@@ -128,6 +128,7 @@
                             android:paddingTop="10dp"
                             app:ccp_autoDetectCountry="true"
                             app:ccp_defaultNameCode="IND"
+                            android:visibility="gone"
                             app:ccp_showFlag="false"
                             app:ccp_textSize="12sp" />
 

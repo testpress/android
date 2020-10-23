@@ -3,9 +3,9 @@ package `in`.testpress.testpress.util
 import `in`.testpress.testpress.databinding.RegisterActivityBinding
 import `in`.testpress.testpress.enums.VerificationMethod
 import android.view.View
+import android.widget.EditText
 import android.widget.TextView
 import androidx.databinding.BaseObservable
-import kotlinx.android.synthetic.main.register_activity.view.*
 
 class RegisterFormUserInputValidation(
         private var binding: RegisterActivityBinding,
@@ -24,36 +24,50 @@ class RegisterFormUserInputValidation(
     }
 
     private fun validateUserData() {
-        ifUsernameNotValidSetError()
-        ifEmailNotValidSetError()
-        if (verificationMethod == VerificationMethod.MOBILE) {
-            ifPhoneNumberNotValidSetError()
+        if (isUsernameNotValid()) {
+            showError(binding.usernameErrorText, binding.editTextUsername,
+                    "This field can contain only lowercase alphabets, numbers and underscore."
+            )
         }
-        ifPasswordNotValidSetError()
-        ifConfirmPasswordNotValidSetError()
+        if (isEmailNotValid()) {
+            showError(binding.emailErrorText, binding.editTextEmail,
+                    "Please enter a valid email address")
+        }
+        if (verificationMethod == VerificationMethod.MOBILE) {
+            if (isPhoneNumberNotValid()) {
+                showError(binding.phoneErrorText, binding.editTextPhone,
+                        "Please enter a valid mobile number")
+            }
+        }
+        if (isPasswordNotValid()) {
+            showError(binding.passwordErrorText, binding.editTextPassword,
+                    "Password should contain at least 6 characters")
+        }
+        if (isConfirmPasswordNotValid()) {
+            showError(binding.confirmPasswordErrorText, binding.editTextConfirmPassword,
+                    "Passwords don\'t match")
+        }
     }
 
-    private fun ifUsernameNotValidSetError() {
+    private fun isUsernameNotValid(): Boolean {
         val username = binding.editTextUsername.text.toString().trim()
         val isUsernameValid = Validator.isUsernameValid(username)
         if (username.isNotEmpty() && !isUsernameValid) {
-            binding.editTextUsername.requestFocus()
-            binding.editTextUsername.setText("")
-            setErrorText(binding.usernameErrorText, "This field can contain only lowercase alphabets, numbers and underscore.", false)
+            return true
         }
+        return false
     }
 
-    private fun ifEmailNotValidSetError() {
+    private fun isEmailNotValid(): Boolean{
         val email = binding.editTextEmail.text.toString().trim()
         val isEmailValid = Validator.isEmailValid(email)
         if (email.isNotEmpty() && !isEmailValid) {
-            binding.editTextEmail.requestFocus()
-            binding.editTextEmail.setText("")
-            setErrorText(binding.emailErrorText, "Please enter a valid email address", false)
+            return true
         }
+        return false
     }
 
-    private fun ifPhoneNumberNotValidSetError() {
+    private fun isPhoneNumberNotValid(): Boolean {
         val phoneNumber = binding.editTextPhone.text.toString().trim()
         val isPhoneNumberValid = if (isTwilioEnabled) {
             PhoneNumberValidator.validateInternationalPhoneNumber(binding.countryCodePicker)
@@ -62,36 +76,33 @@ class RegisterFormUserInputValidation(
         }
 
         if (phoneNumber.trim().isNotEmpty() && !isPhoneNumberValid) {
-            binding.editTextPhone.requestFocus()
-            binding.editTextPhone.setText("")
-            setErrorText(binding.phoneErrorText, "Please enter a valid mobile number", false)
+            return true
         }
+        return false
     }
 
-    private fun ifPasswordNotValidSetError() {
+    private fun isPasswordNotValid(): Boolean {
         val password = binding.editTextPassword.text.toString().trim()
         if (password.isNotEmpty() && password.length < 6) {
-            binding.editTextPassword.requestFocus()
-            binding.editTextPassword.setText("")
-            setErrorText(binding.passwordErrorText, "Password should contain at least 6 characters", false)
+            return true
         }
+        return false
     }
 
-    private fun ifConfirmPasswordNotValidSetError() {
+    private fun isConfirmPasswordNotValid(): Boolean {
         val confirmPassword = binding.editTextConfirmPassword.text.toString().trim()
         if (confirmPassword.isNotEmpty() &&
                 confirmPassword != binding.editTextPassword.text.toString()) {
-            binding.editTextConfirmPassword.requestFocus()
-            binding.editTextConfirmPassword.setText("")
-            setErrorText(binding.confirmPasswordErrorText, "Passwords don\'t match", false)
+            return true
         }
+        return false
     }
 
-    private fun setErrorText(errorTextView: TextView, errorText: String, isValid: Boolean) {
+    private fun showError(errorTextView: TextView, editText: EditText, errorText: String) {
+        editText.requestFocus()
+        editText.setText("")
         errorTextView.visibility = View.VISIBLE
         errorTextView.text = errorText
-        if (!isValid) {
-            this.isValid = false
-        }
+        isValid = false
     }
 }

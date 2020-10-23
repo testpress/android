@@ -470,12 +470,12 @@ public class InstituteSettings {
     }
 
     public VerificationMethod getVerificationType(InstituteSettings instituteSettings) {
-        if(instituteSettings.getVerificationMethod().equals("NV")) {
-            return VerificationMethod.NONE;
+        if(instituteSettings.getVerificationMethod().equals("E")) {
+            return VerificationMethod.EMAIL;
         } else if (instituteSettings.getVerificationMethod().equals("M")) {
             return VerificationMethod.MOBILE;
         } else {
-            return VerificationMethod.EMAIL;
+            return VerificationMethod.NONE;
         }
     }
     // KEEP METHODS END

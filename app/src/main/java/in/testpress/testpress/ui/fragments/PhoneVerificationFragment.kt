@@ -19,7 +19,8 @@ class PhoneVerificationFragment : RegistrationBaseFragment() {
         initViewModel()
         initViewModelObservers()
         setCountryCodePicker()
-        setTextWatchers()
+        hideErrorMessageOnTextChange()
+        showPasswordToggleOnTextChange()
     }
 
     private fun initViewModelObservers() {

@@ -16,7 +16,8 @@ class EmailVerificationFragment : RegistrationBaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         initViewModel()
         initViewModelObservers()
-        setTextWatchers()
+        hideErrorMessageOnTextChange()
+        showPasswordToggleOnTextChange()
     }
 
     private fun initViewModelObservers() {

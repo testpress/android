@@ -49,7 +49,7 @@ open class RegistrationBaseFragment: Fragment() {
         viewModel.handleErrorResponse(exception)
     }
 
-    fun setTextWatchers() {
+    fun hideErrorMessageOnTextChange() {
         val editTextMap = Hashtable<EditText, TextView>()
         editTextMap[editTextUsername] = usernameErrorText
         editTextMap[editTextPassword] = passwordErrorText
@@ -59,6 +59,9 @@ open class RegistrationBaseFragment: Fragment() {
         for (editText in editTextMap.keys()) {
             editTextMap[editText]?.let { TextChangeUtil.hideErrorMessageOnTextChange(editText, it) }
         }
+    }
+
+    fun showPasswordToggleOnTextChange() {
         TextChangeUtil.showPasswordToggleOnTextChange(editTextPassword, passwordErrorText, passwordInputLayout)
         TextChangeUtil.showPasswordToggleOnTextChange(editTextConfirmPassword, confirmPasswordErrorText, confirmPasswordInputLayout)
     }

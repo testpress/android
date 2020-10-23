@@ -107,6 +107,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    dataBinding {
+        enabled = true
+    }
+
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 29

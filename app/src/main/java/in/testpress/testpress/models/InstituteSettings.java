@@ -5,6 +5,7 @@ package in.testpress.testpress.models;
 // KEEP INCLUDES - put your custom includes here
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import in.testpress.testpress.authenticator.RegisterActivity.VerificationMethod;
 // KEEP INCLUDES END
 /**
  * Entity mapped to table "INSTITUTE_SETTINGS".
@@ -466,6 +467,16 @@ public class InstituteSettings {
             }
         }
         return 0L;
+    }
+
+    public VerificationMethod getVerificationType(InstituteSettings instituteSettings) {
+        if(instituteSettings.getVerificationMethod().equals("NV")) {
+            return VerificationMethod.NONE;
+        } else if (instituteSettings.getVerificationMethod().equals("M")) {
+            return VerificationMethod.MOBILE;
+        } else {
+            return VerificationMethod.EMAIL;
+        }
     }
     // KEEP METHODS END
 

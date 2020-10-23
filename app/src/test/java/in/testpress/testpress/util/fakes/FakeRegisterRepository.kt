@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import retrofit.RetrofitError
 import java.io.IOException
 
-class FakeRegisterRepository {
+open class FakeRegisterRepository {
 
     var apiStatus = Status.SUCCESS
     lateinit var result: Resource<RegistrationSuccessResponse>

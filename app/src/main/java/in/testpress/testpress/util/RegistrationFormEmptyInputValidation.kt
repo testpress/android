@@ -31,6 +31,11 @@ class RegistrationFormEmptyInputValidation(
         if (binding.editTextEmail.text.toString().trim().isEmpty()) {
             setErrorText(binding.emailErrorText, isValid = false)
         }
+        if (verificationMethod == VerificationMethod.MOBILE) {
+            if (binding.editTextPhone.text.toString().trim().isEmpty()) {
+                setErrorText(binding.phoneErrorText, isValid = false)
+            }
+        }
         if (binding.editTextConfirmPassword.text.toString().trim().isEmpty()) {
             setErrorText(binding.confirmPasswordErrorText, isValid = false)
         }

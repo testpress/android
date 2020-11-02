@@ -5,11 +5,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import java.util.List;
-
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
+import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
 import in.testpress.testpress.ui.view_holders.BaseCarouselViewHolder;
@@ -25,6 +24,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private DashboardResponse response;
     private Context context;
     private TestpressServiceProvider serviceProvider;
+    private InstituteSettings instituteSettings;
 
     private final int CONTENT_CAROUSEL = 1;
     private final int COURSE_CAROUSEL = 2;
@@ -34,9 +34,10 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private final int STATS_CHART = 7;
 
 
-    public DashboardAdapter(Context context, DashboardResponse response, TestpressServiceProvider serviceProvider) {
+    public DashboardAdapter(Context context, DashboardResponse response, TestpressServiceProvider serviceProvider, InstituteSettings instituteSettings ) {
         this.context = context;
         this.serviceProvider = serviceProvider;
+        this.instituteSettings = instituteSettings;
         this.setResponse(response);
     }
 
@@ -57,10 +58,11 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 return OFFERS_CAROUSEL;
             case "chapter_content_attempt":
                 return CONTENT_CAROUSEL;
-            case "trophy_leaderboard":
-                return LEADERBOARD_LIST;
             case "products":
                 return COURSE_CAROUSEL;
+            case "trophy_leaderboard":
+                if (instituteSettings.getLeaderboardEnabled())
+                return LEADERBOARD_LIST;
         }
         return -1;
     }

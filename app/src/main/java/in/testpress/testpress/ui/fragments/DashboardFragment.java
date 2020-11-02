@@ -38,6 +38,7 @@ import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.DaoSession;
+import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
 import in.testpress.testpress.ui.ThrowableLoader;
@@ -77,6 +78,11 @@ public class DashboardFragment extends Fragment implements
     private DaoSession daoSession;
     protected Exception exception;
     DashboardResponse dashboardResponse;
+    private final InstituteSettings instituteSettings;
+
+    public DashboardFragment(InstituteSettings instituteSettings) {
+        this.instituteSettings = instituteSettings;
+    }
 
 
     @Override
@@ -102,7 +108,7 @@ public class DashboardFragment extends Fragment implements
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
 
-        adapter = new DashboardAdapter(getContext(), new DashboardResponse(), serviceProvider);
+        adapter = new DashboardAdapter(getContext(), new DashboardResponse(), serviceProvider, instituteSettings);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         swipeRefreshLayout.setEnabled(true);

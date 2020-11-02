@@ -290,7 +290,7 @@ public class MainActivity extends TestpressFragmentActivity {
         }
 
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
-            addMenuItem(R.string.dashboard, R.drawable.ic_dashboard, new DashboardFragment());
+            addMenuItem(R.string.dashboard, R.drawable.ic_dashboard, new DashboardFragment(mInstituteSettings));
         } else {
             addMenuItem(R.string.dashboard, R.drawable.profile_default, new MainMenuFragment());
         }

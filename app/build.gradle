@@ -10,8 +10,8 @@ ext {
 }
 
 dependencies {
+
     def lifecycle_version = "2.2.0"
-    def fragment_version = "1.2.5"
 
     // Dependency Injection
     implementation 'com.squareup.dagger:dagger:1.0.1'
@@ -73,11 +73,6 @@ dependencies {
     testImplementation "com.squareup.okhttp3:mockwebserver:3.12.0"
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:3.12.0"
     testImplementation "androidx.arch.core:core-testing:2.1.0"
-    debugImplementation "androidx.fragment:fragment-testing:$fragment_version"
-    testImplementation 'com.android.support.test:rules:1.0.2'
-    testImplementation 'com.android.support.test:runner:1.0.2'
-    testImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    testImplementation "org.robolectric:robolectric:4.3.1"
 
     // ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
@@ -110,16 +105,6 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
-    }
-
-    testOptions {
-        unitTests {
-            includeAndroidResources = true
-        }
     }
 
     defaultConfig {
@@ -161,7 +146,6 @@ android {
                 includeCompileClasspath true
             }
         }
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     packagingOptions {

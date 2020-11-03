@@ -9,6 +9,7 @@ import java.util.List;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.models.InstituteSettings;
+import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
 import in.testpress.testpress.ui.view_holders.BaseCarouselViewHolder;
@@ -17,6 +18,10 @@ import in.testpress.testpress.ui.view_holders.CourseCarouselViewHolder;
 import in.testpress.testpress.ui.view_holders.LeaderboardViewHolder;
 import in.testpress.testpress.ui.view_holders.OffersCarouselViewHolder;
 import in.testpress.testpress.ui.view_holders.PostsCarouselViewHolder;
+import in.testpress.testpress.util.Strings;
+
+import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.TestpressApplication.daoSession;
 
 
 public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -24,7 +29,6 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private DashboardResponse response;
     private Context context;
     private TestpressServiceProvider serviceProvider;
-    private InstituteSettings instituteSettings;
 
     private final int CONTENT_CAROUSEL = 1;
     private final int COURSE_CAROUSEL = 2;
@@ -34,10 +38,9 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private final int STATS_CHART = 7;
 
 
-    public DashboardAdapter(Context context, DashboardResponse response, TestpressServiceProvider serviceProvider, InstituteSettings instituteSettings ) {
+    public DashboardAdapter(Context context, DashboardResponse response, TestpressServiceProvider serviceProvider) {
         this.context = context;
         this.serviceProvider = serviceProvider;
-        this.instituteSettings = instituteSettings;
         this.setResponse(response);
     }
 
@@ -61,7 +64,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             case "products":
                 return COURSE_CAROUSEL;
             case "trophy_leaderboard":
-                if (instituteSettings.getLeaderboardEnabled())
+                if (isLeaderBoardEnabled())
                 return LEADERBOARD_LIST;
         }
         return -1;
@@ -126,5 +129,16 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 ((LeaderboardViewHolder) holder).display(response, context);
                 break;
         }
+    }
+
+    public Boolean isLeaderBoardEnabled() {
+        InstituteSettingsDao instituteSettingsDao = daoSession.getInstituteSettingsDao();
+        InstituteSettings instituteSettings = instituteSettingsDao.queryBuilder()
+                .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
+                .list().get(0);
+
+        if (instituteSettings.getLeaderboardEnabled() == null)
+            return false;
+        return instituteSettings.getLeaderboardEnabled();
     }
 }

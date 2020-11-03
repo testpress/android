@@ -66,6 +66,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         public final static Property ServerTime = new Property(40, String.class, "serverTime", false, "SERVER_TIME");
         public final static Property AllowScreenshotInApp = new Property(41, Boolean.class, "allowScreenshotInApp", false, "ALLOW_SCREENSHOT_IN_APP");
         public final static Property AndroidSentryDns = new Property(42, String.class, "androidSentryDns", false, "ANDROID_SENTRY_DNS");
+        public final static Property LeaderboardEnabled = new Property(43, Boolean.class, "leaderboardEnabled", false, "LEADERBOARD_ENABLED");
     };
 
 
@@ -123,7 +124,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
                 "\"APP_SHARE_LINK\" TEXT," + // 39: appShareLink
                 "\"SERVER_TIME\" TEXT," + // 40: serverTime
                 "\"ALLOW_SCREENSHOT_IN_APP\" INTEGER," + // 41: allowScreenshotInApp
-                "\"ANDROID_SENTRY_DNS\" TEXT);"); // 42: androidSentryDns
+                "\"ANDROID_SENTRY_DNS\" TEXT," + // 42: androidSentryDns
+                "\"LEADERBOARD_ENABLED\" INTEGER);"); // 43: leaderboardEnabled
     }
 
     /** Drops the underlying database table. */
@@ -337,15 +339,20 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         if (serverTime != null) {
             stmt.bindString(41, serverTime);
         }
- 
+
         Boolean allowScreenshotInApp = entity.getAllowScreenshotInApp();
         if (allowScreenshotInApp != null) {
             stmt.bindLong(42, allowScreenshotInApp ? 1L: 0L);
         }
- 
+
         String androidSentryDns = entity.getAndroidSentryDns();
         if (androidSentryDns != null) {
             stmt.bindString(43, androidSentryDns);
+        }
+
+        Boolean leaderboardEnabled = entity.getLeaderboardEnabled();
+        if (leaderboardEnabled != null) {
+            stmt.bindLong(44, leaderboardEnabled ? 1L: 0L);
         }
     }
 
@@ -401,7 +408,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             cursor.isNull(offset + 39) ? null : cursor.getString(offset + 39), // appShareLink
             cursor.isNull(offset + 40) ? null : cursor.getString(offset + 40), // serverTime
             cursor.isNull(offset + 41) ? null : cursor.getShort(offset + 41) != 0, // allowScreenshotInApp
-            cursor.isNull(offset + 42) ? null : cursor.getString(offset + 42) // androidSentryDns
+            cursor.isNull(offset + 42) ? null : cursor.getString(offset + 42), // androidSentryDns
+            cursor.isNull(offset + 43) ? null : cursor.getShort(offset + 43) != 0 // leaderboardEnabled
         );
         return entity;
     }
@@ -452,6 +460,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         entity.setServerTime(cursor.isNull(offset + 40) ? null : cursor.getString(offset + 40));
         entity.setAllowScreenshotInApp(cursor.isNull(offset + 41) ? null : cursor.getShort(offset + 41) != 0);
         entity.setAndroidSentryDns(cursor.isNull(offset + 42) ? null : cursor.getString(offset + 42));
+        entity.setLeaderboardEnabled(cursor.isNull(offset + 43) ? null : cursor.getShort(offset + 43) != 0);
      }
     
     /** @inheritdoc */

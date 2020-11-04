@@ -3,6 +3,7 @@ package in.testpress.testpress.ui.view_holders;
 import android.content.Context;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import in.testpress.core.TestpressSdk;
@@ -27,5 +28,11 @@ public class BaseCarouselViewHolder extends RecyclerView.ViewHolder {
     public void showPageIndicator() {
         recyclerIndicator.attachToPager(recyclerView, new RecyclerViewAttacher(50));
         recyclerIndicator.setVisibility(View.VISIBLE);
+    }
+
+    public BaseCarouselViewHolder(View itemView) {
+        super(itemView);
+        LinearLayout rootLayout = itemView.findViewById(R.id.root_layout);
+        rootLayout.setVisibility(View.GONE);
     }
 }

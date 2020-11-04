@@ -5,11 +5,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import java.util.List;
-
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
+import in.testpress.testpress.models.InstituteSettings;
+import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
 import in.testpress.testpress.ui.view_holders.BaseCarouselViewHolder;
@@ -18,6 +18,10 @@ import in.testpress.testpress.ui.view_holders.CourseCarouselViewHolder;
 import in.testpress.testpress.ui.view_holders.LeaderboardViewHolder;
 import in.testpress.testpress.ui.view_holders.OffersCarouselViewHolder;
 import in.testpress.testpress.ui.view_holders.PostsCarouselViewHolder;
+import in.testpress.testpress.util.Strings;
+
+import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.TestpressApplication.daoSession;
 
 
 public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -57,10 +61,12 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 return OFFERS_CAROUSEL;
             case "chapter_content_attempt":
                 return CONTENT_CAROUSEL;
-            case "trophy_leaderboard":
-                return LEADERBOARD_LIST;
             case "products":
                 return COURSE_CAROUSEL;
+            case "trophy_leaderboard":
+                if (isLeaderBoardEnabled())
+                return LEADERBOARD_LIST;
+                break;
         }
         return -1;
     }
@@ -98,7 +104,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 holder = new LeaderboardViewHolder(view, context);
                 break;
             default:
-                holder = new BaseCarouselViewHolder(view, context);
+                holder = new BaseCarouselViewHolder(view);
                 break;
         }
 
@@ -124,5 +130,16 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 ((LeaderboardViewHolder) holder).display(response, context);
                 break;
         }
+    }
+
+    public Boolean isLeaderBoardEnabled() {
+        InstituteSettingsDao instituteSettingsDao = daoSession.getInstituteSettingsDao();
+        InstituteSettings instituteSettings = instituteSettingsDao.queryBuilder()
+                .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
+                .list().get(0);
+
+        if (instituteSettings.getLeaderboardEnabled() == null)
+            return false;
+        return instituteSettings.getLeaderboardEnabled();
     }
 }

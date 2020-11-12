@@ -147,10 +147,12 @@
                 android:orientation="vertical">
                 <!-- Password Label -->
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/password_text_input_layout"
                     style="@style/TextLabelTab"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:theme="@style/TextLabel">
+                    android:theme="@style/TextLabel"
+                    app:passwordToggleEnabled="false">
 
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/et_password"
@@ -178,9 +180,11 @@
                 android:orientation="vertical">
                 <!-- Confirm Password Label -->
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/confirm_password_text_input_layout"
                     style="@style/TextLabelTab"
                     android:layout_marginTop="8dp"
-                    android:theme="@style/TextLabel">
+                    android:theme="@style/TextLabel"
+                    app:passwordToggleEnabled="false">
 
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/et_password_confirm"

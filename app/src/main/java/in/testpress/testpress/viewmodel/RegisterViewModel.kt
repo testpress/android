@@ -6,7 +6,7 @@ import `in`.testpress.testpress.databinding.RegisterActivityBinding
 import `in`.testpress.testpress.enums.VerificationMethod
 import `in`.testpress.testpress.models.*
 import `in`.testpress.testpress.repository.RegisterRepository
-import `in`.testpress.testpress.util.RegisterFormUserInputValidation
+import `in`.testpress.testpress.util.RegisterFormUserInputValidator
 import android.view.View
 import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
@@ -40,8 +40,8 @@ class RegisterViewModel(
     val confirmPassword = MutableLiveData<String>()
 
     fun isUserDetailsValid() {
-        val registrationForm = RegisterFormUserInputValidation(binding, verificationMethod, isTwilioEnabled)
-        if (registrationForm.isValid()) {
+        val isValid = RegisterFormUserInputValidator(binding, verificationMethod, isTwilioEnabled).isValid()
+        if (isValid) {
             isUserDataValid.postValue(true)
         } else {
             isUserDataValid.postValue(false)

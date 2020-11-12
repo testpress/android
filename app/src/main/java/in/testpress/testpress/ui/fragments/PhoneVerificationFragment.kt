@@ -16,14 +16,10 @@ class PhoneVerificationFragment : RegistrationBaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         phoneLayout.visibility = View.VISIBLE
-        initViewModel()
-        initViewModelObservers()
-        setCountryCodePicker()
-        hideErrorMessageOnTextChange()
-        showPasswordToggleOnTextChange()
+        showOrHideCountryCodePicker()
     }
 
-    private fun initViewModelObservers() {
+    override fun initViewModelObservers() {
         viewModel.isUserDataValid.observe(viewLifecycleOwner, Observer {
             if (it) {
                 initiateSmsRetrieverClient()
@@ -64,7 +60,7 @@ class PhoneVerificationFragment : RegistrationBaseFragment() {
         startActivityForResult(intent, REQUEST_CODE_REGISTER_USER)
     }
 
-    private fun setCountryCodePicker() {
+    private fun showOrHideCountryCodePicker() {
         if (viewModel.isTwilioEnabled) {
             countryCodePicker.apply {
                 visibility = View.VISIBLE

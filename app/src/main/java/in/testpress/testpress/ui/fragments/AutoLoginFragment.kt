@@ -7,8 +7,6 @@ import `in`.testpress.testpress.ui.MainActivity
 import `in`.testpress.testpress.util.ProgressUtil
 import `in`.testpress.testpress.viewmodel.AutoLoginViewModel
 import android.content.Intent
-import android.os.Bundle
-import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.register_activity.*
@@ -21,15 +19,7 @@ class AutoLoginFragment: RegistrationBaseFragment() {
         ViewModelProvider(this).get(AutoLoginViewModel::class.java)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initViewModel()
-        initViewModelObservers()
-        hideErrorMessageOnTextChange()
-        showPasswordToggleOnTextChange()
-    }
-
-    private fun initViewModelObservers() {
+    override fun initViewModelObservers() {
         viewModel.isUserDataValid.observe(viewLifecycleOwner, Observer {
             if (it) {
                 register()
@@ -59,7 +49,7 @@ class AutoLoginFragment: RegistrationBaseFragment() {
     private fun autoLogin() {
         instituteSettings = viewModel.instituteSettings
         autoLoginViewModel.initializeTestPressSession(activity,instituteSettings,
-                editTextUsername.text.toString(), editTextPassword.text.toString())
+                editTextUsername.text.toString(), editTextPassword.text.toString(), activity.testPressService)
     }
 
     private fun navigateToMainActivity() {

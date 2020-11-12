@@ -2,11 +2,15 @@ package `in`.testpress.testpress.util.fakes
 
 import androidx.lifecycle.ViewModel
 
-class FakeRegisterViewModel: ViewModel() {
+class FakeViewModel: ViewModel() {
 
-    private val repository = FakeRegisterRepository()
+    private val repository = FakeRepository()
 
     fun register() {
         repository.register(hashMapOf())
+    }
+
+    fun initializeTestPressSession() {
+        repository
     }
 }

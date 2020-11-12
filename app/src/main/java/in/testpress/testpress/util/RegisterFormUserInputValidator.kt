@@ -7,23 +7,21 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.databinding.BaseObservable
 
-class RegisterFormUserInputValidation(
+class RegisterFormUserInputValidator(
         private var binding: RegisterActivityBinding,
         private val verificationMethod: VerificationMethod,
         private val isTwilioEnabled: Boolean
 ) : BaseObservable() {
 
     private var isValid = true
-    private val registerFormEmptyInputValidation = RegistrationFormEmptyInputValidation(binding,verificationMethod)
 
     fun isValid(): Boolean {
-        isValid = true
-        isValid = registerFormEmptyInputValidation.isValid()
-        validateUserData()
+        isValid = RegistrationFormEmptyInputValidator(binding,verificationMethod).isValid()
+        showErrorWhenUserDataNotValid()
         return isValid
     }
 
-    private fun validateUserData() {
+    private fun showErrorWhenUserDataNotValid() {
         if (isUsernameNotValid()) {
             showError(binding.usernameErrorText, binding.editTextUsername,
                     "This field can contain only lowercase alphabets, numbers and underscore."

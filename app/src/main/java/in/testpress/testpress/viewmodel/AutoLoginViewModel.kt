@@ -1,8 +1,9 @@
 package `in`.testpress.testpress.viewmodel
 
-import `in`.testpress.testpress.authenticator.RegisterActivity
+import `in`.testpress.testpress.core.TestpressService
 import `in`.testpress.testpress.models.InstituteSettings
 import `in`.testpress.testpress.repository.TestPressSessionRepository
+import android.content.Context
 import androidx.lifecycle.ViewModel
 
 class AutoLoginViewModel: ViewModel() {
@@ -11,7 +12,7 @@ class AutoLoginViewModel: ViewModel() {
 
     var result = testPressSessionRepository.result
 
-    fun initializeTestPressSession(activity: RegisterActivity,instituteSettings: InstituteSettings, username: String, password: String) {
+    fun initializeTestPressSession(context: Context,instituteSettings: InstituteSettings, username: String, password: String, testPressService: TestpressService) {
         val settings = `in`.testpress.models.InstituteSettings(instituteSettings.baseUrl)
                 .setBookmarksEnabled(instituteSettings.bookmarksEnabled)
                 .setCoursesFrontend(instituteSettings.showGameFrontend)
@@ -19,6 +20,6 @@ class AutoLoginViewModel: ViewModel() {
                 .setCommentsVotingEnabled(instituteSettings.commentsVotingEnabled)
                 .setAccessCodeEnabled(false)
 
-        testPressSessionRepository.initialize(activity,settings,username, password)
+        testPressSessionRepository.initialize(context,settings,username, password, testPressService)
     }
 }

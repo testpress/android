@@ -20,7 +20,7 @@ import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.register_activity.*
 import java.util.*
 
-open class RegistrationBaseFragment: Fragment() {
+abstract class RegistrationBaseFragment: Fragment() {
 
     lateinit var viewModel: RegisterViewModel
 
@@ -34,7 +34,15 @@ open class RegistrationBaseFragment: Fragment() {
         return binding.root
     }
 
-    fun initViewModel() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initViewModel()
+        initViewModelObservers()
+        hideErrorMessageOnTextChange()
+        showPasswordToggleOnTextChange()
+    }
+
+    private fun initViewModel() {
         viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 return RegisterViewModel(RegisterRepository(activity.testPressService), binding) as T
@@ -43,13 +51,15 @@ open class RegistrationBaseFragment: Fragment() {
         binding.viewModel = viewModel
     }
 
+    abstract fun initViewModelObservers()
+
     fun setPostDetailsException(exception: Exception?) {
         buttonRegister.isEnabled = true
         ProgressUtil.progressDialog.dismiss()
         viewModel.handleErrorResponse(exception)
     }
 
-    fun hideErrorMessageOnTextChange() {
+    private fun hideErrorMessageOnTextChange() {
         val editTextMap = Hashtable<EditText, TextView>()
         editTextMap[editTextUsername] = usernameErrorText
         editTextMap[editTextPassword] = passwordErrorText
@@ -61,7 +71,7 @@ open class RegistrationBaseFragment: Fragment() {
         }
     }
 
-    fun showPasswordToggleOnTextChange() {
+    private fun showPasswordToggleOnTextChange() {
         TextChangeUtil.showPasswordToggleOnTextChange(editTextPassword, passwordErrorText, passwordInputLayout)
         TextChangeUtil.showPasswordToggleOnTextChange(editTextConfirmPassword, confirmPasswordErrorText, confirmPasswordInputLayout)
     }

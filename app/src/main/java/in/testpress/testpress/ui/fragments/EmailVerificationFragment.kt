@@ -2,9 +2,7 @@ package `in`.testpress.testpress.ui.fragments
 
 import `in`.testpress.enums.Status
 import `in`.testpress.testpress.R
-import `in`.testpress.testpress.authenticator.RegisterActivity
 import `in`.testpress.testpress.util.ProgressUtil
-import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.register_activity.*
@@ -12,15 +10,7 @@ import kotlinx.android.synthetic.main.success_message_layout.*
 
 class EmailVerificationFragment : RegistrationBaseFragment() {
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initViewModel()
-        initViewModelObservers()
-        hideErrorMessageOnTextChange()
-        showPasswordToggleOnTextChange()
-    }
-
-    private fun initViewModelObservers() {
+    override fun initViewModelObservers() {
         viewModel.isUserDataValid.observe(viewLifecycleOwner, Observer {
             if (it) {
                 register()

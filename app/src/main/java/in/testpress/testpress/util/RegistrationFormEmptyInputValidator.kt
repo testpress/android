@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.databinding.BaseObservable
 
-class RegistrationFormEmptyInputValidation(
+class RegistrationFormEmptyInputValidator(
         private val binding: RegisterActivityBinding,
         private val verificationMethod: VerificationMethod
 ): BaseObservable() {
@@ -14,7 +14,6 @@ class RegistrationFormEmptyInputValidation(
     private var isValid: Boolean = true
 
     fun isValid(): Boolean {
-        isValid = true
         ifEmptyInputSetInputError()
         return isValid
     }

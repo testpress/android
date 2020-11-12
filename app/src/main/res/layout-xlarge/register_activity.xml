@@ -14,7 +14,7 @@
         <include layout="@layout/success_message_layout" />
 
         <LinearLayout
-            android:id="@+id/register_layout"
+            android:id="@+id/registerLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -41,20 +41,21 @@
                     android:theme="@style/TextLabel">
 
                     <androidx.appcompat.widget.AppCompatEditText
-                        android:id="@+id/et_username"
+                        android:id="@+id/editTextUsername"
+                        style="@style/Input"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/input_height"
                         android:hint="@string/label_username"
                         android:imeOptions="actionNext"
                         android:maxLines="1"
-                        android:nextFocusDown="@+id/et_email"
-                        android:singleLine="true"
-                        style="@style/Input"/>
+                        android:nextFocusDown="@+id/editTextEmail"
+                        android:singleLine="true" />
                 </com.google.android.material.textfield.TextInputLayout>
+
                 <TextView
-                    android:id="@+id/username_error"
-                    android:layout_height="wrap_content"
-                    style="@style/TabInputError"/>
+                    android:id="@+id/usernameErrorText"
+                    style="@style/TabInputError"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
             <LinearLayout
@@ -69,21 +70,22 @@
                     android:theme="@style/TextLabel">
 
                     <androidx.appcompat.widget.AppCompatEditText
-                        android:id="@+id/et_email"
+                        android:id="@+id/editTextEmail"
+                        style="@style/Input"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/input_height"
                         android:hint="@string/label_email"
                         android:imeOptions="actionNext"
                         android:inputType="textEmailAddress"
                         android:maxLines="1"
-                        android:nextFocusDown="@+id/et_phone"
-                        android:singleLine="true"
-                        style="@style/Input"/>
+                        android:nextFocusDown="@+id/editTextPhone"
+                        android:singleLine="true" />
                 </com.google.android.material.textfield.TextInputLayout>
+
                 <TextView
-                    android:id="@+id/email_error"
-                    android:layout_height="wrap_content"
-                    style="@style/TabInputError"/>
+                    android:id="@+id/emailErrorText"
+                    style="@style/TabInputError"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
 
@@ -92,6 +94,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:orientation="vertical">
+
                 <LinearLayout
                     android:layout_width="400dp"
                     android:layout_height="wrap_content"
@@ -100,44 +103,45 @@
                     android:orientation="horizontal">
 
                     <com.hbb20.CountryCodePicker
-                        android:id="@+id/ccp"
+                        android:id="@+id/countryCodePicker"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/input_height"
                         android:layout_gravity="center_vertical"
-                        app:ccp_autoDetectCountry="true"
-                        android:background="@drawable/rounded_border_edittext"
-                        app:ccp_showFlag="false"
-                        app:ccp_textSize="13sp"
-                        android:paddingTop="10dp"
-                        android:layout_marginRight="5dp"
                         android:layout_marginEnd="5dp"
-                        app:ccp_defaultNameCode="IND" />
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/rounded_border_edittext"
+                        android:paddingTop="10dp"
+                        app:ccp_autoDetectCountry="true"
+                        app:ccp_defaultNameCode="IND"
+                        app:ccp_showFlag="false"
+                        app:ccp_textSize="13sp" />
 
                     <!-- Phone Label -->
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/phone_layout"
+                        android:id="@+id/phoneLayout"
                         style="@style/TextLabelTab"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/input_height"
                         android:theme="@style/TextLabel">
 
                         <androidx.appcompat.widget.AppCompatEditText
-                            android:id="@+id/et_phone"
+                            android:id="@+id/editTextPhone"
+                            style="@style/Input"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/input_height"
                             android:hint="@string/label_phone"
                             android:imeOptions="actionNext"
                             android:inputType="number"
                             android:maxLines="1"
-                            android:nextFocusDown="@+id/et_password"
-                            android:singleLine="true"
-                            style="@style/Input"/>
+                            android:nextFocusDown="@+id/editTextPassword"
+                            android:singleLine="true" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
+
                 <TextView
-                    android:id="@+id/phone_error"
-                    android:layout_height="wrap_content"
-                    style="@style/TabInputError"/>
+                    android:id="@+id/phoneErrorText"
+                    style="@style/TabInputError"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
             <LinearLayout
@@ -147,13 +151,16 @@
                 android:orientation="vertical">
                 <!-- Password Label -->
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/passwordInputLayout"
                     style="@style/TextLabelTab"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:theme="@style/TextLabel">
+                    android:theme="@style/TextLabel"
+                    app:passwordToggleEnabled="false">
 
                     <androidx.appcompat.widget.AppCompatEditText
-                        android:id="@+id/et_password"
+                        android:id="@+id/editTextPassword"
+                        style="@style/Input"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/input_height"
                         android:fontFamily="sans-serif"
@@ -161,14 +168,14 @@
                         android:imeOptions="actionNext"
                         android:inputType="textPassword"
                         android:maxLines="1"
-                        android:nextFocusDown="@+id/et_password_confirm"
-                        android:singleLine="true"
-                        style="@style/Input"/>
+                        android:nextFocusDown="@+id/editTextConfirmPassword"
+                        android:singleLine="true" />
                 </com.google.android.material.textfield.TextInputLayout>
+
                 <TextView
-                    android:id="@+id/password_error"
-                    android:layout_height="wrap_content"
-                    style="@style/TabInputError"/>
+                    android:id="@+id/passwordErrorText"
+                    style="@style/TabInputError"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
             <LinearLayout
@@ -178,12 +185,15 @@
                 android:orientation="vertical">
                 <!-- Confirm Password Label -->
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/confirmPasswordInputLayout"
                     style="@style/TextLabelTab"
                     android:layout_marginTop="8dp"
-                    android:theme="@style/TextLabel">
+                    android:theme="@style/TextLabel"
+                    app:passwordToggleEnabled="false">
 
                     <androidx.appcompat.widget.AppCompatEditText
-                        android:id="@+id/et_password_confirm"
+                        android:id="@+id/editTextConfirmPassword"
+                        style="@style/Input"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/input_height"
                         android:fontFamily="sans-serif"
@@ -191,17 +201,17 @@
                         android:imeOptions="actionDone"
                         android:inputType="textPassword"
                         android:maxLines="1"
-                        android:singleLine="true"
-                        style="@style/Input"/>
+                        android:singleLine="true" />
                 </com.google.android.material.textfield.TextInputLayout>
+
                 <TextView
-                    android:id="@+id/confirm_password_error"
-                    android:layout_height="wrap_content"
-                    style="@style/TabInputError"/>
+                    android:id="@+id/confirmPasswordErrorText"
+                    style="@style/TabInputError"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/b_register"
+                android:id="@+id/buttonRegister"
                 style="@style/Button.Tab"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"

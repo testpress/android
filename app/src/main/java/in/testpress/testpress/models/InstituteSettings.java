@@ -5,6 +5,10 @@ package in.testpress.testpress.models;
 // KEEP INCLUDES - put your custom includes here
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
+import in.testpress.database.TestpressDatabase;
+import in.testpress.testpress.BuildConfig;
+import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.enums.VerificationMethod;
 // KEEP INCLUDES END
 /**
@@ -469,7 +473,11 @@ public class InstituteSettings {
         return 0L;
     }
 
-    public VerificationMethod getVerificationType(InstituteSettings instituteSettings) {
+    public VerificationMethod getVerificationType() {
+        InstituteSettingsDao instituteSettingsDao = TestpressApplication.getDaoSession().getInstituteSettingsDao();
+        InstituteSettings instituteSettings = instituteSettingsDao.queryBuilder()
+                .where(InstituteSettingsDao.Properties.BaseUrl.eq(BuildConfig.BASE_URL))
+                .list().get(0);
         if(instituteSettings.getVerificationMethod().equals("E")) {
             return VerificationMethod.EMAIL;
         } else if (instituteSettings.getVerificationMethod().equals("M")) {

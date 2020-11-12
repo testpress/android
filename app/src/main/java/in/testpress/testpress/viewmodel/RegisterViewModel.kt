@@ -25,7 +25,7 @@ class RegisterViewModel(
             .where(InstituteSettingsDao.Properties.BaseUrl.eq(BuildConfig.BASE_URL))
             .list()
 
-    private val verificationMethod: VerificationMethod = InstituteSettings().getVerificationType(instituteSettingsList[0])
+    private val verificationMethod: VerificationMethod = InstituteSettings().verificationType
 
     val isTwilioEnabled: Boolean = instituteSettingsList[0].twilioEnabled
 

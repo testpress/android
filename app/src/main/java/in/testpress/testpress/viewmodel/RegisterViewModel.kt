@@ -1,12 +1,12 @@
 package `in`.testpress.testpress.viewmodel
 
-import `in`.testpress.testpress.BuildConfig
-import `in`.testpress.testpress.TestpressApplication
 import `in`.testpress.testpress.databinding.RegisterActivityBinding
 import `in`.testpress.testpress.enums.VerificationMethod
-import `in`.testpress.testpress.models.*
+import `in`.testpress.testpress.models.InstituteSettings
+import `in`.testpress.testpress.models.RegistrationErrorDetails
+import `in`.testpress.testpress.models.UserDetails
 import `in`.testpress.testpress.repository.RegisterRepository
-import `in`.testpress.testpress.util.RegisterFormUserInputValidator
+import `in`.testpress.testpress.util.UserDataValidator
 import android.view.View
 import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
@@ -19,17 +19,12 @@ class RegisterViewModel(
 
     val registrationResponse = repository.result
 
-    private val daoSession: DaoSession = TestpressApplication.getDaoSession()
-    private val instituteSettingsDao: InstituteSettingsDao = daoSession.instituteSettingsDao
-    private val instituteSettingsList: MutableList<InstituteSettings> = instituteSettingsDao.queryBuilder()
-            .where(InstituteSettingsDao.Properties.BaseUrl.eq(BuildConfig.BASE_URL))
-            .list()
+    val instituteSettings: InstituteSettings = InstituteSettings.getInstance()
 
-    private val verificationMethod: VerificationMethod = InstituteSettings().verificationType
 
-    val isTwilioEnabled: Boolean = instituteSettingsList[0].twilioEnabled
+    private val verificationMethod: VerificationMethod = instituteSettings.verificationType
 
-    val instituteSettings = instituteSettingsList[0]
+    val isTwilioEnabled: Boolean = instituteSettings.twilioEnabled
 
     var isUserDataValid = MutableLiveData<Boolean>()
 
@@ -40,7 +35,7 @@ class RegisterViewModel(
     val confirmPassword = MutableLiveData<String>()
 
     fun isUserDetailsValid() {
-        val isValid = RegisterFormUserInputValidator(binding, verificationMethod, isTwilioEnabled).isValid()
+        val isValid = UserDataValidator(binding, verificationMethod, isTwilioEnabled).isValid()
         if (isValid) {
             isUserDataValid.postValue(true)
         } else {

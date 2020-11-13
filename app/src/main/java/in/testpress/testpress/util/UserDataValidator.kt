@@ -1,43 +1,53 @@
 package `in`.testpress.testpress.util
 
-import `in`.testpress.testpress.databinding.RegisterActivityBinding
 import `in`.testpress.testpress.enums.VerificationMethod
+import `in`.testpress.testpress.databinding.RegisterActivityBinding
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import androidx.databinding.BaseObservable
 
-class RegisterFormUserInputValidator(
+class UserDataValidator(
         private var binding: RegisterActivityBinding,
         private val verificationMethod: VerificationMethod,
         private val isTwilioEnabled: Boolean
-) : BaseObservable() {
-
+): BaseObservable() {
     private var isValid = true
 
+    init {
+        showErrorWhenNotValid()
+    }
+
     fun isValid(): Boolean {
-        isValid = RegistrationFormEmptyInputValidator(binding,verificationMethod).isValid()
-        showErrorWhenUserDataNotValid()
         return isValid
     }
 
-    private fun showErrorWhenUserDataNotValid() {
-        if (isUsernameNotValid()) {
+    private fun showErrorWhenNotValid() {
+        if (isEmpty(binding.editTextUsername)) {
+            showError(binding.usernameErrorText, binding.editTextUsername)
+        } else if (isUsernameNotValid()) {
             showError(binding.usernameErrorText, binding.editTextUsername,
                     "This field can contain only lowercase alphabets, numbers and underscore."
             )
         }
-        if (isEmailNotValid()) {
+        if (isEmpty(binding.editTextEmail)) {
+            showError(binding.emailErrorText, binding.editTextEmail)
+        } else if (isEmailNotValid()) {
             showError(binding.emailErrorText, binding.editTextEmail,
                     "Please enter a valid email address")
         }
-        if (verificationMethod == VerificationMethod.MOBILE) {
+
+        if (isEmpty(binding.editTextPhone)) {
+            showError(binding.phoneErrorText, binding.editTextEmail)
+        } else if (verificationMethod == VerificationMethod.MOBILE) {
             if (isPhoneNumberNotValid()) {
                 showError(binding.phoneErrorText, binding.editTextPhone,
                         "Please enter a valid mobile number")
             }
         }
-        if (isPasswordNotValid()) {
+        if (isEmpty(binding.editTextPassword)) {
+            showError(binding.passwordErrorText, binding.editTextEmail)
+        } else if (isPasswordNotValid()) {
             showError(binding.passwordErrorText, binding.editTextPassword,
                     "Password should contain at least 6 characters")
         }
@@ -96,7 +106,11 @@ class RegisterFormUserInputValidator(
         return false
     }
 
-    private fun showError(errorTextView: TextView, editText: EditText, errorText: String) {
+    private fun isEmpty(editText: EditText): Boolean {
+        return editText.text.toString().trim().isEmpty()
+    }
+
+    private fun showError(errorTextView: TextView, editText: EditText, errorText: String = "This field cannot be empty.") {
         editText.requestFocus()
         editText.setText("")
         errorTextView.visibility = View.VISIBLE

@@ -1,15 +1,11 @@
 package `in`.testpress.testpress.authenticator
 
-import `in`.testpress.testpress.BuildConfig
 import `in`.testpress.testpress.Injector
 import `in`.testpress.testpress.R
-import `in`.testpress.testpress.TestpressApplication
 import `in`.testpress.testpress.authenticator.LoginActivity.REQUEST_CODE_REGISTER_USER
 import `in`.testpress.testpress.core.TestpressService
 import `in`.testpress.testpress.enums.VerificationMethod
-import `in`.testpress.testpress.models.DaoSession
 import `in`.testpress.testpress.models.InstituteSettings
-import `in`.testpress.testpress.models.InstituteSettingsDao
 import `in`.testpress.testpress.ui.fragments.AutoLoginFragment
 import `in`.testpress.testpress.ui.fragments.EmailVerificationFragment
 import `in`.testpress.testpress.ui.fragments.PhoneVerificationFragment
@@ -23,13 +19,7 @@ class RegisterActivity : AppCompatActivity() {
     @Inject
     lateinit var testPressService: TestpressService
 
-    val daoSession: DaoSession = TestpressApplication.getDaoSession()
-    val instituteSettingsDao: InstituteSettingsDao = daoSession.instituteSettingsDao
-    private val instituteSettingsList: MutableList<InstituteSettings> = instituteSettingsDao.queryBuilder()
-            .where(InstituteSettingsDao.Properties.BaseUrl.eq(BuildConfig.BASE_URL))
-            .list()
-
-    private val verificationMethod = InstituteSettings().verificationType
+    private val verificationMethod = InstituteSettings.getInstance().verificationType
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

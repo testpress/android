@@ -473,14 +473,17 @@ public class InstituteSettings {
         return 0L;
     }
 
-    public VerificationMethod getVerificationType() {
+    public static InstituteSettings getInstance() {
         InstituteSettingsDao instituteSettingsDao = TestpressApplication.getDaoSession().getInstituteSettingsDao();
-        InstituteSettings instituteSettings = instituteSettingsDao.queryBuilder()
+        return instituteSettingsDao.queryBuilder()
                 .where(InstituteSettingsDao.Properties.BaseUrl.eq(BuildConfig.BASE_URL))
                 .list().get(0);
-        if(instituteSettings.getVerificationMethod().equals("E")) {
+    }
+
+    public VerificationMethod getVerificationType() {
+        if(this.getVerificationMethod().equals("E")) {
             return VerificationMethod.EMAIL;
-        } else if (instituteSettings.getVerificationMethod().equals("M")) {
+        } else if (this.getVerificationMethod().equals("M")) {
             return VerificationMethod.MOBILE;
         } else {
             return VerificationMethod.NONE;

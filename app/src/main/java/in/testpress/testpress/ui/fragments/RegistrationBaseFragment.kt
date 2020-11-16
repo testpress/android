@@ -53,7 +53,7 @@ abstract class RegistrationBaseFragment: Fragment() {
 
     abstract fun initViewModelObservers()
 
-    fun setPostDetailsException(exception: Exception?) {
+    fun onRegisterException(exception: Exception?) {
         buttonRegister.isEnabled = true
         ProgressUtil.progressDialog.dismiss()
         viewModel.handleErrorResponse(exception)

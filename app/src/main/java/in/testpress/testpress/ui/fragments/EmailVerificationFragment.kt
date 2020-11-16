@@ -21,7 +21,7 @@ open class EmailVerificationFragment : RegistrationBaseFragment() {
         viewModel.registrationResponse.observe(viewLifecycleOwner, Observer {
             when (it.status) {
                 Status.SUCCESS -> showVerifyEmailLayout()
-                Status.ERROR -> setPostDetailsException(it.exception)
+                Status.ERROR -> onRegisterException(it.exception)
             }
         })
     }
@@ -32,7 +32,7 @@ open class EmailVerificationFragment : RegistrationBaseFragment() {
         viewModel.register()
     }
 
-    fun showVerifyEmailLayout() {
+    private fun showVerifyEmailLayout() {
         registerLayout.visibility = View.GONE
         success_description.setText(R.string.activation_email_sent_message)
         success_complete.visibility = View.VISIBLE

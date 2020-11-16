@@ -1,16 +1,21 @@
 package `in`.testpress.testpress.authenticator
 
+import `in`.testpress.testpress.BuildConfig
 import `in`.testpress.testpress.Injector
 import `in`.testpress.testpress.R
+import `in`.testpress.testpress.TestpressApplication
 import `in`.testpress.testpress.authenticator.LoginActivity.REQUEST_CODE_REGISTER_USER
 import `in`.testpress.testpress.core.TestpressService
 import `in`.testpress.testpress.enums.VerificationMethod
+import `in`.testpress.testpress.models.DaoSession
 import `in`.testpress.testpress.models.InstituteSettings
+import `in`.testpress.testpress.models.InstituteSettingsDao
 import `in`.testpress.testpress.ui.fragments.AutoLoginFragment
 import `in`.testpress.testpress.ui.fragments.EmailVerificationFragment
 import `in`.testpress.testpress.ui.fragments.PhoneVerificationFragment
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import javax.inject.Inject
@@ -20,8 +25,13 @@ open class RegisterActivity : AppCompatActivity() {
     @Inject
     lateinit var testPressService: TestpressService
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    var verificationMethod = InstituteSettings.getInstance().verificationType
+    val daoSession: DaoSession = TestpressApplication.getDaoSession()
+    val instituteSettingsDao: InstituteSettingsDao = daoSession.instituteSettingsDao
+    private val instituteSettingsList: MutableList<InstituteSettings> = instituteSettingsDao.queryBuilder()
+            .where(InstituteSettingsDao.Properties.BaseUrl.eq(BuildConfig.BASE_URL))
+            .list()
+
+    private val verificationMethod = InstituteSettings().instance.verificationType
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,21 +48,27 @@ open class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun navigateToPhoneVerificationFragment() {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun navigateToPhoneVerificationFragment() {
+        Log.e("TAG", "Correct")
         supportFragmentManager.beginTransaction().apply {
             add(R.id.container, PhoneVerificationFragment(), "PhoneVerificationFragment")
             commit()
         }
     }
 
-    private fun navigateToEmailVerificationFragment() {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun navigateToEmailVerificationFragment() {
+        Log.e("TAG", "email")
         supportFragmentManager.beginTransaction().apply {
             add(R.id.container, EmailVerificationFragment(), "EmailVerificationFragment")
             commit()
         }
     }
 
-    private fun navigateToAutoLoginFragment() {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun navigateToAutoLoginFragment() {
+        Log.e("TAG", "auto")
         supportFragmentManager.beginTransaction().apply {
             add(R.id.container, AutoLoginFragment(), "AutoLoginFragment")
             commit()

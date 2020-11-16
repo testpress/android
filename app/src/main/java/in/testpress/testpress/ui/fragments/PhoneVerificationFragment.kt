@@ -30,7 +30,7 @@ open class PhoneVerificationFragment : RegistrationBaseFragment() {
         viewModel.registrationResponse.observe(viewLifecycleOwner, Observer {
             when (it.status) {
                 Status.SUCCESS -> navigateToCodeVerificationActivity()
-                Status.ERROR -> setPostDetailsException(it.exception)
+                Status.ERROR -> onRegisterException(it.exception)
             }
         })
     }

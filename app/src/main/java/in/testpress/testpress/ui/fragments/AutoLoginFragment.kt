@@ -30,7 +30,7 @@ open class AutoLoginFragment: RegistrationBaseFragment() {
         viewModel.registrationResponse.observe(viewLifecycleOwner, Observer {
             when (it.status) {
                 Status.SUCCESS -> autoLogin()
-                Status.ERROR -> setPostDetailsException(it.exception)
+                Status.ERROR -> onRegisterException(it.exception)
             }
         })
 
@@ -44,8 +44,8 @@ open class AutoLoginFragment: RegistrationBaseFragment() {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     fun register() {
-        //ProgressUtil.showLoadingDialog(activity)
-        //viewModel.register()
+        ProgressUtil.showLoadingDialog(activity)
+        viewModel.register()
     }
 
     private fun autoLogin() {

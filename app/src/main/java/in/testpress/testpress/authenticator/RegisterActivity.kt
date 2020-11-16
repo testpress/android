@@ -11,15 +11,17 @@ import `in`.testpress.testpress.ui.fragments.EmailVerificationFragment
 import `in`.testpress.testpress.ui.fragments.PhoneVerificationFragment
 import android.content.Intent
 import android.os.Bundle
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import javax.inject.Inject
 
-class RegisterActivity : AppCompatActivity() {
+open class RegisterActivity : AppCompatActivity() {
 
     @Inject
     lateinit var testPressService: TestpressService
 
-    private val verificationMethod = InstituteSettings.getInstance().verificationType
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    var verificationMethod = InstituteSettings.getInstance().verificationType
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

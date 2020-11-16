@@ -12,7 +12,7 @@ import org.junit.runners.JUnit4
 class RegisterFormUserInputValidatorTest {
 
     @Test
-    fun validDataShouldReturnTrue() {
+    fun validateDataShouldReturnTrueForValidUserData() {
         val registerFormUserInputValidation = FakeRegisterFormUserInputValidation(UserDetails(
                 "helen01",
                 "helen01@gmail.com",
@@ -25,7 +25,7 @@ class RegisterFormUserInputValidatorTest {
     }
 
     @Test
-    fun invalidEmailShouldReturnFalse() {
+    fun validateDataShouldReturnFalseForNotValidData() {
         val registerFormUserInputValidation = FakeRegisterFormUserInputValidation(UserDetails(
                 "helen01",
                 "helen01com.tf",
@@ -38,7 +38,7 @@ class RegisterFormUserInputValidatorTest {
     }
 
     @Test
-    fun invalidUserNameShouldReturnFalse() {
+    fun validateUsernameShouldReturnTrueForValidUserName() {
         val registerFormUserInputValidation = FakeRegisterFormUserInputValidation(UserDetails(
                 "helen01!*()",
                 "helen01com.tf",
@@ -51,7 +51,7 @@ class RegisterFormUserInputValidatorTest {
     }
 
     @Test
-    fun samePasswordAndConfirmPasswordShouldReturnTrue() {
+    fun validatePasswordShouldReturnTrueForSamePassword() {
         val registerFormUserInputValidation = FakeRegisterFormUserInputValidation(UserDetails(
                 "helen01!*()",
                 "helen01com.tf",

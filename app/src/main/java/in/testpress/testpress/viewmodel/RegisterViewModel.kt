@@ -13,7 +13,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import retrofit.RetrofitError
 
-class RegisterViewModel(
+open class RegisterViewModel(
         private val repository: RegisterRepository,
         private val binding: RegisterActivityBinding) : ViewModel() {
 

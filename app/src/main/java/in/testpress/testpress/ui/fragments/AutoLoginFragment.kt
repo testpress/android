@@ -7,11 +7,12 @@ import `in`.testpress.testpress.ui.MainActivity
 import `in`.testpress.testpress.util.ProgressUtil
 import `in`.testpress.testpress.viewmodel.AutoLoginViewModel
 import android.content.Intent
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.register_activity.*
 
-class AutoLoginFragment: RegistrationBaseFragment() {
+open class AutoLoginFragment: RegistrationBaseFragment() {
 
     private lateinit var instituteSettings: InstituteSettings
 
@@ -41,9 +42,10 @@ class AutoLoginFragment: RegistrationBaseFragment() {
         })
     }
 
-    private fun register() {
-        ProgressUtil.showLoadingDialog(activity)
-        viewModel.register()
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun register() {
+        //ProgressUtil.showLoadingDialog(activity)
+        //viewModel.register()
     }
 
     private fun autoLogin() {
@@ -52,7 +54,8 @@ class AutoLoginFragment: RegistrationBaseFragment() {
                 editTextUsername.text.toString(), editTextPassword.text.toString(), activity.testPressService)
     }
 
-    private fun navigateToMainActivity() {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun navigateToMainActivity() {
         startActivity(Intent(activity, MainActivity::class.java))
         activity.finish()
     }

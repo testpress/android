@@ -7,11 +7,12 @@ import `in`.testpress.testpress.util.ProgressUtil
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.Observer
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import kotlinx.android.synthetic.main.register_activity.*
 
-class PhoneVerificationFragment : RegistrationBaseFragment() {
+open class PhoneVerificationFragment : RegistrationBaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -45,12 +46,14 @@ class PhoneVerificationFragment : RegistrationBaseFragment() {
         }
     }
 
-    private fun register() {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun register() {
         ProgressUtil.showLoadingDialog(activity)
         viewModel.register()
     }
 
-    private fun navigateToCodeVerificationActivity() {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun navigateToCodeVerificationActivity() {
         val intent = Intent(getActivity(), CodeVerificationActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             putExtra("username", editTextUsername.text.toString())

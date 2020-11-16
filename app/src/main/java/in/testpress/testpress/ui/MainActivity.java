@@ -46,6 +46,7 @@ import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
+import in.testpress.course.fragments.DownloadsFragment;
 import in.testpress.exam.ui.view.NonSwipeableViewPager;
 import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.Injector;
@@ -307,6 +308,8 @@ public class MainActivity extends TestpressFragmentActivity {
             if (mInstituteSettings.getForumEnabled()) {
                 addMenuItem(R.string.discussions, R.drawable.chat_icon, new ForumListFragment());
             }
+            DownloadsFragment downloadsFragment = new DownloadsFragment();
+            addMenuItem(R.string.downloads, R.drawable.ic_downloads, downloadsFragment);
         } else {
             grid.setVisibility(View.GONE);
         }

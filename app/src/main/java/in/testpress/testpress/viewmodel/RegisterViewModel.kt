@@ -19,7 +19,7 @@ open class RegisterViewModel(
 
     val registrationResponse = repository.result
 
-    val instituteSettings: InstituteSettings = InstituteSettings().instance
+    val instituteSettings: InstituteSettings = InstituteSettings.getInstance()
 
     private val verificationMethod: VerificationMethod = instituteSettings.verificationType
 

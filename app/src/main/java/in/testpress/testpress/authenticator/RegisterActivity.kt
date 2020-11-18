@@ -31,7 +31,9 @@ open class RegisterActivity : AppCompatActivity() {
             .where(InstituteSettingsDao.Properties.BaseUrl.eq(BuildConfig.BASE_URL))
             .list()
 
-    private val verificationMethod = InstituteSettings().instance.verificationType
+    private val instituteSettings = InstituteSettings.getInstance()
+
+    private val verificationMethod = instituteSettings.verificationType
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -475,7 +475,7 @@ public class InstituteSettings {
         return 0L;
     }
 
-    public InstituteSettings getInstance() {
+    public static InstituteSettings getInstance() {
         InstituteSettingsDao instituteSettingsDao = TestpressApplication.getDaoSession().getInstituteSettingsDao();
         List<InstituteSettings> instituteSettingList = instituteSettingsDao.queryBuilder()
                 .where(InstituteSettingsDao.Properties.BaseUrl.eq(BuildConfig.BASE_URL))
@@ -484,7 +484,6 @@ public class InstituteSettings {
     }
 
     public VerificationMethod getVerificationType() {
-        Log.e("TAG", this.getVerificationMethod());
         if(this.getVerificationMethod().equals("E")) {
             return VerificationMethod.EMAIL;
         } else if (this.getVerificationMethod().equals("M")) {

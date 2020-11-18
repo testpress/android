@@ -49,6 +49,7 @@ open class AutoLoginFragment: RegistrationBaseFragment() {
     }
 
     private fun autoLogin() {
+        ProgressUtil.progressDialog.dismiss()
         instituteSettings = viewModel.instituteSettings
         autoLoginViewModel.initializeTestPressSession(activity,instituteSettings,
                 editTextUsername.text.toString(), editTextPassword.text.toString(), activity.testPressService)

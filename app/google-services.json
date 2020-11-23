@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "127680131673",
-    "firebase_url": "https://verandalearning-7d60c.firebaseio.com",
-    "project_id": "verandalearning-7d60c",
-    "storage_bucket": "verandalearning-7d60c.appspot.com"
+    "project_number": "357618162281",
+    "firebase_url": "https://veranda-testpress.firebaseio.com",
+    "project_id": "veranda-testpress",
+    "storage_bucket": "veranda-testpress.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:127680131673:android:1e3730deea86dc3058b748",
+        "mobilesdk_app_id": "1:357618162281:android:5f8fd5855596a67018a0f8",
         "android_client_info": {
-          "package_name": "com.verandalearning"
+          "package_name": "com.verandalearning.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "127680131673-m2i4gg04bb2t02p2ta8sv2b05hljmhrd.apps.googleusercontent.com",
+          "client_id": "357618162281-imvrt8q36u4e6a53leibolhjf8s5nmfr.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD0oGdbqr9n7LUUzPI5yKXSbOPYKFVjJEg"
+          "current_key": "AIzaSyD5AXH0B3ZSLZjI5Ftt0HMMkh1bK8VWKH8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "127680131673-m2i4gg04bb2t02p2ta8sv2b05hljmhrd.apps.googleusercontent.com",
+              "client_id": "357618162281-imvrt8q36u4e6a53leibolhjf8s5nmfr.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

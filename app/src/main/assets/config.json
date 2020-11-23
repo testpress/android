@@ -1,14 +1,14 @@
 {
-  "version" : "1.0.1",
+  "version" : "1.0.0",
   "version_code" : 1,
   "testpress_site_subdomain" : "verandalearning",
-  "package_name" : "com.verandalearning",
+  "package_name" : "com.verandalearning.app",
   "app_name" : "Veranda Learning",
   "share_message": "Good app to prepare for online exams.",
   "primary_color": "2ba97d",
   "allow_anonymous_user" : false,
   "facebook_app_id" : "733962776688753",
-  "server_client_id" : "127680131673-m2i4gg04bb2t02p2ta8sv2b05hljmhrd.apps.googleusercontent.com",
+  "server_client_id" : "357618162281-imvrt8q36u4e6a53leibolhjf8s5nmfr.apps.googleusercontent.com",
   "display_username_on_video": true,
   "white_labeled_host_url": "360.verandalearning.com",
   "is_growth_hacks_enabled": false

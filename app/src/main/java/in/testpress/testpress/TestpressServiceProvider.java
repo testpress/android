@@ -28,11 +28,9 @@ import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
-import in.testpress.testpress.models.ProfileDetails;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
-import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.util.UIUtils;
 import retrofit.RestAdapter;
 

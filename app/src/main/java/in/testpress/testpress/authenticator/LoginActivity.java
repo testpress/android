@@ -491,7 +491,9 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
         CommonUtils.registerDevice(this, testpressService);
         final Account account = new Account(username, APPLICATION_ID);
-        deleteDownloadedVideosWhenUserLogInWithDifferentAccount();
+        if (!isPreviouslyLoggedInUser()) {
+            deleteDownloadedVideos();
+        }
         saveUsernameToPreference();
 
         if (requestNewAccount) {
@@ -531,14 +533,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         finish();
     }
 
-    private void deleteDownloadedVideosWhenUserLogInWithDifferentAccount() {
-        if (!isUserAlreadyLoggedIn()) {
-            deleteDownloadedVideos();
-            TestpressSDKDatabase.clearDatabase(this);
-        }
-    }
-
-    private Boolean isUserAlreadyLoggedIn() {
+    private Boolean isPreviouslyLoggedInUser() {
         SharedPreferences pref = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
         String previousUsername = pref.getString("username", "");
         return previousUsername.equals(username);
@@ -548,6 +543,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> TestpressDatabase.Companion.invoke(this).clearAllTables());
         DownloadService.sendRemoveAllDownloads(this, VideoDownloadService.class, false);
+        TestpressSDKDatabase.clearDatabase(this);
     }
 
     private void saveUsernameToPreference() {

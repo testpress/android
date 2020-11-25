@@ -492,7 +492,8 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
         CommonUtils.registerDevice(this, testpressService);
         final Account account = new Account(username, APPLICATION_ID);
-        deleteOfflineVideosForDifferentAccount(username);
+        deleteDownloadedVideos();
+        saveUsernameToPreference();
 
         if (requestNewAccount) {
             accountManager.addAccountExplicitly(account, password, null);
@@ -531,19 +532,26 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         finish();
     }
 
-    private void deleteOfflineVideosForDifferentAccount(String username) {
-        SharedPreferences pref = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
-        String usernamePref = pref.getString("username", "");
-        if (!usernamePref.equals(username)) {
-            deleteDownloadedVideos(this);
+    private void deleteDownloadedVideos() {
+        if (isUserLoginWithDifferentAccount()) {
+            Executor executor = Executors.newSingleThreadExecutor();
+            executor.execute(() -> TestpressDatabase.Companion.invoke(this).clearAllTables());
+            DownloadService.sendRemoveAllDownloads(this, VideoDownloadService.class, false);
             TestpressSDKDatabase.clearDatabase(this);
         }
     }
 
-    private void deleteDownloadedVideos(Activity activity) {
-        Executor executor = Executors.newSingleThreadExecutor();
-        executor.execute(() -> TestpressDatabase.Companion.invoke(activity).clearAllTables());
-        DownloadService.sendRemoveAllDownloads(activity, VideoDownloadService.class, false);
+    private Boolean isUserLoginWithDifferentAccount() {
+        SharedPreferences pref = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
+        String previousUsername = pref.getString("username", "");
+        return !previousUsername.equals(username);
+    }
+
+    private void saveUsernameToPreference() {
+        SharedPreferences pref = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("username", username);
+        editor.commit();
     }
 
     /**

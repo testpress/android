@@ -125,7 +125,6 @@ public class TestpressServiceProvider {
         progressDialog.setCancelable(false);
         UIUtils.setIndeterminateDrawable(activity, progressDialog, 4);
         progressDialog.show();
-        getProfileDetail(serviceProvider, activity);
         serviceProvider.invalidateAuthToken(activity);
         SharedPreferences preferences = activity.getSharedPreferences(Constants.GCM_PREFERENCE_NAME,
                 Context.MODE_PRIVATE);
@@ -148,32 +147,5 @@ public class TestpressServiceProvider {
                 activity.startActivity(intent);
             }
         });
-    }
-
-    private void getProfileDetail(TestpressServiceProvider serviceProvider, Activity activity) {
-        new SafeAsyncTask<ProfileDetails>() {
-            @Override
-            public ProfileDetails call() throws Exception {
-                return serviceProvider.getService(activity).getProfileDetails();
-            }
-
-            @Override
-            protected void onSuccess(ProfileDetails profileDetails) throws Exception {
-                super.onSuccess(profileDetails);
-                saveUsernameToPreference(profileDetails.getUsername(), activity);
-            }
-
-            @Override
-            protected void onException(Exception e) throws RuntimeException {
-                super.onException(e);
-            }
-        }.execute();
-    }
-
-    private void saveUsernameToPreference(String username, Activity activity) {
-        SharedPreferences pref = activity.getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putString("username", username);
-        editor.commit();
     }
 }

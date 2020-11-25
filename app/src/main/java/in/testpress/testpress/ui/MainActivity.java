@@ -3,6 +3,7 @@ package in.testpress.testpress.ui;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.OperationCanceledException;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -32,21 +33,27 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
+import com.google.android.exoplayer2.offline.DownloadService;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import in.testpress.core.TestpressSDKDatabase;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
 import in.testpress.course.fragments.DownloadsFragment;
+import in.testpress.course.services.VideoDownloadService;
+import in.testpress.database.TestpressDatabase;
 import in.testpress.exam.ui.view.NonSwipeableViewPager;
 import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.Injector;

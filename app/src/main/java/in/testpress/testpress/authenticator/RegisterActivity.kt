@@ -1,5 +1,8 @@
 package `in`.testpress.testpress.authenticator
 
+import `in`.testpress.core.TestpressSDKDatabase
+import `in`.testpress.course.services.VideoDownloadService
+import `in`.testpress.database.TestpressDatabase.Companion.invoke
 import `in`.testpress.testpress.Injector
 import `in`.testpress.testpress.R
 import `in`.testpress.testpress.authenticator.LoginActivity.REQUEST_CODE_REGISTER_USER
@@ -9,10 +12,14 @@ import `in`.testpress.testpress.models.InstituteSettings
 import `in`.testpress.testpress.ui.fragments.AutoLoginFragment
 import `in`.testpress.testpress.ui.fragments.EmailVerificationFragment
 import `in`.testpress.testpress.ui.fragments.PhoneVerificationFragment
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.exoplayer2.offline.DownloadService
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 import javax.inject.Inject
 
 open class RegisterActivity : AppCompatActivity() {
@@ -28,7 +35,15 @@ open class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Injector.inject(this)
         setContentView(R.layout.fragment_layout)
+        deleteDownloadedVideos(this)
+        TestpressSDKDatabase.clearDatabase(this)
         initFragment()
+    }
+
+    private fun deleteDownloadedVideos(activity: Activity) {
+        val executor: Executor = Executors.newSingleThreadExecutor()
+        executor.execute { invoke(activity).clearAllTables() }
+        DownloadService.sendRemoveAllDownloads(activity, VideoDownloadService::class.java, false)
     }
 
     private fun initFragment() {

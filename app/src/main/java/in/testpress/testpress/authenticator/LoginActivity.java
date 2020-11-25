@@ -3,12 +3,14 @@ package in.testpress.testpress.authenticator;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
@@ -32,6 +34,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.github.kevinsawicki.wishlist.Toaster;
+import com.google.android.exoplayer2.offline.DownloadService;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
@@ -44,6 +47,8 @@ import com.squareup.otto.Subscribe;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
@@ -52,8 +57,11 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import in.testpress.core.TestpressCallback;
 import in.testpress.core.TestpressException;
+import in.testpress.core.TestpressSDKDatabase;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
+import in.testpress.course.services.VideoDownloadService;
+import in.testpress.database.TestpressDatabase;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.R.id;
@@ -484,6 +492,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
         CommonUtils.registerDevice(this, testpressService);
         final Account account = new Account(username, APPLICATION_ID);
+        deleteOfflineVideosForDifferentAccount(username);
 
         if (requestNewAccount) {
             accountManager.addAccountExplicitly(account, password, null);
@@ -520,6 +529,21 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             startActivity(intent);
         }
         finish();
+    }
+
+    private void deleteOfflineVideosForDifferentAccount(String username) {
+        SharedPreferences pref = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
+        String usernamePref = pref.getString("username", "");
+        if (!usernamePref.equals(username)) {
+            deleteDownloadedVideos(this);
+            TestpressSDKDatabase.clearDatabase(this);
+        }
+    }
+
+    private void deleteDownloadedVideos(Activity activity) {
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> TestpressDatabase.Companion.invoke(activity).clearAllTables());
+        DownloadService.sendRemoveAllDownloads(activity, VideoDownloadService.class, false);
     }
 
     /**

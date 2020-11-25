@@ -44,6 +44,7 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import java.io.IOException;
+import java.security.PublicKey;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -490,7 +491,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
         CommonUtils.registerDevice(this, testpressService);
         final Account account = new Account(username, APPLICATION_ID);
-        deleteDownloadedVideos();
+        deleteDownloadedVideosWhenUserLogInWithDifferentAccount();
         saveUsernameToPreference();
 
         if (requestNewAccount) {
@@ -530,19 +531,23 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         finish();
     }
 
-    private void deleteDownloadedVideos() {
-        if (isUserLoginWithDifferentAccount()) {
-            Executor executor = Executors.newSingleThreadExecutor();
-            executor.execute(() -> TestpressDatabase.Companion.invoke(this).clearAllTables());
-            DownloadService.sendRemoveAllDownloads(this, VideoDownloadService.class, false);
+    private void deleteDownloadedVideosWhenUserLogInWithDifferentAccount() {
+        if (!isUserAlreadyLoggedIn()) {
+            deleteDownloadedVideos();
             TestpressSDKDatabase.clearDatabase(this);
         }
     }
 
-    private Boolean isUserLoginWithDifferentAccount() {
+    private Boolean isUserAlreadyLoggedIn() {
         SharedPreferences pref = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
         String previousUsername = pref.getString("username", "");
-        return !previousUsername.equals(username);
+        return previousUsername.equals(username);
+    }
+
+    private void deleteDownloadedVideos() {
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> TestpressDatabase.Companion.invoke(this).clearAllTables());
+        DownloadService.sendRemoveAllDownloads(this, VideoDownloadService.class, false);
     }
 
     private void saveUsernameToPreference() {

@@ -4,11 +4,12 @@ import `in`.testpress.testpress.models.pojo.DashboardResponse
 import `in`.testpress.testpress.ui.MainActivity
 import `in`.testpress.testpress.ui.adapters.DashboardAdapter
 import `in`.testpress.testpress.ui.fragments.DashboardFragment
-import android.view.View
+import `in`.testpress.testpress.ui.view_holders.PostsCarouselViewHolder
+import android.content.Context
 import android.widget.LinearLayout
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import org.junit.Assert
+import junit.framework.TestCase
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -24,15 +25,20 @@ class PostsCarouselViewHolderTest {
 
     private lateinit var dashBoardFragment: DashboardFragment
 
+    private var context: Context? = null
+
     @Before
     fun setUp() {
         dashBoardFragment = DashboardFragment()
+        context = testActivityRule.activity
     }
 
     @Test
-    fun whenDashboardResponseHasPostPostShouldBeVisible() {
-        dashBoardFragment.adapter = DashboardAdapter(testActivityRule.activity, DashboardResponse(), null)
-        val result = dashBoardFragment.adapter.createViewHolder(LinearLayout(testActivityRule.activity), 3).itemView
-        Assert.assertEquals(View.VISIBLE, result.visibility)
+    fun testCreateViewHolderShouldInflatePostViewHolder() {
+        val adapter = DashboardAdapter(context, DashboardResponse(), null)
+        val parent = LinearLayout(context)
+
+        val viewHolder = adapter.onCreateViewHolder(parent,3)
+        TestCase.assertTrue(viewHolder is PostsCarouselViewHolder)
     }
 }

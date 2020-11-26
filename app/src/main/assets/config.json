@@ -1,6 +1,6 @@
 {
-  "version" : "1.10.3",
-  "version_code" : 3,
+  "version" : "1.10.4",
+  "version_code" : 4,
   "testpress_site_subdomain" : "onlyiasnothingelse",
   "package_name" : "com.onlyiasnothingelse",
   "app_name" : "OnlyIAS",

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
@@ -71,7 +72,8 @@ public class DashboardFragment extends Fragment implements
 
     @Inject
     protected TestpressServiceProvider serviceProvider;
-    private DashboardAdapter adapter;
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    public DashboardAdapter adapter;
     private TestpressService testpressService;
     private boolean firstCallback = true;
     private DaoSession daoSession;

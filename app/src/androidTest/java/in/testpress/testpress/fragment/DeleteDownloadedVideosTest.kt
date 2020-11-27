@@ -3,6 +3,7 @@ package `in`.testpress.testpress.fragment
 import `in`.testpress.testpress.authenticator.LoginActivity
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
@@ -36,24 +37,33 @@ class DeleteDownloadedVideosTest {
 
     @Test
     fun whenUsernameIsDifferentVideosShouldDelete() {
-        val result = testActivityRule.activity.deleteOfflineVideosForDifferentAccount("test")
+        testActivityRule.activity.login("admin")
+        val result = testActivityRule.activity.deleteOfflineVideosForDifferentAccount("testpress")
         Assert.assertTrue(result)
     }
 
     @Test
     fun whenUsernameIsSameVideosShouldNotDelete() {
-        val result = testActivityRule.activity.deleteOfflineVideosForDifferentAccount("testpress")
+        testActivityRule.activity.login("admin")
+        val result = testActivityRule.activity.deleteOfflineVideosForDifferentAccount("admin")
         Assert.assertFalse(result)
     }
 
     private fun LoginActivity.deleteOfflineVideosForDifferentAccount(username: String): Boolean {
         return if (!usernamePref.equals(username)) {
+            testActivityRule.activity.login(username)
             testActivityRule.activity.deleteOfflineVideos()
         } else {
+            testActivityRule.activity.login(username)
             false
         }
     }
 
     private fun LoginActivity.deleteOfflineVideos() = true
+
+    private fun LoginActivity.login(username: String) {
+        val pref = context.getSharedPreferences("UserPreference", MODE_PRIVATE).edit()
+        pref.putString("username", username).commit()
+    }
 
 }

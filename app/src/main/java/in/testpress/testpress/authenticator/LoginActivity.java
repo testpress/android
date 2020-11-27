@@ -494,7 +494,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         if (!isPreviouslyLoggedInUser()) {
             deleteDownloadedVideos();
         }
-        saveUsernameToPreference();
+        saveLoggedInUsername();
 
         if (requestNewAccount) {
             accountManager.addAccountExplicitly(account, password, null);
@@ -546,7 +546,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         TestpressSDKDatabase.clearDatabase(this);
     }
 
-    private void saveUsernameToPreference() {
+    private void saveLoggedInUsername() {
         SharedPreferences pref = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.putString("username", username);

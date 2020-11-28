@@ -4,13 +4,13 @@ import android.content.Context;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.View;
-
 import in.testpress.testpress.R;
 import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
 import in.testpress.testpress.ui.adapters.PostCarouselAdapter;
 
 public class PostsCarouselViewHolder extends BaseCarouselViewHolder {
+
     public PostsCarouselViewHolder(View itemView, Context context) {
         super(itemView, context);
     }

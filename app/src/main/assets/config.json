@@ -1,6 +1,6 @@
 {
-  "version" : "1.1.4",
-  "version_code" : 5,
+  "version" : "1.1.6",
+  "version_code" : 8,
   "testpress_site_subdomain" : "sandbox",
   "package_name" : "in.testpress.sandbox",
   "app_name" : "Testpress Sandbox",

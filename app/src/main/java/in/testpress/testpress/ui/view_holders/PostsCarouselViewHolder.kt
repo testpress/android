@@ -14,8 +14,7 @@ class PostsCarouselViewHolder(itemView: View, context: Context): BaseCarouselVie
     fun display(response: DashboardResponse, context: Context) {
         val section = response.availableSections[adapterPosition]
         initRecyclerView(section, context, response)
-        title.text = section.displayName
-        title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_news_black, 0, 0, 0)
+        displayTitle(section.displayName)
         if (section.items.size > 2) {
             showPageIndicator()
         }
@@ -29,5 +28,10 @@ class PostsCarouselViewHolder(itemView: View, context: Context): BaseCarouselVie
             recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
         recyclerView.adapter = adapter
+    }
+
+    private fun displayTitle(displayName: String) {
+        title.text = displayName
+        title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_news_black, 0, 0, 0)
     }
 }

@@ -66,7 +66,6 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             case "trophy_leaderboard":
                 if (isLeaderBoardEnabled())
                 return LEADERBOARD_LIST;
-                break;
         }
         return -1;
     }

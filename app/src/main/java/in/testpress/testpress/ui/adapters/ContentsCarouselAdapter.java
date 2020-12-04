@@ -98,8 +98,8 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
     }
 
     private void showThumbnail(Content content, ItemViewHolder holder) {
-        if (content.getCoverImage() != null) {
-            imageLoader.displayImage(content.getCoverImage(), holder.image, options);
+        if (content.getCoverImageSmall() != null) {
+            imageLoader.displayImage(content.getCoverImageSmall(), holder.image, options);
         } else {
             showThumbnailForVideo(content, holder);
         }

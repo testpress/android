@@ -1,6 +1,6 @@
 {
-  "version" : "1.10.8",
-  "version_code" : 9,
+  "version" : "1.10.9",
+  "version_code" : 10,
   "testpress_site_subdomain" : "brilliantpalaclasses",
   "package_name" : "in.testpress.brilliantpalaclasses",
   "app_name" : "Online Classes: Brilliant Pala",

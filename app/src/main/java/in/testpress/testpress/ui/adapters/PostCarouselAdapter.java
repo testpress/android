@@ -58,7 +58,7 @@ public class PostCarouselAdapter extends RecyclerView.Adapter<PostCarouselAdapte
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, final int position) {
-        imageLoader.displayImage(posts.get(position).getCoverImageSmall(), holder.image, options);
+        imageLoader.displayImage(posts.get(position).getCoverImageMedium(), holder.image, options);
         holder.title.setText(posts.get(position).getTitle());
         holder.itemView.setOnClickListener(new ItemOnClickListener(posts.get(position).getShortLink()));
     }

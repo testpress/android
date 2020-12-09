@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,8 +99,8 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
     }
 
     private void showThumbnail(Content content, ItemViewHolder holder) {
-        if (content.getCoverImageSmall() != null) {
-            imageLoader.displayImage(content.getCoverImageSmall(), holder.image, options);
+        if (content.getCoverImageMedium() != null) {
+            imageLoader.displayImage(content.getCoverImageMedium(), holder.image, options);
         } else {
             showThumbnailForVideo(content, holder);
         }

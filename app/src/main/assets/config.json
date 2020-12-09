@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.1",
-  "version_code" : 2,
+  "version" : "1.0.2",
+  "version_code" : 3,
   "testpress_site_subdomain" : "direction",
   "package_name" : "com.directionelearning.lms",
   "app_name" : "Direction e-learning",

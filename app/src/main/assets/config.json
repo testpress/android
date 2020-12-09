@@ -1,6 +1,6 @@
 {
-  "version" : "1.12.0",
-  "version_code" : 119,
+  "version" : "1.13.0",
+  "version_code" : 120,
   "testpress_site_subdomain" : "lmsdemo",
   "package_name" : "in.testpress.lmsdemo",
   "app_name" : "Testpress LMS",

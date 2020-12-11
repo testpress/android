@@ -206,6 +206,37 @@
                     android:background="@drawable/google_plus_signin_btn_text_dark"
                     android:layout_width="406dp"
                     android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:id="@+id/privacyContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/privacy_policy_dialogue"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:linksClickable="true"
+                        android:autoLink="web"
+                        android:focusable="true"/>
+
+                    <TextView
+                        android:id="@+id/privacyPolicy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/privacy_policy"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:linksClickable="true"
+                        android:autoLink="web"
+                        android:focusable="true" />
+
+                </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>

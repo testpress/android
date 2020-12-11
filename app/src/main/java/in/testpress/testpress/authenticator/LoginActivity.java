@@ -137,6 +137,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     @InjectView(id.google_sign_in_button) protected Button googleLoginButton;
     @InjectView(id.social_sign_in_buttons) protected LinearLayout socialLoginLayout;
     @InjectView(id.signup) protected TextView signUpButton;
+    @InjectView(id.privacyPolicy) protected TextView privacyPolicy;
 
 
     @InjectView(id.pb_loading) ProgressBar progressBar;
@@ -643,6 +644,13 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     @OnClick(id.google_sign_in_button) public void googleSignIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
         startActivityForResult(signInIntent, REQUEST_CODE_GOOGLE_SIGN_IN);
+    }
+
+    @OnClick(id.privacyPolicy) public void initWebView() {
+        Intent intent = new Intent(LoginActivity.this, WebViewActivity.class);
+        intent.putExtra(URL_TO_OPEN, BASE_URL+"/privacy");
+        intent.putExtra(ACTIVITY_TITLE, "Privacy Policy");
+        startActivity(intent);
     }
 
     @Override

@@ -233,7 +233,7 @@
                         android:clickable="true"
                         android:linksClickable="true"
                         android:autoLink="web"
-                        android:focusable="true"/>
+                        android:focusable="true" />
 
                 </LinearLayout>
 

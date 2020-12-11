@@ -163,7 +163,7 @@
     <string name="open_drawer">Open Navigation Drawer</string>
     <string name="close_drawer">Close Navigation Drawer</string>
     <string name="privacy_policy_dialogue">By signing in you acknowledge the  </string>
-    <string name="privacy_policy"><a href='https://sandbox.testpress.in/privacy/'>Privacy Policy</a></string>
+    <string name="privacy_policy"><a href='#'> Privacy Policy</a></string>
 
     <plurals name="notes_count">
         <item quantity="one">1 Doc</item>

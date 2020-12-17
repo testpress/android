@@ -9,13 +9,18 @@ import android.content.SharedPreferences;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
+import com.google.android.exoplayer2.offline.DownloadService;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import in.testpress.core.TestpressSDKDatabase;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
+import in.testpress.course.services.VideoDownloadService;
+import in.testpress.database.TestpressDatabase;
 import in.testpress.testpress.authenticator.ApiKeyProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
@@ -94,7 +99,8 @@ public class TestpressServiceProvider {
                         .setCooloffTime(instituteSettings.getCooloffTime())
                         .setStoreLabel(instituteSettings.getStoreLabel())
                         .setAppToolbarLogo(instituteSettings.getAppToolbarLogo())
-                        .setAppShareLink(instituteSettings.getAppShareLink());
+                        .setAppShareLink(instituteSettings.getAppShareLink())
+                        .setServerTime(instituteSettings.serverTime());
                 appLink = instituteSettings.getAppShareLink();
             }
             settings.setAppShareText(SHARE_MESSAGE + activity.getString(R.string.get_it_at) + appLink);
@@ -124,7 +130,6 @@ public class TestpressServiceProvider {
         preferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
         CommonUtils.registerDevice(activity, testpressService, serviceProvider);
         TestpressApplication.clearDatabase(activity);
-        TestpressSDKDatabase.clearDatabase(activity);
         logoutService.logout(new Runnable() {
             @Override
             public void run() {

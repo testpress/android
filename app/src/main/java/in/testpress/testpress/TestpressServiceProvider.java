@@ -127,7 +127,6 @@ public class TestpressServiceProvider {
         progressDialog.setCancelable(false);
         UIUtils.setIndeterminateDrawable(activity, progressDialog, 4);
         progressDialog.show();
-        deleteDownloadedVideos(activity);
         serviceProvider.invalidateAuthToken(activity);
         SharedPreferences preferences = activity.getSharedPreferences(Constants.GCM_PREFERENCE_NAME,
                 Context.MODE_PRIVATE);
@@ -136,7 +135,6 @@ public class TestpressServiceProvider {
         CommonUtils.registerDevice(activity, testpressService, serviceProvider);
 
         TestpressApplication.clearDatabase(activity);
-        TestpressSDKDatabase.clearDatabase(activity);
         logoutService.logout(new Runnable() {
             @Override
             public void run() {
@@ -152,11 +150,5 @@ public class TestpressServiceProvider {
                 activity.startActivity(intent);
             }
         });
-    }
-
-    private void deleteDownloadedVideos(Activity activity) {
-        Executor executor = Executors.newSingleThreadExecutor();
-        executor.execute(() -> TestpressDatabase.Companion.invoke(activity).clearAllTables());
-        DownloadService.sendRemoveAllDownloads(activity, VideoDownloadService.class, false);
     }
 }

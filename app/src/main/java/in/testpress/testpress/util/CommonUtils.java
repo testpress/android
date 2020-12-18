@@ -12,8 +12,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.v4.content.Loader;
+import androidx.annotation.NonNull;
+import androidx.loader.content.Loader;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -69,9 +69,6 @@ public class CommonUtils {
     }
 
     public static boolean isUserAuthenticated(final Activity activity) {
-        if (activity == null) {
-            return false;
-        }
         AccountManager manager = (AccountManager) activity.getSystemService(ACCOUNT_SERVICE);
         Account[] account = manager.getAccountsByType(APPLICATION_ID);
         return account.length > 0;
@@ -102,7 +99,7 @@ public class CommonUtils {
             @SuppressLint("HardwareIds")
             @Override
             public Device call() throws Exception {
-                return testpressService.register(token, Settings.Secure.getString(
+                return testpressService.registerDevice(token, Settings.Secure.getString(
                         activity.getContentResolver(), ANDROID_ID));
             }
 

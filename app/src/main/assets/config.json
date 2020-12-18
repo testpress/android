@@ -1,15 +1,15 @@
 {
-  "version" : "1.0.130",
-  "version_code" : 130,
+  "version" : "1.1.0",
+  "version_code" : 131,
   "testpress_site_subdomain" : "dma",
   "package_name" : "in.testpress.dma",
   "app_name" : "TestHub",
   "share_message": "Good app to prepare for FMGE &amp; PGMEE.",
   "primary_color": "34495E",
   "allow_anonymous_user" : false,
-  "screenshot_disabled" : true,
   "facebook_app_id" : "733962776688753",
   "server_client_id" : "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
   "display_username_on_video": true,
-  "white_labeled_host_url": "www.dma-testhub.com"
+  "white_labeled_host_url": "www.dma-testhub.com",
+  "is_growth_hacks_enabled": false
 }

@@ -8,8 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputLayout;
+import androidx.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
@@ -33,17 +32,22 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.github.kevinsawicki.wishlist.Toaster;
+import com.google.android.exoplayer2.offline.DownloadService;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.material.textfield.TextInputLayout;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import java.io.IOException;
+import java.security.PublicKey;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
@@ -52,8 +56,11 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import in.testpress.core.TestpressCallback;
 import in.testpress.core.TestpressException;
+import in.testpress.core.TestpressSDKDatabase;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
+import in.testpress.course.services.VideoDownloadService;
+import in.testpress.database.TestpressDatabase;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.R.id;
@@ -111,15 +118,13 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
     private AccountManager accountManager;
 
-    private boolean showWebViewRegistration = true;
-
-
     @Inject TestpressService testpressService;
 
     @Inject Bus bus;
 
     @InjectView(id.login_layout) LinearLayout loginLayout;
-    @InjectView(id.username_textInput_layout) TextInputLayout usernameInputLayout;
+    @InjectView(id.username_textInput_layout)
+    TextInputLayout usernameInputLayout;
     @InjectView(id.password_textInput_layout) TextInputLayout passwordInputLayout;
     @InjectView(id.et_username) EditText usernameText;
     @InjectView(id.username_error) TextView usernameError;
@@ -132,6 +137,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     @InjectView(id.google_sign_in_button) protected Button googleLoginButton;
     @InjectView(id.social_sign_in_buttons) protected LinearLayout socialLoginLayout;
     @InjectView(id.signup) protected TextView signUpButton;
+    @InjectView(id.privacyPolicy) protected TextView privacyPolicy;
 
 
     @InjectView(id.pb_loading) ProgressBar progressBar;
@@ -410,7 +416,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         ViewUtils.setGone(googleLoginButton, !instituteSettings.getGoogleLoginEnabled());
         ViewUtils.setGone(socialLoginLayout, !instituteSettings.getFacebookLoginEnabled() &&
                 !instituteSettings.getGoogleLoginEnabled());
-        // ViewUtils.setGone(signUpButton, true);
+        ViewUtils.setGone(signUpButton, !instituteSettings.getAllowSignup());
     }
 
 
@@ -486,6 +492,10 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
         CommonUtils.registerDevice(this, testpressService);
         final Account account = new Account(username, APPLICATION_ID);
+        if (!isPreviouslyLoggedInUser()) {
+            deleteDownloadedVideos();
+        }
+        saveLoggedInUsername();
 
         if (requestNewAccount) {
             accountManager.addAccountExplicitly(account, password, null);
@@ -522,6 +532,26 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             startActivity(intent);
         }
         finish();
+    }
+
+    private Boolean isPreviouslyLoggedInUser() {
+        SharedPreferences pref = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
+        String previousUsername = pref.getString("username", "");
+        return previousUsername.equals(username);
+    }
+
+    private void deleteDownloadedVideos() {
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> TestpressDatabase.Companion.invoke(this).clearAllTables());
+        DownloadService.sendRemoveAllDownloads(this, VideoDownloadService.class, false);
+        TestpressSDKDatabase.clearDatabase(this);
+    }
+
+    private void saveLoggedInUsername() {
+        SharedPreferences pref = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("username", username);
+        editor.commit();
     }
 
     /**
@@ -576,18 +606,17 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     }
 
     @OnClick(id.signup) public void signUp() {
-        if(internetConnectivityChecker.isConnected()) {
-            Intent intent;
-            if (showWebViewRegistration){
-                // Customization for dma
-                intent = new Intent(LoginActivity.this, WebViewRegistrationActivity.class);
-                startActivity(intent);
-            } else {
-                intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                if(getIntent().getExtras() != null) {
-                    intent.putExtras(getIntent().getExtras());
-                }
-                startActivityForResult(intent, REQUEST_CODE_REGISTER_USER);
+        if(instituteSettings.getCustomRegistrationEnabled() != null && instituteSettings.getCustomRegistrationEnabled()) {
+            Intent intent = new Intent(this, WebViewActivity.class);
+            intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Register");
+            intent.putExtra(WebViewActivity.SHOW_LOGOUT, "false");
+            intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + "/register/");
+            startActivity(intent);
+        }
+        else if(internetConnectivityChecker.isConnected()) {
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            if(getIntent().getExtras() != null) {
+                intent.putExtras(getIntent().getExtras());
             }
             startActivityForResult(intent, REQUEST_CODE_REGISTER_USER);
         } else {
@@ -615,6 +644,13 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     @OnClick(id.google_sign_in_button) public void googleSignIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
         startActivityForResult(signInIntent, REQUEST_CODE_GOOGLE_SIGN_IN);
+    }
+
+    @OnClick(id.privacyPolicy) public void initWebView() {
+        Intent intent = new Intent(LoginActivity.this, WebViewActivity.class);
+        intent.putExtra(URL_TO_OPEN, BASE_URL+"/privacy");
+        intent.putExtra(ACTIVITY_TITLE, "Privacy Policy");
+        startActivity(intent);
     }
 
     @Override

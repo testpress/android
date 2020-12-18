@@ -1,0 +1,190 @@
+package in.testpress.testpress.ui.adapters;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import androidx.recyclerview.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import in.testpress.course.ui.ChapterDetailActivity;
+import in.testpress.course.ui.CoursePreviewActivity;
+import in.testpress.models.greendao.Product;
+import in.testpress.store.ui.ProductDetailsActivity;
+import in.testpress.testpress.R;
+import in.testpress.testpress.models.pojo.DashboardResponse;
+import in.testpress.testpress.models.pojo.DashboardSection;
+import in.testpress.testpress.util.ImageUtils;
+import in.testpress.testpress.util.UIUtils;
+import in.testpress.util.IntegerList;
+
+import static in.testpress.store.TestpressStore.STORE_REQUEST_CODE;
+import static in.testpress.util.ImageUtils.initImageLoader;
+
+
+public class CourseCarouselAdapter extends RecyclerView.Adapter<CourseCarouselAdapter.MyViewHolder> {
+    private final DashboardResponse response;
+    private final DashboardSection section;
+    private final List<Product> products = new ArrayList<>();
+    private final ImageLoader imageLoader;
+    private final DisplayImageOptions options;
+    private final Context context;
+    private final HashMap<Long, Integer> notesCountHashMap = new HashMap<>();
+    private final HashMap<Long, Integer> videosCountHashMap = new HashMap<>();
+    private final HashMap<Long, Integer> examsCountHashMap = new HashMap<>();
+
+    public CourseCarouselAdapter(DashboardResponse response, DashboardSection currentSection, Context context) {
+        this.response = response;
+        this.context = context;
+        this.section = currentSection;
+        imageLoader = initImageLoader(context);
+        options = ImageUtils.getPlaceholdersOption();
+        populateCourses();
+        populateContentsCount();
+    }
+
+    private void populateContentsCount() {
+        for (Product product: products) {
+            int notesCount = 0;
+            int videosCount = 0;
+            int examsCount = 0;
+
+            for (Integer item: product.getCourseIds()) {
+                long courseId = Long.valueOf(item);
+                notesCount += response.getCourseHashMap().get(courseId).getHtmlContentsCount();
+                videosCount += response.getCourseHashMap().get(courseId).getVideosCount();
+                examsCount += response.getCourseHashMap().get(courseId).getExamsCount();
+            }
+            notesCountHashMap.put(product.getId(), notesCount);
+            videosCountHashMap.put(product.getId(), videosCount);
+            examsCountHashMap.put(product.getId(), examsCount);
+        }
+    }
+
+    private void populateCourses() {
+        IntegerList items = section.getItems();
+        for (Integer item : items) {
+            this.products.add(this.response.getProductHashMap().get(Long.valueOf(item)));
+        }
+    }
+
+    @Override
+    public CourseCarouselAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.course_carousel_item, parent, false);
+        return new MyViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(CourseCarouselAdapter.MyViewHolder holder, int position) {
+        final Product product = products.get(position);
+        imageLoader.displayImage(product.getImage(), holder.image, options);
+        holder.title.setText(product.getTitle());
+        displayContentsCount(holder, product);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Activity activity = (Activity) context;
+                if (product.getCourseIds().size() > 1) {
+                    activity.startActivity(CoursePreviewActivity.createIntent(product.getCourseIds(), activity, product.getSlug()));
+                } else if (product.getCourseIds().size() == 1 ) {
+                    openChapters(product, activity);
+                } else {
+                    Intent intent = new Intent(activity, ProductDetailsActivity.class);
+                    intent.putExtra(ProductDetailsActivity.PRODUCT_SLUG, product.getSlug());
+                    activity.startActivityForResult(intent, STORE_REQUEST_CODE);
+                }
+            }
+        });
+    }
+
+    private void openChapters(Product product, Activity activity) {
+        activity.startActivity(ChapterDetailActivity.createIntent(
+                product.getTitle(),
+                product.getCourseIds().get(0).toString(),
+                activity, product.getSlug()));
+    }
+
+    private void displayContentsCount(CourseCarouselAdapter.MyViewHolder holder, Product product) {
+        showOrHideNotesCount(holder, product);
+        showOrHideVideoCount(holder, product);
+        showOrHideExamCount(holder, product);
+
+        if (product.getCourseIds().size() == 0) {
+            holder.notesCount.setText("Offline");
+            holder.videoContentLayout.setVisibility(View.GONE);
+            holder.examsContentLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void showOrHideNotesCount(CourseCarouselAdapter.MyViewHolder holder, Product product) {
+        Integer notesCount = notesCountHashMap.get(product.getId());
+        String notesCountText = context.getResources().getQuantityString(
+                R.plurals.notes_count, notesCount, notesCount);
+        holder.notesCount.setText(notesCountText);
+
+        if (notesCount <= 0) {
+            holder.notesContentLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void showOrHideVideoCount(CourseCarouselAdapter.MyViewHolder holder, Product product) {
+        Integer videosCount = videosCountHashMap.get(product.getId());
+        String videosCountText = context.getResources().getQuantityString(
+                R.plurals.videos_count, videosCount, videosCount);
+        holder.videosCount.setText(videosCountText);
+
+        if (videosCount <= 0) {
+            holder.videoContentLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void showOrHideExamCount(CourseCarouselAdapter.MyViewHolder holder, Product product) {
+        Integer examsCount = examsCountHashMap.get(product.getId());
+        String examsCountText = context.getResources().getQuantityString(
+                R.plurals.exams_count, examsCount, examsCount);
+        holder.examsCount.setText(examsCountText);
+
+        if (examsCount <= 0) {
+            holder.examsContentLayout.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return products.size();
+    }
+
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView title, examsCount, videosCount, notesCount;
+        ImageView image;
+        LinearLayout examsContentLayout, notesContentLayout, videoContentLayout;
+
+        public MyViewHolder(View itemView) {
+            super(itemView);
+            title = itemView.findViewById(R.id.title);
+            examsCount = itemView.findViewById(R.id.exams_count);
+            videosCount = itemView.findViewById(R.id.videos_count);
+            notesCount = itemView.findViewById(R.id.notes_count);
+            image = itemView.findViewById(R.id.image_view);
+            examsContentLayout = itemView.findViewById(R.id.exam_content_layout);
+            notesContentLayout = itemView.findViewById(R.id.notes_content_layout);
+            videoContentLayout = itemView.findViewById(R.id.video_content_layout);
+
+            title.setTypeface(UIUtils.getLatoSemiBoldFont(context));
+            examsCount.setTypeface(UIUtils.getLatoSemiBoldFont(context));
+            videosCount.setTypeface(UIUtils.getLatoSemiBoldFont(context));
+            notesCount.setTypeface(UIUtils.getLatoSemiBoldFont(context));
+        }
+    }
+}

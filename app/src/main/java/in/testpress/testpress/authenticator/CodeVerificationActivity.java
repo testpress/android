@@ -2,7 +2,6 @@ package in.testpress.testpress.authenticator;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -11,11 +10,10 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -62,8 +60,6 @@ import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.SafeAsyncTask;
 import retrofit.RetrofitError;
 
-import com.google.android.gms.auth.api.phone.SmsRetriever;
-
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
@@ -71,6 +67,7 @@ import static in.testpress.testpress.BuildConfig.BASE_URL;
 public class CodeVerificationActivity extends AppCompatActivity {
     @Inject TestpressService testpressService;
     @InjectView(R.id.welcome) TextView welcomeText;
+    @InjectView(R.id.verification_code_error) TextView verificationCodeError;
     @InjectView(R.id.et_username) EditText usernameText;
     @InjectView(R.id.et_verificationCode) EditText verificationCodeText;
     @InjectView(R.id.b_verify) Button verifyButton;
@@ -220,7 +217,8 @@ public class CodeVerificationActivity extends AppCompatActivity {
                 if((e instanceof RetrofitError)) {
                     RegistrationErrorDetails registrationErrorDetails = (RegistrationErrorDetails)((RetrofitError) e).getBodyAs(RegistrationErrorDetails.class);
                     if(!registrationErrorDetails.getNonFieldErrors().isEmpty()) {
-                        verificationCodeText.setError(registrationErrorDetails.getNonFieldErrors().get(0));
+                        verificationCodeError.setText(registrationErrorDetails.getNonFieldErrors().get(0));
+                        verificationCodeError.setVisibility(View.VISIBLE);
                         verificationCodeText.requestFocus();
                     }
                 }
@@ -291,7 +289,7 @@ public class CodeVerificationActivity extends AppCompatActivity {
             @Override
             public Device call() throws Exception {
                 String token = GCMPreference.getRegistrationId(getApplicationContext());
-                return testpressService.register(token, Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+                return testpressService.registerDevice(token, Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
             }
 
             @Override

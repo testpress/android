@@ -1,9 +1,9 @@
 {
-  "version" : "1.0.0",
-  "version_code" : 1,
+  "version" : "1.0.1",
+  "version_code" : 2,
   "testpress_site_subdomain" : "rksacademicsolutions",
   "package_name" : "in.testpress.rksacademicsolutions",
-  "app_name" : "CBSE MATH Classes 7,8,9,10",
+  "app_name" : "Atharv - CBSE Maths for Classes 7,8,9,10",
   "share_message": "Good app to prepare for online exams.",
   "primary_color": "7240a1",
   "allow_anonymous_user" : false,

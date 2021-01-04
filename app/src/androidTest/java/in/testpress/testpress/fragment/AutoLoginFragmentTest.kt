@@ -1,5 +1,6 @@
 package `in`.testpress.testpress.fragment
 
+import `in`.testpress.testpress.R
 import `in`.testpress.testpress.authenticator.RegisterActivity
 import `in`.testpress.testpress.enums.VerificationMethod
 import `in`.testpress.testpress.ui.MainActivity
@@ -31,9 +32,9 @@ open class AutoLoginFragmentTest {
     }
 
     @Test
-    fun whenNavigateToAutoLoginTheVerificationShouldBeNone() {
+    fun whenNavigateToAutoLoginFragmentTheViewShouldNotBeNull() {
         testActivityRule.activity.navigateToAutoLoginFragment()
-        Assert.assertEquals(VerificationMethod.NONE,testActivityRule.activity.verificationMethod)
+        Assert.assertNotNull(testActivityRule.activity.findViewById(R.id.container))
     }
 
     @Test

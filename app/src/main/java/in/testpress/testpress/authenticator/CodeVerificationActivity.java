@@ -289,7 +289,7 @@ public class CodeVerificationActivity extends AppCompatActivity {
             @Override
             public Device call() throws Exception {
                 String token = GCMPreference.getRegistrationId(getApplicationContext());
-                return testpressService.register(token, Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+                return testpressService.registerDevice(token, Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
             }
 
             @Override

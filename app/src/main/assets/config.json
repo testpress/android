@@ -1,6 +1,6 @@
 {
-  "version" : "1.2.1",
-  "version_code" : 4,
+  "version" : "1.2.2",
+  "version_code" : 5,
   "testpress_site_subdomain" : "ceoaonline",
   "package_name" : "in.testpress.ceoaonline",
   "app_name" : "CEOA Online School",

@@ -1,6 +1,6 @@
 {
-  "version" : "1.2.0",
-  "version_code" : 8,
+  "version" : "1.2.1",
+  "version_code" : 9,
   "testpress_site_subdomain" : "suresuccessmagic",
   "package_name" : "in.testpress.suresuccess",
   "app_name" : "Sure Success MAGIC",

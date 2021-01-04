@@ -115,20 +115,46 @@ public class CourseCarouselAdapter extends RecyclerView.Adapter<CourseCarouselAd
     }
 
     private void displayContentsCount(CourseCarouselAdapter.MyViewHolder holder, Product product) {
-        String notesCountText = context.getResources().getQuantityString(
-                R.plurals.notes_count, notesCountHashMap.get(product.getId()), notesCountHashMap.get(product.getId()));
-        String videosCountText = context.getResources().getQuantityString(
-                R.plurals.videos_count, videosCountHashMap.get(product.getId()), videosCountHashMap.get(product.getId()));
-        String examsCountText = context.getResources().getQuantityString(
-                R.plurals.exams_count, examsCountHashMap.get(product.getId()), examsCountHashMap.get(product.getId()));
-
-        holder.notesCount.setText(notesCountText);
-        holder.videosCount.setText(videosCountText);
-        holder.examsCount.setText(examsCountText);
+        showOrHideNotesCount(holder, product);
+        showOrHideVideoCount(holder, product);
+        showOrHideExamCount(holder, product);
 
         if (product.getCourseIds().size() == 0) {
             holder.notesCount.setText("Offline");
             holder.videoContentLayout.setVisibility(View.GONE);
+            holder.examsContentLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void showOrHideNotesCount(CourseCarouselAdapter.MyViewHolder holder, Product product) {
+        Integer notesCount = notesCountHashMap.get(product.getId());
+        String notesCountText = context.getResources().getQuantityString(
+                R.plurals.notes_count, notesCount, notesCount);
+        holder.notesCount.setText(notesCountText);
+
+        if (notesCount <= 0) {
+            holder.notesContentLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void showOrHideVideoCount(CourseCarouselAdapter.MyViewHolder holder, Product product) {
+        Integer videosCount = videosCountHashMap.get(product.getId());
+        String videosCountText = context.getResources().getQuantityString(
+                R.plurals.videos_count, videosCount, videosCount);
+        holder.videosCount.setText(videosCountText);
+
+        if (videosCount <= 0) {
+            holder.videoContentLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void showOrHideExamCount(CourseCarouselAdapter.MyViewHolder holder, Product product) {
+        Integer examsCount = examsCountHashMap.get(product.getId());
+        String examsCountText = context.getResources().getQuantityString(
+                R.plurals.exams_count, examsCount, examsCount);
+        holder.examsCount.setText(examsCountText);
+
+        if (examsCount <= 0) {
             holder.examsContentLayout.setVisibility(View.GONE);
         }
     }

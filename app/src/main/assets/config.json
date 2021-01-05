@@ -1,6 +1,6 @@
 {
-  "version" : "1.2.2",
-  "version_code" : 11,
+  "version" : "1.2.3",
+  "version_code" : 12,
   "testpress_site_subdomain" : "rays",
   "package_name" : "com.rays",
   "app_name" : "RAYS Online",

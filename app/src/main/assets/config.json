@@ -1,6 +1,6 @@
 {
-  "version" : "1.2.2",
-  "version_code" : 7,
+  "version" : "1.2.3",
+  "version_code" : 8,
   "testpress_site_subdomain" : "brilliantpalaelearn",
   "package_name" : "com.brilliantpala.elearn",
   "app_name" : "Elearn Brilliantpala",

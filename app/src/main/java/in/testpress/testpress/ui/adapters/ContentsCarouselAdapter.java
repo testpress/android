@@ -78,6 +78,9 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
     @Override
     public void onBindViewHolder(ItemViewHolder holder, final int position) {
         final Content content = contents.get(position);
+        if (content == null) {
+            return;
+        }
 
         showThumbnail(content, holder);
         setIconAndChapterTitle(content, holder);

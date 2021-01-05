@@ -1,6 +1,6 @@
 {
-  "version" : "1.2.4",
-  "version_code" : 12,
+  "version" : "1.2.5",
+  "version_code" : 13,
   "testpress_site_subdomain" : "drdilip",
   "package_name" : "in.testpress.drdilip",
   "app_name" : "Medicine",

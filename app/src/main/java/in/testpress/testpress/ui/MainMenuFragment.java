@@ -59,8 +59,8 @@ import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.ui.UserDevicesActivity;
-import io.sentry.Sentry;
-import io.sentry.event.UserBuilder;
+import io.sentry.core.Sentry;
+import io.sentry.core.protocol.User;
 import retrofit.RetrofitError;
 
 import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
@@ -118,7 +118,9 @@ public class MainMenuFragment extends Fragment {
             mMenuItemResIds.put(R.string.dashboard_notification, R.drawable.custom_notification);
             mMenuItemResIds.put(R.string.dashboard_announcement, R.drawable.custom_announcement);
             mMenuItemResIds.put(R.string.dashboard_study_material, R.drawable.custom_study_material);
-            Sentry.getContext().setUser(new UserBuilder().setUsername(account[0].name).build());
+            User user = new User();
+            user.setUsername(account[0].name);
+            Sentry.setUser(user);
 
             if (instituteSettings.getBookmarksEnabled()) {
                 mMenuItemResIds.put(R.string.bookmarks, R.drawable.bookmark);

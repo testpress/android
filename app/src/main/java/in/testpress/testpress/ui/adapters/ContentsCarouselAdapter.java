@@ -62,7 +62,9 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
         } else {
             for (Integer item : items) {
                 CourseAttempt attempt = this.response.getContentAttemptHashMap().get(Long.valueOf(item));
-                this.contents.add(this.response.getContentHashMap().get(attempt.getChapterContentId()));
+                if (attempt != null) {
+                    this.contents.add(this.response.getContentHashMap().get(attempt.getChapterContentId()));
+                }
             }
         }
     }
@@ -73,10 +75,12 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
         return new ItemViewHolder(view);
     }
 
-
     @Override
     public void onBindViewHolder(ItemViewHolder holder, final int position) {
         final Content content = contents.get(position);
+        if (content == null) {
+            return;
+        }
 
         showThumbnail(content, holder);
         setIconAndChapterTitle(content, holder);
@@ -87,9 +91,7 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
         showProgressBarForResumeVideos(position, holder);
 
 
-        String contentName = content.getName();
-        String capitalizedContentName = contentName.substring(0,1).toUpperCase() + contentName.substring(1).toLowerCase();
-        holder.title.setText(capitalizedContentName);
+        holder.title.setText(content.getName());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -101,8 +103,8 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
     }
 
     private void showThumbnail(Content content, ItemViewHolder holder) {
-        if (content.getCoverImage() != null) {
-            imageLoader.displayImage(content.getCoverImage(), holder.image, options);
+        if (content.getCoverImageMedium() != null) {
+            imageLoader.displayImage(content.getCoverImageMedium(), holder.image, options);
         } else {
             showThumbnailForVideo(content, holder);
         }
@@ -115,7 +117,7 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
         if (content.getVideoId() != null) {
             Video video = response.getVideoHashMap().get(content.getVideoId());
 
-            if (video.getThumbnailMedium() != null) {
+            if (video != null && video.getThumbnailMedium() != null) {
                 imageLoader.displayImage(video.getThumbnailMedium(), holder.image, options);
             } else {
                 holder.image.setBackgroundColor(Color.parseColor("#77000000"));
@@ -134,7 +136,9 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
         if (content.getHtmlId() != null) {
             HtmlContent htmlContent = response.getHtmlContentHashMap().get(content.getHtmlId());
             holder.infoLayout.setVisibility(View.VISIBLE);
-            holder.numberOfQuestions.setText(htmlContent.getReadTime());
+            if (htmlContent != null) {
+                holder.numberOfQuestions.setText(htmlContent.getReadTime());
+            }
             holder.infoSubtitle.setVisibility(View.GONE);
         }
     }
@@ -145,10 +149,10 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
             Long attemptId = Long.valueOf(section.getItems().get(position));
             CourseAttempt attempt = this.response.getContentAttemptHashMap().get(attemptId);
 
-            if (attempt.getUserVideoId() != null) {
+            if (attempt != null && attempt.getUserVideoId() != null) {
                 VideoAttempt userVideo = response.getUserVideoHashMap().get(attempt.getUserVideoId());
 
-                if (userVideo.getRawVideoContent() != null && userVideo.getRawVideoContent().getDuration() != null) {
+                if (userVideo != null && userVideo.getRawVideoContent() != null && userVideo.getRawVideoContent().getDuration() != null) {
                     float lastPosition = Float.parseFloat(userVideo.getLastPosition());
                     float totalDuration = Float.parseFloat(userVideo.getRawVideoContent().getDuration());
                     float watchPercentage = (lastPosition / totalDuration) * 100;
@@ -164,7 +168,9 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
     private void setIconAndChapterTitle(Content content, ItemViewHolder holder) {
         if (response.getChapterHashMap().get(content.getChapterId()) != null) {
             Chapter chapter = response.getChapterHashMap().get(content.getChapterId());
-            holder.subtitle.setText(chapter.getName());
+            if (chapter != null) {
+                holder.subtitle.setText(chapter.getName());
+            }
         }
 
         switch (content.getContentType().toLowerCase()) {
@@ -197,7 +203,9 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
             Exam exam = response.getExamHashMap().get(content.getExamId());
             holder.infoLayout.setVisibility(View.VISIBLE);
             holder.infoSubtitle.setVisibility(View.VISIBLE);
-            holder.numberOfQuestions.setText(exam.getNumberOfQuestions().toString());
+            if (exam != null) {
+                holder.numberOfQuestions.setText(exam.getNumberOfQuestions().toString());
+            }
         } else {
             holder.infoLayout.setVisibility(View.GONE);
         }

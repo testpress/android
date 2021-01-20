@@ -66,7 +66,7 @@ public class OffersCarouselAdapter extends RecyclerView.Adapter<OffersCarouselAd
                 Activity activity = (Activity) context;
                 DeeplinkHandler deeplinkHandler = new DeeplinkHandler(activity, serviceProvider);
                 Uri uri = Uri.parse(banners.get(position).getUrl());
-                deeplinkHandler.handleDeepLinkUrl(uri);
+                deeplinkHandler.handleDeepLinkUrl(uri, false);
 //                Intent intent = new Intent(context, WebViewActivity.class);
 //                intent.putExtra(WebViewActivity.URL_TO_OPEN, banners.get(position).getUrl());
 //                context.startActivity(intent);

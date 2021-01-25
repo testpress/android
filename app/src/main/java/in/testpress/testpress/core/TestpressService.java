@@ -146,7 +146,7 @@ public class TestpressService {
     }
 
 
-    public Device register(String registrationId, String deviceId) {
+    public Device registerDevice(String registrationId, String deviceId) {
         HashMap<String, String> credentials = new HashMap<String, String>();
         credentials.put("registration_id", registrationId);
         credentials.put("device_id", deviceId);

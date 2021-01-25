@@ -268,7 +268,7 @@ public class MainMenuFragment extends Fragment {
                 TestpressExam.showBookmarks(getActivity(), session);
                 break;
             case R.string.analytics:
-                TestpressExam.showAnalytics(getActivity(), SUBJECT_ANALYTICS_PATH, session);
+                    TestpressExam.showAnalytics(getActivity(), SUBJECT_ANALYTICS_PATH, session);
                 break;
             case R.string.store:
                 String title = UIUtils.getMenuItemName(R.string.store, mInstituteSettings);

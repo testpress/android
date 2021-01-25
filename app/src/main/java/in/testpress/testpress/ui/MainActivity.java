@@ -35,6 +35,8 @@ import androidx.fragment.app.Fragment;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.navigation.NavigationView;
 
+import org.greenrobot.greendao.annotation.NotNull;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +49,7 @@ import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
 import in.testpress.course.fragments.DownloadsFragment;
+import in.testpress.course.ui.ChaptersListFragment;
 import in.testpress.exam.ui.view.NonSwipeableViewPager;
 import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.Injector;
@@ -279,6 +282,15 @@ public class MainActivity extends TestpressFragmentActivity {
         }.execute();
     }
 
+    @NotNull
+    private ChaptersListFragment getChaptersListFragment(String courseId) {
+        Bundle bundle = new Bundle();
+        bundle.putString("courseId", courseId);
+        ChaptersListFragment fragment = new ChaptersListFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     private void initScreen() {
         isInitScreenCalledOnce = true;
         SharedPreferences preferences =
@@ -297,6 +309,10 @@ public class MainActivity extends TestpressFragmentActivity {
         // Show courses list if game front end is enabled, otherwise hide bottom bar
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             //noinspection ConstantConditions
+            addMenuItem(R.string.qbank, R.drawable.ic_baseline_question_circle, getChaptersListFragment("1"));
+            addMenuItem(R.string.tests, R.drawable.ic_baseline_assignment, getChaptersListFragment("2"));
+            addMenuItem(R.string.flashcards, R.drawable.ic_baseline_flash_card, new PostsListFragment());
+
             addMenuItem(R.string.learn, R.drawable.learn,
                     TestpressCourse.getCoursesListFragment(this, TestpressSdk.getTestpressSession(this)));
 

@@ -10,6 +10,7 @@ import android.net.Uri;
 
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
+import in.testpress.course.ui.CourseListActivity;
 import in.testpress.exam.TestpressExam;
 import in.testpress.store.TestpressStore;
 import in.testpress.testpress.R;
@@ -63,6 +64,10 @@ public class HandleMainMenu {
                 break;
             case R.id.rate_us:
                 rateApp();
+                break;
+            case R.id.learn:
+                intent = new Intent(activity, CourseListActivity.class);
+                activity.startActivity(intent);
                 break;
             case R.id.logout:
                 ((MainActivity) activity).logout();

@@ -3,6 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <group>
         <item
+            android:id="@+id/learn"
+            android:title="Learn"
+            android:icon="@drawable/learn"
+            app:showAsAction="never"/>
+        <item
             android:id="@+id/bookmarks"
             android:title="Bookmarks"
             android:icon="@drawable/ic_bookmark_black_24dp"

@@ -309,12 +309,11 @@ public class MainActivity extends TestpressFragmentActivity {
         // Show courses list if game front end is enabled, otherwise hide bottom bar
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             //noinspection ConstantConditions
-            addMenuItem(R.string.qbank, R.drawable.ic_baseline_question_circle, getChaptersListFragment("1"));
-            addMenuItem(R.string.tests, R.drawable.ic_baseline_assignment, getChaptersListFragment("2"));
-            addMenuItem(R.string.flashcards, R.drawable.ic_baseline_flash_card, new PostsListFragment());
-
             addMenuItem(R.string.learn, R.drawable.learn,
                     TestpressCourse.getCoursesListFragment(this, TestpressSdk.getTestpressSession(this)));
+
+            addMenuItem(R.string.flashcards, R.drawable.ic_baseline_flash_card, new PostsListFragment());
+
 
             if (mInstituteSettings.getCoursesEnableGamification()) {
                 //noinspection ConstantConditions
@@ -324,8 +323,6 @@ public class MainActivity extends TestpressFragmentActivity {
             if (mInstituteSettings.getForumEnabled()) {
                 addMenuItem(R.string.discussions, R.drawable.chat_icon, new ForumListFragment());
             }
-            DownloadsFragment downloadsFragment = new DownloadsFragment();
-            addMenuItem(R.string.downloads, R.drawable.ic_downloads, downloadsFragment);
         } else {
             grid.setVisibility(View.GONE);
         }

@@ -1,9 +1,9 @@
 {
-  "version" : "1.1.7",
-  "version_code" : 1,
+  "version" : "1.0.0",
+  "version_code" : 2,
   "testpress_site_subdomain" : "infotechkannada",
   "package_name" : "in.testpress.infotechkannada",
-  "app_name" : "Infotech Kannada",
+  "app_name" : "i2 Learn",
   "share_message": "Good app to prepare for online exams.",
   "primary_color": "D02328",
   "allow_anonymous_user" : false,

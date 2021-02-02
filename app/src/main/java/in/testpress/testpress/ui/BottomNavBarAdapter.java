@@ -57,22 +57,23 @@ public class BottomNavBarAdapter extends BaseAdapter {
         ImageView imageView = (ImageView) convertView.findViewById(R.id.menu_icon);
         imageView.setImageResource(mItemsImageId.get(position));
         TextView menuTitle = ((TextView) convertView.findViewById(R.id.menu_title));
-        int titleResId = mMenuItemTitleIds.get(position);
-
-        if (!UIUtils.getMenuItemName(titleResId, minstituteSettings).isEmpty()) {
-            menuTitle.setText(UIUtils.getMenuItemName(titleResId, minstituteSettings));
-        } else {
-            menuTitle.setText(titleResId);
-        }
+        menuTitle.setVisibility(View.GONE);
+//        int titleResId = mMenuItemTitleIds.get(position);
+//
+//        if (!UIUtils.getMenuItemName(titleResId, minstituteSettings).isEmpty()) {
+//            menuTitle.setText(UIUtils.getMenuItemName(titleResId, minstituteSettings));
+//        } else {
+//            menuTitle.setText(titleResId);
+//        }
 
         if (selectedPosition == position) {
-            imageView.setColorFilter(ContextCompat.getColor(mContext, R.color.primary));
-            menuTitle.setTextColor(ContextCompat.getColor(mContext, R.color.primary));
+            imageView.setColorFilter(ContextCompat.getColor(mContext, R.color.light_grey));
+            menuTitle.setTextColor(ContextCompat.getColor(mContext, R.color.light_grey));
         } else {
             imageView.setColorFilter(ContextCompat.getColor(mContext,
-                    R.color.bottom_bar_unselected_item));
+                    R.color.white));
             menuTitle.setTextColor(ContextCompat.getColor(mContext,
-                    R.color.bottom_bar_unselected_item_text));
+                    R.color.white));
         }
         menuTitle.setTypeface(TestpressSdk.getRubikRegularFont(mContext));
         return convertView;

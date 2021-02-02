@@ -232,6 +232,7 @@ public class MainActivity extends TestpressFragmentActivity {
             menu.findItem(R.id.login_activity).setVisible(false);
             menu.findItem(R.id.analytics).setVisible(false);
             menu.findItem(R.id.profile).setVisible(false);
+            menu.findItem(R.id.downloads).setVisible(false);
             menu.findItem(R.id.bookmarks).setVisible(false);
         } else {
             menu.findItem(R.id.logout).setVisible(true);
@@ -239,6 +240,7 @@ public class MainActivity extends TestpressFragmentActivity {
             menu.findItem(R.id.analytics).setVisible(true);
             menu.findItem(R.id.profile).setVisible(true);
             menu.findItem(R.id.bookmarks).setVisible(true);
+            menu.findItem(R.id.downloads).setVisible(true);
             menu.findItem(R.id.login).setVisible(false);
         }
     }
@@ -325,11 +327,11 @@ public class MainActivity extends TestpressFragmentActivity {
 //                addMenuItem(R.string.testpress_leaderboard, R.drawable.leaderboard,
 //                        TestpressCourse.getLeaderboardFragment(this, TestpressSdk.getTestpressSession(this)));
 //            }
-            if (mInstituteSettings.getForumEnabled()) {
-                addMenuItem(R.string.discussions, R.drawable.chat_icon, new ForumListFragment());
-            }
-            DownloadsFragment downloadsFragment = new DownloadsFragment();
-            addMenuItem(R.string.downloads, R.drawable.ic_downloads, downloadsFragment);
+//            if (mInstituteSettings.getForumEnabled()) {
+//                addMenuItem(R.string.discussions, R.drawable.chat_icon, new ForumListFragment());
+//            }
+//            DownloadsFragment downloadsFragment = new DownloadsFragment();
+//            addMenuItem(R.string.downloads, R.drawable.ic_downloads, downloadsFragment);
         } else {
             grid.setVisibility(View.GONE);
         }
@@ -374,11 +376,11 @@ public class MainActivity extends TestpressFragmentActivity {
         mBottomBarAdapter.setSelectedPosition(position);
         mBottomBarAdapter.notifyDataSetChanged();
 
-        if (!UIUtils.getMenuItemName(mMenuItemTitleIds.get(position), mInstituteSettings).isEmpty()) {
-            updateToolbarText(UIUtils.getMenuItemName(mMenuItemTitleIds.get(position), mInstituteSettings));
-        } else {
-            updateToolbarText(getString(mMenuItemTitleIds.get(position)));
-        }
+//        if (!UIUtils.getMenuItemName(mMenuItemTitleIds.get(position), mInstituteSettings).isEmpty()) {
+//            updateToolbarText(UIUtils.getMenuItemName(mMenuItemTitleIds.get(position), mInstituteSettings));
+//        } else {
+//            updateToolbarText(getString(mMenuItemTitleIds.get(position)));
+//        }
     }
 
     private void updateToolbarText(CharSequence text) {
@@ -501,7 +503,7 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     public void addMenuItem(int titleResId, int imageResId, Fragment fragment) {
-        mMenuItemTitleIds.add(titleResId);
+//        mMenuItemTitleIds.add(titleResId);
         mMenuItemImageIds.add(imageResId);
         mMenuItemFragments.add(fragment);
     }

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/primary"
     android:orientation="vertical" >
 
     <ImageView
@@ -10,8 +10,9 @@
         android:layout_gravity="center"
         android:layout_width="18dp"
         android:layout_height="18dp"
-        android:layout_marginTop="7dp"
-        android:layout_marginBottom="3dp"
+        android:tint="@color/white"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:src="@drawable/learn" />
 
     <TextView

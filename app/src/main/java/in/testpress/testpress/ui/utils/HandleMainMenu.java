@@ -11,6 +11,7 @@ import android.net.Uri;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.course.ui.CourseListActivity;
+import in.testpress.course.ui.DownloadsActivity;
 import in.testpress.exam.TestpressExam;
 import in.testpress.store.TestpressStore;
 import in.testpress.testpress.R;
@@ -96,6 +97,10 @@ public class HandleMainMenu {
             case R.id.login:
                 intent = new Intent(activity, LoginActivity.class);
                 intent.putExtra(Constants.DEEP_LINK_TO, "home");
+                activity.startActivity(intent);
+                break;
+            case R.id.downloads:
+                intent = new Intent(activity, DownloadsActivity.class);
                 activity.startActivity(intent);
                 break;
         }

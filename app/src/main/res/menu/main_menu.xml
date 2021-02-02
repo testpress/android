@@ -23,6 +23,11 @@
             android:icon="@drawable/ic_pie_chart_black_24dp"
             app:showAsAction="never"/>
         <item
+            android:id="@+id/downloads"
+            android:title="Downloads"
+            android:icon="@drawable/ic_downloads"
+            app:showAsAction="never"/>
+        <item
             android:id="@+id/profile"
             android:title="Profile"
             android:icon="@drawable/ic_person_black_24dp"

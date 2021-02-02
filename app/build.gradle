@@ -21,8 +21,8 @@ dependencies {
     implementation "ru.tinkoff.scrollingpagerindicator:scrollingpagerindicator:1.1.0"
 
     implementation 'com.github.kevinsawicki:wishlist:0.9@aar'
-    implementation project(':commonlib')
-    implementation project(':mobilertc')
+//    implementation project(':commonlib')
+//    implementation project(':mobilertc')
     // Event Bus
     implementation 'com.squareup:otto:1.3.5'
 

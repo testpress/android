@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+
+import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
 import androidx.viewpager.widget.ViewPager;
@@ -25,6 +27,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -72,8 +75,8 @@ import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
-import in.testpress.testpress.util.UIUtils;
 import in.testpress.testpress.util.UpdateAppDialogManager;
+import in.testpress.util.UIUtils;
 import io.sentry.android.core.SentryAndroid;
 
 import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
@@ -106,7 +109,10 @@ public class MainActivity extends TestpressFragmentActivity {
     DrawerLayout drawer;
     @InjectView(R.id.navigation_view)
     NavigationView navigationView;
-
+    @InjectView(R.id.toolbar_actionbar)
+    Toolbar toolbar;
+    @InjectView(R.id.toolbar_logo)
+    ImageView logo;
     private ActionBarDrawerToggle drawerToggle;
     private int mSelectedItem;
     private BottomNavBarAdapter mBottomBarAdapter;
@@ -144,6 +150,7 @@ public class MainActivity extends TestpressFragmentActivity {
             checkUpdate();
         }
         setupEasterEgg();
+        customiseToolbar();
     }
 
     @Override
@@ -221,6 +228,24 @@ public class MainActivity extends TestpressFragmentActivity {
                     return true;
                 }
         });
+    }
+
+    private void customiseToolbar() {
+        toolbar.setBackgroundColor(getResources().getColor(R.color.testpress_color_primary));
+//        toolbar.getOverflowIcon().setColorFilter(getResources().getColor(R.color.testpress_color_primary), PorterDuff.Mode.SRC_ATOP);
+//        toolbar.setTitleTextColor(getResources().getColor(R.color.testpress_color_primary));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        showLogoInToolbar();
+    }
+
+    public void showLogoInToolbar() {
+        getSupportActionBar().setTitle("");
+        TestpressSession session = TestpressSdk.getTestpressSession(this);
+        if (session == null || session.getInstituteSettings() == null) {
+            return;
+        }
+        Log.d("TAG", "showLogoInToolbar: " + session.getInstituteSettings().getAppToolbarLogo());
+        UIUtils.loadLogoInView(logo, this);
     }
 
     private void hideMenuItemsForUnauthenticatedUser(Menu menu) {

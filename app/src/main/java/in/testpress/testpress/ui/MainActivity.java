@@ -339,8 +339,8 @@ public class MainActivity extends TestpressFragmentActivity {
         // Show courses list if game front end is enabled, otherwise hide bottom bar
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             //noinspection ConstantConditions
-            addMenuItem(R.string.classes, R.drawable.ic_class, getChaptersListFragment("2"));
-            addMenuItem(R.string.tests, R.drawable.exams,getChaptersListFragment("3"));
+            addMenuItem(R.string.classes, R.drawable.ic_baseline_menu_book_24, getChaptersListFragment("2"));
+            addMenuItem(R.string.tests, R.drawable.ic_exam,getChaptersListFragment("3"));
             AnalyticsFragment analyticsFragment = new AnalyticsFragment();
             Bundle bundle = new Bundle();
             bundle.putString(ANALYTICS_URL_FRAG, SUBJECT_ANALYTICS_PATH);

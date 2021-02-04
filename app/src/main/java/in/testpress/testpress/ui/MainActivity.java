@@ -150,7 +150,7 @@ public class MainActivity extends TestpressFragmentActivity {
             checkUpdate();
         }
         setupEasterEgg();
-        customiseToolbar();
+//        customiseToolbar();
     }
 
     @Override

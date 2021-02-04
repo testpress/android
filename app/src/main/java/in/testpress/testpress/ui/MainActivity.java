@@ -401,11 +401,11 @@ public class MainActivity extends TestpressFragmentActivity {
         mBottomBarAdapter.setSelectedPosition(position);
         mBottomBarAdapter.notifyDataSetChanged();
 
-//        if (!UIUtils.getMenuItemName(mMenuItemTitleIds.get(position), mInstituteSettings).isEmpty()) {
-//            updateToolbarText(UIUtils.getMenuItemName(mMenuItemTitleIds.get(position), mInstituteSettings));
-//        } else {
-//            updateToolbarText(getString(mMenuItemTitleIds.get(position)));
-//        }
+        if (!in.testpress.testpress.util.UIUtils.getMenuItemName(mMenuItemTitleIds.get(position), mInstituteSettings).isEmpty()) {
+            updateToolbarText(in.testpress.testpress.util.UIUtils.getMenuItemName(mMenuItemTitleIds.get(position), mInstituteSettings));
+        } else {
+            updateToolbarText(getString(mMenuItemTitleIds.get(position)));
+        }
     }
 
     private void updateToolbarText(CharSequence text) {
@@ -528,7 +528,7 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     public void addMenuItem(int titleResId, int imageResId, Fragment fragment) {
-//        mMenuItemTitleIds.add(titleResId);
+        mMenuItemTitleIds.add(titleResId);
         mMenuItemImageIds.add(imageResId);
         mMenuItemFragments.add(fragment);
     }

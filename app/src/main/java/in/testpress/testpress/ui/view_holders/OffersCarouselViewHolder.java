@@ -20,7 +20,8 @@ public class OffersCarouselViewHolder extends BaseCarouselViewHolder {
         OffersCarouselAdapter adapter = new OffersCarouselAdapter(response, section, context, serviceProvider);
         recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(adapter);
-        title.setText(section.getDisplayName());
-        title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_offer_black, 0, 0, 0);
+        title.setVisibility(View.GONE);
+//        title.setText(section.getDisplayName());
+//        title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_offer_black, 0, 0, 0);
     }
 }

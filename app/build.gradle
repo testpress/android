@@ -6,7 +6,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 ext {
-    testpressSDK = '1.4.7-TEST2'
+    testpressSDK = '1.4.10-TEST'
 }
 
 dependencies {

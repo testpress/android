@@ -45,10 +45,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="15dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="16dp"
                 android:text="User Login" />
 
             <!-- Username Label -->
@@ -61,6 +63,7 @@
                     android:id="@+id/username_textInput_layout"
                     android:layout_width="match_parent"
                     android:paddingBottom="2dp"
+                    android:textColorHint="#FFFFFF"
                     android:layout_height="@dimen/input_height"
                     android:theme="@style/TextLabelNew">
                     <androidx.appcompat.widget.AppCompatEditText
@@ -91,6 +94,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/input_height"
                 android:theme="@style/TextLabelNew"
+                android:textColorHint="#FFFFFF"
                 app:passwordToggleEnabled="true">
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/et_password"
@@ -123,11 +127,11 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 style="@style/Button"
-                android:background="@color/white"
-                android:textColor="@color/primary"
+                android:background="@drawable/rounded_corner_button"
+                android:textColor="#2872B7"
                 android:id="@+id/b_signin"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
                 android:layout_marginTop="10dp"
                 android:textSize="14sp"
                 android:text="Login" />
@@ -264,6 +268,7 @@
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             android:layout_below="@+id/login_layout"
+            android:layout_alignParentBottom="true"
             android:src="@drawable/bottom_logo"/>
     </RelativeLayout>
 

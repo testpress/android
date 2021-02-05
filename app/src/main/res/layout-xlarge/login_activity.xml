@@ -56,6 +56,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/username_textInput_layout"
                     style="@style/TextLabelTab"
+                    android:textColorHint="#FFFFFF"
                     android:theme="@style/TextLabelNew" >
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/et_username"
@@ -84,6 +85,7 @@
                     style="@style/TextLabelTab"
                     android:theme="@style/TextLabelNew"
                     android:layout_marginTop="30dp"
+                    android:textColorHint="#FFFFFF"
                     android:textColor="@color/white"
                     app:passwordToggleEnabled="true">
                     <androidx.appcompat.widget.AppCompatEditText
@@ -119,7 +121,7 @@
                 android:id="@+id/b_signin"
                 style="@style/Button.Tab"
                 android:background="@color/white"
-                android:textColor="@color/primary"
+                android:textColor="#2872B7"
                 android:layout_marginTop="5dp"
                 android:textSize="14sp"
                 android:text="Login"

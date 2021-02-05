@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/white"
+    android:background="#2872B7"
     android:fillViewport="true">
 
     <RelativeLayout
@@ -20,7 +20,19 @@
 
     <include layout="@layout/empty_view" />
 
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:src="@drawable/building"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:scaleType="centerCrop"
+        android:adjustViewBounds="true"
+        android:layout_marginBottom="34dp"
+        app:riv_corner_radius_bottom_right="90dp"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/imageView2" />
+
     <LinearLayout
+        android:layout_below="@id/imageView2"
         android:id="@+id/login_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,12 +41,6 @@
         android:paddingRight="24dp"
         android:orientation="vertical">
 
-        <ImageView
-            android:src="@drawable/login_screen_image"
-            android:layout_width="wrap_content"
-            android:layout_height="150dp"
-            android:layout_marginBottom="50dp"
-            android:layout_gravity="center_horizontal" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -50,10 +56,11 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/username_textInput_layout"
                     style="@style/TextLabelTab"
-                    android:theme="@style/TextLabel" >
+                    android:theme="@style/TextLabelNew" >
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/et_username"
                         android:layout_width="match_parent"
+                        android:textColor="@color/white"
                         android:layout_height="@dimen/input_height"
                         android:maxLines="1"
                         android:imeOptions="actionNext"
@@ -75,8 +82,9 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/password_textInput_layout"
                     style="@style/TextLabelTab"
-                    android:theme="@style/TextLabel"
+                    android:theme="@style/TextLabelNew"
                     android:layout_marginTop="30dp"
+                    android:textColor="@color/white"
                     app:passwordToggleEnabled="true">
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/et_password"
@@ -84,6 +92,7 @@
                         android:layout_height="@dimen/input_height"
                         android:fontFamily="sans-serif"
                         android:inputType="textPassword"
+                        android:textColor="@color/white"
                         android:maxLines="1"
                         android:imeOptions="actionSend"
                         style="@style/Input"
@@ -95,9 +104,22 @@
                     style="@style/TabInputError"/>
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/forgot_password"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="@string/forgot_password" />
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/b_signin"
                 style="@style/Button.Tab"
+                android:background="@color/white"
+                android:textColor="@color/primary"
                 android:layout_marginTop="5dp"
                 android:textSize="14sp"
                 android:text="Login"
@@ -108,16 +130,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp" >
 
-                <TextView
-                    android:id="@+id/forgot_password"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/primary"
-                    android:text="@string/forgot_password" />
 
                 <TextView
                     android:id="@+id/b_resend_activation"
@@ -240,5 +252,14 @@
 
         </LinearLayout>
     </LinearLayout>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:scaleType="centerCrop"
+            android:layout_alignParentBottom="true"
+            android:adjustViewBounds="true"
+            android:layout_below="@+id/login_layout"
+            android:src="@drawable/bottom_logo"/>
+
     </RelativeLayout>
 </ScrollView>

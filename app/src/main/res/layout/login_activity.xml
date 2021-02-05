@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/white"
+    android:background="#2872B7"
     android:fillViewport="true">
 
     <RelativeLayout
@@ -20,23 +20,36 @@
 
         <include layout="@layout/empty_view" />
 
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:src="@drawable/building"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:layout_marginBottom="34dp"
+            app:riv_corner_radius_bottom_right="60dp"
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/imageView2" />
+
+
         <LinearLayout
             android:id="@+id/login_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="24dp"
+            android:layout_below="@id/imageView2"
+            android:paddingTop="30dp"
             android:paddingLeft="24dp"
-            android:layout_centerInParent="true"
             android:paddingRight="24dp"
             android:orientation="vertical" >
 
-            <ImageView
-                android:src="@drawable/login_screen_image"
+            <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="100dp"
-                android:layout_marginBottom="24dp"
-                android:layout_gravity="center_horizontal"
-                android:id="@+id/imageView2" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:textColor="@color/white"
+                android:text="User Login" />
 
             <!-- Username Label -->
             <LinearLayout
@@ -49,12 +62,13 @@
                     android:layout_width="match_parent"
                     android:paddingBottom="2dp"
                     android:layout_height="@dimen/input_height"
-                    android:theme="@style/TextLabel">
+                    android:theme="@style/TextLabelNew">
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/et_username"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/input_height"
                         android:maxLines="1"
+                        android:textColor="@color/white"
                         android:imeOptions="actionNext"
                         style="@style/Input"
                         android:hint="@string/label_username" />
@@ -76,7 +90,7 @@
                 android:id="@+id/password_textInput_layout"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/input_height"
-                android:theme="@style/TextLabel"
+                android:theme="@style/TextLabelNew"
                 app:passwordToggleEnabled="true">
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/et_password"
@@ -87,6 +101,7 @@
                     android:maxLines="1"
                     android:imeOptions="actionSend"
                     style="@style/Input"
+                    android:textColor="@color/white"
                     android:hint="@string/label_password"/>
             </com.google.android.material.textfield.TextInputLayout>
             <TextView
@@ -96,8 +111,20 @@
                 style="@style/InputError"/>
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/forgot_password"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:layout_marginBottom="10dp"
+                android:text="@string/forgot_password" />
+
             <androidx.appcompat.widget.AppCompatButton
                 style="@style/Button"
+                android:background="@color/white"
+                android:textColor="@color/primary"
                 android:id="@+id/b_signin"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -109,15 +136,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp" >
-
-                <TextView
-                    android:id="@+id/forgot_password"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/primary"
-                    android:text="@string/forgot_password" />
 
                 <TextView
                     android:id="@+id/b_resend_activation"
@@ -237,11 +255,17 @@
 
                 </LinearLayout>
 
-
             </LinearLayout>
 
         </LinearLayout>
-
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:layout_below="@+id/login_layout"
+            android:src="@drawable/bottom_logo"/>
     </RelativeLayout>
+
 
 </ScrollView>

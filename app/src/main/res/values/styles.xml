@@ -41,6 +41,20 @@
         <item name="android:clipToPadding">false</item>
     </style>
 
+    <style name="TextLabelNew" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!--hint color And Label Color in False State-->
+        <item name="android:textSize">14sp</item>
+        <!--Label color in True State And Bar Color False And True State-->
+        <!--<item name="colorAccent">@color/fbutton_color_pomegranate</item>-->
+        <item name="colorControlNormal">#c5c5c5</item>
+        <item name="colorControlActivated">@color/white</item>
+        <item name="colorControlHighlight">@color/white</item>
+        <item name="android:gravity">bottom</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:clipToPadding">false</item>
+    </style>
+
     <style name="TextLabelTab">
         <item name="android:layout_width">@dimen/tab_input_width</item>
         <item name="android:layout_height">@dimen/input_height</item>

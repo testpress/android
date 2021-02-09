@@ -18,7 +18,7 @@ public class PreferenceManager {
 
     private static final String PREF_KEY_LAUNCHED_TIMES = "launchedTimes";
 
-    public static final String DASHBOARD_DATA = "dashboardData";
+    public static final String DASHBOARD_DATA = "dashboardDataPreference";
 
     private PreferenceManager() {
     }

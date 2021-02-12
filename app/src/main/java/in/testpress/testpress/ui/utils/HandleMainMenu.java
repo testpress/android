@@ -22,6 +22,8 @@ import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
+import in.testpress.testpress.ui.ForumActivity;
+import in.testpress.testpress.ui.ForumListActivity;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.PostsListActivity;
 import in.testpress.testpress.ui.ProfileDetailsActivity;
@@ -101,6 +103,10 @@ public class HandleMainMenu {
                 break;
             case R.id.downloads:
                 intent = new Intent(activity, DownloadsActivity.class);
+                activity.startActivity(intent);
+                break;
+            case R.id.discussions:
+                intent = new Intent(activity, ForumListActivity.class);
                 activity.startActivity(intent);
                 break;
         }

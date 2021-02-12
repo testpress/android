@@ -258,6 +258,7 @@ public class MainActivity extends TestpressFragmentActivity {
             menu.findItem(R.id.analytics).setVisible(false);
             menu.findItem(R.id.profile).setVisible(false);
             menu.findItem(R.id.downloads).setVisible(false);
+            menu.findItem(R.id.discussions).setVisible(false);
             menu.findItem(R.id.bookmarks).setVisible(false);
         } else {
             menu.findItem(R.id.logout).setVisible(true);
@@ -266,6 +267,7 @@ public class MainActivity extends TestpressFragmentActivity {
             menu.findItem(R.id.profile).setVisible(true);
             menu.findItem(R.id.bookmarks).setVisible(true);
             menu.findItem(R.id.downloads).setVisible(true);
+            menu.findItem(R.id.discussions).setVisible(true);
             menu.findItem(R.id.login).setVisible(false);
         }
     }

@@ -177,6 +177,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         super.onCreate(bundle);
 
         Injector.inject(this);
+        getWindow().setBackgroundDrawableResource(R.drawable.login_screen);
 
         accountManager = AccountManager.get(this);
 

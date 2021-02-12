@@ -74,6 +74,7 @@
         <activity
             android:name=".authenticator.LoginActivity"
             android:theme="@style/AppTheme"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"
             android:excludeFromRecents="true">
 

@@ -166,6 +166,18 @@
         <item name="android:background">@drawable/rounded_border_edittext</item>
     </style>
 
+    <style name="Input.Small">
+        <item name="android:paddingTop">3dp</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:background">@drawable/rounded_border_edittext</item>
+    </style>
+
     <style name="Input.Tab" parent="@style/TextLabelTab">
         <item name="android:paddingTop">15dp</item>
         <item name="android:paddingStart">10dp</item>

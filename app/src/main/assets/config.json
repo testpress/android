@@ -1,9 +1,9 @@
 {
-  "version" : "1.0.111",
-  "version_code" : 111,
+  "version" : "1.1.0",
+  "version_code" : 112,
   "testpress_site_subdomain" : "kitabee",
   "package_name" : "in.testpress.kitabee",
-  "app_name" : "Kitabee Education Services",
+  "app_name" : "Testprep by Kitabee - CAT | XAT | IIFT | SNAP | NMAT",
   "share_message": "Good app to prepare for CAT, GMAT, XAT, SNAP. Get it at https://play.google.com/store/apps/details?id=",
   "primary_color": "E82C34",
   "allow_anonymous_user" : false,

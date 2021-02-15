@@ -9,13 +9,18 @@ import android.content.SharedPreferences;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
+import com.google.android.exoplayer2.offline.DownloadService;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import in.testpress.core.TestpressSDKDatabase;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
+import in.testpress.course.services.VideoDownloadService;
+import in.testpress.database.TestpressDatabase;
 import in.testpress.testpress.authenticator.ApiKeyProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
@@ -31,7 +36,9 @@ import retrofit.RestAdapter;
 
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.BuildConfig.DISPLAY_USERNAME_ON_VIDEO;
-import static in.testpress.testpress.BuildConfig.SCREENSHOT_DISABLED;
+import static in.testpress.testpress.BuildConfig.GROWTH_HACKS_ENABLED;
+import static in.testpress.testpress.BuildConfig.SHARE_MESSAGE;
+import static in.testpress.testpress.util.PreferenceManager.setDashboardData;
 
 public class TestpressServiceProvider {
     private RestAdapter.Builder restAdapter;
@@ -71,8 +78,11 @@ public class TestpressServiceProvider {
                     .list();
 
             in.testpress.models.InstituteSettings settings;
+            String appLink = "https://play.google.com/store/apps/details?id=" + activity.getPackageName();
+
             if (instituteSettingsList.isEmpty()) {
                 settings = new in.testpress.models.InstituteSettings(BASE_URL);
+                settings.setScreenshotDisabled(true);
             } else {
                 InstituteSettings instituteSettings = instituteSettingsList.get(0);
                 settings = new in.testpress.models.InstituteSettings(instituteSettings.getBaseUrl())
@@ -80,10 +90,21 @@ public class TestpressServiceProvider {
                         .setCoursesFrontend(instituteSettings.getShowGameFrontend())
                         .setCoursesGamificationEnabled(instituteSettings.getCoursesEnableGamification())
                         .setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled())
-                        .setScreenshotDisabled(SCREENSHOT_DISABLED)
+                        .setScreenshotDisabled(!instituteSettings.getAllowScreenshotInApp())
                         .setDisplayUserEmailOnVideo(DISPLAY_USERNAME_ON_VIDEO)
-                        .setAccessCodeEnabled(false);
+                        .setAccessCodeEnabled(false)
+                        .setEnableParallelLoginRestriction(instituteSettings.getEnableParallelLoginRestriction())
+                        .setMaxParallelLogins(instituteSettings.getMaxParallelLogins())
+                        .setLockoutLimit(instituteSettings.getLockoutLimit())
+                        .setCooloffTime(instituteSettings.getCooloffTime())
+                        .setStoreLabel(instituteSettings.getStoreLabel())
+                        .setAppToolbarLogo(instituteSettings.getAppToolbarLogo())
+                        .setAppShareLink(instituteSettings.getAppShareLink())
+                        .setServerTime(instituteSettings.serverTime());
+                appLink = instituteSettings.getAppShareLink();
             }
+            settings.setAppShareText(SHARE_MESSAGE + activity.getString(R.string.get_it_at) + appLink);
+            settings.setGrowthHackEnabled(GROWTH_HACKS_ENABLED);
             TestpressSdk.setTestpressSession(activity, new TestpressSession(settings, authToken));
         }
 
@@ -105,11 +126,10 @@ public class TestpressServiceProvider {
         serviceProvider.invalidateAuthToken(activity);
         SharedPreferences preferences = activity.getSharedPreferences(Constants.GCM_PREFERENCE_NAME,
                 Context.MODE_PRIVATE);
+        setDashboardData(activity, "{}");
         preferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
         CommonUtils.registerDevice(activity, testpressService, serviceProvider);
         TestpressApplication.clearDatabase(activity);
-        TestpressSdk.clearActiveSession(activity);
-        TestpressSDKDatabase.clearDatabase(activity);
         logoutService.logout(new Runnable() {
             @Override
             public void run() {

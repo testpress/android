@@ -234,39 +234,51 @@ public class PostsListFragment extends Fragment implements
 
             protected void onSuccess(final List<Category> categories) throws Exception {
                 Ln.e("On success");
+                categoryDao.deleteAll();
                 categoryDao.insertOrReplaceInTx(categories);
-                for (final Category category : categories) {
-                    mTopLevelSpinnerAdapter.addItem("" + category.getId(), category.getName(), true,
-                            Color.parseColor("#" + category.getColor()));
-                }
-
-                mTopLevelSpinnerAdapter.notifyDataSetChanged();
-
-                if (categoryFilter != null) {
-                    Spinner spinner = (Spinner) mSpinnerContainer.findViewById(R.id.actionbar_spinner);
-                    spinner.setSelection(mTopLevelSpinnerAdapter.getItemPositionFromTag(categoryFilter.toString()));
-                }
-
-                if (!categories.isEmpty()) {
-                    Ln.e("Setting visible");
+                displayCategorySpinner();
+                if (getActivity() instanceof MainActivity) {
+                    mSpinnerContainer.setVisibility(View.GONE);
+                } else {
                     mSpinnerContainer.setVisibility(View.VISIBLE);
-                    Toolbar toolbar;
-                    if (getActivity() instanceof MainActivity) {
-                        toolbar = ((MainActivity) (getActivity())).getActionBarToolbar();
-                        mSpinnerContainer.setVisibility(View.GONE);
-                    } else {
-                        toolbar = ((PostsListActivity) (getActivity())).getActionBarToolbar();
-                    }
-                    View view = toolbar.findViewById(R.id.actionbar_spinnerwrap);
-                    toolbar.removeView(view);
-                    toolbar.invalidate();
-                    ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                    toolbar.addView(mSpinnerContainer, lp);
                 }
             }
 
         }.execute();
+    }
+
+    public void displayCategorySpinner() {
+        if (categoryDao == null) {
+            return;
+        }
+        List<Category> categories = categoryDao.loadAll();
+        for (final Category category : categories) {
+            mTopLevelSpinnerAdapter.addItem("" + category.getId(), category.getName(), true,
+                    Color.parseColor("#" + category.getColor()));
+        }
+
+        mTopLevelSpinnerAdapter.notifyDataSetChanged();
+
+        if (categoryFilter != null) {
+            Spinner spinner = (Spinner) mSpinnerContainer.findViewById(R.id.actionbar_spinner);
+            spinner.setSelection(mTopLevelSpinnerAdapter.getItemPositionFromTag(categoryFilter.toString()));
+        }
+
+        if (!categories.isEmpty()) {
+            mSpinnerContainer.setVisibility(View.VISIBLE);
+            Toolbar toolbar;
+            if (getActivity() instanceof MainActivity) {
+                toolbar = ((MainActivity) (getActivity())).getActionBarToolbar();
+            } else {
+                toolbar = ((PostsListActivity) (getActivity())).getActionBarToolbar();
+            }
+            View view = toolbar.findViewById(R.id.actionbar_spinnerwrap);
+            toolbar.removeView(view);
+            toolbar.invalidate();
+            ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            toolbar.addView(mSpinnerContainer, lp);
+        }
     }
 
     @SuppressLint("StaticFieldLeak")

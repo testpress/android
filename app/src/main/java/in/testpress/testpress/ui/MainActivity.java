@@ -367,11 +367,22 @@ public class MainActivity extends TestpressFragmentActivity {
         mBottomBarAdapter.setSelectedPosition(position);
         mBottomBarAdapter.notifyDataSetChanged();
 
-        if (!UIUtils.getMenuItemName(mMenuItemTitleIds.get(position), mInstituteSettings).isEmpty()) {
-            updateToolbarText(UIUtils.getMenuItemName(mMenuItemTitleIds.get(position), mInstituteSettings));
+        if (mMenuItemFragments.get(position) instanceof PostsListFragment) {
+            ((PostsListFragment) mMenuItemFragments.get(position)).displayCategorySpinner();
         } else {
-            updateToolbarText(getString(mMenuItemTitleIds.get(position)));
+            hidePostsCategorySpinner();
+
+            if (!UIUtils.getMenuItemName(mMenuItemTitleIds.get(position), mInstituteSettings).isEmpty()) {
+                updateToolbarText(UIUtils.getMenuItemName(mMenuItemTitleIds.get(position), mInstituteSettings));
+            } else {
+                updateToolbarText(getString(mMenuItemTitleIds.get(position)));
+            }
         }
+    }
+
+    private void hidePostsCategorySpinner() {
+        View view = mActionBarToolbar.findViewById(R.id.actionbar_spinnerwrap);
+        mActionBarToolbar.removeView(view);
     }
 
     private void updateToolbarText(CharSequence text) {

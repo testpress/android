@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import android.text.Editable;
@@ -138,6 +139,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     @InjectView(id.social_sign_in_buttons) protected LinearLayout socialLoginLayout;
     @InjectView(id.signup) protected TextView signUpButton;
     @InjectView(id.privacyPolicy) protected TextView privacyPolicy;
+    @InjectView(id.footer_view) protected View footerView;
 
 
     @InjectView(id.pb_loading) ProgressBar progressBar;
@@ -207,6 +209,9 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
                 return false;
             }
         });
+        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.M){
+            footerView.setVisibility(View.GONE);
+        }
 
         passwordText.addTextChangedListener(new TextWatcher() {
             @Override

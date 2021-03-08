@@ -1,9 +1,11 @@
 package `in`.testpress.testpress.ui.view_holders
 
 import `in`.testpress.testpress.R
+import `in`.testpress.testpress.TestpressServiceProvider
 import `in`.testpress.testpress.models.pojo.DashboardResponse
 import `in`.testpress.testpress.models.pojo.DashboardSection
-import `in`.testpress.testpress.ui.adapters.ImageOnlyBannerCarouselAdapter
+import `in`.testpress.testpress.ui.adapters.LargeOfferCarouselAdapter
+import `in`.testpress.testpress.ui.adapters.OffersCarouselAdapter
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
@@ -14,7 +16,7 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.SnapHelper
 
 
-class AutoScrollCarouselViewHolder(itemView: View, context: Context): BaseCarouselViewHolder(itemView, context) {
+class AutoScrollCarouselViewHolder(itemView: View, val context: Context): BaseCarouselViewHolder(itemView, context) {
     private val backgroundTaskRunner: Handler
     private val SCROLL_DELAY = 3000L
     private var isScrollStarted = false
@@ -25,17 +27,17 @@ class AutoScrollCarouselViewHolder(itemView: View, context: Context): BaseCarous
         backgroundTaskRunner = Handler(Looper.getMainLooper())
     }
 
-    fun display(response: DashboardResponse, context: Context) {
+    fun display(response: DashboardResponse, serviceProvider: TestpressServiceProvider) {
         val section = response.availableSections[adapterPosition]
-        initRecyclerView(section, context, response)
+        initRecyclerView(section, response, serviceProvider)
         displayTitle(section.displayName)
         if (section.items.size > 2) {
             showPageIndicator()
         }
     }
 
-    private fun initRecyclerView(section: DashboardSection, context: Context, response: DashboardResponse) {
-        val adapter = ImageOnlyBannerCarouselAdapter(response, section, context)
+    private fun initRecyclerView(section: DashboardSection, response: DashboardResponse, serviceProvider: TestpressServiceProvider) {
+        val adapter = LargeOfferCarouselAdapter(response, section, context, serviceProvider)
         val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = linearLayoutManager
         recyclerView.adapter = adapter

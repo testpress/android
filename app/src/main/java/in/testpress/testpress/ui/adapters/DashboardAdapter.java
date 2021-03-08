@@ -138,7 +138,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     ((LeaderboardViewHolder) holder).display(response, context);
                     break;
                 case CAROUSEL:
-                    ((AutoScrollCarouselViewHolder) holder).display(response, context);
+                    ((AutoScrollCarouselViewHolder) holder).display(response, serviceProvider);
                     break;
             }
         } catch(Exception e) {}

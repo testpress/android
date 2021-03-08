@@ -37,7 +37,7 @@ class ImageOnlyBannerCarouselAdapter(val response: DashboardResponse, val sectio
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.full_width_carousel_item, parent, false)
+        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.image_only_carousel_item, parent, false)
         return ItemViewHolder(view)
     }
 

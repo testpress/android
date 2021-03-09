@@ -112,23 +112,25 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        switch (holder.getItemViewType()) {
-            case CONTENT_CAROUSEL:
-                ((ContentsCarouselViewHolder) holder).display(response, context);
-                break;
-            case POST_CAROUSEL:
-                ((PostsCarouselViewHolder) holder).display(response, context);
-                break;
-            case OFFERS_CAROUSEL:
-                ((OffersCarouselViewHolder) holder).display(response, context, serviceProvider);
-                break;
-            case COURSE_CAROUSEL:
-                ((CourseCarouselViewHolder) holder).display(response, context);
-                break;
-            case LEADERBOARD_LIST:
-                ((LeaderboardViewHolder) holder).display(response, context);
-                break;
-        }
+        try {
+            switch (holder.getItemViewType()) {
+                case CONTENT_CAROUSEL:
+                    ((ContentsCarouselViewHolder) holder).display(response, context);
+                    break;
+                case POST_CAROUSEL:
+                    ((PostsCarouselViewHolder) holder).display(response, context);
+                    break;
+                case OFFERS_CAROUSEL:
+                    ((OffersCarouselViewHolder) holder).display(response, context, serviceProvider);
+                    break;
+                case COURSE_CAROUSEL:
+                    ((CourseCarouselViewHolder) holder).display(response, context);
+                    break;
+                case LEADERBOARD_LIST:
+                    ((LeaderboardViewHolder) holder).display(response, context);
+                    break;
+            }
+        } catch(Exception e) {}
     }
 
     public Boolean isLeaderBoardEnabled() {

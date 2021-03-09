@@ -5,12 +5,10 @@ import `in`.testpress.testpress.TestpressServiceProvider
 import `in`.testpress.testpress.models.pojo.DashboardResponse
 import `in`.testpress.testpress.models.pojo.DashboardSection
 import `in`.testpress.testpress.ui.adapters.LargeOfferCarouselAdapter
-import `in`.testpress.testpress.ui.adapters.OffersCarouselAdapter
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.SnapHelper
@@ -22,9 +20,13 @@ class AutoScrollCarouselViewHolder(itemView: View, val context: Context): BaseCa
     private var isScrollStarted = false
 
     init {
+        snapBannerToCorners()
+        backgroundTaskRunner = Handler(Looper.getMainLooper())
+    }
+
+    private fun snapBannerToCorners() {
         val snapHelper: SnapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(recyclerView)
-        backgroundTaskRunner = Handler(Looper.getMainLooper())
     }
 
     fun display(response: DashboardResponse, serviceProvider: TestpressServiceProvider) {
@@ -37,11 +39,8 @@ class AutoScrollCarouselViewHolder(itemView: View, val context: Context): BaseCa
     }
 
     private fun initRecyclerView(section: DashboardSection, response: DashboardResponse, serviceProvider: TestpressServiceProvider) {
-        val adapter = LargeOfferCarouselAdapter(response, section, context, serviceProvider)
-        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        recyclerView.layoutManager = linearLayoutManager
-        recyclerView.adapter = adapter
-        recyclerView.itemAnimator = DefaultItemAnimator()
+        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        recyclerView.adapter = LargeOfferCarouselAdapter(response, section, context, serviceProvider)
         enableAutoScroll()
     }
 

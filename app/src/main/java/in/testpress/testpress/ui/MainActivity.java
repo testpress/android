@@ -385,6 +385,7 @@ public class MainActivity extends TestpressFragmentActivity {
                     serviceProvider.logout(MainActivity.this, testpressService, serviceProvider,
                             logoutService);
                 }
+                invalidateOptionsMenu();
             }
 
             @Override

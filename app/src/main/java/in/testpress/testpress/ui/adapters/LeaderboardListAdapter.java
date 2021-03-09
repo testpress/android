@@ -61,16 +61,18 @@ public class LeaderboardListAdapter extends RecyclerView.Adapter<LeaderboardList
 
     @Override
     public void onBindViewHolder(LeaderboardListAdapter.MyViewHolder holder, int position) {
-        String rank = position + 1 + "";
-        holder.rank.setText(rank);
-        LeaderboardItem leaderboardItem = leaderboardItems.get(position);
-        holder.username.setText(capitalizeEachWord(leaderboardItem.getUser().getDisplayName()));
-        imageLoader.displayImage(leaderboardItem.getUser().getMediumImage(), holder.userImage, options);
-        int trophies_count = (int) Double.parseDouble(leaderboardItem.getTrophiesCount());
-        holder.trophies.setText(String.valueOf(trophies_count));
+        try {
+            String rank = position + 1 + "";
+            holder.rank.setText(rank);
+            LeaderboardItem leaderboardItem = leaderboardItems.get(position);
+            holder.username.setText(capitalizeEachWord(leaderboardItem.getUser().getDisplayName()));
+            imageLoader.displayImage(leaderboardItem.getUser().getMediumImage(), holder.userImage, options);
+            int trophies_count = (int) Double.parseDouble(leaderboardItem.getTrophiesCount());
+            holder.trophies.setText(String.valueOf(trophies_count));
 
-        Integer difference = leaderboardItem.getDifference() == null ?
-                0 : leaderboardItem.getDifference();
+            Integer difference = leaderboardItem.getDifference() == null ?
+                    0 : leaderboardItem.getDifference();
+        } catch (Exception e){}
     }
 
     @Override

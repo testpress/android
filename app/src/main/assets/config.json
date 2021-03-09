@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.6",
-  "version_code" : 6,
+  "version" : "1.0.8",
+  "version_code" : 8,
   "testpress_site_subdomain" : "verandalearning",
   "package_name" : "com.verandalearning",
   "app_name" : "Veranda Learning",

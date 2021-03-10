@@ -54,7 +54,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public int getItemViewType(int position) {
         String contentType = sections.get(position).getContentType();
-        if (sections.get(position).getDisplayType() == "CAROUSEL") {
+        if (sections.get(position).getDisplayType().equals("CAROUSEL")) {
             return CAROUSEL;
         }
         switch (contentType) {

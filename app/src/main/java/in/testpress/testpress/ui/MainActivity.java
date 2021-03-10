@@ -26,7 +26,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -42,6 +41,7 @@ import org.greenrobot.greendao.annotation.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -50,11 +50,10 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
-import in.testpress.course.TestpressCourse;
-import in.testpress.course.fragments.DownloadsFragment;
-import in.testpress.course.ui.ChaptersListFragment;
+import in.testpress.course.ui.MyCoursesFragment;
 import in.testpress.exam.ui.AnalyticsFragment;
 import in.testpress.exam.ui.view.NonSwipeableViewPager;
+import in.testpress.network.TestpressApiClient;
 import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
@@ -315,10 +314,10 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     @NotNull
-    private ChaptersListFragment getChaptersListFragment(String courseId) {
+    private MyCoursesFragment getCoursesFragment(ArrayList<String> tags) {
         Bundle bundle = new Bundle();
-        bundle.putString("courseId", courseId);
-        ChaptersListFragment fragment = new ChaptersListFragment();
+        bundle.putStringArrayList(TestpressApiClient.TAGS, tags);
+        MyCoursesFragment fragment = new MyCoursesFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -341,8 +340,8 @@ public class MainActivity extends TestpressFragmentActivity {
         // Show courses list if game front end is enabled, otherwise hide bottom bar
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             //noinspection ConstantConditions
-            addMenuItem(R.string.classes, R.drawable.ic_baseline_menu_book_24, getChaptersListFragment("2"));
-            addMenuItem(R.string.tests, R.drawable.ic_exam,getChaptersListFragment("3"));
+            addMenuItem(R.string.classes, R.drawable.ic_baseline_menu_book_24, getCoursesFragment(new ArrayList<String>(Arrays.asList("classes"))));
+            addMenuItem(R.string.tests, R.drawable.ic_exam, getCoursesFragment(new ArrayList<String>(Arrays.asList("exams"))));
             AnalyticsFragment analyticsFragment = new AnalyticsFragment();
             Bundle bundle = new Bundle();
             bundle.putString(ANALYTICS_URL_FRAG, SUBJECT_ANALYTICS_PATH);

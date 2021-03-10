@@ -32,7 +32,7 @@ class AutoScrollCarouselViewHolder(itemView: View, val context: Context): BaseCa
     fun display(response: DashboardResponse, serviceProvider: TestpressServiceProvider) {
         val section = response.availableSections[adapterPosition]
         initRecyclerView(section, response, serviceProvider)
-        displayTitle(section.displayName)
+//        displayTitle(section.displayName)
         if (section.items.size > 2) {
             showPageIndicator()
         }

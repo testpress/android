@@ -9,7 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-class LargeOfferCarouselAdapter(
+class BannerCarouselAdapter(
         val response: DashboardResponse,
         val section: DashboardSection,
         val context: Context, val serviceProvider: TestpressServiceProvider

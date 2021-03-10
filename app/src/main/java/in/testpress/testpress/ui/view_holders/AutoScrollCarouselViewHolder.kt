@@ -4,7 +4,7 @@ import `in`.testpress.testpress.R
 import `in`.testpress.testpress.TestpressServiceProvider
 import `in`.testpress.testpress.models.pojo.DashboardResponse
 import `in`.testpress.testpress.models.pojo.DashboardSection
-import `in`.testpress.testpress.ui.adapters.LargeOfferCarouselAdapter
+import `in`.testpress.testpress.ui.adapters.BannerCarouselAdapter
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
@@ -40,7 +40,7 @@ class AutoScrollCarouselViewHolder(itemView: View, val context: Context): BaseCa
 
     private fun initRecyclerView(section: DashboardSection, response: DashboardResponse, serviceProvider: TestpressServiceProvider) {
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        recyclerView.adapter = LargeOfferCarouselAdapter(response, section, context, serviceProvider)
+        recyclerView.adapter = BannerCarouselAdapter(response, section, context, serviceProvider)
         enableAutoScroll()
     }
 

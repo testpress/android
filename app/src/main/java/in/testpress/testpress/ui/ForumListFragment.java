@@ -513,9 +513,6 @@ public class ForumListFragment extends Fragment implements
 
     void initOldPostLoadingPager() {
         pager = new ForumsPager(getTestpressService(), null);
-        Forum lastForum = forumDao.queryBuilder().orderDesc(ForumDao.Properties
-                .Published).list().get((int) forumDao.count() - 1);
-        pager.setQueryParams("until", lastForum.getLastCommentedTime());
         pager.setLatestModifiedDate(null);
     }
 
@@ -600,7 +597,7 @@ public class ForumListFragment extends Fragment implements
     }
 
     void onNetworkLoadFinished(List<Forum> items) {
-
+        forumDao.deleteAll();
         if (pager != null && !pager.hasMore()) {
             if (adapter.getFootersCount() != 0) {  //if pager reached last page remove footer if
                 // footer added already

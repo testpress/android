@@ -61,19 +61,21 @@ public class OffersCarouselAdapter extends RecyclerView.Adapter<OffersCarouselAd
 
     @Override
     public void onBindViewHolder(OffersCarouselAdapter.MyViewHolder holder, final int position) {
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Activity activity = (Activity) context;
-                DeeplinkHandler deeplinkHandler = new DeeplinkHandler(activity, serviceProvider);
+        try {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Activity activity = (Activity) context;
+                    DeeplinkHandler deeplinkHandler = new DeeplinkHandler(activity, serviceProvider);
 
-                if (!StringUtils.isNullOrEmpty(banners.get(position).getUrl())) {
-                    Uri uri = Uri.parse(banners.get(position).getUrl());
-                    deeplinkHandler.handleDeepLinkUrl(uri, false);
+                    if (!StringUtils.isNullOrEmpty(banners.get(position).getUrl())) {
+                        Uri uri = Uri.parse(banners.get(position).getUrl());
+                        deeplinkHandler.handleDeepLinkUrl(uri, false);
+                    }
                 }
-            }
-        });
-        imageLoader.displayImage(banners.get(position).getImage(), holder.image, options);
+            });
+            imageLoader.displayImage(banners.get(position).getImage(), holder.image, options);
+        } catch(Exception e) {}
     }
 
     @Override

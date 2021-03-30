@@ -87,25 +87,27 @@ public class CourseCarouselAdapter extends RecyclerView.Adapter<CourseCarouselAd
 
     @Override
     public void onBindViewHolder(CourseCarouselAdapter.MyViewHolder holder, int position) {
-        final Product product = products.get(position);
-        imageLoader.displayImage(product.getImage(), holder.image, options);
-        holder.title.setText(product.getTitle());
-        displayContentsCount(holder, product);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Activity activity = (Activity) context;
-                if (product.getCourseIds().size() > 1) {
-                    activity.startActivity(CoursePreviewActivity.createIntent(product.getCourseIds(), activity, product.getSlug()));
-                } else if (product.getCourseIds().size() == 1 ) {
-                    openChapters(product, activity);
-                } else {
-                    Intent intent = new Intent(activity, ProductDetailsActivity.class);
-                    intent.putExtra(ProductDetailsActivity.PRODUCT_SLUG, product.getSlug());
-                    activity.startActivityForResult(intent, STORE_REQUEST_CODE);
+        try {
+            final Product product = products.get(position);
+            imageLoader.displayImage(product.getImage(), holder.image, options);
+            holder.title.setText(product.getTitle());
+            displayContentsCount(holder, product);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Activity activity = (Activity) context;
+                    if (product.getCourseIds().size() > 1) {
+                        activity.startActivity(CoursePreviewActivity.createIntent(product.getCourseIds(), activity, product.getSlug()));
+                    } else if (product.getCourseIds().size() == 1 ) {
+                        openChapters(product, activity);
+                    } else {
+                        Intent intent = new Intent(activity, ProductDetailsActivity.class);
+                        intent.putExtra(ProductDetailsActivity.PRODUCT_SLUG, product.getSlug());
+                        activity.startActivityForResult(intent, STORE_REQUEST_CODE);
+                    }
                 }
-            }
-        });
+            });
+        } catch (Exception e) {}
     }
 
     private void openChapters(Product product, Activity activity) {

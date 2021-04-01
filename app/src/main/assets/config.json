@@ -1,6 +1,6 @@
 {
-  "version" : "1.3.2",
-  "version_code" : 126,
+  "version" : "1.3.3",
+  "version_code" : 127,
   "testpress_site_subdomain" : "talentmed",
   "package_name" : "eu.talentmed",
   "app_name" : "TalentMed",

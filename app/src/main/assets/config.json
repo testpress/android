@@ -6,7 +6,7 @@
   "app_name" : "JB Classes",
   "share_message": "Good app to prepare for online exams.",
   "primary_color": "c32429",
-  "allow_anonymous_user" : true,
+  "allow_anonymous_user" : false,
   "facebook_app_id" : "733962776688753",
   "server_client_id" : "462404050415-5mp3lfghctsv4ia9qqk6a24c2o05oh7b.apps.googleusercontent.com",
   "display_username_on_video": true,

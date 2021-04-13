@@ -78,29 +78,33 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, final int position) {
-        final Content content = contents.get(position);
-        if (content == null) {
-            return;
-        }
-
-        showThumbnail(content, holder);
-        setIconAndChapterTitle(content, holder);
-        showOrHideVideoAccessories(content, holder);
-        showOrHideExamAccessories(content, holder);
-        showReadTimeForHtmlContent(content, holder);
-        showIconForAttachmentContent(content, holder);
-        showProgressBarForResumeVideos(position, holder);
-
-
-        holder.title.setText(content.getName());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Activity activity = (Activity) context;
-                TestpressSession session = TestpressSdk.getTestpressSession(context);
-                TestpressCourse.showContentDetail(activity, content.getId().toString(), session);
+        try {
+            final Content content = contents.get(position);
+            if (content == null) {
+                return;
             }
-        });
+
+            showThumbnail(content, holder);
+            setIconAndChapterTitle(content, holder);
+            showOrHideVideoAccessories(content, holder);
+            showOrHideExamAccessories(content, holder);
+            showReadTimeForHtmlContent(content, holder);
+            showIconForAttachmentContent(content, holder);
+            showProgressBarForResumeVideos(position, holder);
+
+
+                holder.title.setText(content.getName());
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Activity activity = (Activity) context;
+                        TestpressSession session = TestpressSdk.getTestpressSession(context);
+                        TestpressCourse.showContentDetail(activity, content.getId().toString(), session);
+                    }
+                });
+        } catch (Exception e) {
+
+        }
     }
 
     private void showThumbnail(Content content, ItemViewHolder holder) {

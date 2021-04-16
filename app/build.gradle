@@ -6,7 +6,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 ext {
-    testpressSDK = '1.4.18'
+    testpressSDK = '1.4.20'
 }
 
 dependencies {
@@ -43,8 +43,8 @@ dependencies {
     implementation 'de.greenrobot:greendao:2.0.0'
     
     // Testpress Course(which inbuilt has exam & core module)
-    implementation 'com.github.testpress:course:' + testpressSDK
-    implementation 'com.github.testpress:store:' + testpressSDK
+    implementation 'com.github.testpress.android-sdk:course:' + testpressSDK
+    implementation 'com.github.testpress.android-sdk:store:' + testpressSDK
 
     // Gcm
     implementation 'com.google.firebase:firebase-core:17.1.0'

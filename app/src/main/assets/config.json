@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.6",
-  "version_code" : 8,
+  "version" : "1.0.7",
+  "version_code" : 10,
   "testpress_site_subdomain" : "brilliantpalalms",
   "package_name" : "com.brilliantpala.lms",
   "app_name" : "Brilliant Pala e-learning",

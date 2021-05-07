@@ -6,7 +6,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 ext {
-    testpressSDK = '1.4.7'
+    testpressSDK = '1.4.22'
 }
 
 dependencies {
@@ -41,8 +41,8 @@ dependencies {
     implementation 'de.greenrobot:greendao:2.0.0'
     
     // Testpress Course(which inbuilt has exam & core module)
-    implementation 'com.github.testpress:course:' + testpressSDK
-    implementation 'com.github.testpress:store:' + testpressSDK
+    implementation 'com.github.testpress.android-sdk:course:' + testpressSDK
+    implementation 'com.github.testpress.android-sdk:store:' + testpressSDK
 
     // Gcm
     implementation 'com.google.firebase:firebase-core:17.1.0'
@@ -135,7 +135,7 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 29
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 

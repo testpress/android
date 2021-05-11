@@ -1,177 +1,34 @@
 {
   "project_info": {
-    "project_number": "1020449754182",
-    "project_id": "testpress4-657b7",
-    "storage_bucket": "testpress4-657b7.appspot.com"
+    "project_number": "884646934456",
+    "project_id": "testpress-android-app",
+    "storage_bucket": "testpress-android-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1020449754182:android:40a2a9ad22db53ff84ce47",
+        "mobilesdk_app_id": "1:884646934456:android:9bd036f02b7895a326814d",
         "android_client_info": {
-          "package_name": "com.aavishkarevidya.learn"
+          "package_name": "com.megaexams.fortuneiasacademy"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1020449754182-a3plbu9nrteu7jdeqe8nctsjm0kg0q4d.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.aavishkarevidya.learn",
-            "certificate_hash": "2ab21fc395f73d50051aa8e9c18f6d404b093b3d"
-          }
-        },
-        {
-          "client_id": "1020449754182-48b0c7d3tknu4im3n79ap2142pid6ctt.apps.googleusercontent.com",
+          "client_id": "884646934456-8ic4t392kb9ognjg3kd7tn2sqf1b64ld.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyADlC7Ch3dIjeZiXWVQiH1pvWIwl9daGMM"
+          "current_key": "AIzaSyAIJwMv7YcEIJPpb9ZHRiqXL_4CluqcEgA"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1020449754182-48b0c7d3tknu4im3n79ap2142pid6ctt.apps.googleusercontent.com",
+              "client_id": "884646934456-8ic4t392kb9ognjg3kd7tn2sqf1b64ld.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "1020449754182-o5k5aeroq6r1bc5cqu4jlcs3i35hei80.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "in.testpress.happymandarin",
-                "app_store_id": "1543747257"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1020449754182:android:1e172994a9d097c084ce47",
-        "android_client_info": {
-          "package_name": "in.testpress.fortuneiasacademy"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1020449754182-48b0c7d3tknu4im3n79ap2142pid6ctt.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyADlC7Ch3dIjeZiXWVQiH1pvWIwl9daGMM"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1020449754182-48b0c7d3tknu4im3n79ap2142pid6ctt.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "1020449754182-o5k5aeroq6r1bc5cqu4jlcs3i35hei80.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "in.testpress.happymandarin",
-                "app_store_id": "1543747257"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1020449754182:android:11a70b9f404809ea84ce47",
-        "android_client_info": {
-          "package_name": "in.testpress.happymandarin"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1020449754182-bv7i38pk18hlu488qj4703j96c0bjsh0.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "in.testpress.happymandarin",
-            "certificate_hash": "2ab21fc395f73d50051aa8e9c18f6d404b093b3d"
-          }
-        },
-        {
-          "client_id": "1020449754182-48b0c7d3tknu4im3n79ap2142pid6ctt.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyADlC7Ch3dIjeZiXWVQiH1pvWIwl9daGMM"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1020449754182-48b0c7d3tknu4im3n79ap2142pid6ctt.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "1020449754182-o5k5aeroq6r1bc5cqu4jlcs3i35hei80.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "in.testpress.happymandarin",
-                "app_store_id": "1543747257"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1020449754182:android:e0bf970ae155ffc484ce47",
-        "android_client_info": {
-          "package_name": "in.testpress.rksacademicsolutions"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1020449754182-afldnu9us9v17122ro9bm5se2vlutoso.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "in.testpress.rksacademicsolutions",
-            "certificate_hash": "2ab21fc395f73d50051aa8e9c18f6d404b093b3d"
-          }
-        },
-        {
-          "client_id": "1020449754182-48b0c7d3tknu4im3n79ap2142pid6ctt.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyADlC7Ch3dIjeZiXWVQiH1pvWIwl9daGMM"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1020449754182-48b0c7d3tknu4im3n79ap2142pid6ctt.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "1020449754182-o5k5aeroq6r1bc5cqu4jlcs3i35hei80.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "in.testpress.happymandarin",
-                "app_store_id": "1543747257"
-              }
             }
           ]
         }

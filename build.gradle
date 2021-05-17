@@ -18,11 +18,8 @@ buildscript {
 
 allprojects {
     repositories {
-
-        // For local sdk configuration
-        // maven { url "/home/hp/.m2/repository/" }
-        // maven { url "https://phonepe.bintray.com/PhonePeIntentSDK" }
-
+        maven { url "/home/hp/.m2/repository/" }
+        maven { url "https://phonepe.bintray.com/PhonePeIntentSDK" }
         maven {
             url 'https://github.com/friberry/mvn-repo/raw/master/'
         }

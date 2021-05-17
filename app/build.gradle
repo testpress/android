@@ -45,9 +45,6 @@ dependencies {
      implementation 'com.github.testpress.android-sdk:course:' + testpressSDK
      implementation 'com.github.testpress.android-sdk:store:' + testpressSDK
 
-    // Testpress Course (for local sdk configuration)
-    // implementation 'in.testpress:course:1.0.0'
-
     // Gcm
     implementation 'com.google.firebase:firebase-core:17.1.0'
     implementation 'com.google.firebase:firebase-messaging:19.0.1'
@@ -184,7 +181,7 @@ android {
         // Exclude file to avoid
         // Error: Duplicate files during packaging of APK
         exclude 'META-INF/services/javax.annotation.processing.Processor'
-        exclude 'META-INF/prouard/androidx-annotations.pro'
+        exclude 'META-INF/proguard/androidx-annotations.pro'
         exclude 'META-INF/proguard/coroutines.pro'
         exclude 'LICENSE.txt'
     }

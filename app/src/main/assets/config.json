@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.2",
-  "version_code" : 3,
+  "version" : "1.0.8",
+  "version_code" : 8,
   "testpress_site_subdomain" : "fortuneiasacademy",
   "package_name" : "com.megaexams.fortuneiasacademy",
   "app_name" : "Fortune IAS Academy",

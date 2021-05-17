@@ -21,8 +21,9 @@ dependencies {
     implementation "ru.tinkoff.scrollingpagerindicator:scrollingpagerindicator:1.1.0"
 
     implementation 'com.github.kevinsawicki:wishlist:0.9@aar'
-    implementation project(':commonlib')
-    implementation project(':mobilertc')
+    // implementation project(':commonlib')
+    // implementation project(':mobilertc')
+
     // Event Bus
     implementation 'com.squareup:otto:1.3.5'
 
@@ -41,11 +42,11 @@ dependencies {
     implementation 'de.greenrobot:greendao:2.0.0'
     
     // Testpress Course(which inbuilt has exam & core module)
-//     implementation 'com.github.testpress.android-sdk:course:' + testpressSDK
-//     implementation 'com.github.testpress.android-sdk:store:' + testpressSDK
+     implementation 'com.github.testpress.android-sdk:course:' + testpressSDK
+     implementation 'com.github.testpress.android-sdk:store:' + testpressSDK
 
-    // Testpress Course (local)
-    implementation 'in.testpress:course:1.0.0'
+    // Testpress Course (for local sdk configuration)
+    // implementation 'in.testpress:course:1.0.0'
 
     // Gcm
     implementation 'com.google.firebase:firebase-core:17.1.0'

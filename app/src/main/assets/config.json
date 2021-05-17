@@ -1,9 +1,9 @@
 {
-  "version" : "1.0.0",
-  "version_code" : 1,
+  "version" : "1.0.1",
+  "version_code" : 2,
   "testpress_site_subdomain" : "sarrthi",
   "package_name" : "in.testpress.comento",
-  "app_name" : "Comento",
+  "app_name" : "EdSarrthi",
   "share_message": "Good app to prepare for online exams.",
   "primary_color": "fa921f",
   "allow_anonymous_user" : false,

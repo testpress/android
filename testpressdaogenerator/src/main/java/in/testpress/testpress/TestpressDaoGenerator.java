@@ -7,7 +7,7 @@ import de.greenrobot.daogenerator.Schema;
 
 public class TestpressDaoGenerator {
     public static void main(String args[]) throws Exception {
-        Schema schema = new Schema(21, "in.testpress.testpress.models");
+        Schema schema = new Schema(28, "in.testpress.testpress.models");
 
         Entity post = schema.addEntity("Post");
         post.addLongProperty("id").primaryKey();
@@ -28,6 +28,9 @@ public class TestpressDaoGenerator {
         post.addIntProperty("commentsCount");
         post.addStringProperty("commentsUrl");
         post.addStringProperty("coverImage");
+        post.addStringProperty("coverImageMedium");
+        post.addStringProperty("coverImageSmall");
+        post.addStringProperty("slug");
 
         Entity category = schema.addEntity("Category");
         category.addLongProperty("id").primaryKey();
@@ -79,6 +82,11 @@ public class TestpressDaoGenerator {
         instituteSettings.addStringProperty("cooloffTime");
         instituteSettings.addStringProperty("appToolbarLogo");
         instituteSettings.addStringProperty("appShareLink");
+        instituteSettings.addStringProperty("serverTime");
+        instituteSettings.addBooleanProperty("allowScreenshotInApp");
+        instituteSettings.addStringProperty("androidSentryDns");
+        instituteSettings.addBooleanProperty("leaderboardEnabled");
+        instituteSettings.addStringProperty("threatsAndTargetsLabel");
 
         Entity rssFeed = schema.addEntity("RssItem");
         rssFeed.addLongProperty("id").primaryKey().autoincrement();

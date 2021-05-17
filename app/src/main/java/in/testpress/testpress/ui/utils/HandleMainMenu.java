@@ -28,7 +28,7 @@ import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.ui.UserDevicesActivity;
 
-import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
+import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 

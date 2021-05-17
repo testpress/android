@@ -1,6 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
+    ext.kotlin_version = '1.3.31'
     repositories {
         google()
         jcenter()
@@ -8,6 +9,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.1'
         classpath 'com.google.gms:google-services:3.2.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -16,9 +18,13 @@ buildscript {
 
 allprojects {
     repositories {
+        maven { url "/home/hp/.m2/repository/" }
+        maven { url "https://phonepe.bintray.com/PhonePeIntentSDK" }
         maven {
             url 'https://github.com/friberry/mvn-repo/raw/master/'
         }
+        maven { url "https://jitpack.io" }
+
         google()
         jcenter()
     }

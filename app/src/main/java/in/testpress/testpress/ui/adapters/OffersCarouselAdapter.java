@@ -23,6 +23,7 @@ import in.testpress.testpress.models.pojo.DashboardSection;
 import in.testpress.testpress.ui.utils.DeeplinkHandler;
 import in.testpress.util.ImageUtils;
 import in.testpress.util.IntegerList;
+import in.testpress.util.StringUtils;
 
 public class OffersCarouselAdapter extends RecyclerView.Adapter<OffersCarouselAdapter.MyViewHolder> {
 
@@ -60,19 +61,21 @@ public class OffersCarouselAdapter extends RecyclerView.Adapter<OffersCarouselAd
 
     @Override
     public void onBindViewHolder(OffersCarouselAdapter.MyViewHolder holder, final int position) {
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Activity activity = (Activity) context;
-                DeeplinkHandler deeplinkHandler = new DeeplinkHandler(activity, serviceProvider);
-                Uri uri = Uri.parse(banners.get(position).getUrl());
-                deeplinkHandler.handleDeepLinkUrl(uri);
-//                Intent intent = new Intent(context, WebViewActivity.class);
-//                intent.putExtra(WebViewActivity.URL_TO_OPEN, banners.get(position).getUrl());
-//                context.startActivity(intent);
-            }
-        });
-        imageLoader.displayImage(banners.get(position).getImage(), holder.image, options);
+        try {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Activity activity = (Activity) context;
+                    DeeplinkHandler deeplinkHandler = new DeeplinkHandler(activity, serviceProvider);
+
+                    if (!StringUtils.isNullOrEmpty(banners.get(position).getUrl())) {
+                        Uri uri = Uri.parse(banners.get(position).getUrl());
+                        deeplinkHandler.handleDeepLinkUrl(uri, false);
+                    }
+                }
+            });
+            imageLoader.displayImage(banners.get(position).getImage(), holder.image, options);
+        } catch(Exception e) {}
     }
 
     @Override

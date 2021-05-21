@@ -70,7 +70,7 @@ public class UpdateAppDialogManager {
                         clearUpdateAppDialogPreferences(activity);
                         dialog.cancel();
                         activity.startActivity(new Intent(Intent.ACTION_VIEW,
-                                Uri.parse("market://details?id=" + activity.getPackageName())));
+                                Uri.parse("market://details?id=" + "in.testpress.edsarrthi")));
 
                         activity.finish();
                     }

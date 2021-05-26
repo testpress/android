@@ -2,7 +2,7 @@
   "version" : "1.0.0",
   "version_code" : 1,
   "testpress_site_subdomain" : "universalexams",
-  "package_name" : "in.testpress.universalexams",
+  "package_name" : "com.universalexamsnew",
   "app_name" : "Universal Exams",
   "share_message": "Good app to prepare for online exams.",
   "primary_color": "18b399",

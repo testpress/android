@@ -1,6 +1,6 @@
 {
-  "version" : "1.1.4",
-  "version_code" : 12,
+  "version" : "1.1.5",
+  "version_code" : 13,
   "testpress_site_subdomain" : "edzorblaw",
   "package_name" : "com.edzorblaw",
   "app_name" : "Edzorb Law",

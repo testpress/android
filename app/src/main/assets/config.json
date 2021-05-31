@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.0",
-  "version_code" : 1,
+  "version" : "1.0.2",
+  "version_code" : 3,
   "testpress_site_subdomain" : "universalexams",
   "package_name" : "com.universalexamsnew",
   "app_name" : "Universal Exams",

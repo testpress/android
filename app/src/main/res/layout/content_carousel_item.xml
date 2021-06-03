@@ -22,7 +22,7 @@
             android:id="@+id/image_view"
             android:layout_width="155dp"
             android:layout_height="87dp"
-            android:scaleType="centerInside"
+            android:scaleType="centerCrop"
             android:background="@drawable/border_rectangle_light" />
 
         <ImageView

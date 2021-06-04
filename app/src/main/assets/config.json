@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.3",
-  "version_code" : 4,
+  "version" : "1.0.4",
+  "version_code" : 5,
   "testpress_site_subdomain" : "jbclasses",
   "package_name" : "in.testpress.jbclasses",
   "app_name" : "JB Classes",

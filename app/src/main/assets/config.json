@@ -1,9 +1,9 @@
 {
-  "version" : "1.2.4",
-  "version_code" : 9,
+  "version" : "1.2.5",
+  "version_code" : 10,
   "testpress_site_subdomain" : "brilliantpalaelearn",
   "package_name" : "com.brilliantpala.elearn",
-  "app_name" : "Elearn Brilliantpala",
+  "app_name" : "Brilliant Pala Classes",
   "share_message": "Brilliant pala E-learning",
   "primary_color": "ED1D24",
   "allow_anonymous_user" : false,

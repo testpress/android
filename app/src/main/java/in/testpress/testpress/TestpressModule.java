@@ -22,6 +22,7 @@ import in.testpress.testpress.core.RestAdapterRequestInterceptor;
 import in.testpress.testpress.core.RestErrorHandler;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.core.UserAgentProvider;
+import in.testpress.testpress.network.TestpressClient;
 import in.testpress.testpress.ui.AccountActivateActivity;
 import in.testpress.testpress.ui.CreateForumActivity;
 import in.testpress.testpress.ui.DocumentsListActivity;
@@ -46,6 +47,7 @@ import in.testpress.testpress.ui.WebViewActivity;
 import in.testpress.testpress.ui.fragments.DashboardFragment;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
+import retrofit2.Retrofit;
 
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 
@@ -156,4 +158,9 @@ public class TestpressModule {
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setConverter(new GsonConverter(gson));
     }
+//
+//    @Provides
+//    Retrofit providesNetworkClient() {
+//        return TestpressClient.Companion.getClient();
+//    }
 }

@@ -37,6 +37,9 @@ dependencies {
     // Material Dialog
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
 
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'androidx.paging:paging-runtime-ktx:3.0.0'
+
     // GreenDao for database
     implementation 'de.greenrobot:greendao:2.0.0'
     

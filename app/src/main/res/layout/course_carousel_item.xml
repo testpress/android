@@ -20,8 +20,8 @@
 
             <ImageView
                 android:id="@+id/image_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="155dp"
+                android:layout_height="87dp"
                 android:cropToPadding="true"
                 android:background="@drawable/border_rectangle_light"
                 android:scaleType="centerCrop" />

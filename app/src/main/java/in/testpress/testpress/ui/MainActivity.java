@@ -289,27 +289,28 @@ public class MainActivity extends TestpressFragmentActivity {
             CommonUtils.registerDevice(MainActivity.this, testpressService, serviceProvider);
         }
 
-        if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
-            addMenuItem(R.string.dashboard, R.drawable.ic_dashboard, new DashboardFragment());
-        } else {
-            addMenuItem(R.string.dashboard, R.drawable.profile_default, new MainMenuFragment());
-        }
+//        if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
+//            addMenuItem(R.string.dashboard, R.drawable.ic_dashboard, new DashboardFragment());
+//        } else {
+//            addMenuItem(R.string.dashboard, R.drawable.profile_default, new MainMenuFragment());
+//        }
+        addMenuItem(R.string.discussions, R.drawable.chat_icon, new DiscussionFragment());
         // Show courses list if game front end is enabled, otherwise hide bottom bar
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             //noinspection ConstantConditions
-            addMenuItem(R.string.learn, R.drawable.learn,
-                    TestpressCourse.getCoursesListFragment(this, TestpressSdk.getTestpressSession(this)));
+//            addMenuItem(R.string.learn, R.drawable.learn,
+//                    TestpressCourse.getCoursesListFragment(this, TestpressSdk.getTestpressSession(this)));
 
-            if (mInstituteSettings.getCoursesEnableGamification()) {
-                //noinspection ConstantConditions
-                addMenuItem(R.string.testpress_leaderboard, R.drawable.leaderboard,
-                        TestpressCourse.getLeaderboardFragment(this, TestpressSdk.getTestpressSession(this)));
-            }
-            if (mInstituteSettings.getForumEnabled()) {
-                addMenuItem(R.string.discussions, R.drawable.chat_icon, new ForumListFragment());
-            }
-            DownloadsFragment downloadsFragment = new DownloadsFragment();
-            addMenuItem(R.string.downloads, R.drawable.ic_downloads, downloadsFragment);
+//            if (mInstituteSettings.getCoursesEnableGamification()) {
+//                //noinspection ConstantConditions
+//                addMenuItem(R.string.testpress_leaderboard, R.drawable.leaderboard,
+//                        TestpressCourse.getLeaderboardFragment(this, TestpressSdk.getTestpressSession(this)));
+//            }
+//            if (mInstituteSettings.getForumEnabled()) {
+//                addMenuItem(R.string.discussions, R.drawable.chat_icon, new ForumListFragment());
+//            }
+//            DownloadsFragment downloadsFragment = new DownloadsFragment();
+//            addMenuItem(R.string.downloads, R.drawable.ic_downloads, downloadsFragment);
         } else {
             grid.setVisibility(View.GONE);
         }

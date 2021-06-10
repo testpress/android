@@ -149,9 +149,25 @@ public class Strings {
     }
 
     public static String capitalize(String s) {
-        final String c = Strings.toString(s);
+        final String c = Strings.toString(s).toLowerCase();
         return c.length() >= 2 ? c.substring(0, 1).toUpperCase() + c.substring(1) :
                 c.length() >= 1 ? c.toUpperCase() : c;
+    }
+
+    public static String capitalizeEachWord(String str) {
+        String[] words = str.toLowerCase().split("\\s");
+        StringBuilder sb = new StringBuilder();
+
+        for (String s: words) {
+            if (!s.equals("")) {
+                sb.append(Character.toUpperCase(s.charAt(0)));
+                sb.append(s.substring(1));
+            }
+            sb.append(" ");
+        }
+
+        // trim() to remove extra space in the end before returning
+        return sb.toString().trim();
     }
 
     public static boolean equals(Object a, Object b) {

@@ -30,6 +30,7 @@ import in.testpress.testpress.models.RssFeed;
 import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.models.TestpressApiResponse;
 import in.testpress.testpress.models.Update;
+import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.network.CheckPermissionService;
 import in.testpress.testpress.network.RssConverterFactory;
 import in.testpress.testpress.network.RssFeedService;
@@ -129,9 +130,10 @@ public class TestpressService {
         return getResetPasswordService().resetPassword(emailcode);
     }
 
-    public Update checkUpdate(String version) {
+    public Update checkUpdate(String version, String package_name) {
         HashMap<String, String> versioncode = new HashMap<String, String>();
         versioncode.put("version_code", version);
+        versioncode.put("package_name", package_name);
         return getAuthenticationService().checkUpdate(versioncode);
     }
 
@@ -144,7 +146,7 @@ public class TestpressService {
     }
 
 
-    public Device register(String registrationId, String deviceId) {
+    public Device registerDevice(String registrationId, String deviceId) {
         HashMap<String, String> credentials = new HashMap<String, String>();
         credentials.put("registration_id", registrationId);
         credentials.put("device_id", deviceId);
@@ -322,6 +324,10 @@ public class TestpressService {
         params.put("content_object", forum);
         params.put("type_of_vote", typeOfVote);
         return getPostService().updateCommentVote(forum.getVoteId(), params);
+    }
+
+    public DashboardResponse getDashboardData() {
+        return getAuthenticationService().getDashboardData();
     }
 
 }

@@ -107,7 +107,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="colorControlNormal">@color/white</item>
-        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorPrimary">@color/black</item>
         <item name="colorButtonNormal">@color/primary</item>
         <item name="android:statusBarColor">@color/primary</item>
         <item name="android:textAppearanceLargePopupMenu">@style/popupMenuTextAppearance</item>

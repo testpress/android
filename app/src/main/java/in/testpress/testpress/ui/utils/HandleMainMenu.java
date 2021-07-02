@@ -22,6 +22,7 @@ import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
+import in.testpress.testpress.ui.DisscussionActivity;
 import in.testpress.testpress.ui.ForumActivity;
 import in.testpress.testpress.ui.ForumListActivity;
 import in.testpress.testpress.ui.MainActivity;
@@ -30,6 +31,7 @@ import in.testpress.testpress.ui.ProfileDetailsActivity;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.UIUtils;
+import in.testpress.ui.DiscussionActivity;
 import in.testpress.ui.UserDevicesActivity;
 
 import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
@@ -106,7 +108,7 @@ public class HandleMainMenu {
                 activity.startActivity(intent);
                 break;
             case R.id.discussions:
-                intent = new Intent(activity, ForumListActivity.class);
+                intent = DisscussionActivity.createIntent(activity);
                 activity.startActivity(intent);
                 break;
         }

@@ -31,7 +31,7 @@ import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.Forum;
 import in.testpress.testpress.models.ForumDao;
 import in.testpress.testpress.models.UserDao;
-import in.testpress.testpress.ui.view.RoundedImageView;
+import in.testpress.ui.view.RoundedImageView;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.FormatDate;
 import in.testpress.util.ViewUtils;

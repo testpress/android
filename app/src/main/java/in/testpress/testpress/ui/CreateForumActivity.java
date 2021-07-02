@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import android.text.Html;
 import android.text.SpannableString;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -119,6 +120,7 @@ public class CreateForumActivity extends TestpressFragmentActivity{
         publishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("TAG", "onClick: CreateForumActivity");
                 if (postTitle.length() < 3) {
                     Snackbar.make(v, R.string.title_must_be_min_3_characters, LENGTH_SHORT).show();
                 } else if (postTitle.length() > 200) {
@@ -173,6 +175,7 @@ public class CreateForumActivity extends TestpressFragmentActivity{
 
             @Override
             protected void onException(Exception exception) throws RuntimeException {
+                Log.d("TAG", "onException: CreateForumActivity : ${exception}" + exception);
                 if (exception.getCause() instanceof IOException) {
                     setEmptyText(R.string.network_error, R.string.no_internet_try_again,
                             R.drawable.ic_error_outline_black_18dp);
@@ -180,8 +183,11 @@ public class CreateForumActivity extends TestpressFragmentActivity{
                     progressDialog.dismiss();
                     Toast.makeText(getBaseContext(),
                             "Posted successfully", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_OK);
+                    Log.d("TAG", "onException: CreateForumActivity :2");
+
                     finish();
-                    return;
+//                    return;
                 } else {
                     setEmptyText(R.string.network_error, R.string.try_after_sometime,
                             R.drawable.ic_error_outline_black_18dp);
@@ -199,6 +205,7 @@ public class CreateForumActivity extends TestpressFragmentActivity{
 
             @Override
             protected void onSuccess(Forum forum) {
+                Log.d("TAG", "onSuccess: CreateForumActivity");
                 progressDialog.dismiss();
                 Toast.makeText(getBaseContext(), R.string.posted_successfully, Toast.LENGTH_SHORT)
                         .show();

@@ -22,7 +22,7 @@
             android:paddingEnd="23dp"
             tools:ignore="UselessParent">
 
-            <in.testpress.testpress.ui.view.RoundedImageView
+            <in.testpress.ui.view.RoundedImageView
                 android:id="@+id/display_picture"
                 android:layout_width="50dp"
                 android:layout_height="50dp"

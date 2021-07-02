@@ -3,8 +3,11 @@ package in.testpress.testpress.ui;
 import android.os.Bundle;
 
 import in.testpress.testpress.R;
+import in.testpress.testpress.ui.fragments.DiscussionFragmentv2;
+import in.testpress.ui.BaseToolBarActivity;
 
-public class ForumListActivity extends TestpressFragmentActivity{
+
+public class ForumListActivity extends BaseToolBarActivity {
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -12,7 +15,7 @@ public class ForumListActivity extends TestpressFragmentActivity{
         setContentView(R.layout.container_layout);
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ForumListFragment postsListFragment = new ForumListFragment();
+        DiscussionFragmentv2 postsListFragment = new DiscussionFragmentv2();
         Bundle bundle = getIntent().getExtras();
         postsListFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()

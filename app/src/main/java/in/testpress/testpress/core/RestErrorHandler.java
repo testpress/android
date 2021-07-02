@@ -37,7 +37,7 @@ public class RestErrorHandler implements ErrorHandler {
     public Throwable handleError(RetrofitError cause) {
         TestpressApiErrorResponse errorResponse = (TestpressApiErrorResponse) cause.getBodyAs(TestpressApiErrorResponse.class);
 
-        if (errorResponse.getErrorCode() != null) {
+        if (errorResponse != null && errorResponse.getErrorCode() != null) {
             bus.post(new CustomErrorEvent(errorResponse.getErrorCode(), errorResponse.getDetail()));
         }
 

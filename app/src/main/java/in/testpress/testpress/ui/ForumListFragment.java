@@ -153,13 +153,13 @@ public class ForumListFragment extends Fragment implements
         mTopLevelSpinnerAdapter.addItem("", getString(R.string.all_discussions), false, 0);
         mTopLevelSpinnerAdapter.addHeader(getString(R.string.categories));
         Toolbar toolbar;
-        if (getActivity() instanceof MainActivity) {
-            toolbar = ((MainActivity) (getActivity())).getActionBarToolbar();
-        } else {
-            toolbar = ((ForumListActivity) (getActivity())).getActionBarToolbar();
-        }
-        mSpinnerContainer = getActivity().getLayoutInflater().inflate(R.layout.actionbar_spinner,
-                toolbar, false);
+//        if (getActivity() instanceof MainActivity) {
+//            toolbar = ((MainActivity) (getActivity())).getActionBarToolbar();
+//        } else {
+//            toolbar = ((ForumListActivity) (getActivity())).getActionBarToolbar();
+//        }
+//        mSpinnerContainer = getActivity().getLayoutInflater().inflate(R.layout.actionbar_spinner,
+//                toolbar, false);
 
         Spinner spinner = mSpinnerContainer.findViewById(R.id.actionbar_spinner);
         spinner.setAdapter(mTopLevelSpinnerAdapter);
@@ -449,15 +449,15 @@ public class ForumListFragment extends Fragment implements
                         mSpinnerContainer.setVisibility(View.GONE);
                     } else {
                         //noinspection ConstantConditions
-                        toolbar = ((ForumListActivity) (getActivity())).getActionBarToolbar();
+//                        toolbar = ((ForumListActivity) (getActivity())).getActionBarToolbar();
                         mSpinnerContainer.setVisibility(View.VISIBLE);
                     }
-                    View view = toolbar.findViewById(R.id.actionbar_spinnerwrap);
-                    toolbar.removeView(view);
-                    toolbar.invalidate();
-                    ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                    toolbar.addView(mSpinnerContainer, lp);
+//                    View view = toolbar.findViewById(R.id.actionbar_spinnerwrap);
+//                    toolbar.removeView(view);
+//                    toolbar.invalidate();
+//                    ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
+//                            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//                    toolbar.addView(mSpinnerContainer, lp);
                 }
             }
 
@@ -881,14 +881,14 @@ public class ForumListFragment extends Fragment implements
                 toolbar = ((MainActivity) (getActivity())).getActionBarToolbar();
                 mSpinnerContainer.setVisibility(View.GONE);
             } else {
-                toolbar = ((ForumListActivity) (getActivity())).getActionBarToolbar();
+//                toolbar = ((ForumListActivity) (getActivity())).getActionBarToolbar();
             }
-            View view = toolbar.findViewById(R.id.actionbar_spinnerwrap);
-            toolbar.removeView(view);
-            toolbar.invalidate();
-            ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            toolbar.addView(mSpinnerContainer, lp);
+//            View view = toolbar.findViewById(R.id.actionbar_spinnerwrap);
+//            toolbar.removeView(view);
+//            toolbar.invalidate();
+//            ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
+//                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//            toolbar.addView(mSpinnerContainer, lp);
         }
     }
 }

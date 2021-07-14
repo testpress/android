@@ -6,7 +6,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 ext {
-    testpressSDK = '1.4.21'
+    testpressSDK = '1.4.22'
 }
 
 dependencies {
@@ -46,7 +46,7 @@ dependencies {
     implementation 'com.github.testpress.android-sdk:store:' + testpressSDK
 
     // Gcm
-    implementation 'com.google.firebase:firebase-core:17.1.0'
+    implementation 'com.google.firebase:firebase-core:19.0.0'
     implementation 'com.google.firebase:firebase-messaging:19.0.1'
     implementation 'org.greenrobot:eventbus:3.1.1'
 
@@ -136,7 +136,7 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 16
         targetSdkVersion 29
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 

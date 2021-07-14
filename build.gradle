@@ -22,7 +22,6 @@ allprojects {
             url 'https://github.com/friberry/mvn-repo/raw/master/'
         }
         maven { url "https://jitpack.io" }
-
         google()
         jcenter()
     }

@@ -18,6 +18,10 @@ buildscript {
 
 allprojects {
     repositories {
+        maven { url "/home/yuvan/.m2/repository/" }
+        maven {
+            url "https://phonepe.mycloudrepo.io/public/repositories/phonepe-intentsdk-android"
+        }
         maven {
             url 'https://github.com/friberry/mvn-repo/raw/master/'
         }

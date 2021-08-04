@@ -67,6 +67,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         public final static Property AllowScreenshotInApp = new Property(41, Boolean.class, "allowScreenshotInApp", false, "ALLOW_SCREENSHOT_IN_APP");
         public final static Property AndroidSentryDns = new Property(42, String.class, "androidSentryDns", false, "ANDROID_SENTRY_DNS");
         public final static Property LeaderboardEnabled = new Property(43, Boolean.class, "leaderboardEnabled", false, "LEADERBOARD_ENABLED");
+        public final static Property ThreatsAndTargetsLabel = new Property(44, String.class, "threatsAndTargetsLabel", false, "THREATS_AND_TARGETS_LABEL");
     };
 
 
@@ -125,7 +126,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
                 "\"SERVER_TIME\" TEXT," + // 40: serverTime
                 "\"ALLOW_SCREENSHOT_IN_APP\" INTEGER," + // 41: allowScreenshotInApp
                 "\"ANDROID_SENTRY_DNS\" TEXT," + // 42: androidSentryDns
-                "\"LEADERBOARD_ENABLED\" INTEGER);"); // 43: leaderboardEnabled
+                "\"LEADERBOARD_ENABLED\" INTEGER," + // 43: leaderboardEnabled
+                "\"THREATS_AND_TARGETS_LABEL\" TEXT);"); // 44: threatsAndTargetsLabel
     }
 
     /** Drops the underlying database table. */
@@ -354,6 +356,11 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         if (leaderboardEnabled != null) {
             stmt.bindLong(44, leaderboardEnabled ? 1L: 0L);
         }
+ 
+        String threatsAndTargetsLabel = entity.getThreatsAndTargetsLabel();
+        if (threatsAndTargetsLabel != null) {
+            stmt.bindString(45, threatsAndTargetsLabel);
+        }
     }
 
     /** @inheritdoc */
@@ -409,7 +416,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             cursor.isNull(offset + 40) ? null : cursor.getString(offset + 40), // serverTime
             cursor.isNull(offset + 41) ? null : cursor.getShort(offset + 41) != 0, // allowScreenshotInApp
             cursor.isNull(offset + 42) ? null : cursor.getString(offset + 42), // androidSentryDns
-            cursor.isNull(offset + 43) ? null : cursor.getShort(offset + 43) != 0 // leaderboardEnabled
+            cursor.isNull(offset + 43) ? null : cursor.getShort(offset + 43) != 0, // leaderboardEnabled
+            cursor.isNull(offset + 44) ? null : cursor.getString(offset + 44) // threatsAndTargetsLabel
         );
         return entity;
     }
@@ -461,6 +469,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         entity.setAllowScreenshotInApp(cursor.isNull(offset + 41) ? null : cursor.getShort(offset + 41) != 0);
         entity.setAndroidSentryDns(cursor.isNull(offset + 42) ? null : cursor.getString(offset + 42));
         entity.setLeaderboardEnabled(cursor.isNull(offset + 43) ? null : cursor.getShort(offset + 43) != 0);
+        entity.setThreatsAndTargetsLabel(cursor.isNull(offset + 44) ? null : cursor.getString(offset + 44));
      }
     
     /** @inheritdoc */

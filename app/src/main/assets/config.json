@@ -1,6 +1,6 @@
 {
-  "version" : "1.11.2",
-  "version_code" : 8,
+  "version" : "1.11.3",
+  "version_code" : 10,
   "testpress_site_subdomain" : "chaithanyaclasses",
   "package_name" : "in.testpress.profpcthomas",
   "app_name" : "Prof PC Thomas classes",

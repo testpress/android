@@ -1,6 +1,6 @@
 {
-  "version" : "2.0.0",
-  "version_code" : 2,
+  "version" : "2.0.1",
+  "version_code" : 3,
   "testpress_site_subdomain" : "lorviinclasses",
   "package_name" : "com.aavishkarevidya.learn",
   "app_name" : "Lorviin Classes",

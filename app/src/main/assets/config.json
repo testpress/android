@@ -1,6 +1,6 @@
 {
-  "version" : "1.10.7",
-  "version_code" : 8,
+  "version" : "1.10.10",
+  "version_code" : 11,
   "testpress_site_subdomain" : "chaithanyaclasses",
   "package_name" : "in.testpress.chaithanyaclasses",
   "app_name" : "Chaithanya Classes",

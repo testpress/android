@@ -7,6 +7,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.TextUtils;
 
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
@@ -159,7 +160,7 @@ public class HandleMainMenu {
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("text/plain");
         String appLink = "https://play.google.com/store/apps/details?id=" + activity.getPackageName();
-        if (instituteSettings.getAppShareLink() != null) {
+        if (!TextUtils.isEmpty(instituteSettings.getAppShareLink())) {
             appLink = instituteSettings.getAppShareLink();
         }
         share.putExtra(Intent.EXTRA_TEXT, activity.getString(R.string.share_message) +

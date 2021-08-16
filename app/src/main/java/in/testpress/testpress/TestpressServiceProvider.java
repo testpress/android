@@ -83,6 +83,7 @@ public class TestpressServiceProvider {
             if (instituteSettingsList.isEmpty()) {
                 settings = new in.testpress.models.InstituteSettings(BASE_URL);
                 settings.setScreenshotDisabled(true);
+                settings.setVideoDownloadEnabled(true);
             } else {
                 InstituteSettings instituteSettings = instituteSettingsList.get(0);
                 settings = new in.testpress.models.InstituteSettings(instituteSettings.getBaseUrl())
@@ -100,7 +101,10 @@ public class TestpressServiceProvider {
                         .setStoreLabel(instituteSettings.getStoreLabel())
                         .setAppToolbarLogo(instituteSettings.getAppToolbarLogo())
                         .setAppShareLink(instituteSettings.getAppShareLink())
-                        .setServerTime(instituteSettings.serverTime());
+                        .setServerTime(instituteSettings.serverTime())
+                        .setLeaderboardLabel(instituteSettings.getLeaderboardLabel())
+                        .setVideoDownloadEnabled(instituteSettings.getIsVideoDownloadEnabled())
+                        .setThreatsAndTargetsLabel(instituteSettings.getThreatsAndTargetsLabel());
                 appLink = instituteSettings.getAppShareLink();
             }
             settings.setAppShareText(SHARE_MESSAGE + activity.getString(R.string.get_it_at) + appLink);

@@ -22,7 +22,10 @@ allprojects {
             url 'https://github.com/friberry/mvn-repo/raw/master/'
         }
         maven { url "https://jitpack.io" }
-
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/testpress/android-sdk")
+        }
         google()
         jcenter()
     }

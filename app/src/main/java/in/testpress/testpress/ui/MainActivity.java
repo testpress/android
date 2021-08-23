@@ -308,8 +308,10 @@ public class MainActivity extends TestpressFragmentActivity {
             if (mInstituteSettings.getForumEnabled()) {
                 addMenuItem(R.string.discussions, R.drawable.chat_icon, new ForumListFragment());
             }
-            DownloadsFragment downloadsFragment = new DownloadsFragment();
-            addMenuItem(R.string.downloads, R.drawable.ic_downloads, downloadsFragment);
+            if (mInstituteSettings.getIsVideoDownloadEnabled()) {
+                DownloadsFragment downloadsFragment = new DownloadsFragment();
+                addMenuItem(R.string.downloads, R.drawable.ic_downloads, downloadsFragment);
+            }
         } else {
             grid.setVisibility(View.GONE);
         }

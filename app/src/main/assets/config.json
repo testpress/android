@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.0",
-  "version_code" : 1,
+  "version" : "1.1.0",
+  "version_code" : 2,
   "testpress_site_subdomain" : "terzaghi",
   "package_name" : "in.testpress.terzaghi",
   "app_name" : "Terzaghi Institute",

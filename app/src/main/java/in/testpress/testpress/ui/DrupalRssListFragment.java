@@ -1,9 +1,9 @@
 package in.testpress.testpress.ui;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.Loader;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.loader.content.Loader;
 import android.util.Log;
 import android.view.View;
 

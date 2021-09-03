@@ -1,6 +1,6 @@
 {
   "version" : "1.0.0",
-  "version_code" : 1,
+  "version_code" : 2,
   "testpress_site_subdomain" : "catking",
   "package_name" : "com.catking",
   "app_name" : "CATKing Educare",

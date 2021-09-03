@@ -28,7 +28,16 @@ allprojects {
         maven { url "https://jitpack.io" }
         maven {
             name = "GitHubPackages"
+
             url = uri("https://maven.pkg.github.com/testpress/android-sdk")
+
+            credentials {
+                username = "Karthik-0"
+                password = "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"
+            }
+        }
+        maven {
+            url('C:\\Users\\Karthik\\.m2\\repository\\')
         }
         google()
         jcenter()

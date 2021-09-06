@@ -6,7 +6,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 ext {
-    testpressSDK = '1.4.35'
+    testpressSDK = '1.4.40'
 }
 
 dependencies {
@@ -113,7 +113,7 @@ try {
 
 android {
 
-    compileSdkVersion 29
+    compileSdkVersion 30
     buildToolsVersion '28.0.3'
 
     compileOptions {
@@ -136,7 +136,7 @@ android {
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         def jsonFile = file('src/main/assets/config.json')

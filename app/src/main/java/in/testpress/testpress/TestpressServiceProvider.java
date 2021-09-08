@@ -83,6 +83,7 @@ public class TestpressServiceProvider {
             if (instituteSettingsList.isEmpty()) {
                 settings = new in.testpress.models.InstituteSettings(BASE_URL);
                 settings.setScreenshotDisabled(true);
+                settings.setVideoDownloadEnabled(true);
             } else {
                 InstituteSettings instituteSettings = instituteSettingsList.get(0);
                 settings = new in.testpress.models.InstituteSettings(instituteSettings.getBaseUrl())
@@ -102,6 +103,7 @@ public class TestpressServiceProvider {
                         .setAppShareLink(instituteSettings.getAppShareLink())
                         .setServerTime(instituteSettings.serverTime())
                         .setLeaderboardLabel(instituteSettings.getLeaderboardLabel())
+                        .setVideoDownloadEnabled(instituteSettings.getIsVideoDownloadEnabled())
                         .setThreatsAndTargetsLabel(instituteSettings.getThreatsAndTargetsLabel());
                 appLink = instituteSettings.getAppShareLink();
             }

@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.0",
-  "version_code" : 1,
+  "version" : "1.0.2",
+  "version_code" : 3,
   "testpress_site_subdomain" : "eea",
   "package_name" : "com.eea.android",
   "app_name" : "Endurance Engineering Academy",
@@ -12,5 +12,5 @@
   "display_username_on_video": true,
   "white_labeled_host_url": null,
   "is_growth_hacks_enabled": false,
-  "show_pdf_vertically": true
+  "show_pdf_vertically": false
 }

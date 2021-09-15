@@ -9,13 +9,18 @@ import android.content.SharedPreferences;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
+import com.google.android.exoplayer2.offline.DownloadService;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import in.testpress.core.TestpressSDKDatabase;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
+import in.testpress.course.services.VideoDownloadService;
+import in.testpress.database.TestpressDatabase;
 import in.testpress.testpress.authenticator.ApiKeyProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
@@ -31,6 +36,7 @@ import retrofit.RestAdapter;
 
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.BuildConfig.DISPLAY_USERNAME_ON_VIDEO;
+import static in.testpress.testpress.BuildConfig.SHOW_PDF_VERTICALLY;
 import static in.testpress.testpress.BuildConfig.GROWTH_HACKS_ENABLED;
 import static in.testpress.testpress.BuildConfig.SHARE_MESSAGE;
 import static in.testpress.testpress.util.PreferenceManager.setDashboardData;
@@ -78,6 +84,8 @@ public class TestpressServiceProvider {
             if (instituteSettingsList.isEmpty()) {
                 settings = new in.testpress.models.InstituteSettings(BASE_URL);
                 settings.setScreenshotDisabled(true);
+                settings.setVideoDownloadEnabled(true);
+                settings.setShowPDFVertically(SHOW_PDF_VERTICALLY);
             } else {
                 InstituteSettings instituteSettings = instituteSettingsList.get(0);
                 settings = new in.testpress.models.InstituteSettings(instituteSettings.getBaseUrl())
@@ -94,7 +102,12 @@ public class TestpressServiceProvider {
                         .setCooloffTime(instituteSettings.getCooloffTime())
                         .setStoreLabel(instituteSettings.getStoreLabel())
                         .setAppToolbarLogo(instituteSettings.getAppToolbarLogo())
-                        .setAppShareLink(instituteSettings.getAppShareLink());
+                        .setAppShareLink(instituteSettings.getAppShareLink())
+                        .setServerTime(instituteSettings.serverTime())
+                        .setLeaderboardLabel(instituteSettings.getLeaderboardLabel())
+                        .setVideoDownloadEnabled(instituteSettings.getIsVideoDownloadEnabled())
+                        .setThreatsAndTargetsLabel(instituteSettings.getThreatsAndTargetsLabel())
+                        .setShowPDFVertically(SHOW_PDF_VERTICALLY);
                 appLink = instituteSettings.getAppShareLink();
             }
             settings.setAppShareText(SHARE_MESSAGE + activity.getString(R.string.get_it_at) + appLink);
@@ -124,7 +137,6 @@ public class TestpressServiceProvider {
         preferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
         CommonUtils.registerDevice(activity, testpressService, serviceProvider);
         TestpressApplication.clearDatabase(activity);
-        TestpressSDKDatabase.clearDatabase(activity);
         logoutService.logout(new Runnable() {
             @Override
             public void run() {

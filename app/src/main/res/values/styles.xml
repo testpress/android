@@ -110,6 +110,11 @@
         <item name="android:textColorPrimary">@color/white</item>
         <item name="colorButtonNormal">@color/primary</item>
         <item name="android:statusBarColor">@color/primary</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/popupMenuTextAppearance</item>
+    </style>
+
+    <style name="popupMenuTextAppearance" parent="@android:style/TextAppearance.DeviceDefault.Widget.PopupMenu.Large">
+        <item name="android:textColor">@color/testpress_black</item>
     </style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

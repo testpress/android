@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
@@ -17,14 +18,12 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 
 import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -44,8 +43,11 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
-import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
+import in.testpress.course.fragments.DownloadsFragment;
+import in.testpress.course.repository.VideoWatchDataRepository;
+import in.testpress.database.OfflineVideoDao;
+import in.testpress.database.TestpressDatabase;
 import in.testpress.exam.ui.view.NonSwipeableViewPager;
 import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.Injector;
@@ -69,8 +71,7 @@ import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.testpress.util.UpdateAppDialogManager;
-import io.sentry.Sentry;
-import io.sentry.android.AndroidSentryClientFactory;
+import io.sentry.android.core.SentryAndroid;
 
 import static in.testpress.testpress.BuildConfig.ALLOW_ANONYMOUS_USER;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
@@ -119,7 +120,6 @@ public class MainActivity extends TestpressFragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         ButterKnife.inject(this);
-        Sentry.init("https://10326980de2149d3b91cb628d7c3da36@sentry.testpress.in/3", new AndroidSentryClientFactory(this));
 
         if (savedInstanceState != null) {
             mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM);
@@ -309,6 +309,10 @@ public class MainActivity extends TestpressFragmentActivity {
             if (mInstituteSettings.getForumEnabled()) {
                 addMenuItem(R.string.discussions, R.drawable.chat_icon, new ForumListFragment());
             }
+            if (mInstituteSettings.getIsVideoDownloadEnabled()) {
+                DownloadsFragment downloadsFragment = new DownloadsFragment();
+                addMenuItem(R.string.downloads, R.drawable.ic_downloads, downloadsFragment);
+            }
         } else {
             grid.setVisibility(View.GONE);
         }
@@ -335,6 +339,7 @@ public class MainActivity extends TestpressFragmentActivity {
                     serviceProvider.logout(MainActivity.this, testpressService, serviceProvider,
                             logoutService);
                 }
+                invalidateOptionsMenu();
             }
 
             @Override
@@ -419,6 +424,12 @@ public class MainActivity extends TestpressFragmentActivity {
         this.mInstituteSettings = instituteSettings;
         isUserAuthenticated = CommonUtils.isUserAuthenticated(this);
         setUpNavigationDrawer();
+        SentryAndroid.init(
+                this,
+                options -> {
+                    options.setDsn(instituteSettings.getAndroidSentryDns());
+                    options.setEnableSessionTracking(true);
+                });
         //noinspection ConstantConditions
         if (!isUserAuthenticated && !ALLOW_ANONYMOUS_USER) {
             // Show login screen if user not logged in else update institute settings in TestpressSDK
@@ -426,6 +437,7 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             initScreen();
             showMainActivityContents();
+            syncVideoWatchedData();
 
             if (isUserAuthenticated) {
                 updateTestpressSession();
@@ -435,6 +447,12 @@ public class MainActivity extends TestpressFragmentActivity {
                 }
             }
         }
+    }
+
+    private void syncVideoWatchedData() {
+        OfflineVideoDao offlineVideoDao = TestpressDatabase.Companion.invoke(this).offlineVideoDao();
+        VideoWatchDataRepository videoWatchDataRepository = new VideoWatchDataRepository(this, offlineVideoDao);
+        AsyncTask.execute((Runnable) videoWatchDataRepository::sync);
     }
 
     private void checkUpdate() {

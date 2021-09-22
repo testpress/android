@@ -36,6 +36,7 @@ import retrofit.RestAdapter;
 
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.BuildConfig.DISPLAY_USERNAME_ON_VIDEO;
+import static in.testpress.testpress.BuildConfig.SHOW_PDF_VERTICALLY;
 import static in.testpress.testpress.BuildConfig.GROWTH_HACKS_ENABLED;
 import static in.testpress.testpress.BuildConfig.SHARE_MESSAGE;
 import static in.testpress.testpress.util.PreferenceManager.setDashboardData;
@@ -84,6 +85,7 @@ public class TestpressServiceProvider {
                 settings = new in.testpress.models.InstituteSettings(BASE_URL);
                 settings.setScreenshotDisabled(true);
                 settings.setVideoDownloadEnabled(true);
+                settings.setShowPDFVertically(SHOW_PDF_VERTICALLY);
             } else {
                 InstituteSettings instituteSettings = instituteSettingsList.get(0);
                 settings = new in.testpress.models.InstituteSettings(instituteSettings.getBaseUrl())
@@ -104,7 +106,8 @@ public class TestpressServiceProvider {
                         .setServerTime(instituteSettings.serverTime())
                         .setLeaderboardLabel(instituteSettings.getLeaderboardLabel())
                         .setVideoDownloadEnabled(instituteSettings.getIsVideoDownloadEnabled())
-                        .setThreatsAndTargetsLabel(instituteSettings.getThreatsAndTargetsLabel());
+                        .setThreatsAndTargetsLabel(instituteSettings.getThreatsAndTargetsLabel())
+                        .setShowPDFVertically(SHOW_PDF_VERTICALLY);
                 appLink = instituteSettings.getAppShareLink();
             }
             settings.setAppShareText(SHARE_MESSAGE + activity.getString(R.string.get_it_at) + appLink);

@@ -1,6 +1,6 @@
 {
-  "version" : "1.1.0",
-  "version_code" : 5,
+  "version" : "1.1.1",
+  "version_code" : 6,
   "testpress_site_subdomain" : "nationalacademy",
   "package_name" : "in.testpress.nationalacademy",
   "app_name" : "National Academy Coaching Villupuram",
@@ -11,5 +11,6 @@
   "server_client_id" : "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
   "display_username_on_video": true,
   "white_labeled_host_url": null,
-  "is_growth_hacks_enabled": false
+  "is_growth_hacks_enabled": false,
+  "show_pdf_vertically": true
 }

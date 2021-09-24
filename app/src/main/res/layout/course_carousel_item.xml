@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="87dp"
                 android:cropToPadding="true"
-                android:background="@drawable/border_rectangle_light"
+                android:background="@drawable/border_rectangle_dark"
                 android:scaleType="centerInside" />
         </androidx.cardview.widget.CardView>
     </FrameLayout>

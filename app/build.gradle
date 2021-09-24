@@ -6,7 +6,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 ext {
-    testpressSDK = '1.4.22'
+    testpressSDK = '1.4.42'
 }
 
 dependencies {
@@ -42,8 +42,8 @@ dependencies {
     implementation 'de.greenrobot:greendao:2.0.0'
     
     // Testpress Course(which inbuilt has exam & core module)
-    implementation 'com.github.testpress.android-sdk:course:' + testpressSDK
-    implementation 'com.github.testpress.android-sdk:store:' + testpressSDK
+    implementation 'com.github.testpress:course:' + testpressSDK
+    implementation 'com.github.testpress:store:' + testpressSDK
 
     // Gcm
     implementation 'com.google.firebase:firebase-core:19.0.0'
@@ -115,7 +115,7 @@ try {
 android {
 
     compileSdkVersion 29
-    buildToolsVersion '28.0.3'
+    buildToolsVersion '29.0.3'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -158,6 +158,7 @@ android {
         resValue "color", "primary", "#" + json.primary_color
         buildConfigField "boolean", "ALLOW_ANONYMOUS_USER", "" + json.allow_anonymous_user
         buildConfigField "boolean", "GROWTH_HACKS_ENABLED", "" + json.is_growth_hacks_enabled
+        buildConfigField "boolean", "SHOW_PDF_VERTICALLY", "" + json.show_pdf_vertically
         buildConfigField "String", "SHARE_MESSAGE", '"' + json.share_message + '"'
         if (json.display_username_on_video != null) {
             buildConfigField "boolean", "DISPLAY_USERNAME_ON_VIDEO", "" + json.display_username_on_video

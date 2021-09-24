@@ -11,5 +11,6 @@
   "server_client_id" : "764761056705-rcolaihbj1vr5hnmrgfupgm7c07mqje2.apps.googleusercontent.com",
   "display_username_on_video": true,
   "white_labeled_host_url": "www.raysonlineportal.in",
-  "is_growth_hacks_enabled": false
+  "is_growth_hacks_enabled": false,
+  "show_pdf_vertically": true
 }

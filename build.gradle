@@ -32,12 +32,9 @@ allprojects {
             url = uri("https://maven.pkg.github.com/testpress/android-sdk")
 
             credentials {
-                username = "Karthik-0"
-                password = "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"
+                username = System.getenv("GITHUB_USERNAME")
+                password = System.getenv("GITHUB_ACCESS_KEY")
             }
-        }
-        maven {
-            url('C:\\Users\\Karthik\\.m2\\repository\\')
         }
         google()
         jcenter()

@@ -1,6 +1,6 @@
 {
-  "version" : "1.2.12",
-  "version_code" : 25,
+  "version" : "1.2.13",
+  "version_code" : 26,
   "testpress_site_subdomain" : "rays",
   "package_name" : "com.rays",
   "app_name" : "RaysEdu",

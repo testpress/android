@@ -249,7 +249,6 @@ public class MainActivity extends TestpressFragmentActivity {
         if (session == null || session.getInstituteSettings() == null) {
             return;
         }
-        Log.d("TAG", "showLogoInToolbar: " + session.getInstituteSettings().getAppToolbarLogo());
         UIUtils.loadLogoInView(logo, this);
     }
 

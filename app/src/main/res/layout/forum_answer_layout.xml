@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:textStyle="bold"
-        android:text="Answer"
+        android:text="Accepted Answer"
         android:textSize="18sp"
         android:lineSpacingExtra="4sp"
         android:id="@+id/answer_label" />

@@ -1,10 +1,7 @@
 package `in`.testpress.testpress.repository
 
 import `in`.testpress.database.TestpressDatabase
-import `in`.testpress.models.DomainDiscussionAnswer
-import `in`.testpress.models.NetworkDiscussionAnswer
-import `in`.testpress.models.asDatabaseModel
-import `in`.testpress.models.asDomainModel
+import `in`.testpress.models.*
 import `in`.testpress.network.APIClient
 import `in`.testpress.network.NetworkBoundResource
 import `in`.testpress.network.Resource
@@ -18,23 +15,23 @@ class ForumAnswerRepository(val context: Context) {
     val discussionAnswerDao = TestpressDatabase(context).discussionAnswerDao()
     private val service = APIClient(context)
 
-    fun loadDiscussionAnswer(forumId: Long): LiveData<Resource<DomainDiscussionAnswer>> {
-        return object : NetworkBoundResource<DomainDiscussionAnswer, NetworkDiscussionAnswer>() {
-            override fun createCall(): RetrofitCall<NetworkDiscussionAnswer> {
+    fun loadDiscussionAnswer(forumId: Long): LiveData<Resource<DomainDiscussionThreadAnswer>> {
+        return object : NetworkBoundResource<DomainDiscussionThreadAnswer, NetworkDiscussionThreadAnswer>() {
+            override fun createCall(): RetrofitCall<NetworkDiscussionThreadAnswer> {
                 return service.getDiscussionAnswer(forumId)
             }
 
-            override fun loadFromDb(): LiveData<DomainDiscussionAnswer> {
+            override fun loadFromDb(): LiveData<DomainDiscussionThreadAnswer> {
                 return Transformations.map(discussionAnswerDao.getByForumId(forumId)) {
                     it?.asDomainModel()
                 }
             }
 
-            override fun saveNetworkResponseToDB(item: NetworkDiscussionAnswer) {
+            override fun saveNetworkResponseToDB(item: NetworkDiscussionThreadAnswer) {
                 discussionAnswerDao.insert(item.asDatabaseModel())
             }
 
-            override fun shouldFetch(data: DomainDiscussionAnswer?): Boolean {
+            override fun shouldFetch(data: DomainDiscussionThreadAnswer?): Boolean {
                 return true
             }
 

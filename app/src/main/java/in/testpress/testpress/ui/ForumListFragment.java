@@ -300,7 +300,7 @@ public class ForumListFragment extends Fragment implements
             testpressService = getTestpressService();
         }
         adapter = new HeaderFooterListAdapter<>(listView,
-                new ForumListAdapter(serviceProvider, getActivity(), R.layout.forum_list_item));
+                new ForumListAdapter(serviceProvider, getActivity(), R.layout.legacy_forum_list_item));
         listView.setAdapter(adapter);
         loadingLayout = LayoutInflater.from(getActivity()).inflate(R.layout.loading_layout, null);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {

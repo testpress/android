@@ -130,7 +130,7 @@
             android:label="Articles" />
 
         <activity
-            android:name=".ui.ForumListActivity"
+            android:name=".ui.DisscussionActivity"
             android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Discussions" />

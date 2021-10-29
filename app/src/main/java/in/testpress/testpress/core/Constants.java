@@ -76,7 +76,7 @@ public final class Constants {
         public static final String URL_POSTS_FRAG =  "api/v2.2/posts/";
         public static final String URL_CATEGORIES_FRAG = URL_POSTS_FRAG + "categories/";
 
-        public static final String URL_FORUMS_FRAG =  "api/v2.3/forum/";
+        public static final String URL_FORUMS_FRAG =  "api/v2.5/discussions/";
 
         public static final String URL_COMMENTS_FRAG =  "/comments/";
 

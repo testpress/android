@@ -1,6 +1,6 @@
 {
-  "version" : "1.10.9",
-  "version_code" : 10,
+  "version" : "1.10.12",
+  "version_code" : 14,
   "testpress_site_subdomain" : "onlyiasnothingelse",
   "package_name" : "com.onlyiasnothingelse",
   "app_name" : "OnlyIAS",
@@ -11,6 +11,6 @@
   "server_client_id" : "132240523441-p4hduq3cid007d7lrsldvq82a975p1ab.apps.googleusercontent.com",
   "display_username_on_video": true,
   "white_labeled_host_url": "https://dpp.onlyias.in/",
-  "is_growth_hacks_enabled": false
+  "is_growth_hacks_enabled": false,
   "show_pdf_vertically": true
 }

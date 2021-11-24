@@ -1,6 +1,6 @@
 {
-  "version" : "1.4.0",
-  "version_code" : 186,
+  "version" : "1.4.1",
+  "version_code" : 187,
   "testpress_site_subdomain": "race",
   "package_name": "in.raceinstitute",
   "app_name" : "RACE",
@@ -11,5 +11,6 @@
   "facebook_app_id" : "642128432634881",
   "server_client_id" : "1064046661341-itk3upke5nqs5mrcrflbhi9dia3vl2se.apps.googleusercontent.com",
   "display_username_on_video": true,
-  "white_labeled_host_url": "onlinetest.raceinstitute.in"
+  "white_labeled_host_url": "onlinetest.raceinstitute.in",
+  "show_pdf_vertically": true
 }

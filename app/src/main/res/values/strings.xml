@@ -167,6 +167,8 @@
     <string name="try_after_some_time">Please try after some time</string>
     <string name="open_drawer">Open Navigation Drawer</string>
     <string name="close_drawer">Close Navigation Drawer</string>
+    <string name="privacy_policy_dialogue">By signing in you acknowledge the  </string>
+    <string name="privacy_policy"><a href='#'> Privacy Policy</a></string>
 
     <plurals name="notes_count">
         <item quantity="one">1 Doc</item>

@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
@@ -72,6 +73,7 @@ import in.testpress.testpress.models.Forum;
 import in.testpress.testpress.models.ForumDao;
 import in.testpress.testpress.models.User;
 import in.testpress.testpress.models.UserDao;
+import in.testpress.testpress.ui.fragments.ForumAnswerFragment;
 import in.testpress.testpress.ui.view.RoundedImageView;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
@@ -116,6 +118,7 @@ public class ForumActivity extends TestpressFragmentActivity implements
     @InjectView(R.id.empty_description) TextView emptyDescView;
     @InjectView(R.id.retry_button) Button retryButton;
     @InjectView(R.id.comments_layout) LinearLayout commentsLayout;
+    @InjectView(R.id.accepted_answer_layout) LinearLayout answerLayout;
     @InjectView(R.id.loading_previous_comments_layout) LinearLayout previousCommentsLoadingLayout;
     @InjectView(R.id.loading_new_comments_layout) LinearLayout newCommentsLoadingLayout;
     @InjectView(R.id.comments_list_view) RecyclerView listView;
@@ -215,6 +218,17 @@ public class ForumActivity extends TestpressFragmentActivity implements
         }
     }
 
+    protected void initializeAnswerFragment() {
+        ForumAnswerFragment fragment = new ForumAnswerFragment();
+        Bundle bundle = new Bundle();
+        bundle.putLong("id", forum.getId());
+        fragment.setArguments(bundle);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.accepted_answer, fragment)
+                .commitAllowingStateLoss();
+    }
+
     private void fetchForum() {
         new SafeAsyncTask<Forum>() {
             @Override
@@ -247,7 +261,7 @@ public class ForumActivity extends TestpressFragmentActivity implements
                 if (forumDao.queryBuilder()
                         .where(ForumDao.Properties.Id.eq(forum.getId())).count() != 0) {
 
-                    forum.setModified(ForumActivity.this.forum.getModified());
+                    forum.setModified(forum.getModified());
                     forum.setModifiedDate(simpleDateFormat.parse(forum.getModified()).getTime());
                     if (forum.getRawCategory() != null) {
                         forum.setCategory(forum.getRawCategory());
@@ -267,6 +281,10 @@ public class ForumActivity extends TestpressFragmentActivity implements
                 }
                 ForumActivity.this.forum = forum;
                 displayForum(forum);
+                if (forum.hasAnswer()) {
+                    answerLayout.setVisibility(View.VISIBLE);
+                    initializeAnswerFragment();
+                }
             }
         }.execute();
     }

@@ -1,9 +1,9 @@
 {
   "version" : "1.0.0",
-  "version_code" : 1,
+  "version_code" : 3,
   "testpress_site_subdomain" : "agroneerstopperscorner",
   "package_name" : "in.testpress.agroneerstopperscorner",
-  "app_name" : "Testpress Sandbox",
+  "app_name" : "Agroneer Corner",
   "share_message": "Good app to prepare for online exams.",
   "primary_color": "FF0606",
   "allow_anonymous_user" : false,

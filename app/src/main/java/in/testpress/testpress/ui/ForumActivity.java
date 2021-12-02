@@ -23,6 +23,9 @@ import android.text.Html;
 import android.text.SpannableString;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
@@ -30,9 +33,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -216,6 +223,62 @@ public class ForumActivity extends TestpressFragmentActivity implements
             setEmptyText(R.string.invalid_post, R.string.try_after_sometime,
                     R.drawable.ic_error_outline_black_18dp);
         }
+    }
+
+    private void reportForum() {
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog);
+        EditText commentBox = bottomSheetDialog.findViewById(R.id.comment_box);
+        Button reportButton = bottomSheetDialog.findViewById(R.id.reportButton);
+        RadioGroup radioGroup = bottomSheetDialog.findViewById(R.id.reportForum);
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.customReason) {
+                commentBox.setVisibility(View.VISIBLE);
+            } else {
+                commentBox.setVisibility(View.GONE);
+            }
+        });
+        reportButton.setOnClickListener(v -> {
+            int checkedId = radioGroup.getCheckedRadioButtonId();
+            switch(checkedId) {
+                case -1:
+                    Toast.makeText(this, "No option selected", Toast.LENGTH_LONG).show();
+                    break;
+                case R.id.customReason:
+                    String text = commentBox.getText().toString();
+                    if (text.length() < 10) {
+                        Toast.makeText(this, "Please enter atleast 10 characters", Toast.LENGTH_LONG).show();
+                        break;
+                    }
+                    reportInappropriateContent(forum.getId().intValue(), text);
+                    break;
+                default:
+                    RadioButton rb = (RadioButton) bottomSheetDialog.findViewById(checkedId);
+                    Log.d("TAG", "reportForum 2 : " + rb.getText().toString());
+                    reportInappropriateContent(forum.getId().intValue(), rb.getText().toString());
+            }
+        });
+
+        bottomSheetDialog.show();
+    }
+
+    private void reportInappropriateContent(int forumId, String reason) {
+        new SafeAsyncTask<String>() {
+            @Override
+            public String call() {
+                return getService().reportPost(forumId, reason);
+            }
+
+            @Override
+            protected void onException(Exception exception) throws RuntimeException {
+                Log.d("TAG", "onException: ");
+            }
+
+            @Override
+            protected void onSuccess(String result) {
+                Log.d("TAG", "onSuccess: " + result);
+            }
+        }.execute();
     }
 
     protected void initializeAnswerFragment() {
@@ -633,6 +696,22 @@ public class ForumActivity extends TestpressFragmentActivity implements
         imagePickerUtils = new ImageUtils(activityRootLayout, this);
         commentsLayout.setVisibility(View.VISIBLE);
         getSupportLoaderManager().initLoader(PREVIOUS_COMMENTS_LOADER_ID, null, ForumActivity.this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.forum_action_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.report: reportForum();
+            break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @NonNull

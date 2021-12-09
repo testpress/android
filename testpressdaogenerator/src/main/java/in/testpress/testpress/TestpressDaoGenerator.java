@@ -7,7 +7,7 @@ import de.greenrobot.daogenerator.Schema;
 
 public class TestpressDaoGenerator {
     public static void main(String args[]) throws Exception {
-        Schema schema = new Schema(27, "in.testpress.testpress.models");
+        Schema schema = new Schema(30, "in.testpress.testpress.models");
 
         Entity post = schema.addEntity("Post");
         post.addLongProperty("id").primaryKey();
@@ -86,6 +86,8 @@ public class TestpressDaoGenerator {
         instituteSettings.addBooleanProperty("allowScreenshotInApp");
         instituteSettings.addStringProperty("androidSentryDns");
         instituteSettings.addBooleanProperty("leaderboardEnabled");
+        instituteSettings.addStringProperty("threatsAndTargetsLabel");
+        instituteSettings.addBooleanProperty("isVideoDownloadEnabled");
 
         Entity rssFeed = schema.addEntity("RssItem");
         rssFeed.addLongProperty("id").primaryKey().autoincrement();
@@ -151,6 +153,7 @@ public class TestpressDaoGenerator {
         forum.addIntProperty("typeOfVote");
         forum.addLongProperty("published");
         forum.addLongProperty("modifiedDate");
+        forum.addBooleanProperty("hasAnswer");
         return forum;
     }
 

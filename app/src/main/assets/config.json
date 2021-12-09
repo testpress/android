@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.8",
-  "version_code" : 8,
+  "version" : "1.1.0",
+  "version_code" : 9,
   "testpress_site_subdomain" : "verandalearning",
   "package_name" : "com.verandalearning",
   "app_name" : "Veranda Learning",
@@ -11,5 +11,6 @@
   "server_client_id" : "127680131673-m2i4gg04bb2t02p2ta8sv2b05hljmhrd.apps.googleusercontent.com",
   "display_username_on_video": true,
   "white_labeled_host_url": "360.verandalearning.com",
-  "is_growth_hacks_enabled": false
+  "is_growth_hacks_enabled": false,
+  "show_pdf_vertically": true
 }

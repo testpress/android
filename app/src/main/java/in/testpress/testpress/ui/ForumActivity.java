@@ -230,17 +230,24 @@ public class ForumActivity extends TestpressFragmentActivity implements
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog);
         EditText commentBox = bottomSheetDialog.findViewById(R.id.comment_box);
         Button reportButton = bottomSheetDialog.findViewById(R.id.reportButton);
-        RadioGroup radioGroup = bottomSheetDialog.findViewById(R.id.reportForum);
-        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+        RadioGroup spamReasons = bottomSheetDialog.findViewById(R.id.reportForum);
+        spamReasons.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.customReason) {
                 commentBox.setVisibility(View.VISIBLE);
             } else {
                 commentBox.setVisibility(View.GONE);
             }
         });
-        reportButton.setOnClickListener(v -> {
-            int checkedId = radioGroup.getCheckedRadioButtonId();
-            switch(checkedId) {
+        reportButton.setOnClickListener(onClickSpamReasonHandler(bottomSheetDialog, commentBox, spamReasons));
+
+        bottomSheetDialog.show();
+    }
+
+    @NonNull
+    private View.OnClickListener onClickSpamReasonHandler(BottomSheetDialog bottomSheetDialog, EditText commentBox, RadioGroup spamReasons) {
+        return v -> {
+            int checkedId = spamReasons.getCheckedRadioButtonId();
+            switch (checkedId) {
                 case -1:
                     Toast.makeText(this, "No option selected", Toast.LENGTH_LONG).show();
                     break;
@@ -254,12 +261,9 @@ public class ForumActivity extends TestpressFragmentActivity implements
                     break;
                 default:
                     RadioButton rb = (RadioButton) bottomSheetDialog.findViewById(checkedId);
-                    Log.d("TAG", "reportForum 2 : " + rb.getText().toString());
                     reportInappropriateContent(forum.getId().intValue(), rb.getText().toString());
             }
-        });
-
-        bottomSheetDialog.show();
+        };
     }
 
     private void reportInappropriateContent(int forumId, String reason) {

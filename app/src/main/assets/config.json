@@ -1,6 +1,6 @@
 {
-  "version" : "5.1.2",
-  "version_code" : 12,
+  "version" : "5.5.1",
+  "version_code" : 13,
   "testpress_site_subdomain" : "dentalpulseacademy",
   "package_name" : "in.testpress.dentalpulseacademy",
   "app_name" : "Dental Pulse Academy",

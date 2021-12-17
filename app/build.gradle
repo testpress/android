@@ -6,7 +6,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 ext {
-    testpressSDK = '1.4.10'
+    testpressSDK = '1.4.47'
 }
 
 dependencies {
@@ -45,7 +45,7 @@ dependencies {
     implementation 'com.github.testpress:store:' + testpressSDK
 
     // Gcm
-    implementation 'com.google.firebase:firebase-core:17.1.0'
+    implementation 'com.google.firebase:firebase-core:19.0.0'
     implementation 'com.google.firebase:firebase-messaging:19.0.1'
     implementation 'org.greenrobot:eventbus:3.1.1'
 
@@ -63,7 +63,7 @@ dependencies {
     // https://github.com/hbb20/CountryCodePickerProject/wiki
     implementation "com.hbb20:ccp:2.1.9"
 
-    implementation 'io.sentry:sentry-android:2.3.0'
+    implementation 'io.sentry:sentry-android:5.3.0'
     implementation 'org.slf4j:slf4j-nop:1.7.25'
 
 
@@ -113,8 +113,8 @@ try {
 
 android {
 
-    compileSdkVersion 29
-    buildToolsVersion '28.0.3'
+    compileSdkVersion 30
+    buildToolsVersion '30.0.3'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -135,8 +135,8 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 29
+        minSdkVersion 21
+        targetSdkVersion 30
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         def jsonFile = file('src/main/assets/config.json')
@@ -157,6 +157,7 @@ android {
         resValue "color", "primary", "#" + json.primary_color
         buildConfigField "boolean", "ALLOW_ANONYMOUS_USER", "" + json.allow_anonymous_user
         buildConfigField "boolean", "GROWTH_HACKS_ENABLED", "" + json.is_growth_hacks_enabled
+        buildConfigField "boolean", "SHOW_PDF_VERTICALLY", "" + json.show_pdf_vertically
         buildConfigField "String", "SHARE_MESSAGE", '"' + json.share_message + '"'
         if (json.display_username_on_video != null) {
             buildConfigField "boolean", "DISPLAY_USERNAME_ON_VIDEO", "" + json.display_username_on_video

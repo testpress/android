@@ -1,6 +1,6 @@
 {
-  "version" : "1.1.3",
-  "version_code" : 7,
+  "version" : "1.2.3",
+  "version_code" : 8,
   "testpress_site_subdomain" : "lawxpertsmv",
   "package_name" : "in.testpress.lawxpertsmv",
   "app_name" : "Lawxpertsmv India",
@@ -11,5 +11,6 @@
   "server_client_id" : "234956709117-9jd0f90q0262bb41moodkff4pf7of7lq.apps.googleusercontent.com",
   "display_username_on_video": true,
   "white_labeled_host_url": null,
-  "is_growth_hacks_enabled": false
+  "is_growth_hacks_enabled": false,
+  "show_pdf_vertically": true
 }

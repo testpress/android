@@ -73,6 +73,6 @@ public interface PostService {
             @Body HashMap<String, Object> params);
 
 
-    @POST("/api/v2.5/discussions/{post_id}/report")
+    @POST("/api/v2.5/discussions/{post_id}/report/")
     String reportPost(@Path(value="post_id") long postId, @Body Map<String, String> options);
 }

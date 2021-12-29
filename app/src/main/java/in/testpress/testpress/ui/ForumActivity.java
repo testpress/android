@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -83,6 +82,7 @@ import in.testpress.testpress.models.UserDao;
 import in.testpress.testpress.ui.fragments.ForumAnswerFragment;
 import in.testpress.testpress.ui.view.RoundedImageView;
 import in.testpress.testpress.util.CommonUtils;
+import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.util.FullScreenChromeClient;
@@ -159,6 +159,7 @@ public class ForumActivity extends TestpressFragmentActivity implements
     private int grayColor;
     private int primaryColor;
     private Activity activity;
+    private BottomSheetDialog reportSpamBottomSheet;
 
     private Handler newCommentsHandler;
     private Runnable runnable = new Runnable() {
@@ -223,14 +224,16 @@ public class ForumActivity extends TestpressFragmentActivity implements
             setEmptyText(R.string.invalid_post, R.string.try_after_sometime,
                     R.drawable.ic_error_outline_black_18dp);
         }
+
+        initializeReportSpamBottomSheet();
     }
 
-    private void reportForum() {
-        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
-        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog);
-        EditText commentBox = bottomSheetDialog.findViewById(R.id.comment_box);
-        Button reportButton = bottomSheetDialog.findViewById(R.id.reportButton);
-        RadioGroup spamReasons = bottomSheetDialog.findViewById(R.id.reportForum);
+    private void initializeReportSpamBottomSheet() {
+        reportSpamBottomSheet = new BottomSheetDialog(this);
+        reportSpamBottomSheet.setContentView(R.layout.bottom_sheet_dialog);
+        EditText commentBox = reportSpamBottomSheet.findViewById(R.id.comment_box);
+        Button reportButton = reportSpamBottomSheet.findViewById(R.id.reportButton);
+        RadioGroup spamReasons = reportSpamBottomSheet.findViewById(R.id.reportForum);
         spamReasons.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.customReason) {
                 commentBox.setVisibility(View.VISIBLE);
@@ -238,9 +241,7 @@ public class ForumActivity extends TestpressFragmentActivity implements
                 commentBox.setVisibility(View.GONE);
             }
         });
-        reportButton.setOnClickListener(onClickSpamReasonHandler(bottomSheetDialog, commentBox, spamReasons));
-
-        bottomSheetDialog.show();
+        reportButton.setOnClickListener(onClickSpamReasonHandler(reportSpamBottomSheet, commentBox, spamReasons));
     }
 
     @NonNull
@@ -275,12 +276,14 @@ public class ForumActivity extends TestpressFragmentActivity implements
 
             @Override
             protected void onException(Exception exception) throws RuntimeException {
-                Log.d("TAG", "onException: ");
+                reportSpamBottomSheet.dismiss();
+                Toast.makeText(getBaseContext(), "You have already reported this post", Toast.LENGTH_LONG).show();
             }
 
             @Override
             protected void onSuccess(String result) {
-                Log.d("TAG", "onSuccess: " + result);
+                reportSpamBottomSheet.dismiss();
+                Toast.makeText(getBaseContext(), "You have successfully reported this post", Toast.LENGTH_LONG).show();
             }
         }.execute();
     }
@@ -712,7 +715,7 @@ public class ForumActivity extends TestpressFragmentActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.report: reportForum();
+            case R.id.report: reportSpamBottomSheet.show();;
             break;
         }
         return super.onOptionsItemSelected(item);

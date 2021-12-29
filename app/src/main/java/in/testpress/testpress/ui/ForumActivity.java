@@ -82,7 +82,6 @@ import in.testpress.testpress.models.UserDao;
 import in.testpress.testpress.ui.fragments.ForumAnswerFragment;
 import in.testpress.testpress.ui.view.RoundedImageView;
 import in.testpress.testpress.util.CommonUtils;
-import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.util.FullScreenChromeClient;
@@ -241,11 +240,11 @@ public class ForumActivity extends TestpressFragmentActivity implements
                 commentBox.setVisibility(View.GONE);
             }
         });
-        reportButton.setOnClickListener(onClickSpamReasonHandler(reportSpamBottomSheet, commentBox, spamReasons));
+        reportButton.setOnClickListener(handleSpamReportSubmit(reportSpamBottomSheet, commentBox, spamReasons));
     }
 
     @NonNull
-    private View.OnClickListener onClickSpamReasonHandler(BottomSheetDialog bottomSheetDialog, EditText commentBox, RadioGroup spamReasons) {
+    private View.OnClickListener handleSpamReportSubmit(BottomSheetDialog bottomSheetDialog, EditText commentBox, RadioGroup spamReasons) {
         return v -> {
             int checkedId = spamReasons.getCheckedRadioButtonId();
             switch (checkedId) {

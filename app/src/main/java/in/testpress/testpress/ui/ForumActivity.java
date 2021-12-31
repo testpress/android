@@ -154,7 +154,6 @@ public class ForumActivity extends TestpressFragmentActivity implements
     private int grayColor;
     private int primaryColor;
     private Activity activity;
-    private BottomSheetDialog reportSpamBottomSheet;
 
     private Handler newCommentsHandler;
     private Runnable runnable = new Runnable() {

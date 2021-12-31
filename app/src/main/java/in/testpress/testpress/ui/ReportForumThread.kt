@@ -1,5 +1,6 @@
 package `in`.testpress.testpress.ui
 
+import `in`.testpress.testpress.Injector
 import `in`.testpress.testpress.R
 import `in`.testpress.testpress.TestpressServiceProvider
 import `in`.testpress.testpress.util.SafeAsyncTask
@@ -19,6 +20,7 @@ class ReportForumThread: Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Injector.inject(this)
         setContentView(R.layout.report_spam_thread)
         forumTitle.text = intent.getStringExtra("title")
         setOnClickListeners()
@@ -70,16 +72,18 @@ class ReportForumThread: Activity() {
 
     fun reportForumThread(reason: String) {
         val forumId = intent.getIntExtra("forum_id", -1)
-        object : SafeAsyncTask<String?>() {
-            override fun call(): String {
-                return serviceProvider!!.getService(this@ReportForumThread).reportPost(
+        object : SafeAsyncTask<Boolean>() {
+            override fun call(): Boolean {
+                serviceProvider.getService(this@ReportForumThread).reportPost(
                     forumId,
                     reason
                 )
+                return true
             }
 
             @Throws(RuntimeException::class)
             override fun onException(exception: Exception) {
+                exception.printStackTrace()
                 Toast.makeText(
                     baseContext,
                     "You have already reported this post",
@@ -87,7 +91,7 @@ class ReportForumThread: Activity() {
                 ).show()
             }
 
-            override fun onSuccess(t: String?) {
+            override fun onSuccess(t: Boolean?) {
                 onBackPressed()
                 Toast.makeText(
                     baseContext,

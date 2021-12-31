@@ -173,4 +173,7 @@
         <item name="android:layout_gravity">center_horizontal</item>
     </style>
 
+    <style name="SmallTitle" parent="@style/Base.TextAppearance.AppCompat.Title">
+        <item name="android:textSize">18sp</item>
+    </style>
 </resources>

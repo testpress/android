@@ -326,7 +326,7 @@ public class TestpressService {
         return getPostService().updateCommentVote(forum.getVoteId(), params);
     }
 
-    public String reportPost(int postId, String reason) {
+    public Object reportPost(int postId, String reason) {
         HashMap<String, String> params = new HashMap<>();
         params.put("reason", reason);
         return getPostService().reportPost(postId, params);

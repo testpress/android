@@ -101,6 +101,14 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:windowSoftInputMode="adjustResize|stateHidden"/>
 
+
+        <activity
+            android:name=".ui.ReportForumThread"
+            android:theme="@style/AppTheme"
+            android:label="Report Thread"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="adjustPan"/>
+
         <activity
             android:name=".ui.CreateForumActivity"
             android:label="Create Forum Post"

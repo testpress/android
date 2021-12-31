@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:minHeight="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="Flag as inappropriate"
+        app:navigationIcon="@drawable/ic_close_black_24dp"
+        app:titleTextColor="@color/testpress_black"
+        app:titleTextAppearance="@style/SmallTitle"
+        android:background="@color/white">
+    </androidx.appcompat.widget.Toolbar>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#eee" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="20dp"
+        android:textColor="#333"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:id="@+id/forumTitle"
+        android:paddingHorizontal="10dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#eee" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#333"
+        android:textSize="18sp"
+        android:layout_marginTop="5dp"
+        android:paddingHorizontal="10dp"
+        android:text="The reason you find this content objectionable:"/>
+
+    <RadioGroup
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:id="@+id/spamReasons"
+        android:layout_width="fill_parent"
+        android:textColor="#333"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Graphical Violence"
+            android:paddingLeft="10dp"
+            android:layout_marginVertical="10dp"
+            android:buttonTint="@color/testpress_black"
+            android:textSize="16sp"/>
+
+        <RadioButton
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:paddingLeft="10dp"
+            android:text="Hateful or abusive content"
+            android:buttonTint="@color/testpress_black"
+            android:textSize="16sp"/>
+
+        <RadioButton
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:paddingLeft="10dp"
+            android:text="Off-Topic"
+            android:buttonTint="@color/testpress_black"
+            android:textSize="16sp"/>
+
+        <RadioButton
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:paddingLeft="10dp"
+            android:text="Inappropriate"
+            android:buttonTint="@color/testpress_black"
+            android:textSize="16sp"/>
+
+        <RadioButton
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:paddingLeft="10dp"
+            android:text="Spam"
+            android:buttonTint="@color/testpress_black"
+            android:textSize="16sp"/>
+
+
+        <RadioButton
+            android:id="@+id/customReason"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:paddingLeft="10dp"
+            android:text="Something else"
+            android:buttonTint="@color/testpress_black"
+            android:textSize="16sp"/>
+    </RadioGroup>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="10dp"
+        android:layout_marginHorizontal="10dp"
+        android:id="@+id/commentBox"
+        android:inputType="text|textMultiLine"
+        android:textSize="16sp"
+        android:visibility="gone"
+        android:textColor="#000"
+        style="@style/Input"
+        android:hint="Describe your reason" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="bottom"
+        android:gravity="bottom"
+        android:orientation="vertical" >
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#eee" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="10dp"
+        android:gravity="end"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:textSize="15sp"
+            android:textAllCaps="true"
+            android:fontFamily="sans-serif-medium"
+            android:layout_height="wrap_content"
+            android:textColor="@color/testpress_color_primary"
+            android:background="?android:attr/selectableItemBackground"
+            android:minWidth="64dp"
+            android:text="Cancel" />
+
+        <Button
+            android:id="@+id/submitButton"
+            android:layout_width="wrap_content"
+            android:textSize="15sp"
+            android:paddingHorizontal="0dp"
+            android:textAllCaps="true"
+            android:fontFamily="sans-serif-medium"
+            android:layout_height="wrap_content"
+            android:textColor="@color/button_text_states"
+            android:background="?android:attr/selectableItemBackground"
+            android:minWidth="64dp"
+            android:enabled="false"
+            android:text="Submit" />
+    </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

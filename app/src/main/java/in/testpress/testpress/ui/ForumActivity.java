@@ -32,13 +32,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -224,67 +220,6 @@ public class ForumActivity extends TestpressFragmentActivity implements
                     R.drawable.ic_error_outline_black_18dp);
         }
 
-        initializeReportSpamBottomSheet();
-    }
-
-    private void initializeReportSpamBottomSheet() {
-        reportSpamBottomSheet = new BottomSheetDialog(this);
-        reportSpamBottomSheet.setContentView(R.layout.bottom_sheet_dialog);
-        EditText commentBox = reportSpamBottomSheet.findViewById(R.id.comment_box);
-        Button reportButton = reportSpamBottomSheet.findViewById(R.id.reportButton);
-        RadioGroup spamReasons = reportSpamBottomSheet.findViewById(R.id.reportForum);
-        spamReasons.setOnCheckedChangeListener((group, checkedId) -> {
-            if (checkedId == R.id.customReason) {
-                commentBox.setVisibility(View.VISIBLE);
-            } else {
-                commentBox.setVisibility(View.GONE);
-            }
-        });
-        reportButton.setOnClickListener(handleSpamReportSubmit(reportSpamBottomSheet, commentBox, spamReasons));
-    }
-
-    @NonNull
-    private View.OnClickListener handleSpamReportSubmit(BottomSheetDialog bottomSheetDialog, EditText commentBox, RadioGroup spamReasons) {
-        return v -> {
-            int checkedId = spamReasons.getCheckedRadioButtonId();
-            switch (checkedId) {
-                case -1:
-                    Toast.makeText(this, "No option selected", Toast.LENGTH_LONG).show();
-                    break;
-                case R.id.customReason:
-                    String text = commentBox.getText().toString();
-                    if (text.length() < 10) {
-                        Toast.makeText(this, "Please enter atleast 10 characters", Toast.LENGTH_LONG).show();
-                        break;
-                    }
-                    reportInappropriateContent(forum.getId().intValue(), text);
-                    break;
-                default:
-                    RadioButton rb = (RadioButton) bottomSheetDialog.findViewById(checkedId);
-                    reportInappropriateContent(forum.getId().intValue(), rb.getText().toString());
-            }
-        };
-    }
-
-    private void reportInappropriateContent(int forumId, String reason) {
-        new SafeAsyncTask<String>() {
-            @Override
-            public String call() {
-                return getService().reportPost(forumId, reason);
-            }
-
-            @Override
-            protected void onException(Exception exception) throws RuntimeException {
-                reportSpamBottomSheet.dismiss();
-                Toast.makeText(getBaseContext(), "You have already reported this post", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            protected void onSuccess(String result) {
-                reportSpamBottomSheet.dismiss();
-                Toast.makeText(getBaseContext(), "You have successfully reported this post", Toast.LENGTH_LONG).show();
-            }
-        }.execute();
     }
 
     protected void initializeAnswerFragment() {
@@ -714,7 +649,11 @@ public class ForumActivity extends TestpressFragmentActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.report: reportSpamBottomSheet.show();;
+            case R.id.report:
+                Intent intent = new Intent(this, ReportForumThread.class);
+                intent.putExtra("title", forum.getTitle());
+                intent.putExtra("forum_id", forum.getId().intValue());
+                activity.startActivity(intent);
             break;
         }
         return super.onOptionsItemSelected(item);

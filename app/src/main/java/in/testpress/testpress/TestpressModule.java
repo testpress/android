@@ -31,6 +31,7 @@ import in.testpress.testpress.ui.DrupalRssListFragment;
 import in.testpress.testpress.ui.ForumActivity;
 import in.testpress.testpress.ui.ForumListActivity;
 import in.testpress.testpress.ui.ForumListFragment;
+import in.testpress.testpress.ui.ReportForumThread;
 import in.testpress.testpress.ui.RssFeedDetailActivity;
 import in.testpress.testpress.ui.SplashScreenActivity;
 import in.testpress.testpress.ui.MainActivity;
@@ -84,7 +85,8 @@ import static in.testpress.testpress.BuildConfig.BASE_URL;
                 ForumActivity.class,
                 CreateForumActivity.class,
                 WebViewActivity.class,
-                DashboardFragment.class
+                DashboardFragment.class,
+                ReportForumThread.class,
         }
 )
 public class TestpressModule {

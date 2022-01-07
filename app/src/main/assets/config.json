@@ -11,5 +11,6 @@
   "server_client_id" : "17714631434-fmfn968jsf0tegnvo4706lukqistm6qs.apps.googleusercontent.com",
   "display_username_on_video": true,
   "white_labeled_host_url": null,
-  "is_growth_hacks_enabled": false
+  "is_growth_hacks_enabled": false,
+  "show_pdf_vertically": true
 }

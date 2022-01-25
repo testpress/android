@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.7",
-  "version_code" : 8,
+  "version" : "1.0.9",
+  "version_code" : 10,
   "testpress_site_subdomain" : "sarrthi",
   "package_name" : "in.testpress.edsarrthi",
   "app_name" : "EdSarrthi",

@@ -45,6 +45,7 @@ public class Forum {
     private Integer typeOfVote;
     private Long published;
     private Long modifiedDate;
+    private Boolean hasAnswer;
     private Long creatorId;
     private Long commentorId;
     private Long categoryId;
@@ -75,7 +76,7 @@ public class Forum {
         this.id = id;
     }
 
-    public Forum(String shortWebUrl, String shortUrl, String webUrl, String created, String commentsUrl, String url, Long id, String modified, Integer upvotes, Integer downvotes, String title, String summary, Boolean isActive, String publishedDate, Integer commentsCount, Boolean isLocked, Integer subject, Integer viewsCount, Integer participantsCount, String lastCommentedTime, String contentHtml, Boolean isPublic, String shortLink, Integer institute, String slug, Boolean isPublished, Boolean isApproved, Boolean forum, String ipAddress, Long voteId, Integer typeOfVote, Long published, Long modifiedDate, Long creatorId, Long commentorId, Long categoryId) {
+    public Forum(String shortWebUrl, String shortUrl, String webUrl, String created, String commentsUrl, String url, Long id, String modified, Integer upvotes, Integer downvotes, String title, String summary, Boolean isActive, String publishedDate, Integer commentsCount, Boolean isLocked, Integer subject, Integer viewsCount, Integer participantsCount, String lastCommentedTime, String contentHtml, Boolean isPublic, String shortLink, Integer institute, String slug, Boolean isPublished, Boolean isApproved, Boolean forum, String ipAddress, Long voteId, Integer typeOfVote, Long published, Long modifiedDate, Boolean hasAnswer, Long creatorId, Long commentorId, Long categoryId) {
         this.shortWebUrl = shortWebUrl;
         this.shortUrl = shortUrl;
         this.webUrl = webUrl;
@@ -109,6 +110,7 @@ public class Forum {
         this.typeOfVote = typeOfVote;
         this.published = published;
         this.modifiedDate = modifiedDate;
+        this.hasAnswer = hasAnswer;
         this.creatorId = creatorId;
         this.commentorId = commentorId;
         this.categoryId = categoryId;
@@ -384,6 +386,14 @@ public class Forum {
         this.modifiedDate = modifiedDate;
     }
 
+    public Boolean getHasAnswer() {
+        return hasAnswer;
+    }
+
+    public void setHasAnswer(Boolean hasAnswer) {
+        this.hasAnswer = hasAnswer;
+    }
+
     public Long getCreatorId() {
         return creatorId;
     }
@@ -531,6 +541,11 @@ public class Forum {
 
         return getLastCommentedBy();
     }
+
+    public Boolean hasAnswer() {
+        return Boolean.TRUE.equals(hasAnswer);
+    }
+
     // KEEP METHODS END
 
 }

@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.0",
-  "version_code" : 1,
+  "version" : "1.0.1",
+  "version_code" : 2,
   "testpress_site_subdomain" : "legacyiasacademy",
   "package_name" : "in.testpress.legacyiasacademy",
   "app_name" : "LEGACY IAS ONLINE",

@@ -71,4 +71,8 @@ public interface PostService {
     Vote<Forum> updateCommentVote(
             @Path(value = "vote_id") long id,
             @Body HashMap<String, Object> params);
+
+
+    @POST("/api/v2.5/discussions/{post_id}/report/")
+    Object reportPost(@Path(value="post_id") long postId, @Body Map<String, String> options);
 }

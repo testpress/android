@@ -22,7 +22,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.format.DateUtils;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
@@ -216,6 +218,7 @@ public class ForumActivity extends TestpressFragmentActivity implements
             setEmptyText(R.string.invalid_post, R.string.try_after_sometime,
                     R.drawable.ic_error_outline_black_18dp);
         }
+
     }
 
     protected void initializeAnswerFragment() {
@@ -633,6 +636,26 @@ public class ForumActivity extends TestpressFragmentActivity implements
         imagePickerUtils = new ImageUtils(activityRootLayout, this);
         commentsLayout.setVisibility(View.VISIBLE);
         getSupportLoaderManager().initLoader(PREVIOUS_COMMENTS_LOADER_ID, null, ForumActivity.this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.forum_action_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.report:
+                Intent intent = new Intent(this, ReportForumThread.class);
+                intent.putExtra("title", forum.getTitle());
+                intent.putExtra("forum_id", forum.getId().intValue());
+                activity.startActivity(intent);
+            break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @NonNull

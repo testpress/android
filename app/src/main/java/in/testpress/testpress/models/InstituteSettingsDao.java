@@ -69,6 +69,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         public final static Property LeaderboardEnabled = new Property(43, Boolean.class, "leaderboardEnabled", false, "LEADERBOARD_ENABLED");
         public final static Property ThreatsAndTargetsLabel = new Property(44, String.class, "threatsAndTargetsLabel", false, "THREATS_AND_TARGETS_LABEL");
         public final static Property IsVideoDownloadEnabled = new Property(45, Boolean.class, "isVideoDownloadEnabled", false, "IS_VIDEO_DOWNLOAD_ENABLED");
+        public final static Property IsHelpdeskEnabled = new Property(46, Boolean.class, "isHelpdeskEnabled", false, "IS_HELPDESK_ENABLED");
     };
 
 
@@ -129,7 +130,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
                 "\"ANDROID_SENTRY_DNS\" TEXT," + // 42: androidSentryDns
                 "\"LEADERBOARD_ENABLED\" INTEGER," + // 43: leaderboardEnabled
                 "\"THREATS_AND_TARGETS_LABEL\" TEXT," + // 44: threatsAndTargetsLabel
-                "\"IS_VIDEO_DOWNLOAD_ENABLED\" INTEGER);"); // 45: isVideoDownloadEnabled
+                "\"IS_VIDEO_DOWNLOAD_ENABLED\" INTEGER," + // 45: isVideoDownloadEnabled
+                "\"IS_HELPDESK_ENABLED\" INTEGER);"); // 46: isHelpdeskEnabled
     }
 
     /** Drops the underlying database table. */
@@ -368,6 +370,11 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         if (isVideoDownloadEnabled != null) {
             stmt.bindLong(46, isVideoDownloadEnabled ? 1L: 0L);
         }
+ 
+        Boolean isHelpdeskEnabled = entity.getIsHelpdeskEnabled();
+        if (isHelpdeskEnabled != null) {
+            stmt.bindLong(47, isHelpdeskEnabled ? 1L: 0L);
+        }
     }
 
     /** @inheritdoc */
@@ -425,7 +432,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             cursor.isNull(offset + 42) ? null : cursor.getString(offset + 42), // androidSentryDns
             cursor.isNull(offset + 43) ? null : cursor.getShort(offset + 43) != 0, // leaderboardEnabled
             cursor.isNull(offset + 44) ? null : cursor.getString(offset + 44), // threatsAndTargetsLabel
-            cursor.isNull(offset + 45) ? null : cursor.getShort(offset + 45) != 0 // isVideoDownloadEnabled
+            cursor.isNull(offset + 45) ? null : cursor.getShort(offset + 45) != 0, // isVideoDownloadEnabled
+            cursor.isNull(offset + 46) ? null : cursor.getShort(offset + 46) != 0 // isHelpdeskEnabled
         );
         return entity;
     }
@@ -479,6 +487,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         entity.setLeaderboardEnabled(cursor.isNull(offset + 43) ? null : cursor.getShort(offset + 43) != 0);
         entity.setThreatsAndTargetsLabel(cursor.isNull(offset + 44) ? null : cursor.getString(offset + 44));
         entity.setIsVideoDownloadEnabled(cursor.isNull(offset + 45) ? null : cursor.getShort(offset + 45) != 0);
+        entity.setIsHelpdeskEnabled(cursor.isNull(offset + 46) ? null : cursor.getShort(offset + 46) != 0);
      }
     
     /** @inheritdoc */

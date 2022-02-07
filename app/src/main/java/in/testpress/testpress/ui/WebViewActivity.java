@@ -17,6 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -58,6 +60,7 @@ public class WebViewActivity extends BaseToolBarActivity {
     @Inject protected LogoutService logoutService;
 
     private ProgressBar pb_loading;
+    private SwipeRefreshLayout swipeContainer;
     WebView webView;
     private String mCapturedMessage;
     private ValueCallback<Uri> mUploadMessage;
@@ -114,6 +117,7 @@ public class WebViewActivity extends BaseToolBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         pb_loading = this.findViewById(R.id.pb_loading);
+        initializeSwipeToRefresh();
 
         Intent intent = getIntent();
 
@@ -261,6 +265,17 @@ public class WebViewActivity extends BaseToolBarActivity {
                 startActivityForResult(chooserIntent, FILE_CHOOSER_RESULT_CODE);
 
                 return true;
+            }
+        });
+    }
+
+    private void initializeSwipeToRefresh() {
+        swipeContainer = this.findViewById(R.id.swipe_container);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                webView.reload();
+                swipeContainer.setRefreshing(false);
             }
         });
     }

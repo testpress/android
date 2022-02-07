@@ -49,6 +49,7 @@ public class WebViewActivity extends BaseToolBarActivity {
     private static final String TAG = WebViewActivity.class.getSimpleName();
     public static final String URL_TO_OPEN = "URL";
     public static final String ACTIVITY_TITLE = "TITLE";
+    public static final String ENABLE_BACK = "ENABLE_BACK";
     public static final String SHOW_LOGOUT = "SHOW_LOGOUT";
     private final static int FILE_CHOOSER_RESULT_CODE = 1;
 
@@ -328,6 +329,15 @@ public class WebViewActivity extends BaseToolBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getIntent().getBooleanExtra(ENABLE_BACK, false) && webView.canGoBack()) {
+            webView.goBack();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     public void logout() {

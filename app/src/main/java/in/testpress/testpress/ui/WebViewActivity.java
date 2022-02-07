@@ -67,6 +67,7 @@ public class WebViewActivity extends BaseToolBarActivity {
     private ValueCallback<Uri[]> mUploadMessages;
     private String url;
     private boolean showLogout;
+    private boolean reload = false;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -164,6 +165,10 @@ public class WebViewActivity extends BaseToolBarActivity {
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                if (reload) {
+                    webView.reload();
+                    reload = false;
+                }
                 pb_loading.setVisibility(View.VISIBLE);
             }
 
@@ -349,6 +354,7 @@ public class WebViewActivity extends BaseToolBarActivity {
     @Override
     public void onBackPressed() {
         if (getIntent().getBooleanExtra(ENABLE_BACK, false) && webView.canGoBack()) {
+            reload = true;
             webView.goBack();
         } else {
             super.onBackPressed();

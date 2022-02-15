@@ -119,6 +119,11 @@
             android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Verify" />
+        <activity
+            android:name=".ui.DoubtsActivity"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Doubts" />
 
         <activity
             android:name=".ui.DocumentsListActivity"

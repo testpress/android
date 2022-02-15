@@ -17,6 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -49,6 +51,7 @@ public class WebViewActivity extends BaseToolBarActivity {
     private static final String TAG = WebViewActivity.class.getSimpleName();
     public static final String URL_TO_OPEN = "URL";
     public static final String ACTIVITY_TITLE = "TITLE";
+    public static final String ENABLE_BACK = "ENABLE_BACK";
     public static final String SHOW_LOGOUT = "SHOW_LOGOUT";
     private final static int FILE_CHOOSER_RESULT_CODE = 1;
 
@@ -57,12 +60,14 @@ public class WebViewActivity extends BaseToolBarActivity {
     @Inject protected LogoutService logoutService;
 
     private ProgressBar pb_loading;
+    private SwipeRefreshLayout swipeContainer;
     WebView webView;
     private String mCapturedMessage;
     private ValueCallback<Uri> mUploadMessage;
     private ValueCallback<Uri[]> mUploadMessages;
     private String url;
     private boolean showLogout;
+    private boolean reload = false;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -113,6 +118,7 @@ public class WebViewActivity extends BaseToolBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         pb_loading = this.findViewById(R.id.pb_loading);
+        initializeSwipeToRefresh();
 
         Intent intent = getIntent();
 
@@ -159,6 +165,10 @@ public class WebViewActivity extends BaseToolBarActivity {
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                if (reload) {
+                    webView.reload();
+                    reload = false;
+                }
                 pb_loading.setVisibility(View.VISIBLE);
             }
 
@@ -264,6 +274,17 @@ public class WebViewActivity extends BaseToolBarActivity {
         });
     }
 
+    private void initializeSwipeToRefresh() {
+        swipeContainer = this.findViewById(R.id.swipe_container);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                webView.reload();
+                swipeContainer.setRefreshing(false);
+            }
+        });
+    }
+
     public void setUrl(String url) {
         this.url = url;
     }
@@ -328,6 +349,16 @@ public class WebViewActivity extends BaseToolBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getIntent().getBooleanExtra(ENABLE_BACK, false) && webView.canGoBack()) {
+            reload = true;
+            webView.goBack();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     public void logout() {

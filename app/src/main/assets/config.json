@@ -1,6 +1,6 @@
 {
-  "version" : "1.0.0",
-  "version_code" : 1,
+  "version" : "4.0.0",
+  "version_code" : 23,
   "testpress_site_subdomain" : "smartclasses",
   "package_name" : "com.shakti.deansacademy",
   "app_name" : "Deanx Academy",

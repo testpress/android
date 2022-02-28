@@ -64,6 +64,7 @@ public class InstituteSettings {
     private Boolean leaderboardEnabled;
     private String threatsAndTargetsLabel;
     private Boolean isVideoDownloadEnabled;
+    private Boolean isHelpdeskEnabled;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
@@ -75,7 +76,7 @@ public class InstituteSettings {
         this.baseUrl = baseUrl;
     }
 
-    public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, Boolean facebookLoginEnabled, Boolean googleLoginEnabled, boolean commentsVotingEnabled, Boolean bookmarksEnabled, Boolean forumEnabled, Boolean twilioEnabled, Boolean allow_profile_edit, String learnLabel, String leaderboardLabel, String dashboardLabel, String bookmarksLabel, String loginLabel, String loginPasswordLabel, String aboutUs, Boolean disableStudentAnalytics, Boolean customRegistrationEnabled, Boolean enableParallelLoginRestriction, Integer maxParallelLogins, Integer lockoutLimit, String cooloffTime, String appToolbarLogo, String appShareLink, String serverTime, Boolean allowScreenshotInApp, String androidSentryDns, Boolean leaderboardEnabled, String threatsAndTargetsLabel, Boolean isVideoDownloadEnabled) {
+    public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, Boolean facebookLoginEnabled, Boolean googleLoginEnabled, boolean commentsVotingEnabled, Boolean bookmarksEnabled, Boolean forumEnabled, Boolean twilioEnabled, Boolean allow_profile_edit, String learnLabel, String leaderboardLabel, String dashboardLabel, String bookmarksLabel, String loginLabel, String loginPasswordLabel, String aboutUs, Boolean disableStudentAnalytics, Boolean customRegistrationEnabled, Boolean enableParallelLoginRestriction, Integer maxParallelLogins, Integer lockoutLimit, String cooloffTime, String appToolbarLogo, String appShareLink, String serverTime, Boolean allowScreenshotInApp, String androidSentryDns, Boolean leaderboardEnabled, String threatsAndTargetsLabel, Boolean isVideoDownloadEnabled, Boolean isHelpdeskEnabled) {
         this.baseUrl = baseUrl;
         this.verificationMethod = verificationMethod;
         this.allowSignup = allowSignup;
@@ -122,6 +123,7 @@ public class InstituteSettings {
         this.leaderboardEnabled = leaderboardEnabled;
         this.threatsAndTargetsLabel = threatsAndTargetsLabel;
         this.isVideoDownloadEnabled = isVideoDownloadEnabled;
+        this.isHelpdeskEnabled = isHelpdeskEnabled;
     }
 
     public String getBaseUrl() {
@@ -490,6 +492,14 @@ public class InstituteSettings {
 
     public void setIsVideoDownloadEnabled(Boolean isVideoDownloadEnabled) {
         this.isVideoDownloadEnabled = isVideoDownloadEnabled;
+    }
+
+    public Boolean getIsHelpdeskEnabled() {
+        return isHelpdeskEnabled;
+    }
+
+    public void setIsHelpdeskEnabled(Boolean isHelpdeskEnabled) {
+        this.isHelpdeskEnabled = isHelpdeskEnabled;
     }
 
     // KEEP METHODS - put your custom methods here

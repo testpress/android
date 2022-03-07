@@ -3,7 +3,7 @@
   "version_code" : 1,
   "testpress_site_subdomain" : "wincentre",
   "package_name" : "in.testpress.wincentre",
-  "app_name" : "WIMMASTER",
+  "app_name" : "WINMASTER",
   "share_message": "Good app to prepare for online exams.",
   "primary_color": "1f73a8",
   "allow_anonymous_user" : false,

@@ -2,7 +2,7 @@
   "version" : "1.0.0",
   "version_code" : 1,
   "testpress_site_subdomain" : "askthetopperias",
-  "package_name" : "in.testpress.askthetopperias",
+  "package_name" : "in.testpress.iasmonkey",
   "app_name" : "IAS monkey",
   "share_message": "Good app to prepare for online exams.",
   "primary_color": "3598db",

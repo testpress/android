@@ -7,9 +7,67 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:234109861763:android:d8b7f300fbe222dd58c0b6",
+        "mobilesdk_app_id": "1:234109861763:android:0c1b7bcb6ecdcad758c0b6",
         "android_client_info": {
-          "package_name": "in.testpress.askthetopperias"
+          "package_name": "com.yourlordships.learning"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "234109861763-bioogliutgusino2na0fk3pgl9f6t8m8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCPAdWjWo9yAQopNkU-M8WvuoAMN5J-2u0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "234109861763-bioogliutgusino2na0fk3pgl9f6t8m8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:234109861763:android:291b1fd58b9b1e2358c0b6",
+        "android_client_info": {
+          "package_name": "in.testpress.iasmonkey"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "234109861763-bioogliutgusino2na0fk3pgl9f6t8m8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCPAdWjWo9yAQopNkU-M8WvuoAMN5J-2u0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "234109861763-bioogliutgusino2na0fk3pgl9f6t8m8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:234109861763:android:190c2a6ab432328358c0b6",
+        "android_client_info": {
+          "package_name": "in.testpress.ibs"
         }
       },
       "oauth_client": [

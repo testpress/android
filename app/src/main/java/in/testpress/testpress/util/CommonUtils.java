@@ -99,7 +99,7 @@ public class CommonUtils {
             @SuppressLint("HardwareIds")
             @Override
             public Device call() throws Exception {
-                return testpressService.register(token, Settings.Secure.getString(
+                return testpressService.registerDevice(token, Settings.Secure.getString(
                         activity.getContentResolver(), ANDROID_ID));
             }
 

@@ -42,8 +42,8 @@ import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
 import in.testpress.testpress.ui.ThrowableLoader;
 import in.testpress.testpress.ui.adapters.DashboardAdapter;
-import io.sentry.core.Sentry;
-import io.sentry.core.protocol.User;
+import io.sentry.Sentry;
+import io.sentry.protocol.User;
 
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.util.PreferenceManager.getDashboardDataPreferences;

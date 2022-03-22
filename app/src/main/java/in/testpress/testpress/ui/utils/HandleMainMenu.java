@@ -7,6 +7,8 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.TextUtils;
+import android.util.Log;
 
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
@@ -20,6 +22,7 @@ import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
+import in.testpress.testpress.ui.DoubtsActivity;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.PostsListActivity;
 import in.testpress.testpress.ui.ProfileDetailsActivity;
@@ -82,6 +85,11 @@ public class HandleMainMenu {
                 break;
             case R.id.login_activity:
                 intent = new Intent(activity, UserDevicesActivity.class);
+                activity.startActivity(intent);
+                break;
+            case R.id.doubts:
+                Log.d("TAG", "handleMenuOptionClick: ");
+                intent = new Intent(activity, DoubtsActivity.class);
                 activity.startActivity(intent);
                 break;
             case R.id.profile:
@@ -159,7 +167,7 @@ public class HandleMainMenu {
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("text/plain");
         String appLink = "https://play.google.com/store/apps/details?id=" + activity.getPackageName();
-        if (instituteSettings.getAppShareLink() != null) {
+        if (!TextUtils.isEmpty(instituteSettings.getAppShareLink())) {
             appLink = instituteSettings.getAppShareLink();
         }
         share.putExtra(Intent.EXTRA_TEXT, activity.getString(R.string.share_message) +

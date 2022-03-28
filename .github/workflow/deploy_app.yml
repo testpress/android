@@ -1,11 +1,7 @@
 name: Deploy app workflow
-on:   
-  workflow_dispatch:
-    inputs:
-      deploy_mode:
-        description: 'Which domain you are launching an app'
-        required: true
-        default: 'sandbox'
+on:
+  pull_request:  
+    types: [opened, reopened]
 
 jobs:
   deploy:

@@ -1,0 +1,66 @@
+desc "Generate Android App Bundle"
+lane :generate_bundle do |signing_config|
+  sh("cd ..;echo '%s' | base64 --decode > $(pwd)/app/keystore.jks" %[signing_config[:keystore_file]])
+  gradle(
+  task: "bundleRelease",
+  print_command: false,
+  properties: {
+     "android.injected.signing.store.file" => "keystore.jks",
+     "android.injected.signing.store.password" => signing_config[:keystore_password],
+     "android.injected.signing.key.alias" => signing_config[:key_alias],
+     "android.injected.signing.key.password" => signing_config[:key_password],
+     })
+end
+
+desc "Deploy a new version to the Google Play"
+lane :deploy do 
+  config_json = read_json(json_string: get_app_config())
+  generate_bundle(
+    keystore_file: config_json[:keystore_file],
+    keystore_password: config_json[:keystore_password],
+    key_password: config_json[:key_password],
+    key_alias: config_json[:key_alias]
+  )
+  upload_to_play_store(
+    skip_upload_apk: true,
+    package_name: config_json[:package_name],
+    json_key_data: convert_base64_into_string(data: config_json[:json_key_file]),
+  )
+end
+
+lane :replace_google_services do
+  config_json = read_json(json_string: get_app_config())
+  replace_google_services_json(google_services_json: config_json[:google_services_json])
+end
+
+lane :replace_images do |config_json|
+  config_json = read_json(json_string: get_app_config())
+  download_file(url: config_json[:splash_screen1], destination_path: './app/src/main/res/drawable/splash_screen.png')
+  download_file(url: config_json[:splash_screen2], destination_path: './app/src/main/res/drawable-land/splash_screen.png')
+  download_file(url: config_json[:splash_screen3], destination_path: './app/src/main/res/drawable-large/splash_screen.png')
+  download_file(url: config_json[:splash_screen4], destination_path: './app/src/main/res/drawable-large-land/splash_screen.png')
+  download_file(url: config_json[:notification1], destination_path: './app/src/main/res/drawable-mdpi/ic_stat_notification.png')
+  download_file(url: config_json[:notification2], destination_path: './app/src/main/res/drawable-hdpi/ic_stat_notification.png')
+  download_file(url: config_json[:notification3], destination_path: './app/src/main/res/drawable-xhdpi/ic_stat_notification.png')
+  download_file(url: config_json[:notification4], destination_path: './app/src/main/res/drawable-xxhdpi/ic_stat_notification.png')
+  download_file(url: config_json[:notification5], destination_path: './app/src/main/res/drawable-xxxhdpi/ic_stat_notification.png')
+  download_file(url: config_json[:launcher1], destination_path: './app/src/main/res/mipmap-mdpi/ic_launcher.png')
+  download_file(url: config_json[:launcher2], destination_path: './app/src/main/res/mipmap-hdpi/ic_launcher.png')
+  download_file(url: config_json[:launcher3], destination_path: './app/src/main/res/mipmap-xhdpi/ic_launcher.png')
+  download_file(url: config_json[:launcher4], destination_path: './app/src/main/res/mipmap-xxhdpi/ic_launcher.png')
+  download_file(url: config_json[:launcher5], destination_path: './app/src/main/res/mipmap-xxxhdpi/ic_launcher.png')
+  download_file(url: config_json[:login_screen_image], destination_path: './app/src/main/res/drawable/login_screen_image.png')
+end
+
+
+lane :modify_config_json do
+  modify_config_json_file(config_json: get_app_config())
+end
+
+lane :generate_debug_apk do
+  gradle(
+    task: "assemble",
+    build_type: "Debug"
+  )
+end
+

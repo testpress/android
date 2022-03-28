@@ -26,6 +26,7 @@ import in.testpress.testpress.ui.AccountActivateActivity;
 import in.testpress.testpress.ui.CreateForumActivity;
 import in.testpress.testpress.ui.DocumentsListActivity;
 import in.testpress.testpress.ui.DocumentsListFragment;
+import in.testpress.testpress.ui.DoubtsActivity;
 import in.testpress.testpress.ui.DrupalRssListActivity;
 import in.testpress.testpress.ui.DrupalRssListFragment;
 import in.testpress.testpress.ui.ForumActivity;
@@ -84,7 +85,8 @@ import static in.testpress.testpress.BuildConfig.BASE_URL;
                 ForumActivity.class,
                 CreateForumActivity.class,
                 WebViewActivity.class,
-                DashboardFragment.class
+                DashboardFragment.class,
+                DoubtsActivity.class
         }
 )
 public class TestpressModule {

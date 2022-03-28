@@ -55,8 +55,8 @@ import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.ui.UserDevicesActivity;
-import io.sentry.core.Sentry;
-import io.sentry.core.protocol.User;
+import io.sentry.Sentry;
+import io.sentry.protocol.User;
 import retrofit.RetrofitError;
 
 import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;

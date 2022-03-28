@@ -4,10 +4,10 @@ on: [push]
 
 jobs:
   deploy:
-    env:
-    GITHUB_ACCESS_KEY: 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
-    GITHUB_USERNAME: hari-testpress
     runs-on: ubuntu-latest
+    env:
+      GITHUB_ACCESS_KEY: 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
+      GITHUB_USERNAME: hari-testpress
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v2

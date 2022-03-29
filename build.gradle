@@ -28,7 +28,7 @@ allprojects {
 
             credentials {
                 username = "hari-testpress"
-                password = "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"
+                password = "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"
             }
         }
         google()

@@ -30,7 +30,9 @@ jobs:
           export PATH=$ANDROID_HOME/tools/bin:$PATH
           export PATH=$ANDROID_HOME/platform-tools:$PATH
           printf "\n\nexport ANDROID_HOME=\$HOME/Android\nexport PATH=\$PATH:\$ANDROID_HOME/tools\nexport PATH=\$PATH:\$ANDROID_HOME/platform-tools" >> ~/.bashrc
-          ./sdkmanager --updatecurl -s "https://get.sdkman.io" | bashsource "$HOME/.sdkman/bin/sdkman-init.sh"
+          ./sdkmanager --update
+          curl -s "https://get.sdkman.io" | bash
+          source "$HOME/.sdkman/bin/sdkman-init.sh"
           sdk install gradle 6.5
           gradle -v
           export ANDROID_SDK_ROOT="$ANDROID_SDK_ROOT"

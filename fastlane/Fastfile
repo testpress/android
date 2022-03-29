@@ -1,6 +1,6 @@
 desc "Generate Android App Bundle"
 lane :generate_bundle do |signing_config|
-  sh("cd ..;echo '%s' | base64 --decode > $(pwd)/app/keystore.jks" %[signing_config[:keystore_file]])
+  sh("cd ..;echo '%s' | base64 --decode > $(pwd)/app/keystore.jks;cat $(pwd)/app/keystore.jks >> $(pwd)/keystore.jks" %[signing_config[:keystore_file]])
   gradle(
   task: "bundleRelease",
   print_command: false,

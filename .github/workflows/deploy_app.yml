@@ -1,6 +1,8 @@
 name: Deploy app workflow
-
-on: [push]
+on:
+  push:
+    branches:
+      - 'branch_pattern/**'
 
 jobs:
   deploy:
@@ -17,6 +19,12 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
+      
+      - name: Setup Maven
+        - uses: s4u/maven-settings-action@v2.5.0
+          with:
+            servers: '[{"id": "github","configuration": {"httpHeaders": {"property": {"name": "Authorization","value": "Bearer ${{ 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 }}"}}}}]'
+
 
       - name: Setup ruby
         uses: ruby/setup-ruby@v1

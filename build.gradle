@@ -27,8 +27,8 @@ allprojects {
             url = uri("https://maven.pkg.github.com/testpress/android-sdk")
 
             credentials {
-                username = "hari-testpress"
-                password = "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"
+                username = System.getenv("GITHUB_ACCESS_KEY")
+                password = System.getenv("GITHUB_USERNAME")
             }
         }
         google()

@@ -5,6 +5,9 @@ on: [push]
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_ACCESS_KEY: ${{ secrets.GH_ACCESS_KEY }}
+      GITHUB_USERNAME: ${{ secrets.GH_USERNAME }}
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v2

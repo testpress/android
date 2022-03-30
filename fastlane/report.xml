@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="fastlane.lanes">
+    
+    
+    
+      
+      <testcase classname="fastlane.lanes" name="0: get_app_config" time="0.22839553">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="1: read_json" time="0.0005707">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="2: cd ..;echo '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
+' | base64 --decode &gt; $(pwd)/app/keystore.jks;cat $(pwd)/app/keystore.jks &gt;&gt; $(pwd)/keystore.jks" time="0.002848997">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="3: bundleRelease" time="3.646398306">
+        
+      </testcase>
+    
+  </testsuite>
+</testsuites>

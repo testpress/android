@@ -5,12 +5,12 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: get_app_config" time="0.22839553">
+      <testcase classname="fastlane.lanes" name="0: get_app_config" time="0.183470142">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: read_json" time="0.0005707">
+      <testcase classname="fastlane.lanes" name="1: read_json" time="0.000649676">
         
       </testcase>
     
@@ -56,12 +56,12 @@ Irgzb8osZ203S+IFgd9F9CFTLkpzG1ptigSclSqqdmD3OasYK6Z3h7JMf9ewS6ljZwk9pcdaZO9p
 3IjfbwPWucPBIkjPWfUNm375QD4gXxNl6clsszRItf4vzpLRL31wuScOQEU3ux8vKSuEj7qCE/ff
 Ot8HNQ+ZE0ME+DHtxhMJPUIZ1IL/fPmCUwp4pCfEgpY+7JSJBO7WK3ZcAZQeTY/5JHZq5tNBhMei
 vaSM6OoLeIddbXSEPXIjzT8ry209HLQP1C7AS0iUOHuNiSA=
-' | base64 --decode &gt; $(pwd)/app/keystore.jks;cat $(pwd)/app/keystore.jks &gt;&gt; $(pwd)/keystore.jks" time="0.002848997">
+' | base64 --decode &gt; $(pwd)/app/keystore.jks;cat $(pwd)/app/keystore.jks &gt;&gt; $(pwd)/keystore.jks" time="0.00292663">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: bundleRelease" time="3.646398306">
+      <testcase classname="fastlane.lanes" name="3: bundleRelease assembleRelease assembleDebug" time="36.282389203">
         
       </testcase>
     

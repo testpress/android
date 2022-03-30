@@ -53,10 +53,10 @@ Deploy a new version to the Google Play
 
 
 
-### generate_debug_apk
+### generate_app_files
 
 ```sh
-[bundle exec] fastlane generate_debug_apk
+[bundle exec] fastlane generate_app_files
 ```
 
 

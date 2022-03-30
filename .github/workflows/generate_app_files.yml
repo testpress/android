@@ -53,10 +53,13 @@ jobs:
         run: |
           export LC_ALL=en_US.UTF-8
           export LANG=en_US.UTF-8
-          bundle exec fastlane generate_bundle
+          bundle exec fastlane generate_app_files
       
       - name: Upload AAB
         uses: actions/upload-artifact@v1
         with:
           name: app
-          path: app/build/outputs/bundle/release/app-release.aab
+          path: |
+            app/build/outputs/apk/release/app-release.aab
+            app/build/outputs/bundle/release/app-release.aab
+            app/build/outputs/apk/debug/app-debug.apk

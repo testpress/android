@@ -60,6 +60,6 @@ jobs:
         with:
           name: app
           path: |
-            app/build/outputs/apk/release/app-release.aab
+            app/build/outputs/apk/release/app-release.apk
             app/build/outputs/bundle/release/app-release.aab
             app/build/outputs/apk/debug/app-debug.apk

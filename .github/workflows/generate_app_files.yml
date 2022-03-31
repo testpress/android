@@ -56,7 +56,7 @@ jobs:
           bundle exec fastlane generate_app_files
       
       - name: Upload AAB
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: app
           path: |

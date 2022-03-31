@@ -5,17 +5,17 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: get_app_config" time="0.183470142">
+      <testcase classname="fastlane.lanes" name="0: get_app_config" time="0.27094771">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: read_json" time="0.000649676">
+      <testcase classname="fastlane.lanes" name="1: read_json" time="0.00051981">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: cd ..;echo '/u3+7QAAAAIAAAABAAAAAQAJdGVzdHByZXNzAAABTK31E50AAAUEMIIFADAOBgorBgEEASoCEQEB
+      <testcase classname="fastlane.lanes" name="2: echo '/u3+7QAAAAIAAAABAAAAAQAJdGVzdHByZXNzAAABTK31E50AAAUEMIIFADAOBgorBgEEASoCEQEB
 BQAEggTsSmFIiLWPq6/C1T/HCVpQWqCIr1BF4byHKZVC6A/m/tlGFqqyZqxYVPSUT/iILYxQkS5u
 4FcQE4Db1LFVh/jKyRwUBKx+MRt+h1pj5me/iJniNyzLKTshnp1ZppzPwHG4Op6kp2OhznNQ07+c
 ORp1k45fdGnWGnBd8ni/R76ryi1vhvIqJPcLtb7GSDAKGg37EDdwFRHEc/WKjZZVbVNRjS7PkWsh
@@ -56,12 +56,12 @@ Irgzb8osZ203S+IFgd9F9CFTLkpzG1ptigSclSqqdmD3OasYK6Z3h7JMf9ewS6ljZwk9pcdaZO9p
 3IjfbwPWucPBIkjPWfUNm375QD4gXxNl6clsszRItf4vzpLRL31wuScOQEU3ux8vKSuEj7qCE/ff
 Ot8HNQ+ZE0ME+DHtxhMJPUIZ1IL/fPmCUwp4pCfEgpY+7JSJBO7WK3ZcAZQeTY/5JHZq5tNBhMei
 vaSM6OoLeIddbXSEPXIjzT8ry209HLQP1C7AS0iUOHuNiSA=
-' | base64 --decode &gt; $(pwd)/app/keystore.jks;cat $(pwd)/app/keystore.jks &gt;&gt; $(pwd)/keystore.jks" time="0.00292663">
+' | base64 --decode &gt; $(pwd)/keystore.jks" time="0.001970487">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: bundleRelease assembleRelease assembleDebug" time="36.282389203">
+      <testcase classname="fastlane.lanes" name="3: bundleRelease assembleRelease assembleDebug" time="20.297808487">
         
       </testcase>
     

@@ -215,8 +215,8 @@ PLATFORMS
 
 DEPENDENCIES
   fastlane
-  fastlane-plugin-download_file
   fastlane-plugin-json
+  fastlane-plugin-download_file
 
 BUNDLED WITH
    2.3.10

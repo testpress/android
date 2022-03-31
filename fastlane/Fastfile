@@ -1,11 +1,11 @@
 desc "Generate Android App Bundle"
 lane :generate_bundle do |signing_config|
-  sh("cd ..;echo '%s' | base64 --decode > $(pwd)/app/keystore.jks;cat $(pwd)/app/keystore.jks >> $(pwd)/keystore.jks" %[signing_config[:keystore_file]])
+  sh("echo '%s' | base64 --decode > $(pwd)/keystore.jks" %[signing_config[:keystore_file]])
   gradle(
   task: "bundleRelease",
   print_command: false,
   properties: {
-     "android.injected.signing.store.file" => "keystore.jks",
+    "android.injected.signing.store.file" => "%s/app/keystore.jks"%File.expand_path("..", Dir.pwd),
      "android.injected.signing.store.password" => signing_config[:keystore_password],
      "android.injected.signing.key.alias" => signing_config[:key_alias],
      "android.injected.signing.key.password" => signing_config[:key_password],
@@ -59,12 +59,12 @@ end
 
 lane :generate_app_files do
   signing_config = read_json(json_string: get_app_config())
-  sh("cd ..;echo '%s' | base64 --decode > $(pwd)/app/keystore.jks;cat $(pwd)/app/keystore.jks >> $(pwd)/keystore.jks" %[signing_config[:keystore_file]])
+  sh("echo '%s' | base64 --decode > $(pwd)/keystore.jks" %[signing_config[:keystore_file]])
   gradle(
   tasks: ["bundleRelease", "assembleRelease", "assembleDebug"],
   print_command: false,
   properties: {
-     "android.injected.signing.store.file" => "keystore.jks",
+     "android.injected.signing.store.file" => "%s/app/keystore.jks"%File.expand_path("..", Dir.pwd),
      "android.injected.signing.store.password" => signing_config[:keystore_password],
      "android.injected.signing.key.alias" => signing_config[:key_alias],
      "android.injected.signing.key.password" => signing_config[:key_password],

@@ -58,9 +58,9 @@ lane :modify_config_json do
 end
 
 lane :generate_app_files do
+  sh("bundle exec fastlane run get_app_config")
   signing_config = read_json(json_string: get_app_config())
   sh("echo '%s' | base64 --decode > $(pwd)/keystore.jks" %[signing_config[:keystore_file]])
-  sh("bundle exec fastlane run get_app_config")
   gradle(
   tasks: ["bundleRelease", "assembleRelease", "assembleDebug"],
   print_command: false,

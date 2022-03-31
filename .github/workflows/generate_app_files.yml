@@ -1,12 +1,6 @@
-name: Deploy app workflow
+name: Generate App File
 
-on:
-  workflow_dispatch:
-    inputs:
-      deploy_mode:
-        description: 'Enter the subdomain'
-        required: true
-        default: 'master'
+on: [push]
 
 jobs:
   deploy:
@@ -59,4 +53,13 @@ jobs:
         run: |
           export LC_ALL=en_US.UTF-8
           export LANG=en_US.UTF-8
-          bundle exec fastlane deploy
+          bundle exec fastlane generate_app_files
+      
+      - name: Upload AAB
+        uses: actions/upload-artifact@v2
+        with:
+          name: app
+          path: |
+            app/build/outputs/apk/release/app-release.apk
+            app/build/outputs/bundle/release/app-release.aab
+            app/build/outputs/apk/debug/app-debug.apk

@@ -1,9 +1,9 @@
 {
-  "version" : "1.0.0",
-  "version_code" : 1,
+  "version" : "1.0.1",
+  "version_code" : 2,
   "testpress_site_subdomain" : "edukosh",
   "package_name" : "in.testpress.edukosh",
-  "app_name" : "Kaksha",
+  "app_name" : "EDUKOSH",
   "share_message": "Good app to prepare for online exams.",
   "primary_color": "38919D",
   "allow_anonymous_user" : false,

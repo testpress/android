@@ -302,6 +302,10 @@ public class MainActivity extends TestpressFragmentActivity {
             apiAvailability.makeGooglePlayServicesAvailable(this);
             CommonUtils.registerDevice(MainActivity.this, testpressService, serviceProvider);
         }
+        SharedPreferences userPreferences = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
+        if (userPreferences.getBoolean("isProfileUpdatePending", false)) {
+            fetchSsoLink();
+        }
 
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             addMenuItem(R.string.dashboard, R.drawable.ic_dashboard, new DashboardFragment());

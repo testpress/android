@@ -532,6 +532,9 @@ public class InstituteSettings {
         List<InstituteSettings> instituteSettingList = instituteSettingsDao.queryBuilder()
                 .where(InstituteSettingsDao.Properties.BaseUrl.eq(BuildConfig.BASE_URL))
                 .list();
+        if (instituteSettingList.size() == 0) {
+            return null;
+        }
         return instituteSettingList.get(0);
     }
 

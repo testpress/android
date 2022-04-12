@@ -53,7 +53,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:18.0.0'
 
     // Facebook SDK
-    implementation 'com.facebook.android:facebook-android-sdk:4.20.0'
+    implementation 'com.facebook.android:facebook-android-sdk:8.2.0'
 
     // Allow methods more than 64K
     implementation 'androidx.multidex:multidex:2.0.1'
@@ -62,6 +62,7 @@ dependencies {
     // Country code picker
     // https://github.com/hbb20/CountryCodePickerProject/wiki
     implementation "com.hbb20:ccp:2.1.9"
+    implementation 'com.lionscribe.open.libphonenumber:libphonenumber:8.12.18.1'
 
     implementation 'io.sentry:sentry-android:5.3.0'
     implementation 'org.slf4j:slf4j-nop:1.7.25'

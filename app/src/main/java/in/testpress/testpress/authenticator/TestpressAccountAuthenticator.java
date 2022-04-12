@@ -66,7 +66,7 @@ public class TestpressAccountAuthenticator extends AbstractAccountAuthenticator 
                              final String authTokenType, final String[] requiredFeatures,
                              final Bundle options) throws NetworkErrorException {
         //TODO Restrict to one account
-        final Intent intent = new Intent(context, LoginActivity.class);
+        final Intent intent = new Intent(context, LoginActivityV2.class);
         intent.putExtra(PARAM_AUTHTOKEN_TYPE, authTokenType);
         intent.putExtra(KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
 

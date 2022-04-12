@@ -232,7 +232,9 @@ public class MainActivity extends TestpressFragmentActivity {
             menu.findItem(R.id.bookmarks).setVisible(false);
         } else {
             menu.findItem(R.id.logout).setVisible(true);
-            menu.findItem(R.id.doubts).setVisible(Boolean.TRUE.equals(mInstituteSettings.getIsHelpdeskEnabled()));
+            if (mInstituteSettings != null) {
+                menu.findItem(R.id.doubts).setVisible(Boolean.TRUE.equals(mInstituteSettings.getIsHelpdeskEnabled()));
+            }
             menu.findItem(R.id.login_activity).setVisible(true);
             menu.findItem(R.id.analytics).setVisible(true);
             menu.findItem(R.id.profile).setVisible(true);

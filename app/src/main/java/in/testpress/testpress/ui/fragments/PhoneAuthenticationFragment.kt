@@ -12,7 +12,11 @@ import `in`.testpress.testpress.viewmodel.LoginViewModel
 import `in`.testpress.util.ViewUtils
 import android.content.Intent
 import android.content.IntentSender
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +24,8 @@ import android.view.inputmethod.EditorInfo
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.auth.api.credentials.*
@@ -111,6 +117,9 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
     }
 
     private fun setOnClickListeners() {
+        val primaryColor =
+            String.format("#%06x", ContextCompat.getColor(requireContext(), R.color.testpress_color_primary) and 0xffffff) + "75"
+        userNameLogin.backgroundTintList = ColorStateList.valueOf(Color.parseColor(primaryColor))
         userNameLogin.setOnClickListener {
             loginNavigation?.goToUsernameAuthentication()
         }

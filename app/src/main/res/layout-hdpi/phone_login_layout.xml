@@ -145,7 +145,7 @@
             android:textStyle="normal"
             android:paddingVertical="5dp"
             style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-            android:backgroundTint="#C7280F"
+            android:backgroundTint="@color/testpress_color_secondary"
             android:elevation="0dp"
             android:fontFamily="@font/inter"
             android:textAllCaps="false"

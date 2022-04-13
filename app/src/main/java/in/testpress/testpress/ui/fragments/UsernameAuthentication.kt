@@ -22,6 +22,8 @@ import android.accounts.AccountManager
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -30,6 +32,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.core.content.ContextCompat
 import com.facebook.Profile
 import kotlinx.android.synthetic.main.username_login_layout.*
 import javax.inject.Inject
@@ -96,6 +99,11 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
     }
 
     private fun initializeButtons() {
+        val primaryColor =
+            String.format("#%06x", ContextCompat.getColor(requireContext(), R.color.testpress_color_primary) and 0xffffff) + "75"
+        phoneLogin.backgroundTintList = ColorStateList.valueOf(Color.parseColor(primaryColor))
+        forgotPassword.backgroundTintList = ColorStateList.valueOf(Color.parseColor(primaryColor))
+
         phoneLogin.setOnClickListener {
             loginNavigation?.goToPhoneAuthentication()
         }

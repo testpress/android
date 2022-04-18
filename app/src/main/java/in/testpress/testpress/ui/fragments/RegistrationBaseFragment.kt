@@ -44,7 +44,7 @@ abstract class RegistrationBaseFragment: Fragment() {
 
     private fun initViewModel() {
         viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return RegisterViewModel(RegisterRepository(activity.testPressService), binding) as T
             }
         }).get(RegisterViewModel::class.java)

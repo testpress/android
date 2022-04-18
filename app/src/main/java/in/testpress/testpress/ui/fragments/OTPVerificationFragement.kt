@@ -119,6 +119,7 @@ class OTPVerificationFragement: BaseAuthenticationFragment() {
     fun verifyOTP() {
         if (otpField.isEmpty()) {
             otpField.error = "Please enter OTP number"
+            return
         }
         requireActivity().runOnUiThread {
             viewModel.verifyOTP(Integer.parseInt(otpField.text.toString()), phoneNumber).observe(this, { resource ->

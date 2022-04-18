@@ -88,6 +88,7 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
                     loadingDialog.hideDialog()
                     goToPhoneAuthentication()
                 }
+                Status.ERROR -> loadingDialog.hideDialog()
             }
         })
     }

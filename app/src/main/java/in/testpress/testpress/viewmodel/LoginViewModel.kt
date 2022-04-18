@@ -6,7 +6,6 @@ import `in`.testpress.testpress.models.pojo.GenerateOTPResponse
 import `in`.testpress.testpress.models.pojo.OTPLoginResponse
 import `in`.testpress.testpress.repository.InstituteRepository
 import androidx.lifecycle.*
-import kotlinx.coroutines.launch
 
 class LoginViewModel(private val repository: InstituteRepository): ViewModel() {
 

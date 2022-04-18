@@ -159,7 +159,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:backgroundTint="#BF251C75"
+                android:backgroundTint="@color/testpress_color_tertiary"
                 android:elevation="0dp"
                 android:fontFamily="@font/inter"
                 android:paddingVertical="15dp"

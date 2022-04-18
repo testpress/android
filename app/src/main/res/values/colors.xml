@@ -43,6 +43,7 @@
     <color name="testpress_actionbar_text">@color/white</color>
     <color name="testpress_color_primary">@color/primary</color>
     <color name="testpress_color_secondary">@color/secondary</color>
+    <color name="testpress_color_tertiary">@color/tertiary</color>
     <color name="testpress_button_text_color">@color/white</color>
 
     <color name="green_correct">#00CCAA</color>

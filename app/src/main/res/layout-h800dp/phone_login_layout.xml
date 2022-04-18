@@ -162,7 +162,7 @@
             android:textStyle="normal"
             android:fontFamily="@font/inter"
             style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-            android:backgroundTint="#BF251C75"
+            android:backgroundTint="@color/testpress_color_tertiary"
             app:backgroundTintMode="add"
             android:elevation="0dp"
             app:cornerRadius="8dp"

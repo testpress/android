@@ -4,23 +4,16 @@ import `in`.testpress.core.TestpressCallback
 import `in`.testpress.core.TestpressException
 import `in`.testpress.core.TestpressSdk
 import `in`.testpress.core.TestpressSession
-import `in`.testpress.testpress.BuildConfig
 import `in`.testpress.testpress.Injector
 import `in`.testpress.testpress.R
 import `in`.testpress.testpress.authenticator.LoginActivityV2
 import `in`.testpress.testpress.authenticator.ResetPasswordActivity
-import `in`.testpress.testpress.core.Constants
 import `in`.testpress.testpress.core.TestpressService
 import `in`.testpress.testpress.models.InstituteSettings
-import `in`.testpress.testpress.util.CommonUtils
-import `in`.testpress.testpress.util.GCMPreference
 import `in`.testpress.testpress.util.UIUtils
 import `in`.testpress.testpress.util.isEmpty
 import `in`.testpress.util.ViewUtils
-import android.accounts.Account
 import android.accounts.AccountManager
-import android.app.Activity.RESULT_OK
-import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -33,7 +26,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.content.ContextCompat
-import com.facebook.Profile
 import kotlinx.android.synthetic.main.username_login_layout.*
 import javax.inject.Inject
 
@@ -159,41 +151,23 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
     private fun signIn() {
         authenticate(
             username.text.toString(), password.text.toString(),
-            TestpressSdk.Provider.TESTPRESS
         )
     }
 
-    private fun authenticate(
-        userId: String, accessToken: String,
-        provider: TestpressSdk.Provider
-    ) {
+    private fun authenticate(userId: String, accessToken: String) {
         val settings = `in`.testpress.models.InstituteSettings(instituteSettings.baseUrl)
             .setBookmarksEnabled(instituteSettings.bookmarksEnabled)
             .setCoursesFrontend(instituteSettings.showGameFrontend)
             .setCoursesGamificationEnabled(instituteSettings.coursesEnableGamification)
             .setCommentsVotingEnabled(instituteSettings.commentsVotingEnabled)
             .setAccessCodeEnabled(false)
-        TestpressSdk.initialize(requireContext(), settings, userId, accessToken, provider,
+        TestpressSdk.initialize(requireContext(), settings, userId, accessToken, TestpressSdk.Provider.TESTPRESS,
             object : TestpressCallback<TestpressSession?>() {
                 override fun onSuccess(response: TestpressSession?) {
-                    if (provider == TestpressSdk.Provider.FACEBOOK &&
-                        Profile.getCurrentProfile() != null
-                    ) {
-
-                    }
                     val authToken = response?.token
-                    testPressService.setAuthToken(authToken)
-                    val sharedPreferences =
-                        requireActivity().getSharedPreferences(
-                            Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE
-                        )
-                    sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false)
-                        .apply()
-                    CommonUtils.registerDevice(requireActivity(), testPressService)
-                    val account = Account(username.text.toString(), BuildConfig.APPLICATION_ID)
-                    accountManager.addAccountExplicitly(account, password.text.toString(), null)
-                    accountManager.setAuthToken(account, BuildConfig.APPLICATION_ID, authToken)
-                    autoLogin(authToken)
+                    if (authToken != null) {
+                        loginNavigation?.onLoginSuccess(username.text.toString(), authToken)
+                    }
                 }
 
                 override fun onException(e: TestpressException) {
@@ -210,15 +184,5 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
                     }
                 }
             })
-    }
-
-    private fun autoLogin(authToken: String?) {
-        val intent = Intent()
-        intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, username.text.toString())
-        intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, BuildConfig.APPLICATION_ID)
-        intent.putExtra(AccountManager.KEY_AUTHTOKEN, authToken)
-        loginNavigation?.onLoginSuccess(intent)
-        requireActivity().setResult(RESULT_OK, intent)
-        requireActivity().finish()
     }
 }

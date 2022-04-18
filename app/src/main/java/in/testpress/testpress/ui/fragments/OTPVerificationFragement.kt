@@ -1,28 +1,16 @@
 package `in`.testpress.testpress.ui.fragments
 
-import `in`.testpress.core.TestpressSdk
-import `in`.testpress.core.TestpressSession
 import `in`.testpress.enums.Status
-import `in`.testpress.network.Resource
-import `in`.testpress.testpress.BuildConfig
 import `in`.testpress.testpress.Injector
 import `in`.testpress.testpress.R
-import `in`.testpress.testpress.core.Constants
 import `in`.testpress.testpress.core.TestpressService
-import `in`.testpress.testpress.models.InstituteSettings
-import `in`.testpress.testpress.models.pojo.OTPLoginResponse
 import `in`.testpress.testpress.repository.InstituteRepository
 import `in`.testpress.testpress.ui.utils.AutoDetectOTP
-import `in`.testpress.testpress.util.CommonUtils
-import `in`.testpress.testpress.util.GCMPreference
 import `in`.testpress.testpress.util.UIUtils
 import `in`.testpress.testpress.util.isEmpty
 import `in`.testpress.testpress.viewmodel.LoginViewModel
-import android.accounts.Account
 import android.accounts.AccountManager
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -43,7 +31,6 @@ class OTPVerificationFragement: BaseAuthenticationFragment() {
     lateinit var testPressService: TestpressService
     lateinit var phoneNumber: String
     lateinit var countryCode: String
-    private val instituteSettings = InstituteSettings.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -134,29 +121,17 @@ class OTPVerificationFragement: BaseAuthenticationFragment() {
             otpField.error = "Please enter OTP number"
         }
         requireActivity().runOnUiThread {
-            val settings = `in`.testpress.models.InstituteSettings(instituteSettings.baseUrl)
-                .setBookmarksEnabled(instituteSettings.bookmarksEnabled)
-                .setCoursesFrontend(instituteSettings.showGameFrontend)
-                .setCoursesGamificationEnabled(instituteSettings.coursesEnableGamification)
-                .setCommentsVotingEnabled(instituteSettings.commentsVotingEnabled)
-                .setAccessCodeEnabled(false)
-
             viewModel.verifyOTP(Integer.parseInt(otpField.text.toString()), phoneNumber).observe(this, { resource ->
                 when(resource.status) {
                     Status.SUCCESS -> {
                         if (resource.data?.token != null) {
-                            val session = TestpressSession(settings, resource.data!!.token!!)
-                            TestpressSdk.setTestpressSession(requireContext(), session)
-                            testPressService.setAuthToken(resource.data!!.token!!)
-                            registerDevice()
                             if (resource.data?.isNewUser == true) {
                                 val userSharedPreference = requireActivity().getSharedPreferences(
                                     "UserPreference", Context.MODE_PRIVATE
                                 )
                                 userSharedPreference.edit().putBoolean("isProfileUpdatePending", true).apply()
                             }
-                            addTokenToAccountManager(resource)
-                            autoLogin(resource)
+                            loginNavigation?.onLoginSuccess(phoneNumber, resource.data!!.token!!)
                         }
                     }
                     Status.ERROR -> {
@@ -170,30 +145,5 @@ class OTPVerificationFragement: BaseAuthenticationFragment() {
                 }
             })
         }
-    }
-
-    private fun addTokenToAccountManager(resource: Resource<OTPLoginResponse>) {
-        val account = Account(phoneNumber, BuildConfig.APPLICATION_ID)
-        accountManager.addAccountExplicitly(account, null, null)
-        accountManager.setAuthToken(account, BuildConfig.APPLICATION_ID, resource.data!!.token!!)
-    }
-
-    private fun registerDevice() {
-        val sharedPreferences = requireActivity().getSharedPreferences(
-            Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE
-        )
-        sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false)
-            .apply()
-        CommonUtils.registerDevice(requireActivity(), testPressService)
-    }
-
-    private fun autoLogin(resource: Resource<OTPLoginResponse>) {
-        val intent = Intent()
-        intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, phoneNumber)
-        intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, BuildConfig.APPLICATION_ID)
-        intent.putExtra(AccountManager.KEY_AUTHTOKEN, resource.data!!.token!!)
-        loginNavigation?.onLoginSuccess(intent)
-        requireActivity().setResult(Activity.RESULT_OK, intent)
-        requireActivity().finish()
     }
 }

@@ -46,7 +46,7 @@ import in.testpress.testpress.ui.ProfileDetailsActivity;
 import in.testpress.testpress.ui.ProfilePhotoActivity;
 import in.testpress.testpress.ui.WebViewActivity;
 import in.testpress.testpress.ui.fragments.DashboardFragment;
-import in.testpress.testpress.ui.fragments.OTPVerificationFragement;
+import in.testpress.testpress.ui.fragments.OTPVerificationFragment;
 import in.testpress.testpress.ui.fragments.PhoneAuthenticationFragment;
 import in.testpress.testpress.ui.fragments.UsernameAuthentication;
 import retrofit.RestAdapter;
@@ -94,7 +94,7 @@ import static in.testpress.testpress.BuildConfig.BASE_URL;
                 LoginActivityV2.class,
                 UsernameAuthentication.class,
                 PhoneAuthenticationFragment.class,
-                OTPVerificationFragement.class
+                OTPVerificationFragment.class
         }
 )
 public class TestpressModule {

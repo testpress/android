@@ -23,7 +23,7 @@ import java.util.regex.Pattern
 import javax.inject.Inject
 import kotlin.concurrent.schedule
 
-class OTPVerificationFragement: BaseAuthenticationFragment() {
+class OTPVerificationFragment: BaseAuthenticationFragment() {
     lateinit var viewModel: LoginViewModel
     lateinit var accountManager: AccountManager
 

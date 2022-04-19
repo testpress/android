@@ -12,7 +12,7 @@ import `in`.testpress.testpress.core.Constants
 import `in`.testpress.testpress.core.TestpressService
 import `in`.testpress.testpress.models.InstituteSettings
 import `in`.testpress.testpress.repository.InstituteRepository
-import `in`.testpress.testpress.ui.fragments.OTPVerificationFragement
+import `in`.testpress.testpress.ui.fragments.OTPVerificationFragment
 import `in`.testpress.testpress.ui.fragments.PhoneAuthenticationFragment
 import `in`.testpress.testpress.ui.fragments.UsernameAuthentication
 import `in`.testpress.testpress.ui.view.LoadingDialog
@@ -116,7 +116,7 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
     }
 
     override fun goToOTPVerification(phoneNumber: String, countryCode: String) {
-        val otpVerificationFragement = OTPVerificationFragement()
+        val otpVerificationFragement = OTPVerificationFragment()
         otpVerificationFragement.arguments = Bundle().apply {
             putString("phoneNumber", phoneNumber)
             putString("countryCode", countryCode)

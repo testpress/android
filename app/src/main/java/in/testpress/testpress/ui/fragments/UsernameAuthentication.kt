@@ -4,12 +4,16 @@ import `in`.testpress.core.TestpressCallback
 import `in`.testpress.core.TestpressException
 import `in`.testpress.core.TestpressSdk
 import `in`.testpress.core.TestpressSession
+import `in`.testpress.testpress.BuildConfig
 import `in`.testpress.testpress.Injector
 import `in`.testpress.testpress.R
+import `in`.testpress.testpress.authenticator.LoginActivity
 import `in`.testpress.testpress.authenticator.LoginActivityV2
+import `in`.testpress.testpress.authenticator.RegisterActivity
 import `in`.testpress.testpress.authenticator.ResetPasswordActivity
 import `in`.testpress.testpress.core.TestpressService
 import `in`.testpress.testpress.models.InstituteSettings
+import `in`.testpress.testpress.ui.WebViewActivity
 import `in`.testpress.testpress.util.UIUtils
 import `in`.testpress.testpress.util.isEmpty
 import `in`.testpress.util.ViewUtils
@@ -113,6 +117,14 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
         googleSignIn.setOnClickListener {
             loginNavigation?.signInWithGoogle()
         }
+
+        signUp.setOnClickListener {
+            val intent = Intent(requireContext(), WebViewActivity::class.java)
+            intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Register")
+            intent.putExtra(WebViewActivity.SHOW_LOGOUT, "false")
+            intent.putExtra(WebViewActivity.URL_TO_OPEN, BuildConfig.BASE_URL + "/register/")
+            startActivity(intent)
+        }
     }
 
     private fun updateLabels() {
@@ -132,6 +144,8 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
     }
 
     private fun showOrHideButtons() {
+        ViewUtils.setGone(signUp, instituteSettings.verificationMethod.equals("M"))
+        ViewUtils.setGone(phoneLogin, 3 !in instituteSettings.allowedLoginMethods)
         ViewUtils.setGone(facebookSignIn, !instituteSettings.facebookLoginEnabled)
         ViewUtils.setGone(googleSignIn, !instituteSettings.googleLoginEnabled)
         ViewUtils.setGone(

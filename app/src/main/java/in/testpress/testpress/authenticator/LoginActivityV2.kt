@@ -86,7 +86,11 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
                 Status.SUCCESS -> {
                     instituteSettings = resource.data!!
                     loadingDialog.hideDialog()
-                    goToPhoneAuthentication()
+                    if (3 in instituteSettings.allowedLoginMethods) {
+                        goToPhoneAuthentication()
+                    } else {
+                        goToUsernameAuthentication()
+                    }
                 }
                 Status.ERROR -> loadingDialog.hideDialog()
             }

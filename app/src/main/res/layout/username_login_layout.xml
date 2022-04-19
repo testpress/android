@@ -204,6 +204,23 @@
                 app:backgroundTintMode="add"
                 app:cornerRadius="8dp" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/signUp"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:backgroundTint="@color/testpress_color_tertiary"
+                android:elevation="0dp"
+                android:fontFamily="@font/inter"
+                android:paddingVertical="15dp"
+                android:text="Create Account"
+                android:textAllCaps="false"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                app:backgroundTintMode="add"
+                app:cornerRadius="8dp" />
+
 
             <TextView
                 android:layout_width="wrap_content"

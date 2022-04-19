@@ -1,11 +1,14 @@
 package `in`.testpress.testpress.ui.fragments
 
 import `in`.testpress.enums.Status
+import `in`.testpress.testpress.BuildConfig
 import `in`.testpress.testpress.Injector
 import `in`.testpress.testpress.R
 import `in`.testpress.testpress.core.TestpressService
+import `in`.testpress.testpress.enums.VerificationMethod
 import `in`.testpress.testpress.models.InstituteSettings
 import `in`.testpress.testpress.repository.InstituteRepository
+import `in`.testpress.testpress.ui.WebViewActivity
 import `in`.testpress.testpress.util.UIUtils
 import `in`.testpress.testpress.util.isEmpty
 import `in`.testpress.testpress.viewmodel.LoginViewModel
@@ -13,6 +16,7 @@ import `in`.testpress.util.ViewUtils
 import android.content.Intent
 import android.content.IntentSender
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -102,6 +106,8 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
     }
 
     private fun showOrHideButtons() {
+        ViewUtils.setGone(signUp, instituteSettings.verificationMethod.equals("E"))
+        ViewUtils.setGone(userNameLogin, 1 !in instituteSettings.allowedLoginMethods)
         ViewUtils.setGone(facebookSignIn, !instituteSettings.facebookLoginEnabled)
         ViewUtils.setGone(googleSignIn, !instituteSettings.googleLoginEnabled)
         ViewUtils.setGone(
@@ -125,6 +131,14 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
 
         googleSignIn.setOnClickListener {
             loginNavigation?.signInWithGoogle()
+        }
+
+        signUp.setOnClickListener {
+            val intent = Intent(requireContext(), WebViewActivity::class.java)
+            intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Register")
+            intent.putExtra(WebViewActivity.SHOW_LOGOUT, "false")
+            intent.putExtra(WebViewActivity.URL_TO_OPEN, BuildConfig.BASE_URL + "/register/")
+            startActivity(intent)
         }
     }
 

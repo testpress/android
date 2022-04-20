@@ -106,7 +106,9 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
     }
 
     private fun showOrHideButtons() {
-        ViewUtils.setGone(signUp, instituteSettings.verificationMethod.equals("E"))
+        if (!instituteSettings.allowSignup) {
+            signUp.visibility = View.GONE
+        }
         ViewUtils.setGone(userNameLogin, 1 !in instituteSettings.allowedLoginMethods)
         ViewUtils.setGone(facebookSignIn, !instituteSettings.facebookLoginEnabled)
         ViewUtils.setGone(googleSignIn, !instituteSettings.googleLoginEnabled)

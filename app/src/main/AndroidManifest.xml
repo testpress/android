@@ -30,6 +30,9 @@
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
         <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_stat_notification" />
         <meta-data android:name="com.google.firebase.messaging.default_notification_color" android:resource="@color/testpress_color_primary" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
         <activity
             android:name=".ui.SplashScreenActivity"
@@ -77,6 +80,13 @@
 
         <activity
             android:name=".authenticator.LoginActivity"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden"
+            android:excludeFromRecents="true" />
+
+
+        <activity
+            android:name=".authenticator.LoginActivityV2"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden"
             android:excludeFromRecents="true">

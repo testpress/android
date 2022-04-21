@@ -126,12 +126,6 @@ class OTPVerificationFragment: BaseAuthenticationFragment() {
                 when(resource.status) {
                     Status.SUCCESS -> {
                         if (resource.data?.token != null) {
-                            if (resource.data?.isNewUser == true) {
-                                val userSharedPreference = requireActivity().getSharedPreferences(
-                                    "UserPreference", Context.MODE_PRIVATE
-                                )
-                                userSharedPreference.edit().putBoolean("isProfileUpdatePending", true).apply()
-                            }
                             loginNavigation?.onLoginSuccess(phoneNumber, resource.data!!.token!!)
                         }
                     }

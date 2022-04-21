@@ -1,120 +1,33 @@
 {
   "project_info": {
-    "project_number": "234109861763",
-    "project_id": "testpress-apps-7",
-    "storage_bucket": "testpress-apps-7.appspot.com"
+    "project_number": "530998619692",
+    "project_id": "testpress-ab7b2",
+    "storage_bucket": "testpress-ab7b2.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:234109861763:android:74492977bf90956e58c0b6",
+        "mobilesdk_app_id": "1:530998619692:android:69fa7e57194a05e6e42b89",
         "android_client_info": {
-          "package_name": "in.testpress.lms"
+          "package_name": "in.wincentre.www"
         }
       },
       "oauth_client": [
         {
-          "client_id": "234109861763-bioogliutgusino2na0fk3pgl9f6t8m8.apps.googleusercontent.com",
+          "client_id": "530998619692-q5bevbb5jcuhkji1bg1h9hmvl19fvrc6.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCPAdWjWo9yAQopNkU-M8WvuoAMN5J-2u0"
+          "current_key": "AIzaSyAoXBgOCcfArbZSh6UovyzSpW_sPn_MnMA"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "234109861763-bioogliutgusino2na0fk3pgl9f6t8m8.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:234109861763:android:60da031d4777444558c0b6",
-        "android_client_info": {
-          "package_name": "in.testpress.tito"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "234109861763-bioogliutgusino2na0fk3pgl9f6t8m8.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCPAdWjWo9yAQopNkU-M8WvuoAMN5J-2u0"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "234109861763-bioogliutgusino2na0fk3pgl9f6t8m8.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:234109861763:android:3985636d1fe9e2b958c0b6",
-        "android_client_info": {
-          "package_name": "in.testpress.ustaad"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "234109861763-bioogliutgusino2na0fk3pgl9f6t8m8.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCPAdWjWo9yAQopNkU-M8WvuoAMN5J-2u0"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "234109861763-bioogliutgusino2na0fk3pgl9f6t8m8.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:234109861763:android:df6876bd149daaa258c0b6",
-        "android_client_info": {
-          "package_name": "in.testpress.wincentre"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "234109861763-bioogliutgusino2na0fk3pgl9f6t8m8.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCPAdWjWo9yAQopNkU-M8WvuoAMN5J-2u0"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "234109861763-bioogliutgusino2na0fk3pgl9f6t8m8.apps.googleusercontent.com",
+              "client_id": "530998619692-q5bevbb5jcuhkji1bg1h9hmvl19fvrc6.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

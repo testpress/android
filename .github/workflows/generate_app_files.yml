@@ -1,0 +1,91 @@
+name: Generate App File
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch_name:
+        description: 'branch to generate app file'
+        required: true
+        default: 'master'
+
+      keystore_file_path:
+        description: 'Keystore file path to generate signed build'
+        required: true
+      
+      keystore_password:
+        description: 'Keystore file's password'
+        required: true
+            
+      key_alias:
+        description: 'Key Alias'
+        required: true
+            
+      key_password:
+        description: 'Key password'
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_ACCESS_KEY: ${{ secrets.GH_ACCESS_KEY }}
+      GITHUB_USERNAME: ${{ secrets.GH_USERNAME }}
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - name: Setup JDK 11
+        uses: actions/setup-java@v2
+        with:
+          distribution: "zulu"
+          java-version: 11
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+
+      - name: Setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+
+      - name: Caching ruby dependencies
+        uses: actions/cache@v2
+        with:
+          path: 'vendor/bundle'
+          key: ${{ runner.os }}-gems-${{ secrets.GEMS_CACHE_VERSION }}-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+
+      - name: Caching Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Install dependencies to support ruby project
+        run: |
+          bundle config --global set deploy_platform_default x86_64-linux
+          bundle install
+
+      - name: Build and distribute app
+        run: |
+          export LC_ALL=en_US.UTF-8
+          export LANG=en_US.UTF-8
+          bundle exec fastlane generate_app_files \
+          keystore_file_path:${{ github.event.inputs.keystore_file_path }} \
+          keystore_password:${{ github.event.inputs.keystore_password }} \
+          key_alias:${{ github.event.inputs.key_alias }} \
+          key_password:${{ github.event.inputs.key_password }}
+      
+      - name: Upload AAB
+        uses: actions/upload-artifact@v2
+        with:
+          name: app
+          path: |
+            app/build/outputs/apk/release/app-release.apk
+            app/build/outputs/bundle/release/app-release.aab
+            app/build/outputs/apk/debug/app-debug.apk 

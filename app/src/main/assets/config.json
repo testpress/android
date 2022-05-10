@@ -6,10 +6,13 @@
   "app_name" : "CATKing Educare",
   "share_message": "Good app to prepare for online exams.",
   "primary_color": "10104E",
+  "secondary_color": "C7280F",
+  "tertiary_color": "32297D",
   "allow_anonymous_user" : false,
   "facebook_app_id" : "733962776688753",
   "server_client_id" : "1024179395437-9q6u7utkgp40das46006nluhduh9ar8e.apps.googleusercontent.com",
   "display_username_on_video": true,
   "white_labeled_host_url": null,
-  "is_growth_hacks_enabled": false
+  "is_growth_hacks_enabled": false,
+  "show_pdf_vertically": true
 }

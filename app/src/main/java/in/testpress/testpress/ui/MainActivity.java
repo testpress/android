@@ -64,6 +64,7 @@ import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.models.Update;
 import in.testpress.testpress.ui.fragments.DashboardFragment;
+import in.testpress.testpress.ui.fragments.DiscussionFragmentv2;
 import in.testpress.testpress.ui.utils.HandleMainMenu;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
@@ -71,6 +72,7 @@ import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.testpress.util.UpdateAppDialogManager;
+import in.testpress.ui.fragments.DiscussionFragment;
 import io.sentry.android.core.SentryAndroid;
 
 import static in.testpress.testpress.BuildConfig.ALLOW_ANONYMOUS_USER;
@@ -207,6 +209,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private void setupDrawerContent(NavigationView navigationView) {
         hideMenuItemsForUnauthenticatedUser(navigationView.getMenu());
+        updateMenuItemNames(navigationView.getMenu());
         final HandleMainMenu handleMainMenu = new HandleMainMenu(MainActivity.this, serviceProvider);
         navigationView.setNavigationItemSelectedListener(
             new NavigationView.OnNavigationItemSelectedListener() {
@@ -230,11 +233,21 @@ public class MainActivity extends TestpressFragmentActivity {
             menu.findItem(R.id.bookmarks).setVisible(false);
         } else {
             menu.findItem(R.id.logout).setVisible(true);
+            if (mInstituteSettings != null) {
+                menu.findItem(R.id.doubts).setVisible(Boolean.TRUE.equals(mInstituteSettings.getIsHelpdeskEnabled()));
+            }
             menu.findItem(R.id.login_activity).setVisible(true);
             menu.findItem(R.id.analytics).setVisible(true);
             menu.findItem(R.id.profile).setVisible(true);
             menu.findItem(R.id.bookmarks).setVisible(true);
             menu.findItem(R.id.login).setVisible(false);
+        }
+    }
+
+    private void updateMenuItemNames(Menu menu) {
+        if (mInstituteSettings != null) {
+            menu.findItem(R.id.posts).setTitle(Strings.toString(mInstituteSettings.getPostsLabel()));
+            menu.findItem(R.id.bookmarks).setTitle(Strings.toString(mInstituteSettings.getBookmarksLabel()));
         }
     }
 
@@ -307,7 +320,7 @@ public class MainActivity extends TestpressFragmentActivity {
                         TestpressCourse.getLeaderboardFragment(this, TestpressSdk.getTestpressSession(this)));
             }
             if (mInstituteSettings.getForumEnabled()) {
-                addMenuItem(R.string.discussions, R.drawable.chat_icon, new ForumListFragment());
+                addMenuItem(R.string.discussions, R.drawable.chat_icon, new DiscussionFragmentv2());
             }
             if (mInstituteSettings.getIsVideoDownloadEnabled()) {
                 DownloadsFragment downloadsFragment = new DownloadsFragment();

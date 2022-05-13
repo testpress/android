@@ -160,9 +160,9 @@ android {
         resValue "string", "facebook_app_id", json.facebook_app_id
         resValue "string", "fb_login_protocol_scheme", json.facebook_app_id
         resValue "string", "server_client_id", json.server_client_id
-        resValue "color", "primary", "#" + json.primary_color
-        resValue "color", "secondary", "#" + json.secondary_color
-        resValue "color", "tertiary", "#" + json.tertiary_color
+        resValue "color", "primary", json.primary_color
+        resValue "color", "secondary", json.secondary_color
+        resValue "color", "tertiary", json.tertiary_color
         buildConfigField "boolean", "ALLOW_ANONYMOUS_USER", "" + json.allow_anonymous_user
         buildConfigField "boolean", "GROWTH_HACKS_ENABLED", "" + json.is_growth_hacks_enabled
         buildConfigField "boolean", "SHOW_PDF_VERTICALLY", "" + json.show_pdf_vertically

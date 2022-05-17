@@ -7,15 +7,12 @@ module Fastlane
     class GetAppConfigAction < Action
       def self.run(params)
         uri = URI("#{params[:subdomain]}.testpress.in/api/v2.5/admin/android/app-config/")
+        request = Net::HTTP::Get.new(uri)
+        request["API-access-key"] = ENV["API_ACCESS_KEY"]
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = true
-        req = Net::HTTP::Get.new(uri)
-        req["API-access-key"] = ENV["API_ACCESS_KEY"]
-        res = http.request(req)
-        if res.code != '200'
-            raise "API request failed, please provide valid subdomain"
-        end
-        return JSON.parse(res.body)
+        response = http.request(request)
+        return JSON.parse(response.body)
       end
 
       def self.available_options

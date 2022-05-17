@@ -19,11 +19,11 @@ jobs:
       GITHUB_ACCESS_KEY: ${{ secrets.GH_ACCESS_KEY }}
       GITHUB_USERNAME: ${{ secrets.GH_USERNAME }}
       API_ACCESS_KEY: ${{ secrets.API_ACCESS_KEY }}
+    
     steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.inputs.tag }}
+      - name: Validate subdomain
+        run: |
+          curl -f https://${{ github.event.inputs.subdomain }}.testpress.in/api/v2.5/admin/android/app-config/ -H "API-access-key: $API_ACCESS_KEY"
 
       - name: Setup JDK 11
         uses: actions/setup-java@v2
@@ -34,18 +34,22 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
 
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.tag }}
+                 
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7
+          bundler-cache: true
+      
+      - name: Setup Zoom SDK
+        run: |
+          wget https://media.testpress.in/static/android/zoom_sdk.zip
+          unzip -o ./zoom_sdk.zip 
 
-      - name: Caching ruby dependencies
-        uses: actions/cache@v2
-        with:
-          path: 'vendor/bundle'
-          key: ${{ runner.os }}-gems-${{ secrets.GEMS_CACHE_VERSION }}-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-
 
       - name: Caching Gradle packages
         uses: actions/cache@v2
@@ -56,19 +60,14 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-
-      - name: Install dependencies to support ruby project
-        run: |
-          bundle config --global set deploy_platform_default x86_64-linux
-          bundle install
-
-      - name: Build and distribute app
+      
+      - name: Build app
         run: |
           export LC_ALL=en_US.UTF-8
           export LANG=en_US.UTF-8
           bundle exec fastlane build_app subdomain:${{ github.event.inputs.subdomain }}
       
-      - name: Upload AAB
+      - name: Store app artifacts
         uses: actions/upload-artifact@v2
         with:
           name: app

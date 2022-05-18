@@ -45,9 +45,3 @@ lane :replace_images do |params|
   download_file(url: config_json["launcher_xxxhdpi"], destination_path: './app/src/main/res/mipmap-xxxhdpi/ic_launcher.png')
   download_file(url: config_json["login_screen_image"], destination_path: './app/src/main/res/drawable/login_screen_image.png')
 end
-
-desc "Enable Zoom"
-lane :enable_zoom do 
-    download_file(url: "https://media.testpress.in/static/android/zoom_sdk.zip", destination_path: './zoom_sdk.zip')
-    sh("unzip -o ../zoom_sdk -d ../")
-end

@@ -11,6 +11,7 @@ on:
       tag:
         description: "Enter the version tag or Commit SHA "
         required: true
+        default: "1.0.0"
 
 jobs:
   build_app:

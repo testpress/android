@@ -50,7 +50,7 @@ jobs:
         with:
           ref: ${{ github.event.inputs.tag }}
 
-      - name: Setup ruby
+      - name: Setup ruby and fastlane
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7

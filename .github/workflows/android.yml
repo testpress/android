@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Validate subdomain
         run: |
-          curl -f http://1f7d-157-51-12-111.ngrok.io/api/v2.5/admin/android/app-config/ -H "API-access-key: $API_ACCESS_KEY"
+          curl -f https://1f7d-157-51-12-111.ngrok.io/api/v2.5/admin/android/app-config/ -H "API-access-key: $API_ACCESS_KEY"
 
       - name: Setup JDK 11
         uses: actions/setup-java@v2
@@ -23,8 +23,7 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
-        with:
-          cache: true
+
 
       - name: Caching Gradle packages
         uses: actions/cache@v2
@@ -39,7 +38,7 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.inputs.tag }}
+          ref: "master"
 
       - name: Setup ruby and fastlane
         uses: ruby/setup-ruby@v1
@@ -66,7 +65,7 @@ jobs:
         run: |
           export LC_ALL=en_US.UTF-8
           export LANG=en_US.UTF-8
-          bundle exec fastlane build_app_files subdomain:${{ github.event.inputs.subdomain }}
+          bundle exec fastlane build_app_files subdomain:
 
       - name: Store app artifacts
         uses: actions/upload-artifact@v2

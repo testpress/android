@@ -27,6 +27,9 @@ jobs:
           packages: ndk;21.4.7075529
           cache: true
 
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+      
       - name: Caching Gradle packages
         uses: actions/cache@v2
         with:
@@ -36,9 +39,6 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-
-      - name: Checkout the repository
-        uses: actions/checkout@v2
 
       - name: Setup ruby and fastlane
         uses: ruby/setup-ruby@v1

@@ -21,9 +21,11 @@ jobs:
           distribution: "zulu"
           java-version: 11
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v2
-
+      - name: setup-android-tools
+        uses: maxim-lobanov/setup-android-tools@v1
+        with: 
+          packages: ndk;21.4.7075529
+          cache: true
 
       - name: Caching Gradle packages
         uses: actions/cache@v2
@@ -63,7 +65,7 @@ jobs:
         run: |
           export LC_ALL=en_US.UTF-8
           export LANG=en_US.UTF-8
-          bundle exec fastlane build_app_files subdomain:
+          bundle exec fastlane build_app_files subdomain:https://1f7d-157-51-12-111.ngrok.io/
 
       - name: Store app artifacts
         uses: actions/upload-artifact@v2

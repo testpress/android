@@ -4,22 +4,22 @@ on:
   workflow_dispatch:
     inputs:
       subdomain:
-        description: 'Which subdomain you want to build the android app'
+        description: "Which subdomain you want to build the android app"
         required: true
-        default: 'master'
+        default: "master"
 
       tag:
-        description: 'Enter the version tag or Commit SHA '
+        description: "Enter the version tag or Commit SHA "
         required: true
-      
+
 jobs:
-  deploy:
+  build_app:
     runs-on: ubuntu-latest
     env:
       GITHUB_ACCESS_KEY: ${{ secrets.GH_ACCESS_KEY }}
       GITHUB_USERNAME: ${{ secrets.GH_USERNAME }}
       API_ACCESS_KEY: ${{ secrets.API_ACCESS_KEY }}
-    
+
     steps:
       - name: Validate subdomain
         run: |
@@ -33,7 +33,7 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
-      
+
       - name: Caching Gradle packages
         uses: actions/cache@v2
         with:
@@ -48,7 +48,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.inputs.tag }}
-                 
+
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -62,20 +62,20 @@ jobs:
           path: |
             ./mobilertc
             ./commonlib
-        key: zoom_sdk_files
-      
+          key: zoom_sdk_files
+
       - name: Setup Zoom SDK
         if: steps.zoom-cache.outputs.cache-hit != 'true'
         run: |
           wget https://media.testpress.in/static/android/zoom_sdk.zip
-          unzip -o ./zoom_sdk.zip 
-      
+          unzip -o ./zoom_sdk.zip
+
       - name: Build app
         run: |
           export LC_ALL=en_US.UTF-8
           export LANG=en_US.UTF-8
           bundle exec fastlane build_app subdomain:${{ github.event.inputs.subdomain }}
-      
+
       - name: Store app artifacts
         uses: actions/upload-artifact@v2
         with:

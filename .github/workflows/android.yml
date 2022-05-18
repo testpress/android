@@ -53,7 +53,7 @@ jobs:
           path: |
             ./mobilertc
             ./commonlib
-          key: zoom_sdk_files
+          key: ${{ runner.os }}-zoom_sdk_files
 
       - name: Setup Zoom SDK
         if: steps.zoom-cache.outputs.cache-hit != 'true'

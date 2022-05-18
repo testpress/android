@@ -21,11 +21,8 @@ jobs:
           distribution: "zulu"
           java-version: 11
 
-      - name: setup-android-tools
-        uses: maxim-lobanov/setup-android-tools@v1
-        with: 
-          packages: ndk;21.4.7075529
-          cache: true
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
 
       - name: Checkout the repository
         uses: actions/checkout@v2

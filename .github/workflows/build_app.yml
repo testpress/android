@@ -33,6 +33,16 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
+      
+      - name: Caching Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
       - name: Checkout the repository
         uses: actions/checkout@v2
@@ -44,22 +54,21 @@ jobs:
         with:
           ruby-version: 2.7
           bundler-cache: true
-      
-      - name: Setup Zoom SDK
-        run: |
-          wget https://media.testpress.in/static/android/zoom_sdk.zip
-          unzip -o ./zoom_sdk.zip 
 
-
-      - name: Caching Gradle packages
+      - name: Cache Zoom SDK files
+        id: zoom-cache
         uses: actions/cache@v2
         with:
           path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+            ./mobilertc
+            ./commonlib
+        key: zoom_sdk_files
+      
+      - name: Setup Zoom SDK
+        if: steps.zoom-cache.outputs.cache-hit != 'true'
+        run: |
+          wget https://media.testpress.in/static/android/zoom_sdk.zip
+          unzip -o ./zoom_sdk.zip 
       
       - name: Build app
         run: |

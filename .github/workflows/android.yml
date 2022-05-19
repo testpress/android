@@ -51,8 +51,6 @@ jobs:
             mobilertc
             commonlib
           key: ${{ runner.os }}-zoom_sdk_files
-          restore-keys: |
-            ${{ runner.os }}-
 
 
       - name: Setup Zoom SDK

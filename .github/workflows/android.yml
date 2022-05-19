@@ -6,8 +6,7 @@ on:
 jobs:
   reuse:
     uses: testpress/android/.github/workflows/setup_project.yml@test_reusable_workflow
-    with:
-      secrets: inherit
+    secrets: inherit
 
   do-it:
     runs-on: ubuntu-latest

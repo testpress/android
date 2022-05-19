@@ -1,17 +1,20 @@
 name: Android CI
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  [push]
 
 jobs:
-  build:
+  reuse:
+    uses: testpress/android/.github/workflows/setup_project.yml@test_reusable_workflow
+    with:
+      secrets: inherit
+
+  do-it:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: testpress/android/.github/workflows/setup_project.yml@test_reusable_workflow
-      with:
-        secrets: inherit
+      - uses: actions/checkout@v2
+
+      - name: Run a one-line script
+        run: echo Hello, world!
 

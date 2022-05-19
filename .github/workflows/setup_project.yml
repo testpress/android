@@ -19,4 +19,5 @@ jobs:
     steps: 
       - name: Test
         run: |
-           echo $API_ACCESS_KEY
+          echo "hello world" 
+          echo $API_ACCESS_KEY

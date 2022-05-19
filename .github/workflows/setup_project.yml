@@ -3,9 +3,9 @@ name: Create and Publish Docker Image
 on:
   workflow_call:
     secrets:
-      GITHUB_ACCESS_KEY:
+      GH_ACCESS_KEY:
         required: true
-      GITHUB_USERNAME:
+      GH_USERNAME:
         required: true
       API_ACCESS_KEY:
         required: true

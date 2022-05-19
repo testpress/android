@@ -6,7 +6,7 @@ module Fastlane
   module Actions
     class GetAppConfigAction < Action
       def self.run(params)
-        uri = URI("#{params[:subdomain]}api/v2.5/admin/android/app-config/")
+        uri = URI("#{params[:subdomain]}/api/v2.5/admin/android/app-config/")
         request = Net::HTTP::Get.new(uri)
         request["API-access-key"] = ENV["API_ACCESS_KEY"]
         http = Net::HTTP.new(uri.host, uri.port)

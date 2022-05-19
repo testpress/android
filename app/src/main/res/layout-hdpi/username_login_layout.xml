@@ -83,9 +83,9 @@
                     android:layout_gravity="bottom"
                     android:layout_marginBottom="5sp"
                     android:fontFamily="@font/inter"
-                    android:textSize="13sp"
                     android:text="Choose your preferred or given way of login."
-                    android:textColor="#4f4f4f" />
+                    android:textColor="#4f4f4f"
+                    android:textSize="13sp" />
             </LinearLayout>
 
         </RelativeLayout>
@@ -94,9 +94,9 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/testpress_color_primary"
+            android:gravity="center_vertical"
             android:orientation="vertical"
             android:padding="20dp"
-            android:gravity="center_vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -205,6 +205,7 @@
                 android:textStyle="normal"
                 app:backgroundTintMode="add"
                 app:cornerRadius="8dp" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/signUp"
                 style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
@@ -221,43 +222,50 @@
                 android:textStyle="normal"
                 app:backgroundTintMode="add"
                 app:cornerRadius="8dp" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="15dp"
-                android:fontFamily="@font/inter"
-                android:gravity="center_horizontal"
-                android:text="Or continue with"
-                android:textColor="#828282" />
 
             <LinearLayout
                 android:id="@+id/socialLoginLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/googleSignIn"
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="10dp"
-                    android:background="@drawable/rounded_corner"
-                    android:padding="8dp"
-                    android:src="@drawable/ic_google" />
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="15dp"
+                    android:fontFamily="@font/inter"
+                    android:gravity="center_horizontal"
+                    android:text="Or continue with"
+                    android:textColor="#828282" />
 
-                <com.facebook.login.widget.LoginButton xmlns:facebook="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/facebookSignIn"
-                    android:layout_width="40dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="5dp"
-                    android:paddingLeft="12dp"
-                    android:paddingTop="11dp"
-                    android:paddingBottom="11dp"
-                    android:scaleType="centerInside"
-                    facebook:com_facebook_login_text="" />
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
 
+                    <ImageButton
+                        android:id="@+id/googleSignIn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="10dp"
+                        android:background="@drawable/rounded_corner"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_google" />
+
+                    <com.facebook.login.widget.LoginButton xmlns:facebook="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/facebookSignIn"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:paddingLeft="12dp"
+                        android:paddingTop="11dp"
+                        android:paddingBottom="11dp"
+                        android:scaleType="centerInside"
+                        facebook:com_facebook_login_text="" />
+
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

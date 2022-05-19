@@ -30,7 +30,7 @@ module Fastlane
           file = File.read(path)
           config_json = JSON.parse(file)
           app_config_json = JSON.parse(data)
-          config_json.each{|key, value| config_json[key] = app_config_json[key] if fields.includes?(key)}
+          config_json.each{|key, value| config_json[key] = app_config_json[key] if fields.include?(key)}
           File.open(path,"w") do |f|
             f.puts JSON.pretty_generate(config_json)
           end

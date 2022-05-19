@@ -21,3 +21,7 @@ jobs:
         run: |
           echo "hello world" 
           echo $API_ACCESS_KEY
+      
+      - name: Validate subdomain
+        run: |
+          curl -f https://${{ github.event.inputs.subdomain }}.testpress.in/api/v2.5/admin/android/app-config/ -H "API-access-key: $API_ACCESS_KEY"

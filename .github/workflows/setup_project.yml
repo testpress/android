@@ -1,0 +1,22 @@
+name: Create and Publish Docker Image
+
+on:
+  workflow_call:
+    secrets:
+      GITHUB_ACCESS_KEY:
+        required: true
+      GITHUB_USERNAME:
+        required: true
+      API_ACCESS_KEY:
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env: 
+      API_ACCESS_KEY: ${{secrets.API_ACCESS_KEY}}
+
+    steps: 
+      - name: Test
+        run: |
+           echo $API_ACCESS_KEY

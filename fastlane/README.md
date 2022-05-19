@@ -13,21 +13,13 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 # Available Actions
 
-### generate_app_file
-
-```sh
-[bundle exec] fastlane generate_app_file
-```
-
-Generate Android App Bundle
-
 ### build_app_files
 
 ```sh
 [bundle exec] fastlane build_app_files
 ```
 
-Build customized for app client
+Build customized app for an institute
 
 ### replace_images
 
@@ -35,15 +27,15 @@ Build customized for app client
 [bundle exec] fastlane replace_images
 ```
 
-Generate Android App Bundle
+Replace images
 
-### enable_zoom
+### generate_app_file
 
 ```sh
-[bundle exec] fastlane enable_zoom
+[bundle exec] fastlane generate_app_file
 ```
 
-
+Generate Android App Bundle
 
 ----
 

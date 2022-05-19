@@ -24,4 +24,4 @@ jobs:
       
       - name: Validate subdomain
         run: |
-          curl -f https://1f7d-157-51-12-111.ngrok.io/.testpress.in/api/v2.5/admin/android/app-config/ -H "API-access-key: $API_ACCESS_KEY"
+          curl -f https://1f7d-157-51-12-111.ngrok.io/api/v2.5/admin/android/app-config/ -H "API-access-key: $API_ACCESS_KEY"

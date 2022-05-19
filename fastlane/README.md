@@ -21,6 +21,30 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 Generate Android App Bundle
 
+### build_app_files
+
+```sh
+[bundle exec] fastlane build_app_files
+```
+
+Build customized for app client
+
+### replace_images
+
+```sh
+[bundle exec] fastlane replace_images
+```
+
+Generate Android App Bundle
+
+### enable_zoom
+
+```sh
+[bundle exec] fastlane enable_zoom
+```
+
+
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.

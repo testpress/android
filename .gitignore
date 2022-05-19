@@ -60,3 +60,5 @@ project.properties
 */seed.txt
 gen-external-apklibs
 *.hprof
+
+fastlane/report.xml

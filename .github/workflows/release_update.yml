@@ -8,11 +8,6 @@ on:
         required: true
         default: "all"
 
-      tag:
-        description: "Enter the version tag or Commit SHA "
-        required: true
-        default: "1.0.0"
-
 jobs:
   release_update:
     runs-on: ubuntu-latest

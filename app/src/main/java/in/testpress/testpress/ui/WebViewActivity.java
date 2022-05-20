@@ -296,8 +296,8 @@ public class WebViewActivity extends BaseToolBarActivity {
         }
     }
     
-    private boolean isPermissionGranted(String recordAudio) {
-        return ContextCompat.checkSelfPermission(this, recordAudio) != PackageManager.PERMISSION_GRANTED;
+    private boolean isPermissionGranted(String permissionName) {
+        return ContextCompat.checkSelfPermission(this, permissionName) != PackageManager.PERMISSION_GRANTED;
     }
 
     private void initializeSwipeToRefresh() {

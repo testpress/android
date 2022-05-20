@@ -8,10 +8,6 @@ on:
         required: true
         default: "master"
 
-      tag:
-        description: "Enter the version tag or Commit SHA "
-        required: true
-        default: "1.0.0"
 
 jobs:
   build_app:
@@ -47,8 +43,6 @@ jobs:
 
       - name: Checkout the repository
         uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.inputs.tag }}
 
       - name: Setup ruby and fastlane
         uses: ruby/setup-ruby@v1

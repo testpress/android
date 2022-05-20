@@ -7,6 +7,8 @@ module Fastlane
     class ModifyConfigJsonFileAction < Action
       def self.run(params)     
         fields_to_change = [
+          "version",
+          "version_code",
           "allow_anonymous_user",
           "package_name", 
           "app_name", 

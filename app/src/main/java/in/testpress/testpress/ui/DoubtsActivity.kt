@@ -75,6 +75,7 @@ class DoubtsActivity: TestpressFragmentActivity(), EmptyViewListener {
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP;
         intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Doubts")
         intent.putExtra(WebViewActivity.ENABLE_BACK, true)
+        intent.putExtra(WebViewActivity.SHOW_LOADING, false)
         intent.putExtra(
             WebViewActivity.URL_TO_OPEN,
             BuildConfig.BASE_URL + ssoLink?.ssoUrl + "&next=/tickets/mobile/"

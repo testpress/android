@@ -11,8 +11,8 @@ desc "Replace images"
 lane :replace_images do |params|
   config_json = params[:app_config]
   download_file(url: config_json["splash_screen"], destination_path: './app/src/main/res/drawable/splash_screen.png')
-  download_file(url: config_json["splash_screen_land"], destination_path: './app/src/main/res/drawable-land/splash_screen.png')
-  download_file(url: config_json["splash_screen_large"], destination_path: './app/src/main/res/drawable-large/splash_screen.png')
+  download_file(url: config_json["splash_screen_large"], destination_path: './app/src/main/res/drawable-land/splash_screen.png')
+  download_file(url: config_json["splash_screen_land"], destination_path: './app/src/main/res/drawable-large/splash_screen.png')
   download_file(url: config_json["splash_screen_land_large"], destination_path: './app/src/main/res/drawable-large-land/splash_screen.png')
   download_file(url: config_json["notification_mdpi"], destination_path: './app/src/main/res/drawable-mdpi/ic_stat_notification.png')
   download_file(url: config_json["notification_hdpi"], destination_path: './app/src/main/res/drawable-hdpi/ic_stat_notification.png')

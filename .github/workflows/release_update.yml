@@ -14,7 +14,7 @@ on:
         default: "1.0.0"
 
 jobs:
-  release update:
+  release_update:
     runs-on: ubuntu-latest
     env:
       GITHUB_ACCESS_KEY: ${{ secrets.GH_ACCESS_KEY }}
@@ -23,6 +23,7 @@ jobs:
 
     steps:
       - name: Validate subdomain
+        if: ${{ github.event.inputs.subdomain }} != 'all'
         run: |
           curl -f https://${{ github.event.inputs.subdomain }}.testpress.in/api/v2.5/admin/android/app-config/ -H "API-access-key: $API_ACCESS_KEY"
 
@@ -75,7 +76,7 @@ jobs:
         run: |
           export LC_ALL=en_US.UTF-8
           export LANG=en_US.UTF-8
-          bundle exec fastlane build_app subdomain:${{ github.event.inputs.subdomain }}
+          bundle exec fastlane release_update_to subdomain:${{ github.event.inputs.subdomain }}
 
       - name: Store app artifacts
         uses: actions/upload-artifact@v2

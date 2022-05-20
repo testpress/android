@@ -7,14 +7,15 @@ lane :build_app_files do |params|
   generate_app_file(keystore_file_path: app_config["keystore_file"], keystore_password: app_config["keystore_password"], key_alias: app_config["key_alias"], key_password: app_config["key_password"])
 end
 
-lane :do_release_update_to do |params|
+lane :release_update_to do |params|
   if params[:subdomain] == "all"
-    subdomains = fetch_subdomains(subdomain: params[:subdomain])
+    subdomains = fetch_subdomains
     subdomains.each do |subdomain|
       release_update(subdomain: subdomain)
     end
+  else
+    release_update(subdomain: params[:subdomain])
   end
-  release_update(subdomain: params[:subdomain])
 end
 
 

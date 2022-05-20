@@ -6,7 +6,7 @@ module Fastlane
   module Actions
     class FetchSubdomainsAction < Action
       def self.run(params)
-        uri = URI("https://#{params[:subdomain]}.testpress.in/api/v2.5/admin/android/domains/")
+        uri = URI("https://sandbox.testpress.in/api/v2.5/admin/android/subdomains/")
         request = Net::HTTP::Get.new(uri)
         request["API-access-key"] = ENV["API_ACCESS_KEY"]
         http = Net::HTTP.new(uri.host, uri.port)
@@ -14,12 +14,6 @@ module Fastlane
         response = http.request(request)
         return JSON.parse(response.body)
       end
-
-      def self.available_options
-        [
-            FastlaneCore::ConfigItem.new(key: :subdomain,description: "Subdomain to get app configuration data")
-        ]
-       end
     end
   end
 end

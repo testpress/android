@@ -21,10 +21,10 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 Build customized app for an institute
 
-### do_release_update_to
+### release_update_to
 
 ```sh
-[bundle exec] fastlane do_release_update_to
+[bundle exec] fastlane release_update_to
 ```
 
 

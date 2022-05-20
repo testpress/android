@@ -6,7 +6,7 @@ module Fastlane
   module Actions
     class UpdateAppVersionAction < Action
       def self.run(params)
-        uri = URI("https://0b62-115-97-91-114.in.ngrok.io/api/v2.5/admin/android/update/")
+        uri = URI("https://#{params[:subdomain]}.testpress.in/api/v2.5/admin/android/update/")
         request = Net::HTTP::Put.new(uri)
         request["API-access-key"] = ENV["API_ACCESS_KEY"]
         request.body = " "
@@ -18,7 +18,7 @@ module Fastlane
 
       def self.available_options
         [
-            FastlaneCore::ConfigItem.new(key: :subdomain,description: "Subdomain to get app configuration data")
+            FastlaneCore::ConfigItem.new(key: :subdomain,description: "Subdomain to get update configuration")
         ]
        end
     end

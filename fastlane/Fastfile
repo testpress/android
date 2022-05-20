@@ -75,7 +75,7 @@ lane :deploy_app do |params|
   upload_to_play_store(
     skip_upload_apk: true,
     package_name: params[:package_name],
-    json_key_data: "%s/app/private_key.json"%File.expand_path("..", Dir.pwd)
+    json_key: "%s/app/private_key.json"%File.expand_path("..", Dir.pwd)
   )
 end
 

@@ -65,7 +65,7 @@ jobs:
           wget https://media.testpress.in/static/android/zoom_sdk.zip
           unzip -o ./zoom_sdk.zip
 
-      - name: Build app
+      - name: Build and deploy app
         run: |
           export LC_ALL=en_US.UTF-8
           export LANG=en_US.UTF-8

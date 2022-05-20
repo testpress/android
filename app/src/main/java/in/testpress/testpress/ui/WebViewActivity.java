@@ -53,6 +53,7 @@ public class WebViewActivity extends BaseToolBarActivity {
     public static final String ACTIVITY_TITLE = "TITLE";
     public static final String ENABLE_BACK = "ENABLE_BACK";
     public static final String SHOW_LOGOUT = "SHOW_LOGOUT";
+    public static final String SHOW_LOADING = "SHOW_LOADING";
     private final static int FILE_CHOOSER_RESULT_CODE = 1;
 
     @Inject protected TestpressServiceProvider serviceProvider;
@@ -67,6 +68,7 @@ public class WebViewActivity extends BaseToolBarActivity {
     private ValueCallback<Uri[]> mUploadMessages;
     private String url;
     private boolean showLogout;
+    private boolean showLoading = true;
     private boolean reload = false;
 
     @Override
@@ -122,6 +124,10 @@ public class WebViewActivity extends BaseToolBarActivity {
 
         Intent intent = getIntent();
 
+        parseIntent();
+        if (!showLoading) {
+            pb_loading.setVisibility(View.GONE);
+        }
         if (intent.hasExtra(URL_TO_OPEN) && intent.getExtras().getString(URL_TO_OPEN) != "") {
             setUrl(intent.getExtras().getString(URL_TO_OPEN));
         } else {
@@ -169,7 +175,9 @@ public class WebViewActivity extends BaseToolBarActivity {
                     webView.reload();
                     reload = false;
                 }
-                pb_loading.setVisibility(View.VISIBLE);
+                if (showLoading) {
+                    pb_loading.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -272,6 +280,13 @@ public class WebViewActivity extends BaseToolBarActivity {
                 return true;
             }
         });
+    }
+
+    private void parseIntent() {
+        Intent intent = getIntent();
+        if (intent.hasExtra(SHOW_LOADING) && !intent.getExtras().getBoolean(SHOW_LOADING, true)) {
+            showLoading = false;
+        }
     }
 
     private void initializeSwipeToRefresh() {

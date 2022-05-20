@@ -1,6 +1,6 @@
 {
-  "version" : "2.1.1",
-  "version_code" : 40033,
+  "version" : "2.1.2",
+  "version_code" : 40034,
   "testpress_site_subdomain" : "wincentre",
   "package_name" : "in.wincentre.www",
   "app_name" : "Winmaster",

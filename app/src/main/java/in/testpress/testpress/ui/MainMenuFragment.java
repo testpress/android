@@ -11,9 +11,9 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,10 +52,14 @@ import in.testpress.testpress.models.TestpressApiErrorResponse;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
+import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
+import in.testpress.ui.UserDevicesActivity;
+import io.sentry.Sentry;
+import io.sentry.protocol.User;
 import retrofit.RetrofitError;
 
-import static in.testpress.exam.network.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
+import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.ui.DrupalRssListFragment.RSS_FEED_URL;
@@ -101,7 +105,16 @@ public class MainMenuFragment extends Fragment {
         final boolean isUserAuthenticated = account.length > 0;
         // ToDo get from institute settings
         boolean drupalRssFeedEnabled = false;
+
+        if (!Strings.toString(instituteSettings.getAboutUs()).isEmpty()) {
+            mMenuItemResIds.put(R.string.about_us, R.drawable.about_us);
+        }
+
         if (isUserAuthenticated) {
+            User user = new User();
+            user.setUsername(account[0].name);
+            Sentry.setUser(user);
+
             if (!instituteSettings.getShowGameFrontend()) {
                 mMenuItemResIds.put(R.string.my_exams, R.drawable.exams);
             }
@@ -111,11 +124,18 @@ public class MainMenuFragment extends Fragment {
             if (instituteSettings.getDocumentsEnabled()) {
                 mMenuItemResIds.put(R.string.documents, R.drawable.documents);
             }
-            mMenuItemResIds.put(R.string.analytics, R.drawable.analytics);
+
+            if (!instituteSettings.getDisableStudentAnalytics()) {
+                mMenuItemResIds.put(R.string.analytics, R.drawable.analytics);
+            }
+
             mMenuItemResIds.put(R.string.profile, R.drawable.ic_profile_details);
             if (instituteSettings.getStoreEnabled()) {
                 mMenuItemResIds.put(R.string.store, R.drawable.store);
             }
+
+            mMenuItemResIds.put(R.string.login_activity, R.drawable.warning);
+
         }
         if (drupalRssFeedEnabled) {
             mMenuItemResIds.put(R.string.rss_posts, R.drawable.rss_feed);
@@ -142,6 +162,10 @@ public class MainMenuFragment extends Fragment {
                 Intent intent;
                 String custom_title;
                 switch ((int) id) {
+                    case R.string.about_us:
+                        intent = new Intent(getActivity(), AboutUsActivity.class);
+                        startActivity(intent);
+                        break;
                     case R.string.my_exams:
                         checkAuthenticatedUser(R.string.my_exams);
                         break;
@@ -197,6 +221,10 @@ public class MainMenuFragment extends Fragment {
                     case R.string.login:
                         intent = new Intent(getActivity(), LoginActivity.class);
                         intent.putExtra(Constants.DEEP_LINK_TO, "home");
+                        startActivity(intent);
+                        break;
+                    case R.string.login_activity:
+                        intent = new Intent(getActivity(), UserDevicesActivity.class);
                         startActivity(intent);
                         break;
                 }

@@ -10,21 +10,19 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
-import android.support.customtabs.CustomTabsIntent;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.Loader;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
+import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.loader.app.LoaderManager;
+import androidx.core.content.ContextCompat;
+import androidx.loader.content.Loader;
+import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.format.DateUtils;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
@@ -35,6 +33,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -74,10 +73,10 @@ import in.testpress.testpress.models.Forum;
 import in.testpress.testpress.models.ForumDao;
 import in.testpress.testpress.models.User;
 import in.testpress.testpress.models.UserDao;
+import in.testpress.testpress.ui.fragments.ForumAnswerFragment;
 import in.testpress.testpress.ui.view.RoundedImageView;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
-import in.testpress.testpress.util.ShareUtil;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.util.FullScreenChromeClient;
 import in.testpress.util.ViewUtils;
@@ -119,6 +118,7 @@ public class ForumActivity extends TestpressFragmentActivity implements
     @InjectView(R.id.empty_description) TextView emptyDescView;
     @InjectView(R.id.retry_button) Button retryButton;
     @InjectView(R.id.comments_layout) LinearLayout commentsLayout;
+    @InjectView(R.id.accepted_answer_layout) LinearLayout answerLayout;
     @InjectView(R.id.loading_previous_comments_layout) LinearLayout previousCommentsLoadingLayout;
     @InjectView(R.id.loading_new_comments_layout) LinearLayout newCommentsLoadingLayout;
     @InjectView(R.id.comments_list_view) RecyclerView listView;
@@ -218,6 +218,17 @@ public class ForumActivity extends TestpressFragmentActivity implements
         }
     }
 
+    protected void initializeAnswerFragment() {
+        ForumAnswerFragment fragment = new ForumAnswerFragment();
+        Bundle bundle = new Bundle();
+        bundle.putLong("id", forum.getId());
+        fragment.setArguments(bundle);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.accepted_answer, fragment)
+                .commitAllowingStateLoss();
+    }
+
     private void fetchForum() {
         new SafeAsyncTask<Forum>() {
             @Override
@@ -250,18 +261,18 @@ public class ForumActivity extends TestpressFragmentActivity implements
                 if (forumDao.queryBuilder()
                         .where(ForumDao.Properties.Id.eq(forum.getId())).count() != 0) {
 
-                    forum.setModified(ForumActivity.this.forum.getModified());
+                    forum.setModified(forum.getModified());
                     forum.setModifiedDate(simpleDateFormat.parse(forum.getModified()).getTime());
-                    if (forum.category != null) {
-                        forum.setCategory(forum.category);
+                    if (forum.getRawCategory() != null) {
+                        forum.setCategory(forum.getRawCategory());
                         CategoryDao categoryDao =
                                 TestpressApplication.getDaoSession().getCategoryDao();
-                        categoryDao.insertOrReplace(forum.category);
+                        categoryDao.insertOrReplace(forum.getRawCategory());
                     }
-                    User user = forum.createdBy;
+                    User user = forum.getRawCreatedBy();
                     userDao.insertOrReplace(user);
                     forum.setCreatorId(user.getId());
-                    user = forum.lastCommentedBy;
+                    user = forum.getRawLastCommentedBy();
                     if (user != null) {
                         userDao.insertOrReplace(user);
                         forum.setCommentorId(user.getId());
@@ -270,6 +281,10 @@ public class ForumActivity extends TestpressFragmentActivity implements
                 }
                 ForumActivity.this.forum = forum;
                 displayForum(forum);
+                if (forum.hasAnswer()) {
+                    answerLayout.setVisibility(View.VISIBLE);
+                    initializeAnswerFragment();
+                }
             }
         }.execute();
     }
@@ -300,8 +315,8 @@ public class ForumActivity extends TestpressFragmentActivity implements
             votesCount.setTextColor(primaryColor);
             downButton.setColorFilter(grayColor);
         }
-        userName.setText(forum.getCreatedBy().getFirstName() + " " + forum.getCreatedBy().getLastName());
-        imageLoader.displayImage(forum.getCreatedBy().getMediumImage(), roundedImageView, options);
+        userName.setText(forum.getRawCreatedBy().getFirstName() + " " + forum.getRawCreatedBy().getLastName());
+        imageLoader.displayImage(forum.getRawCreatedBy().getMediumImage(), roundedImageView, options);
         if (forum.getContentHtml() != null) {
             WebViewUtils webViewUtils = new WebViewUtils(content) {
                 @Override
@@ -373,7 +388,7 @@ public class ForumActivity extends TestpressFragmentActivity implements
     }
 
     private void voteForumPost(final View view, final int typeOfVote) {
-        if (isSelfVote(forum.getCreatedBy().getId())) {
+        if (isSelfVote(forum.getRawCreatedBy().getId())) {
             showSnackBar(view, R.string.testpress_self_vote_error);
             return;
         }
@@ -477,10 +492,10 @@ public class ForumActivity extends TestpressFragmentActivity implements
         forum = vote.getContentObject();
         forum.setVoteId((long) vote.getId());
         forum.setTypeOfVote(vote.getTypeOfVote());
-        User user = vote.getContentObject().createdBy;
+        User user = vote.getContentObject().getRawCreatedBy();
         userDao.insertOrReplace(user);
         forum.setCreatorId(user.getId());
-        user = vote.getContentObject().lastCommentedBy;
+        user = vote.getContentObject().getRawLastCommentedBy();
         if (user != null) {
             userDao.insertOrReplace(user);
             forum.setCommentorId(user.getId());
@@ -517,9 +532,9 @@ public class ForumActivity extends TestpressFragmentActivity implements
         } else if (exception instanceof RetrofitError) {
             if (((RetrofitError) exception).getResponse().getStatus() == 400) {
                 error = R.string.testpress_self_vote_error;
-                if (TestpressSdk.getTestpressUserId(activity) != forum.getCreatedBy().getId()) {
+                if (TestpressSdk.getTestpressUserId(activity) != forum.getRawCreatedBy().getId()) {
                     TestpressSdk.setTestpressUserId(activity,
-                            Integer.parseInt(forum.getCreatedBy().getId() + ""));
+                            Integer.parseInt(forum.getRawCreatedBy().getId() + ""));
                 }
             }
         }

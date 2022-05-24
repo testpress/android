@@ -8,15 +8,14 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
-import android.support.v4.widget.SlidingPaneLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
+import androidx.slidingpanelayout.widget.SlidingPaneLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,6 +32,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.github.kevinsawicki.wishlist.Toaster;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
 import java.text.Format;
@@ -300,7 +300,7 @@ public class ForumListFragment extends Fragment implements
             testpressService = getTestpressService();
         }
         adapter = new HeaderFooterListAdapter<>(listView,
-                new ForumListAdapter(serviceProvider, getActivity(), R.layout.forum_list_item));
+                new ForumListAdapter(serviceProvider, getActivity(), R.layout.legacy_forum_list_item));
         listView.setAdapter(adapter);
         loadingLayout = LayoutInflater.from(getActivity()).inflate(R.layout.loading_layout, null);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -753,16 +753,16 @@ public class ForumListFragment extends Fragment implements
     protected void writeToDB(List<Forum> forums) {
         List<Category> categories = new ArrayList<>();
         for (Forum forum : forums) {
-            if (forum.category != null) {
-                categories.add(forum.category);
+            if (forum.getRawCategory() != null) {
+                categories.add(forum.getRawCategory());
             }
         }
         categoryDao.insertOrReplaceInTx(categories);
         for (Forum forumTemp : forums) {
-            User user = forumTemp.createdBy;
+            User user = forumTemp.getRawCreatedBy();
             userDao.insertOrReplace(user);
             forumTemp.setCreatorId(user.getId());
-            user = forumTemp.lastCommentedBy;
+            user = forumTemp.getRawLastCommentedBy();
             if (user != null) {
                 userDao.insertOrReplace(user);
                 forumTemp.setCommentorId(user.getId());

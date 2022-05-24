@@ -12,6 +12,7 @@ import java.util.Map;
 
 import in.testpress.exam.models.Vote;
 import in.testpress.testpress.models.Category;
+import in.testpress.testpress.models.CheckPermission;
 import in.testpress.testpress.models.Comment;
 import in.testpress.testpress.models.Device;
 import in.testpress.testpress.models.Forum;
@@ -26,10 +27,14 @@ import in.testpress.testpress.models.ProfileDetails;
 import in.testpress.testpress.models.RegistrationSuccessResponse;
 import in.testpress.testpress.models.ResetPassword;
 import in.testpress.testpress.models.RssFeed;
+import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.models.TestpressApiResponse;
 import in.testpress.testpress.models.Update;
+import in.testpress.testpress.models.pojo.DashboardResponse;
+import in.testpress.testpress.network.CheckPermissionService;
 import in.testpress.testpress.network.RssConverterFactory;
 import in.testpress.testpress.network.RssFeedService;
+import in.testpress.testpress.network.SsoUrlService;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 
@@ -93,6 +98,22 @@ public class TestpressService {
 
     private ResetPasswordService getResetPasswordService(){return getRestAdapter().create(ResetPasswordService.class);}
 
+    private SsoUrlService getSsoUrlService() {
+        return getRestAdapter().create(SsoUrlService.class);
+    }
+
+    public SsoUrl getSsoUrl(){
+        return getSsoUrlService().getSsoUrl();
+    }
+
+    private CheckPermissionService getCheckPermissionService() {
+        return getRestAdapter().create(CheckPermissionService.class);
+    }
+
+    public CheckPermission checkPermission(){
+        return getCheckPermissionService().getPermission();
+    }
+
     private RssFeedService getRssFeedService(String url) {
         restAdapter.setEndpoint(url);
         restAdapter.setConverter(RssConverterFactory.create());
@@ -109,9 +130,10 @@ public class TestpressService {
         return getResetPasswordService().resetPassword(emailcode);
     }
 
-    public Update checkUpdate(String version) {
+    public Update checkUpdate(String version, String package_name) {
         HashMap<String, String> versioncode = new HashMap<String, String>();
         versioncode.put("version_code", version);
+        versioncode.put("package_name", package_name);
         return getAuthenticationService().checkUpdate(versioncode);
     }
 
@@ -124,7 +146,7 @@ public class TestpressService {
     }
 
 
-    public Device register(String registrationId, String deviceId) {
+    public Device registerDevice(String registrationId, String deviceId) {
         HashMap<String, String> credentials = new HashMap<String, String>();
         credentials.put("registration_id", registrationId);
         credentials.put("device_id", deviceId);
@@ -302,6 +324,10 @@ public class TestpressService {
         params.put("content_object", forum);
         params.put("type_of_vote", typeOfVote);
         return getPostService().updateCommentVote(forum.getVoteId(), params);
+    }
+
+    public DashboardResponse getDashboardData() {
+        return getAuthenticationService().getDashboardData();
     }
 
 }

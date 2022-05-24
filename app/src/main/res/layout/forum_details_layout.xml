@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v4.widget.NestedScrollView
+        <androidx.core.widget.NestedScrollView
             android:id="@+id/scroll_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -228,6 +228,27 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/content_layout"/>
 
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="invisible"
+                    android:id="@+id/accepted_answer_layout"
+                    android:layout_below="@+id/content_empty_view">
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="15dp"
+                        android:background="#e6e6e6"/>
+
+                    <FrameLayout
+                        android:id="@+id/accepted_answer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical" />
+
+                </LinearLayout>
                 <LinearLayout
                     android:orientation="vertical"
                     android:id="@+id/comments_layout"
@@ -235,7 +256,7 @@
                     android:layout_marginBottom="-2dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/content_empty_view">
+                    android:layout_below="@+id/accepted_answer_layout">
 
                     <View
                         android:layout_width="match_parent"
@@ -295,7 +316,7 @@
 
                     </LinearLayout>
 
-                    <android.support.v7.widget.RecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/comments_list_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
@@ -374,6 +395,7 @@
                                 android:minLines="1"
                                 android:maxLines="5"
                                 android:layout_gravity="center"
+                                android:textColor="@color/black"
                                 android:gravity="start"
                                 android:background="@drawable/light_grey_border"
                                 android:paddingLeft="5dp"
@@ -428,7 +450,7 @@
 
         </RelativeLayout>
 
-        </android.support.v4.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
 
     </LinearLayout>
 

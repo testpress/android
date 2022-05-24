@@ -29,7 +29,7 @@ public final class Constants {
         /**
          * Authentication URL
          */
-        public static final String URL_AUTH_FRAG = "/api/v2.2/auth-token/";
+        public static final String URL_AUTH_FRAG = "/api/v2.3/auth-token/";
 
         /**
          * New User Register URL
@@ -76,11 +76,15 @@ public final class Constants {
         public static final String URL_POSTS_FRAG =  "api/v2.2/posts/";
         public static final String URL_CATEGORIES_FRAG = URL_POSTS_FRAG + "categories/";
 
-        public static final String URL_FORUMS_FRAG =  "/api/v2.3/forum/";
+        public static final String URL_FORUMS_FRAG =  "api/v2.5/discussions/";
 
         public static final String URL_COMMENTS_FRAG =  "/comments/";
 
         public static final String CHAPTERS_PATH =  "/api/v2.2.1/chapters/";
+
+        public static final String URL_GENERATE_SSO_LINK =  "/api/v2.3/presigned_sso_url/";
+
+        public static final String CHECK_PERMISSION_URL =  "/api/v2.3/me/check_permission/";
 
         /**
          * Handle Success & Failure of payments

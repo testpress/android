@@ -209,6 +209,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private void setupDrawerContent(NavigationView navigationView) {
         hideMenuItemsForUnauthenticatedUser(navigationView.getMenu());
+        updateMenuItemNames(navigationView.getMenu());
         final HandleMainMenu handleMainMenu = new HandleMainMenu(MainActivity.this, serviceProvider);
         navigationView.setNavigationItemSelectedListener(
             new NavigationView.OnNavigationItemSelectedListener() {
@@ -232,11 +233,21 @@ public class MainActivity extends TestpressFragmentActivity {
             menu.findItem(R.id.bookmarks).setVisible(false);
         } else {
             menu.findItem(R.id.logout).setVisible(true);
+            if (mInstituteSettings != null) {
+                menu.findItem(R.id.doubts).setVisible(Boolean.TRUE.equals(mInstituteSettings.getIsHelpdeskEnabled()));
+            }
             menu.findItem(R.id.login_activity).setVisible(true);
             menu.findItem(R.id.analytics).setVisible(true);
             menu.findItem(R.id.profile).setVisible(true);
             menu.findItem(R.id.bookmarks).setVisible(true);
             menu.findItem(R.id.login).setVisible(false);
+        }
+    }
+
+    private void updateMenuItemNames(Menu menu) {
+        if (mInstituteSettings != null) {
+            menu.findItem(R.id.posts).setTitle(Strings.toString(mInstituteSettings.getPostsLabel()));
+            menu.findItem(R.id.bookmarks).setTitle(Strings.toString(mInstituteSettings.getBookmarksLabel()));
         }
     }
 

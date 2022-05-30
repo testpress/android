@@ -19,6 +19,9 @@ import in.testpress.testpress.models.InstituteSettings;
 
 import static in.testpress.core.TestpressSdk.getTypeface;
 
+import com.afollestad.materialdialogs.GravityEnum;
+import com.afollestad.materialdialogs.MaterialDialog;
+
 public class UIUtils {
     private static Typeface latoSemiBold;
     private static final String LATO_SEMI_BOLD_FONT_PATH = "fonts/Lato-Semibold.ttf";
@@ -104,5 +107,14 @@ public class UIUtils {
             latoSemiBold = getTypeface(context, LATO_SEMI_BOLD_FONT_PATH);
         }
         return latoSemiBold;
+    }
+
+    public static void showAlert(Context context, String message) {
+        new MaterialDialog.Builder(context)
+                .content(message)
+                .neutralText(R.string.ok)
+                .neutralColorRes(R.color.testpress_color_primary)
+                .buttonsGravity(GravityEnum.END)
+                .show();
     }
 }

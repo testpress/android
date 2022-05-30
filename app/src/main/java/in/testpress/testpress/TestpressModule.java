@@ -13,6 +13,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import in.testpress.testpress.authenticator.ApiKeyProvider;
+import in.testpress.testpress.authenticator.LoginActivityV2;
 import in.testpress.testpress.authenticator.RegisterActivity;
 import in.testpress.testpress.authenticator.ResetPasswordActivity;
 import in.testpress.testpress.authenticator.LoginActivity;
@@ -26,6 +27,7 @@ import in.testpress.testpress.ui.AccountActivateActivity;
 import in.testpress.testpress.ui.CreateForumActivity;
 import in.testpress.testpress.ui.DocumentsListActivity;
 import in.testpress.testpress.ui.DocumentsListFragment;
+import in.testpress.testpress.ui.DoubtsActivity;
 import in.testpress.testpress.ui.DrupalRssListActivity;
 import in.testpress.testpress.ui.DrupalRssListFragment;
 import in.testpress.testpress.ui.ForumActivity;
@@ -44,6 +46,9 @@ import in.testpress.testpress.ui.ProfileDetailsActivity;
 import in.testpress.testpress.ui.ProfilePhotoActivity;
 import in.testpress.testpress.ui.WebViewActivity;
 import in.testpress.testpress.ui.fragments.DashboardFragment;
+import in.testpress.testpress.ui.fragments.OTPVerificationFragment;
+import in.testpress.testpress.ui.fragments.PhoneAuthenticationFragment;
+import in.testpress.testpress.ui.fragments.UsernameAuthentication;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
 
@@ -84,7 +89,12 @@ import static in.testpress.testpress.BuildConfig.BASE_URL;
                 ForumActivity.class,
                 CreateForumActivity.class,
                 WebViewActivity.class,
-                DashboardFragment.class
+                DashboardFragment.class,
+                DoubtsActivity.class,
+                LoginActivityV2.class,
+                UsernameAuthentication.class,
+                PhoneAuthenticationFragment.class,
+                OTPVerificationFragment.class
         }
 )
 public class TestpressModule {

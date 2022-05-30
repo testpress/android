@@ -25,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.CookieManager;
+import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -143,8 +144,9 @@ public class WebViewActivity extends BaseToolBarActivity {
         }
 
 
-        if (Build.VERSION.SDK_INT >= 23 && (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)) {
-            ActivityCompat.requestPermissions(WebViewActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, 1);
+        if (Build.VERSION.SDK_INT >= 23 &&
+                (isPermissionGranted(Manifest.permission.RECORD_AUDIO) || isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE) || isPermissionGranted(Manifest.permission.CAMERA))) {
+            ActivityCompat.requestPermissions(WebViewActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO}, 1);
         }
 
         webView = (WebView) findViewById(R.id.web_view);
@@ -231,6 +233,11 @@ public class WebViewActivity extends BaseToolBarActivity {
                 WebViewActivity.this.startActivityForResult(Intent.createChooser(i, "File Chooser"), WebViewActivity.FILE_CHOOSER_RESULT_CODE);
             }
 
+            @Override
+            public void onPermissionRequest(PermissionRequest request) {
+                runOnUiThread(() -> request.grant(request.getResources()));
+            }
+
             //For Android 5.0+
             public boolean onShowFileChooser(
                     WebView webView, ValueCallback<Uri[]> filePathCallback,
@@ -287,6 +294,10 @@ public class WebViewActivity extends BaseToolBarActivity {
         if (intent.hasExtra(SHOW_LOADING) && !intent.getExtras().getBoolean(SHOW_LOADING, true)) {
             showLoading = false;
         }
+    }
+    
+    private boolean isPermissionGranted(String permissionName) {
+        return ContextCompat.checkSelfPermission(this, permissionName) != PackageManager.PERMISSION_GRANTED;
     }
 
     private void initializeSwipeToRefresh() {

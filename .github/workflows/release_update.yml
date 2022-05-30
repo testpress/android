@@ -1,16 +1,15 @@
-name: Bulid app files
+name: Release update
 
 on:
   workflow_dispatch:
     inputs:
       subdomain:
-        description: "Which subdomain you want to build the android app"
+        description: "Enter the institute's subdomain or all to release update(all -> deploy update for all institute)"
         required: true
-        default: "master"
-
+        default: "all"
 
 jobs:
-  build_app:
+  release_update:
     runs-on: ubuntu-latest
     env:
       GITHUB_ACCESS_KEY: ${{ secrets.GH_ACCESS_KEY }}
@@ -19,6 +18,7 @@ jobs:
 
     steps:
       - name: Validate subdomain
+        if: ${{ github.event.inputs.subdomain }} != 'all'
         run: |
           curl -f https://${{ github.event.inputs.subdomain }}.testpress.in/api/v2.5/admin/android/app-config/ -H "API-access-key: $API_ACCESS_KEY"
 
@@ -65,11 +65,11 @@ jobs:
           wget https://media.testpress.in/static/android/zoom_sdk.zip
           unzip -o ./zoom_sdk.zip
 
-      - name: Build app
+      - name: Build and deploy app
         run: |
           export LC_ALL=en_US.UTF-8
           export LANG=en_US.UTF-8
-          bundle exec fastlane build_app_files subdomain:${{ github.event.inputs.subdomain }}
+          bundle exec fastlane release_update_to subdomain:${{ github.event.inputs.subdomain }}
 
       - name: Store app artifacts
         uses: actions/upload-artifact@v2

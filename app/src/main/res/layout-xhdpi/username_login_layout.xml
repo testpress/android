@@ -57,7 +57,7 @@
                     android:fontFamily="@font/inter"
                     android:text="Get Started with"
                     android:textColor="#828282"
-                    android:textSize="28sp"
+                    android:textSize="26sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -66,7 +66,7 @@
                     android:fontFamily="@font/inter"
                     android:text="@string/app_name"
                     android:textColor="@color/testpress_black"
-                    android:textSize="31sp"
+                    android:textSize="28sp"
                     android:textStyle="bold" />
 
             </LinearLayout>

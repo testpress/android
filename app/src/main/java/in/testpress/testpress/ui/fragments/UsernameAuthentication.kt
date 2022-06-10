@@ -144,7 +144,7 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
     }
 
     private fun showOrHideButtons() {
-        if (!instituteSettings.allowSignup or instituteSettings.verificationMethod.equals("M")) {
+        if (!instituteSettings.allowSignup) {
             signUp.visibility = View.GONE
         }
         ViewUtils.setGone(phoneLogin, 3 !in instituteSettings.allowedLoginMethods)

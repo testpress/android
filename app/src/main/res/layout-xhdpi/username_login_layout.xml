@@ -220,7 +220,11 @@
                 android:textStyle="normal"
                 app:backgroundTintMode="add"
                 app:cornerRadius="8dp" />
-
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/socialLoginLayout"
+            android:orientation="vertical">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -232,7 +236,6 @@
                 android:textColor="#828282" />
 
             <LinearLayout
-                android:id="@+id/socialLoginLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
@@ -259,6 +262,7 @@
                     facebook:com_facebook_login_text="" />
 
             </LinearLayout>
+        </LinearLayout>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

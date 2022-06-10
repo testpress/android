@@ -1,3 +1,59 @@
+desc "Build customized app for an institute"
+lane :build_app_files do |params|
+  app_config = get_app_config(subdomain: params[:subdomain])
+  replace_images(app_config: app_config)
+  replace_google_services_json(google_services_json: app_config["google_services_json"].to_json)
+  modify_config_json_file(config_json: app_config.to_json)
+  generate_app_file(keystore_file_path: app_config["keystore_file"], keystore_password: app_config["keystore_password"], key_alias: app_config["key_alias"], key_password: app_config["key_password"])
+end
+
+lane :release_update_to do |params|
+  if params[:subdomain] == "all"
+    subdomains = fetch_subdomains
+    subdomains.each do |subdomain|
+      release_update(subdomain: subdomain)
+    end
+  else
+    release_update(subdomain: params[:subdomain])
+  end
+end
+
+
+desc "Release updates"
+lane :release_update do |params|
+  app_config = update_app_version(subdomain: params[:subdomain])
+  generate_customized_app_files(app_config: app_config)
+  deploy_app(play_console_key_file: app_config["play_console_key_file"], package_name: app_config["package_name"])
+end
+
+desc "Generate Customized app for an institute"
+lane :generate_customized_app_files do |params|
+  config = params[:app_config]
+  replace_images(app_config: config)
+  replace_google_services_json(google_services_json: config["google_services_json"].to_json)
+  modify_config_json_file(config_json: config.to_json)
+  generate_app_file(keystore_file_path: config["keystore_file"], keystore_password: config["keystore_password"], key_alias: config["key_alias"], key_password: config["key_password"])
+end
+
+desc "Replace images"
+lane :replace_images do |params|
+  config_json = params[:app_config]
+  download_file(url: config_json["splash_screen"], destination_path: './app/src/main/res/drawable/splash_screen.png')
+  download_file(url: config_json["splash_screen_large"], destination_path: './app/src/main/res/drawable-land/splash_screen.png')
+  download_file(url: config_json["splash_screen_land"], destination_path: './app/src/main/res/drawable-large/splash_screen.png')
+  download_file(url: config_json["splash_screen_land_large"], destination_path: './app/src/main/res/drawable-large-land/splash_screen.png')
+  download_file(url: config_json["notification_mdpi"], destination_path: './app/src/main/res/drawable-mdpi/ic_stat_notification.png')
+  download_file(url: config_json["notification_hdpi"], destination_path: './app/src/main/res/drawable-hdpi/ic_stat_notification.png')
+  download_file(url: config_json["notification_xhdpi"], destination_path: './app/src/main/res/drawable-xhdpi/ic_stat_notification.png')
+  download_file(url: config_json["notification_xxhdpi"], destination_path: './app/src/main/res/drawable-xxhdpi/ic_stat_notification.png')
+  download_file(url: config_json["notification_xxxhdpi"], destination_path: './app/src/main/res/drawable-xxxhdpi/ic_stat_notification.png')
+  download_file(url: config_json["launcher_mdpi"], destination_path: './app/src/main/res/mipmap-mdpi/ic_launcher.png')
+  download_file(url: config_json["launcher_hdpi"], destination_path: './app/src/main/res/mipmap-hdpi/ic_launcher.png')
+  download_file(url: config_json["launcher_xhdpi"], destination_path: './app/src/main/res/mipmap-xhdpi/ic_launcher.png')
+  download_file(url: config_json["launcher_xxhdpi"], destination_path: './app/src/main/res/mipmap-xxhdpi/ic_launcher.png')
+  download_file(url: config_json["launcher_xxxhdpi"], destination_path: './app/src/main/res/mipmap-xxxhdpi/ic_launcher.png')
+  download_file(url: config_json["login_screen_image"], destination_path: './app/src/main/res/drawable/login_screen_image.png')
+end
 
 desc "Generate Android App Bundle"
 lane :generate_app_file do |signing_config|
@@ -7,8 +63,19 @@ lane :generate_app_file do |signing_config|
   print_command: false,
   properties: {
     "android.injected.signing.store.file" => "%s/app/keystore.jks"%File.expand_path("..", Dir.pwd),
-     "android.injected.signing.store.password" => signing_config[:keystore_password],
-     "android.injected.signing.key.alias" => signing_config[:key_alias],
-     "android.injected.signing.key.password" => signing_config[:key_password],
-     })
+    "android.injected.signing.store.password" => signing_config[:keystore_password],
+    "android.injected.signing.key.alias" => signing_config[:key_alias],
+    "android.injected.signing.key.password" => signing_config[:key_password],
+  })
 end
+
+desc "Deploying the app to play store"
+lane :deploy_app do |params|
+  download_file(url: params[:play_console_key_file], destination_path: './app/private_key.json')
+  upload_to_play_store(
+    skip_upload_apk: true,
+    package_name: params[:package_name],
+    json_key: "%s/app/private_key.json"%File.expand_path("..", Dir.pwd)
+  )
+end
+

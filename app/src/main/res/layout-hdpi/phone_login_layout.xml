@@ -186,44 +186,50 @@
             app:cornerRadius="8dp"
             android:text="Create Account" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#828282"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center_horizontal"
-            android:fontFamily="@font/inter"
-            android:layout_marginBottom="15dp"
-            android:text="Or continue with"
-            />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal">
-
-            <ImageButton
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/socialLoginLayout"
+                android:orientation="vertical">
+            <TextView
                 android:layout_width="wrap_content"
-                android:id="@+id/googleSignIn"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:layout_marginHorizontal="10dp"
-                android:background="@drawable/rounded_corner"
-                android:src="@drawable/ic_google"
+                android:textColor="#828282"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:fontFamily="@font/inter"
+                android:layout_marginBottom="15dp"
+                android:text="Or continue with"
                 />
-
-            <com.facebook.login.widget.LoginButton
-                xmlns:facebook="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/facebookSignIn"
-                android:layout_width="40dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="11dp"
-                android:paddingBottom="11dp"
-                android:paddingLeft="12dp"
-                android:scaleType="centerInside"
-                android:layout_marginHorizontal="5dp"
-                facebook:com_facebook_login_text="" />
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
 
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:id="@+id/googleSignIn"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:background="@drawable/rounded_corner"
+                    android:src="@drawable/ic_google"
+                    />
+
+                <com.facebook.login.widget.LoginButton
+                    xmlns:facebook="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/facebookSignIn"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="11dp"
+                    android:paddingBottom="11dp"
+                    android:paddingLeft="12dp"
+                    android:scaleType="centerInside"
+                    android:layout_marginHorizontal="5dp"
+                    facebook:com_facebook_login_text="" />
+
+            </LinearLayout>
         </LinearLayout>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

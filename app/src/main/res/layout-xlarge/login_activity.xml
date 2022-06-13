@@ -101,7 +101,7 @@
                         <androidx.appcompat.widget.AppCompatEditText
                             android:id="@+id/et_password"
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/input_height"
+                            android:layout_height="70dp"
                             android:fontFamily="sans-serif"
                             android:inputType="textPassword"
                             android:textColor="@color/white"

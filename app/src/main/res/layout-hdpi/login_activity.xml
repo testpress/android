@@ -90,7 +90,7 @@
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/password_textInput_layout"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/input_height"
+                        android:layout_height="70dp"
                         android:theme="@style/TextLabelNew"
                         android:textColorHint="#FFFFFF"
                         app:passwordToggleEnabled="true">

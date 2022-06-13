@@ -5,12 +5,15 @@
   "package_name" : "com.brilliantpala.lms",
   "app_name" : "Brilliant Pala e-learning",
   "share_message": "Good app to prepare for online exams.",
-  "primary_color": "0556CE",
+  "primary_color": "#0556CE",
+  "secondary_color": "#C7280F",
+  "tertiary_color": "#32297D",
   "allow_anonymous_user" : false,
   "facebook_app_id" : "733962776688753",
   "server_client_id" : "418837212121-7jh36l4ovmh9q1omompfvnb038350jks.apps.googleusercontent.com",
   "display_username_on_video": true,
   "white_labeled_host_url": null,
   "is_growth_hacks_enabled": false,
-  "show_pdf_vertically": true
+  "show_pdf_vertically": true,
+  "zoom_enabled": false
 }

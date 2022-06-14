@@ -25,22 +25,22 @@
             android:weightSum="1.0"
             android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.makeramen.roundedimageview.RoundedImageView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:src="@drawable/building"
-                android:layout_weight="0.45"
-                android:scaleType="centerCrop"
-                app:riv_corner_radius_bottom_right="90dp"
-                android:adjustViewBounds="true"
-                android:layout_marginBottom="20dp"
-                android:layout_gravity="top"
-                android:id="@+id/imageView2" />
-        </LinearLayout>
+                android:layout_height="wrap_content">
+
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:src="@drawable/building"
+                    android:layout_weight="0.45"
+                    android:scaleType="centerCrop"
+                    app:riv_corner_radius_bottom_right="90dp"
+                    android:adjustViewBounds="true"
+                    android:layout_marginBottom="20dp"
+                    android:layout_gravity="top"
+                    android:id="@+id/imageView2" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/login_layout"
@@ -106,21 +106,22 @@
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/password_textInput_layout"
                         android:layout_width="match_parent"
-                        android:layout_height="70dp"
+                        android:layout_height="@dimen/input_height"
                         android:theme="@style/TextLabelNew"
                         android:textColorHint="#FFFFFF"
                         app:passwordToggleEnabled="true">
                         <androidx.appcompat.widget.AppCompatEditText
                             android:id="@+id/et_password"
                             android:layout_width="match_parent"
-                            android:layout_height="70dp"
+                            android:layout_height="@dimen/input_height"
                             android:fontFamily="sans-serif"
                             android:inputType="textPassword"
                             android:maxLines="1"
                             android:imeOptions="actionSend"
                             style="@style/Input"
                             android:textColor="@color/white"
-                            android:hint="@string/label_password"/>
+                            android:hint="@string/label_password"
+                            />
                     </com.google.android.material.textfield.TextInputLayout>
                     <TextView
                         android:id="@+id/password_error"

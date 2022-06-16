@@ -6,8 +6,12 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 ext {
-    testpressSDK = '1.4.56'
+    testpressSDK = '1.4.61'
 }
+
+def jsonFile = file('src/main/assets/config.json')
+def json = new JsonSlurper().parseText(jsonFile.text)
+
 
 dependencies {
 
@@ -21,8 +25,12 @@ dependencies {
     implementation "ru.tinkoff.scrollingpagerindicator:scrollingpagerindicator:1.1.0"
 
     implementation 'com.github.kevinsawicki:wishlist:0.9@aar'
-//    implementation project(':commonlib')
-//    implementation project(':mobilertc')
+
+    if (json.zoom_enabled) {
+        implementation project(':commonlib')
+        implementation project(':mobilertc')
+    }
+
     // Event Bus
     implementation 'com.squareup:otto:1.3.5'
 
@@ -53,7 +61,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:18.0.0'
 
     // Facebook SDK
-    implementation 'com.facebook.android:facebook-android-sdk:4.20.0'
+    implementation 'com.facebook.android:facebook-android-sdk:8.2.0'
 
     // Allow methods more than 64K
     implementation 'androidx.multidex:multidex:2.0.1'
@@ -62,6 +70,7 @@ dependencies {
     // Country code picker
     // https://github.com/hbb20/CountryCodePickerProject/wiki
     implementation "com.hbb20:ccp:2.1.9"
+    implementation 'com.lionscribe.open.libphonenumber:libphonenumber:8.12.18.1'
 
     implementation 'io.sentry:sentry-android:5.3.0'
     implementation 'org.slf4j:slf4j-nop:1.7.25'
@@ -139,9 +148,6 @@ android {
         targetSdkVersion 30
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        def jsonFile = file('src/main/assets/config.json')
-        def json = new JsonSlurper().parseText(jsonFile.text)
-
         versionName json.version
         versionCode json.version_code
 
@@ -154,7 +160,9 @@ android {
         resValue "string", "facebook_app_id", json.facebook_app_id
         resValue "string", "fb_login_protocol_scheme", json.facebook_app_id
         resValue "string", "server_client_id", json.server_client_id
-        resValue "color", "primary", "#" + json.primary_color
+        resValue "color", "primary", json.primary_color
+        resValue "color", "secondary", json.secondary_color
+        resValue "color", "tertiary", json.tertiary_color
         buildConfigField "boolean", "ALLOW_ANONYMOUS_USER", "" + json.allow_anonymous_user
         buildConfigField "boolean", "GROWTH_HACKS_ENABLED", "" + json.is_growth_hacks_enabled
         buildConfigField "boolean", "SHOW_PDF_VERTICALLY", "" + json.show_pdf_vertically

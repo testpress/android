@@ -94,6 +94,43 @@
     },
     {
       "client_info": {
+        "mobilesdk_app_id": "1:452024948803:android:5617a508f8014a4d075cf6",
+        "android_client_info": {
+          "package_name": "in.testpress.sandbox"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "452024948803-8c329ok1sv3ethl1h83alnv0brgh308k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.testpress.sandbox",
+            "certificate_hash": "2398cbcb627f2e5e1945cdf127d5432f74d99ae4"
+          }
+        },
+        {
+          "client_id": "452024948803-sa3dp91nlmmsccjc1t73f77vtif6047q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATHw8i4UXzKddlZtXGSAUHAMDGb1UVDLo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "452024948803-sa3dp91nlmmsccjc1t73f77vtif6047q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:452024948803:android:d4a3b648675d766e075cf6",
         "android_client_info": {
           "package_name": "in.testpress.sashwat"

@@ -57,7 +57,7 @@
                     android:fontFamily="@font/inter"
                     android:text="Get Started with"
                     android:textColor="#828282"
-                    android:textSize="28sp"
+                    android:textSize="26sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -66,27 +66,11 @@
                     android:fontFamily="@font/inter"
                     android:text="@string/app_name"
                     android:textColor="@color/testpress_black"
-                    android:textSize="31sp"
+                    android:textSize="28sp"
                     android:textStyle="bold" />
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="10dp"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginBottom="5sp"
-                    android:fontFamily="@font/inter"
-                    android:text="Choose your preferred or given way of login."
-                    android:textColor="#4f4f4f" />
-            </LinearLayout>
 
         </RelativeLayout>
 
@@ -122,7 +106,7 @@
                     android:maxLines="1"
                     android:paddingLeft="10dp"
                     android:textColor="@color/white"
-                    android:textColorHint="#aaaaaa"
+                    android:textColorHint="@color/white"
                     android:textCursorDrawable="@null" />
             </LinearLayout>
 
@@ -149,7 +133,7 @@
                     android:maxLines="1"
                     android:paddingLeft="10dp"
                     android:textColor="@color/white"
-                    android:textColorHint="#aaaaaa"
+                    android:textColorHint="@color/white"
                     android:textCursorDrawable="@null" />
             </com.google.android.material.textfield.TextInputLayout>
 

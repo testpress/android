@@ -5,12 +5,15 @@
   "package_name" : "com.eea.android",
   "app_name" : "Endurance Engineering Academy",
   "share_message": "Good app to prepare for GATE exams.",
-  "primary_color": "F15540",
+  "primary_color": "#F15540",
+  "secondary_color": "#C7280F",
+  "tertiary_color": "#32297D",
   "allow_anonymous_user" : false,
   "facebook_app_id" : "733962776688753",
   "server_client_id" : "415377538152-bfc5o6in0ugf2e98ceuf58kuo4jiapp0.apps.googleusercontent.com",
   "display_username_on_video": true,
   "white_labeled_host_url": null,
   "is_growth_hacks_enabled": false,
-  "show_pdf_vertically": false
+  "show_pdf_vertically": true,
+  "zoom_enabled": true
 }

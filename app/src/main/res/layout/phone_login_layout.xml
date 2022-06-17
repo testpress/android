@@ -131,7 +131,7 @@
                     android:maxLines="1"
                     android:paddingEnd="10dp"
                     android:textColor="@color/white"
-                    android:textColorHint="#aaaaaa"
+                    android:textColorHint="@color/white"
                     android:textCursorDrawable="@null" />
 
             </LinearLayout>

@@ -125,7 +125,7 @@
                 android:maxLines="1"
                 android:inputType="phone"
                 android:fontFamily="@font/inter"
-                android:textColorHint="#aaaaaa"
+                android:textColorHint="@color/white"
                 android:paddingEnd="10dp"
                 android:textCursorDrawable="@null"
                 android:background="@android:color/transparent"

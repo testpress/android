@@ -1,4 +1,5 @@
 package in.testpress.testpress.ui;
+import in.testpress.course.ui.CourseListFragment;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -9,6 +10,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
+import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
 import androidx.viewpager.widget.ViewPager;
@@ -115,6 +118,7 @@ public class MainActivity extends TestpressFragmentActivity {
     private boolean isUserAuthenticated;
     public String ssoUrl;
     private boolean isInitScreenCalledOnce;
+    private CourseListFragment courseListFragment;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -150,6 +154,14 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1000 && resultCode == -1 && data != null && !data.getBooleanExtra("continue_purchase", false)){
+            courseListFragment.onActivityResult(requestCode, resultCode, data);
+         }
     }
 
     private void setupEasterEgg() {
@@ -312,7 +324,7 @@ public class MainActivity extends TestpressFragmentActivity {
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             //noinspection ConstantConditions
             addMenuItem(R.string.learn, R.drawable.learn,
-                    TestpressCourse.getCoursesListFragment(this, TestpressSdk.getTestpressSession(this)));
+                    courseListFragment = TestpressCourse.getCoursesListFragment(this, TestpressSdk.getTestpressSession(this)));
 
             if (mInstituteSettings.getCoursesEnableGamification()) {
                 //noinspection ConstantConditions

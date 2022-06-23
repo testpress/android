@@ -14,6 +14,6 @@
   "display_username_on_video": true,
   "white_labeled_host_url": null,
   "is_growth_hacks_enabled": false,
-  "show_pdf_vertically": true,
+  "show_pdf_vertically": false,
   "zoom_enabled": true
 }

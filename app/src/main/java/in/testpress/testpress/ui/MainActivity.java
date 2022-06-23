@@ -160,12 +160,12 @@ public class MainActivity extends TestpressFragmentActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (isUserPurchasedFromStore(requestCode, resultCode)) {
+        if (isProductPurchaseSuccessful(requestCode, resultCode)) {
             courseListFragment.onActivityResult(requestCode, resultCode, data);
          }
     }
 
-    private boolean isUserPurchasedFromStore(int requestCode, int resultCode){
+    private boolean isProductPurchaseSuccessful(int requestCode, int resultCode){
         return requestCode == STORE_REQUEST_CODE && resultCode == RESULT_OK;
     }
 

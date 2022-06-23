@@ -160,9 +160,13 @@ public class MainActivity extends TestpressFragmentActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == STORE_REQUEST_CODE && resultCode == RESULT_OK){
+        if (isUserPurchasedFromStore(requestCode, resultCode)) {
             courseListFragment.onActivityResult(requestCode, resultCode, data);
          }
+    }
+
+    private boolean isUserPurchasedFromStore(int requestCode, int resultCode){
+        return requestCode == STORE_REQUEST_CODE && resultCode == RESULT_OK;
     }
 
     private void setupEasterEgg() {

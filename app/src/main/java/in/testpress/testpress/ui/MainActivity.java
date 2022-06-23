@@ -84,6 +84,7 @@ import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.ui.utils.EasterEggUtils.enableOrDisableEasterEgg;
 import static in.testpress.testpress.ui.utils.EasterEggUtils.enableScreenShot;
 import static in.testpress.testpress.ui.utils.EasterEggUtils.isEasterEggEnabled;
+import static in.testpress.store.TestpressStore.STORE_REQUEST_CODE;
 
 public class MainActivity extends TestpressFragmentActivity {
 
@@ -159,7 +160,7 @@ public class MainActivity extends TestpressFragmentActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1000 && resultCode == -1 && data != null && !data.getBooleanExtra("continue_purchase", false)){
+        if (requestCode == STORE_REQUEST_CODE && resultCode == RESULT_OK){
             courseListFragment.onActivityResult(requestCode, resultCode, data);
          }
     }

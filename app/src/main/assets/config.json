@@ -5,12 +5,15 @@
   "package_name" : "com.brilliantpala.elearn",
   "app_name" : "Brilliant Pala Classes",
   "share_message": "Brilliant pala E-learning",
-  "primary_color": "ED1D24",
+  "primary_color": "#ED1D24",
+  "secondary_color": "#C7280F",
+  "tertiary_color": "#32297D",
   "allow_anonymous_user" : false,
   "facebook_app_id" : "733962776688753",
   "server_client_id" : "234956709117-9jd0f90q0262bb41moodkff4pf7of7lq.apps.googleusercontent.com",
   "display_username_on_video": true,
   "white_labeled_host_url": null,
   "is_growth_hacks_enabled": false,
-  "show_pdf_vertically": true
+  "show_pdf_vertically": true,
+  "zoom_enabled": false
 }

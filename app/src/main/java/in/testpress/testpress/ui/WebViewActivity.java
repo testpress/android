@@ -25,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.CookieManager;
+import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -53,6 +54,7 @@ public class WebViewActivity extends BaseToolBarActivity {
     public static final String ACTIVITY_TITLE = "TITLE";
     public static final String ENABLE_BACK = "ENABLE_BACK";
     public static final String SHOW_LOGOUT = "SHOW_LOGOUT";
+    public static final String SHOW_LOADING = "SHOW_LOADING";
     private final static int FILE_CHOOSER_RESULT_CODE = 1;
 
     @Inject protected TestpressServiceProvider serviceProvider;
@@ -67,6 +69,7 @@ public class WebViewActivity extends BaseToolBarActivity {
     private ValueCallback<Uri[]> mUploadMessages;
     private String url;
     private boolean showLogout;
+    private boolean showLoading = true;
     private boolean reload = false;
 
     @Override
@@ -122,6 +125,10 @@ public class WebViewActivity extends BaseToolBarActivity {
 
         Intent intent = getIntent();
 
+        parseIntent();
+        if (!showLoading) {
+            pb_loading.setVisibility(View.GONE);
+        }
         if (intent.hasExtra(URL_TO_OPEN) && intent.getExtras().getString(URL_TO_OPEN) != "") {
             setUrl(intent.getExtras().getString(URL_TO_OPEN));
         } else {
@@ -137,8 +144,9 @@ public class WebViewActivity extends BaseToolBarActivity {
         }
 
 
-        if (Build.VERSION.SDK_INT >= 23 && (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)) {
-            ActivityCompat.requestPermissions(WebViewActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, 1);
+        if (Build.VERSION.SDK_INT >= 23 &&
+                (isPermissionGranted(Manifest.permission.RECORD_AUDIO) || isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE) || isPermissionGranted(Manifest.permission.CAMERA))) {
+            ActivityCompat.requestPermissions(WebViewActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO}, 1);
         }
 
         webView = (WebView) findViewById(R.id.web_view);
@@ -169,7 +177,9 @@ public class WebViewActivity extends BaseToolBarActivity {
                     webView.reload();
                     reload = false;
                 }
-                pb_loading.setVisibility(View.VISIBLE);
+                if (showLoading) {
+                    pb_loading.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -223,6 +233,11 @@ public class WebViewActivity extends BaseToolBarActivity {
                 WebViewActivity.this.startActivityForResult(Intent.createChooser(i, "File Chooser"), WebViewActivity.FILE_CHOOSER_RESULT_CODE);
             }
 
+            @Override
+            public void onPermissionRequest(PermissionRequest request) {
+                runOnUiThread(() -> request.grant(request.getResources()));
+            }
+
             //For Android 5.0+
             public boolean onShowFileChooser(
                     WebView webView, ValueCallback<Uri[]> filePathCallback,
@@ -272,6 +287,17 @@ public class WebViewActivity extends BaseToolBarActivity {
                 return true;
             }
         });
+    }
+
+    private void parseIntent() {
+        Intent intent = getIntent();
+        if (intent.hasExtra(SHOW_LOADING) && !intent.getExtras().getBoolean(SHOW_LOADING, true)) {
+            showLoading = false;
+        }
+    }
+    
+    private boolean isPermissionGranted(String permissionName) {
+        return ContextCompat.checkSelfPermission(this, permissionName) != PackageManager.PERMISSION_GRANTED;
     }
 
     private void initializeSwipeToRefresh() {

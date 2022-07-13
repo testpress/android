@@ -75,6 +75,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         public final static Property IsHelpdeskEnabled = new Property(46, Boolean.class, "isHelpdeskEnabled", false, "IS_HELPDESK_ENABLED");
         public final static Property AllowedLoginMethods = new Property(47, String.class, "allowedLoginMethods", false, "ALLOWED_LOGIN_METHODS");
         public final static Property ShowShareButton = new Property(48, Boolean.class, "showShareButton", false, "SHOW_SHARE_BUTTON");
+        public final static Property FacebookAppId = new Property(49, String.class, "facebookAppId", false, "FACEBOOK_APP_ID");
     };
 
     private final IntegerListConverter allowedLoginMethodsConverter = new IntegerListConverter();
@@ -139,7 +140,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
                 "\"IS_VIDEO_DOWNLOAD_ENABLED\" INTEGER," + // 45: isVideoDownloadEnabled
                 "\"IS_HELPDESK_ENABLED\" INTEGER," + // 46: isHelpdeskEnabled
                 "\"ALLOWED_LOGIN_METHODS\" TEXT," + // 47: allowedLoginMethods
-                "\"SHOW_SHARE_BUTTON\" INTEGER);"); // 48: showShareButton
+                "\"SHOW_SHARE_BUTTON\" INTEGER," + // 48: showShareButton
+                "\"FACEBOOK_APP_ID\" TEXT);"); // 49: facebookAppId
     }
 
     /** Drops the underlying database table. */
@@ -393,6 +395,11 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         if (showShareButton != null) {
             stmt.bindLong(49, showShareButton ? 1L: 0L);
         }
+ 
+        String facebookAppId = entity.getFacebookAppId();
+        if (facebookAppId != null) {
+            stmt.bindString(50, facebookAppId);
+        }
     }
 
     /** @inheritdoc */
@@ -453,7 +460,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             cursor.isNull(offset + 45) ? null : cursor.getShort(offset + 45) != 0, // isVideoDownloadEnabled
             cursor.isNull(offset + 46) ? null : cursor.getShort(offset + 46) != 0, // isHelpdeskEnabled
             cursor.isNull(offset + 47) ? null : allowedLoginMethodsConverter.convertToEntityProperty(cursor.getString(offset + 47)), // allowedLoginMethods
-            cursor.isNull(offset + 48) ? null : cursor.getShort(offset + 48) != 0 // showShareButton
+            cursor.isNull(offset + 48) ? null : cursor.getShort(offset + 48) != 0, // showShareButton
+            cursor.isNull(offset + 49) ? null : cursor.getString(offset + 49) // facebookAppId
         );
         return entity;
     }
@@ -510,6 +518,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         entity.setIsHelpdeskEnabled(cursor.isNull(offset + 46) ? null : cursor.getShort(offset + 46) != 0);
         entity.setAllowedLoginMethods(cursor.isNull(offset + 47) ? null : allowedLoginMethodsConverter.convertToEntityProperty(cursor.getString(offset + 47)));
         entity.setShowShareButton(cursor.isNull(offset + 48) ? null : cursor.getShort(offset + 48) != 0);
+        entity.setFacebookAppId(cursor.isNull(offset + 49) ? null : cursor.getString(offset + 49));
      }
     
     /** @inheritdoc */

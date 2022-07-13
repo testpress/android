@@ -226,6 +226,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private void setupDrawerContent(NavigationView navigationView) {
         hideMenuItemsForUnauthenticatedUser(navigationView.getMenu());
+        showShareButtonBasedOnInstituteSettings(navigationView.getMenu());
         updateMenuItemNames(navigationView.getMenu());
         final HandleMainMenu handleMainMenu = new HandleMainMenu(MainActivity.this, serviceProvider);
         navigationView.setNavigationItemSelectedListener(
@@ -258,6 +259,12 @@ public class MainActivity extends TestpressFragmentActivity {
             menu.findItem(R.id.profile).setVisible(true);
             menu.findItem(R.id.bookmarks).setVisible(true);
             menu.findItem(R.id.login).setVisible(false);
+        }
+    }
+
+    private void showShareButtonBasedOnInstituteSettings(Menu menu){
+        if (mInstituteSettings != null) {
+            menu.findItem(R.id.share).setVisible(Boolean.TRUE.equals(mInstituteSettings.getShowShareButton()));
         }
     }
 

@@ -6,7 +6,7 @@ on:
       subdomain:
         description: "Which subdomain you want to build the android app"
         required: true
-        default: "master"
+        default: "sandbox"
 
 
 jobs:

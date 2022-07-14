@@ -79,3 +79,8 @@ lane :deploy_app do |params|
   )
 end
 
+lane :generate_debug_apk do
+  gradle(
+    task: "assembleDebug"
+  )
+end

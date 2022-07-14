@@ -84,5 +84,3 @@ lane :generate_debug_apk do
     task: "assembleDebug"
   )
 end
-
-

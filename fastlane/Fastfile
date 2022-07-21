@@ -1,10 +1,7 @@
 desc "Build customized app for an institute"
 lane :build_app_files do |params|
   app_config = get_app_config(subdomain: params[:subdomain])
-  replace_images(app_config: app_config)
-  replace_google_services_json(google_services_json: app_config["google_services_json"].to_json)
-  modify_config_json_file(config_json: app_config.to_json)
-  generate_app_file(keystore_file_path: app_config["keystore_file"], keystore_password: app_config["keystore_password"], key_alias: app_config["key_alias"], key_password: app_config["key_password"])
+  generate_customized_app_files(app_config: app_config)
 end
 
 lane :release_update_to do |params|

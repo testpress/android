@@ -1,4 +1,5 @@
 package in.testpress.testpress.ui;
+import in.testpress.course.ui.CourseListFragment;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -9,6 +10,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
+import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
 import androidx.viewpager.widget.ViewPager;
@@ -81,6 +84,7 @@ import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.ui.utils.EasterEggUtils.enableOrDisableEasterEgg;
 import static in.testpress.testpress.ui.utils.EasterEggUtils.enableScreenShot;
 import static in.testpress.testpress.ui.utils.EasterEggUtils.isEasterEggEnabled;
+import static in.testpress.store.TestpressStore.STORE_REQUEST_CODE;
 
 public class MainActivity extends TestpressFragmentActivity {
 
@@ -115,6 +119,7 @@ public class MainActivity extends TestpressFragmentActivity {
     private boolean isUserAuthenticated;
     public String ssoUrl;
     private boolean isInitScreenCalledOnce;
+    private CourseListFragment courseListFragment;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -150,6 +155,18 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (isProductPurchaseSuccessful(requestCode, resultCode)) {
+            courseListFragment.onActivityResult(requestCode, resultCode, data);
+         }
+    }
+
+    private boolean isProductPurchaseSuccessful(int requestCode, int resultCode){
+        return requestCode == STORE_REQUEST_CODE && resultCode == RESULT_OK;
     }
 
     private void setupEasterEgg() {
@@ -209,6 +226,8 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private void setupDrawerContent(NavigationView navigationView) {
         hideMenuItemsForUnauthenticatedUser(navigationView.getMenu());
+        showShareButtonBasedOnInstituteSettings(navigationView.getMenu());
+        showRateUsButtonBasedOnInstituteSettings(navigationView.getMenu());
         updateMenuItemNames(navigationView.getMenu());
         final HandleMainMenu handleMainMenu = new HandleMainMenu(MainActivity.this, serviceProvider);
         navigationView.setNavigationItemSelectedListener(
@@ -241,6 +260,18 @@ public class MainActivity extends TestpressFragmentActivity {
             menu.findItem(R.id.profile).setVisible(true);
             menu.findItem(R.id.bookmarks).setVisible(true);
             menu.findItem(R.id.login).setVisible(false);
+        }
+    }
+
+    private void showShareButtonBasedOnInstituteSettings(Menu menu){
+        if (mInstituteSettings != null) {
+            menu.findItem(R.id.share).setVisible(Boolean.TRUE.equals(mInstituteSettings.getShowShareButton()));
+        }
+    }
+
+    private void showRateUsButtonBasedOnInstituteSettings(Menu menu){
+        if (mInstituteSettings != null) {
+            menu.findItem(R.id.rate_us).setVisible(Boolean.TRUE.equals(mInstituteSettings.getShowShareButton()));
         }
     }
 
@@ -312,7 +343,7 @@ public class MainActivity extends TestpressFragmentActivity {
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             //noinspection ConstantConditions
             addMenuItem(R.string.learn, R.drawable.learn,
-                    TestpressCourse.getCoursesListFragment(this, TestpressSdk.getTestpressSession(this)));
+                    courseListFragment = TestpressCourse.getCoursesListFragment(this, TestpressSdk.getTestpressSession(this)));
 
             if (mInstituteSettings.getCoursesEnableGamification()) {
                 //noinspection ConstantConditions

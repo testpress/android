@@ -78,6 +78,6 @@ end
 
 lane :generate_debug_apk do
   gradle(
-    task: "assembleDebug"
+    tasks: ["bundleRelease", "assembleRelease", "assembleDebug"]
   )
 end

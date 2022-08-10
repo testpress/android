@@ -77,7 +77,14 @@ lane :deploy_app do |params|
 end
 
 lane :generate_debug_apk do
+  download_file(url: signing_config[:keystore_file_path], destination_path: 'http://media.testpress.in/static/android/testpress.jks')
   gradle(
-    tasks: ["bundleRelease", "assembleRelease", "assembleDebug"]
+    tasks: ["bundleRelease", "assembleRelease", "assembleDebug"],
+    properties: {
+      "android.injected.signing.store.file" => "%s/app/keystore.jks"%File.expand_path("..", Dir.pwd),
+      "android.injected.signing.store.password" => "welcome1$",
+      "android.injected.signing.key.alias" => "testpress",
+      "android.injected.signing.key.password" => "welcome1$",
+    }
   )
 end

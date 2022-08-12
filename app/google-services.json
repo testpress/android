@@ -1,163 +1,84 @@
 {
-  "project_info": {
-    "project_number": "452024948803",
-    "project_id": "testpress-app-8",
-    "storage_bucket": "testpress-app-8.appspot.com"
-  },
   "client": [
     {
-      "client_info": {
-        "mobilesdk_app_id": "1:452024948803:android:1cf1533514682488075cf6",
-        "android_client_info": {
-          "package_name": "in.testpress.edukosh"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "452024948803-sa3dp91nlmmsccjc1t73f77vtif6047q.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyATHw8i4UXzKddlZtXGSAUHAMDGb1UVDLo"
-        }
-      ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "452024948803-sa3dp91nlmmsccjc1t73f77vtif6047q.apps.googleusercontent.com",
-              "client_type": 3
+              "client_type": 3,
+              "client_id": "32758085827-6e4u7bdru6ka054pueq2e3ruk18i4iht.apps.googleusercontent.com"
             }
           ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:452024948803:android:ecb1870c93e94eee075cf6",
-        "android_client_info": {
-          "package_name": "in.testpress.hindalcoindustries"
         }
       },
       "oauth_client": [
         {
-          "client_id": "452024948803-sa3dp91nlmmsccjc1t73f77vtif6047q.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyATHw8i4UXzKddlZtXGSAUHAMDGb1UVDLo"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "452024948803-sa3dp91nlmmsccjc1t73f77vtif6047q.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:452024948803:android:67951aa3dcd3b217075cf6",
-        "android_client_info": {
-          "package_name": "in.testpress.lalsacademy"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "452024948803-sa3dp91nlmmsccjc1t73f77vtif6047q.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyATHw8i4UXzKddlZtXGSAUHAMDGb1UVDLo"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "452024948803-sa3dp91nlmmsccjc1t73f77vtif6047q.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:452024948803:android:5617a508f8014a4d075cf6",
-        "android_client_info": {
-          "package_name": "in.testpress.sandbox"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "452024948803-8c329ok1sv3ethl1h83alnv0brgh308k.apps.googleusercontent.com",
-          "client_type": 1,
           "android_info": {
-            "package_name": "in.testpress.sandbox",
-            "certificate_hash": "2398cbcb627f2e5e1945cdf127d5432f74d99ae4"
-          }
+            "certificate_hash": "26ba55d5e7c69307830c00aefea862060a75ff10",
+            "package_name": "com.makeiteasyskills.android"
+          },
+          "client_type": 1,
+          "client_id": "32758085827-r0pad1ude9fleiu9gtoc9o7a77dd47ak.apps.googleusercontent.com"
         },
         {
-          "client_id": "452024948803-sa3dp91nlmmsccjc1t73f77vtif6047q.apps.googleusercontent.com",
-          "client_type": 3
+          "android_info": {
+            "certificate_hash": "1991812f2ae071cd1e4efabb37c8277bf1c95d4b",
+            "package_name": "com.makeiteasyskills.android"
+          },
+          "client_type": 1,
+          "client_id": "32758085827-sfr627aa2f6hk07lptm5k3d0nrafncfi.apps.googleusercontent.com"
+        },
+        {
+          "client_type": 3,
+          "client_id": "32758085827-6e4u7bdru6ka054pueq2e3ruk18i4iht.apps.googleusercontent.com"
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyATHw8i4UXzKddlZtXGSAUHAMDGb1UVDLo"
+          "current_key": "AIzaSyDl7NE0fVaRwBdxJt8uxCi433ZxL3sb6vY"
         }
       ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "452024948803-sa3dp91nlmmsccjc1t73f77vtif6047q.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+      "client_info": {
+        "mobilesdk_app_id": "1:32758085827:android:51a99c03c84fdbf82a0a76",
+        "android_client_info": {
+          "package_name": "com.makeiteasyskills.android"
         }
       }
     },
     {
-      "client_info": {
-        "mobilesdk_app_id": "1:452024948803:android:d4a3b648675d766e075cf6",
-        "android_client_info": {
-          "package_name": "in.testpress.sashwat"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "452024948803-sa3dp91nlmmsccjc1t73f77vtif6047q.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyATHw8i4UXzKddlZtXGSAUHAMDGb1UVDLo"
-        }
-      ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "452024948803-sa3dp91nlmmsccjc1t73f77vtif6047q.apps.googleusercontent.com",
-              "client_type": 3
+              "client_type": 3,
+              "client_id": "32758085827-6e4u7bdru6ka054pueq2e3ruk18i4iht.apps.googleusercontent.com"
             }
           ]
+        }
+      },
+      "oauth_client": [
+        {
+          "client_type": 3,
+          "client_id": "32758085827-6e4u7bdru6ka054pueq2e3ruk18i4iht.apps.googleusercontent.com"
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDl7NE0fVaRwBdxJt8uxCi433ZxL3sb6vY"
+        }
+      ],
+      "client_info": {
+        "mobilesdk_app_id": "1:32758085827:android:44098a95a6c5b13e2a0a76",
+        "android_client_info": {
+          "package_name": "in.testpress.makeiteasy"
         }
       }
     }
   ],
-  "configuration_version": "1"
+  "configuration_version": "1",
+  "project_info": {
+    "storage_bucket": "make-it-easy-skills.appspot.com",
+    "project_id": "make-it-easy-skills",
+    "project_number": "32758085827"
+  }
 }

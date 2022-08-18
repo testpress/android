@@ -38,6 +38,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gems-
 
+      - name: Cache Zoom SDK files
+        id: zoom-cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ./mobilertc
+            ./commonlib
+          key: zoom_sdk_files
+
+      - name: Setup Zoom SDK
+        if: steps.zoom-cache.outputs.cache-hit != 'true'
+        run: |
+          wget https://media.testpress.in/static/android/zoom_sdk.zip
+          unzip -o ./zoom_sdk.zip
+
       - name: Caching Gradle packages
         uses: actions/cache@v2
         with:

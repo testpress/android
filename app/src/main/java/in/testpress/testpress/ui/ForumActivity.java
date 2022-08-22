@@ -69,11 +69,9 @@ import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.CategoryDao;
 import in.testpress.testpress.models.Comment;
-import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.Forum;
 import in.testpress.testpress.models.ForumDao;
 import in.testpress.testpress.models.InstituteSettings;
-import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.User;
 import in.testpress.testpress.models.UserDao;
 import in.testpress.testpress.ui.fragments.ForumAnswerFragment;
@@ -86,7 +84,6 @@ import in.testpress.util.ViewUtils;
 import in.testpress.util.WebViewUtils;
 import retrofit.RetrofitError;
 
-import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.util.CommonUtils.getException;
 
 public class ForumActivity extends TestpressFragmentActivity implements
@@ -156,7 +153,7 @@ public class ForumActivity extends TestpressFragmentActivity implements
     private int grayColor;
     private int primaryColor;
     private Activity activity;
-    private InstituteSettings instituteSettings;
+    private InstituteSettings instituteSettings = TestpressApplication.getInstituteSettings();
 
     private Handler newCommentsHandler;
     private Runnable runnable = new Runnable() {
@@ -221,11 +218,6 @@ public class ForumActivity extends TestpressFragmentActivity implements
             setEmptyText(R.string.invalid_post, R.string.try_after_sometime,
                     R.drawable.ic_error_outline_black_18dp);
         }
-        DaoSession daoSession = TestpressApplication.getDaoSession();
-        InstituteSettingsDao instituteSettingsDao = daoSession.getInstituteSettingsDao();
-        instituteSettings = instituteSettingsDao.queryBuilder()
-                .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
-                .list().get(0);
     }
 
     protected void initializeAnswerFragment() {
@@ -310,7 +302,7 @@ public class ForumActivity extends TestpressFragmentActivity implements
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        allowVotingBasedOninstituteSettings();
+        allowVotingBasedOnInstituteSettings();
         userName.setText(forum.getRawCreatedBy().getFirstName() + " " + forum.getRawCreatedBy().getLastName());
         imageLoader.displayImage(forum.getRawCreatedBy().getMediumImage(), roundedImageView, options);
         if (forum.getContentHtml() != null) {
@@ -385,14 +377,14 @@ public class ForumActivity extends TestpressFragmentActivity implements
 
     private void allowVotingBasedOnInstituteSettings(){
         if (instituteSettings.getCommentsVotingEnabled()){
-            ShowVotingOptions();
+            showVotingOptions();
         }
         else {
-            HideVotingOptions();
+            hideVotingOptions();
         }
     }
 
-    private void ShowVotingOptions(){
+    private void showVotingOptions(){
         viewsCount.setText("" + forum.getViewsCount() + " views");
         votesCount.setText("" + (forum.getUpvotes() - forum.getDownvotes()));
         if (forum.getTypeOfVote() == null) {
@@ -410,7 +402,7 @@ public class ForumActivity extends TestpressFragmentActivity implements
         }
     }
 
-    private void HideVotingOptions(){
+    private void hideVotingOptions(){
         LinearLayout voting_layout = (LinearLayout) findViewById(R.id.voting_layout);
         voting_layout.setVisibility(View.GONE);
     }

@@ -31,6 +31,7 @@ import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.Forum;
 import in.testpress.testpress.models.ForumDao;
 import in.testpress.testpress.models.UserDao;
+import in.testpress.testpress.ui.fragments.DiscussionFragmentv2;
 import in.testpress.testpress.ui.view.RoundedImageView;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.FormatDate;
@@ -174,7 +175,7 @@ public class ForumListAdapter extends BaseAdapter{
         convertView.findViewById(R.id.ripple_layout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(activity, ForumActivity.class);
+                Intent intent = new Intent(activity, DisscussionActivity.class);
                 intent.putExtra("Url", forum.getUrl());
                 activity.startActivity(intent);
             }

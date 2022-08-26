@@ -195,29 +195,33 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
         } else {
             result.signInAccount!!.email
         }
-        TestpressSdk.initialize(this, settings, userId, accessToken, TestpressSdk.Provider.GOOGLE,
-            object : TestpressCallback<TestpressSession?>() {
-                override fun onSuccess(response: TestpressSession?) {
-                    val authToken = response?.token
-                    if (authToken != null) {
-                        onLoginSuccess(username, authToken)
-                    }
-                }
-
-                override fun onException(e: TestpressException) {
-                    if (e.isNetworkError) {
-                        UIUtils.showAlert(this@LoginActivityV2, getString(R.string.no_internet_try_again))
-                    } else if (e.isClientError) {
-                        if (e.message?.isNotEmpty() == true) {
-                            UIUtils.showAlert(this@LoginActivityV2, e.message!!)
-                        } else {
-                            UIUtils.showAlert(this@LoginActivityV2,getString(R.string.invalid_username_or_password))
+        if (userId != null && accessToken != null) {
+            TestpressSdk.initialize(this, settings, userId, accessToken, TestpressSdk.Provider.GOOGLE,
+                object : TestpressCallback<TestpressSession?>() {
+                    override fun onSuccess(response: TestpressSession?) {
+                        val authToken = response?.token
+                        if (authToken != null) {
+                            if (username != null) {
+                                onLoginSuccess(username, authToken)
+                            }
                         }
-                    } else {
-                        UIUtils.showAlert(this@LoginActivityV2,getString(R.string.testpress_some_thing_went_wrong_try_again))
                     }
-                }
-            })
+
+                    override fun onException(e: TestpressException) {
+                        if (e.isNetworkError) {
+                            UIUtils.showAlert(this@LoginActivityV2, getString(R.string.no_internet_try_again))
+                        } else if (e.isClientError) {
+                            if (e.message?.isNotEmpty() == true) {
+                                UIUtils.showAlert(this@LoginActivityV2, e.message!!)
+                            } else {
+                                UIUtils.showAlert(this@LoginActivityV2,getString(R.string.invalid_username_or_password))
+                            }
+                        } else {
+                            UIUtils.showAlert(this@LoginActivityV2,getString(R.string.testpress_some_thing_went_wrong_try_again))
+                        }
+                    }
+                })
+        }
     }
 
     private fun getInstituteSettings(): `in`.testpress.models.InstituteSettings {

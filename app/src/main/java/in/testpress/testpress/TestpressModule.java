@@ -45,7 +45,7 @@ import in.testpress.testpress.ui.PostsListFragment;
 import in.testpress.testpress.ui.ProfileDetailsActivity;
 import in.testpress.testpress.ui.ProfilePhotoActivity;
 import in.testpress.testpress.ui.WebViewActivity;
-import in.testpress.testpress.ui.fragments.DashboardFragment;
+import in.testpress.testpress.ui.fragments.DashBoardFragment;
 import in.testpress.testpress.ui.fragments.OTPVerificationFragment;
 import in.testpress.testpress.ui.fragments.PhoneAuthenticationFragment;
 import in.testpress.testpress.ui.fragments.UsernameAuthentication;
@@ -89,7 +89,7 @@ import static in.testpress.testpress.BuildConfig.BASE_URL;
                 ForumActivity.class,
                 CreateForumActivity.class,
                 WebViewActivity.class,
-                DashboardFragment.class,
+                DashBoardFragment.class,
                 DoubtsActivity.class,
                 LoginActivityV2.class,
                 UsernameAuthentication.class,

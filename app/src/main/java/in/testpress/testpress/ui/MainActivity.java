@@ -66,6 +66,7 @@ import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.models.Update;
+import in.testpress.testpress.repository.InstituteRepository;
 import in.testpress.testpress.ui.fragments.DashboardFragment;
 import in.testpress.testpress.ui.fragments.DiscussionFragmentv2;
 import in.testpress.testpress.ui.utils.HandleMainMenu;
@@ -75,7 +76,7 @@ import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.testpress.util.UpdateAppDialogManager;
-import in.testpress.ui.fragments.DiscussionFragment;
+import in.testpress.testpress.viewmodel.MainActivityViewModel;
 import io.sentry.android.core.SentryAndroid;
 
 import static in.testpress.testpress.BuildConfig.ALLOW_ANONYMOUS_USER;
@@ -120,6 +121,7 @@ public class MainActivity extends TestpressFragmentActivity {
     public String ssoUrl;
     private boolean isInitScreenCalledOnce;
     private CourseListFragment courseListFragment;
+    private MainActivityViewModel viewModel;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -128,6 +130,7 @@ public class MainActivity extends TestpressFragmentActivity {
         setContentView(R.layout.main_activity);
         ButterKnife.inject(this);
 
+        initViewModel();
         if (savedInstanceState != null) {
             mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM);
         }
@@ -146,6 +149,13 @@ public class MainActivity extends TestpressFragmentActivity {
             checkUpdate();
         }
         setupEasterEgg();
+    }
+
+    private void initViewModel(){
+        viewModel = new MainActivityViewModel(
+                new InstituteRepository(getApplicationContext(),
+                testpressService)
+        );
     }
 
     @Override
@@ -420,48 +430,46 @@ public class MainActivity extends TestpressFragmentActivity {
         if (mInstituteSettings == null) {
             progressBarLayout.setVisibility(View.VISIBLE);
         }
-        new SafeAsyncTask<InstituteSettings>() {
-            @Override
-            public InstituteSettings call() {
-                return testpressService.getInstituteSettings();
-            }
 
-            @Override
-            protected void onException(Exception exception) throws RuntimeException {
-                if (mInstituteSettings != null) {
-                    return;
-                }
-                if (exception.getCause() instanceof IOException) {
-                    setEmptyText(R.string.network_error, R.string.no_internet_try_again,
-                            R.drawable.ic_error_outline_black_18dp);
-                } else {
-                    setEmptyText(R.string.network_error, R.string.try_after_sometime,
-                            R.drawable.ic_error_outline_black_18dp);
-                }
-                progressBarLayout.setVisibility(View.GONE);
-                retryButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        emptyView.setVisibility(View.GONE);
-                        fetchInstituteSettings();
+        viewModel.getInstituteSettings().observe(this, instituteSettings -> {
+            switch (instituteSettings.getStatus()){
+                case SUCCESS:{
+                    instituteSettings.getData().setBaseUrl(BASE_URL);
+                    instituteSettingsDao.insertOrReplace(instituteSettings.getData());
+
+                    if (mInstituteSettings == null) {
+                        onFinishFetchingInstituteSettings(instituteSettings.getData());
+                    } else if (mInstituteSettings.getForceStudentData()) {
+                        checkForForceUserData();
+                    } else {
+                        showMainActivityContents();
                     }
-                });
-            }
+                    break;
+                }
+                case ERROR:{
+                    if (mInstituteSettings != null) {
+                        return;
+                    }
 
-            @Override
-            protected void onSuccess(InstituteSettings instituteSettings) {
-                instituteSettings.setBaseUrl(BASE_URL);
-                instituteSettingsDao.insertOrReplace(instituteSettings);
-
-                if (mInstituteSettings == null) {
-                    onFinishFetchingInstituteSettings(instituteSettings);
-                } else if (mInstituteSettings.getForceStudentData()) {
-                    checkForForceUserData();
-                } else {
-                    showMainActivityContents();
+                    if (instituteSettings.getException().isNetworkError()) {
+                        setEmptyText(R.string.network_error, R.string.no_internet_try_again,
+                                R.drawable.ic_error_outline_black_18dp);
+                    } else {
+                        setEmptyText(R.string.network_error, R.string.try_after_sometime,
+                                R.drawable.ic_error_outline_black_18dp);
+                    }
+                    progressBarLayout.setVisibility(View.GONE);
+                    retryButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            emptyView.setVisibility(View.GONE);
+                            fetchInstituteSettings();
+                        }
+                    });
+                    break;
                 }
             }
-        }.execute();
+        });
     }
 
     public void onFinishFetchingInstituteSettings(InstituteSettings instituteSettings) {

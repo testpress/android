@@ -69,7 +69,7 @@ jobs:
         run: |
           export LC_ALL=en_US.UTF-8
           export LANG=en_US.UTF-8
-          bundle exec fastlane release_update_to subdomain:${{ github.event.inputs.subdomain }} > /dev/null
+          bundle exec fastlane release_update_to subdomain:${{ github.event.inputs.subdomain }} | egrep -v "https"
 
       - name: Store app artifacts
         uses: actions/upload-artifact@v2

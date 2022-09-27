@@ -16,6 +16,9 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import in.testpress.testpress.models.DaoMaster;
 import in.testpress.testpress.models.DaoSession;
+import in.testpress.testpress.models.InstituteSettings;
+import in.testpress.testpress.models.InstituteSettingsDao;
+import static in.testpress.testpress.BuildConfig.BASE_URL;
 import in.testpress.testpress.util.NotificationHelper;
 
 public class TestpressApplication extends Application {
@@ -109,5 +112,13 @@ public class TestpressApplication extends Application {
 
     public static TestpressApplication getInstance() {
         return instance;
+    }
+
+    public static InstituteSettings getInstituteSettings(){
+        InstituteSettingsDao instituteSettingsDao = daoSession.getInstituteSettingsDao();
+        return instituteSettingsDao.queryBuilder()
+                .where(InstituteSettingsDao.Properties.BaseUrl.eq(BASE_URL))
+                .list().get(0);
+
     }
 }

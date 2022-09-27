@@ -47,6 +47,7 @@
                     android:layout_below="@+id/title">
 
                     <LinearLayout
+                        android:id="@+id/voting_layout"
                         android:layout_width="30dp"
                         android:layout_height="50dp"
                         android:orientation="vertical"

@@ -143,22 +143,17 @@ public class DeeplinkHandler {
                         switch (pathSegments.get(0)) {
                             case "exams":
                                 if (pathSegments.size() == 2) {
-                                    if (!pathSegments.get(1).equals("available") ||
-                                            !pathSegments.get(1).equals("upcoming") ||
-                                            !pathSegments.get(1).equals("history")) {
-
-                                        TestpressExam.showExamAttemptedState(
-                                                activity,
-                                                pathSegments.get(1),
-                                                testpressSession
-                                        );
-                                        return;
+                                    if (pathSegments.get(1).equals("available") ||
+                                            pathSegments.get(1).equals("upcoming") ||
+                                            pathSegments.get(1).equals("history")) {
+                                        TestpressExam.show(activity, testpressSession);
                                     }
+                                    else {
+                                        gotoHome();
+                                    }
+                                    activity.finish();
                                 }
-                                TestpressExam.show(activity, testpressSession);
-                                activity.finish();
                                 break;
-
                             case "analytics":
                                 TestpressExam.showAnalytics(activity, SUBJECT_ANALYTICS_PATH,
                                         testpressSession);

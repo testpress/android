@@ -147,11 +147,11 @@ public class DeeplinkHandler {
                                             pathSegments.get(1).equals("upcoming") ||
                                             pathSegments.get(1).equals("history")) {
                                         TestpressExam.show(activity, testpressSession);
+                                        activity.finish();
                                     }
                                     else {
                                         gotoHome();
                                     }
-                                    activity.finish();
                                 }
                                 break;
                             case "analytics":

@@ -1,5 +1,6 @@
 package in.testpress.testpress.util;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -165,7 +166,15 @@ public class NotificationHelper extends ContextWrapper {
         Intent intent = new Intent(this, SplashScreenActivity.class);
         intent.setData(uri);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        return PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        return PendingIntent.getActivity(this, 0, intent, this.getPendingIntentFlags());
+    }
+
+    private int getPendingIntentFlags(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            return PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_ONE_SHOT;
+        } else {
+            return PendingIntent.FLAG_ONE_SHOT;
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)

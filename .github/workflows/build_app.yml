@@ -1,4 +1,4 @@
-run-name: Bulid app files for ${{ inputs.subdomain.capitalized }}
+run-name: Bulid app files for ${{ inputs.subdomain }}
 
 on:
   workflow_dispatch:

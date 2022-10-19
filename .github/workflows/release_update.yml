@@ -1,4 +1,4 @@
-name: Release update
+run-name: Release update for ${{ inputs.subdomain.capitalized }}
 
 on:
   workflow_dispatch:

@@ -133,6 +133,7 @@ public class TestpressServiceProvider {
             }
             settings.setAppShareText(SHARE_MESSAGE + activity.getString(R.string.get_it_at) + appLink);
             settings.setGrowthHackEnabled(GROWTH_HACKS_ENABLED);
+            settings.setAppName(activity.getString(R.string.app_name));
             TestpressSdk.setTestpressSession(activity, new TestpressSession(settings, authToken));
         }
 

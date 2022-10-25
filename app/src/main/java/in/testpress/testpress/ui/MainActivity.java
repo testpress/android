@@ -576,8 +576,8 @@ public class MainActivity extends TestpressFragmentActivity {
     public void onResume() {
         super.onResume();
 
-        if(isVerandaLearningApp()){
-            showTermsAndConditionsIfNotAgreed();
+        if(isVerandaLearningApp() && !hasAgreedTermsAndConditions()){
+            startActivity(TermsAndConditionActivity.Companion.createIntent(MainActivity.this));
         }
 
         if (navigationView != null) {
@@ -700,11 +700,8 @@ public class MainActivity extends TestpressFragmentActivity {
         return getApplicationContext().getPackageName().equals("com.verandalearning");
     }
 
-    public void showTermsAndConditionsIfNotAgreed(){
-        boolean data = getSharedPreferences(TERMS_AND_CONDITIONS, Context.MODE_PRIVATE).getBoolean(TERMS_AND_CONDITIONS, false);
-        if (data == false){
-            startActivity(TermsAndConditionActivity.Companion.createIntent(MainActivity.this));
-        }
+    private Boolean hasAgreedTermsAndConditions(){
+        return getSharedPreferences(TERMS_AND_CONDITIONS, Context.MODE_PRIVATE).getBoolean(TERMS_AND_CONDITIONS, false);
     }
 
 }

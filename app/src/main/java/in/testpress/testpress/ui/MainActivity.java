@@ -81,6 +81,7 @@ import io.sentry.android.core.SentryAndroid;
 import static in.testpress.testpress.BuildConfig.ALLOW_ANONYMOUS_USER;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.ui.TermsAndConditionActivityKt.TERMS_AND_CONDITIONS;
 import static in.testpress.testpress.ui.utils.EasterEggUtils.enableOrDisableEasterEgg;
 import static in.testpress.testpress.ui.utils.EasterEggUtils.enableScreenShot;
 import static in.testpress.testpress.ui.utils.EasterEggUtils.isEasterEggEnabled;
@@ -574,6 +575,11 @@ public class MainActivity extends TestpressFragmentActivity {
     @Override
     public void onResume() {
         super.onResume();
+
+        if(getApplicationContext().getPackageName().equals("com.verandalearning")){
+            loadingTermsAndCondition();
+        }
+
         if (navigationView != null) {
             hideMenuItemsForUnauthenticatedUser(navigationView.getMenu());
         }
@@ -689,4 +695,12 @@ public class MainActivity extends TestpressFragmentActivity {
             grid.setVisibility(View.VISIBLE);
         }
     }
+
+    public void loadingTermsAndCondition(){
+        boolean data = this.getSharedPreferences(TERMS_AND_CONDITIONS, Context.MODE_PRIVATE).getBoolean(TERMS_AND_CONDITIONS, false);
+        if (data == false){
+            startActivity(TermsAndConditionActivity.Companion.createIntent(MainActivity.this));
+        }
+    }
+
 }

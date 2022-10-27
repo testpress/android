@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.ProgressBar
 
 const val TERMS_AND_CONDITIONS = "terms&condition"
@@ -78,7 +79,16 @@ class TermsAndConditionActivity : BaseToolBarActivity() {
 
         webView.settings.javaScriptEnabled = true
         webView.addJavascriptInterface(MyJavaScriptInterface(this), "Android")
+        webView.webViewClient = WebViewClient()
         webView.loadData(url, "text/html", null)
+    }
+
+    override fun onBackPressed() {
+        if (webView.canGoBack()){
+            webView.goBack()
+        } else {
+            super.onBackPressed()
+        }
     }
 
 }

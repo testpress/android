@@ -3,7 +3,7 @@
   "version_code" : 7,
   "testpress_site_subdomain" : "nationalacademy",
   "package_name" : "in.testpress.nationalacademy",
-  "app_name" : "National Academy Coaching Villupuram",
+  "app_name" : "National Academy",
   "share_message": "Good app to prepare for TNPSC exams.",
   "primary_color": "f64803",
   "allow_anonymous_user" : false,

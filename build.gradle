@@ -33,6 +33,7 @@ allprojects {
         maven { url 'https://jitpack.io' }
 
         google()
+        mavenCentral()
         jcenter() {
             content {
                 includeModule("com.google.android", "flexbox")
@@ -41,6 +42,9 @@ allprojects {
                 includeModule("com.github.skydoves", "powerspinner")
             }
         }
+
+        maven {url "https://phonepe.mycloudrepo.io/public/repositories/phonepe-intentsdk-android"}
+
     }
 }
 

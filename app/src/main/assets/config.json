@@ -3,7 +3,7 @@
   "version_code" : 2,
   "testpress_site_subdomain" : "ibs",
   "package_name" : "in.testpress.ibs",
-  "app_name" : "Institute Of Banking Studies (IBS)",
+  "app_name" : "Institute Of Banking Studies",
   "share_message": "Good app to prepare for online exams.",
   "primary_color": "054cbe",
   "allow_anonymous_user" : false,

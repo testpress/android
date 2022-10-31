@@ -3,7 +3,7 @@
   "version_code" : 2,
   "testpress_site_subdomain" : "tuvrnifeacademy",
   "package_name" : "in.testpress.tuvrnifeacademy",
-  "app_name" : "TUV Rheinland NIFE Academy Pvt Ltd",
+  "app_name" : "TUV Rheinland NIFE Academy",
   "share_message": "Good app to prepare for online exams.",
   "primary_color": "0277BF",
   "allow_anonymous_user" : false,

@@ -15,6 +15,7 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ProgressBar
+import android.widget.Toast
 
 const val TERMS_AND_CONDITIONS = "terms&condition"
 
@@ -36,7 +37,7 @@ class TermsAndConditionActivity : BaseToolBarActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.terms_and_condition_activity)
-        supportActionBar?.title = "Terms And Conditions"
+        supportActionBar?.title = getString(R.string.terms_and_conditions)
         progressBar = findViewById(R.id.terms_and_condition_pb_loading)
 
         fetchProfileDetails()
@@ -47,11 +48,9 @@ class TermsAndConditionActivity : BaseToolBarActivity() {
         fetchProfileDetails()
     }
 
-
     private fun fetchProfileDetails() {
         TestpressUserDetails.getInstance().load(this, object : TestpressCallback<ProfileDetails>() {
             override fun onSuccess(result: ProfileDetails) {
-                progressBar.visibility = View.GONE
                 this@TermsAndConditionActivity.profileDetails = result
                 displayWebView()
             }
@@ -63,6 +62,7 @@ class TermsAndConditionActivity : BaseToolBarActivity() {
 
     private fun displayWebView() {
         webView = findViewById(R.id.terms_and_condition_web_view)
+        webView.visibility = View.GONE
         val url = "<iframe data-tally-src=" +
                 "\"https://tally.so/embed/n9qLPp?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1&name${profileDetails.username}&ref=${profileDetails.email}\"" +
                 " width=\"100%\" height=\"100%\" frameborder=\"0\" marginheight=\"0\" marginwidth=\"0\" " +
@@ -79,15 +79,23 @@ class TermsAndConditionActivity : BaseToolBarActivity() {
 
         webView.settings.javaScriptEnabled = true
         webView.addJavascriptInterface(MyJavaScriptInterface(this), "Android")
-        webView.webViewClient = WebViewClient()
         webView.loadData(url, "text/html", null)
+        webView.webViewClient =object :WebViewClient(){
+            override fun onPageFinished(view: WebView?, url: String?) {
+                webView.visibility = View.VISIBLE
+                progressBar.visibility = View.GONE
+                super.onPageFinished(view, url)
+            }
+        }
     }
 
     override fun onBackPressed() {
         if (webView.canGoBack()){
+            progressBar.visibility = View.VISIBLE
+            webView.visibility = View.GONE
             webView.goBack()
         } else {
-            super.onBackPressed()
+            finishAffinity()
         }
     }
 
@@ -97,6 +105,7 @@ internal class MyJavaScriptInterface(val activity: Activity) {
     @JavascriptInterface
     fun onUrlChange(url: String) {
         saveData()
+        Toast.makeText(activity,"Terms and conditions accepted",Toast.LENGTH_SHORT).show()
         activity.finish()
     }
 

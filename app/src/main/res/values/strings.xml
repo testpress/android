@@ -165,6 +165,8 @@
     <string name="privacy_policy_dialogue">By signing in you acknowledge the  </string>
     <string name="privacy_policy"><a href='#'> Privacy Policy</a></string>
 
+    <string name="terms_and_conditions">Terms And Conditions</string>
+
     <plurals name="notes_count">
         <item quantity="one">1 Doc</item>
         <item quantity="other">%d Docs</item>

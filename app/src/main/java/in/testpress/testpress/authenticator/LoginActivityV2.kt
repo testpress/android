@@ -12,6 +12,8 @@ import `in`.testpress.testpress.core.Constants
 import `in`.testpress.testpress.core.TestpressService
 import `in`.testpress.testpress.models.InstituteSettings
 import `in`.testpress.testpress.repository.InstituteRepository
+import `in`.testpress.testpress.ui.TERMS_AND_CONDITIONS
+import `in`.testpress.testpress.ui.TermsAndConditionActivity
 import `in`.testpress.testpress.ui.fragments.OTPVerificationFragment
 import `in`.testpress.testpress.ui.fragments.PhoneAuthenticationFragment
 import `in`.testpress.testpress.ui.fragments.UsernameAuthentication
@@ -174,6 +176,9 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
         intent.putExtra(AccountManager.KEY_AUTHTOKEN, token)
         setAccountAuthenticatorResult(intent.extras)
         setResult(Activity.RESULT_OK, intent)
+        if(isVerandaLearningApp() && !hasAgreedTermsAndConditions()){
+            startActivity(TermsAndConditionActivity.Companion.createIntent(this))
+        }
         finish()
     }
 
@@ -232,6 +237,15 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
             .setCommentsVotingEnabled(instituteSettings.commentsVotingEnabled)
             .setAccessCodeEnabled(false)
         return settings
+    }
+
+    private fun isVerandaLearningApp(): Boolean {
+        return packageName == "com.verandalearning"
+
+    }
+
+    private fun hasAgreedTermsAndConditions(): Boolean {
+        return getSharedPreferences(TERMS_AND_CONDITIONS, MODE_PRIVATE).getBoolean(TERMS_AND_CONDITIONS, false)
     }
 }
 

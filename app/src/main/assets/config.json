@@ -3,7 +3,7 @@
   "version_code" : 2,
   "testpress_site_subdomain" : "ipec",
   "package_name" : "in.testpress.ipeciitonline",
-  "app_name" : "IPEC eLearning-App for JEE & NEET",
+  "app_name" : "IPEC eLearning-App",
   "share_message": "Good app to prepare for online exams.",
   "primary_color": "FFEE00",
   "allow_anonymous_user" : false,

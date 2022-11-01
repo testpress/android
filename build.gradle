@@ -41,6 +41,9 @@ allprojects {
                 includeModule("com.theartofdev.edmodo", "android-image-cropper")
                 includeModule("com.futuremind.recyclerfastscroll", "fastscroll")
                 includeModule("com.github.skydoves", "powerspinner")
+                includeModule("com.hbb20","ccp")
+                includeModule("io.michaelrocks","libphonenumber-android")
+                includeModule("com.mindorks.android","prdownloader")
             }
         }
 

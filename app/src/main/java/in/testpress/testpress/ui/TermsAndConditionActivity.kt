@@ -4,23 +4,38 @@ import `in`.testpress.core.TestpressCallback
 import `in`.testpress.core.TestpressException
 import `in`.testpress.core.TestpressUserDetails
 import `in`.testpress.models.ProfileDetails
+import `in`.testpress.testpress.Injector
 import `in`.testpress.testpress.R
+import `in`.testpress.testpress.TestpressServiceProvider
+import `in`.testpress.testpress.authenticator.LogoutService
+import `in`.testpress.testpress.core.TestpressService
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import javax.inject.Inject
 
 const val TERMS_AND_CONDITIONS = "terms&condition"
 
 
 class TermsAndConditionActivity : BaseToolBarActivity() {
+
+    @Inject
+    lateinit var serviceProvider: TestpressServiceProvider
+    @Inject
+    lateinit var testpressService: TestpressService
+    @Inject
+    lateinit var logoutService: LogoutService
 
     lateinit var webView: WebView
     lateinit var progressBar: ProgressBar
@@ -35,6 +50,7 @@ class TermsAndConditionActivity : BaseToolBarActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Injector.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.terms_and_condition_activity)
         supportActionBar?.title = getString(R.string.terms_and_conditions)
@@ -97,6 +113,36 @@ class TermsAndConditionActivity : BaseToolBarActivity() {
         } else {
             finishAffinity()
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.logout_terms_and_conditions, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id: Int = item.itemId
+        if (id == R.id.logout_terms_and_conditions_button) {
+            logout()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    fun logout() {
+        AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
+            .setTitle(R.string.logout)
+            .setMessage(R.string.logout_confirm_message)
+            .setPositiveButton(
+                R.string.ok
+            ) { dialogInterface, i ->
+                dialogInterface.dismiss()
+                serviceProvider.logout(
+                    this@TermsAndConditionActivity, testpressService,
+                    serviceProvider, logoutService
+                )
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
     }
 
 }

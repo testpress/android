@@ -69,8 +69,8 @@ dependencies {
 
     // Country code picker
     // https://github.com/hbb20/CountryCodePickerProject/wiki
-    implementation "com.hbb20:ccp:2.1.9"
-    implementation 'com.lionscribe.open.libphonenumber:libphonenumber:8.12.18.1'
+    implementation "com.github.hbb20:CountryCodePickerProject:2.4.2"
+    implementation 'io.michaelrocks:libphonenumber-android:8.12.57'
 
     implementation 'io.sentry:sentry-android:5.3.0'
     implementation 'org.slf4j:slf4j-nop:1.7.25'
@@ -102,7 +102,7 @@ dependencies {
     implementation 'com.github.vkay94:DoubleTapPlayerView:1.0.0'
 
     implementation 'com.github.mhiew:android-pdf-viewer:3.2.0-beta.1'
-    implementation 'com.mindorks.android:prdownloader:0.6.0'
+    implementation 'com.github.alexto9090:PRDownloader:1.0'
 
 }
 

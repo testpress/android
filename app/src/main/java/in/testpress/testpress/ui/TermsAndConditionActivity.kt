@@ -80,7 +80,7 @@ class TermsAndConditionActivity : BaseToolBarActivity() {
         webView = findViewById(R.id.terms_and_condition_web_view)
         webView.visibility = View.GONE
         val url = "<iframe data-tally-src=" +
-                "\"https://tally.so/embed/n9qLPp?name=${profileDetails.username}&ref=${profileDetails.email}&alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1\"" +
+                "\"https://tally.so/embed/n9qLPp?name=${profileDetails.username}&email=${profileDetails.email}&alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1\"" +
                 " width=\"100%\" height=\"100%\" frameborder=\"0\" marginheight=\"0\" marginwidth=\"0\" " +
                 "title=\"Veranda Race - SH\"></iframe><script>var d=document,w=\"https://tally.so/widgets/embed.js\"," +
                 "v=function(){\"undefined\"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll(\"iframe[data-tally-src]:not([src])\")." +

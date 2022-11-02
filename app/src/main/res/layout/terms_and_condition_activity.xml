@@ -7,6 +7,8 @@
     <include layout="@layout/testpress_toolbar"
         android:id="@+id/app_bar"/>
 
+    <include layout="@layout/empty_view" />
+
     <WebView
         android:id="@+id/terms_and_condition_web_view"
         android:layout_width="match_parent"

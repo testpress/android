@@ -17,12 +17,12 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.webkit.JavascriptInterface
-import android.webkit.WebView
-import android.webkit.WebViewClient
-import android.widget.ProgressBar
-import android.widget.Toast
+import android.webkit.*
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
+import butterknife.ButterKnife
+import butterknife.InjectView
+import java.io.IOException
 import javax.inject.Inject
 
 const val TERMS_AND_CONDITIONS = "terms&condition"
@@ -36,6 +36,15 @@ class TermsAndConditionActivity : BaseToolBarActivity() {
     lateinit var testpressService: TestpressService
     @Inject
     lateinit var logoutService: LogoutService
+
+    @InjectView(R.id.empty_container)
+    lateinit var emptyView: LinearLayout
+    @InjectView(R.id.empty_title)
+    lateinit var emptyTitleView: TextView
+    @InjectView(R.id.empty_description)
+    lateinit var emptyDescView: TextView
+    @InjectView(R.id.retry_button)
+    lateinit var retryButton: Button
 
     lateinit var webView: WebView
     lateinit var progressBar: ProgressBar
@@ -53,14 +62,16 @@ class TermsAndConditionActivity : BaseToolBarActivity() {
         Injector.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.terms_and_condition_activity)
+        ButterKnife.inject(this)
         supportActionBar?.title = getString(R.string.terms_and_conditions)
         progressBar = findViewById(R.id.terms_and_condition_pb_loading)
-
-        fetchProfileDetails()
+        webView = findViewById(R.id.terms_and_condition_web_view)
     }
 
     override fun onResume() {
         super.onResume()
+        progressBar.visibility = View.VISIBLE
+        webView.visibility =View.GONE
         fetchProfileDetails()
     }
 
@@ -71,13 +82,26 @@ class TermsAndConditionActivity : BaseToolBarActivity() {
                 displayWebView()
             }
 
-            override fun onException(exception: TestpressException?) {
+            override fun onException(exception: TestpressException) {
+                if (exception.cause is IOException){
+                    setEmptyText(
+                        R.string.network_error, R.string.no_internet_try_again,
+                        R.drawable.ic_error_outline_black_18dp
+                    )
+                }
+                webView.visibility = View.GONE
+                progressBar.visibility = View.GONE
+                retryButton.setOnClickListener {
+                    emptyView.visibility = View.GONE
+                    progressBar.visibility = View.VISIBLE
+                    fetchProfileDetails()
+                }
+
             }
         })
     }
 
     private fun displayWebView() {
-        webView = findViewById(R.id.terms_and_condition_web_view)
         webView.visibility = View.GONE
         val url = "<iframe data-tally-src=" +
                 "\"https://tally.so/embed/n9qLPp?name=${profileDetails.username}&email=${profileDetails.email}&alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1\"" +
@@ -143,6 +167,13 @@ class TermsAndConditionActivity : BaseToolBarActivity() {
             }
             .setNegativeButton(R.string.cancel, null)
             .show()
+    }
+
+    fun setEmptyText(title: Int, description: Int, left: Int) {
+        emptyView.visibility = View.VISIBLE
+        emptyTitleView.setText(title)
+        emptyTitleView.setCompoundDrawablesWithIntrinsicBounds(left, 0, 0, 0)
+        emptyDescView.setText(description)
     }
 
 }

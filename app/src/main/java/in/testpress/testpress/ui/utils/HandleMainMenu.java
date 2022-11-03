@@ -15,6 +15,7 @@ import in.testpress.core.TestpressSession;
 import in.testpress.course.ui.CourseListActivity;
 import in.testpress.course.ui.DownloadsActivity;
 import in.testpress.exam.TestpressExam;
+import in.testpress.course.TestpressCourse;
 import in.testpress.store.TestpressStore;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
@@ -154,7 +155,7 @@ public class HandleMainMenu {
                 TestpressExam.showCategories(activity, true, session);
                 break;
             case R.string.bookmarks:
-                TestpressExam.showBookmarks(activity, session);
+                TestpressCourse.showBookmarks(activity, session);
                 break;
             case R.string.analytics:
                 TestpressExam.showAnalytics(activity, SUBJECT_ANALYTICS_PATH, session);

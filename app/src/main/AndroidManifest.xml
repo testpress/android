@@ -26,7 +26,10 @@
         android:requestLegacyExternalStorage="true"
         android:preserveLegacyExternalStorage="true"
         tools:replace="android:theme,android:allowBackup"
-        android:theme="@style/Theme.Testpress.Dark">
+        android:theme="@style/Theme.Testpress.Dark"
+        android:exported="true"
+        >
+
         <meta-data android:name="io.sentry.auto-init" android:value="false" />
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
         <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_stat_notification" />
@@ -39,7 +42,9 @@
             android:name=".ui.SplashScreenActivity"
             android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:exported="true"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -61,7 +66,9 @@
 
         <service
             android:name=".authenticator.AccountAuthenticatorService"
-            android:process=":auth">
+            android:process=":auth"
+            android:exported="true"
+            >
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
@@ -72,7 +79,10 @@
         </service>
 
         <!-- [START gcm_listener] -->
-        <service android:name=".core.TestpressGCMListenerService">
+        <service 
+            android:name=".core.TestpressGCMListenerService" 
+            android:exported="true"
+            >
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -82,15 +92,8 @@
         <activity
             android:name=".authenticator.LoginActivity"
             android:theme="@style/AppTheme"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"
-            android:excludeFromRecents="true">
-
-            <!--
-                No intent-filter here! This activity is only ever launched by
-                someone who explicitly knows the class name
-            -->
-        </activity>
+            android:windowSoftInputMode="stateHidden"
+            android:excludeFromRecents="true" />
 
         <activity
             android:name=".ui.PostActivity"
@@ -216,6 +219,10 @@
             android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Web View" />
+
+        <activity android:name=".ui.TermsAndConditionActivity"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
 
     </application>
 

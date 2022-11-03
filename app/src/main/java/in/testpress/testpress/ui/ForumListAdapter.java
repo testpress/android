@@ -174,7 +174,7 @@ public class ForumListAdapter extends BaseAdapter{
         convertView.findViewById(R.id.ripple_layout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(activity, ForumActivity.class);
+                Intent intent = new Intent(activity, DisscussionActivity.class);
                 intent.putExtra("Url", forum.getUrl());
                 activity.startActivity(intent);
             }

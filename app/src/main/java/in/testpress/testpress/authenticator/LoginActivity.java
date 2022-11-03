@@ -190,10 +190,6 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
         requestNewAccount = username == null;
 
-        if (AccessToken.getCurrentAccessToken() != null) {
-            LoginManager.getInstance().logOut();
-        }
-
         setContentView(layout.login_activity);
 
         ButterKnife.inject(this);
@@ -254,31 +250,6 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         passwordText.setTypeface(Typeface.DEFAULT);
         passwordText.setTransformationMethod(new PasswordTransformationMethod());
         callbackManager = CallbackManager.Factory.create();
-        fbLoginButton.invalidate();
-        fbLoginButton.setReadPermissions("email");
-        fbLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                loginLayout.setVisibility(View.GONE);
-                username = loginResult.getAccessToken().getUserId();
-                authenticate(loginResult.getAccessToken().getUserId(),
-                        loginResult.getAccessToken().getToken(), TestpressSdk.Provider.FACEBOOK);
-            }
-
-            @Override
-            public void onCancel() {
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-                if (error.getMessage().contains("CONNECTION_FAILURE")) {
-                    showAlert(getString(R.string.no_internet_try_again));
-                } else {
-                    Log.e("Facebook sign in error", "check hashes");
-                    showAlert(getString(R.string.something_went_wrong_please_try_after));
-                }
-            }
-        });
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(
                 GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -313,6 +284,38 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
         setLoginLabel(instituteSettings);
         setVisibilityResendVerificationSMS(instituteSettings);
+
+
+        if (!instituteSettings.getFacebookAppId().isEmpty() && AccessToken.getCurrentAccessToken() != null) {
+            LoginManager.getInstance().logOut();
+        }
+        if (!instituteSettings.getFacebookAppId().isEmpty()) {
+            fbLoginButton.invalidate();
+            fbLoginButton.setReadPermissions("email");
+            fbLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+                @Override
+                public void onSuccess(LoginResult loginResult) {
+                    loginLayout.setVisibility(View.GONE);
+                    username = loginResult.getAccessToken().getUserId();
+                    authenticate(loginResult.getAccessToken().getUserId(),
+                            loginResult.getAccessToken().getToken(), TestpressSdk.Provider.FACEBOOK);
+                }
+
+                @Override
+                public void onCancel() {
+                }
+
+                @Override
+                public void onError(FacebookException error) {
+                    if (error.getMessage().contains("CONNECTION_FAILURE")) {
+                        showAlert(getString(R.string.no_internet_try_again));
+                    } else {
+                        Log.e("Facebook sign in error", "check hashes");
+                        showAlert(getString(R.string.something_went_wrong_please_try_after));
+                    }
+                }
+            });
+        }
     }
 
     public void setLoginLabel(InstituteSettings instituteSettings) {

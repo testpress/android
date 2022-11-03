@@ -6,6 +6,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.text.TextUtils;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
@@ -53,10 +56,28 @@ public class TestpressServiceProvider {
 
     public void invalidateAuthToken(Context context) {
         authToken = null;
-        FacebookSdk.sdkInitialize(context.getApplicationContext());
-        LoginManager.getInstance().logOut();
+        if (hasFacebookAppID(context)) {
+            FacebookSdk.sdkInitialize(context.getApplicationContext());
+            LoginManager.getInstance().logOut();
+        }
         TestpressSdk.clearActiveSession(context);
     }
+
+    private boolean hasFacebookAppID(Context context){
+        ApplicationInfo applicationInfo = getApplicationInfo(context);
+        if (applicationInfo == null) return false;
+        String appId = applicationInfo.metaData.getString(FacebookSdk.APPLICATION_ID_PROPERTY);
+        return !TextUtils.isEmpty(appId);
+    }
+
+    private ApplicationInfo getApplicationInfo(Context context){
+        try {
+            return context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+        } catch (PackageManager.NameNotFoundException e) {
+            return null;
+        }
+    }
+
     /**
      * Get service for configured key provider
      * <p/>
@@ -112,6 +133,7 @@ public class TestpressServiceProvider {
             }
             settings.setAppShareText(SHARE_MESSAGE + activity.getString(R.string.get_it_at) + appLink);
             settings.setGrowthHackEnabled(GROWTH_HACKS_ENABLED);
+            settings.setAppName(activity.getString(R.string.app_name));
             TestpressSdk.setTestpressSession(activity, new TestpressSession(settings, authToken));
         }
 

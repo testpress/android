@@ -178,11 +178,7 @@ android {
         resValue "string", "package_name", json.package_name
 
         multiDexEnabled true
-        javaCompileOptions {
-            annotationProcessorOptions {
-                includeCompileClasspath true
-            }
-        }
+
     }
 
     packagingOptions {

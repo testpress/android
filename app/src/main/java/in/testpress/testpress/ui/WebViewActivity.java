@@ -41,6 +41,7 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
+import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -184,7 +185,8 @@ public class WebViewActivity extends BaseToolBarActivity {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                return false;
+                openInstituteUrlOnly(view,url);
+                return true;
             }
 
             @Override
@@ -287,6 +289,19 @@ public class WebViewActivity extends BaseToolBarActivity {
                 return true;
             }
         });
+    }
+
+    private void openInstituteUrlOnly(WebView view,String url){
+        if(url.contains(BuildConfig.BASE_URL) || url.contains(BuildConfig.WHITE_LABELED_HOST_URL)) {
+            view.loadUrl(url);
+        } else {
+            try {
+                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(i);
+            } catch (Exception e){
+                Toast.makeText(getApplicationContext(),"Not able to open this Link",Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void parseIntent() {

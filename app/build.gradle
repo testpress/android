@@ -170,8 +170,12 @@ android {
         if (json.display_username_on_video != null) {
             buildConfigField "boolean", "DISPLAY_USERNAME_ON_VIDEO", "" + json.display_username_on_video
         }
-        if (json.white_labeled_host_url != null && json.white_labeled_host_url != "") {
+        if (json.white_labeled_host_url == "" || json.white_labeled_host_url == null) {
+            resValue "string", "white_labeled_host_url", host_url
+            buildConfigField "String", "WHITE_LABELED_HOST_URL", '"https://' + host_url + '"'
+        } else {
             resValue "string", "white_labeled_host_url", json.white_labeled_host_url
+            buildConfigField "String", "WHITE_LABELED_HOST_URL", '"https://' + json.white_labeled_host_url + '"'
         }
 
         applicationId json.package_name

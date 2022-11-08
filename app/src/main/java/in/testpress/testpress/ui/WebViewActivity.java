@@ -185,7 +185,11 @@ public class WebViewActivity extends BaseToolBarActivity {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                openInstituteUrlOnly(view,url);
+                if (isInstituteURL(url)) {
+                    view.loadUrl(url);
+                } else {
+                    openInExternal(url);
+                }
                 return true;
             }
 
@@ -291,16 +295,16 @@ public class WebViewActivity extends BaseToolBarActivity {
         });
     }
 
-    private void openInstituteUrlOnly(WebView view,String url){
-        if(url.contains(BuildConfig.BASE_URL) || url.contains(BuildConfig.WHITE_LABELED_HOST_URL)) {
-            view.loadUrl(url);
-        } else {
-            try {
-                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivity(i);
-            } catch (Exception e){
-                Toast.makeText(getApplicationContext(),"Not able to open this Link",Toast.LENGTH_SHORT).show();
-            }
+    private Boolean isInstituteURL(String url){
+        return url.contains(BuildConfig.BASE_URL) || url.contains(BuildConfig.WHITE_LABELED_HOST_URL);
+    }
+
+    private void openInExternal(String url){
+        try {
+            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(i);
+        } catch (Exception e){
+            Toast.makeText(getApplicationContext(),"Not able to open this Link",Toast.LENGTH_SHORT).show();
         }
     }
 

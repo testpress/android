@@ -168,6 +168,8 @@
     <string name="tests">Tests</string>
     <string name="classes">Classes</string>
 
+    <string name="terms_and_conditions">Terms And Conditions</string>
+
     <plurals name="notes_count">
         <item quantity="one">1 Doc</item>
         <item quantity="other">%d Docs</item>

@@ -27,7 +27,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.auth.api.credentials.*
-import com.google.i18n.phonenumbers.PhoneNumberUtil
+import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import kotlinx.android.synthetic.main.phone_login_layout.*
 import javax.inject.Inject
 
@@ -162,7 +162,7 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
     }
 
     private fun autoFillPhoneNumber(intent: Intent) {
-        val phoneNumberUtil = PhoneNumberUtil.getInstance(requireContext())
+        val phoneNumberUtil = PhoneNumberUtil.createInstance(requireContext())
         val phoneNo = intent.getParcelableExtra<Credential>(Credential.EXTRA_KEY)?.id
         if (phoneNo != null) {
             val number = phoneNumberUtil.parse(phoneNo, "")

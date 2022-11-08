@@ -527,6 +527,9 @@ public class MainActivity extends TestpressFragmentActivity {
             // Show login screen if user not logged in else update institute settings in TestpressSDK
             updateTestpressSession();
         } else {
+            if(isVerandaLearningApp() && !hasAgreedTermsAndConditions()){
+                startActivity(TermsAndConditionActivity.Companion.createIntent(MainActivity.this));
+            }
             initScreen();
             showMainActivityContents();
             syncVideoWatchedData();
@@ -598,6 +601,7 @@ public class MainActivity extends TestpressFragmentActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.dismiss();
+                                setTermsAndConditionNotAgreed();
                                 serviceProvider.logout(MainActivity.this, testpressService,
                                         serviceProvider, logoutService);
                             }
@@ -749,6 +753,12 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private Boolean hasAgreedTermsAndConditions(){
         return getSharedPreferences(TERMS_AND_CONDITIONS, Context.MODE_PRIVATE).getBoolean(TERMS_AND_CONDITIONS, false);
+    }
+
+    private void setTermsAndConditionNotAgreed() {
+        SharedPreferences.Editor editor = getSharedPreferences(TERMS_AND_CONDITIONS, MODE_PRIVATE).edit();
+        editor.putBoolean(TERMS_AND_CONDITIONS, false);
+        editor.apply();
     }
 
 }

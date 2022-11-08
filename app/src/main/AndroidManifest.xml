@@ -29,7 +29,6 @@
         android:theme="@style/Theme.Testpress.Dark"
         android:exported="true"
         >
-
         <meta-data android:name="io.sentry.auto-init" android:value="false" />
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
         <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_stat_notification" />
@@ -56,6 +55,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" android:host="@string/host_url"/>
                 <data android:scheme="http" android:host="@string/host_url" />
+                <data android:scheme="https" android:host="@string/white_labeled_host_url"/>
+                <data android:scheme="http" android:host="@string/white_labeled_host_url"/>
             </intent-filter>
         </activity>
         <activity

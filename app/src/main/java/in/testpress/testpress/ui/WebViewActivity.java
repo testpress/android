@@ -304,7 +304,7 @@ public class WebViewActivity extends BaseToolBarActivity {
             Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(i);
         } catch (Exception e){
-            Toast.makeText(getApplicationContext(),"Not able to open this Link",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),"No suitable app was found to open this URL. Please install any browser app",Toast.LENGTH_SHORT).show();
         }
     }
 

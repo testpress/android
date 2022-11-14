@@ -62,8 +62,8 @@ jobs:
       - name: Setup Zoom SDK
         if: steps.zoom-cache.outputs.cache-hit != 'true'
         run: |
-          wget https://media.testpress.in/static/android/zoom_sdk.zip
-          unzip -o ./zoom_sdk.zip
+          wget https://media.testpress.in/static/android/zoom_sdk2.zip
+          unzip -o ./zoom_sdk2.zip
 
       - name: Build and deploy app
         run: |

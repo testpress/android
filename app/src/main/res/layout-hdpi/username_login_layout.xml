@@ -146,7 +146,7 @@
                     android:background="@android:color/transparent"
                     android:fontFamily="@font/inter"
                     android:hint="Password"
-                    android:imeOptions="actionNext"
+                    android:imeOptions="actionDone"
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:paddingLeft="10dp"

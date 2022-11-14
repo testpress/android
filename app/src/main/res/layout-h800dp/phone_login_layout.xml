@@ -129,7 +129,7 @@
                 android:paddingEnd="10dp"
                 android:textCursorDrawable="@null"
                 android:background="@android:color/transparent"
-                android:imeOptions="actionNext"
+                android:imeOptions="actionDone"
                 android:textColor="@color/white"
                 android:hint="Phone Number" />
 

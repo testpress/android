@@ -126,7 +126,7 @@
                     android:background="@android:color/transparent"
                     android:fontFamily="@font/inter"
                     android:hint="Phone Number"
-                    android:imeOptions="actionNext"
+                    android:imeOptions="actionDone"
                     android:inputType="phone"
                     android:maxLines="1"
                     android:paddingEnd="10dp"

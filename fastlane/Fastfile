@@ -8,6 +8,9 @@ lane :release_update_to do |params|
   if params[:subdomain] == "all"
     subdomains = fetch_subdomains
     subdomains.each do |subdomain|
+      if ['verandalearning', 'brilliantpalalms', 'brilliantpalaclasses'].include? subdomain
+        next
+      end
       release_update(subdomain: subdomain)
     end
   else

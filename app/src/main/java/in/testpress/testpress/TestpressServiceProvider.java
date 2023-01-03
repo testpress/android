@@ -128,7 +128,8 @@ public class TestpressServiceProvider {
                         .setLeaderboardLabel(instituteSettings.getLeaderboardLabel())
                         .setVideoDownloadEnabled(instituteSettings.getIsVideoDownloadEnabled())
                         .setThreatsAndTargetsLabel(instituteSettings.getThreatsAndTargetsLabel())
-                        .setShowPDFVertically(SHOW_PDF_VERTICALLY);
+                        .setShowPDFVertically(SHOW_PDF_VERTICALLY)
+                        .setTotalDownloadCount(instituteSettings.getTotalDownloadCount());
                 appLink = instituteSettings.getAppShareLink();
             }
             settings.setAppShareText(SHARE_MESSAGE + activity.getString(R.string.get_it_at) + appLink);

@@ -169,6 +169,9 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
             socialLoginLayout, !instituteSettings.facebookLoginEnabled &&
                     !instituteSettings.googleLoginEnabled
         )
+        if (instituteSettings.disableForgotPassword != null){
+            ViewUtils.setGone(forgotPassword,instituteSettings.disableForgotPassword)
+        }
     }
 
     private fun signIn() {

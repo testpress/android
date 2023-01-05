@@ -95,7 +95,7 @@ public class TestpressDaoGenerator {
         );
         instituteSettings.addBooleanProperty("showShareButton");
         instituteSettings.addStringProperty("facebookAppId");
-        instituteSettings.addIntProperty("totalDownloadCount");
+        instituteSettings.addIntProperty("maxAllowedDownloadedVideos");
 
         Entity rssFeed = schema.addEntity("RssItem");
         rssFeed.addLongProperty("id").primaryKey().autoincrement();

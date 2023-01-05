@@ -22,32 +22,32 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:weightSum="1.0"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content">-->
 
-                <com.makeramen.roundedimageview.RoundedImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:src="@drawable/building"
-                    android:layout_weight="0.45"
-                    android:scaleType="centerCrop"
-                    app:riv_corner_radius_bottom_right="90dp"
-                    android:adjustViewBounds="true"
-                    android:layout_marginBottom="20dp"
-                    android:layout_gravity="top"
-                    android:id="@+id/imageView2" />
-            </LinearLayout>
+<!--                <com.makeramen.roundedimageview.RoundedImageView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="100dp"-->
+<!--                    android:src="@drawable/building"-->
+<!--                    android:layout_weight="0.45"-->
+<!--                    android:scaleType="centerCrop"-->
+<!--                    app:riv_corner_radius_bottom_right="90dp"-->
+<!--                    android:adjustViewBounds="true"-->
+<!--                    android:layout_marginBottom="20dp"-->
+<!--                    android:layout_gravity="top"-->
+<!--                    android:id="@+id/imageView2" />-->
+<!--            </LinearLayout>-->
 
             <LinearLayout
                 android:id="@+id/login_layout"
                 android:layout_width="match_parent"
                 android:layout_weight="0.4"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/imageView2"
                 android:paddingTop="40dp"
                 android:paddingLeft="24dp"
                 android:paddingRight="24dp"

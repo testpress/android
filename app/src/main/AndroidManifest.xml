@@ -14,6 +14,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"/>
 
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
 <!--    <uses-sdk tools:overrideLibrary="us.zoom.androidlib,us.zoom.videomeetings"/>-->

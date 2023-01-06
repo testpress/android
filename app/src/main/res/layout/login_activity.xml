@@ -33,7 +33,6 @@
                 <com.makeramen.roundedimageview.RoundedImageView
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
-
                     android:layout_weight="0.45"
                     android:scaleType="centerCrop"
                     app:riv_corner_radius_bottom_right="90dp"

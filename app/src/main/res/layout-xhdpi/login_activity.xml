@@ -33,6 +33,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:riv_corner_radius_bottom_right="90dp"
+                    android:src="@drawable/building"
                     android:scaleType="centerCrop"
                     android:adjustViewBounds="true"
                     android:layout_gravity="center_horizontal"

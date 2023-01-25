@@ -1,4 +1,5 @@
 package in.testpress.testpress.ui;
+import in.testpress.core.TestpressUserDetails;
 import in.testpress.course.ui.CourseListFragment;
 
 import android.accounts.Account;
@@ -147,6 +148,7 @@ public class MainActivity extends TestpressFragmentActivity {
             checkUpdate();
         }
         setupEasterEgg();
+        TestpressUserDetails.getInstance().load(this);
     }
 
     @Override

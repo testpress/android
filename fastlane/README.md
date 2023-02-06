@@ -69,6 +69,14 @@ Generate Android App Bundle
 
 Deploying the app to play store
 
+### generate_debug_apk
+
+```sh
+[bundle exec] fastlane generate_debug_apk
+```
+
+
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.

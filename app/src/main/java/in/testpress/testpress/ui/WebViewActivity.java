@@ -185,6 +185,10 @@ public class WebViewActivity extends BaseToolBarActivity {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url.contains("login")){
+                    Toast.makeText(WebViewActivity.this, "Not able Sign in here", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
                 if (isInstituteURL(url)) {
                     view.loadUrl(url);
                 } else {

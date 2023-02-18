@@ -266,13 +266,13 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private void showShareButtonBasedOnInstituteSettings(Menu menu){
         if (mInstituteSettings != null) {
-            menu.findItem(R.id.share).setVisible(Boolean.TRUE.equals(mInstituteSettings.getShowShareButton()));
+            menu.findItem(R.id.share).setVisible(false);
         }
     }
 
     private void showRateUsButtonBasedOnInstituteSettings(Menu menu){
         if (mInstituteSettings != null) {
-            menu.findItem(R.id.rate_us).setVisible(Boolean.TRUE.equals(mInstituteSettings.getShowShareButton()));
+            menu.findItem(R.id.rate_us).setVisible(false);
         }
     }
 

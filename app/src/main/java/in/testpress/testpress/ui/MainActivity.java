@@ -532,10 +532,10 @@ public class MainActivity extends TestpressFragmentActivity {
             }
             initScreen();
             showMainActivityContents();
-            syncVideoWatchedData();
 
             if (isUserAuthenticated) {
                 updateTestpressSession();
+                syncVideoWatchedData();
 
                 if (mInstituteSettings.getForceStudentData()) {
                     checkForForceUserData();

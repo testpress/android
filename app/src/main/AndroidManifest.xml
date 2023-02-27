@@ -94,7 +94,7 @@
         <activity
             android:name=".authenticator.LoginActivity"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden"
+            android:windowSoftInputMode="stateHidden|adjustPan"
             android:excludeFromRecents="true" />
 
         <activity

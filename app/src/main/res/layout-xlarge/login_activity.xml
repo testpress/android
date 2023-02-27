@@ -28,12 +28,11 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="0.5">
+                android:layout_weight="0.45">
                 <com.makeramen.roundedimageview.RoundedImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:riv_corner_radius_bottom_right="90dp"
-                    android:src="@drawable/building"
                     android:scaleType="centerCrop"
                     android:adjustViewBounds="true"
                     android:layout_gravity="center_horizontal"
@@ -46,7 +45,6 @@
                 android:layout_width="match_parent"
                 android:layout_weight="0.4"
                 android:layout_height="wrap_content"
-                android:paddingTop="50dp"
                 android:paddingLeft="24dp"
                 android:paddingRight="24dp"
                 android:orientation="vertical">
@@ -58,45 +56,52 @@
                     android:gravity="center_horizontal|center_vertical"
                     android:orientation="vertical">
 
+                    <!-- Username Label -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
                         android:orientation="vertical">
-                        <!-- Username Label -->
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/username_textInput_layout"
-                            style="@style/TextLabelTab"
+                            android:layout_width="match_parent"
+                            android:paddingBottom="2dp"
                             android:textColorHint="#FFFFFF"
-                            android:theme="@style/TextLabelNew" >
+                            android:layout_height="@dimen/input_height"
+                            app:hintEnabled="false"
+                            android:theme="@style/TextLabelNew">
                             <androidx.appcompat.widget.AppCompatEditText
                                 android:id="@+id/et_username"
                                 android:layout_width="match_parent"
-                                android:textColor="@color/white"
                                 android:layout_height="@dimen/input_height"
                                 android:maxLines="1"
+                                android:textColor="@color/white"
                                 android:imeOptions="actionNext"
-                                style="@style/Input"
+                                android:textSize="16sp"
+                                android:textColorHint="#FFFFFF"
                                 android:hint="@string/label_username" />
                         </com.google.android.material.textfield.TextInputLayout>
                         <TextView
                             android:id="@+id/username_error"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            style="@style/TabInputError"/>
+                            style="@style/InputError"/>
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="30dp"
+                        android:layout_marginBottom="10dp"
                         android:orientation="vertical">
                         <!-- Password Label -->
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/password_textInput_layout"
-                            style="@style/TextLabelTab"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/input_height"
                             android:theme="@style/TextLabelNew"
-                            android:layout_marginTop="30dp"
+                            app:hintEnabled="false"
                             android:textColorHint="#FFFFFF"
-                            android:textColor="@color/white"
+                            app:passwordToggleTint="#FFFFFF"
                             app:passwordToggleEnabled="true">
                             <androidx.appcompat.widget.AppCompatEditText
                                 android:id="@+id/et_password"
@@ -104,28 +109,19 @@
                                 android:layout_height="@dimen/input_height"
                                 android:fontFamily="sans-serif"
                                 android:inputType="textPassword"
-                                android:textColor="@color/white"
                                 android:maxLines="1"
                                 android:imeOptions="actionSend"
-                                style="@style/Input"
+                                android:textColor="@color/white"
+                                android:textSize="16sp"
+                                android:textColorHint="#90FFFFFF"
                                 android:hint="@string/label_password"/>
                         </com.google.android.material.textfield.TextInputLayout>
                         <TextView
                             android:id="@+id/password_error"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            style="@style/TabInputError"/>
+                            style="@style/InputError"/>
                     </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/forgot_password"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginStart="5dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/white"
-                        android:text="@string/forgot_password" />
 
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/b_signin"
@@ -137,24 +133,41 @@
                         android:text="Login"
                         />
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="16dp"
+                        android:layout_height="wrap_content"
+                        android:weightSum="2"
+                        android:layout_gravity="center_horizontal"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/forgot_password"
+                            android:layout_width="match_parent"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/primary"
+                            android:gravity="start"
+                            android:text="@string/forgot_password" />
+
+                        <TextView
+                            android:id="@+id/b_resend_activation"
+                            android:layout_width="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:text="@string/resend_verification_sms"
+                            android:textColor="@color/primary" />
+
+                    </LinearLayout>
+
                     <RelativeLayout
                         android:layout_width="400dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="15dp" >
 
-
-                        <TextView
-                            android:id="@+id/b_resend_activation"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@id/forgot_password"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginStart="5dp"
-                            android:text="@string/resend_verification_sms"
-                            android:textColor="@color/primary" />
 
                         <TextView
                             android:layout_alignParentRight="true"

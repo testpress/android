@@ -53,7 +53,6 @@ class OTPVerificationFragment: BaseAuthenticationFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initializeInputField()
         setOnClickListeners()
     }
 
@@ -117,9 +116,7 @@ class OTPVerificationFragment: BaseAuthenticationFragment() {
                 }
             })
         }
-    }
 
-    private fun initializeInputField(){
         otpField.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE){
                 verifyOTP()

@@ -175,7 +175,7 @@
         <item name="android:paddingRight">10dp</item>
         <item name="android:paddingEnd">10dp</item>
         <item name="android:paddingBottom">15dp</item>
-        <item name="android:background">@drawable/rounded_border_edittext</item>
+        <item name="android:background">@drawable/blue_rounded_border_edittext</item>
     </style>
 
     <style name="Input.Small">
@@ -187,7 +187,7 @@
         <item name="android:paddingRight">10dp</item>
         <item name="android:paddingEnd">10dp</item>
         <item name="android:paddingBottom">4dp</item>
-        <item name="android:background">@drawable/rounded_border_edittext</item>
+        <item name="android:background">@drawable/blue_rounded_border_edittext</item>
     </style>
 
     <style name="Input.Tab" parent="@style/TextLabelTab">
@@ -197,7 +197,7 @@
         <item name="android:paddingLeft">10dp</item>
         <item name="android:translationY">2dp</item>
         <item name="android:paddingBottom">15dp</item>
-        <item name="android:background">@drawable/rounded_border_edittext</item>
+        <item name="android:background">@drawable/blue_rounded_border_edittext</item>
     </style>
 
     <style name="InputError">

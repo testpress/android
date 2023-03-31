@@ -122,7 +122,7 @@
                             android:layout_height="@dimen/input_height"
                             android:layout_marginEnd="5dp"
                             android:layout_marginRight="5dp"
-                            android:background="@drawable/rounded_border_edittext"
+                            android:background="@drawable/blue_rounded_border_edittext"
                             android:paddingTop="10dp"
                             app:ccp_autoDetectCountry="true"
                             app:ccp_defaultNameCode="IND"

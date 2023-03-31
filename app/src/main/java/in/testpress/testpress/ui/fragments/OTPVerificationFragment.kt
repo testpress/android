@@ -15,6 +15,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.otp_verification_layout.*
@@ -51,6 +53,7 @@ class OTPVerificationFragment: BaseAuthenticationFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initializeInputField()
         setOnClickListeners()
     }
 
@@ -114,6 +117,23 @@ class OTPVerificationFragment: BaseAuthenticationFragment() {
                 }
             })
         }
+    }
+
+    private fun initializeInputField(){
+        otpField.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE){
+                verifyOTP()
+                hideSoftKeyboard()
+                true
+            } else {
+                false
+            }
+        }
+    }
+
+    private fun hideSoftKeyboard(){
+        val inputManager= requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(this.view?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
     }
 
     fun verifyOTP() {

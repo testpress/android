@@ -101,7 +101,7 @@
                 android:paddingLeft="10dp"
                 android:textColorHint="#aaaaaa"
                 android:background="@android:color/transparent"
-                android:imeOptions="actionNext"
+                android:imeOptions="actionDone"
                 android:textColor="@color/white"
                 android:hint="Enter OTP" />
 

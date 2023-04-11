@@ -7,7 +7,7 @@ end
 lane :release_update_to do |params|
   release_option = params[:release_option]
   if params[:subdomain] == "all"
-    subdomains = fetch_subdomains
+    subdomains = ['lmsdemo', 'demo', 'lms']
     subdomains.each do |subdomain|
       if ['verandalearning', 'brilliantpalalms', 'brilliantpalaclasses', "race"].include? subdomain
         next

@@ -24,11 +24,16 @@ jobs:
       GITHUB_USERNAME: ${{ secrets.GH_USERNAME }}
       API_ACCESS_KEY: ${{ secrets.API_ACCESS_KEY }}
 
+    strategy:
+      matrix:
+        app:
+          - lmsdemo
+          - demo
+
     steps:
       - name: Validate subdomain
-        if: ${{ github.event.inputs.subdomain }} != 'all'
         run: |
-          curl -f https://${{ github.event.inputs.subdomain }}.testpress.in/api/v2.5/admin/android/app-config/ -H "API-access-key: $API_ACCESS_KEY"
+          curl -f https://${{ matrix.app }}.testpress.in/api/v2.5/admin/android/app-config/ -H "API-access-key: $API_ACCESS_KEY"
 
       - name: Setup JDK 11
         uses: actions/setup-java@v3
@@ -77,13 +82,4 @@ jobs:
         run: |
           export LC_ALL=en_US.UTF-8
           export LANG=en_US.UTF-8
-          bundle exec fastlane release_update_to subdomain:${{ github.event.inputs.subdomain }} release_option:${{ github.event.inputs.release_option }}
-
-      - name: Store app artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: app
-          path: |
-            app/build/outputs/apk/release/app-release.apk
-            app/build/outputs/bundle/release/app-release.aab
-            app/build/outputs/apk/debug/app-debug.apk
+          bundle exec fastlane release_update_to subdomain:${{ matrix.app }}

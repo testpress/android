@@ -28,7 +28,7 @@ jobs:
       matrix:
         app:
           - lmsdemo
-          - demos
+          - demotech
 
     steps:
       - name: Validate subdomain

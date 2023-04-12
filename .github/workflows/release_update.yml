@@ -85,7 +85,7 @@ jobs:
           bundle exec fastlane release_update_to subdomain:${{ matrix.app }}
 
       - name: Output Failed Matrix
-      if: matrix.status != 'success'
-      run: |
-        echo "The following matrix values failed:"
-        echo "${{ matrix.app }} - ${{ job.status }}"
+        if: matrix.status != 'success'
+        run: |
+          echo "The following matrix values failed:"
+          echo "${{ matrix.app }} - ${{ job.status }}"

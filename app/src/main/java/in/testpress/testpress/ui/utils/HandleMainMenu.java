@@ -15,6 +15,7 @@ import in.testpress.core.TestpressSession;
 import in.testpress.exam.TestpressExam;
 import in.testpress.course.TestpressCourse;
 import in.testpress.store.TestpressStore;
+import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -23,10 +24,12 @@ import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
+import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.ui.DoubtsActivity;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.PostsListActivity;
 import in.testpress.testpress.ui.ProfileDetailsActivity;
+import in.testpress.testpress.ui.WebViewActivity;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.UIUtils;
@@ -36,16 +39,22 @@ import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PAT
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 
+import com.github.kevinsawicki.wishlist.Toaster;
+
+import java.net.UnknownHostException;
+
 public class HandleMainMenu {
     private Activity activity;
     private TestpressServiceProvider serviceProvider;
     private InstituteSettings instituteSettings;
     Account[] account;
     boolean isUserAuthenticated;
+    String ssoUrl;
 
     public HandleMainMenu(Activity activity, TestpressServiceProvider serviceProvider) {
         this.activity = activity;
         this.serviceProvider = serviceProvider;
+        fetchSsoLink();
 
         DaoSession daoSession =
                 ((TestpressApplication) activity.getApplicationContext()).getDaoSession();
@@ -56,6 +65,7 @@ public class HandleMainMenu {
 
         AccountManager manager = (AccountManager) activity.getSystemService(Context.ACCOUNT_SERVICE);
         account = manager.getAccountsByType(APPLICATION_ID);
+
         isUserAuthenticated = account.length > 0;
     }
 
@@ -102,7 +112,36 @@ public class HandleMainMenu {
                 intent.putExtra(Constants.DEEP_LINK_TO, "home");
                 activity.startActivity(intent);
                 break;
+            case  R.id.report:
+                intent = new Intent(activity, WebViewActivity.class);
+                intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Report");
+                intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + ssoUrl+"&next=/report/");
+                activity.startActivity(intent);
+                break;
         }
+    }
+
+    public void fetchSsoLink() {
+        new SafeAsyncTask<SsoUrl>() {
+            @Override
+            public SsoUrl call() throws Exception {
+                return serviceProvider.getService(activity).getSsoUrl();
+            }
+
+            @Override
+            protected void onException(final Exception exception) throws RuntimeException {
+                super.onException(exception);
+
+                if (exception.getCause() instanceof UnknownHostException) {
+                    Toaster.showLong(activity, R.string.no_internet);
+                }
+            }
+
+            @Override
+            protected void onSuccess(final SsoUrl ssoLink) throws Exception {
+                ssoUrl = ssoLink.getSsoUrl();
+            }
+        }.execute();
     }
 
     void checkAuthenticationAndOpen(final int clickedMenuTitleResId) {

@@ -219,9 +219,9 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         handleDetail(phone, mobileNoRow, profileDetails.getPhone());
         handleDetail(gender, genderRow, profileDetails.getGender());
         handleDetail(dateOfBirth, dobRow, profileDetails.getBirthDate());
-        String fullAddress = profileDetails.getAddress1() + "\n" + profileDetails.getAddress2()
-                + "\n" + profileDetails.getCity() + " - " + profileDetails.getZip();
-        handleDetail(address, addressRow, fullAddress);
+//        String fullAddress = profileDetails.getAddress1() + "\n" + profileDetails.getAddress2()
+//                + "\n" + profileDetails.getCity() + " - " + profileDetails.getZip();
+        //handleDetail(address, addressRow, fullAddress);
         handleDetail(city, cityRow, profileDetails.getCity());
         handleDetail(state, stateRow, profileDetails.getState());
         handleDetail(pinCode, pinCodeRow, profileDetails.getZip());

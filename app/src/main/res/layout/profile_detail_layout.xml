@@ -232,6 +232,7 @@
                 android:layout_marginEnd="@dimen/editor_delete_button_width"
                 android:layout_marginBottom="@dimen/editor_padding_between_read_only_editor_views"
                 android:paddingBottom="20dp"
+                android:visibility="gone"
                 android:id="@+id/address_container"
                 android:orientation="horizontal">
 

@@ -35,7 +35,8 @@
         <item
             android:id="@+id/report"
             android:title="Report"
-            android:icon="@drawable/ic_baseline_message_24" />
+            android:icon="@drawable/ic_baseline_message_24"
+            app:showAsAction="never"/>
         <item
             android:id="@+id/logout"
             android:icon="@drawable/ic_exit_to_app_black_24dp"

@@ -34,6 +34,7 @@ import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.ui.UserDevicesActivity;
+import in.testpress.util.ViewUtils;
 
 import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
@@ -130,7 +131,10 @@ public class HandleMainMenu {
                 super.onException(exception);
 
                 if (exception.getCause() instanceof UnknownHostException) {
-                    Toaster.showLong(activity, R.string.no_internet);
+                    ViewUtils.toast(
+                            activity.getApplicationContext(),
+                            activity.getResources().getString(R.string.no_internet)
+                    );
                 }
             }
 

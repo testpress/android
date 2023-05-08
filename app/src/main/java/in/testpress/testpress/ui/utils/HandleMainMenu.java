@@ -113,10 +113,7 @@ public class HandleMainMenu {
                 activity.startActivity(intent);
                 break;
             case  R.id.report:
-                intent = new Intent(activity, WebViewActivity.class);
-                intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Report");
-                intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + ssoUrl+"&next=/report/");
-                activity.startActivity(intent);
+                launchReportPage();
                 break;
         }
     }
@@ -213,5 +210,12 @@ public class HandleMainMenu {
         share.putExtra(Intent.EXTRA_TEXT, activity.getString(R.string.share_message) +
                 activity.getString(R.string.get_it_at) + appLink);
         activity.startActivity(Intent.createChooser(share, "Share with"));
+    }
+
+    private void launchReportPage() {
+        Intent intent = new Intent(activity, WebViewActivity.class);
+        intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Report");
+        intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + ssoUrl+"&next=/report/");
+        activity.startActivity(intent);
     }
 }

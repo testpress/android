@@ -21,16 +21,34 @@ class StudentReportActivity: TestpressFragmentActivity(), EmptyViewListener {
     @Inject
     lateinit var serviceProvider: TestpressServiceProvider
     lateinit var emptyViewFragment: EmptyViewFragment
+    lateinit var webViewFragment: WebViewFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Injector.inject(this)
         setContentView(R.layout.container_layout)
-        fetchSsoLink()
-        initializeEmptyViewFragment()
         showLoading()
+        initializeEmptyViewFragment()
+        initializeWebViewFragment()
+        fetchSsoLink()
         supportActionBar?.title = "Report"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    private fun showLoading() {
+        pb_loading.visibility = View.VISIBLE
+        fragment_container.visibility = View.GONE
+    }
+
+    private fun initializeEmptyViewFragment() {
+        emptyViewFragment = EmptyViewFragment()
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container, emptyViewFragment)
+        transaction.commit()
+    }
+
+    private fun initializeWebViewFragment() {
+        webViewFragment = WebViewFragment()
     }
 
     private fun fetchSsoLink() {
@@ -55,11 +73,6 @@ class StudentReportActivity: TestpressFragmentActivity(), EmptyViewListener {
         }.execute()
     }
 
-    private fun showLoading() {
-        pb_loading.visibility = View.VISIBLE
-        fragment_container.visibility = View.GONE
-    }
-
     private fun hideLoading() {
         pb_loading.visibility = View.GONE
         fragment_container.visibility = View.VISIBLE
@@ -76,7 +89,6 @@ class StudentReportActivity: TestpressFragmentActivity(), EmptyViewListener {
     }
 
     private fun openTicketsInWebview(ssoLink: SsoUrl?) {
-        val webViewFragment = WebViewFragment()
         val arguments = Bundle()
         arguments.putString(WebViewFragment.URL_TO_OPEN, "$BASE_URL${ssoLink?.ssoUrl}&next=/report/")
         webViewFragment.arguments = arguments
@@ -85,14 +97,15 @@ class StudentReportActivity: TestpressFragmentActivity(), EmptyViewListener {
         transaction.commit()
     }
 
-    private fun initializeEmptyViewFragment() {
-        emptyViewFragment = EmptyViewFragment()
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, emptyViewFragment)
-        transaction.commit()
-    }
-
     override fun onRetryClick() {
         fetchSsoLink()
+    }
+
+    override fun onBackPressed() {
+        if (webViewFragment.canGoBack()) {
+            webViewFragment.goBack()
+        } else {
+            super.onBackPressed()
+        }
     }
 }

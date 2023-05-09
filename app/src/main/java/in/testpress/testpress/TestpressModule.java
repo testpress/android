@@ -44,6 +44,7 @@ import in.testpress.testpress.ui.PostsListActivity;
 import in.testpress.testpress.ui.PostsListFragment;
 import in.testpress.testpress.ui.ProfileDetailsActivity;
 import in.testpress.testpress.ui.ProfilePhotoActivity;
+import in.testpress.testpress.ui.StudentReportActivity;
 import in.testpress.testpress.ui.TermsAndConditionActivity;
 import in.testpress.testpress.ui.WebViewActivity;
 import in.testpress.testpress.ui.fragments.DashboardFragment;
@@ -96,7 +97,8 @@ import static in.testpress.testpress.BuildConfig.BASE_URL;
                 UsernameAuthentication.class,
                 PhoneAuthenticationFragment.class,
                 OTPVerificationFragment.class,
-                TermsAndConditionActivity.class
+                TermsAndConditionActivity.class,
+                StudentReportActivity.class
         }
 )
 public class TestpressModule {

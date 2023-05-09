@@ -23,23 +23,19 @@ import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
-import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.ui.DoubtsActivity;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.PostsListActivity;
 import in.testpress.testpress.ui.ProfileDetailsActivity;
-import in.testpress.testpress.ui.WebViewActivity;
+import in.testpress.testpress.ui.StudentReportActivity;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.ui.UserDevicesActivity;
-import in.testpress.util.ViewUtils;
 
 import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
-
-import java.net.UnknownHostException;
 
 public class HandleMainMenu {
     private Activity activity;
@@ -47,12 +43,10 @@ public class HandleMainMenu {
     private InstituteSettings instituteSettings;
     Account[] account;
     boolean isUserAuthenticated;
-    String ssoUrl;
 
     public HandleMainMenu(Activity activity, TestpressServiceProvider serviceProvider) {
         this.activity = activity;
         this.serviceProvider = serviceProvider;
-        fetchSsoLink();
 
         DaoSession daoSession =
                 ((TestpressApplication) activity.getApplicationContext()).getDaoSession();
@@ -111,35 +105,9 @@ public class HandleMainMenu {
                 activity.startActivity(intent);
                 break;
             case  R.id.report:
-                launchReportPage();
+                launchStudentReportActivity();
                 break;
         }
-    }
-
-    public void fetchSsoLink() {
-        new SafeAsyncTask<SsoUrl>() {
-            @Override
-            public SsoUrl call() throws Exception {
-                return serviceProvider.getService(activity).getSsoUrl();
-            }
-
-            @Override
-            protected void onException(final Exception exception) throws RuntimeException {
-                super.onException(exception);
-
-                if (exception.getCause() instanceof UnknownHostException) {
-                    ViewUtils.toast(
-                            activity.getApplicationContext(),
-                            activity.getResources().getString(R.string.no_internet)
-                    );
-                }
-            }
-
-            @Override
-            protected void onSuccess(final SsoUrl ssoLink) throws Exception {
-                ssoUrl = ssoLink.getSsoUrl();
-            }
-        }.execute();
     }
 
     void checkAuthenticationAndOpen(final int clickedMenuTitleResId) {
@@ -213,10 +181,8 @@ public class HandleMainMenu {
         activity.startActivity(Intent.createChooser(share, "Share with"));
     }
 
-    private void launchReportPage() {
-        Intent intent = new Intent(activity, WebViewActivity.class);
-        intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Report");
-        intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + ssoUrl+"&next=/report/");
+    private void launchStudentReportActivity() {
+        Intent intent = new Intent(activity, StudentReportActivity.class);
         activity.startActivity(intent);
     }
 }

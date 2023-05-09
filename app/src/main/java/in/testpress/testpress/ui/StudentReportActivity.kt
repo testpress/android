@@ -68,7 +68,7 @@ class StudentReportActivity: TestpressFragmentActivity(), EmptyViewListener {
                 super.onSuccess(ssoLink)
                 emptyViewFragment.hide()
                 hideLoading()
-                openTicketsInWebview(ssoLink)
+                openStudentReportInWebview(ssoLink)
             }
         }.execute()
     }
@@ -88,7 +88,7 @@ class StudentReportActivity: TestpressFragmentActivity(), EmptyViewListener {
         }
     }
 
-    private fun openTicketsInWebview(ssoLink: SsoUrl?) {
+    private fun openStudentReportInWebview(ssoLink: SsoUrl?) {
         val arguments = Bundle()
         arguments.putString(WebViewFragment.URL_TO_OPEN, "$BASE_URL${ssoLink?.ssoUrl}&next=/report/")
         webViewFragment.arguments = arguments

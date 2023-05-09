@@ -57,7 +57,6 @@ public class HandleMainMenu {
 
         AccountManager manager = (AccountManager) activity.getSystemService(Context.ACCOUNT_SERVICE);
         account = manager.getAccountsByType(APPLICATION_ID);
-
         isUserAuthenticated = account.length > 0;
     }
 
@@ -104,7 +103,7 @@ public class HandleMainMenu {
                 intent.putExtra(Constants.DEEP_LINK_TO, "home");
                 activity.startActivity(intent);
                 break;
-            case  R.id.report:
+            case  R.id.student_report:
                 launchStudentReportActivity();
                 break;
         }

@@ -31,7 +31,7 @@ class StudentReportActivity: TestpressFragmentActivity(), EmptyViewListener {
         initializeEmptyViewFragment()
         initializeWebViewFragment()
         fetchSsoLink()
-        supportActionBar?.title = "Report"
+        supportActionBar?.title = "Your Report"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 

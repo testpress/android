@@ -54,6 +54,7 @@ class WebViewFragment : Fragment() {
     private fun setupWebView() {
         val cookieManager = CookieManager.getInstance()
         cookieManager.setAcceptCookie(true)
+        cookieManager.removeAllCookies(null)
         webView.settings.javaScriptEnabled = true
         webView.webViewClient = getWebViewClient()
     }

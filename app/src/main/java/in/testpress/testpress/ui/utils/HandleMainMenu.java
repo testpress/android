@@ -36,6 +36,7 @@ import in.testpress.ui.UserDevicesActivity;
 import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.core.Constants.Http.URL_STUDENT_REPORT_FLAG;
 
 public class HandleMainMenu {
     private Activity activity;
@@ -181,6 +182,7 @@ public class HandleMainMenu {
     }
 
     private void launchStudentReportActivity() {
-        activity.startActivity(WebViewWithSSO.createIntent(activity, "/report/", "Report"));
+        activity.startActivity(WebViewWithSSO.createIntent(
+                activity, URL_STUDENT_REPORT_FLAG, activity.getString(R.string.student_report)));
     }
 }

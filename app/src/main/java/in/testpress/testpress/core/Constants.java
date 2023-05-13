@@ -92,6 +92,11 @@ public final class Constants {
         public static final String URL_PAYMENT_RESPONSE_HANDLER = BASE_URL + "/payments/response/payu/";
 
         /**
+         * Student Report URL
+         */
+        public static final String URL_STUDENT_REPORT_FLAG = BASE_URL + "/report/";
+
+        /**
          * Query Params
          */
         public static final String PARENT = "parent";

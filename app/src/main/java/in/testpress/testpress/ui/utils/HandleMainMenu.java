@@ -12,6 +12,7 @@ import android.util.Log;
 
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
+import in.testpress.course.ui.WebViewWithSSO;
 import in.testpress.exam.TestpressExam;
 import in.testpress.course.TestpressCourse;
 import in.testpress.store.TestpressStore;
@@ -27,7 +28,6 @@ import in.testpress.testpress.ui.DoubtsActivity;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.PostsListActivity;
 import in.testpress.testpress.ui.ProfileDetailsActivity;
-import in.testpress.testpress.ui.StudentReportActivity;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.UIUtils;
@@ -181,7 +181,6 @@ public class HandleMainMenu {
     }
 
     private void launchStudentReportActivity() {
-        Intent intent = new Intent(activity, StudentReportActivity.class);
-        activity.startActivity(intent);
+        activity.startActivity(WebViewWithSSO.createIntent(activity, "/report/", "Report"));
     }
 }

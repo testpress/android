@@ -148,12 +148,6 @@
             android:label="Doubts" />
 
         <activity
-            android:name=".ui.StudentReportActivity"
-            android:theme="@style/AppTheme"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="Report" />
-
-        <activity
             android:name=".ui.DocumentsListActivity"
             android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"

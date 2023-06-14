@@ -94,7 +94,7 @@ public final class Constants {
         /**
          * Student Report URL
          */
-        public static final String URL_STUDENT_REPORT_FLAG = BASE_URL + "/report/";
+        public static final String URL_STUDENT_REPORT_FLAG = "/report/";
 
         /**
          * Query Params

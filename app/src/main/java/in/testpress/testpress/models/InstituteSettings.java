@@ -597,6 +597,10 @@ public class InstituteSettings {
             return VerificationMethod.NONE;
         }
     }
+
+    public boolean isStudentReportEnabled() {
+        return Boolean.TRUE.equals(this.getCoursesEnabled()) && Boolean.FALSE.equals(this.getDisableStudentReport());
+    }
     // KEEP METHODS END
 
 }

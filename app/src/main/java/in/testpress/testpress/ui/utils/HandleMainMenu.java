@@ -32,6 +32,7 @@ import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.ui.UserDevicesActivity;
+import in.testpress.ui.WebViewWithSSOActivity;
 
 import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
@@ -182,7 +183,14 @@ public class HandleMainMenu {
     }
 
     private void launchStudentReportActivity() {
-        activity.startActivity(WebViewWithSSO.createIntent(
-                activity, URL_STUDENT_REPORT_FLAG, activity.getString(R.string.student_report)));
+        activity.startActivity(
+                WebViewWithSSOActivity.Companion.createIntent(
+                        activity,
+                        activity.getString(R.string.student_report),
+                        URL_STUDENT_REPORT_FLAG,
+                        true,
+                        WebViewWithSSOActivity.class
+                )
+        );
     }
 }

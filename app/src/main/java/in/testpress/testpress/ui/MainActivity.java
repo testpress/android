@@ -261,6 +261,9 @@ public class MainActivity extends TestpressFragmentActivity {
             menu.findItem(R.id.profile).setVisible(true);
             menu.findItem(R.id.bookmarks).setVisible(true);
             menu.findItem(R.id.login).setVisible(false);
+            if (mInstituteSettings != null){
+                menu.findItem(R.id.student_report).setVisible(mInstituteSettings.isStudentReportEnabled());
+            }
         }
     }
 

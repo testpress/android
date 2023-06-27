@@ -47,7 +47,6 @@ dependencies {
 
     // GreenDao for database
     implementation 'de.greenrobot:greendao:2.0.0'
-    
     // Testpress Course(which inbuilt has exam & core module)
     implementation 'com.github.testpress:course:' + testpressSDK
     implementation 'com.github.testpress:store:' + testpressSDK
@@ -151,7 +150,7 @@ android {
         versionName json.version
         versionCode json.version_code
 
-        def host_url = json.testpress_site_subdomain + '.testpress.in'
+        def host_url = "01b0-183-82-179-25.ngrok-free.app"
         resValue "string", "host_url", host_url
         buildConfigField "String", "BASE_URL", '"https://' + host_url + '"'
         resValue "string", "app_name", json.app_name

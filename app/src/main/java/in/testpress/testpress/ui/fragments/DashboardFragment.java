@@ -84,7 +84,10 @@ public class DashboardFragment extends Fragment {
     }
 
     private void initViewModel() {
-        viewModel = new DashBoardViewModel(new DashBoardRepository(requireContext()));
+        viewModel = DashBoardViewModel.Companion.initializeViewModel(
+                this,
+                new DashBoardRepository(requireContext())
+        );
     }
 
     private void setUsernameInSentry() {

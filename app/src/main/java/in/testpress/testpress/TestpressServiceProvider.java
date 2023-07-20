@@ -111,6 +111,7 @@ public class TestpressServiceProvider {
             } else {
                 InstituteSettings instituteSettings = instituteSettingsList.get(0);
                 settings = new in.testpress.models.InstituteSettings(instituteSettings.getBaseUrl())
+                        .setWhiteLabeledHostUrl(BuildConfig.WHITE_LABELED_HOST_URL)
                         .setBookmarksEnabled(instituteSettings.getBookmarksEnabled())
                         .setCoursesFrontend(instituteSettings.getShowGameFrontend())
                         .setCoursesGamificationEnabled(instituteSettings.getCoursesEnableGamification())

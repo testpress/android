@@ -16,5 +16,6 @@
   "is_growth_hacks_enabled": false,
   "show_pdf_vertically": true,
   "zoom_enabled": false,
-  "zoom_custom_meeting_ui_enabled": false
+  "zoom_custom_meeting_ui_enabled": false,
+  "current_payment_app": null
 }

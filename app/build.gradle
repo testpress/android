@@ -177,6 +177,13 @@ android {
             resValue "string", "white_labeled_host_url", json.white_labeled_host_url
             buildConfigField "String", "WHITE_LABELED_HOST_URL", '"https://' + json.white_labeled_host_url + '"'
         }
+        if (json.current_payment_app == null) {
+            resValue "string", "current_payment_app", ""
+            buildConfigField "String", "CURRENT_PAYMENT_APP", '""'
+        } else {
+            resValue "string", "current_payment_app", json.current_payment_app
+            buildConfigField "String", "CURRENT_PAYMENT_APP", '"' + json.current_payment_app + '"'
+        }
         buildConfigField "boolean", "ZOOM_CUSTOM_MEETING_UI_ENABLED", "" + json.zoom_custom_meeting_ui_enabled
 
         applicationId json.package_name

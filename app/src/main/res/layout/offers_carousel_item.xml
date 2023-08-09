@@ -10,7 +10,7 @@
     <in.testpress.testpress.ui.view.RoundedCornerImageView
         android:id="@+id/image_view"
         android:layout_width="375dp"
-        android:layout_height="125dp"
+        android:layout_height="150dp"
         android:tint="#000000"
         android:scaleType="centerCrop"
         android:background="@drawable/border_rectangle_light"

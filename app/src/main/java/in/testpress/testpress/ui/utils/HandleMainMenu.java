@@ -37,10 +37,12 @@ import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.ui.DiscussionActivity;
 import in.testpress.ui.UserDevicesActivity;
+import in.testpress.ui.WebViewWithSSOActivity;
 
 import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.core.Constants.Http.URL_STUDENT_REPORT_FLAG;
 
 public class HandleMainMenu {
     private Activity activity;
@@ -120,6 +122,9 @@ public class HandleMainMenu {
                 intent = DisscussionActivity.createIntent(activity);
                 activity.startActivity(intent);
                 break;
+            case  R.id.student_report:
+                launchStudentReportActivity();
+                break;
         }
     }
 
@@ -192,5 +197,17 @@ public class HandleMainMenu {
         share.putExtra(Intent.EXTRA_TEXT, activity.getString(R.string.share_message) +
                 activity.getString(R.string.get_it_at) + appLink);
         activity.startActivity(Intent.createChooser(share, "Share with"));
+    }
+
+    private void launchStudentReportActivity() {
+        activity.startActivity(
+                WebViewWithSSOActivity.Companion.createIntent(
+                        activity,
+                        activity.getString(R.string.student_report),
+                        URL_STUDENT_REPORT_FLAG,
+                        true,
+                        WebViewWithSSOActivity.class
+                )
+        );
     }
 }

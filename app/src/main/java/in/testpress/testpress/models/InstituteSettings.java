@@ -72,6 +72,8 @@ public class InstituteSettings {
     private String facebookAppId;
     private Integer maxAllowedDownloadedVideos;
     private Boolean disableForgotPassword;
+    private Boolean disableStudentReport;
+    private Boolean enableCustomTest;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
@@ -83,7 +85,7 @@ public class InstituteSettings {
         this.baseUrl = baseUrl;
     }
 
-    public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, Boolean facebookLoginEnabled, Boolean googleLoginEnabled, boolean commentsVotingEnabled, Boolean bookmarksEnabled, Boolean forumEnabled, Boolean twilioEnabled, Boolean allow_profile_edit, String learnLabel, String leaderboardLabel, String dashboardLabel, String bookmarksLabel, String loginLabel, String loginPasswordLabel, String aboutUs, Boolean disableStudentAnalytics, Boolean customRegistrationEnabled, Boolean enableParallelLoginRestriction, Integer maxParallelLogins, Integer lockoutLimit, String cooloffTime, String appToolbarLogo, String appShareLink, String serverTime, Boolean allowScreenshotInApp, String androidSentryDns, Boolean leaderboardEnabled, String threatsAndTargetsLabel, Boolean isVideoDownloadEnabled, Boolean isHelpdeskEnabled, IntegerList allowedLoginMethods, Boolean showShareButton, String facebookAppId, Integer maxAllowedDownloadedVideos, Boolean disableForgotPassword) {
+    public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, Boolean facebookLoginEnabled, Boolean googleLoginEnabled, boolean commentsVotingEnabled, Boolean bookmarksEnabled, Boolean forumEnabled, Boolean twilioEnabled, Boolean allow_profile_edit, String learnLabel, String leaderboardLabel, String dashboardLabel, String bookmarksLabel, String loginLabel, String loginPasswordLabel, String aboutUs, Boolean disableStudentAnalytics, Boolean customRegistrationEnabled, Boolean enableParallelLoginRestriction, Integer maxParallelLogins, Integer lockoutLimit, String cooloffTime, String appToolbarLogo, String appShareLink, String serverTime, Boolean allowScreenshotInApp, String androidSentryDns, Boolean leaderboardEnabled, String threatsAndTargetsLabel, Boolean isVideoDownloadEnabled, Boolean isHelpdeskEnabled, IntegerList allowedLoginMethods, Boolean showShareButton, String facebookAppId, Integer maxAllowedDownloadedVideos, Boolean disableForgotPassword, Boolean disableStudentReport, Boolean enableCustomTest) {
         this.baseUrl = baseUrl;
         this.verificationMethod = verificationMethod;
         this.allowSignup = allowSignup;
@@ -136,6 +138,8 @@ public class InstituteSettings {
         this.facebookAppId = facebookAppId;
         this.maxAllowedDownloadedVideos = maxAllowedDownloadedVideos;
         this.disableForgotPassword = disableForgotPassword;
+        this.disableStudentReport = disableStudentReport;
+        this.enableCustomTest = enableCustomTest;
     }
 
     public String getBaseUrl() {
@@ -554,6 +558,22 @@ public class InstituteSettings {
         this.disableForgotPassword = disableForgotPassword;
     }
 
+    public Boolean getDisableStudentReport() {
+        return disableStudentReport;
+    }
+
+    public void setDisableStudentReport(Boolean disableStudentReport) {
+        this.disableStudentReport = disableStudentReport;
+    }
+
+    public Boolean getEnableCustomTest() {
+        return enableCustomTest;
+    }
+
+    public void setEnableCustomTest(Boolean enableCustomTest) {
+        this.enableCustomTest = enableCustomTest;
+    }
+
     // KEEP METHODS - put your custom methods here
     public long serverTime() {
         if (serverTime != null) {
@@ -586,6 +606,10 @@ public class InstituteSettings {
         } else {
             return VerificationMethod.NONE;
         }
+    }
+
+    public boolean isStudentReportEnabled() {
+        return Boolean.TRUE.equals(this.getCoursesEnabled()) && Boolean.FALSE.equals(this.getDisableStudentReport());
     }
     // KEEP METHODS END
 

@@ -48,6 +48,11 @@
             android:icon="@drawable/ic_baseline_message_24"
             app:showAsAction="never"/>
         <item
+            android:id="@+id/student_report"
+            android:title="Your Report"
+            android:icon="@drawable/ic_student_report"
+            app:showAsAction="never"/>
+        <item
             android:id="@+id/logout"
             android:icon="@drawable/ic_exit_to_app_black_24dp"
             android:title="Logout"

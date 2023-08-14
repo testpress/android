@@ -13,6 +13,7 @@ import android.util.Log;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.course.ui.CourseListActivity;
+import in.testpress.course.ui.CustomTestGenerationActivity;
 import in.testpress.course.ui.DownloadsActivity;
 import in.testpress.exam.TestpressExam;
 import in.testpress.course.TestpressCourse;
@@ -125,6 +126,9 @@ public class HandleMainMenu {
             case  R.id.student_report:
                 launchStudentReportActivity();
                 break;
+            case  R.id.custom_test:
+                launchCustomTestActivity();
+                break;
         }
     }
 
@@ -207,6 +211,18 @@ public class HandleMainMenu {
                         URL_STUDENT_REPORT_FLAG,
                         true,
                         WebViewWithSSOActivity.class
+                )
+        );
+    }
+
+    private void launchCustomTestActivity() {
+        activity.startActivity(
+                CustomTestGenerationActivity.Companion.createIntent(
+                        activity,
+                        "Custom Module",
+                        "/courses/custom_test_generation/?testpress_app=android",
+                        true,
+                        CustomTestGenerationActivity.class
                 )
         );
     }

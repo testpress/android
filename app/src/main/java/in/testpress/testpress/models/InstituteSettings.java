@@ -611,6 +611,10 @@ public class InstituteSettings {
     public boolean isStudentReportEnabled() {
         return Boolean.TRUE.equals(this.getCoursesEnabled()) && Boolean.FALSE.equals(this.getDisableStudentReport());
     }
+
+    public boolean isCustomTestEnabled() {
+        return Boolean.TRUE.equals(this.getCoursesEnabled()) && Boolean.TRUE.equals(this.getEnableCustomTest());
+    }
     // KEEP METHODS END
 
 }

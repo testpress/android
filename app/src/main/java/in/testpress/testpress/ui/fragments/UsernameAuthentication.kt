@@ -133,16 +133,11 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
         }
 
         signUp.setOnClickListener {
-            if (instituteSettings.customRegistrationEnabled){
-                val intent = Intent(requireContext(), WebViewActivity::class.java)
-                intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Register")
-                intent.putExtra(WebViewActivity.SHOW_LOGOUT, "false")
-                intent.putExtra(WebViewActivity.URL_TO_OPEN, BuildConfig.BASE_URL + "/register/")
-                startActivity(intent)
-            } else {
-                val intent = Intent(requireContext(), RegisterActivity::class.java)
-                startActivityForResult(intent, LoginActivity.REQUEST_CODE_REGISTER_USER)
-            }
+            val intent = Intent(requireContext(), WebViewActivity::class.java)
+            intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Register")
+            intent.putExtra(WebViewActivity.SHOW_LOGOUT, "false")
+            intent.putExtra(WebViewActivity.URL_TO_OPEN, "https://www.epratibha.net/login/")
+            startActivity(intent)
         }
 
         usernameLayoutPrivacyPolicy.setOnClickListener {

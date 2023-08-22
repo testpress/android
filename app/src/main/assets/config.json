@@ -4,7 +4,7 @@
   "testpress_site_subdomain":"eenadupratibha",
   "package_name":"in.testpress.sandbox",
   "app_name":"EPratibha",
-  "share_message":"You should check out the app I am using! It's super effective and awesome 💫",
+  "share_message": "Good app to prepare for online exams.",
   "primary_color":"#251c75",
   "secondary_color":"#c7280f",
   "tertiary_color":"#32297d",
@@ -15,7 +15,7 @@
   "white_labeled_host_url":"courses.epratibha.net",
   "is_growth_hacks_enabled":false,
   "show_pdf_vertically":true,
-  "zoom_enabled":true,
+  "zoom_enabled":false,
   "zoom_custom_meeting_ui_enabled": false,
   "current_payment_app":""
 }

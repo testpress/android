@@ -31,7 +31,11 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat.getSystemService
+import kotlinx.android.synthetic.main.phone_login_layout.*
 import kotlinx.android.synthetic.main.username_login_layout.*
+import kotlinx.android.synthetic.main.username_login_layout.facebookSignIn
+import kotlinx.android.synthetic.main.username_login_layout.googleSignIn
+import kotlinx.android.synthetic.main.username_login_layout.socialLoginLayout
 import javax.inject.Inject
 
 

@@ -1,14 +1,18 @@
 package `in`.testpress.testpress.ui.fragments
 
 import `in`.testpress.enums.Status
+import `in`.testpress.testpress.BuildConfig
 import `in`.testpress.testpress.Injector
 import `in`.testpress.testpress.R
+import `in`.testpress.testpress.core.Constants
 import `in`.testpress.testpress.core.TestpressService
 import `in`.testpress.testpress.models.InstituteSettings
 import `in`.testpress.testpress.repository.InstituteRepository
 import `in`.testpress.testpress.util.UIUtils
 import `in`.testpress.testpress.util.isEmpty
 import `in`.testpress.testpress.viewmodel.LoginViewModel
+import `in`.testpress.ui.AbstractWebViewActivity.Companion.createIntent
+import `in`.testpress.ui.WebViewWithSSOActivity
 import `in`.testpress.util.ViewUtils
 import android.content.Intent
 import android.content.IntentSender
@@ -17,6 +21,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -128,6 +133,17 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
             loginNavigation?.signInWithGoogle()
         }
 
+        requireActivity().findViewById<TextView>(R.id.privacyPolicyText).setOnClickListener {
+            startActivity(
+                createIntent(
+                    requireContext(),
+                    activity!!.getString(R.string.privacy_policy),
+                    BuildConfig.BASE_URL + Constants.Http.URL_PRIVACY_POLICY_FLAG,
+                    false,
+                    WebViewWithSSOActivity::class.java
+                )
+            )
+        }
     }
 
     private fun requestOTP(phoneNumber: String, countryCode: String) {

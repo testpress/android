@@ -97,6 +97,11 @@ public final class Constants {
         public static final String URL_STUDENT_REPORT_FLAG = "/report/";
 
         /**
+         * Privacy Policy URL
+         */
+        public static final String URL_PRIVACY_POLICY_FLAG = "/privacy/";
+
+        /**
          * Query Params
          */
         public static final String PARENT = "parent";

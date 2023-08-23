@@ -21,6 +21,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -264,6 +265,7 @@ public class MainActivity extends TestpressFragmentActivity {
             if (mInstituteSettings != null){
                 menu.findItem(R.id.student_report).setVisible(mInstituteSettings.isStudentReportEnabled());
             }
+            Log.d("TAG", "hideMenuItemsForUnauthenticatedUser: "+manager.getPassword(account[0]));
         }
     }
 

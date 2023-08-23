@@ -143,7 +143,7 @@ class OTPVerificationFragment: BaseAuthenticationFragment() {
                 when(resource.status) {
                     Status.SUCCESS -> {
                         if (resource.data?.token != null) {
-                            loginNavigation?.onLoginSuccess(phoneNumber, resource.data!!.token!!)
+                            loginNavigation?.onLoginSuccess(phoneNumber,"", resource.data!!.token!!)
                         }
                     }
                     Status.ERROR -> {

@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import in.testpress.models.greendao.Attempt;
 import in.testpress.models.greendao.Chapter;
@@ -229,7 +230,10 @@ public class DashboardResponse {
         if (availableSections.isEmpty()) {
             for (DashboardSection section : dashboardSections) {
                 if (!section.getItems().isEmpty() && acceptedContentTypes.contains(section.getContentType())) {
-                    availableSections.add(section);
+                    Log.d("TAG", "getAvailableSections: "+section.getContentType());
+                    if (!Objects.equals(section.getContentType(), "products")) {
+                        availableSections.add(section);
+                    }
                 }
             }
 

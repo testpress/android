@@ -164,7 +164,7 @@
     <string name="try_after_some_time">Please try after some time</string>
     <string name="open_drawer">Open Navigation Drawer</string>
     <string name="close_drawer">Close Navigation Drawer</string>
-    <string name="privacy_policy_dialogue">By signing in you acknowledge the  </string>
+    <string name="privacy_policy_dialogue">By signing in you acknowledge our  </string>
     <string name="privacy_policy"><a href='#'> Privacy Policy</a></string>
 
     <string name="terms_and_conditions">Terms And Conditions</string>

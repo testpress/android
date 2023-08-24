@@ -144,19 +144,19 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
     }
 
 
-    override fun onLoginSuccess(username: String, token: String) {
+    override fun onLoginSuccess(username: String, password: String, token: String) {
         val settings = getInstituteSettings()
         val session = TestpressSession(settings, token)
         TestpressSdk.setTestpressSession(this, session)
         testPressService.setAuthToken(token)
-        addTokenToAccountManager(username, token)
+        addTokenToAccountManager(username,password, token)
         registerDevice()
         autoLogin(username, token)
     }
 
-    private fun addTokenToAccountManager(username: String, token: String) {
+    private fun addTokenToAccountManager(username: String,password: String, token: String) {
         val account = Account(username, BuildConfig.APPLICATION_ID)
-        accountManager.addAccountExplicitly(account, null, null)
+        accountManager.addAccountExplicitly(account, password, null)
         accountManager.setAuthToken(account, BuildConfig.APPLICATION_ID, token)
     }
 
@@ -207,7 +207,7 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
                         val authToken = response?.token
                         if (authToken != null) {
                             if (username != null) {
-                                onLoginSuccess(username, authToken)
+                                onLoginSuccess(username,"", authToken)
                             }
                         }
                     }
@@ -254,5 +254,5 @@ interface LoginNavigationInterface {
     fun goToPhoneAuthentication()
     fun signInWithGoogle()
     fun goToOTPVerification(phoneNumber: String, countryCode: String)
-    fun onLoginSuccess(username:String, token: String)
+    fun onLoginSuccess(username: String, password: String, token: String)
 }

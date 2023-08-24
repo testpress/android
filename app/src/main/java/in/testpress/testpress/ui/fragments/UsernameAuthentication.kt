@@ -204,7 +204,7 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
                 override fun onSuccess(response: TestpressSession?) {
                     val authToken = response?.token
                     if (authToken != null) {
-                        loginNavigation?.onLoginSuccess(username.text.toString(), authToken)
+                        loginNavigation?.onLoginSuccess(username.text.toString(),password.text.toString(), authToken)
                     }
                 }
 

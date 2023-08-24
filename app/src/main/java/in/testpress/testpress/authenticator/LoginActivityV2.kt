@@ -254,5 +254,5 @@ interface LoginNavigationInterface {
     fun goToPhoneAuthentication()
     fun signInWithGoogle()
     fun goToOTPVerification(phoneNumber: String, countryCode: String)
-    fun onLoginSuccess(username:String,password: String = "", token: String)
+    fun onLoginSuccess(username: String, password: String, token: String)
 }

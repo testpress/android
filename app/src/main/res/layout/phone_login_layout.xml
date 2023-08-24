@@ -222,7 +222,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="16dp"
             android:orientation="horizontal">
 
             <TextView
@@ -233,7 +233,7 @@
                 android:gravity="center" />
 
             <TextView
-                android:id="@+id/privacyPolicyText"
+                android:id="@+id/phoneLayoutPrivacyPolicy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
@@ -241,5 +241,6 @@
                 android:text="@string/privacy_policy_text"/>
 
         </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

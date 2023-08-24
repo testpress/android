@@ -4,15 +4,14 @@ import `in`.testpress.enums.Status
 import `in`.testpress.testpress.BuildConfig
 import `in`.testpress.testpress.Injector
 import `in`.testpress.testpress.R
-import `in`.testpress.testpress.core.Constants
+import `in`.testpress.testpress.core.Constants.Http
 import `in`.testpress.testpress.core.TestpressService
 import `in`.testpress.testpress.models.InstituteSettings
 import `in`.testpress.testpress.repository.InstituteRepository
+import `in`.testpress.testpress.ui.WebViewActivity
 import `in`.testpress.testpress.util.UIUtils
 import `in`.testpress.testpress.util.isEmpty
 import `in`.testpress.testpress.viewmodel.LoginViewModel
-import `in`.testpress.ui.AbstractWebViewActivity.Companion.createIntent
-import `in`.testpress.ui.WebViewWithSSOActivity
 import `in`.testpress.util.ViewUtils
 import android.content.Intent
 import android.content.IntentSender
@@ -21,7 +20,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -30,6 +28,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.auth.api.credentials.*
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import kotlinx.android.synthetic.main.phone_login_layout.*
+import kotlinx.android.synthetic.main.phone_login_layout.facebookSignIn
+import kotlinx.android.synthetic.main.phone_login_layout.googleSignIn
+import kotlinx.android.synthetic.main.phone_login_layout.socialLoginLayout
 import javax.inject.Inject
 
 
@@ -133,16 +134,11 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
             loginNavigation?.signInWithGoogle()
         }
 
-        requireActivity().findViewById<TextView>(R.id.privacyPolicyText).setOnClickListener {
-            startActivity(
-                createIntent(
-                    requireContext(),
-                    activity!!.getString(R.string.privacy_policy),
-                    BuildConfig.BASE_URL + Constants.Http.URL_PRIVACY_POLICY_FLAG,
-                    false,
-                    WebViewWithSSOActivity::class.java
-                )
-            )
+        phoneLayoutPrivacyPolicy.setOnClickListener {
+            val intent = Intent(requireActivity(), WebViewActivity::class.java)
+            intent.putExtra(WebViewActivity.URL_TO_OPEN, BuildConfig.BASE_URL + Http.URL_PRIVACY_POLICY_FLAG)
+            intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Privacy Policy")
+            startActivity(intent)
         }
     }
 

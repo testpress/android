@@ -11,6 +11,7 @@ import `in`.testpress.testpress.authenticator.LoginActivity
 import `in`.testpress.testpress.authenticator.LoginActivityV2
 import `in`.testpress.testpress.authenticator.RegisterActivity
 import `in`.testpress.testpress.authenticator.ResetPasswordActivity
+import `in`.testpress.testpress.core.Constants
 import `in`.testpress.testpress.core.TestpressService
 import `in`.testpress.testpress.models.InstituteSettings
 import `in`.testpress.testpress.ui.WebViewActivity
@@ -18,7 +19,6 @@ import `in`.testpress.testpress.util.UIUtils
 import `in`.testpress.testpress.util.isEmpty
 import `in`.testpress.util.ViewUtils
 import android.accounts.AccountManager
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -30,8 +30,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat.getSystemService
-import kotlinx.android.synthetic.main.phone_login_layout.*
 import kotlinx.android.synthetic.main.username_login_layout.*
 import kotlinx.android.synthetic.main.username_login_layout.facebookSignIn
 import kotlinx.android.synthetic.main.username_login_layout.googleSignIn
@@ -144,6 +142,14 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
                 startActivityForResult(intent, LoginActivity.REQUEST_CODE_REGISTER_USER)
             }
         }
+
+        usernameLayoutPrivacyPolicy.setOnClickListener {
+            val intent = Intent(requireActivity(), WebViewActivity::class.java)
+            intent.putExtra(WebViewActivity.URL_TO_OPEN, BuildConfig.BASE_URL + Constants.Http.URL_PRIVACY_POLICY_FLAG)
+            intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Privacy Policy")
+            startActivity(intent)
+        }
+
     }
 
     private fun updateLabels() {

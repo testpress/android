@@ -19,6 +19,7 @@ import `in`.testpress.testpress.util.UIUtils
 import `in`.testpress.testpress.util.isEmpty
 import `in`.testpress.util.ViewUtils
 import android.accounts.AccountManager
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -29,6 +30,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.core.content.ContextCompat.getSystemService
 import android.view.inputmethod.InputMethodManager
 import kotlinx.android.synthetic.main.username_login_layout.*
 import kotlinx.android.synthetic.main.username_login_layout.facebookSignIn

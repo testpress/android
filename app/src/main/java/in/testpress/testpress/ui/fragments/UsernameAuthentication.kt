@@ -136,7 +136,8 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
             val intent = Intent(requireContext(), WebViewActivity::class.java)
             intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Register")
             intent.putExtra(WebViewActivity.SHOW_LOGOUT, "false")
-            intent.putExtra(WebViewActivity.URL_TO_OPEN, "https://www.epratibha.net/login/")
+            intent.putExtra(WebViewActivity.ALLOW_EXTERNAL_LINK,true)
+            intent.putExtra(WebViewActivity.URL_TO_OPEN, "https://www.epratibha.net/sign-up/")
             startActivity(intent)
         }
 

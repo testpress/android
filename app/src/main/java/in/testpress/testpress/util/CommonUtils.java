@@ -21,9 +21,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.core.TestpressService;

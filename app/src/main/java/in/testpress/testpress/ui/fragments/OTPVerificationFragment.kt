@@ -139,7 +139,7 @@ class OTPVerificationFragment: BaseAuthenticationFragment() {
             return
         }
         requireActivity().runOnUiThread {
-            viewModel.verifyOTP(Integer.parseInt(otpField.text.toString()), phoneNumber).observe(this, { resource ->
+            viewModel.verifyOTP(Integer.parseInt(otpField.text.toString()), phoneNumber).observe(viewLifecycleOwner, { resource ->
                 when(resource.status) {
                     Status.SUCCESS -> {
                         if (resource.data?.token != null) {

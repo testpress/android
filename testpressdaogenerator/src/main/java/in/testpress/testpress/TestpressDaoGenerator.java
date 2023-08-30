@@ -99,6 +99,7 @@ public class TestpressDaoGenerator {
         instituteSettings.addBooleanProperty("disableForgotPassword");
         instituteSettings.addBooleanProperty("disableStudentReport");
         instituteSettings.addBooleanProperty("enableCustomTest");
+        instituteSettings.addStringProperty("currentPaymentApp");
 
         Entity rssFeed = schema.addEntity("RssItem");
         rssFeed.addLongProperty("id").primaryKey().autoincrement();

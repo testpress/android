@@ -229,6 +229,12 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Web View" />
 
+        <activity
+            android:name=".ui.WebViewForm"
+            android:theme="@style/TestpressWebViewTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Web View" />
+
         <activity android:name=".ui.TermsAndConditionActivity"
             android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"/>

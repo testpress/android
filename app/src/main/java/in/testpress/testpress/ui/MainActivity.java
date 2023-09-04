@@ -596,11 +596,15 @@ public class MainActivity extends TestpressFragmentActivity {
     public void callWebViewActivity(String url) {
 
         if (!Strings.toString(url).isEmpty()) {
-            Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
-            intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Mandatory Update");
-            intent.putExtra(WebViewActivity.SHOW_LOGOUT, "true");
-            intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + url + "&next=/settings/force/mobile/");
-            startActivity(intent);
+            startActivity(
+                    WebViewForm.Companion.createIntent(
+                            this,
+                            "Mandatory Update",
+                            "/settings/force/mobile/",
+                            true,
+                            WebViewForm.class
+                    )
+            );
         }
     }
 

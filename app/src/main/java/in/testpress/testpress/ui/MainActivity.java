@@ -1,6 +1,7 @@
 package in.testpress.testpress.ui;
 import in.testpress.course.ui.CourseListFragment;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.OperationCanceledException;
@@ -9,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -696,6 +698,13 @@ public class MainActivity extends TestpressFragmentActivity {
         if (isInitScreenCalledOnce) {
             viewPager.setVisibility(View.VISIBLE);
             grid.setVisibility(View.VISIBLE);
+        }
+        askNotificationPermission();
+    }
+
+    private void askNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS},1000);
         }
     }
 

@@ -71,6 +71,7 @@ import in.testpress.testpress.models.CategoryDao;
 import in.testpress.testpress.models.Comment;
 import in.testpress.testpress.models.Forum;
 import in.testpress.testpress.models.ForumDao;
+import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.User;
 import in.testpress.testpress.models.UserDao;
 import in.testpress.testpress.ui.fragments.ForumAnswerFragment;
@@ -152,6 +153,7 @@ public class ForumActivity extends TestpressFragmentActivity implements
     private int grayColor;
     private int primaryColor;
     private Activity activity;
+    private InstituteSettings instituteSettings = TestpressApplication.getInstituteSettings();
 
     private Handler newCommentsHandler;
     private Runnable runnable = new Runnable() {
@@ -300,21 +302,7 @@ public class ForumActivity extends TestpressFragmentActivity implements
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        viewsCount.setText("" + forum.getViewsCount() + " views");
-        votesCount.setText("" + (forum.getUpvotes() - forum.getDownvotes()));
-        if (forum.getTypeOfVote() == null) {
-            upvoteButton.setColorFilter(grayColor);
-            votesCount.setTextColor(grayColor);
-            downButton.setColorFilter(grayColor);
-        } else if (forum.getTypeOfVote() == -1) {
-            upvoteButton.setColorFilter(grayColor);
-            votesCount.setTextColor(primaryColor);
-            downButton.setColorFilter(primaryColor);
-        } else {
-            upvoteButton.setColorFilter(primaryColor);
-            votesCount.setTextColor(primaryColor);
-            downButton.setColorFilter(grayColor);
-        }
+        allowVotingBasedOnInstituteSettings();
         userName.setText(forum.getRawCreatedBy().getFirstName() + " " + forum.getRawCreatedBy().getLastName());
         imageLoader.displayImage(forum.getRawCreatedBy().getMediumImage(), roundedImageView, options);
         if (forum.getContentHtml() != null) {
@@ -385,6 +373,38 @@ public class ForumActivity extends TestpressFragmentActivity implements
                 voteForumPost(v, DOWNVOTE);
             }
         });
+    }
+
+    private void allowVotingBasedOnInstituteSettings(){
+        if (instituteSettings.getCommentsVotingEnabled()){
+            showVotingOptions();
+        }
+        else {
+            hideVotingOptions();
+        }
+    }
+
+    private void showVotingOptions(){
+        viewsCount.setText("" + forum.getViewsCount() + " views");
+        votesCount.setText("" + (forum.getUpvotes() - forum.getDownvotes()));
+        if (forum.getTypeOfVote() == null) {
+            upvoteButton.setColorFilter(grayColor);
+            votesCount.setTextColor(grayColor);
+            downButton.setColorFilter(grayColor);
+        } else if (forum.getTypeOfVote() == -1) {
+            upvoteButton.setColorFilter(grayColor);
+            votesCount.setTextColor(primaryColor);
+            downButton.setColorFilter(primaryColor);
+        } else {
+            upvoteButton.setColorFilter(primaryColor);
+            votesCount.setTextColor(primaryColor);
+            downButton.setColorFilter(grayColor);
+        }
+    }
+
+    private void hideVotingOptions(){
+        LinearLayout voting_layout = (LinearLayout) findViewById(R.id.voting_layout);
+        voting_layout.setVisibility(View.GONE);
     }
 
     private void voteForumPost(final View view, final int typeOfVote) {

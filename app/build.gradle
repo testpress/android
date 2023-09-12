@@ -6,7 +6,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 ext {
-    testpressSDK = '1.4.65'
+    testpressSDK = '1.4.109'
 }
 
 def jsonFile = file('src/main/assets/config.json')
@@ -69,8 +69,8 @@ dependencies {
 
     // Country code picker
     // https://github.com/hbb20/CountryCodePickerProject/wiki
-    implementation "com.hbb20:ccp:2.1.9"
-    implementation 'com.lionscribe.open.libphonenumber:libphonenumber:8.12.18.1'
+    implementation "com.github.hbb20:CountryCodePickerProject:2.4.2"
+    implementation 'io.michaelrocks:libphonenumber-android:8.12.57'
 
     implementation 'io.sentry:sentry-android:5.3.0'
     implementation 'org.slf4j:slf4j-nop:1.7.25'
@@ -101,9 +101,8 @@ dependencies {
 
     implementation 'com.github.vkay94:DoubleTapPlayerView:1.0.0'
 
-    implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
-    implementation 'com.mindorks.android:prdownloader:0.6.0'
-
+    implementation 'com.github.mhiew:android-pdf-viewer:3.2.0-beta.1'
+    implementation 'com.github.alexto9090:PRDownloader:1.0'
 }
 
 def key_alias = "sample"
@@ -122,7 +121,7 @@ try {
 
 android {
 
-    compileSdkVersion 31
+    compileSdkVersion 33
     buildToolsVersion '30.0.3'
     ndkVersion "23.2.8568313"
 
@@ -146,7 +145,7 @@ android {
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdkVersion 33
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         versionName json.version
@@ -171,19 +170,27 @@ android {
         if (json.display_username_on_video != null) {
             buildConfigField "boolean", "DISPLAY_USERNAME_ON_VIDEO", "" + json.display_username_on_video
         }
-        if (json.white_labeled_host_url != null && json.white_labeled_host_url != "") {
+        if (json.white_labeled_host_url == "" || json.white_labeled_host_url == null) {
+            resValue "string", "white_labeled_host_url", host_url
+            buildConfigField "String", "WHITE_LABELED_HOST_URL", '"https://' + host_url + '"'
+        } else {
             resValue "string", "white_labeled_host_url", json.white_labeled_host_url
+            buildConfigField "String", "WHITE_LABELED_HOST_URL", '"https://' + json.white_labeled_host_url + '"'
         }
+        if (json.current_payment_app == null) {
+            resValue "string", "current_payment_app", ""
+            buildConfigField "String", "CURRENT_PAYMENT_APP", '""'
+        } else {
+            resValue "string", "current_payment_app", json.current_payment_app
+            buildConfigField "String", "CURRENT_PAYMENT_APP", '"' + json.current_payment_app + '"'
+        }
+        buildConfigField "boolean", "ZOOM_CUSTOM_MEETING_UI_ENABLED", "" + json.zoom_custom_meeting_ui_enabled
 
         applicationId json.package_name
         resValue "string", "package_name", json.package_name
 
         multiDexEnabled true
-        javaCompileOptions {
-            annotationProcessorOptions {
-                includeCompileClasspath true
-            }
-        }
+
     }
 
     packagingOptions {
@@ -193,6 +200,12 @@ android {
         exclude 'META-INF/proguard/androidx-annotations.pro'
         exclude 'META-INF/proguard/coroutines.pro'
         exclude 'LICENSE.txt'
+
+        // Error: More than one file was found with OS independent path
+        pickFirst 'lib/x86/libc++_shared.so'
+        pickFirst 'lib/x86_64/libc++_shared.so'
+        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+        pickFirst 'lib/arm64-v8a/libc++_shared.so'
     }
 
     signingConfigs {

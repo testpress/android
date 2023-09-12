@@ -42,6 +42,7 @@ import static in.testpress.testpress.BuildConfig.DISPLAY_USERNAME_ON_VIDEO;
 import static in.testpress.testpress.BuildConfig.SHOW_PDF_VERTICALLY;
 import static in.testpress.testpress.BuildConfig.GROWTH_HACKS_ENABLED;
 import static in.testpress.testpress.BuildConfig.SHARE_MESSAGE;
+import static in.testpress.testpress.BuildConfig.ZOOM_CUSTOM_MEETING_UI_ENABLED;
 import static in.testpress.testpress.util.PreferenceManager.setDashboardData;
 
 public class TestpressServiceProvider {
@@ -110,6 +111,8 @@ public class TestpressServiceProvider {
             } else {
                 InstituteSettings instituteSettings = instituteSettingsList.get(0);
                 settings = new in.testpress.models.InstituteSettings(instituteSettings.getBaseUrl())
+                        .setWhiteLabeledHostUrl(BuildConfig.WHITE_LABELED_HOST_URL)
+                        .setCurrentPaymentApp(instituteSettings.getCurrentPaymentApp())
                         .setBookmarksEnabled(instituteSettings.getBookmarksEnabled())
                         .setCoursesFrontend(instituteSettings.getShowGameFrontend())
                         .setCoursesGamificationEnabled(instituteSettings.getCoursesEnableGamification())
@@ -128,11 +131,15 @@ public class TestpressServiceProvider {
                         .setLeaderboardLabel(instituteSettings.getLeaderboardLabel())
                         .setVideoDownloadEnabled(instituteSettings.getIsVideoDownloadEnabled())
                         .setThreatsAndTargetsLabel(instituteSettings.getThreatsAndTargetsLabel())
-                        .setShowPDFVertically(SHOW_PDF_VERTICALLY);
+                        .setShowPDFVertically(SHOW_PDF_VERTICALLY)
+                        .setMaxAllowedDownloadedVideos(instituteSettings.getMaxAllowedDownloadedVideos());
+                settings.setEnableCustomTest(instituteSettings.getEnableCustomTest());
                 appLink = instituteSettings.getAppShareLink();
             }
             settings.setAppShareText(SHARE_MESSAGE + activity.getString(R.string.get_it_at) + appLink);
             settings.setGrowthHackEnabled(GROWTH_HACKS_ENABLED);
+            settings.setAppName(activity.getString(R.string.app_name));
+            settings.setIsCustomMeetingUIEnabled(ZOOM_CUSTOM_MEETING_UI_ENABLED);
             TestpressSdk.setTestpressSession(activity, new TestpressSession(settings, authToken));
         }
 

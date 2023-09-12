@@ -15,6 +15,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.otp_verification_layout.*
@@ -114,6 +116,21 @@ class OTPVerificationFragment: BaseAuthenticationFragment() {
                 }
             })
         }
+
+        otpField.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE){
+                verifyOTP()
+                hideSoftKeyboard()
+                true
+            } else {
+                false
+            }
+        }
+    }
+
+    private fun hideSoftKeyboard(){
+        val inputManager= requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(this.view?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
     }
 
     fun verifyOTP() {
@@ -122,11 +139,11 @@ class OTPVerificationFragment: BaseAuthenticationFragment() {
             return
         }
         requireActivity().runOnUiThread {
-            viewModel.verifyOTP(Integer.parseInt(otpField.text.toString()), phoneNumber).observe(this, { resource ->
+            viewModel.verifyOTP(Integer.parseInt(otpField.text.toString()), phoneNumber).observe(viewLifecycleOwner, { resource ->
                 when(resource.status) {
                     Status.SUCCESS -> {
                         if (resource.data?.token != null) {
-                            loginNavigation?.onLoginSuccess(phoneNumber, resource.data!!.token!!)
+                            loginNavigation?.onLoginSuccess(phoneNumber,"", resource.data!!.token!!)
                         }
                     }
                     Status.ERROR -> {

@@ -1,6 +1,7 @@
 package in.testpress.testpress.ui;
 import in.testpress.course.ui.CourseListFragment;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.OperationCanceledException;
@@ -9,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -81,6 +83,7 @@ import io.sentry.android.core.SentryAndroid;
 import static in.testpress.testpress.BuildConfig.ALLOW_ANONYMOUS_USER;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.ui.TermsAndConditionActivityKt.TERMS_AND_CONDITIONS;
 import static in.testpress.testpress.ui.utils.EasterEggUtils.enableOrDisableEasterEgg;
 import static in.testpress.testpress.ui.utils.EasterEggUtils.enableScreenShot;
 import static in.testpress.testpress.ui.utils.EasterEggUtils.isEasterEggEnabled;
@@ -260,6 +263,9 @@ public class MainActivity extends TestpressFragmentActivity {
             menu.findItem(R.id.profile).setVisible(true);
             menu.findItem(R.id.bookmarks).setVisible(true);
             menu.findItem(R.id.login).setVisible(false);
+            if (mInstituteSettings != null){
+                menu.findItem(R.id.student_report).setVisible(mInstituteSettings.isStudentReportEnabled());
+            }
         }
     }
 
@@ -320,6 +326,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 if (viewPager.getVisibility() != View.VISIBLE) {
                     initScreen();
                 }
+                askNotificationPermission();
             }
         }.execute();
     }
@@ -479,12 +486,15 @@ public class MainActivity extends TestpressFragmentActivity {
             // Show login screen if user not logged in else update institute settings in TestpressSDK
             updateTestpressSession();
         } else {
+            if(isVerandaLearningApp() && !hasAgreedTermsAndConditions()){
+                startActivity(TermsAndConditionActivity.Companion.createIntent(MainActivity.this));
+            }
             initScreen();
             showMainActivityContents();
-            syncVideoWatchedData();
 
             if (isUserAuthenticated) {
                 updateTestpressSession();
+                syncVideoWatchedData();
 
                 if (mInstituteSettings.getForceStudentData()) {
                     checkForForceUserData();
@@ -550,6 +560,7 @@ public class MainActivity extends TestpressFragmentActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.dismiss();
+                                setTermsAndConditionNotAgreed();
                                 serviceProvider.logout(MainActivity.this, testpressService,
                                         serviceProvider, logoutService);
                             }
@@ -574,6 +585,7 @@ public class MainActivity extends TestpressFragmentActivity {
     @Override
     public void onResume() {
         super.onResume();
+
         if (navigationView != null) {
             hideMenuItemsForUnauthenticatedUser(navigationView.getMenu());
         }
@@ -689,4 +701,25 @@ public class MainActivity extends TestpressFragmentActivity {
             grid.setVisibility(View.VISIBLE);
         }
     }
+
+    private void askNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS},1000);
+        }
+    }
+
+    private Boolean isVerandaLearningApp(){
+        return getApplicationContext().getPackageName().equals("com.verandalearning");
+    }
+
+    private Boolean hasAgreedTermsAndConditions(){
+        return getSharedPreferences(TERMS_AND_CONDITIONS, Context.MODE_PRIVATE).getBoolean(TERMS_AND_CONDITIONS, false);
+    }
+
+    private void setTermsAndConditionNotAgreed() {
+        SharedPreferences.Editor editor = getSharedPreferences(TERMS_AND_CONDITIONS, MODE_PRIVATE).edit();
+        editor.putBoolean(TERMS_AND_CONDITIONS, false);
+        editor.apply();
+    }
+
 }

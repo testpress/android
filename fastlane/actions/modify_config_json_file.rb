@@ -22,7 +22,8 @@ module Fastlane
           "testpress_site_subdomain", 
           "secondary_color",
           "tertiary_color", 
-          "zoom_enabled"
+          "zoom_enabled",
+          "current_payment_app",
         ]
         replace_fields_value(fields_to_change, params[:config_json])
       end

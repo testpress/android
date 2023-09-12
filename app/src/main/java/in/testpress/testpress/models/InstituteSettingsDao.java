@@ -76,6 +76,11 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         public final static Property AllowedLoginMethods = new Property(47, String.class, "allowedLoginMethods", false, "ALLOWED_LOGIN_METHODS");
         public final static Property ShowShareButton = new Property(48, Boolean.class, "showShareButton", false, "SHOW_SHARE_BUTTON");
         public final static Property FacebookAppId = new Property(49, String.class, "facebookAppId", false, "FACEBOOK_APP_ID");
+        public final static Property MaxAllowedDownloadedVideos = new Property(50, Integer.class, "maxAllowedDownloadedVideos", false, "MAX_ALLOWED_DOWNLOADED_VIDEOS");
+        public final static Property DisableForgotPassword = new Property(51, Boolean.class, "disableForgotPassword", false, "DISABLE_FORGOT_PASSWORD");
+        public final static Property DisableStudentReport = new Property(52, Boolean.class, "disableStudentReport", false, "DISABLE_STUDENT_REPORT");
+        public final static Property EnableCustomTest = new Property(53, Boolean.class, "enableCustomTest", false, "ENABLE_CUSTOM_TEST");
+        public final static Property CurrentPaymentApp = new Property(54, String.class, "currentPaymentApp", false, "CURRENT_PAYMENT_APP");
     };
 
     private final IntegerListConverter allowedLoginMethodsConverter = new IntegerListConverter();
@@ -141,7 +146,12 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
                 "\"IS_HELPDESK_ENABLED\" INTEGER," + // 46: isHelpdeskEnabled
                 "\"ALLOWED_LOGIN_METHODS\" TEXT," + // 47: allowedLoginMethods
                 "\"SHOW_SHARE_BUTTON\" INTEGER," + // 48: showShareButton
-                "\"FACEBOOK_APP_ID\" TEXT);"); // 49: facebookAppId
+                "\"FACEBOOK_APP_ID\" TEXT," + // 49: facebookAppId
+                "\"MAX_ALLOWED_DOWNLOADED_VIDEOS\" INTEGER," + // 50: maxAllowedDownloadedVideos
+                "\"DISABLE_FORGOT_PASSWORD\" INTEGER," + // 51: disableForgotPassword
+                "\"DISABLE_STUDENT_REPORT\" INTEGER," + // 52: disableStudentReport
+                "\"ENABLE_CUSTOM_TEST\" INTEGER," + // 53: enableCustomTest
+                "\"CURRENT_PAYMENT_APP\" TEXT);"); // 54: currentPaymentApp
     }
 
     /** Drops the underlying database table. */
@@ -400,6 +410,31 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         if (facebookAppId != null) {
             stmt.bindString(50, facebookAppId);
         }
+ 
+        Integer maxAllowedDownloadedVideos = entity.getMaxAllowedDownloadedVideos();
+        if (maxAllowedDownloadedVideos != null) {
+            stmt.bindLong(51, maxAllowedDownloadedVideos);
+        }
+ 
+        Boolean disableForgotPassword = entity.getDisableForgotPassword();
+        if (disableForgotPassword != null) {
+            stmt.bindLong(52, disableForgotPassword ? 1L: 0L);
+        }
+ 
+        Boolean disableStudentReport = entity.getDisableStudentReport();
+        if (disableStudentReport != null) {
+            stmt.bindLong(53, disableStudentReport ? 1L: 0L);
+        }
+ 
+        Boolean enableCustomTest = entity.getEnableCustomTest();
+        if (enableCustomTest != null) {
+            stmt.bindLong(54, enableCustomTest ? 1L: 0L);
+        }
+ 
+        String currentPaymentApp = entity.getCurrentPaymentApp();
+        if (currentPaymentApp != null) {
+            stmt.bindString(55, currentPaymentApp);
+        }
     }
 
     /** @inheritdoc */
@@ -461,7 +496,12 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             cursor.isNull(offset + 46) ? null : cursor.getShort(offset + 46) != 0, // isHelpdeskEnabled
             cursor.isNull(offset + 47) ? null : allowedLoginMethodsConverter.convertToEntityProperty(cursor.getString(offset + 47)), // allowedLoginMethods
             cursor.isNull(offset + 48) ? null : cursor.getShort(offset + 48) != 0, // showShareButton
-            cursor.isNull(offset + 49) ? null : cursor.getString(offset + 49) // facebookAppId
+            cursor.isNull(offset + 49) ? null : cursor.getString(offset + 49), // facebookAppId
+            cursor.isNull(offset + 50) ? null : cursor.getInt(offset + 50), // maxAllowedDownloadedVideos
+            cursor.isNull(offset + 51) ? null : cursor.getShort(offset + 51) != 0, // disableForgotPassword
+            cursor.isNull(offset + 52) ? null : cursor.getShort(offset + 52) != 0, // disableStudentReport
+            cursor.isNull(offset + 53) ? null : cursor.getShort(offset + 53) != 0, // enableCustomTest
+            cursor.isNull(offset + 54) ? null : cursor.getString(offset + 54) // currentPaymentApp
         );
         return entity;
     }
@@ -519,6 +559,11 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         entity.setAllowedLoginMethods(cursor.isNull(offset + 47) ? null : allowedLoginMethodsConverter.convertToEntityProperty(cursor.getString(offset + 47)));
         entity.setShowShareButton(cursor.isNull(offset + 48) ? null : cursor.getShort(offset + 48) != 0);
         entity.setFacebookAppId(cursor.isNull(offset + 49) ? null : cursor.getString(offset + 49));
+        entity.setMaxAllowedDownloadedVideos(cursor.isNull(offset + 50) ? null : cursor.getInt(offset + 50));
+        entity.setDisableForgotPassword(cursor.isNull(offset + 51) ? null : cursor.getShort(offset + 51) != 0);
+        entity.setDisableStudentReport(cursor.isNull(offset + 52) ? null : cursor.getShort(offset + 52) != 0);
+        entity.setEnableCustomTest(cursor.isNull(offset + 53) ? null : cursor.getShort(offset + 53) != 0);
+        entity.setCurrentPaymentApp(cursor.isNull(offset + 54) ? null : cursor.getString(offset + 54));
      }
     
     /** @inheritdoc */

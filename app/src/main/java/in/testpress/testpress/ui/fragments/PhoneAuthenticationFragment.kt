@@ -4,8 +4,8 @@ import `in`.testpress.enums.Status
 import `in`.testpress.testpress.BuildConfig
 import `in`.testpress.testpress.Injector
 import `in`.testpress.testpress.R
+import `in`.testpress.testpress.core.Constants.Http
 import `in`.testpress.testpress.core.TestpressService
-import `in`.testpress.testpress.enums.VerificationMethod
 import `in`.testpress.testpress.models.InstituteSettings
 import `in`.testpress.testpress.repository.InstituteRepository
 import `in`.testpress.testpress.ui.WebViewActivity
@@ -16,7 +16,6 @@ import `in`.testpress.util.ViewUtils
 import android.content.Intent
 import android.content.IntentSender
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,8 +26,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.auth.api.credentials.*
-import com.google.i18n.phonenumbers.PhoneNumberUtil
+import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import kotlinx.android.synthetic.main.phone_login_layout.*
+import kotlinx.android.synthetic.main.phone_login_layout.facebookSignIn
+import kotlinx.android.synthetic.main.phone_login_layout.googleSignIn
+import kotlinx.android.synthetic.main.phone_login_layout.socialLoginLayout
 import javax.inject.Inject
 
 
@@ -106,9 +108,6 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
     }
 
     private fun showOrHideButtons() {
-        if (!instituteSettings.allowSignup) {
-            signUp.visibility = View.GONE
-        }
         ViewUtils.setGone(userNameLogin, 1 !in instituteSettings.allowedLoginMethods)
         ViewUtils.setGone(facebookSignIn, !instituteSettings.facebookLoginEnabled)
         ViewUtils.setGone(googleSignIn, !instituteSettings.googleLoginEnabled)
@@ -135,11 +134,10 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
             loginNavigation?.signInWithGoogle()
         }
 
-        signUp.setOnClickListener {
-            val intent = Intent(requireContext(), WebViewActivity::class.java)
-            intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Register")
-            intent.putExtra(WebViewActivity.SHOW_LOGOUT, "false")
-            intent.putExtra(WebViewActivity.URL_TO_OPEN, BuildConfig.BASE_URL + "/register/")
+        phoneLayoutPrivacyPolicy.setOnClickListener {
+            val intent = Intent(requireActivity(), WebViewActivity::class.java)
+            intent.putExtra(WebViewActivity.URL_TO_OPEN, BuildConfig.BASE_URL + Http.URL_PRIVACY_POLICY_FLAG)
+            intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Privacy Policy")
             startActivity(intent)
         }
     }
@@ -162,7 +160,7 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
     }
 
     private fun autoFillPhoneNumber(intent: Intent) {
-        val phoneNumberUtil = PhoneNumberUtil.getInstance(requireContext())
+        val phoneNumberUtil = PhoneNumberUtil.createInstance(requireContext())
         val phoneNo = intent.getParcelableExtra<Credential>(Credential.EXTRA_KEY)?.id
         if (phoneNo != null) {
             val number = phoneNumberUtil.parse(phoneNo, "")

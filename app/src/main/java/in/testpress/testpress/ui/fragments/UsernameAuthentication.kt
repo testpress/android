@@ -11,6 +11,7 @@ import `in`.testpress.testpress.authenticator.LoginActivity
 import `in`.testpress.testpress.authenticator.LoginActivityV2
 import `in`.testpress.testpress.authenticator.RegisterActivity
 import `in`.testpress.testpress.authenticator.ResetPasswordActivity
+import `in`.testpress.testpress.core.Constants
 import `in`.testpress.testpress.core.TestpressService
 import `in`.testpress.testpress.models.InstituteSettings
 import `in`.testpress.testpress.ui.WebViewActivity
@@ -18,6 +19,8 @@ import `in`.testpress.testpress.util.UIUtils
 import `in`.testpress.testpress.util.isEmpty
 import `in`.testpress.util.ViewUtils
 import android.accounts.AccountManager
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -27,7 +30,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.core.content.ContextCompat.getSystemService
+import android.view.inputmethod.InputMethodManager
 import kotlinx.android.synthetic.main.username_login_layout.*
+import kotlinx.android.synthetic.main.username_login_layout.facebookSignIn
+import kotlinx.android.synthetic.main.username_login_layout.googleSignIn
+import kotlinx.android.synthetic.main.username_login_layout.socialLoginLayout
 import javax.inject.Inject
 
 
@@ -67,6 +75,7 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
         password.setOnEditorActionListener { _, actionId, _ ->
             when (actionId) {
                 EditorInfo.IME_ACTION_DONE -> {
+                    hideSoftKeyboard()
                     signIn()
                     true
                 }
@@ -89,6 +98,11 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
             }
         })
         username.requestFocus()
+    }
+
+    private fun hideSoftKeyboard(){
+        val inputManager= requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(this.view?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
     }
 
     private fun initializeButtons() {
@@ -119,12 +133,25 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
         }
 
         signUp.setOnClickListener {
-            val intent = Intent(requireContext(), WebViewActivity::class.java)
-            intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Register")
-            intent.putExtra(WebViewActivity.SHOW_LOGOUT, "false")
-            intent.putExtra(WebViewActivity.URL_TO_OPEN, BuildConfig.BASE_URL + "/register/")
+            if (instituteSettings.customRegistrationEnabled){
+                val intent = Intent(requireContext(), WebViewActivity::class.java)
+                intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Register")
+                intent.putExtra(WebViewActivity.SHOW_LOGOUT, "false")
+                intent.putExtra(WebViewActivity.URL_TO_OPEN, BuildConfig.BASE_URL + "/register/")
+                startActivity(intent)
+            } else {
+                val intent = Intent(requireContext(), RegisterActivity::class.java)
+                startActivityForResult(intent, LoginActivity.REQUEST_CODE_REGISTER_USER)
+            }
+        }
+
+        usernameLayoutPrivacyPolicy.setOnClickListener {
+            val intent = Intent(requireActivity(), WebViewActivity::class.java)
+            intent.putExtra(WebViewActivity.URL_TO_OPEN, BuildConfig.BASE_URL + Constants.Http.URL_PRIVACY_POLICY_FLAG)
+            intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Privacy Policy")
             startActivity(intent)
         }
+
     }
 
     private fun updateLabels() {
@@ -154,6 +181,9 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
             socialLoginLayout, !instituteSettings.facebookLoginEnabled &&
                     !instituteSettings.googleLoginEnabled
         )
+        if (instituteSettings.disableForgotPassword != null){
+            ViewUtils.setGone(forgotPassword,instituteSettings.disableForgotPassword)
+        }
     }
 
     private fun signIn() {
@@ -174,7 +204,7 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
                 override fun onSuccess(response: TestpressSession?) {
                     val authToken = response?.token
                     if (authToken != null) {
-                        loginNavigation?.onLoginSuccess(username.text.toString(), authToken)
+                        loginNavigation?.onLoginSuccess(username.text.toString(),password.text.toString(), authToken)
                     }
                 }
 

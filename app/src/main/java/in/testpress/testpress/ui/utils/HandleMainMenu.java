@@ -13,6 +13,7 @@ import android.util.Log;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.exam.TestpressExam;
+import in.testpress.course.TestpressCourse;
 import in.testpress.store.TestpressStore;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
@@ -30,10 +31,13 @@ import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.ui.UserDevicesActivity;
+import in.testpress.ui.WebViewWithSSOActivity;
 
 import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.core.Constants.Http.URL_PRIVACY_POLICY_FLAG;
+import static in.testpress.testpress.core.Constants.Http.URL_STUDENT_REPORT_FLAG;
 
 public class HandleMainMenu {
     private Activity activity;
@@ -66,6 +70,9 @@ public class HandleMainMenu {
                 break;
             case R.id.rate_us:
                 rateApp();
+                break;
+            case R.id.privacy_policy:
+                openPrivacyPolicy();
                 break;
             case R.id.logout:
                 ((MainActivity) activity).logout();
@@ -100,6 +107,9 @@ public class HandleMainMenu {
                 intent = new Intent(activity, LoginActivity.class);
                 intent.putExtra(Constants.DEEP_LINK_TO, "home");
                 activity.startActivity(intent);
+                break;
+            case  R.id.student_report:
+                launchStudentReportActivity();
                 break;
         }
     }
@@ -136,7 +146,7 @@ public class HandleMainMenu {
                 TestpressExam.showCategories(activity, true, session);
                 break;
             case R.string.bookmarks:
-                TestpressExam.showBookmarks(activity, session);
+                TestpressCourse.showBookmarks(activity, session);
                 break;
             case R.string.analytics:
                 TestpressExam.showAnalytics(activity, SUBJECT_ANALYTICS_PATH, session);
@@ -173,5 +183,29 @@ public class HandleMainMenu {
         share.putExtra(Intent.EXTRA_TEXT, activity.getString(R.string.share_message) +
                 activity.getString(R.string.get_it_at) + appLink);
         activity.startActivity(Intent.createChooser(share, "Share with"));
+    }
+
+    private void launchStudentReportActivity() {
+        activity.startActivity(
+                WebViewWithSSOActivity.Companion.createIntent(
+                        activity,
+                        activity.getString(R.string.student_report),
+                        URL_STUDENT_REPORT_FLAG,
+                        true,
+                        WebViewWithSSOActivity.class
+                )
+        );
+    }
+
+    private void openPrivacyPolicy() {
+        activity.startActivity(
+                WebViewWithSSOActivity.Companion.createIntent(
+                        activity,
+                        activity.getString(R.string.privacy_policy),
+                        BASE_URL + URL_PRIVACY_POLICY_FLAG,
+                        false,
+                        WebViewWithSSOActivity.class
+                )
+        );
     }
 }

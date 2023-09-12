@@ -113,6 +113,17 @@
         <item name="android:textAppearanceLargePopupMenu">@style/popupMenuTextAppearance</item>
     </style>
 
+    <style name="TestpressWebViewTheme" parent="Theme.MaterialComponents.Light.DarkActionBar.Bridge">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorAccent">@color/primary</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="colorButtonNormal">@color/primary</item>
+        <item name="android:statusBarColor">@color/primary</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/popupMenuTextAppearance</item>
+    </style>
+
     <style name="popupMenuTextAppearance" parent="@android:style/TextAppearance.DeviceDefault.Widget.PopupMenu.Large">
         <item name="android:textColor">@color/testpress_black</item>
     </style>

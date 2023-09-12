@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="in.testpress.testpress">
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
@@ -14,6 +16,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"/>
 
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
 <!--    <uses-sdk tools:overrideLibrary="us.zoom.androidlib,us.zoom.videomeetings"/>-->
@@ -55,6 +58,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" android:host="@string/host_url"/>
                 <data android:scheme="http" android:host="@string/host_url" />
+                <data android:scheme="https" android:host="@string/white_labeled_host_url"/>
+                <data android:scheme="http" android:host="@string/white_labeled_host_url"/>
             </intent-filter>
         </activity>
         <activity
@@ -222,9 +227,13 @@
 
         <activity
             android:name=".ui.WebViewActivity"
-            android:theme="@style/AppTheme"
+            android:theme="@style/TestpressWebViewTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Web View" />
+
+        <activity android:name=".ui.TermsAndConditionActivity"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
 
     </application>
 

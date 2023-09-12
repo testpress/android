@@ -362,6 +362,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 if (viewPager.getVisibility() != View.VISIBLE) {
                     initScreen();
                 }
+                askNotificationPermission();
             }
         }.execute();
     }
@@ -751,7 +752,6 @@ public class MainActivity extends TestpressFragmentActivity {
             viewPager.setVisibility(View.VISIBLE);
             grid.setVisibility(View.VISIBLE);
         }
-        askNotificationPermission();
     }
 
     private void askNotificationPermission() {

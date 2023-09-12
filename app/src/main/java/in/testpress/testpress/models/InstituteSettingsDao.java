@@ -80,6 +80,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         public final static Property DisableForgotPassword = new Property(51, Boolean.class, "disableForgotPassword", false, "DISABLE_FORGOT_PASSWORD");
         public final static Property DisableStudentReport = new Property(52, Boolean.class, "disableStudentReport", false, "DISABLE_STUDENT_REPORT");
         public final static Property EnableCustomTest = new Property(53, Boolean.class, "enableCustomTest", false, "ENABLE_CUSTOM_TEST");
+        public final static Property CurrentPaymentApp = new Property(54, String.class, "currentPaymentApp", false, "CURRENT_PAYMENT_APP");
     };
 
     private final IntegerListConverter allowedLoginMethodsConverter = new IntegerListConverter();
@@ -149,7 +150,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
                 "\"MAX_ALLOWED_DOWNLOADED_VIDEOS\" INTEGER," + // 50: maxAllowedDownloadedVideos
                 "\"DISABLE_FORGOT_PASSWORD\" INTEGER," + // 51: disableForgotPassword
                 "\"DISABLE_STUDENT_REPORT\" INTEGER," + // 52: disableStudentReport
-                "\"ENABLE_CUSTOM_TEST\" INTEGER);"); // 53: enableCustomTest
+                "\"ENABLE_CUSTOM_TEST\" INTEGER," + // 53: enableCustomTest
+                "\"CURRENT_PAYMENT_APP\" TEXT);"); // 54: currentPaymentApp
     }
 
     /** Drops the underlying database table. */
@@ -428,6 +430,11 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         if (enableCustomTest != null) {
             stmt.bindLong(54, enableCustomTest ? 1L: 0L);
         }
+ 
+        String currentPaymentApp = entity.getCurrentPaymentApp();
+        if (currentPaymentApp != null) {
+            stmt.bindString(55, currentPaymentApp);
+        }
     }
 
     /** @inheritdoc */
@@ -493,7 +500,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             cursor.isNull(offset + 50) ? null : cursor.getInt(offset + 50), // maxAllowedDownloadedVideos
             cursor.isNull(offset + 51) ? null : cursor.getShort(offset + 51) != 0, // disableForgotPassword
             cursor.isNull(offset + 52) ? null : cursor.getShort(offset + 52) != 0, // disableStudentReport
-            cursor.isNull(offset + 53) ? null : cursor.getShort(offset + 53) != 0 // enableCustomTest
+            cursor.isNull(offset + 53) ? null : cursor.getShort(offset + 53) != 0, // enableCustomTest
+            cursor.isNull(offset + 54) ? null : cursor.getString(offset + 54) // currentPaymentApp
         );
         return entity;
     }
@@ -555,6 +563,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         entity.setDisableForgotPassword(cursor.isNull(offset + 51) ? null : cursor.getShort(offset + 51) != 0);
         entity.setDisableStudentReport(cursor.isNull(offset + 52) ? null : cursor.getShort(offset + 52) != 0);
         entity.setEnableCustomTest(cursor.isNull(offset + 53) ? null : cursor.getShort(offset + 53) != 0);
+        entity.setCurrentPaymentApp(cursor.isNull(offset + 54) ? null : cursor.getString(offset + 54));
      }
     
     /** @inheritdoc */

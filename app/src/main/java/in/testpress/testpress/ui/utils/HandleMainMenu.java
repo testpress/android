@@ -43,6 +43,7 @@ import in.testpress.ui.WebViewWithSSOActivity;
 import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.core.Constants.Http.URL_PRIVACY_POLICY_FLAG;
 import static in.testpress.testpress.core.Constants.Http.URL_STUDENT_REPORT_FLAG;
 
 public class HandleMainMenu {
@@ -76,6 +77,9 @@ public class HandleMainMenu {
                 break;
             case R.id.rate_us:
                 rateApp();
+                break;
+            case R.id.privacy_policy:
+                openPrivacyPolicy();
                 break;
             case R.id.learn:
                 intent = new Intent(activity, CourseListActivity.class);
@@ -210,6 +214,18 @@ public class HandleMainMenu {
                         activity.getString(R.string.student_report),
                         URL_STUDENT_REPORT_FLAG,
                         true,
+                        WebViewWithSSOActivity.class
+                )
+        );
+    }
+
+    private void openPrivacyPolicy() {
+        activity.startActivity(
+                WebViewWithSSOActivity.Companion.createIntent(
+                        activity,
+                        activity.getString(R.string.privacy_policy),
+                        BASE_URL + URL_PRIVACY_POLICY_FLAG,
+                        false,
                         WebViewWithSSOActivity.class
                 )
         );

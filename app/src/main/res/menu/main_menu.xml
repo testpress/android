@@ -72,6 +72,11 @@
         android:id="@+id/group_feature">
 
         <item
+            android:id="@+id/privacy_policy"
+            android:icon="@drawable/policy_48px"
+            android:title="Privacy Policy"
+            app:showAsAction="always"/>
+        <item
             android:id="@+id/rate_us"
             android:icon="@drawable/ic_rate_review_black_24dp"
             android:title="Rate Us"

@@ -43,7 +43,6 @@ import static in.testpress.testpress.BuildConfig.SHOW_PDF_VERTICALLY;
 import static in.testpress.testpress.BuildConfig.GROWTH_HACKS_ENABLED;
 import static in.testpress.testpress.BuildConfig.SHARE_MESSAGE;
 import static in.testpress.testpress.BuildConfig.ZOOM_CUSTOM_MEETING_UI_ENABLED;
-import static in.testpress.testpress.BuildConfig.CURRENT_PAYMENT_APP;
 import static in.testpress.testpress.util.PreferenceManager.setDashboardData;
 
 public class TestpressServiceProvider {
@@ -113,7 +112,7 @@ public class TestpressServiceProvider {
                 InstituteSettings instituteSettings = instituteSettingsList.get(0);
                 settings = new in.testpress.models.InstituteSettings(instituteSettings.getBaseUrl())
                         .setWhiteLabeledHostUrl(BuildConfig.WHITE_LABELED_HOST_URL)
-                        .setCurrentPaymentApp(CURRENT_PAYMENT_APP)
+                        .setCurrentPaymentApp(instituteSettings.getCurrentPaymentApp())
                         .setBookmarksEnabled(instituteSettings.getBookmarksEnabled())
                         .setCoursesFrontend(instituteSettings.getShowGameFrontend())
                         .setCoursesGamificationEnabled(instituteSettings.getCoursesEnableGamification())

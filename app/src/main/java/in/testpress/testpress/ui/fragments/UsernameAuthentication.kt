@@ -11,6 +11,7 @@ import `in`.testpress.testpress.authenticator.LoginActivity
 import `in`.testpress.testpress.authenticator.LoginActivityV2
 import `in`.testpress.testpress.authenticator.RegisterActivity
 import `in`.testpress.testpress.authenticator.ResetPasswordActivity
+import `in`.testpress.testpress.core.Constants
 import `in`.testpress.testpress.core.TestpressService
 import `in`.testpress.testpress.models.InstituteSettings
 import `in`.testpress.testpress.ui.WebViewActivity
@@ -29,9 +30,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat.getSystemService
+import android.view.inputmethod.InputMethodManager
 import kotlinx.android.synthetic.main.username_login_layout.*
+import kotlinx.android.synthetic.main.username_login_layout.facebookSignIn
+import kotlinx.android.synthetic.main.username_login_layout.googleSignIn
+import kotlinx.android.synthetic.main.username_login_layout.socialLoginLayout
 import javax.inject.Inject
 
 
@@ -140,6 +144,14 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
                 startActivityForResult(intent, LoginActivity.REQUEST_CODE_REGISTER_USER)
             }
         }
+
+        usernameLayoutPrivacyPolicy.setOnClickListener {
+            val intent = Intent(requireActivity(), WebViewActivity::class.java)
+            intent.putExtra(WebViewActivity.URL_TO_OPEN, BuildConfig.BASE_URL + Constants.Http.URL_PRIVACY_POLICY_FLAG)
+            intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Privacy Policy")
+            startActivity(intent)
+        }
+
     }
 
     private fun updateLabels() {
@@ -192,7 +204,7 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
                 override fun onSuccess(response: TestpressSession?) {
                     val authToken = response?.token
                     if (authToken != null) {
-                        loginNavigation?.onLoginSuccess(username.text.toString(), authToken)
+                        loginNavigation?.onLoginSuccess(username.text.toString(),password.text.toString(), authToken)
                     }
                 }
 

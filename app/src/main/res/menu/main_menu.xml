@@ -28,6 +28,16 @@
             android:icon="@drawable/ic_lock_outline_black_24dp"
             app:showAsAction="never"/>
         <item
+            android:id="@+id/doubts"
+            android:title="Doubts"
+            android:icon="@drawable/ic_baseline_message_24"
+            app:showAsAction="never"/>
+        <item
+            android:id="@+id/student_report"
+            android:title="Your Report"
+            android:icon="@drawable/ic_student_report"
+            app:showAsAction="never"/>
+        <item
             android:id="@+id/logout"
             android:icon="@drawable/ic_exit_to_app_black_24dp"
             android:title="Logout"
@@ -41,6 +51,11 @@
     <group
         android:id="@+id/group_feature">
 
+        <item
+            android:id="@+id/privacy_policy"
+            android:icon="@drawable/policy_48px"
+            android:title="Privacy Policy"
+            app:showAsAction="always"/>
         <item
             android:id="@+id/rate_us"
             android:icon="@drawable/ic_rate_review_black_24dp"

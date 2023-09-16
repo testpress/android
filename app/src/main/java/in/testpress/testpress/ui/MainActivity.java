@@ -1,5 +1,7 @@
 package in.testpress.testpress.ui;
+import in.testpress.course.ui.CourseListFragment;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.OperationCanceledException;
@@ -8,7 +10,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+
+import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
 import androidx.viewpager.widget.ViewPager;
@@ -43,13 +48,12 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
-import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
 import in.testpress.course.fragments.DownloadsFragment;
-import in.testpress.exam.TestpressExam;
 import in.testpress.course.repository.VideoWatchDataRepository;
 import in.testpress.database.OfflineVideoDao;
 import in.testpress.database.TestpressDatabase;
+import in.testpress.exam.TestpressExam;
 import in.testpress.exam.ui.view.NonSwipeableViewPager;
 import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.Injector;
@@ -80,9 +84,11 @@ import io.sentry.android.core.SentryAndroid;
 import static in.testpress.testpress.BuildConfig.ALLOW_ANONYMOUS_USER;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.ui.TermsAndConditionActivityKt.TERMS_AND_CONDITIONS;
 import static in.testpress.testpress.ui.utils.EasterEggUtils.enableOrDisableEasterEgg;
 import static in.testpress.testpress.ui.utils.EasterEggUtils.enableScreenShot;
 import static in.testpress.testpress.ui.utils.EasterEggUtils.isEasterEggEnabled;
+import static in.testpress.store.TestpressStore.STORE_REQUEST_CODE;
 
 public class MainActivity extends TestpressFragmentActivity {
 
@@ -117,6 +123,7 @@ public class MainActivity extends TestpressFragmentActivity {
     private boolean isUserAuthenticated;
     public String ssoUrl;
     private boolean isInitScreenCalledOnce;
+    private CourseListFragment courseListFragment;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -152,6 +159,18 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (isProductPurchaseSuccessful(requestCode, resultCode)) {
+            courseListFragment.onActivityResult(requestCode, resultCode, data);
+         }
+    }
+
+    private boolean isProductPurchaseSuccessful(int requestCode, int resultCode){
+        return requestCode == STORE_REQUEST_CODE && resultCode == RESULT_OK;
     }
 
     private void setupEasterEgg() {
@@ -211,6 +230,9 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private void setupDrawerContent(NavigationView navigationView) {
         hideMenuItemsForUnauthenticatedUser(navigationView.getMenu());
+        showShareButtonBasedOnInstituteSettings(navigationView.getMenu());
+        showRateUsButtonBasedOnInstituteSettings(navigationView.getMenu());
+        updateMenuItemNames(navigationView.getMenu());
         final HandleMainMenu handleMainMenu = new HandleMainMenu(MainActivity.this, serviceProvider);
         navigationView.setNavigationItemSelectedListener(
             new NavigationView.OnNavigationItemSelectedListener() {
@@ -234,11 +256,36 @@ public class MainActivity extends TestpressFragmentActivity {
             menu.findItem(R.id.bookmarks).setVisible(false);
         } else {
             menu.findItem(R.id.logout).setVisible(true);
+            if (mInstituteSettings != null) {
+                menu.findItem(R.id.doubts).setVisible(Boolean.TRUE.equals(mInstituteSettings.getIsHelpdeskEnabled()));
+            }
             menu.findItem(R.id.login_activity).setVisible(true);
             menu.findItem(R.id.analytics).setVisible(true);
             menu.findItem(R.id.profile).setVisible(true);
             menu.findItem(R.id.bookmarks).setVisible(true);
             menu.findItem(R.id.login).setVisible(false);
+            if (mInstituteSettings != null){
+                menu.findItem(R.id.student_report).setVisible(mInstituteSettings.isStudentReportEnabled());
+            }
+        }
+    }
+
+    private void showShareButtonBasedOnInstituteSettings(Menu menu){
+        if (mInstituteSettings != null) {
+            menu.findItem(R.id.share).setVisible(Boolean.TRUE.equals(mInstituteSettings.getShowShareButton()));
+        }
+    }
+
+    private void showRateUsButtonBasedOnInstituteSettings(Menu menu){
+        if (mInstituteSettings != null) {
+            menu.findItem(R.id.rate_us).setVisible(Boolean.TRUE.equals(mInstituteSettings.getShowShareButton()));
+        }
+    }
+
+    private void updateMenuItemNames(Menu menu) {
+        if (mInstituteSettings != null) {
+            menu.findItem(R.id.posts).setTitle(Strings.toString(mInstituteSettings.getPostsLabel()));
+            menu.findItem(R.id.bookmarks).setTitle(Strings.toString(mInstituteSettings.getBookmarksLabel()));
         }
     }
 
@@ -280,6 +327,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 if (viewPager.getVisibility() != View.VISIBLE) {
                     initScreen();
                 }
+                askNotificationPermission();
             }
         }.execute();
     }
@@ -301,18 +349,17 @@ public class MainActivity extends TestpressFragmentActivity {
 //        }
         // Show courses list if game front end is enabled, otherwise hide bottom bar
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
-            TestpressSession session = TestpressSdk.getTestpressSession(this);
             //noinspection ConstantConditions
             addMenuItem(R.string.learn, R.drawable.learn,
-                    TestpressCourse.getCoursesListFragment(this, session));
+                    courseListFragment = TestpressCourse.getCoursesListFragment(this, TestpressSdk.getTestpressSession(this)));
 
             if (mInstituteSettings.getCoursesEnableGamification()) {
                 //noinspection ConstantConditions
                 addMenuItem(R.string.testpress_leaderboard, R.drawable.leaderboard,
-                        TestpressCourse.getLeaderboardFragment(this, session));
+                        TestpressCourse.getLeaderboardFragment(this, TestpressSdk.getTestpressSession(this)));
             }
             addMenuItem(R.string.testpress_access_code, R.drawable.access_key,
-                    TestpressExam.getAccessCodeFragment(this, session));
+                    TestpressExam.getAccessCodeFragment(this, TestpressSdk.getTestpressSession(this)));
 
             if (mInstituteSettings.getForumEnabled()) {
                 addMenuItem(R.string.discussions, R.drawable.chat_icon, new DiscussionFragmentv2());
@@ -443,12 +490,15 @@ public class MainActivity extends TestpressFragmentActivity {
             // Show login screen if user not logged in else update institute settings in TestpressSDK
             updateTestpressSession();
         } else {
+            if(isVerandaLearningApp() && !hasAgreedTermsAndConditions()){
+                startActivity(TermsAndConditionActivity.Companion.createIntent(MainActivity.this));
+            }
             initScreen();
             showMainActivityContents();
-//            syncVideoWatchedData();
 
             if (isUserAuthenticated) {
                 updateTestpressSession();
+                syncVideoWatchedData();
 
                 if (mInstituteSettings.getForceStudentData()) {
                     checkForForceUserData();
@@ -514,6 +564,7 @@ public class MainActivity extends TestpressFragmentActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.dismiss();
+                                setTermsAndConditionNotAgreed();
                                 serviceProvider.logout(MainActivity.this, testpressService,
                                         serviceProvider, logoutService);
                             }
@@ -538,6 +589,7 @@ public class MainActivity extends TestpressFragmentActivity {
     @Override
     public void onResume() {
         super.onResume();
+
         if (navigationView != null) {
             hideMenuItemsForUnauthenticatedUser(navigationView.getMenu());
         }
@@ -653,4 +705,25 @@ public class MainActivity extends TestpressFragmentActivity {
             grid.setVisibility(View.VISIBLE);
         }
     }
+
+    private void askNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS},1000);
+        }
+    }
+
+    private Boolean isVerandaLearningApp(){
+        return getApplicationContext().getPackageName().equals("com.verandalearning");
+    }
+
+    private Boolean hasAgreedTermsAndConditions(){
+        return getSharedPreferences(TERMS_AND_CONDITIONS, Context.MODE_PRIVATE).getBoolean(TERMS_AND_CONDITIONS, false);
+    }
+
+    private void setTermsAndConditionNotAgreed() {
+        SharedPreferences.Editor editor = getSharedPreferences(TERMS_AND_CONDITIONS, MODE_PRIVATE).edit();
+        editor.putBoolean(TERMS_AND_CONDITIONS, false);
+        editor.apply();
+    }
+
 }

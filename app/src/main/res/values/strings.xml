@@ -125,6 +125,7 @@
     <string name="dashboard">Dashboard</string>
     <string name="bookmarks">Bookmarks</string>
     <string name="about_us">About Us</string>
+    <string name="student_report">Student Report</string>
 
     <string name="view_in_website">View in Website</string>
 
@@ -147,6 +148,7 @@
     <string name="testpress_post_content">Post Content</string>
     <string name="testpress_publish">Publish</string>
     <string name="articles">Articles</string>
+    <string name="privacy_policy_text"><u>Privacy Policy</u></string>
 
     <string name="title_must_be_min_3_characters">The title must be at least 3 characters.</string>
     <string name="title_must_be_max_200_characters">The title must be less than 200 characters.</string>
@@ -167,8 +169,10 @@
     <string name="try_after_some_time">Please try after some time</string>
     <string name="open_drawer">Open Navigation Drawer</string>
     <string name="close_drawer">Close Navigation Drawer</string>
-    <string name="privacy_policy_dialogue">By signing in you acknowledge the  </string>
+    <string name="privacy_policy_dialogue">By signing in you acknowledge our  </string>
     <string name="privacy_policy"><a href='#'> Privacy Policy</a></string>
+
+    <string name="terms_and_conditions">Terms And Conditions</string>
 
     <plurals name="notes_count">
         <item quantity="one">1 Doc</item>

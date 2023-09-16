@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:weightSum="4">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:weightSum="10"
+        android:layout_marginHorizontal="30dp"
+        android:orientation="vertical"
+        android:background="@color/testpress_white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="80dp"
+                android:id="@+id/imageView"
+                android:layout_gravity="left"
+                android:src="@drawable/login_screen_image"
+                android:layout_marginBottom="20dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="9"
+            android:orientation="vertical"
+            android:gravity="left|center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Get Started with"
+                android:textStyle="bold"
+                android:fontFamily="@font/inter"
+                android:textColor="#828282"
+                android:textSize="28sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:textStyle="bold"
+                android:fontFamily="@font/inter"
+                android:textColor="@color/testpress_black"
+                android:textSize="31sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:layout_weight="1">
+            <TextView
+                android:id="@+id/helpText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:textColor="#4f4f4f"
+                android:layout_marginBottom="5sp"
+                android:text="We have sent you an OTP"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:padding="30dp"
+        android:orientation="vertical"
+        android:background="@color/testpress_color_primary">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/rounded_corner_with_transparent_bg"
+            android:gravity="center_vertical">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/otpField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:inputType="number"
+                android:paddingLeft="10dp"
+                android:textColorHint="#aaaaaa"
+                android:background="@android:color/transparent"
+                android:imeOptions="actionDone"
+                android:textColor="@color/white"
+                android:hint="Enter OTP" />
+
+        </LinearLayout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/verifyOTP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textSize="14sp"
+            android:layout_marginBottom="10dp"
+            android:textStyle="normal"
+            android:paddingVertical="15dp"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            android:backgroundTint="@color/testpress_color_secondary"
+            android:elevation="0dp"
+            android:textAllCaps="false"
+            app:cornerRadius="8dp"
+            android:text="Proceed" />
+
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/resentOtp"
+            android:textSize="14sp"
+            android:paddingVertical="15dp"
+            android:textAllCaps="false"
+            android:layout_marginBottom="10dp"
+            android:textStyle="normal"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            android:backgroundTint="@color/testpress_color_tertiary"
+            app:backgroundTintMode="add"
+            android:elevation="0dp"
+            app:cornerRadius="8dp"
+            android:text="Resend OTP" />
+
+
+    </LinearLayout>
+</LinearLayout>

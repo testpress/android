@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="in.testpress.testpress">
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
@@ -13,9 +15,11 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"/>
 
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
-    <uses-sdk tools:overrideLibrary="us.zoom.androidlib,us.zoom.videomeetings"/>
+<!--    <uses-sdk tools:overrideLibrary="us.zoom.androidlib,us.zoom.videomeetings"/>-->
 
     <application
         android:name=".TestpressApplication"
@@ -24,18 +28,25 @@
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
         android:preserveLegacyExternalStorage="true"
-        tools:replace="android:theme"
-        android:theme="@style/Theme.Testpress.Dark">
+        tools:replace="android:theme,android:allowBackup"
+        android:theme="@style/Theme.Testpress.Dark"
+        android:exported="true"
+        >
         <meta-data android:name="io.sentry.auto-init" android:value="false" />
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
         <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_stat_notification" />
         <meta-data android:name="com.google.firebase.messaging.default_notification_color" android:resource="@color/testpress_color_primary" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
         <activity
             android:name=".ui.SplashScreenActivity"
             android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:exported="true"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -48,7 +59,7 @@
                 <data android:scheme="https" android:host="@string/host_url"/>
                 <data android:scheme="http" android:host="@string/host_url" />
                 <data android:scheme="https" android:host="@string/white_labeled_host_url"/>
-                <data android:scheme="http" android:host="@string/white_labeled_host_url" />
+                <data android:scheme="http" android:host="@string/white_labeled_host_url"/>
             </intent-filter>
         </activity>
         <activity
@@ -59,7 +70,9 @@
 
         <service
             android:name=".authenticator.AccountAuthenticatorService"
-            android:process=":auth">
+            android:process=":auth"
+            android:exported="true"
+            >
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
@@ -70,7 +83,10 @@
         </service>
 
         <!-- [START gcm_listener] -->
-        <service android:name=".core.TestpressGCMListenerService">
+        <service
+            android:name=".core.TestpressGCMListenerService"
+            android:exported="true"
+            >
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -79,6 +95,13 @@
 
         <activity
             android:name=".authenticator.LoginActivity"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden"
+            android:excludeFromRecents="true" />
+
+
+        <activity
+            android:name=".authenticator.LoginActivityV2"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden"
             android:excludeFromRecents="true">
@@ -120,6 +143,11 @@
             android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Verify" />
+        <activity
+            android:name=".ui.DoubtsActivity"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Doubts" />
 
         <activity
             android:name=".ui.DocumentsListActivity"
@@ -205,9 +233,13 @@
 
         <activity
             android:name=".ui.WebViewActivity"
-            android:theme="@style/AppTheme"
+            android:theme="@style/TestpressWebViewTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Web View" />
+
+        <activity android:name=".ui.TermsAndConditionActivity"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
 
     </application>
 

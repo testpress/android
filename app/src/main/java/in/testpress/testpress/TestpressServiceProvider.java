@@ -6,6 +6,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.text.TextUtils;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
@@ -40,6 +43,7 @@ import static in.testpress.testpress.BuildConfig.DISPLAY_USERNAME_ON_VIDEO;
 import static in.testpress.testpress.BuildConfig.SHOW_PDF_VERTICALLY;
 import static in.testpress.testpress.BuildConfig.GROWTH_HACKS_ENABLED;
 import static in.testpress.testpress.BuildConfig.SHARE_MESSAGE;
+import static in.testpress.testpress.BuildConfig.ZOOM_CUSTOM_MEETING_UI_ENABLED;
 import static in.testpress.testpress.util.PreferenceManager.setDashboardData;
 
 public class TestpressServiceProvider {
@@ -54,10 +58,28 @@ public class TestpressServiceProvider {
 
     public void invalidateAuthToken(Context context) {
         authToken = null;
-        FacebookSdk.sdkInitialize(context.getApplicationContext());
-        LoginManager.getInstance().logOut();
+        if (hasFacebookAppID(context)) {
+            FacebookSdk.sdkInitialize(context.getApplicationContext());
+            LoginManager.getInstance().logOut();
+        }
         TestpressSdk.clearActiveSession(context);
     }
+
+    private boolean hasFacebookAppID(Context context){
+        ApplicationInfo applicationInfo = getApplicationInfo(context);
+        if (applicationInfo == null) return false;
+        String appId = applicationInfo.metaData.getString(FacebookSdk.APPLICATION_ID_PROPERTY);
+        return !TextUtils.isEmpty(appId);
+    }
+
+    private ApplicationInfo getApplicationInfo(Context context){
+        try {
+            return context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+        } catch (PackageManager.NameNotFoundException e) {
+            return null;
+        }
+    }
+
     /**
      * Get service for configured key provider
      * <p/>
@@ -90,6 +112,8 @@ public class TestpressServiceProvider {
             } else {
                 InstituteSettings instituteSettings = instituteSettingsList.get(0);
                 settings = new in.testpress.models.InstituteSettings(instituteSettings.getBaseUrl())
+                        .setWhiteLabeledHostUrl(BuildConfig.WHITE_LABELED_HOST_URL)
+                        .setCurrentPaymentApp(instituteSettings.getCurrentPaymentApp())
                         .setBookmarksEnabled(instituteSettings.getBookmarksEnabled())
                         .setCoursesFrontend(instituteSettings.getShowGameFrontend())
                         .setCoursesGamificationEnabled(instituteSettings.getCoursesEnableGamification())
@@ -108,11 +132,15 @@ public class TestpressServiceProvider {
                         .setLeaderboardLabel(instituteSettings.getLeaderboardLabel())
                         .setVideoDownloadEnabled(instituteSettings.getIsVideoDownloadEnabled())
                         .setThreatsAndTargetsLabel(instituteSettings.getThreatsAndTargetsLabel())
-                        .setShowPDFVertically(SHOW_PDF_VERTICALLY);
+                        .setShowPDFVertically(SHOW_PDF_VERTICALLY)
+                        .setMaxAllowedDownloadedVideos(instituteSettings.getMaxAllowedDownloadedVideos());
+                settings.setEnableCustomTest(instituteSettings.getEnableCustomTest());
                 appLink = instituteSettings.getAppShareLink();
             }
             settings.setAppShareText(SHARE_MESSAGE + activity.getString(R.string.get_it_at) + appLink);
             settings.setGrowthHackEnabled(GROWTH_HACKS_ENABLED);
+            settings.setAppName(activity.getString(R.string.app_name));
+            settings.setIsCustomMeetingUIEnabled(ZOOM_CUSTOM_MEETING_UI_ENABLED);
             TestpressSdk.setTestpressSession(activity, new TestpressSession(settings, authToken));
         }
 

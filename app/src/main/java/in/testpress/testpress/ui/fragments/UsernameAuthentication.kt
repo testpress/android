@@ -19,7 +19,6 @@ import `in`.testpress.testpress.util.UIUtils
 import `in`.testpress.testpress.util.isEmpty
 import `in`.testpress.util.ViewUtils
 import android.accounts.AccountManager
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -30,12 +29,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.core.content.ContextCompat.getSystemService
 import android.view.inputmethod.InputMethodManager
 import kotlinx.android.synthetic.main.username_login_layout.*
-import kotlinx.android.synthetic.main.username_login_layout.facebookSignIn
-import kotlinx.android.synthetic.main.username_login_layout.googleSignIn
-import kotlinx.android.synthetic.main.username_login_layout.socialLoginLayout
 import javax.inject.Inject
 
 
@@ -133,12 +128,26 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
         }
 
         signUp.setOnClickListener {
-            val intent = Intent(requireContext(), WebViewActivity::class.java)
-            intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Register")
-            intent.putExtra(WebViewActivity.SHOW_LOGOUT, "false")
-            intent.putExtra(WebViewActivity.ALLOW_EXTERNAL_LINK,true)
-            intent.putExtra(WebViewActivity.URL_TO_OPEN, "https://www.epratibha.net/sign-up/")
-            startActivity(intent)
+            if (isEPratibhaApp()) {
+                val intent = Intent(requireContext(), WebViewActivity::class.java)
+                intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Register")
+                intent.putExtra(WebViewActivity.SHOW_LOGOUT, "false")
+                intent.putExtra(WebViewActivity.ALLOW_EXTERNAL_LINK,true)
+                intent.putExtra(WebViewActivity.URL_TO_OPEN, "https://www.epratibha.net/sign-up/")
+                startActivity(intent)
+                return@setOnClickListener
+            }
+            if (instituteSettings.customRegistrationEnabled){
+                val intent = Intent(requireContext(), WebViewActivity::class.java)
+                intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Register")
+                intent.putExtra(WebViewActivity.SHOW_LOGOUT, "false")
+                intent.putExtra(WebViewActivity.ALLOW_EXTERNAL_LINK,false)
+                intent.putExtra(WebViewActivity.URL_TO_OPEN, BuildConfig.BASE_URL + "/register/")
+                startActivity(intent)
+            } else {
+                val intent = Intent(requireContext(), RegisterActivity::class.java)
+                startActivityForResult(intent, LoginActivity.REQUEST_CODE_REGISTER_USER)
+            }
         }
 
         usernameLayoutPrivacyPolicy.setOnClickListener {
@@ -149,6 +158,8 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
         }
 
     }
+
+    private fun isEPratibhaApp() = requireContext().packageName == "net.epratibha.www"
 
     private fun updateLabels() {
         if (UIUtils.getMenuItemName(R.string.label_username, instituteSettings).isNotEmpty()) {

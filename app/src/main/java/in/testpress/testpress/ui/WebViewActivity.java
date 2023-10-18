@@ -56,6 +56,7 @@ public class WebViewActivity extends BaseToolBarActivity {
     public static final String ENABLE_BACK = "ENABLE_BACK";
     public static final String SHOW_LOGOUT = "SHOW_LOGOUT";
     public static final String SHOW_LOADING = "SHOW_LOADING";
+    public static final String ALLOW_EXTERNAL_LINK = "ALLOW_EXTERNAL_LINK";
     private final static int FILE_CHOOSER_RESULT_CODE = 1;
 
     @Inject protected TestpressServiceProvider serviceProvider;
@@ -72,6 +73,7 @@ public class WebViewActivity extends BaseToolBarActivity {
     private boolean showLogout;
     private boolean showLoading = true;
     private boolean reload = false;
+    private boolean allowExternalLink = false;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -144,6 +146,10 @@ public class WebViewActivity extends BaseToolBarActivity {
             getSupportActionBar().setTitle(intent.getExtras().getString(ACTIVITY_TITLE));
         }
 
+        if (intent.hasExtra(ALLOW_EXTERNAL_LINK)) {
+            allowExternalLink = intent.getExtras().getBoolean(ALLOW_EXTERNAL_LINK);
+        }
+
 
         if (Build.VERSION.SDK_INT >= 23 &&
                 (isPermissionGranted(Manifest.permission.RECORD_AUDIO) || isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE) || isPermissionGranted(Manifest.permission.CAMERA))) {
@@ -185,7 +191,7 @@ public class WebViewActivity extends BaseToolBarActivity {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (isInstituteURL(url)) {
+                if (allowExternalLink || isInstituteURL(url)) {
                     view.loadUrl(url);
                 } else {
                     openInExternal(url);

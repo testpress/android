@@ -137,7 +137,8 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
                 val intent = Intent(requireContext(), WebViewActivity::class.java)
                 intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Register")
                 intent.putExtra(WebViewActivity.SHOW_LOGOUT, "false")
-                intent.putExtra(WebViewActivity.URL_TO_OPEN, BuildConfig.BASE_URL + "/register/")
+                intent.putExtra(WebViewActivity.ALLOW_EXTERNAL_LINK,true)
+                intent.putExtra(WebViewActivity.URL_TO_OPEN, instituteSettings.customRegistrationUrl)
                 startActivity(intent)
             } else {
                 val intent = Intent(requireContext(), RegisterActivity::class.java)

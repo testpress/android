@@ -81,6 +81,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         public final static Property DisableStudentReport = new Property(52, Boolean.class, "disableStudentReport", false, "DISABLE_STUDENT_REPORT");
         public final static Property EnableCustomTest = new Property(53, Boolean.class, "enableCustomTest", false, "ENABLE_CUSTOM_TEST");
         public final static Property CurrentPaymentApp = new Property(54, String.class, "currentPaymentApp", false, "CURRENT_PAYMENT_APP");
+        public final static Property CustomRegistrationUrl = new Property(55, String.class, "customRegistrationUrl", false, "CUSTOM_REGISTRATION_URL");
     };
 
     private final IntegerListConverter allowedLoginMethodsConverter = new IntegerListConverter();
@@ -151,7 +152,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
                 "\"DISABLE_FORGOT_PASSWORD\" INTEGER," + // 51: disableForgotPassword
                 "\"DISABLE_STUDENT_REPORT\" INTEGER," + // 52: disableStudentReport
                 "\"ENABLE_CUSTOM_TEST\" INTEGER," + // 53: enableCustomTest
-                "\"CURRENT_PAYMENT_APP\" TEXT);"); // 54: currentPaymentApp
+                "\"CURRENT_PAYMENT_APP\" TEXT," + // 54: currentPaymentApp
+                "\"CUSTOM_REGISTRATION_URL\" TEXT);"); // 55: customRegistrationUrl
     }
 
     /** Drops the underlying database table. */
@@ -435,6 +437,11 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         if (currentPaymentApp != null) {
             stmt.bindString(55, currentPaymentApp);
         }
+ 
+        String customRegistrationUrl = entity.getCustomRegistrationUrl();
+        if (customRegistrationUrl != null) {
+            stmt.bindString(56, customRegistrationUrl);
+        }
     }
 
     /** @inheritdoc */
@@ -501,7 +508,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             cursor.isNull(offset + 51) ? null : cursor.getShort(offset + 51) != 0, // disableForgotPassword
             cursor.isNull(offset + 52) ? null : cursor.getShort(offset + 52) != 0, // disableStudentReport
             cursor.isNull(offset + 53) ? null : cursor.getShort(offset + 53) != 0, // enableCustomTest
-            cursor.isNull(offset + 54) ? null : cursor.getString(offset + 54) // currentPaymentApp
+            cursor.isNull(offset + 54) ? null : cursor.getString(offset + 54), // currentPaymentApp
+            cursor.isNull(offset + 55) ? null : cursor.getString(offset + 55) // customRegistrationUrl
         );
         return entity;
     }
@@ -564,6 +572,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         entity.setDisableStudentReport(cursor.isNull(offset + 52) ? null : cursor.getShort(offset + 52) != 0);
         entity.setEnableCustomTest(cursor.isNull(offset + 53) ? null : cursor.getShort(offset + 53) != 0);
         entity.setCurrentPaymentApp(cursor.isNull(offset + 54) ? null : cursor.getString(offset + 54));
+        entity.setCustomRegistrationUrl(cursor.isNull(offset + 55) ? null : cursor.getString(offset + 55));
      }
     
     /** @inheritdoc */

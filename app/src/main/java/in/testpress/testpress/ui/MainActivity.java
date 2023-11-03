@@ -153,7 +153,11 @@ public class MainActivity extends TestpressFragmentActivity {
 
     @Override
     public void onBackPressed() {
-        if (viewPager.getCurrentItem() != 0) {
+        if (courseListFragment != null && viewPager.getCurrentItem() == 1) {
+            if (courseListFragment.onBackPress()) {
+                viewPager.setCurrentItem(0);
+            }
+        } else if (viewPager.getCurrentItem() != 0) {
             viewPager.setCurrentItem(0);
         } else {
             super.onBackPressed();

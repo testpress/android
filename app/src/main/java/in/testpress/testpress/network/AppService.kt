@@ -8,7 +8,7 @@ import `in`.testpress.testpress.models.InstituteSettings
 import `in`.testpress.testpress.models.pojo.GenerateOTPResponse
 import `in`.testpress.testpress.models.pojo.OTPLoginResponse
 import android.content.Context
-import retrofit.http.GET
+import retrofit2.http.GET
 import retrofit2.http.Body
 import retrofit2.http.POST
 import kotlin.collections.HashMap

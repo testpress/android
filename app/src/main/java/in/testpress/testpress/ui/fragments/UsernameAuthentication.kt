@@ -46,8 +46,6 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
     @Inject
     lateinit var testPressService: TestpressService
 
-    lateinit var activity: LoginActivityV2
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Injector.inject(this)

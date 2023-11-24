@@ -323,6 +323,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private void updateMenuItemNames(Menu menu) {
         if (mInstituteSettings != null) {
+            menu.findItem(R.id.posts).setVisible(Boolean.TRUE.equals(mInstituteSettings.getPostsEnabled()));
             menu.findItem(R.id.posts).setTitle(Strings.toString(mInstituteSettings.getPostsLabel()));
             menu.findItem(R.id.bookmarks).setTitle(Strings.toString(mInstituteSettings.getBookmarksLabel()));
         }

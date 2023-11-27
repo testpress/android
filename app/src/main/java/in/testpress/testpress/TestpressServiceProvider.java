@@ -134,7 +134,8 @@ public class TestpressServiceProvider {
                         .setShowPDFVertically(SHOW_PDF_VERTICALLY)
                         .setMaxAllowedDownloadedVideos(instituteSettings.getMaxAllowedDownloadedVideos())
                         .setEnableCustomTest(instituteSettings.getEnableCustomTest())
-                        .setStoreEnabled(instituteSettings.getStoreEnabled());
+                        .setStoreEnabled(instituteSettings.getStoreEnabled())
+                        .setDisableStoreInApp(instituteSettings.getDisableStoreInApp());
                 appLink = instituteSettings.getAppShareLink();
             }
             settings.setAppShareText(SHARE_MESSAGE + activity.getString(R.string.get_it_at) + appLink);

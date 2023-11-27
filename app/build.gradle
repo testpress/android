@@ -6,7 +6,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 ext {
-    testpressSDK = '1.4.122'
+    testpressSDK = '1.4.123'
 }
 
 def jsonFile = file('src/main/assets/config.json')

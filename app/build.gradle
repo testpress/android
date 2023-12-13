@@ -6,7 +6,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 ext {
-    testpressSDK = '1.4.124'
+    testpressSDK = '1.4.123'
 }
 
 def jsonFile = file('src/main/assets/config.json')
@@ -151,7 +151,7 @@ android {
         versionName json.version
         versionCode json.version_code
 
-        def host_url = '6bd7-183-82-206-168.ngrok-free.app'
+        def host_url = json.testpress_site_subdomain + '.testpress.in'
         resValue "string", "host_url", host_url
         buildConfigField "String", "BASE_URL", '"https://' + host_url + '"'
         resValue "string", "app_name", json.app_name

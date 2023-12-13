@@ -168,6 +168,7 @@
     <string name="privacy_policy"><a href='#'> Privacy Policy</a></string>
 
     <string name="terms_and_conditions">Terms And Conditions</string>
+    <string name="proctored_exam">Proctored Exam</string>
 
     <plurals name="notes_count">
         <item quantity="one">1 Doc</item>

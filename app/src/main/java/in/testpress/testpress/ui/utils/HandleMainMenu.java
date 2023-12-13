@@ -37,6 +37,7 @@ import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PAT
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.core.Constants.Http.URL_PRIVACY_POLICY_FLAG;
+import static in.testpress.testpress.core.Constants.Http.URL_PROCTORED_EXAM_FLAG;
 import static in.testpress.testpress.core.Constants.Http.URL_STUDENT_REPORT_FLAG;
 
 public class HandleMainMenu {
@@ -110,6 +111,9 @@ public class HandleMainMenu {
                 break;
             case  R.id.student_report:
                 launchStudentReportActivity();
+                break;
+            case  R.id.proctored_exam:
+                launchProctoredExamActivity();
                 break;
         }
     }
@@ -191,6 +195,18 @@ public class HandleMainMenu {
                         activity,
                         activity.getString(R.string.student_report),
                         URL_STUDENT_REPORT_FLAG,
+                        true,
+                        WebViewWithSSOActivity.class
+                )
+        );
+    }
+
+    private void launchProctoredExamActivity() {
+        activity.startActivity(
+                WebViewWithSSOActivity.Companion.createIntent(
+                        activity,
+                        activity.getString(R.string.proctored_exam),
+                        URL_PROCTORED_EXAM_FLAG,
                         true,
                         WebViewWithSSOActivity.class
                 )

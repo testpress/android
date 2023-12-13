@@ -72,9 +72,11 @@ import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.FormatDate;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
+import in.testpress.ui.WebViewWithSSOActivity;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.core.Constants.Http.URL_STUDENT_REPORT_FLAG;
 
 public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         implements LoaderManager.LoaderCallbacks<ProfileDetails> {
@@ -166,6 +168,20 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
                 .showImageOnLoading(R.drawable.profile_image_sample).build();
         getSupportLoaderManager().initLoader(0, null, this);
         fetchSsoLink();
+        findViewById(R.id.delete_account).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ProfileDetailsActivity.this.startActivity(
+                        WebViewWithSSOActivity.Companion.createIntent(
+                                ProfileDetailsActivity.this,
+                                "Delete Account",
+                                "/settings/account/delete/",
+                                true,
+                                WebViewWithSSOActivity.class
+                        )
+                );
+            }
+        });
     }
 
     @Override

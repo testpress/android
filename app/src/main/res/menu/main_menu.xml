@@ -40,6 +40,12 @@
             android:visible="false"
             app:showAsAction="never"/>
         <item
+            android:id="@+id/proctored_exam"
+            android:title="@string/proctored_exam"
+            android:icon="@drawable/ic_baseline_key_24"
+            android:visible="false"
+            app:showAsAction="never"/>
+        <item
             android:id="@+id/logout"
             android:icon="@drawable/ic_exit_to_app_black_24dp"
             android:title="Logout"

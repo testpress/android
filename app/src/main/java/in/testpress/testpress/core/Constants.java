@@ -97,6 +97,11 @@ public final class Constants {
         public static final String URL_STUDENT_REPORT_FLAG = "/report/";
 
         /**
+         * Proctored Exam URL
+         */
+        public static final String URL_PROCTORED_EXAM_FLAG = "/exams/access-code/";
+
+        /**
          * Privacy Policy URL
          */
         public static final String URL_PRIVACY_POLICY_FLAG = "/privacy/";

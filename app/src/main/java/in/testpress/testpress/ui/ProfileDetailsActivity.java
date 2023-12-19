@@ -172,12 +172,12 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
             @Override
             public void onClick(View v) {
                 ProfileDetailsActivity.this.startActivity(
-                        WebViewWithSSOActivity.Companion.createIntent(
+                        AccountDeleteActivity.Companion.createIntent(
                                 ProfileDetailsActivity.this,
                                 "Delete Account",
                                 "/settings/account/delete/",
                                 true,
-                                WebViewWithSSOActivity.class
+                                AccountDeleteActivity.class
                         )
                 );
             }

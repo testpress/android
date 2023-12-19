@@ -132,9 +132,10 @@ public class TestpressServiceProvider {
                         .setVideoDownloadEnabled(instituteSettings.getIsVideoDownloadEnabled())
                         .setThreatsAndTargetsLabel(instituteSettings.getThreatsAndTargetsLabel())
                         .setShowPDFVertically(SHOW_PDF_VERTICALLY)
-                        .setMaxAllowedDownloadedVideos(instituteSettings.getMaxAllowedDownloadedVideos());
-                settings.setEnableCustomTest(instituteSettings.getEnableCustomTest());
-                settings.setStoreEnabled(instituteSettings.getStoreEnabled());
+                        .setMaxAllowedDownloadedVideos(instituteSettings.getMaxAllowedDownloadedVideos())
+                        .setEnableCustomTest(instituteSettings.getEnableCustomTest())
+                        .setStoreEnabled(instituteSettings.getStoreEnabled())
+                        .setDisableStoreInApp(instituteSettings.getDisableStoreInApp());
                 appLink = instituteSettings.getAppShareLink();
             }
             settings.setAppShareText(SHARE_MESSAGE + activity.getString(R.string.get_it_at) + appLink);

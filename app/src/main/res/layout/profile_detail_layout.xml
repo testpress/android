@@ -600,6 +600,7 @@
                 android:layout_marginBottom="16dp"
                 android:text="Delete Account"
                 android:textAllCaps="false"
+                android:visibility="gone"
                 android:textColor="@color/testpress_red"
                 app:cornerRadius="10dp"
                 app:strokeColor="@color/testpress_red"

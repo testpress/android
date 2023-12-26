@@ -589,23 +589,6 @@
 
             </RelativeLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/delete_account"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_gravity="bottom|center_horizontal"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginBottom="16dp"
-                android:text="Delete Account"
-                android:textAllCaps="false"
-                android:visibility="gone"
-                android:textColor="@color/testpress_red"
-                app:cornerRadius="10dp"
-                app:strokeColor="@color/testpress_red"
-                app:strokeWidth="2dp" />
-
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
@@ -618,5 +601,22 @@
         <!--android:src="@drawable/edit_icon_white"-->
         <!--android:layout_margin="@dimen/fab_margin"-->
         <!--android:clickable="true"/>-->
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/delete_account"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="Delete Account"
+        android:textAllCaps="false"
+        android:visibility="gone"
+        android:textColor="@color/testpress_red"
+        app:cornerRadius="10dp"
+        app:strokeColor="@color/testpress_red"
+        app:strokeWidth="2dp" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

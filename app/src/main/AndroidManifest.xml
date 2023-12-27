@@ -235,6 +235,10 @@
             android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"/>
 
+        <activity android:name=".ui.AccountDeleteActivity"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
+
     </application>
 
 </manifest>

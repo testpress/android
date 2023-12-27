@@ -24,6 +24,7 @@ import in.testpress.testpress.core.RestErrorHandler;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.core.UserAgentProvider;
 import in.testpress.testpress.ui.AccountActivateActivity;
+import in.testpress.testpress.ui.AccountDeleteActivity;
 import in.testpress.testpress.ui.CreateForumActivity;
 import in.testpress.testpress.ui.DocumentsListActivity;
 import in.testpress.testpress.ui.DocumentsListFragment;
@@ -96,7 +97,8 @@ import static in.testpress.testpress.BuildConfig.BASE_URL;
                 UsernameAuthentication.class,
                 PhoneAuthenticationFragment.class,
                 OTPVerificationFragment.class,
-                TermsAndConditionActivity.class
+                TermsAndConditionActivity.class,
+                AccountDeleteActivity.class
         }
 )
 public class TestpressModule {

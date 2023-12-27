@@ -38,7 +38,6 @@ class AccountDeleteActivity : AbstractWebViewActivity() {
                 serviceProvider,
                 logoutService
             )
-            finish()
         }
 
     }

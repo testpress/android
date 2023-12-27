@@ -1,6 +1,5 @@
 package in.testpress.testpress.ui;
 
-import android.accounts.AccountsException;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -74,11 +73,9 @@ import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.FormatDate;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
-import in.testpress.ui.WebViewWithSSOActivity;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
-import static in.testpress.testpress.core.Constants.Http.URL_STUDENT_REPORT_FLAG;
 
 public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         implements LoaderManager.LoaderCallbacks<ProfileDetails> {
@@ -128,7 +125,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     ImageLoader imageLoader;
     DisplayImageOptions options;
     Menu menu;
-    Button deleteAccount;
+    Button deleteAccountButton;
     static final private int SELECT_IMAGE = 100;
     public String ssoUrl;
 
@@ -172,8 +169,12 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
                 .showImageOnLoading(R.drawable.profile_image_sample).build();
         getSupportLoaderManager().initLoader(0, null, this);
         fetchSsoLink();
-        deleteAccount = findViewById(R.id.delete_account);
-        deleteAccount.setOnClickListener(new View.OnClickListener() {
+        initializeDeleteAccountButton();
+    }
+
+    private void initializeDeleteAccountButton() {
+        deleteAccountButton = findViewById(R.id.delete_account);
+        deleteAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ProfileDetailsActivity.this.startActivity(
@@ -248,10 +249,13 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         handleDetail(pinCode, pinCodeRow, profileDetails.getZip());
         saveButton.setVisibility(View.GONE);
         setEnabled(false, new View[]{email, phone, gender, dateOfBirth, address, city, state, pinCode});
+        showOrHideDeleteAccountButton();
+    }
 
+    private void showOrHideDeleteAccountButton() {
         Boolean allowSignUp = TestpressApplication.getInstituteSettings().getAllowSignup();
         if (Boolean.TRUE.equals(allowSignUp)) {
-            deleteAccount.setVisibility(View.VISIBLE);
+            deleteAccountButton.setVisibility(View.VISIBLE);
         }
     }
 

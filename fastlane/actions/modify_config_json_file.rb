@@ -36,7 +36,9 @@ module Fastlane
             if app_config_json.key?(key) && fields.include?(key)
                 if key == "app_name"
                     temp_app_name = app_config_json[key]
+                    puts temp_app_name
                     config_json[key] = sanitize_app_name(temp_app_name)
+                    puts config_json[key]
                 else
                     config_json[key] = app_config_json[key]
                 end

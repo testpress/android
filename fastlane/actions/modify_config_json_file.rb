@@ -34,12 +34,9 @@ module Fastlane
           app_config_json = JSON.parse(data)
           config_json.each do |key, value|
             if app_config_json.key?(key) && fields.include?(key)
-                puts key
                 if key == "app_name"
                     temp_app_name = app_config_json[key]
-                    puts temp_app_name
                     config_json[key] = sanitize_app_name(temp_app_name)
-                    puts config_json[key]
                 else
                     config_json[key] = app_config_json[key]
                 end
@@ -54,7 +51,7 @@ module Fastlane
            FastlaneCore::ConfigItem.new(key: :config_json, description: "Json file with value to update")
         ]
       end
-      def sanitize_app_name(app_name)
+      def self.sanitize_app_name(app_name)
         # Replace single quotes with escaped single quotes
         sanitized_name = app_name.gsub("\'", "\\\\'")
         return sanitized_name

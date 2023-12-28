@@ -34,6 +34,7 @@ module Fastlane
           app_config_json = JSON.parse(data)
           config_json.each do |key, value|
             if app_config_json.key?(key) && fields.include?(key)
+                puts key
                 if key == "app_name"
                     temp_app_name = app_config_json[key]
                     puts temp_app_name

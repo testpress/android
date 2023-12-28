@@ -35,7 +35,7 @@ module Fastlane
           config_json.each do |key, value|
             if app_config_json.key?(key) && fields.include?(key)
               # Check if the key is 'app_name' and replace single quotes with escaped single quotes
-              config_json[key] = key == 'app_name' ? app_config_json[key].gsub("'", "\\\'") : app_config_json[key]
+              config_json[key] = key == 'app_name' ? app_config_json[key].gsub("'", "\\\\'") : app_config_json[key]
             end
           end
           File.open(path,"w") do |f|

@@ -56,7 +56,7 @@ module Fastlane
       end
       def sanitize_app_name(app_name)
         # Replace single quotes with escaped single quotes
-        sanitized_name = app_name.gsub("'", "\\\\'")
+        sanitized_name = app_name.gsub("\'", "\\\\'")
         return sanitized_name
       end
     end

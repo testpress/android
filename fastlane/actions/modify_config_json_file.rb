@@ -37,7 +37,7 @@ module Fastlane
                 if key == "app_name"
                     temp_app_name = app_config_json[key]
                     # Replace single quotes with escaped single quotes
-                    config_json[key] = temp_app_name..gsub("\'", "\\\\'")
+                    config_json[key] = temp_app_name.gsub("\'", "\\\\'")
                 else
                     config_json[key] = app_config_json[key]
                 end

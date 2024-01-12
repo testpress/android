@@ -11,6 +11,8 @@ import androidx.annotation.StringRes;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
+
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -97,6 +99,8 @@ public class UIUtils {
                 return Strings.toString(instituteSettings.getLoginLabel());
             case R.string.label_password:
                 return Strings.toString(instituteSettings.getLoginPasswordLabel());
+            case R.string.discussions:
+                return Strings.toString(instituteSettings.getForumLabel());
             default:
                 return "";
         }

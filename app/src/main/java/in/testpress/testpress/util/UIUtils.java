@@ -11,8 +11,6 @@ import androidx.annotation.StringRes;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
-
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 

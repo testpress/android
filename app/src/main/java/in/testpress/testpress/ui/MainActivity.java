@@ -155,7 +155,11 @@ public class MainActivity extends TestpressFragmentActivity {
 
     @Override
     public void onBackPressed() {
-        if (viewPager.getCurrentItem() != 0) {
+        if (courseListFragment != null && viewPager.getCurrentItem() == 1) {
+            if (courseListFragment.onBackPress()) {
+                viewPager.setCurrentItem(0);
+            }
+        } else if (viewPager.getCurrentItem() != 0) {
             viewPager.setCurrentItem(0);
         } else {
             super.onBackPressed();
@@ -285,6 +289,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private void updateMenuItemNames(Menu menu) {
         if (mInstituteSettings != null) {
+            menu.findItem(R.id.posts).setVisible(Boolean.TRUE.equals(mInstituteSettings.getPostsEnabled()));
             menu.findItem(R.id.posts).setTitle(Strings.toString(mInstituteSettings.getPostsLabel()));
             menu.findItem(R.id.bookmarks).setTitle(Strings.toString(mInstituteSettings.getBookmarksLabel()));
         }

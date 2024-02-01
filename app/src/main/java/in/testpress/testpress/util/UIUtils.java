@@ -97,6 +97,8 @@ public class UIUtils {
                 return Strings.toString(instituteSettings.getLoginLabel());
             case R.string.label_password:
                 return Strings.toString(instituteSettings.getLoginPasswordLabel());
+            case R.string.discussions:
+                return Strings.toString(instituteSettings.getForumLabel());
             default:
                 return "";
         }

@@ -49,38 +49,41 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         public final static Property CommentsVotingEnabled = new Property(20, boolean.class, "commentsVotingEnabled", false, "COMMENTS_VOTING_ENABLED");
         public final static Property BookmarksEnabled = new Property(21, Boolean.class, "bookmarksEnabled", false, "BOOKMARKS_ENABLED");
         public final static Property ForumEnabled = new Property(22, Boolean.class, "forumEnabled", false, "FORUM_ENABLED");
-        public final static Property TwilioEnabled = new Property(23, Boolean.class, "twilioEnabled", false, "TWILIO_ENABLED");
-        public final static Property Allow_profile_edit = new Property(24, Boolean.class, "allow_profile_edit", false, "ALLOW_PROFILE_EDIT");
-        public final static Property LearnLabel = new Property(25, String.class, "learnLabel", false, "LEARN_LABEL");
-        public final static Property LeaderboardLabel = new Property(26, String.class, "leaderboardLabel", false, "LEADERBOARD_LABEL");
-        public final static Property DashboardLabel = new Property(27, String.class, "dashboardLabel", false, "DASHBOARD_LABEL");
-        public final static Property BookmarksLabel = new Property(28, String.class, "bookmarksLabel", false, "BOOKMARKS_LABEL");
-        public final static Property LoginLabel = new Property(29, String.class, "loginLabel", false, "LOGIN_LABEL");
-        public final static Property LoginPasswordLabel = new Property(30, String.class, "loginPasswordLabel", false, "LOGIN_PASSWORD_LABEL");
-        public final static Property AboutUs = new Property(31, String.class, "aboutUs", false, "ABOUT_US");
-        public final static Property DisableStudentAnalytics = new Property(32, Boolean.class, "disableStudentAnalytics", false, "DISABLE_STUDENT_ANALYTICS");
-        public final static Property CustomRegistrationEnabled = new Property(33, Boolean.class, "customRegistrationEnabled", false, "CUSTOM_REGISTRATION_ENABLED");
-        public final static Property EnableParallelLoginRestriction = new Property(34, Boolean.class, "enableParallelLoginRestriction", false, "ENABLE_PARALLEL_LOGIN_RESTRICTION");
-        public final static Property MaxParallelLogins = new Property(35, Integer.class, "maxParallelLogins", false, "MAX_PARALLEL_LOGINS");
-        public final static Property LockoutLimit = new Property(36, Integer.class, "lockoutLimit", false, "LOCKOUT_LIMIT");
-        public final static Property CooloffTime = new Property(37, String.class, "cooloffTime", false, "COOLOFF_TIME");
-        public final static Property AppToolbarLogo = new Property(38, String.class, "appToolbarLogo", false, "APP_TOOLBAR_LOGO");
-        public final static Property AppShareLink = new Property(39, String.class, "appShareLink", false, "APP_SHARE_LINK");
-        public final static Property ServerTime = new Property(40, String.class, "serverTime", false, "SERVER_TIME");
-        public final static Property AllowScreenshotInApp = new Property(41, Boolean.class, "allowScreenshotInApp", false, "ALLOW_SCREENSHOT_IN_APP");
-        public final static Property AndroidSentryDns = new Property(42, String.class, "androidSentryDns", false, "ANDROID_SENTRY_DNS");
-        public final static Property LeaderboardEnabled = new Property(43, Boolean.class, "leaderboardEnabled", false, "LEADERBOARD_ENABLED");
-        public final static Property ThreatsAndTargetsLabel = new Property(44, String.class, "threatsAndTargetsLabel", false, "THREATS_AND_TARGETS_LABEL");
-        public final static Property IsVideoDownloadEnabled = new Property(45, Boolean.class, "isVideoDownloadEnabled", false, "IS_VIDEO_DOWNLOAD_ENABLED");
-        public final static Property IsHelpdeskEnabled = new Property(46, Boolean.class, "isHelpdeskEnabled", false, "IS_HELPDESK_ENABLED");
-        public final static Property AllowedLoginMethods = new Property(47, String.class, "allowedLoginMethods", false, "ALLOWED_LOGIN_METHODS");
-        public final static Property ShowShareButton = new Property(48, Boolean.class, "showShareButton", false, "SHOW_SHARE_BUTTON");
-        public final static Property FacebookAppId = new Property(49, String.class, "facebookAppId", false, "FACEBOOK_APP_ID");
-        public final static Property MaxAllowedDownloadedVideos = new Property(50, Integer.class, "maxAllowedDownloadedVideos", false, "MAX_ALLOWED_DOWNLOADED_VIDEOS");
-        public final static Property DisableForgotPassword = new Property(51, Boolean.class, "disableForgotPassword", false, "DISABLE_FORGOT_PASSWORD");
-        public final static Property DisableStudentReport = new Property(52, Boolean.class, "disableStudentReport", false, "DISABLE_STUDENT_REPORT");
-        public final static Property EnableCustomTest = new Property(53, Boolean.class, "enableCustomTest", false, "ENABLE_CUSTOM_TEST");
-        public final static Property CurrentPaymentApp = new Property(54, String.class, "currentPaymentApp", false, "CURRENT_PAYMENT_APP");
+        public final static Property ForumLabel = new Property(23, String.class, "forumLabel", false, "FORUM_LABEL");
+        public final static Property TwilioEnabled = new Property(24, Boolean.class, "twilioEnabled", false, "TWILIO_ENABLED");
+        public final static Property Allow_profile_edit = new Property(25, Boolean.class, "allow_profile_edit", false, "ALLOW_PROFILE_EDIT");
+        public final static Property LearnLabel = new Property(26, String.class, "learnLabel", false, "LEARN_LABEL");
+        public final static Property LeaderboardLabel = new Property(27, String.class, "leaderboardLabel", false, "LEADERBOARD_LABEL");
+        public final static Property DashboardLabel = new Property(28, String.class, "dashboardLabel", false, "DASHBOARD_LABEL");
+        public final static Property BookmarksLabel = new Property(29, String.class, "bookmarksLabel", false, "BOOKMARKS_LABEL");
+        public final static Property LoginLabel = new Property(30, String.class, "loginLabel", false, "LOGIN_LABEL");
+        public final static Property LoginPasswordLabel = new Property(31, String.class, "loginPasswordLabel", false, "LOGIN_PASSWORD_LABEL");
+        public final static Property AboutUs = new Property(32, String.class, "aboutUs", false, "ABOUT_US");
+        public final static Property DisableStudentAnalytics = new Property(33, Boolean.class, "disableStudentAnalytics", false, "DISABLE_STUDENT_ANALYTICS");
+        public final static Property CustomRegistrationEnabled = new Property(34, Boolean.class, "customRegistrationEnabled", false, "CUSTOM_REGISTRATION_ENABLED");
+        public final static Property EnableParallelLoginRestriction = new Property(35, Boolean.class, "enableParallelLoginRestriction", false, "ENABLE_PARALLEL_LOGIN_RESTRICTION");
+        public final static Property MaxParallelLogins = new Property(36, Integer.class, "maxParallelLogins", false, "MAX_PARALLEL_LOGINS");
+        public final static Property LockoutLimit = new Property(37, Integer.class, "lockoutLimit", false, "LOCKOUT_LIMIT");
+        public final static Property CooloffTime = new Property(38, String.class, "cooloffTime", false, "COOLOFF_TIME");
+        public final static Property AppToolbarLogo = new Property(39, String.class, "appToolbarLogo", false, "APP_TOOLBAR_LOGO");
+        public final static Property AppShareLink = new Property(40, String.class, "appShareLink", false, "APP_SHARE_LINK");
+        public final static Property ServerTime = new Property(41, String.class, "serverTime", false, "SERVER_TIME");
+        public final static Property AllowScreenshotInApp = new Property(42, Boolean.class, "allowScreenshotInApp", false, "ALLOW_SCREENSHOT_IN_APP");
+        public final static Property AndroidSentryDns = new Property(43, String.class, "androidSentryDns", false, "ANDROID_SENTRY_DNS");
+        public final static Property LeaderboardEnabled = new Property(44, Boolean.class, "leaderboardEnabled", false, "LEADERBOARD_ENABLED");
+        public final static Property ThreatsAndTargetsLabel = new Property(45, String.class, "threatsAndTargetsLabel", false, "THREATS_AND_TARGETS_LABEL");
+        public final static Property IsVideoDownloadEnabled = new Property(46, Boolean.class, "isVideoDownloadEnabled", false, "IS_VIDEO_DOWNLOAD_ENABLED");
+        public final static Property IsHelpdeskEnabled = new Property(47, Boolean.class, "isHelpdeskEnabled", false, "IS_HELPDESK_ENABLED");
+        public final static Property AllowedLoginMethods = new Property(48, String.class, "allowedLoginMethods", false, "ALLOWED_LOGIN_METHODS");
+        public final static Property ShowShareButton = new Property(49, Boolean.class, "showShareButton", false, "SHOW_SHARE_BUTTON");
+        public final static Property FacebookAppId = new Property(50, String.class, "facebookAppId", false, "FACEBOOK_APP_ID");
+        public final static Property MaxAllowedDownloadedVideos = new Property(51, Integer.class, "maxAllowedDownloadedVideos", false, "MAX_ALLOWED_DOWNLOADED_VIDEOS");
+        public final static Property DisableForgotPassword = new Property(52, Boolean.class, "disableForgotPassword", false, "DISABLE_FORGOT_PASSWORD");
+        public final static Property DisableStudentReport = new Property(53, Boolean.class, "disableStudentReport", false, "DISABLE_STUDENT_REPORT");
+        public final static Property EnableCustomTest = new Property(54, Boolean.class, "enableCustomTest", false, "ENABLE_CUSTOM_TEST");
+        public final static Property CurrentPaymentApp = new Property(55, String.class, "currentPaymentApp", false, "CURRENT_PAYMENT_APP");
+        public final static Property CustomRegistrationUrl = new Property(56, String.class, "customRegistrationUrl", false, "CUSTOM_REGISTRATION_URL");
+        public final static Property DisableStoreInApp = new Property(57, Boolean.class, "disableStoreInApp", false, "DISABLE_STORE_IN_APP");
     };
 
     private final IntegerListConverter allowedLoginMethodsConverter = new IntegerListConverter();
@@ -120,38 +123,41 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
                 "\"COMMENTS_VOTING_ENABLED\" INTEGER NOT NULL ," + // 20: commentsVotingEnabled
                 "\"BOOKMARKS_ENABLED\" INTEGER," + // 21: bookmarksEnabled
                 "\"FORUM_ENABLED\" INTEGER," + // 22: forumEnabled
-                "\"TWILIO_ENABLED\" INTEGER," + // 23: twilioEnabled
-                "\"ALLOW_PROFILE_EDIT\" INTEGER," + // 24: allow_profile_edit
-                "\"LEARN_LABEL\" TEXT," + // 25: learnLabel
-                "\"LEADERBOARD_LABEL\" TEXT," + // 26: leaderboardLabel
-                "\"DASHBOARD_LABEL\" TEXT," + // 27: dashboardLabel
-                "\"BOOKMARKS_LABEL\" TEXT," + // 28: bookmarksLabel
-                "\"LOGIN_LABEL\" TEXT," + // 29: loginLabel
-                "\"LOGIN_PASSWORD_LABEL\" TEXT," + // 30: loginPasswordLabel
-                "\"ABOUT_US\" TEXT," + // 31: aboutUs
-                "\"DISABLE_STUDENT_ANALYTICS\" INTEGER," + // 32: disableStudentAnalytics
-                "\"CUSTOM_REGISTRATION_ENABLED\" INTEGER," + // 33: customRegistrationEnabled
-                "\"ENABLE_PARALLEL_LOGIN_RESTRICTION\" INTEGER," + // 34: enableParallelLoginRestriction
-                "\"MAX_PARALLEL_LOGINS\" INTEGER," + // 35: maxParallelLogins
-                "\"LOCKOUT_LIMIT\" INTEGER," + // 36: lockoutLimit
-                "\"COOLOFF_TIME\" TEXT," + // 37: cooloffTime
-                "\"APP_TOOLBAR_LOGO\" TEXT," + // 38: appToolbarLogo
-                "\"APP_SHARE_LINK\" TEXT," + // 39: appShareLink
-                "\"SERVER_TIME\" TEXT," + // 40: serverTime
-                "\"ALLOW_SCREENSHOT_IN_APP\" INTEGER," + // 41: allowScreenshotInApp
-                "\"ANDROID_SENTRY_DNS\" TEXT," + // 42: androidSentryDns
-                "\"LEADERBOARD_ENABLED\" INTEGER," + // 43: leaderboardEnabled
-                "\"THREATS_AND_TARGETS_LABEL\" TEXT," + // 44: threatsAndTargetsLabel
-                "\"IS_VIDEO_DOWNLOAD_ENABLED\" INTEGER," + // 45: isVideoDownloadEnabled
-                "\"IS_HELPDESK_ENABLED\" INTEGER," + // 46: isHelpdeskEnabled
-                "\"ALLOWED_LOGIN_METHODS\" TEXT," + // 47: allowedLoginMethods
-                "\"SHOW_SHARE_BUTTON\" INTEGER," + // 48: showShareButton
-                "\"FACEBOOK_APP_ID\" TEXT," + // 49: facebookAppId
-                "\"MAX_ALLOWED_DOWNLOADED_VIDEOS\" INTEGER," + // 50: maxAllowedDownloadedVideos
-                "\"DISABLE_FORGOT_PASSWORD\" INTEGER," + // 51: disableForgotPassword
-                "\"DISABLE_STUDENT_REPORT\" INTEGER," + // 52: disableStudentReport
-                "\"ENABLE_CUSTOM_TEST\" INTEGER," + // 53: enableCustomTest
-                "\"CURRENT_PAYMENT_APP\" TEXT);"); // 54: currentPaymentApp
+                "\"FORUM_LABEL\" TEXT," + // 23: forumLabel
+                "\"TWILIO_ENABLED\" INTEGER," + // 24: twilioEnabled
+                "\"ALLOW_PROFILE_EDIT\" INTEGER," + // 25: allow_profile_edit
+                "\"LEARN_LABEL\" TEXT," + // 26: learnLabel
+                "\"LEADERBOARD_LABEL\" TEXT," + // 27: leaderboardLabel
+                "\"DASHBOARD_LABEL\" TEXT," + // 28: dashboardLabel
+                "\"BOOKMARKS_LABEL\" TEXT," + // 29: bookmarksLabel
+                "\"LOGIN_LABEL\" TEXT," + // 30: loginLabel
+                "\"LOGIN_PASSWORD_LABEL\" TEXT," + // 31: loginPasswordLabel
+                "\"ABOUT_US\" TEXT," + // 32: aboutUs
+                "\"DISABLE_STUDENT_ANALYTICS\" INTEGER," + // 33: disableStudentAnalytics
+                "\"CUSTOM_REGISTRATION_ENABLED\" INTEGER," + // 34: customRegistrationEnabled
+                "\"ENABLE_PARALLEL_LOGIN_RESTRICTION\" INTEGER," + // 35: enableParallelLoginRestriction
+                "\"MAX_PARALLEL_LOGINS\" INTEGER," + // 36: maxParallelLogins
+                "\"LOCKOUT_LIMIT\" INTEGER," + // 37: lockoutLimit
+                "\"COOLOFF_TIME\" TEXT," + // 38: cooloffTime
+                "\"APP_TOOLBAR_LOGO\" TEXT," + // 39: appToolbarLogo
+                "\"APP_SHARE_LINK\" TEXT," + // 40: appShareLink
+                "\"SERVER_TIME\" TEXT," + // 41: serverTime
+                "\"ALLOW_SCREENSHOT_IN_APP\" INTEGER," + // 42: allowScreenshotInApp
+                "\"ANDROID_SENTRY_DNS\" TEXT," + // 43: androidSentryDns
+                "\"LEADERBOARD_ENABLED\" INTEGER," + // 44: leaderboardEnabled
+                "\"THREATS_AND_TARGETS_LABEL\" TEXT," + // 45: threatsAndTargetsLabel
+                "\"IS_VIDEO_DOWNLOAD_ENABLED\" INTEGER," + // 46: isVideoDownloadEnabled
+                "\"IS_HELPDESK_ENABLED\" INTEGER," + // 47: isHelpdeskEnabled
+                "\"ALLOWED_LOGIN_METHODS\" TEXT," + // 48: allowedLoginMethods
+                "\"SHOW_SHARE_BUTTON\" INTEGER," + // 49: showShareButton
+                "\"FACEBOOK_APP_ID\" TEXT," + // 50: facebookAppId
+                "\"MAX_ALLOWED_DOWNLOADED_VIDEOS\" INTEGER," + // 51: maxAllowedDownloadedVideos
+                "\"DISABLE_FORGOT_PASSWORD\" INTEGER," + // 52: disableForgotPassword
+                "\"DISABLE_STUDENT_REPORT\" INTEGER," + // 53: disableStudentReport
+                "\"ENABLE_CUSTOM_TEST\" INTEGER," + // 54: enableCustomTest
+                "\"CURRENT_PAYMENT_APP\" TEXT," + // 55: currentPaymentApp
+                "\"CUSTOM_REGISTRATION_URL\" TEXT," + // 56: customRegistrationUrl
+                "\"DISABLE_STORE_IN_APP\" INTEGER);"); // 57: disableStoreInApp
     }
 
     /** Drops the underlying database table. */
@@ -276,164 +282,179 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             stmt.bindLong(23, forumEnabled ? 1L: 0L);
         }
  
+        String forumLabel = entity.getForumLabel();
+        if (forumLabel != null) {
+            stmt.bindString(24, forumLabel);
+        }
+ 
         Boolean twilioEnabled = entity.getTwilioEnabled();
         if (twilioEnabled != null) {
-            stmt.bindLong(24, twilioEnabled ? 1L: 0L);
+            stmt.bindLong(25, twilioEnabled ? 1L: 0L);
         }
  
         Boolean allow_profile_edit = entity.getAllow_profile_edit();
         if (allow_profile_edit != null) {
-            stmt.bindLong(25, allow_profile_edit ? 1L: 0L);
+            stmt.bindLong(26, allow_profile_edit ? 1L: 0L);
         }
  
         String learnLabel = entity.getLearnLabel();
         if (learnLabel != null) {
-            stmt.bindString(26, learnLabel);
+            stmt.bindString(27, learnLabel);
         }
  
         String leaderboardLabel = entity.getLeaderboardLabel();
         if (leaderboardLabel != null) {
-            stmt.bindString(27, leaderboardLabel);
+            stmt.bindString(28, leaderboardLabel);
         }
  
         String dashboardLabel = entity.getDashboardLabel();
         if (dashboardLabel != null) {
-            stmt.bindString(28, dashboardLabel);
+            stmt.bindString(29, dashboardLabel);
         }
  
         String bookmarksLabel = entity.getBookmarksLabel();
         if (bookmarksLabel != null) {
-            stmt.bindString(29, bookmarksLabel);
+            stmt.bindString(30, bookmarksLabel);
         }
  
         String loginLabel = entity.getLoginLabel();
         if (loginLabel != null) {
-            stmt.bindString(30, loginLabel);
+            stmt.bindString(31, loginLabel);
         }
  
         String loginPasswordLabel = entity.getLoginPasswordLabel();
         if (loginPasswordLabel != null) {
-            stmt.bindString(31, loginPasswordLabel);
+            stmt.bindString(32, loginPasswordLabel);
         }
  
         String aboutUs = entity.getAboutUs();
         if (aboutUs != null) {
-            stmt.bindString(32, aboutUs);
+            stmt.bindString(33, aboutUs);
         }
  
         Boolean disableStudentAnalytics = entity.getDisableStudentAnalytics();
         if (disableStudentAnalytics != null) {
-            stmt.bindLong(33, disableStudentAnalytics ? 1L: 0L);
+            stmt.bindLong(34, disableStudentAnalytics ? 1L: 0L);
         }
  
         Boolean customRegistrationEnabled = entity.getCustomRegistrationEnabled();
         if (customRegistrationEnabled != null) {
-            stmt.bindLong(34, customRegistrationEnabled ? 1L: 0L);
+            stmt.bindLong(35, customRegistrationEnabled ? 1L: 0L);
         }
  
         Boolean enableParallelLoginRestriction = entity.getEnableParallelLoginRestriction();
         if (enableParallelLoginRestriction != null) {
-            stmt.bindLong(35, enableParallelLoginRestriction ? 1L: 0L);
+            stmt.bindLong(36, enableParallelLoginRestriction ? 1L: 0L);
         }
  
         Integer maxParallelLogins = entity.getMaxParallelLogins();
         if (maxParallelLogins != null) {
-            stmt.bindLong(36, maxParallelLogins);
+            stmt.bindLong(37, maxParallelLogins);
         }
  
         Integer lockoutLimit = entity.getLockoutLimit();
         if (lockoutLimit != null) {
-            stmt.bindLong(37, lockoutLimit);
+            stmt.bindLong(38, lockoutLimit);
         }
  
         String cooloffTime = entity.getCooloffTime();
         if (cooloffTime != null) {
-            stmt.bindString(38, cooloffTime);
+            stmt.bindString(39, cooloffTime);
         }
  
         String appToolbarLogo = entity.getAppToolbarLogo();
         if (appToolbarLogo != null) {
-            stmt.bindString(39, appToolbarLogo);
+            stmt.bindString(40, appToolbarLogo);
         }
  
         String appShareLink = entity.getAppShareLink();
         if (appShareLink != null) {
-            stmt.bindString(40, appShareLink);
+            stmt.bindString(41, appShareLink);
         }
  
         String serverTime = entity.getServerTime();
         if (serverTime != null) {
-            stmt.bindString(41, serverTime);
+            stmt.bindString(42, serverTime);
         }
  
         Boolean allowScreenshotInApp = entity.getAllowScreenshotInApp();
         if (allowScreenshotInApp != null) {
-            stmt.bindLong(42, allowScreenshotInApp ? 1L: 0L);
+            stmt.bindLong(43, allowScreenshotInApp ? 1L: 0L);
         }
  
         String androidSentryDns = entity.getAndroidSentryDns();
         if (androidSentryDns != null) {
-            stmt.bindString(43, androidSentryDns);
+            stmt.bindString(44, androidSentryDns);
         }
  
         Boolean leaderboardEnabled = entity.getLeaderboardEnabled();
         if (leaderboardEnabled != null) {
-            stmt.bindLong(44, leaderboardEnabled ? 1L: 0L);
+            stmt.bindLong(45, leaderboardEnabled ? 1L: 0L);
         }
  
         String threatsAndTargetsLabel = entity.getThreatsAndTargetsLabel();
         if (threatsAndTargetsLabel != null) {
-            stmt.bindString(45, threatsAndTargetsLabel);
+            stmt.bindString(46, threatsAndTargetsLabel);
         }
  
         Boolean isVideoDownloadEnabled = entity.getIsVideoDownloadEnabled();
         if (isVideoDownloadEnabled != null) {
-            stmt.bindLong(46, isVideoDownloadEnabled ? 1L: 0L);
+            stmt.bindLong(47, isVideoDownloadEnabled ? 1L: 0L);
         }
  
         Boolean isHelpdeskEnabled = entity.getIsHelpdeskEnabled();
         if (isHelpdeskEnabled != null) {
-            stmt.bindLong(47, isHelpdeskEnabled ? 1L: 0L);
+            stmt.bindLong(48, isHelpdeskEnabled ? 1L: 0L);
         }
  
         IntegerList allowedLoginMethods = entity.getAllowedLoginMethods();
         if (allowedLoginMethods != null) {
-            stmt.bindString(48, allowedLoginMethodsConverter.convertToDatabaseValue(allowedLoginMethods));
+            stmt.bindString(49, allowedLoginMethodsConverter.convertToDatabaseValue(allowedLoginMethods));
         }
  
         Boolean showShareButton = entity.getShowShareButton();
         if (showShareButton != null) {
-            stmt.bindLong(49, showShareButton ? 1L: 0L);
+            stmt.bindLong(50, showShareButton ? 1L: 0L);
         }
  
         String facebookAppId = entity.getFacebookAppId();
         if (facebookAppId != null) {
-            stmt.bindString(50, facebookAppId);
+            stmt.bindString(51, facebookAppId);
         }
  
         Integer maxAllowedDownloadedVideos = entity.getMaxAllowedDownloadedVideos();
         if (maxAllowedDownloadedVideos != null) {
-            stmt.bindLong(51, maxAllowedDownloadedVideos);
+            stmt.bindLong(52, maxAllowedDownloadedVideos);
         }
  
         Boolean disableForgotPassword = entity.getDisableForgotPassword();
         if (disableForgotPassword != null) {
-            stmt.bindLong(52, disableForgotPassword ? 1L: 0L);
+            stmt.bindLong(53, disableForgotPassword ? 1L: 0L);
         }
  
         Boolean disableStudentReport = entity.getDisableStudentReport();
         if (disableStudentReport != null) {
-            stmt.bindLong(53, disableStudentReport ? 1L: 0L);
+            stmt.bindLong(54, disableStudentReport ? 1L: 0L);
         }
  
         Boolean enableCustomTest = entity.getEnableCustomTest();
         if (enableCustomTest != null) {
-            stmt.bindLong(54, enableCustomTest ? 1L: 0L);
+            stmt.bindLong(55, enableCustomTest ? 1L: 0L);
         }
  
         String currentPaymentApp = entity.getCurrentPaymentApp();
         if (currentPaymentApp != null) {
-            stmt.bindString(55, currentPaymentApp);
+            stmt.bindString(56, currentPaymentApp);
+        }
+ 
+        String customRegistrationUrl = entity.getCustomRegistrationUrl();
+        if (customRegistrationUrl != null) {
+            stmt.bindString(57, customRegistrationUrl);
+        }
+ 
+        Boolean disableStoreInApp = entity.getDisableStoreInApp();
+        if (disableStoreInApp != null) {
+            stmt.bindLong(58, disableStoreInApp ? 1L: 0L);
         }
     }
 
@@ -470,38 +491,41 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             cursor.getShort(offset + 20) != 0, // commentsVotingEnabled
             cursor.isNull(offset + 21) ? null : cursor.getShort(offset + 21) != 0, // bookmarksEnabled
             cursor.isNull(offset + 22) ? null : cursor.getShort(offset + 22) != 0, // forumEnabled
-            cursor.isNull(offset + 23) ? null : cursor.getShort(offset + 23) != 0, // twilioEnabled
-            cursor.isNull(offset + 24) ? null : cursor.getShort(offset + 24) != 0, // allow_profile_edit
-            cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25), // learnLabel
-            cursor.isNull(offset + 26) ? null : cursor.getString(offset + 26), // leaderboardLabel
-            cursor.isNull(offset + 27) ? null : cursor.getString(offset + 27), // dashboardLabel
-            cursor.isNull(offset + 28) ? null : cursor.getString(offset + 28), // bookmarksLabel
-            cursor.isNull(offset + 29) ? null : cursor.getString(offset + 29), // loginLabel
-            cursor.isNull(offset + 30) ? null : cursor.getString(offset + 30), // loginPasswordLabel
-            cursor.isNull(offset + 31) ? null : cursor.getString(offset + 31), // aboutUs
-            cursor.isNull(offset + 32) ? null : cursor.getShort(offset + 32) != 0, // disableStudentAnalytics
-            cursor.isNull(offset + 33) ? null : cursor.getShort(offset + 33) != 0, // customRegistrationEnabled
-            cursor.isNull(offset + 34) ? null : cursor.getShort(offset + 34) != 0, // enableParallelLoginRestriction
-            cursor.isNull(offset + 35) ? null : cursor.getInt(offset + 35), // maxParallelLogins
-            cursor.isNull(offset + 36) ? null : cursor.getInt(offset + 36), // lockoutLimit
-            cursor.isNull(offset + 37) ? null : cursor.getString(offset + 37), // cooloffTime
-            cursor.isNull(offset + 38) ? null : cursor.getString(offset + 38), // appToolbarLogo
-            cursor.isNull(offset + 39) ? null : cursor.getString(offset + 39), // appShareLink
-            cursor.isNull(offset + 40) ? null : cursor.getString(offset + 40), // serverTime
-            cursor.isNull(offset + 41) ? null : cursor.getShort(offset + 41) != 0, // allowScreenshotInApp
-            cursor.isNull(offset + 42) ? null : cursor.getString(offset + 42), // androidSentryDns
-            cursor.isNull(offset + 43) ? null : cursor.getShort(offset + 43) != 0, // leaderboardEnabled
-            cursor.isNull(offset + 44) ? null : cursor.getString(offset + 44), // threatsAndTargetsLabel
-            cursor.isNull(offset + 45) ? null : cursor.getShort(offset + 45) != 0, // isVideoDownloadEnabled
-            cursor.isNull(offset + 46) ? null : cursor.getShort(offset + 46) != 0, // isHelpdeskEnabled
-            cursor.isNull(offset + 47) ? null : allowedLoginMethodsConverter.convertToEntityProperty(cursor.getString(offset + 47)), // allowedLoginMethods
-            cursor.isNull(offset + 48) ? null : cursor.getShort(offset + 48) != 0, // showShareButton
-            cursor.isNull(offset + 49) ? null : cursor.getString(offset + 49), // facebookAppId
-            cursor.isNull(offset + 50) ? null : cursor.getInt(offset + 50), // maxAllowedDownloadedVideos
-            cursor.isNull(offset + 51) ? null : cursor.getShort(offset + 51) != 0, // disableForgotPassword
-            cursor.isNull(offset + 52) ? null : cursor.getShort(offset + 52) != 0, // disableStudentReport
-            cursor.isNull(offset + 53) ? null : cursor.getShort(offset + 53) != 0, // enableCustomTest
-            cursor.isNull(offset + 54) ? null : cursor.getString(offset + 54) // currentPaymentApp
+            cursor.isNull(offset + 23) ? null : cursor.getString(offset + 23), // forumLabel
+            cursor.isNull(offset + 24) ? null : cursor.getShort(offset + 24) != 0, // twilioEnabled
+            cursor.isNull(offset + 25) ? null : cursor.getShort(offset + 25) != 0, // allow_profile_edit
+            cursor.isNull(offset + 26) ? null : cursor.getString(offset + 26), // learnLabel
+            cursor.isNull(offset + 27) ? null : cursor.getString(offset + 27), // leaderboardLabel
+            cursor.isNull(offset + 28) ? null : cursor.getString(offset + 28), // dashboardLabel
+            cursor.isNull(offset + 29) ? null : cursor.getString(offset + 29), // bookmarksLabel
+            cursor.isNull(offset + 30) ? null : cursor.getString(offset + 30), // loginLabel
+            cursor.isNull(offset + 31) ? null : cursor.getString(offset + 31), // loginPasswordLabel
+            cursor.isNull(offset + 32) ? null : cursor.getString(offset + 32), // aboutUs
+            cursor.isNull(offset + 33) ? null : cursor.getShort(offset + 33) != 0, // disableStudentAnalytics
+            cursor.isNull(offset + 34) ? null : cursor.getShort(offset + 34) != 0, // customRegistrationEnabled
+            cursor.isNull(offset + 35) ? null : cursor.getShort(offset + 35) != 0, // enableParallelLoginRestriction
+            cursor.isNull(offset + 36) ? null : cursor.getInt(offset + 36), // maxParallelLogins
+            cursor.isNull(offset + 37) ? null : cursor.getInt(offset + 37), // lockoutLimit
+            cursor.isNull(offset + 38) ? null : cursor.getString(offset + 38), // cooloffTime
+            cursor.isNull(offset + 39) ? null : cursor.getString(offset + 39), // appToolbarLogo
+            cursor.isNull(offset + 40) ? null : cursor.getString(offset + 40), // appShareLink
+            cursor.isNull(offset + 41) ? null : cursor.getString(offset + 41), // serverTime
+            cursor.isNull(offset + 42) ? null : cursor.getShort(offset + 42) != 0, // allowScreenshotInApp
+            cursor.isNull(offset + 43) ? null : cursor.getString(offset + 43), // androidSentryDns
+            cursor.isNull(offset + 44) ? null : cursor.getShort(offset + 44) != 0, // leaderboardEnabled
+            cursor.isNull(offset + 45) ? null : cursor.getString(offset + 45), // threatsAndTargetsLabel
+            cursor.isNull(offset + 46) ? null : cursor.getShort(offset + 46) != 0, // isVideoDownloadEnabled
+            cursor.isNull(offset + 47) ? null : cursor.getShort(offset + 47) != 0, // isHelpdeskEnabled
+            cursor.isNull(offset + 48) ? null : allowedLoginMethodsConverter.convertToEntityProperty(cursor.getString(offset + 48)), // allowedLoginMethods
+            cursor.isNull(offset + 49) ? null : cursor.getShort(offset + 49) != 0, // showShareButton
+            cursor.isNull(offset + 50) ? null : cursor.getString(offset + 50), // facebookAppId
+            cursor.isNull(offset + 51) ? null : cursor.getInt(offset + 51), // maxAllowedDownloadedVideos
+            cursor.isNull(offset + 52) ? null : cursor.getShort(offset + 52) != 0, // disableForgotPassword
+            cursor.isNull(offset + 53) ? null : cursor.getShort(offset + 53) != 0, // disableStudentReport
+            cursor.isNull(offset + 54) ? null : cursor.getShort(offset + 54) != 0, // enableCustomTest
+            cursor.isNull(offset + 55) ? null : cursor.getString(offset + 55), // currentPaymentApp
+            cursor.isNull(offset + 56) ? null : cursor.getString(offset + 56), // customRegistrationUrl
+            cursor.isNull(offset + 57) ? null : cursor.getShort(offset + 57) != 0 // disableStoreInApp
         );
         return entity;
     }
@@ -532,38 +556,41 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         entity.setCommentsVotingEnabled(cursor.getShort(offset + 20) != 0);
         entity.setBookmarksEnabled(cursor.isNull(offset + 21) ? null : cursor.getShort(offset + 21) != 0);
         entity.setForumEnabled(cursor.isNull(offset + 22) ? null : cursor.getShort(offset + 22) != 0);
-        entity.setTwilioEnabled(cursor.isNull(offset + 23) ? null : cursor.getShort(offset + 23) != 0);
-        entity.setAllow_profile_edit(cursor.isNull(offset + 24) ? null : cursor.getShort(offset + 24) != 0);
-        entity.setLearnLabel(cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25));
-        entity.setLeaderboardLabel(cursor.isNull(offset + 26) ? null : cursor.getString(offset + 26));
-        entity.setDashboardLabel(cursor.isNull(offset + 27) ? null : cursor.getString(offset + 27));
-        entity.setBookmarksLabel(cursor.isNull(offset + 28) ? null : cursor.getString(offset + 28));
-        entity.setLoginLabel(cursor.isNull(offset + 29) ? null : cursor.getString(offset + 29));
-        entity.setLoginPasswordLabel(cursor.isNull(offset + 30) ? null : cursor.getString(offset + 30));
-        entity.setAboutUs(cursor.isNull(offset + 31) ? null : cursor.getString(offset + 31));
-        entity.setDisableStudentAnalytics(cursor.isNull(offset + 32) ? null : cursor.getShort(offset + 32) != 0);
-        entity.setCustomRegistrationEnabled(cursor.isNull(offset + 33) ? null : cursor.getShort(offset + 33) != 0);
-        entity.setEnableParallelLoginRestriction(cursor.isNull(offset + 34) ? null : cursor.getShort(offset + 34) != 0);
-        entity.setMaxParallelLogins(cursor.isNull(offset + 35) ? null : cursor.getInt(offset + 35));
-        entity.setLockoutLimit(cursor.isNull(offset + 36) ? null : cursor.getInt(offset + 36));
-        entity.setCooloffTime(cursor.isNull(offset + 37) ? null : cursor.getString(offset + 37));
-        entity.setAppToolbarLogo(cursor.isNull(offset + 38) ? null : cursor.getString(offset + 38));
-        entity.setAppShareLink(cursor.isNull(offset + 39) ? null : cursor.getString(offset + 39));
-        entity.setServerTime(cursor.isNull(offset + 40) ? null : cursor.getString(offset + 40));
-        entity.setAllowScreenshotInApp(cursor.isNull(offset + 41) ? null : cursor.getShort(offset + 41) != 0);
-        entity.setAndroidSentryDns(cursor.isNull(offset + 42) ? null : cursor.getString(offset + 42));
-        entity.setLeaderboardEnabled(cursor.isNull(offset + 43) ? null : cursor.getShort(offset + 43) != 0);
-        entity.setThreatsAndTargetsLabel(cursor.isNull(offset + 44) ? null : cursor.getString(offset + 44));
-        entity.setIsVideoDownloadEnabled(cursor.isNull(offset + 45) ? null : cursor.getShort(offset + 45) != 0);
-        entity.setIsHelpdeskEnabled(cursor.isNull(offset + 46) ? null : cursor.getShort(offset + 46) != 0);
-        entity.setAllowedLoginMethods(cursor.isNull(offset + 47) ? null : allowedLoginMethodsConverter.convertToEntityProperty(cursor.getString(offset + 47)));
-        entity.setShowShareButton(cursor.isNull(offset + 48) ? null : cursor.getShort(offset + 48) != 0);
-        entity.setFacebookAppId(cursor.isNull(offset + 49) ? null : cursor.getString(offset + 49));
-        entity.setMaxAllowedDownloadedVideos(cursor.isNull(offset + 50) ? null : cursor.getInt(offset + 50));
-        entity.setDisableForgotPassword(cursor.isNull(offset + 51) ? null : cursor.getShort(offset + 51) != 0);
-        entity.setDisableStudentReport(cursor.isNull(offset + 52) ? null : cursor.getShort(offset + 52) != 0);
-        entity.setEnableCustomTest(cursor.isNull(offset + 53) ? null : cursor.getShort(offset + 53) != 0);
-        entity.setCurrentPaymentApp(cursor.isNull(offset + 54) ? null : cursor.getString(offset + 54));
+        entity.setForumLabel(cursor.isNull(offset + 23) ? null : cursor.getString(offset + 23));
+        entity.setTwilioEnabled(cursor.isNull(offset + 24) ? null : cursor.getShort(offset + 24) != 0);
+        entity.setAllow_profile_edit(cursor.isNull(offset + 25) ? null : cursor.getShort(offset + 25) != 0);
+        entity.setLearnLabel(cursor.isNull(offset + 26) ? null : cursor.getString(offset + 26));
+        entity.setLeaderboardLabel(cursor.isNull(offset + 27) ? null : cursor.getString(offset + 27));
+        entity.setDashboardLabel(cursor.isNull(offset + 28) ? null : cursor.getString(offset + 28));
+        entity.setBookmarksLabel(cursor.isNull(offset + 29) ? null : cursor.getString(offset + 29));
+        entity.setLoginLabel(cursor.isNull(offset + 30) ? null : cursor.getString(offset + 30));
+        entity.setLoginPasswordLabel(cursor.isNull(offset + 31) ? null : cursor.getString(offset + 31));
+        entity.setAboutUs(cursor.isNull(offset + 32) ? null : cursor.getString(offset + 32));
+        entity.setDisableStudentAnalytics(cursor.isNull(offset + 33) ? null : cursor.getShort(offset + 33) != 0);
+        entity.setCustomRegistrationEnabled(cursor.isNull(offset + 34) ? null : cursor.getShort(offset + 34) != 0);
+        entity.setEnableParallelLoginRestriction(cursor.isNull(offset + 35) ? null : cursor.getShort(offset + 35) != 0);
+        entity.setMaxParallelLogins(cursor.isNull(offset + 36) ? null : cursor.getInt(offset + 36));
+        entity.setLockoutLimit(cursor.isNull(offset + 37) ? null : cursor.getInt(offset + 37));
+        entity.setCooloffTime(cursor.isNull(offset + 38) ? null : cursor.getString(offset + 38));
+        entity.setAppToolbarLogo(cursor.isNull(offset + 39) ? null : cursor.getString(offset + 39));
+        entity.setAppShareLink(cursor.isNull(offset + 40) ? null : cursor.getString(offset + 40));
+        entity.setServerTime(cursor.isNull(offset + 41) ? null : cursor.getString(offset + 41));
+        entity.setAllowScreenshotInApp(cursor.isNull(offset + 42) ? null : cursor.getShort(offset + 42) != 0);
+        entity.setAndroidSentryDns(cursor.isNull(offset + 43) ? null : cursor.getString(offset + 43));
+        entity.setLeaderboardEnabled(cursor.isNull(offset + 44) ? null : cursor.getShort(offset + 44) != 0);
+        entity.setThreatsAndTargetsLabel(cursor.isNull(offset + 45) ? null : cursor.getString(offset + 45));
+        entity.setIsVideoDownloadEnabled(cursor.isNull(offset + 46) ? null : cursor.getShort(offset + 46) != 0);
+        entity.setIsHelpdeskEnabled(cursor.isNull(offset + 47) ? null : cursor.getShort(offset + 47) != 0);
+        entity.setAllowedLoginMethods(cursor.isNull(offset + 48) ? null : allowedLoginMethodsConverter.convertToEntityProperty(cursor.getString(offset + 48)));
+        entity.setShowShareButton(cursor.isNull(offset + 49) ? null : cursor.getShort(offset + 49) != 0);
+        entity.setFacebookAppId(cursor.isNull(offset + 50) ? null : cursor.getString(offset + 50));
+        entity.setMaxAllowedDownloadedVideos(cursor.isNull(offset + 51) ? null : cursor.getInt(offset + 51));
+        entity.setDisableForgotPassword(cursor.isNull(offset + 52) ? null : cursor.getShort(offset + 52) != 0);
+        entity.setDisableStudentReport(cursor.isNull(offset + 53) ? null : cursor.getShort(offset + 53) != 0);
+        entity.setEnableCustomTest(cursor.isNull(offset + 54) ? null : cursor.getShort(offset + 54) != 0);
+        entity.setCurrentPaymentApp(cursor.isNull(offset + 55) ? null : cursor.getString(offset + 55));
+        entity.setCustomRegistrationUrl(cursor.isNull(offset + 56) ? null : cursor.getString(offset + 56));
+        entity.setDisableStoreInApp(cursor.isNull(offset + 57) ? null : cursor.getShort(offset + 57) != 0);
      }
     
     /** @inheritdoc */

@@ -21,7 +21,6 @@ class DiscussionFragmentv2: DiscussionFragment() {
         requireActivity().startActivity(intent)
     }
 
-    @ExperimentalPagingApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.categories.observe(viewLifecycleOwner, Observer { domainCategories ->

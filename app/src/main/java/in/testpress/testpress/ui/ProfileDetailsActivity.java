@@ -63,6 +63,7 @@ import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.core.Constants;
+import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
@@ -80,6 +81,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         implements LoaderManager.LoaderCallbacks<ProfileDetails> {
 
     @Inject TestpressServiceProvider serviceProvider;
+    @Inject TestpressService testpressService;
     @InjectView(R.id.profile_photo) ImageView profilePhoto;
     @InjectView(R.id.edit_profile) ImageView editProfile;
     @InjectView(R.id.edit_profile_photo) ImageView imageEditButton;
@@ -123,6 +125,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     ImageLoader imageLoader;
     DisplayImageOptions options;
     Menu menu;
+    Button deleteAccountButton;
     static final private int SELECT_IMAGE = 100;
     public String ssoUrl;
 
@@ -166,6 +169,25 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
                 .showImageOnLoading(R.drawable.profile_image_sample).build();
         getSupportLoaderManager().initLoader(0, null, this);
         fetchSsoLink();
+        initializeDeleteAccountButton();
+    }
+
+    private void initializeDeleteAccountButton() {
+        deleteAccountButton = findViewById(R.id.delete_account);
+        deleteAccountButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ProfileDetailsActivity.this.startActivity(
+                        AccountDeleteActivity.Companion.createIntent(
+                                ProfileDetailsActivity.this,
+                                "Delete Account",
+                                "/settings/account/delete/",
+                                true,
+                                AccountDeleteActivity.class
+                        )
+                );
+            }
+        });
     }
 
     @Override
@@ -227,6 +249,14 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         handleDetail(pinCode, pinCodeRow, profileDetails.getZip());
         saveButton.setVisibility(View.GONE);
         setEnabled(false, new View[]{email, phone, gender, dateOfBirth, address, city, state, pinCode});
+        showOrHideDeleteAccountButton();
+    }
+
+    private void showOrHideDeleteAccountButton() {
+        Boolean allowSignUp = TestpressApplication.getInstituteSettings().getAllowSignup();
+        if (Boolean.TRUE.equals(allowSignUp)) {
+            deleteAccountButton.setVisibility(View.VISIBLE);
+        }
     }
 
     private void handleDetail(View widget, View viewRow, String detail) {

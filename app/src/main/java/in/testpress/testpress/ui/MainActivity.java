@@ -482,8 +482,12 @@ public class MainActivity extends TestpressFragmentActivity {
         }
         new SafeAsyncTask<InstituteSettings>() {
             @Override
-            public InstituteSettings call() {
-                return testpressService.getInstituteSettings();
+            public InstituteSettings call() throws Exception {
+                if (isUserAuthenticated) {
+                    return serviceProvider.getService(MainActivity.this).getInstituteSettings();
+                } else {
+                    return testpressService.getInstituteSettings();
+                }
             }
 
             @Override

@@ -31,6 +31,7 @@ open class AutoLoginFragment: RegistrationBaseFragment() {
             when (it.status) {
                 Status.SUCCESS -> autoLogin()
                 Status.ERROR -> onRegisterException(it.exception)
+                else -> {}
             }
         })
 
@@ -38,6 +39,7 @@ open class AutoLoginFragment: RegistrationBaseFragment() {
             when (it.status) {
                 Status.SUCCESS -> navigateToMainActivity()
                 Status.ERROR -> navigateToLoginActivity()
+                else -> {}
             }
         })
     }

@@ -31,6 +31,7 @@ open class PhoneVerificationFragment : RegistrationBaseFragment() {
             when (it.status) {
                 Status.SUCCESS -> navigateToCodeVerificationActivity()
                 Status.ERROR -> onRegisterException(it.exception)
+                else -> {}
             }
         })
     }

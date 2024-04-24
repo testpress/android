@@ -155,6 +155,7 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
                         UIUtils.showAlert(requireContext(),"Error occurred while sending OTP. Please try again.")
                     }
                 }
+                else -> {}
             }
         })
     }

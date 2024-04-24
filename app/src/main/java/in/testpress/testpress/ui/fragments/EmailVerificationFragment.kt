@@ -28,6 +28,7 @@ open class EmailVerificationFragment : RegistrationBaseFragment() {
             when (it.status) {
                 Status.SUCCESS -> showVerifyEmailLayout()
                 Status.ERROR -> onRegisterException(it.exception)
+                else -> {}
             }
         })
     }

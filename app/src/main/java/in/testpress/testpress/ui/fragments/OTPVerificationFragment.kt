@@ -113,6 +113,7 @@ class OTPVerificationFragment: BaseAuthenticationFragment() {
                     Status.ERROR -> {
                         UIUtils.showAlert(requireContext(),resource.data?.detail ?: "Couldn't send OTP. Please try again")
                     }
+                    else -> {}
                 }
             })
         }
@@ -154,6 +155,7 @@ class OTPVerificationFragment: BaseAuthenticationFragment() {
                             UIUtils.showAlert(requireContext(),"Error occurred while verifying OTP. Please try again.")
                         }
                     }
+                    else -> {}
                 }
             })
         }

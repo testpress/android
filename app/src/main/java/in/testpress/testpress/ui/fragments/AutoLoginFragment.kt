@@ -10,7 +10,6 @@ import android.content.Intent
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import kotlinx.android.synthetic.main.register_activity.*
 
 open class AutoLoginFragment: RegistrationBaseFragment() {
 
@@ -53,8 +52,13 @@ open class AutoLoginFragment: RegistrationBaseFragment() {
     private fun autoLogin() {
         ProgressUtil.progressDialog.dismiss()
         instituteSettings = viewModel.instituteSettings
-        autoLoginViewModel.initializeTestPressSession(activity,instituteSettings,
-                editTextUsername.text.toString(), editTextPassword.text.toString(), activity.testPressService)
+        autoLoginViewModel.initializeTestPressSession(
+            activity,
+            instituteSettings,
+            binding.editTextUsername.text.toString(),
+            binding.editTextPassword.text.toString(),
+            activity.testPressService
+        )
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)

@@ -7,8 +7,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.Observer
-import kotlinx.android.synthetic.main.register_activity.*
-import kotlinx.android.synthetic.main.success_message_layout.*
 
 open class EmailVerificationFragment : RegistrationBaseFragment() {
 
@@ -41,13 +39,13 @@ open class EmailVerificationFragment : RegistrationBaseFragment() {
 
     private fun showVerifyEmailLayout() {
         ProgressUtil.progressDialog.dismiss()
-        registerLayout.visibility = View.GONE
-        success_description.setText(R.string.activation_email_sent_message)
-        success_complete.visibility = View.VISIBLE
+        binding.registerLayout.visibility = View.GONE
+        binding.successMessageLayout!!.successDescription.setText(R.string.activation_email_sent_message)
+        binding.successMessageLayout!!.successComplete.visibility = View.VISIBLE
     }
 
     private fun setOnClickListener() {
-        success_ok.setOnClickListener {
+        binding.successMessageLayout!!.successOk.setOnClickListener {
             activity.finish()
         }
     }

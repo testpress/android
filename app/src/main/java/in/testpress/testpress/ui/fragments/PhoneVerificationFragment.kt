@@ -10,13 +10,13 @@ import android.view.View
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.Observer
 import com.google.android.gms.auth.api.phone.SmsRetriever
-import kotlinx.android.synthetic.main.register_activity.*
+//import kotlinx.android.synthetic.main.register_activity.*
 
 open class PhoneVerificationFragment : RegistrationBaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        phoneLayout.visibility = View.VISIBLE
+        binding.phoneLayout.visibility = View.VISIBLE
         showOrHideCountryCodePicker()
     }
 
@@ -57,22 +57,22 @@ open class PhoneVerificationFragment : RegistrationBaseFragment() {
     fun navigateToCodeVerificationActivity() {
         val intent = Intent(getActivity(), CodeVerificationActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            putExtra("username", editTextUsername.text.toString())
-            putExtra("password", editTextPassword.text.toString())
-            putExtra("phoneNumber", editTextPhone.text.toString())
+            putExtra("username", binding.editTextUsername.text.toString())
+            putExtra("password", binding.editTextPassword.text.toString())
+            putExtra("phoneNumber", binding.editTextPhone.text.toString())
         }
         startActivityForResult(intent, REQUEST_CODE_REGISTER_USER)
     }
 
     private fun showOrHideCountryCodePicker() {
         if (viewModel.isTwilioEnabled) {
-            countryCodePicker.apply {
+            binding.countryCodePicker.apply {
                 visibility = View.VISIBLE
-                registerCarrierNumberEditText(editTextPhone)
+                registerCarrierNumberEditText(binding.editTextPhone)
                 setNumberAutoFormattingEnabled(false)
             }
         } else {
-            countryCodePicker.visibility = View.GONE
+            binding.countryCodePicker.visibility = View.GONE
         }
     }
 }

@@ -13,6 +13,7 @@ import `in`.testpress.testpress.authenticator.RegisterActivity
 import `in`.testpress.testpress.authenticator.ResetPasswordActivity
 import `in`.testpress.testpress.core.Constants
 import `in`.testpress.testpress.core.TestpressService
+import `in`.testpress.testpress.databinding.UsernameLoginLayoutBinding
 import `in`.testpress.testpress.models.InstituteSettings
 import `in`.testpress.testpress.ui.WebViewActivity
 import `in`.testpress.testpress.util.UIUtils
@@ -32,10 +33,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.content.ContextCompat.getSystemService
 import android.view.inputmethod.InputMethodManager
-import kotlinx.android.synthetic.main.username_login_layout.*
-import kotlinx.android.synthetic.main.username_login_layout.facebookSignIn
-import kotlinx.android.synthetic.main.username_login_layout.googleSignIn
-import kotlinx.android.synthetic.main.username_login_layout.socialLoginLayout
 import javax.inject.Inject
 
 
@@ -45,6 +42,8 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
 
     @Inject
     lateinit var testPressService: TestpressService
+    private var _binding: UsernameLoginLayoutBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +56,8 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.username_login_layout, container, false)
+        _binding = UsernameLoginLayoutBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -69,8 +69,8 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
     }
 
     private fun initializeInputFields() {
-        password.transformationMethod = PasswordTransformationMethod()
-        password.setOnEditorActionListener { _, actionId, _ ->
+        binding.password.transformationMethod = PasswordTransformationMethod()
+        binding.password.setOnEditorActionListener { _, actionId, _ ->
             when (actionId) {
                 EditorInfo.IME_ACTION_DONE -> {
                     hideSoftKeyboard()
@@ -81,7 +81,7 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
             }
         }
 
-        username.addTextChangedListener(object : TextWatcher {
+        binding.username.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
@@ -89,13 +89,13 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (username.text.toString().contains(" ")) {
-                    username.setText(username.text.toString().replace(" ", ""))
-                    username.setSelection(username.text?.length ?: 0)
+                if (binding.username.text.toString().contains(" ")) {
+                    binding.username.setText(binding.username.text.toString().replace(" ", ""))
+                    binding.username.setSelection(binding.username.text?.length ?: 0)
                 }
             }
         })
-        username.requestFocus()
+        binding.username.requestFocus()
     }
 
     private fun hideSoftKeyboard(){
@@ -104,33 +104,33 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
     }
 
     private fun initializeButtons() {
-        phoneLogin.setOnClickListener {
+        binding.phoneLogin.setOnClickListener {
             loginNavigation?.goToPhoneAuthentication()
         }
 
-        signIn.setOnClickListener {
-            if (username.isEmpty() or password.isEmpty()) {
-                if (username.isEmpty()) {
-                    username.error = "Please enter username/email address"
+        binding.signIn.setOnClickListener {
+            if (binding.username.isEmpty() or binding.password.isEmpty()) {
+                if (binding.username.isEmpty()) {
+                    binding.username.error = "Please enter username/email address"
                 }
-                if (password.isEmpty()) {
-                    password.error = "Please enter your password"
+                if (binding.password.isEmpty()) {
+                    binding.password.error = "Please enter your password"
                 }
             } else {
                 signIn()
             }
         }
 
-        forgotPassword.setOnClickListener {
+        binding.forgotPassword.setOnClickListener {
             val intent = Intent(requireContext(), ResetPasswordActivity::class.java)
             requireActivity().startActivity(intent)
         }
 
-        googleSignIn.setOnClickListener {
+        binding.googleSignIn.setOnClickListener {
             loginNavigation?.signInWithGoogle()
         }
 
-        signUp.setOnClickListener {
+        binding.signUp.setOnClickListener {
             if (instituteSettings.customRegistrationEnabled){
                 val intent = Intent(requireContext(), WebViewActivity::class.java)
                 intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Register")
@@ -144,7 +144,7 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
             }
         }
 
-        usernameLayoutPrivacyPolicy.setOnClickListener {
+        binding.usernameLayoutPrivacyPolicy.setOnClickListener {
             val intent = Intent(requireActivity(), WebViewActivity::class.java)
             intent.putExtra(WebViewActivity.URL_TO_OPEN, BuildConfig.BASE_URL + Constants.Http.URL_PRIVACY_POLICY_FLAG)
             intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Privacy Policy")
@@ -155,14 +155,14 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
 
     private fun updateLabels() {
         if (UIUtils.getMenuItemName(R.string.label_username, instituteSettings).isNotEmpty()) {
-            username.hint = UIUtils.getMenuItemName(
+            binding.username.hint = UIUtils.getMenuItemName(
                 R.string.label_username,
                 instituteSettings
             )
         }
 
         if (UIUtils.getMenuItemName(R.string.label_password, instituteSettings).isNotEmpty()) {
-            password.hint = UIUtils.getMenuItemName(
+            binding.password.hint = UIUtils.getMenuItemName(
                 R.string.label_password,
                 instituteSettings
             )
@@ -171,23 +171,23 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
 
     private fun showOrHideButtons() {
         if (!instituteSettings.allowSignup) {
-            signUp.visibility = View.GONE
+            binding.signUp.visibility = View.GONE
         }
-        ViewUtils.setGone(phoneLogin, 3 !in instituteSettings.allowedLoginMethods)
-        ViewUtils.setGone(facebookSignIn, !instituteSettings.facebookLoginEnabled)
-        ViewUtils.setGone(googleSignIn, !instituteSettings.googleLoginEnabled)
+        ViewUtils.setGone(binding.phoneLogin, 3 !in instituteSettings.allowedLoginMethods)
+        ViewUtils.setGone(binding.facebookSignIn, !instituteSettings.facebookLoginEnabled)
+        ViewUtils.setGone(binding.googleSignIn, !instituteSettings.googleLoginEnabled)
         ViewUtils.setGone(
-            socialLoginLayout, !instituteSettings.facebookLoginEnabled &&
+            binding.socialLoginLayout, !instituteSettings.facebookLoginEnabled &&
                     !instituteSettings.googleLoginEnabled
         )
         if (instituteSettings.disableForgotPassword != null){
-            ViewUtils.setGone(forgotPassword,instituteSettings.disableForgotPassword)
+            ViewUtils.setGone(binding.forgotPassword,instituteSettings.disableForgotPassword)
         }
     }
 
     private fun signIn() {
         authenticate(
-            username.text.toString(), password.text.toString(),
+            binding.username.text.toString(), binding.password.text.toString(),
         )
     }
 
@@ -203,7 +203,7 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
                 override fun onSuccess(response: TestpressSession?) {
                     val authToken = response?.token
                     if (authToken != null) {
-                        loginNavigation?.onLoginSuccess(username.text.toString(),password.text.toString(), authToken)
+                        loginNavigation?.onLoginSuccess(binding.username.text.toString(),binding.password.text.toString(), authToken)
                     }
                 }
 
@@ -221,5 +221,10 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
                     }
                 }
             })
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

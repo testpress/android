@@ -7,12 +7,12 @@ import `in`.testpress.testpress.BuildConfig
 import `in`.testpress.testpress.Injector
 import `in`.testpress.testpress.R
 import `in`.testpress.testpress.TestpressServiceProvider
+import `in`.testpress.testpress.databinding.ContainerLayoutBinding
 import `in`.testpress.testpress.models.SsoUrl
 import `in`.testpress.testpress.util.SafeAsyncTask
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import kotlinx.android.synthetic.main.container_layout.*
 import java.io.IOException
 import javax.inject.Inject
 
@@ -20,11 +20,13 @@ class DoubtsActivity: TestpressFragmentActivity(), EmptyViewListener {
     @Inject
     lateinit var serviceProvider: TestpressServiceProvider
     lateinit var emptyViewFragment: EmptyViewFragment
+    private lateinit var binding: ContainerLayoutBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Injector.inject(this)
-        setContentView(R.layout.container_layout)
+        binding = ContainerLayoutBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         fetchSsoLink()
         initializeEmptyViewFragment()
         showLoading()
@@ -51,13 +53,13 @@ class DoubtsActivity: TestpressFragmentActivity(), EmptyViewListener {
     }
 
     private fun showLoading() {
-        pb_loading.visibility = View.VISIBLE
-        fragment_container.visibility = View.GONE
+        binding.pbLoading.visibility = View.VISIBLE
+        binding.fragmentContainer.visibility = View.GONE
     }
 
     private fun hideLoading() {
-        pb_loading.visibility = View.GONE
-        fragment_container.visibility = View.VISIBLE
+        binding.pbLoading.visibility = View.GONE
+        binding.fragmentContainer.visibility = View.VISIBLE
     }
 
     private fun showErrorView(exception: java.lang.Exception?) {

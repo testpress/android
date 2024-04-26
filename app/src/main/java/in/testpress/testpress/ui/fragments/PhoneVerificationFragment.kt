@@ -10,7 +10,6 @@ import android.view.View
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.Observer
 import com.google.android.gms.auth.api.phone.SmsRetriever
-//import kotlinx.android.synthetic.main.register_activity.*
 
 open class PhoneVerificationFragment : RegistrationBaseFragment() {
 

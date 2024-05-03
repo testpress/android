@@ -17,7 +17,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import kotlinx.android.synthetic.main.register_activity.*
 import java.util.*
 
 abstract class RegistrationBaseFragment: Fragment() {
@@ -54,25 +53,33 @@ abstract class RegistrationBaseFragment: Fragment() {
     abstract fun initViewModelObservers()
 
     fun onRegisterException(exception: Exception?) {
-        buttonRegister.isEnabled = true
+        binding.buttonRegister.isEnabled = true
         ProgressUtil.progressDialog.dismiss()
         viewModel.handleErrorResponse(exception)
     }
 
     private fun hideErrorMessageOnTextChange() {
         val editTextMap = Hashtable<EditText, TextView>()
-        editTextMap[editTextUsername] = usernameErrorText
-        editTextMap[editTextPassword] = passwordErrorText
-        editTextMap[editTextConfirmPassword] = confirmPasswordErrorText
-        editTextMap[editTextEmail] = emailErrorText
-        editTextMap[editTextPhone] = phoneErrorText
+        editTextMap[binding.editTextUsername] = binding.usernameErrorText
+        editTextMap[binding.editTextPassword] = binding.passwordErrorText
+        editTextMap[binding.editTextConfirmPassword] = binding.confirmPasswordErrorText
+        editTextMap[binding.editTextEmail] = binding.emailErrorText
+        editTextMap[binding.editTextPhone] = binding.phoneErrorText
         for (editText in editTextMap.keys()) {
             editTextMap[editText]?.let { TextChangeUtil.hideErrorMessageOnTextChange(editText, it) }
         }
     }
 
     private fun showPasswordToggleOnTextChange() {
-        TextChangeUtil.showPasswordToggleOnTextChange(editTextPassword, passwordErrorText, passwordInputLayout)
-        TextChangeUtil.showPasswordToggleOnTextChange(editTextConfirmPassword, confirmPasswordErrorText, confirmPasswordInputLayout)
+        TextChangeUtil.showPasswordToggleOnTextChange(
+            binding.editTextPassword,
+            binding.passwordErrorText,
+            binding.passwordInputLayout
+        )
+        TextChangeUtil.showPasswordToggleOnTextChange(
+            binding.editTextConfirmPassword,
+            binding.confirmPasswordErrorText,
+            binding.confirmPasswordInputLayout
+        )
     }
 }

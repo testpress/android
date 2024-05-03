@@ -2,11 +2,10 @@ import groovy.json.JsonSlurper
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 ext {
-    testpressSDK = '1.4.130'
+    testpressSDK = '1.4.136'
 }
 
 def jsonFile = file('src/main/assets/config.json')
@@ -133,6 +132,10 @@ android {
 
     dataBinding {
         enabled = true
+    }
+
+    buildFeatures {
+        viewBinding true
     }
 
     compileOptions {

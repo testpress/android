@@ -6,6 +6,7 @@ import `in`.testpress.testpress.Injector
 import `in`.testpress.testpress.R
 import `in`.testpress.testpress.core.Constants.Http
 import `in`.testpress.testpress.core.TestpressService
+import `in`.testpress.testpress.databinding.PhoneLoginLayoutBinding
 import `in`.testpress.testpress.models.InstituteSettings
 import `in`.testpress.testpress.repository.InstituteRepository
 import `in`.testpress.testpress.ui.WebViewActivity
@@ -27,10 +28,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.auth.api.credentials.*
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
-import kotlinx.android.synthetic.main.phone_login_layout.*
-import kotlinx.android.synthetic.main.phone_login_layout.facebookSignIn
-import kotlinx.android.synthetic.main.phone_login_layout.googleSignIn
-import kotlinx.android.synthetic.main.phone_login_layout.socialLoginLayout
 import javax.inject.Inject
 
 
@@ -39,6 +36,8 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
     @Inject
     lateinit var testPressService: TestpressService
     private val instituteSettings = InstituteSettings.getInstance()
+    private var _binding: PhoneLoginLayoutBinding? = null
+    private val binding get() = _binding!!
 
     private val phonePickIntentResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
@@ -79,7 +78,8 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.phone_login_layout, container, false)
+        _binding = PhoneLoginLayoutBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     private fun initViewModel() {
@@ -95,10 +95,10 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setOnClickListeners()
-        phoneNumber.setOnEditorActionListener { _, actionId, _ ->
+        binding.phoneNumber.setOnEditorActionListener { _, actionId, _ ->
             when(actionId) {
                 EditorInfo.IME_ACTION_DONE -> {
-                    requestOTP(phoneNumber.text.toString(), countryCode.selectedCountryCode)
+                    requestOTP(binding.phoneNumber.text.toString(), binding.countryCode.selectedCountryCode)
                     true
                 }
                 else -> false
@@ -108,33 +108,33 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
     }
 
     private fun showOrHideButtons() {
-        ViewUtils.setGone(userNameLogin, 1 !in instituteSettings.allowedLoginMethods)
-        ViewUtils.setGone(facebookSignIn, !instituteSettings.facebookLoginEnabled)
-        ViewUtils.setGone(googleSignIn, !instituteSettings.googleLoginEnabled)
+        ViewUtils.setGone(binding.userNameLogin, 1 !in instituteSettings.allowedLoginMethods)
+        ViewUtils.setGone(binding.facebookSignIn, !instituteSettings.facebookLoginEnabled)
+        ViewUtils.setGone(binding.googleSignIn, !instituteSettings.googleLoginEnabled)
         ViewUtils.setGone(
-            socialLoginLayout, !instituteSettings.facebookLoginEnabled &&
+            binding.socialLoginLayout, !instituteSettings.facebookLoginEnabled &&
                     !instituteSettings.googleLoginEnabled
         )
     }
 
     private fun setOnClickListeners() {
-        userNameLogin.setOnClickListener {
+        binding.userNameLogin.setOnClickListener {
             loginNavigation?.goToUsernameAuthentication()
         }
 
-        verifyOtp.setOnClickListener {
-            if (phoneNumber.isEmpty()) {
-                phoneNumber.error = "Please enter your mobile number"
+        binding.verifyOtp.setOnClickListener {
+            if (binding.phoneNumber.isEmpty()) {
+                binding.phoneNumber.error = "Please enter your mobile number"
             } else {
-                requestOTP(phoneNumber.text.toString(), countryCode.selectedCountryCode)
+                requestOTP(binding.phoneNumber.text.toString(), binding.countryCode.selectedCountryCode)
             }
         }
 
-        googleSignIn.setOnClickListener {
+        binding.googleSignIn.setOnClickListener {
             loginNavigation?.signInWithGoogle()
         }
 
-        phoneLayoutPrivacyPolicy.setOnClickListener {
+        binding.phoneLayoutPrivacyPolicy.setOnClickListener {
             val intent = Intent(requireActivity(), WebViewActivity::class.java)
             intent.putExtra(WebViewActivity.URL_TO_OPEN, BuildConfig.BASE_URL + Http.URL_PRIVACY_POLICY_FLAG)
             intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Privacy Policy")
@@ -155,6 +155,7 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
                         UIUtils.showAlert(requireContext(),"Error occurred while sending OTP. Please try again.")
                     }
                 }
+                else -> {}
             }
         })
     }
@@ -164,8 +165,13 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
         val phoneNo = intent.getParcelableExtra<Credential>(Credential.EXTRA_KEY)?.id
         if (phoneNo != null) {
             val number = phoneNumberUtil.parse(phoneNo, "")
-            phoneNumber.setText(number.nationalNumber.toString())
-            countryCode.setCountryForPhoneCode(number.countryCode)
+            binding.phoneNumber.setText(number.nationalNumber.toString())
+            binding.countryCode.setCountryForPhoneCode(number.countryCode)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

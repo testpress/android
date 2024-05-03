@@ -18,7 +18,9 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <include layout="@layout/success_message_layout" />
+            <include
+                android:id="@+id/success_message_layout"
+                layout="@layout/success_message_layout" />
 
             <LinearLayout
                 android:id="@+id/registerLayout"

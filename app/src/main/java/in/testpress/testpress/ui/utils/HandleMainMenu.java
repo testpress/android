@@ -124,8 +124,9 @@ public class HandleMainMenu {
                 activity.startActivity(intent);
                 break;
             case R.id.discussions:
-                intent = DisscussionActivity.createIntent(activity);
-                activity.startActivity(intent);
+                String label = instituteSettings.getForumLabel();
+                label = label != null ? label : "Discussion";
+                launchDiscussionActivity(label);
                 break;
             case  R.id.student_report:
                 launchStudentReportActivity();
@@ -237,6 +238,18 @@ public class HandleMainMenu {
                         activity,
                         "Custom Module",
                         "/courses/custom_test_generation/?testpress_app=android",
+                        true,
+                        CustomTestGenerationActivity.class
+                )
+        );
+    }
+
+    private void launchDiscussionActivity(String title) {
+        activity.startActivity(
+                WebViewWithSSOActivity.Companion.createIntent(
+                        activity,
+                        title,
+                        "/discussions/new",
                         true,
                         CustomTestGenerationActivity.class
                 )

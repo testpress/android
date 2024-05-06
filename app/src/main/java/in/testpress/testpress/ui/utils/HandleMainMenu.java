@@ -251,7 +251,7 @@ public class HandleMainMenu {
                         title,
                         "/discussions/new",
                         true,
-                        CustomTestGenerationActivity.class
+                        WebViewWithSSOActivity.class
                 )
         );
     }

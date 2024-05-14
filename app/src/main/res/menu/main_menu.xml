@@ -18,6 +18,11 @@
             android:icon="@drawable/ic_pie_chart_black_24dp"
             app:showAsAction="never"/>
         <item
+            android:id="@+id/discussions"
+            android:title="Discussions"
+            android:icon="@drawable/ic_baseline_message_24"
+            app:showAsAction="never"/>
+        <item
             android:id="@+id/profile"
             android:title="Profile"
             android:icon="@drawable/ic_person_black_24dp"

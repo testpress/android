@@ -23,6 +23,7 @@ import in.testpress.testpress.ui.PostActivity;
 import in.testpress.testpress.ui.PostsListActivity;
 import in.testpress.testpress.ui.ProfileDetailsActivity;
 import in.testpress.testpress.util.CommonUtils;
+import in.testpress.ui.WebViewWithSSOActivity;
 import in.testpress.util.Assert;
 
 import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
@@ -107,6 +108,7 @@ public class DeeplinkHandler {
                 case "store":
                 case "market":
                 case "products":
+                case "discussions":
                     authenticateUserAndOpen(uri);
                     break;
                 default:
@@ -164,6 +166,9 @@ public class DeeplinkHandler {
                             case "products":
                                 deepLinkToProduct(uri, testpressSession);
                                 break;
+                            case "discussions":
+                                deepLinkToDiscussions(uri);
+                                break;
                         }
                     }
                 });
@@ -194,6 +199,27 @@ public class DeeplinkHandler {
         } else {
             TestpressStore.show(activity, testpressSession);
         }
+    }
+
+    private void deepLinkToDiscussions(Uri uri) {
+        final List<String> pathSegments = uri.getPathSegments();
+        if (pathSegments.size() == 3) {
+            String discussionSlug = uri.getLastPathSegment();
+            assert discussionSlug != null;
+            openDiscussionActivity(discussionSlug);
+        } else {
+            gotoHome();
+        }
+    }
+
+    private void openDiscussionActivity(String discussionSlug) {
+        activity.startActivityForResult(WebViewWithSSOActivity.Companion.createIntent(
+                activity,
+                "Discussion",
+                "/discussions/new/" + discussionSlug,
+                true,
+                WebViewWithSSOActivity.class
+        ), 1000);
     }
 
     private void gotoAccountActivate(String activateUrlFrag) {

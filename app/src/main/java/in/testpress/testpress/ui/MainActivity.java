@@ -240,6 +240,7 @@ public class MainActivity extends TestpressFragmentActivity {
         hideMenuItemsForUnauthenticatedUser(navigationView.getMenu());
         showShareButtonBasedOnInstituteSettings(navigationView.getMenu());
         showRateUsButtonBasedOnInstituteSettings(navigationView.getMenu());
+        showDiscussionsButtonBasedOnInstituteSettings(navigationView.getMenu());
         updateMenuItemNames(navigationView.getMenu());
         final HandleMainMenu handleMainMenu = new HandleMainMenu(MainActivity.this, serviceProvider);
         navigationView.setNavigationItemSelectedListener(
@@ -266,7 +267,6 @@ public class MainActivity extends TestpressFragmentActivity {
             menu.findItem(R.id.logout).setVisible(true);
             if (mInstituteSettings != null) {
                 menu.findItem(R.id.doubts).setVisible(Boolean.TRUE.equals(mInstituteSettings.getIsHelpdeskEnabled()));
-                menu.findItem(R.id.discussions).setVisible(Boolean.TRUE.equals(mInstituteSettings.getForumEnabled()));
             }
             menu.findItem(R.id.login_activity).setVisible(true);
             menu.findItem(R.id.analytics).setVisible(true);
@@ -288,6 +288,16 @@ public class MainActivity extends TestpressFragmentActivity {
     private void showRateUsButtonBasedOnInstituteSettings(Menu menu){
         if (mInstituteSettings != null) {
             menu.findItem(R.id.rate_us).setVisible(Boolean.TRUE.equals(mInstituteSettings.getShowShareButton()));
+        }
+    }
+
+    private void showDiscussionsButtonBasedOnInstituteSettings(Menu menu) {
+        if (mInstituteSettings != null) {
+            String discussionsLabel = (mInstituteSettings.getForumLabel() != null)
+                    ? mInstituteSettings.getForumLabel()
+                    : getString(R.string.discussions);
+            menu.findItem(R.id.discussions).setTitle(discussionsLabel);
+            menu.findItem(R.id.discussions).setVisible(Boolean.TRUE.equals(mInstituteSettings.getShowShareButton()));
         }
     }
 

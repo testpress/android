@@ -240,6 +240,7 @@ public class MainActivity extends TestpressFragmentActivity {
         hideMenuItemsForUnauthenticatedUser(navigationView.getMenu());
         showShareButtonBasedOnInstituteSettings(navigationView.getMenu());
         showRateUsButtonBasedOnInstituteSettings(navigationView.getMenu());
+        showDiscussionsButtonBasedOnInstituteSettings(navigationView.getMenu());
         updateMenuItemNames(navigationView.getMenu());
         final HandleMainMenu handleMainMenu = new HandleMainMenu(MainActivity.this, serviceProvider);
         navigationView.setNavigationItemSelectedListener(
@@ -287,6 +288,16 @@ public class MainActivity extends TestpressFragmentActivity {
     private void showRateUsButtonBasedOnInstituteSettings(Menu menu){
         if (mInstituteSettings != null) {
             menu.findItem(R.id.rate_us).setVisible(Boolean.TRUE.equals(mInstituteSettings.getShowShareButton()));
+        }
+    }
+
+    private void showDiscussionsButtonBasedOnInstituteSettings(Menu menu) {
+        if (mInstituteSettings != null) {
+            String discussionsLabel = (mInstituteSettings.getForumLabel() != null)
+                    ? mInstituteSettings.getForumLabel()
+                    : getString(R.string.discussions);
+            menu.findItem(R.id.discussions).setTitle(discussionsLabel);
+            menu.findItem(R.id.discussions).setVisible(Boolean.TRUE.equals(mInstituteSettings.getShowShareButton()));
         }
     }
 
@@ -366,9 +377,6 @@ public class MainActivity extends TestpressFragmentActivity {
                 //noinspection ConstantConditions
                 addMenuItem(R.string.testpress_leaderboard, R.drawable.leaderboard,
                         TestpressCourse.getLeaderboardFragment(this, TestpressSdk.getTestpressSession(this)));
-            }
-            if (mInstituteSettings.getForumEnabled()) {
-                addMenuItem(R.string.discussions, R.drawable.chat_icon, new DiscussionFragmentv2());
             }
             if (mInstituteSettings.getIsVideoDownloadEnabled()) {
                 DownloadsFragment downloadsFragment = new DownloadsFragment();

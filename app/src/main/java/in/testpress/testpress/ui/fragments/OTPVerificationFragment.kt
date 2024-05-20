@@ -1,5 +1,6 @@
 package `in`.testpress.testpress.ui.fragments
 
+import `in`.testpress.core.TestpressSdk
 import `in`.testpress.enums.Status
 import `in`.testpress.testpress.Injector
 import `in`.testpress.testpress.core.TestpressService
@@ -147,6 +148,7 @@ class OTPVerificationFragment: BaseAuthenticationFragment() {
                     Status.SUCCESS -> {
                         if (resource.data?.token != null) {
                             loginNavigation?.onLoginSuccess(phoneNumber,"", resource.data!!.token!!)
+                            TestpressSdk.initSentry(requireContext(),testPressService.instituteSettings.androidSentryDns)
                         }
                     }
                     Status.ERROR -> {

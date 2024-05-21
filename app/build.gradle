@@ -71,7 +71,7 @@ dependencies {
     implementation "com.github.hbb20:CountryCodePickerProject:2.4.2"
     implementation 'io.michaelrocks:libphonenumber-android:8.12.57'
 
-    implementation 'io.sentry:sentry-android:5.3.0'
+    implementation 'io.sentry:sentry-android:6.4.2'
     implementation 'org.slf4j:slf4j-nop:1.7.25'
 
 

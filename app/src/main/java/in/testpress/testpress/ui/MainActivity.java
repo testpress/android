@@ -501,7 +501,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 this,
                 options -> {
                     options.setDsn(instituteSettings.getAndroidSentryDns());
-                    options.setEnableSessionTracking(true);
+                    options.setEnableAutoSessionTracking(true);
                 });
         //noinspection ConstantConditions
         if (!isUserAuthenticated && !ALLOW_ANONYMOUS_USER) {

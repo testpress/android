@@ -1,9 +1,11 @@
 package `in`.testpress.testpress.ui.fragments
 
+import `in`.testpress.core.TestpressSdk
 import `in`.testpress.enums.Status
 import `in`.testpress.testpress.Injector
 import `in`.testpress.testpress.core.TestpressService
 import `in`.testpress.testpress.databinding.OtpVerificationLayoutBinding
+import `in`.testpress.testpress.models.InstituteSettings
 import `in`.testpress.testpress.repository.InstituteRepository
 import `in`.testpress.testpress.ui.utils.AutoDetectOTP
 import `in`.testpress.testpress.util.UIUtils
@@ -12,6 +14,7 @@ import `in`.testpress.testpress.viewmodel.LoginViewModel
 import android.accounts.AccountManager
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -147,6 +150,7 @@ class OTPVerificationFragment: BaseAuthenticationFragment() {
                     Status.SUCCESS -> {
                         if (resource.data?.token != null) {
                             loginNavigation?.onLoginSuccess(phoneNumber,"", resource.data!!.token!!)
+                            TestpressSdk.initSentry(requireContext(),InstituteSettings.getInstance().androidSentryDns)
                         }
                     }
                     Status.ERROR -> {

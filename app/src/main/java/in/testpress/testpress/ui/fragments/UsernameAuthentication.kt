@@ -197,6 +197,7 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
             .setCoursesFrontend(instituteSettings.showGameFrontend)
             .setCoursesGamificationEnabled(instituteSettings.coursesEnableGamification)
             .setCommentsVotingEnabled(instituteSettings.commentsVotingEnabled)
+            .setAndroidSentryDns(instituteSettings.androidSentryDns)
             .setAccessCodeEnabled(false)
         TestpressSdk.initialize(requireContext(), settings, userId, accessToken, TestpressSdk.Provider.TESTPRESS,
             object : TestpressCallback<TestpressSession?>() {

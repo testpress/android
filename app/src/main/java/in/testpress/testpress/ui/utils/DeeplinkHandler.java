@@ -216,7 +216,7 @@ public class DeeplinkHandler {
         activity.startActivityForResult(WebViewWithSSOActivity.Companion.createIntent(
                 activity,
                 "Discussion",
-                "/discussions/new/" + discussionSlug,
+                BASE_URL + "/discussions/new/" + discussionSlug,
                 true,
                 WebViewWithSSOActivity.class
         ), 1000);

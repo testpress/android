@@ -181,7 +181,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
                         AccountDeleteActivity.Companion.createIntent(
                                 ProfileDetailsActivity.this,
                                 "Delete Account",
-                                "/settings/account/delete/",
+                                BASE_URL + "/settings/account/delete/",
                                 true,
                                 AccountDeleteActivity.class
                         )

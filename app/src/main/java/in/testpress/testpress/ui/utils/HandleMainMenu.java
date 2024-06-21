@@ -15,6 +15,7 @@ import in.testpress.core.TestpressSession;
 import in.testpress.course.ui.CourseListActivity;
 import in.testpress.course.ui.CustomTestGenerationActivity;
 import in.testpress.course.ui.DownloadsActivity;
+import in.testpress.course.ui.OfflineExamListActivity;
 import in.testpress.exam.TestpressExam;
 import in.testpress.course.TestpressCourse;
 import in.testpress.store.TestpressStore;
@@ -133,6 +134,9 @@ public class HandleMainMenu {
                 break;
             case  R.id.custom_test:
                 launchCustomTestActivity();
+                break;
+            case  R.id.offline_exam:
+                openOfflineExamActivity();
                 break;
         }
     }
@@ -254,5 +258,10 @@ public class HandleMainMenu {
                         WebViewWithSSOActivity.class
                 )
         );
+    }
+
+    private void openOfflineExamActivity() {
+        Intent intent = new Intent(activity, OfflineExamListActivity.class);
+        activity.startActivity(intent);
     }
 }

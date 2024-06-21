@@ -60,6 +60,11 @@
             android:icon="@drawable/ic_baseline_auto_fix_high_24"
             app:showAsAction="never"/>
         <item
+            android:id="@+id/offline_exam"
+            android:title="Offline Exam"
+            android:icon="@drawable/ic_baseline_auto_fix_high_24"
+            app:showAsAction="never"/>
+        <item
             android:id="@+id/logout"
             android:icon="@drawable/ic_exit_to_app_black_24dp"
             android:title="Logout"

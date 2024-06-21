@@ -241,6 +241,7 @@ public class MainActivity extends TestpressFragmentActivity {
         showShareButtonBasedOnInstituteSettings(navigationView.getMenu());
         showRateUsButtonBasedOnInstituteSettings(navigationView.getMenu());
         showDiscussionsButtonBasedOnInstituteSettings(navigationView.getMenu());
+        showBookmarkButtonBasedOnInstituteSettings(navigationView.getMenu());
         updateMenuItemNames(navigationView.getMenu());
         final HandleMainMenu handleMainMenu = new HandleMainMenu(MainActivity.this, serviceProvider);
         navigationView.setNavigationItemSelectedListener(
@@ -262,7 +263,6 @@ public class MainActivity extends TestpressFragmentActivity {
             menu.findItem(R.id.login_activity).setVisible(false);
             menu.findItem(R.id.analytics).setVisible(false);
             menu.findItem(R.id.profile).setVisible(false);
-            menu.findItem(R.id.bookmarks).setVisible(false);
         } else {
             menu.findItem(R.id.logout).setVisible(true);
             if (mInstituteSettings != null) {
@@ -271,7 +271,6 @@ public class MainActivity extends TestpressFragmentActivity {
             menu.findItem(R.id.login_activity).setVisible(true);
             menu.findItem(R.id.analytics).setVisible(true);
             menu.findItem(R.id.profile).setVisible(true);
-            menu.findItem(R.id.bookmarks).setVisible(true);
             menu.findItem(R.id.login).setVisible(false);
             if (mInstituteSettings != null){
                 menu.findItem(R.id.student_report).setVisible(mInstituteSettings.isStudentReportEnabled());
@@ -297,7 +296,17 @@ public class MainActivity extends TestpressFragmentActivity {
                     ? mInstituteSettings.getForumLabel()
                     : getString(R.string.discussions);
             menu.findItem(R.id.discussions).setTitle(discussionsLabel);
-            menu.findItem(R.id.discussions).setVisible(Boolean.TRUE.equals(mInstituteSettings.getShowShareButton()));
+            menu.findItem(R.id.discussions).setVisible(Boolean.TRUE.equals(mInstituteSettings.getForumEnabled()));
+        }
+    }
+
+    private void showBookmarkButtonBasedOnInstituteSettings(Menu menu) {
+        if (mInstituteSettings != null) {
+            String BookmarksLabel = (mInstituteSettings.getBookmarksLabel() != null)
+                    ? mInstituteSettings.getBookmarksLabel()
+                    : getString(R.string.bookmarks);
+            menu.findItem(R.id.bookmarks).setTitle(BookmarksLabel);
+            menu.findItem(R.id.bookmarks).setVisible(Boolean.TRUE.equals(mInstituteSettings.getBookmarksEnabled()));
         }
     }
 

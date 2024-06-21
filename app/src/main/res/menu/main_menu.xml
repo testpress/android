@@ -5,6 +5,7 @@
         <item
             android:id="@+id/bookmarks"
             android:title="Bookmarks"
+            android:visible="false"
             android:icon="@drawable/ic_bookmark_black_24dp"
             app:showAsAction="never"/>
         <item
@@ -20,6 +21,7 @@
         <item
             android:id="@+id/discussions"
             android:title="Discussions"
+            android:visible="false"
             android:icon="@drawable/chat_icon"
             app:showAsAction="never"/>
         <item

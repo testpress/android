@@ -136,6 +136,7 @@ public class MainActivity extends TestpressFragmentActivity {
     public String ssoUrl;
     private boolean isInitScreenCalledOnce;
     private CourseListFragment courseListFragment;
+    int touchCountToEnableScreenShot = 0;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -204,11 +205,9 @@ public class MainActivity extends TestpressFragmentActivity {
             public boolean onLongClick(View view) {
                 Toast.makeText(getApplicationContext(), "App version is " + getString(R.string.version), Toast.LENGTH_SHORT).show();
                 enableOrDisableEasterEgg(getApplicationContext(), true);
-                rateUsButton.getActionView().setVisibility(View.VISIBLE);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        rateUsButton.getActionView().setVisibility(View.GONE);
                         enableOrDisableEasterEgg(getApplicationContext(), false);
                     }
                 }, 7000);
@@ -216,13 +215,19 @@ public class MainActivity extends TestpressFragmentActivity {
             }
         });
 
-        rateUsButton.getActionView().setOnLongClickListener(new View.OnLongClickListener() {
+        findViewById(R.id.version_info).setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View view) {
+            public void onClick(View view) {
                 if (isEasterEggEnabled(getApplicationContext())) {
-                    enableScreenShot(getApplicationContext());
+                    if (touchCountToEnableScreenShot == 3) {
+                        enableScreenShot(getApplicationContext());
+                        touchCountToEnableScreenShot = 0;
+                    } else {
+                        touchCountToEnableScreenShot++;
+                    }
+                } else {
+                    touchCountToEnableScreenShot = 0;
                 }
-                return false;
             }
         });
     }
@@ -249,6 +254,7 @@ public class MainActivity extends TestpressFragmentActivity {
         hideMenuItemsForUnauthenticatedUser(navigationView.getMenu());
         showShareButtonBasedOnInstituteSettings(navigationView.getMenu());
         showRateUsButtonBasedOnInstituteSettings(navigationView.getMenu());
+        showDiscussionsButtonBasedOnInstituteSettings(navigationView.getMenu());
         updateMenuItemNames(navigationView.getMenu());
         final HandleMainMenu handleMainMenu = new HandleMainMenu(MainActivity.this, serviceProvider);
         navigationView.setNavigationItemSelectedListener(
@@ -318,6 +324,16 @@ public class MainActivity extends TestpressFragmentActivity {
     private void showRateUsButtonBasedOnInstituteSettings(Menu menu){
         if (mInstituteSettings != null) {
             menu.findItem(R.id.rate_us).setVisible(Boolean.TRUE.equals(mInstituteSettings.getShowShareButton()));
+        }
+    }
+
+    private void showDiscussionsButtonBasedOnInstituteSettings(Menu menu) {
+        if (mInstituteSettings != null) {
+            String discussionsLabel = (mInstituteSettings.getForumLabel() != null)
+                    ? mInstituteSettings.getForumLabel()
+                    : getString(R.string.discussions);
+            menu.findItem(R.id.discussions).setTitle(discussionsLabel);
+            menu.findItem(R.id.discussions).setVisible(Boolean.TRUE.equals(mInstituteSettings.getShowShareButton()));
         }
     }
 
@@ -536,7 +552,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 this,
                 options -> {
                     options.setDsn(instituteSettings.getAndroidSentryDns());
-                    options.setEnableSessionTracking(true);
+                    options.setEnableAutoSessionTracking(true);
                 });
         //noinspection ConstantConditions
         if (!isUserAuthenticated && !ALLOW_ANONYMOUS_USER) {

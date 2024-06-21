@@ -18,6 +18,7 @@ class AutoLoginViewModel: ViewModel() {
                 .setCoursesFrontend(instituteSettings.showGameFrontend)
                 .setCoursesGamificationEnabled(instituteSettings.coursesEnableGamification)
                 .setCommentsVotingEnabled(instituteSettings.commentsVotingEnabled)
+                .setAndroidSentryDns(instituteSettings.androidSentryDns)
                 .setAccessCodeEnabled(false)
 
         testPressSessionRepository.initialize(context,settings,username, password, testPressService)

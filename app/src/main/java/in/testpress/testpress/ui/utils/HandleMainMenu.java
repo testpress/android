@@ -213,7 +213,7 @@ public class HandleMainMenu {
                 WebViewWithSSOActivity.Companion.createIntent(
                         activity,
                         activity.getString(R.string.student_report),
-                        URL_STUDENT_REPORT_FLAG,
+                        BASE_URL + URL_STUDENT_REPORT_FLAG,
                         true,
                         WebViewWithSSOActivity.class
                 )
@@ -237,7 +237,7 @@ public class HandleMainMenu {
                 CustomTestGenerationActivity.Companion.createIntent(
                         activity,
                         "Custom Module",
-                        "/courses/custom_test_generation/?testpress_app=android",
+                        BASE_URL + "/courses/custom_test_generation/?testpress_app=android",
                         true,
                         CustomTestGenerationActivity.class
                 )
@@ -249,7 +249,7 @@ public class HandleMainMenu {
                 WebViewWithSSOActivity.Companion.createIntent(
                         activity,
                         title,
-                        "/discussions/new",
+                        BASE_URL + "/discussions/new",
                         true,
                         WebViewWithSSOActivity.class
                 )

@@ -235,6 +235,7 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
             .setCoursesFrontend(instituteSettings.showGameFrontend)
             .setCoursesGamificationEnabled(instituteSettings.coursesEnableGamification)
             .setCommentsVotingEnabled(instituteSettings.commentsVotingEnabled)
+            .setAndroidSentryDns(instituteSettings.androidSentryDns)
             .setAccessCodeEnabled(false)
         return settings
     }

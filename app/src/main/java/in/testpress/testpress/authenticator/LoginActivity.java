@@ -381,6 +381,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
                         .setCoursesFrontend(instituteSettings.getShowGameFrontend())
                         .setCoursesGamificationEnabled(instituteSettings.getCoursesEnableGamification())
                         .setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled())
+                        .setAndroidSentryDns(instituteSettings.getAndroidSentryDns())
                         .setAccessCodeEnabled(false);
 
         TestpressSdk.initialize(this, settings, userId, accessToken, provider,

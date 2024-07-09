@@ -99,6 +99,11 @@ public class HandleMainMenu {
                 intent = new Intent(activity, DoubtsActivity.class);
                 activity.startActivity(intent);
                 break;
+            case R.id.discussions:
+                String label = instituteSettings.getForumLabel();
+                label = label != null ? label : "Discussion";
+                launchDiscussionActivity(label);
+                break;
             case R.id.profile:
                 intent = new Intent(activity, ProfileDetailsActivity.class);
                 activity.startActivity(intent);
@@ -190,7 +195,7 @@ public class HandleMainMenu {
                 WebViewWithSSOActivity.Companion.createIntent(
                         activity,
                         activity.getString(R.string.student_report),
-                        URL_STUDENT_REPORT_FLAG,
+                        BASE_URL + URL_STUDENT_REPORT_FLAG,
                         true,
                         WebViewWithSSOActivity.class
                 )
@@ -204,6 +209,18 @@ public class HandleMainMenu {
                         activity.getString(R.string.privacy_policy),
                         BASE_URL + URL_PRIVACY_POLICY_FLAG,
                         false,
+                        WebViewWithSSOActivity.class
+                )
+        );
+    }
+
+    private void launchDiscussionActivity(String title) {
+        activity.startActivity(
+                WebViewWithSSOActivity.Companion.createIntent(
+                        activity,
+                        title,
+                        BASE_URL + "/discussions/new",
+                        true,
                         WebViewWithSSOActivity.class
                 )
         );

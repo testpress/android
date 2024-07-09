@@ -136,6 +136,7 @@ public class TestpressServiceProvider {
                         .setMaxAllowedDownloadedVideos(instituteSettings.getMaxAllowedDownloadedVideos())
                         .setEnableCustomTest(instituteSettings.getEnableCustomTest())
                         .setStoreEnabled(instituteSettings.getStoreEnabled())
+                        .setAndroidSentryDns(instituteSettings.getAndroidSentryDns())
                         .setDisableStoreInApp(instituteSettings.getDisableStoreInApp());
                 appLink = instituteSettings.getAppShareLink();
             }

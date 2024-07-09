@@ -125,6 +125,7 @@ public class MainActivity extends TestpressFragmentActivity {
     public String ssoUrl;
     private boolean isInitScreenCalledOnce;
     private CourseListFragment courseListFragment;
+    int touchCountToEnableScreenShot = 0;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -192,11 +193,9 @@ public class MainActivity extends TestpressFragmentActivity {
             public boolean onLongClick(View view) {
                 Toast.makeText(getApplicationContext(), "App version is " + getString(R.string.version), Toast.LENGTH_SHORT).show();
                 enableOrDisableEasterEgg(getApplicationContext(), true);
-                rateUsButton.getActionView().setVisibility(View.VISIBLE);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        rateUsButton.getActionView().setVisibility(View.GONE);
                         enableOrDisableEasterEgg(getApplicationContext(), false);
                     }
                 }, 7000);
@@ -204,13 +203,19 @@ public class MainActivity extends TestpressFragmentActivity {
             }
         });
 
-        rateUsButton.getActionView().setOnLongClickListener(new View.OnLongClickListener() {
+        findViewById(R.id.version_info).setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View view) {
+            public void onClick(View view) {
                 if (isEasterEggEnabled(getApplicationContext())) {
-                    enableScreenShot(getApplicationContext());
+                    if (touchCountToEnableScreenShot == 3) {
+                        enableScreenShot(getApplicationContext());
+                        touchCountToEnableScreenShot = 0;
+                    } else {
+                        touchCountToEnableScreenShot++;
+                    }
+                } else {
+                    touchCountToEnableScreenShot = 0;
                 }
-                return false;
             }
         });
     }
@@ -237,6 +242,8 @@ public class MainActivity extends TestpressFragmentActivity {
         hideMenuItemsForUnauthenticatedUser(navigationView.getMenu());
         showShareButtonBasedOnInstituteSettings(navigationView.getMenu());
         showRateUsButtonBasedOnInstituteSettings(navigationView.getMenu());
+        showDiscussionsButtonBasedOnInstituteSettings(navigationView.getMenu());
+        showBookmarkButtonBasedOnInstituteSettings(navigationView.getMenu());
         updateMenuItemNames(navigationView.getMenu());
         final HandleMainMenu handleMainMenu = new HandleMainMenu(MainActivity.this, serviceProvider);
         navigationView.setNavigationItemSelectedListener(
@@ -258,7 +265,6 @@ public class MainActivity extends TestpressFragmentActivity {
             menu.findItem(R.id.login_activity).setVisible(false);
             menu.findItem(R.id.analytics).setVisible(false);
             menu.findItem(R.id.profile).setVisible(false);
-            menu.findItem(R.id.bookmarks).setVisible(false);
         } else {
             menu.findItem(R.id.logout).setVisible(true);
             if (mInstituteSettings != null) {
@@ -267,7 +273,6 @@ public class MainActivity extends TestpressFragmentActivity {
             menu.findItem(R.id.login_activity).setVisible(true);
             menu.findItem(R.id.analytics).setVisible(true);
             menu.findItem(R.id.profile).setVisible(true);
-            menu.findItem(R.id.bookmarks).setVisible(true);
             menu.findItem(R.id.login).setVisible(false);
             if (mInstituteSettings != null){
                 menu.findItem(R.id.student_report).setVisible(mInstituteSettings.isStudentReportEnabled());
@@ -284,6 +289,26 @@ public class MainActivity extends TestpressFragmentActivity {
     private void showRateUsButtonBasedOnInstituteSettings(Menu menu){
         if (mInstituteSettings != null) {
             menu.findItem(R.id.rate_us).setVisible(Boolean.TRUE.equals(mInstituteSettings.getShowShareButton()));
+        }
+    }
+
+    private void showDiscussionsButtonBasedOnInstituteSettings(Menu menu) {
+        if (mInstituteSettings != null) {
+            String discussionsLabel = (mInstituteSettings.getForumLabel() != null)
+                    ? mInstituteSettings.getForumLabel()
+                    : getString(R.string.discussions);
+            menu.findItem(R.id.discussions).setTitle(discussionsLabel);
+            menu.findItem(R.id.discussions).setVisible(Boolean.TRUE.equals(mInstituteSettings.getForumEnabled()));
+        }
+    }
+
+    private void showBookmarkButtonBasedOnInstituteSettings(Menu menu) {
+        if (mInstituteSettings != null) {
+            String BookmarksLabel = (mInstituteSettings.getBookmarksLabel() != null)
+                    ? mInstituteSettings.getBookmarksLabel()
+                    : getString(R.string.bookmarks);
+            menu.findItem(R.id.bookmarks).setTitle(BookmarksLabel);
+            menu.findItem(R.id.bookmarks).setVisible(Boolean.TRUE.equals(mInstituteSettings.getBookmarksEnabled()));
         }
     }
 
@@ -367,9 +392,6 @@ public class MainActivity extends TestpressFragmentActivity {
             addMenuItem(R.string.testpress_access_code, R.drawable.access_key,
                     TestpressExam.getAccessCodeFragment(this, TestpressSdk.getTestpressSession(this)));
 
-            if (mInstituteSettings.getForumEnabled()) {
-                addMenuItem(R.string.discussions, R.drawable.chat_icon, new DiscussionFragmentv2());
-            }
             if (mInstituteSettings.getIsVideoDownloadEnabled()) {
                 DownloadsFragment downloadsFragment = new DownloadsFragment();
                 addMenuItem(R.string.downloads, R.drawable.ic_downloads, downloadsFragment);
@@ -493,7 +515,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 this,
                 options -> {
                     options.setDsn(instituteSettings.getAndroidSentryDns());
-                    options.setEnableSessionTracking(true);
+                    options.setEnableAutoSessionTracking(true);
                 });
         //noinspection ConstantConditions
         if (!isUserAuthenticated && !ALLOW_ANONYMOUS_USER) {

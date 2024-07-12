@@ -155,7 +155,7 @@ android {
 
         def host_url = json.testpress_site_subdomain + '.testpress.in'
         resValue "string", "host_url", host_url
-        buildConfigField "String", "BASE_URL", '"https://' + 'ed5e-183-82-26-209.ngrok-free.app' + '"'
+        buildConfigField "String", "BASE_URL", '"https://' + '0bbe-106-51-100-122.ngrok-free.app' + '"'
         resValue "string", "app_name", json.app_name
         resValue "string", "testpress_site_subdomain", json.testpress_site_subdomain
         resValue "string", "version", json.version

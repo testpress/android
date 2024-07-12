@@ -3,6 +3,7 @@ package `in`.testpress.testpress.ui.fragments
 import `in`.testpress.enums.Status
 import `in`.testpress.testpress.BuildConfig
 import `in`.testpress.testpress.Injector
+import `in`.testpress.testpress.R
 import `in`.testpress.testpress.core.Constants.Http
 import `in`.testpress.testpress.core.TestpressService
 import `in`.testpress.testpress.databinding.PhoneLoginLayoutBinding

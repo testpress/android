@@ -12,4 +12,8 @@ object AppChecker {
     fun isLmsDemoApp(context: Context): Boolean {
         return context.getString(R.string.testpress_site_subdomain) == "lmsdemo"
     }
+
+    fun isBrilliantPalaClassesApp(context: Context): Boolean {
+        return context.getString(R.string.testpress_site_subdomain) == "brilliantpalaelearn"
+    }
 }

@@ -37,6 +37,7 @@ import in.testpress.ui.WebViewWithSSOActivity;
 import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.BuildConfig.WHITE_LABELED_HOST_URL;
 import static in.testpress.testpress.core.Constants.Http.URL_PRIVACY_POLICY_FLAG;
 import static in.testpress.testpress.core.Constants.Http.URL_PROCTORED_EXAM_FLAG;
 import static in.testpress.testpress.core.Constants.Http.URL_STUDENT_REPORT_FLAG;
@@ -203,7 +204,7 @@ public class HandleMainMenu {
                 WebViewWithSSOActivity.Companion.createIntent(
                         activity,
                         activity.getString(R.string.student_report),
-                        BASE_URL + URL_STUDENT_REPORT_FLAG,
+                        WHITE_LABELED_HOST_URL + URL_STUDENT_REPORT_FLAG,
                         true,
                         WebViewWithSSOActivity.class
                 )
@@ -215,7 +216,7 @@ public class HandleMainMenu {
                 WebViewWithSSOActivity.Companion.createIntent(
                         activity,
                         activity.getString(R.string.proctored_exam),
-                        URL_PROCTORED_EXAM_FLAG,
+                        WHITE_LABELED_HOST_URL + URL_PROCTORED_EXAM_FLAG,
                         true,
                         WebViewWithSSOActivity.class
                 )
@@ -239,7 +240,7 @@ public class HandleMainMenu {
                 WebViewWithSSOActivity.Companion.createIntent(
                         activity,
                         title,
-                        BASE_URL + "/discussions/new",
+                        WHITE_LABELED_HOST_URL + "/discussions/new",
                         true,
                         WebViewWithSSOActivity.class
                 )

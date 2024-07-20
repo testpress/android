@@ -662,7 +662,7 @@ public class InstituteSettings {
     }
 
     public Boolean getEnableOfflineExam(Context context) {
-        return AppChecker.INSTANCE.isLmsDemoApp(context);
+        return AppChecker.INSTANCE.isLmsDemoApp(context) || AppChecker.INSTANCE.isBrilliantPalaClassesApp(context);
     }
     // KEEP METHODS END
 

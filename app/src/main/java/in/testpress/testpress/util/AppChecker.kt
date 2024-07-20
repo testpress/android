@@ -9,4 +9,7 @@ object AppChecker {
         return context.getString(R.string.testpress_site_subdomain) == "eduport"
     }
 
+    fun isLmsDemoApp(context: Context): Boolean {
+        return context.getString(R.string.testpress_site_subdomain) == "lmsdemo"
+    }
 }

@@ -240,6 +240,7 @@ public class MainActivity extends TestpressFragmentActivity {
         hideMenuItemsForUnauthenticatedUser(navigationView.getMenu());
         showShareButtonBasedOnInstituteSettings(navigationView.getMenu());
         showRateUsButtonBasedOnInstituteSettings(navigationView.getMenu());
+        showOfflineExamBasedOnInstituteSettings(navigationView.getMenu());
         showDiscussionsButtonBasedOnInstituteSettings(navigationView.getMenu());
         showBookmarkButtonBasedOnInstituteSettings(navigationView.getMenu());
         updateMenuItemNames(navigationView.getMenu());
@@ -297,6 +298,12 @@ public class MainActivity extends TestpressFragmentActivity {
                     : getString(R.string.discussions);
             menu.findItem(R.id.discussions).setTitle(discussionsLabel);
             menu.findItem(R.id.discussions).setVisible(Boolean.TRUE.equals(mInstituteSettings.getForumEnabled()));
+        }
+    }
+
+    private void showOfflineExamBasedOnInstituteSettings(Menu menu) {
+        if (mInstituteSettings != null) {
+            menu.findItem(R.id.offline_exam_list).setVisible(Boolean.TRUE.equals(mInstituteSettings.getEnableOfflineExam(this)));
         }
     }
 

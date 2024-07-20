@@ -6,7 +6,7 @@
             android:id="@+id/bookmarks"
             android:title="Bookmarks"
             android:visible="false"
-            android:icon="@drawable/ic_bookmark_black_24dp"
+            android:icon="@drawable/ic_exam"
             app:showAsAction="never"/>
         <item
             android:id="@+id/posts"
@@ -38,6 +38,12 @@
             android:id="@+id/doubts"
             android:title="Doubts"
             android:icon="@drawable/ic_baseline_message_24"
+            android:visible="false"
+            app:showAsAction="never"/>
+        <item
+            android:id="@+id/offline_exam_list"
+            android:title="Offline Exam"
+            android:icon="@drawable/ic_exam"
             android:visible="false"
             app:showAsAction="never"/>
         <item

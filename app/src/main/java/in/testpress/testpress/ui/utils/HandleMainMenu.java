@@ -12,6 +12,7 @@ import android.util.Log;
 
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
+import in.testpress.course.ui.OfflineExamListActivity;
 import in.testpress.exam.TestpressExam;
 import in.testpress.course.TestpressCourse;
 import in.testpress.store.TestpressStore;
@@ -98,6 +99,9 @@ public class HandleMainMenu {
                 Log.d("TAG", "handleMenuOptionClick: ");
                 intent = new Intent(activity, DoubtsActivity.class);
                 activity.startActivity(intent);
+                break;
+            case R.id.offline_exam_list:
+                launchOfflineExamListActivity();
                 break;
             case R.id.discussions:
                 String label = instituteSettings.getForumLabel();
@@ -224,5 +228,9 @@ public class HandleMainMenu {
                         WebViewWithSSOActivity.class
                 )
         );
+    }
+
+    private void launchOfflineExamListActivity() {
+        activity.startActivity(new Intent(activity, OfflineExamListActivity.class));
     }
 }

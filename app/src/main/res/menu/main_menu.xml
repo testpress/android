@@ -6,7 +6,7 @@
             android:id="@+id/bookmarks"
             android:title="Bookmarks"
             android:visible="false"
-            android:icon="@drawable/ic_exam"
+            android:icon="@drawable/ic_bookmark_black_24dp"
             app:showAsAction="never"/>
         <item
             android:id="@+id/posts"

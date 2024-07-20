@@ -1,9 +1,11 @@
 package `in`.testpress.testpress.ui.fragments
 
+import `in`.testpress.core.TestpressSdk
 import `in`.testpress.enums.Status
 import `in`.testpress.testpress.Injector
-import `in`.testpress.testpress.R
 import `in`.testpress.testpress.core.TestpressService
+import `in`.testpress.testpress.databinding.OtpVerificationLayoutBinding
+import `in`.testpress.testpress.models.InstituteSettings
 import `in`.testpress.testpress.repository.InstituteRepository
 import `in`.testpress.testpress.ui.utils.AutoDetectOTP
 import `in`.testpress.testpress.util.UIUtils
@@ -19,7 +21,6 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import kotlinx.android.synthetic.main.otp_verification_layout.*
 import java.util.*
 import java.util.regex.Pattern
 import javax.inject.Inject
@@ -33,6 +34,8 @@ class OTPVerificationFragment: BaseAuthenticationFragment() {
     lateinit var testPressService: TestpressService
     lateinit var phoneNumber: String
     lateinit var countryCode: String
+    private var _binding: OtpVerificationLayoutBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +51,8 @@ class OTPVerificationFragment: BaseAuthenticationFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.otp_verification_layout, container, false)
+        _binding = OtpVerificationLayoutBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -83,7 +87,7 @@ class OTPVerificationFragment: BaseAuthenticationFragment() {
                     if (matcher.find()) {
                         val otp = matcher.group(0)
                         if (isVisible) {
-                            otpField.setText(otp)
+                            binding.otpField.setText(otp)
                             Timer().schedule(500) {
                                 verifyOTP()
                             }
@@ -100,24 +104,25 @@ class OTPVerificationFragment: BaseAuthenticationFragment() {
     }
 
     fun setOnClickListeners() {
-        verifyOTP.setOnClickListener {
+        binding.verifyOTP.setOnClickListener {
             verifyOTP()
         }
 
-        resentOtp.setOnClickListener {
+        binding.resentOtp.setOnClickListener {
             viewModel.requestOTP(phoneNumber, countryCode).observe(viewLifecycleOwner, { resource ->
                 when(resource.status) {
                     Status.SUCCESS -> {
-                        helpText.text = "We resent your OTP"
+                        binding.helpText?.text = "We resent your OTP"
                     }
                     Status.ERROR -> {
                         UIUtils.showAlert(requireContext(),resource.data?.detail ?: "Couldn't send OTP. Please try again")
                     }
+                    else -> {}
                 }
             })
         }
 
-        otpField.setOnEditorActionListener { _, actionId, _ ->
+        binding.otpField.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE){
                 verifyOTP()
                 hideSoftKeyboard()
@@ -134,16 +139,17 @@ class OTPVerificationFragment: BaseAuthenticationFragment() {
     }
 
     fun verifyOTP() {
-        if (otpField.isEmpty()) {
-            otpField.error = "Please enter OTP number"
+        if (binding.otpField.isEmpty()) {
+            binding.otpField.error = "Please enter OTP number"
             return
         }
         requireActivity().runOnUiThread {
-            viewModel.verifyOTP(Integer.parseInt(otpField.text.toString()), phoneNumber).observe(viewLifecycleOwner, { resource ->
+            viewModel.verifyOTP(Integer.parseInt(binding.otpField.text.toString()), phoneNumber).observe(viewLifecycleOwner, { resource ->
                 when(resource.status) {
                     Status.SUCCESS -> {
                         if (resource.data?.token != null) {
                             loginNavigation?.onLoginSuccess(phoneNumber,"", resource.data!!.token!!)
+                            TestpressSdk.initSentry(requireContext(),InstituteSettings.getInstance().androidSentryDns)
                         }
                     }
                     Status.ERROR -> {
@@ -154,8 +160,14 @@ class OTPVerificationFragment: BaseAuthenticationFragment() {
                             UIUtils.showAlert(requireContext(),"Error occurred while verifying OTP. Please try again.")
                         }
                     }
+                    else -> {}
                 }
             })
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

@@ -243,6 +243,7 @@ public class CodeVerificationActivity extends AppCompatActivity {
                         .setBookmarksEnabled(instituteSettings.getBookmarksEnabled())
                         .setCoursesFrontend(instituteSettings.getShowGameFrontend())
                         .setCoursesGamificationEnabled(instituteSettings.getCoursesEnableGamification())
+                        .setAndroidSentryDns(instituteSettings.getAndroidSentryDns())
                         .setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled()).setAccessCodeEnabled(false);
 
         TestpressSdk.initialize(this, settings, username, password, TestpressSdk.Provider.TESTPRESS,

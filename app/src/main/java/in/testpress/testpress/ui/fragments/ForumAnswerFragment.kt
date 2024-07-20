@@ -77,6 +77,7 @@ class ForumAnswerFragment: Fragment() {
                     Toast.makeText(requireContext(), "Error in refreshing answer", Toast.LENGTH_SHORT).show()
                 }
                 Status.LOADING -> progressBar.visibility = View.VISIBLE
+                else -> {}
             }
         })
     }

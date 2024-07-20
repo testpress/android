@@ -12,6 +12,7 @@ import android.util.Log;
 
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
+import in.testpress.course.ui.OfflineExamListActivity;
 import in.testpress.exam.TestpressExam;
 import in.testpress.course.TestpressCourse;
 import in.testpress.store.TestpressStore;
@@ -99,6 +100,14 @@ public class HandleMainMenu {
                 Log.d("TAG", "handleMenuOptionClick: ");
                 intent = new Intent(activity, DoubtsActivity.class);
                 activity.startActivity(intent);
+                break;
+            case R.id.offline_exam_list:
+                launchOfflineExamListActivity();
+                break;
+            case R.id.discussions:
+                String label = instituteSettings.getForumLabel();
+                label = label != null ? label : "Discussion";
+                launchDiscussionActivity(label);
                 break;
             case R.id.profile:
                 intent = new Intent(activity, ProfileDetailsActivity.class);
@@ -194,7 +203,7 @@ public class HandleMainMenu {
                 WebViewWithSSOActivity.Companion.createIntent(
                         activity,
                         activity.getString(R.string.student_report),
-                        URL_STUDENT_REPORT_FLAG,
+                        BASE_URL + URL_STUDENT_REPORT_FLAG,
                         true,
                         WebViewWithSSOActivity.class
                 )
@@ -223,5 +232,21 @@ public class HandleMainMenu {
                         WebViewWithSSOActivity.class
                 )
         );
+    }
+
+    private void launchDiscussionActivity(String title) {
+        activity.startActivity(
+                WebViewWithSSOActivity.Companion.createIntent(
+                        activity,
+                        title,
+                        BASE_URL + "/discussions/new",
+                        true,
+                        WebViewWithSSOActivity.class
+                )
+        );
+    }
+
+    private void launchOfflineExamListActivity() {
+        activity.startActivity(new Intent(activity, OfflineExamListActivity.class));
     }
 }

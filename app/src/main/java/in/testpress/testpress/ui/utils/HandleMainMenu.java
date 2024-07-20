@@ -114,11 +114,6 @@ public class HandleMainMenu {
             case R.id.offline_exam_list:
                 launchOfflineExamListActivity();
                 break;
-            case R.id.discussions:
-                String label = instituteSettings.getForumLabel();
-                label = label != null ? label : "Discussion";
-                launchDiscussionActivity(label);
-                break;
             case R.id.profile:
                 intent = new Intent(activity, ProfileDetailsActivity.class);
                 activity.startActivity(intent);

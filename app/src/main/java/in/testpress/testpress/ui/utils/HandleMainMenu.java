@@ -15,6 +15,7 @@ import in.testpress.core.TestpressSession;
 import in.testpress.course.ui.CourseListActivity;
 import in.testpress.course.ui.CustomTestGenerationActivity;
 import in.testpress.course.ui.DownloadsActivity;
+import in.testpress.course.ui.OfflineExamListActivity;
 import in.testpress.exam.TestpressExam;
 import in.testpress.course.TestpressCourse;
 import in.testpress.store.TestpressStore;
@@ -109,6 +110,14 @@ public class HandleMainMenu {
                 Log.d("TAG", "handleMenuOptionClick: ");
                 intent = new Intent(activity, DoubtsActivity.class);
                 activity.startActivity(intent);
+                break;
+            case R.id.offline_exam_list:
+                launchOfflineExamListActivity();
+                break;
+            case R.id.discussions:
+                String label = instituteSettings.getForumLabel();
+                label = label != null ? label : "Discussion";
+                launchDiscussionActivity(label);
                 break;
             case R.id.profile:
                 intent = new Intent(activity, ProfileDetailsActivity.class);
@@ -254,5 +263,9 @@ public class HandleMainMenu {
                         WebViewWithSSOActivity.class
                 )
         );
+    }
+
+    private void launchOfflineExamListActivity() {
+        activity.startActivity(new Intent(activity, OfflineExamListActivity.class));
     }
 }

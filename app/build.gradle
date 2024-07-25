@@ -5,7 +5,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 ext {
-    testpressSDK = '1.4.152'
+    testpressSDK = '1.4.153'
 }
 
 def jsonFile = file('src/main/assets/config.json')
@@ -14,7 +14,7 @@ def json = new JsonSlurper().parseText(jsonFile.text)
 
 dependencies {
 
-    def lifecycle_version = "2.2.0"
+    def lifecycle_version = "2.6.1"
     def fragment_version = "1.4.1"
 
     // Dependency Injection

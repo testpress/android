@@ -9,7 +9,7 @@ import `in`.testpress.network.RetrofitCall
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 
 class ForumAnswerRepository(val context: Context) {
     val discussionAnswerDao = TestpressDatabase(context).discussionAnswerDao()
@@ -22,9 +22,7 @@ class ForumAnswerRepository(val context: Context) {
             }
 
             override fun loadFromDb(): LiveData<DomainDiscussionThreadAnswer> {
-                return Transformations.map(discussionAnswerDao.getByForumId(forumId)) {
-                    it?.asDomainModel()
-                }
+                return discussionAnswerDao.getByForumId(forumId).map { it?.asDomainModel()!! }
             }
 
             override fun saveNetworkResponseToDB(item: NetworkDiscussionThreadAnswer) {

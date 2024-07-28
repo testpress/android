@@ -139,6 +139,7 @@ public class TestpressServiceProvider {
                         .setAndroidSentryDns(instituteSettings.getAndroidSentryDns())
                         .setDisableImageFullscreenZoomInExam(instituteSettings.getDisableImageFullscreenZoomInExam(activity))
                         .setEnableOfflineExam(instituteSettings.getEnableOfflineExam(activity))
+                        .setShowOfflineExamEndingAlert(true)
                         .setDisableStoreInApp(instituteSettings.getDisableStoreInApp());
                 appLink = instituteSettings.getAppShareLink();
             }

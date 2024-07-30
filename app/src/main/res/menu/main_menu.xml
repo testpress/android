@@ -41,6 +41,12 @@
             android:visible="false"
             app:showAsAction="never"/>
         <item
+            android:id="@+id/offline_exam_list"
+            android:title="Offline Exam"
+            android:icon="@drawable/ic_exam"
+            android:visible="false"
+            app:showAsAction="never"/>
+        <item
             android:id="@+id/student_report"
             android:title="Your Report"
             android:icon="@drawable/ic_student_report"

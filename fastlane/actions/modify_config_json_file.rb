@@ -35,7 +35,7 @@ module Fastlane
           app_config_json = JSON.parse(data)
           config_json.each do |key, value|
             if app_config_json.key?(key) && fields.include?(key)
-                puts "#{key}: #{config_json[field]}" # Print app_name
+                puts "#{key}: #{config_json[key]}" # Print app_name
                 if key == "app_name" or "share_message"
                     temp_value = app_config_json[key]
                     # Replace single quotes with escaped single quotes

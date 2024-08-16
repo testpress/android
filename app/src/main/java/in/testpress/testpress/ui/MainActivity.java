@@ -500,7 +500,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
                 if (mInstituteSettings == null) {
                     onFinishFetchingInstituteSettings(instituteSettings);
-                } else if (mInstituteSettings.getForceStudentData()) {
+                } else if (isUserAuthenticated && mInstituteSettings.getForceStudentData()) {
                     checkForForceUserData();
                 } else {
                     showMainActivityContents();
@@ -534,7 +534,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 updateTestpressSession();
                 syncVideoWatchedData();
 
-                if (mInstituteSettings.getForceStudentData()) {
+                if (isUserAuthenticated && mInstituteSettings.getForceStudentData()) {
                     checkForForceUserData();
                 }
             }
@@ -627,7 +627,7 @@ public class MainActivity extends TestpressFragmentActivity {
         if (navigationView != null) {
             hideMenuItemsForUnauthenticatedUser(navigationView.getMenu());
         }
-        if (mInstituteSettings != null && mInstituteSettings.getForceStudentData()) {
+        if (isUserAuthenticated && mInstituteSettings != null && mInstituteSettings.getForceStudentData()) {
             checkForForceUserData();
         } else {
             showMainActivityContents();

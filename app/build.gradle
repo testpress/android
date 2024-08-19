@@ -68,7 +68,7 @@ dependencies {
 
     // Country code picker
     // https://github.com/hbb20/CountryCodePickerProject/wiki
-    implementation "com.github.hbb20:CountryCodePickerProject:2.4.2"
+    implementation "com.hbb20:ccp:2.7.0"
     implementation 'io.michaelrocks:libphonenumber-android:8.12.57'
 
     implementation 'io.sentry:sentry-android:6.4.2'

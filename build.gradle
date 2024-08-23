@@ -18,6 +18,7 @@ buildscript {
 
 allprojects {
     repositories {
+        mavenLocal()
         maven {
             url 'https://github.com/friberry/mvn-repo/raw/master/'
         }

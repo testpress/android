@@ -34,15 +34,9 @@ allprojects {
 
         google()
         mavenCentral()
-        jcenter() {
-            content {
-                includeModule("com.google.android", "flexbox")
-                includeModule("com.theartofdev.edmodo", "android-image-cropper")
-                includeModule("com.github.skydoves", "powerspinner")
-            }
-        }
-
+        jcenter()
         maven {url "https://phonepe.mycloudrepo.io/public/repositories/phonepe-intentsdk-android"}
+        maven { url "https://github.com/testpress/Android-Image-Cropper/raw/main" }
 
     }
 }

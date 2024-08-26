@@ -5,7 +5,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 ext {
-    testpressSDK = '1.4.159'
+    testpressSDK = '1.4.161'
 }
 
 def jsonFile = file('src/main/assets/config.json')
@@ -26,7 +26,6 @@ dependencies {
     implementation 'com.github.kevinsawicki:wishlist:0.9@aar'
 
     if (json.zoom_enabled) {
-        implementation project(':commonlib')
         implementation project(':mobilertc')
     }
 
@@ -120,7 +119,7 @@ try {
 
 android {
 
-    compileSdkVersion 33
+    compileSdkVersion 34
     buildToolsVersion '30.0.3'
     ndkVersion "23.2.8568313"
 
@@ -148,7 +147,7 @@ android {
 
     defaultConfig {
         minSdkVersion 23
-        targetSdkVersion 33
+        targetSdkVersion 34
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         versionName json.version

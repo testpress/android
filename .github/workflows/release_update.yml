@@ -8,6 +8,15 @@ on:
         required: true
         default: "all"
 
+      release_option:
+        description: "Select the release option."
+        required: true
+        default: "complete"
+        type: choice
+        options:
+          - "complete"
+          - "draft"
+
 jobs:
   release_update:
     runs-on: ubuntu-latest

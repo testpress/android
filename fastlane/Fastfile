@@ -76,9 +76,9 @@ lane :deploy_app do |params|
   # Determine the release status based on release_option
   release_option = params[:release_option]
   case release_option
-  when 'Complete Release'
-    releas e_status = 'completed'
-  when 'Draft Release'
+  when 'Complete-Release'
+    release_status = 'completed'
+  when 'Draft-Release'
     release_status = 'draft'
   else
     release_status = 'completed'

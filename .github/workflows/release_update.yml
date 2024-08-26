@@ -14,8 +14,8 @@ on:
         default: "complete"
         type: choice
         options:
-          - "Complete Release"
-          - "Draft Release"
+          - "Complete-Release"
+          - "Draft-Release"
 
 jobs:
   release_update:

@@ -21,6 +21,8 @@
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
 <!--    <uses-sdk tools:overrideLibrary="us.zoom.androidlib,us.zoom.videomeetings"/>-->
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_PHONE_CALL" tools:node="remove" />
+
     <application
         android:name=".TestpressApplication"
         android:allowBackup="true"

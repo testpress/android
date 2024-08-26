@@ -78,7 +78,7 @@ jobs:
         run: |
           export LC_ALL=en_US.UTF-8
           export LANG=en_US.UTF-8
-          bundle exec fastlane release_update_to subdomain:${{ github.event.inputs.subdomain }}
+          bundle exec fastlane release_update_to subdomain:${{ github.event.inputs.subdomain }} release_option:${{ github.event.inputs.release_option }}
 
       - name: Store app artifacts
         uses: actions/upload-artifact@v2

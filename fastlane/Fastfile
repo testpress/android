@@ -72,10 +72,23 @@ end
 desc "Deploying the app to play store"
 lane :deploy_app do |params|
   download_file(url: params[:play_console_key_file], destination_path: './app/private_key.json')
+
+  # Determine the release status based on release_option
+  release_option = params[:release_option]
+  case release_option
+  when 'Complete Release'
+    releas e_status = 'completed'
+  when 'Draft Release'
+    release_status = 'draft'
+  else
+    release_status = 'completed'
+  end
+
   upload_to_play_store(
     skip_upload_apk: true,
     package_name: params[:package_name],
-    json_key: "%s/app/private_key.json"%File.expand_path("..", Dir.pwd)
+    json_key: "%s/app/private_key.json"%File.expand_path("..", Dir.pwd),
+    release_status: release_status
   )
 end
 

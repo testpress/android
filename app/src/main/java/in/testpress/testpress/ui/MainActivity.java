@@ -1,4 +1,5 @@
 package in.testpress.testpress.ui;
+import in.testpress.core.TestpressUserDetails;
 import in.testpress.course.ui.CourseListFragment;
 
 import android.Manifest;
@@ -360,6 +361,8 @@ public class MainActivity extends TestpressFragmentActivity {
             protected void onSuccess(final Boolean hasAuthenticated) throws Exception {
                 super.onSuccess(hasAuthenticated);
                 isUserAuthenticated = true;
+                // Loading UserProfile Details
+                TestpressUserDetails.getInstance().load(MainActivity.this);
                 if (viewPager.getVisibility() != View.VISIBLE) {
                     initScreen();
                 }

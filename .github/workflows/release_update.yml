@@ -9,13 +9,13 @@ on:
         default: "all"
 
       release_option:
-        description: "Select the release option."
+        description: "Choose the type of release. 'Complete' for a full release or 'Draft' for a pre-release version."
         required: true
         default: "complete"
         type: choice
         options:
-          - "complete"
-          - "draft"
+          - "Complete Release"
+          - "Draft Release"
 
 jobs:
   release_update:

@@ -42,6 +42,24 @@
             android:icon="@drawable/ic_student_report"
             android:visible="false"
             app:showAsAction="never"/>
+        <item
+            android:id="@+id/recorded_lessons"
+            android:icon="@drawable/outline_smart_display_24"
+            android:title="Recorded Lessons"
+            android:visible="false"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/mocks"
+            android:icon="@drawable/testpress_exam_icon"
+            android:title="Mocks"
+            android:visible="false"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/e_books"
+            android:icon="@drawable/testpress_notes_icon"
+            android:title="E-Books"
+            android:visible="false"
+            app:showAsAction="never" />
     </group>
 
     <group

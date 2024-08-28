@@ -120,6 +120,15 @@ public class HandleMainMenu {
             case  R.id.student_report:
                 launchStudentReportActivity();
                 break;
+            case  R.id.recorded_lessons:
+                openCakingExternalURL("Recorded Lessons","/external_site/?endpoint=recorded_lectures");
+                break;
+            case  R.id.mocks:
+                openCakingExternalURL("Mocks","/external_site/?endpoint=mocks");
+                break;
+            case  R.id.e_books:
+                openCakingExternalURL("E-Books","/external_site/?endpoint=e-books");
+                break;
         }
     }
 
@@ -235,5 +244,17 @@ public class HandleMainMenu {
 
     private void launchOfflineExamListActivity() {
         activity.startActivity(new Intent(activity, OfflineExamListActivity.class));
+    }
+
+    private void openCakingExternalURL(String title, String url) {
+        activity.startActivity(
+                WebViewWithSSOActivity.Companion.createIntent(
+                        activity,
+                        title,
+                        BASE_URL + url,
+                        true,
+                        WebViewWithSSOActivity.class
+                )
+        );
     }
 }

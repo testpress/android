@@ -129,6 +129,15 @@ public class HandleMainMenu {
             case  R.id.e_books:
                 openCakingExternalURL("E-Books","/external_site/?endpoint=e-books");
                 break;
+            case  R.id.live_lectures_cat:
+                openCakingExternalURL("CAT","/external_site/?endpoint=cat/40-days-challenge");
+                break;
+            case  R.id.live_lectures_non_cat:
+                openCakingExternalURL("NON-CAT","/external_site/?endpoint=noncat/non-cat-40-days-challenge");
+                break;
+            case  R.id.live_lectures_gd_watpi:
+                openCakingExternalURL("GD WATPI","/external_site/?endpoint=gdwatpi/todays-classes");
+                break;
         }
     }
 

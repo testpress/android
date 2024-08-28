@@ -60,6 +60,31 @@
             android:title="E-Books"
             android:visible="false"
             app:showAsAction="never" />
+        <item
+            android:id="@+id/live_lectures"
+            android:title="Live Lectures"
+            app:showAsAction="never">
+            <menu>
+                <item
+                    android:id="@+id/live_lectures_cat"
+                    android:icon="@drawable/testpress_live_conference_icon"
+                    android:title="CAT"
+                    android:visible="false"
+                    app:showAsAction="never" />
+                <item
+                    android:id="@+id/live_lectures_non_cat"
+                    android:icon="@drawable/testpress_live_conference_icon"
+                    android:title="NON-CAT"
+                    android:visible="false"
+                    app:showAsAction="never" />
+                <item
+                    android:id="@+id/live_lectures_gd_watpi"
+                    android:icon="@drawable/testpress_live_conference_icon"
+                    android:title="GD WATPI"
+                    android:visible="false"
+                    app:showAsAction="never" />
+            </menu>
+        </item>
     </group>
 
     <group

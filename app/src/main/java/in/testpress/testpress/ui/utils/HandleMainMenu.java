@@ -253,6 +253,7 @@ public class HandleMainMenu {
                         title,
                         BASE_URL + url,
                         true,
+                        true,
                         WebViewWithSSOActivity.class
                 )
         );

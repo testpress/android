@@ -201,6 +201,7 @@ public class HandleMainMenu {
                         activity.getString(R.string.student_report),
                         BASE_URL + URL_STUDENT_REPORT_FLAG,
                         true,
+                        false,
                         WebViewWithSSOActivity.class
                 )
         );
@@ -212,6 +213,7 @@ public class HandleMainMenu {
                         activity,
                         activity.getString(R.string.privacy_policy),
                         BASE_URL + URL_PRIVACY_POLICY_FLAG,
+                        false,
                         false,
                         WebViewWithSSOActivity.class
                 )
@@ -225,6 +227,7 @@ public class HandleMainMenu {
                         title,
                         BASE_URL + "/discussions/new",
                         true,
+                        false,
                         WebViewWithSSOActivity.class
                 )
         );

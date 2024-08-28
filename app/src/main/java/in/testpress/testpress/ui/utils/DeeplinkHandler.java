@@ -218,6 +218,7 @@ public class DeeplinkHandler {
                 "Discussion",
                 BASE_URL + "/discussions/new/" + discussionSlug,
                 true,
+                false,
                 WebViewWithSSOActivity.class
         ), 1000);
     }

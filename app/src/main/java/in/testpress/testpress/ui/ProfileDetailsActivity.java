@@ -183,6 +183,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
                                 "Delete Account",
                                 BASE_URL + "/settings/account/delete/",
                                 true,
+                                false,
                                 AccountDeleteActivity.class
                         )
                 );

@@ -71,6 +71,7 @@ import in.testpress.testpress.models.Update;
 import in.testpress.testpress.ui.fragments.DashboardFragment;
 import in.testpress.testpress.ui.fragments.DiscussionFragmentv2;
 import in.testpress.testpress.ui.utils.HandleMainMenu;
+import in.testpress.testpress.util.AppChecker;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.SafeAsyncTask;
@@ -240,6 +241,7 @@ public class MainActivity extends TestpressFragmentActivity {
         showOfflineExamBasedOnInstituteSettings(navigationView.getMenu());
         showDiscussionsButtonBasedOnInstituteSettings(navigationView.getMenu());
         showBookmarkButtonBasedOnInstituteSettings(navigationView.getMenu());
+        showCustomOptions(navigationView.getMenu());
         updateMenuItemNames(navigationView.getMenu());
         final HandleMainMenu handleMainMenu = new HandleMainMenu(MainActivity.this, serviceProvider);
         navigationView.setNavigationItemSelectedListener(
@@ -311,6 +313,14 @@ public class MainActivity extends TestpressFragmentActivity {
                     : getString(R.string.bookmarks);
             menu.findItem(R.id.bookmarks).setTitle(BookmarksLabel);
             menu.findItem(R.id.bookmarks).setVisible(Boolean.TRUE.equals(mInstituteSettings.getBookmarksEnabled()));
+        }
+    }
+
+    private void showCustomOptions(Menu menu) {
+        if (mInstituteSettings != null && AppChecker.INSTANCE.isCatkingApp(this)) {
+            menu.findItem(R.id.recorded_lessons).setVisible(true);
+            menu.findItem(R.id.mocks).setVisible(true);
+            menu.findItem(R.id.e_books).setVisible(true);
         }
     }
 

@@ -179,14 +179,10 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private void setupEasterEgg() {
         Menu navigationMenu = navigationView.getMenu();
-        final MenuItem rateUsButton = navigationMenu.findItem(R.id.rate_us);
+        final MenuItem versionInfo = navigationMenu.findItem(R.id.version_info);
         Button button = new Button(this);
         button.setAlpha(0);
-        rateUsButton.setActionView(button);
-        rateUsButton.getActionView().setVisibility(View.GONE);
-
-
-        findViewById(R.id.version_info).setOnLongClickListener(new View.OnLongClickListener() {
+        button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 Toast.makeText(getApplicationContext(), "App version is " + getString(R.string.version), Toast.LENGTH_SHORT).show();
@@ -201,11 +197,11 @@ public class MainActivity extends TestpressFragmentActivity {
             }
         });
 
-        findViewById(R.id.version_info).setOnClickListener(new View.OnClickListener() {
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (isEasterEggEnabled(getApplicationContext())) {
-                    if (touchCountToEnableScreenShot == 3) {
+                    if (touchCountToEnableScreenShot == 4) {
                         enableScreenShot(getApplicationContext());
                         touchCountToEnableScreenShot = 0;
                     } else {
@@ -216,6 +212,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 }
             }
         });
+        versionInfo.setActionView(button);
     }
 
     private void setUpNavigationDrawer() {
@@ -323,6 +320,7 @@ public class MainActivity extends TestpressFragmentActivity {
             menu.findItem(R.id.posts).setTitle(Strings.toString(mInstituteSettings.getPostsLabel()));
             menu.findItem(R.id.bookmarks).setTitle(Strings.toString(mInstituteSettings.getBookmarksLabel()));
         }
+        menu.findItem(R.id.version_info).setTitle("Version - "+getString(R.string.version));
     }
 
     @Override

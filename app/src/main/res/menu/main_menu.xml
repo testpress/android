@@ -86,5 +86,10 @@
             android:icon="@drawable/ic_share_white_24dp"
             android:title="Share"
             app:showAsAction="always"/>
+        <item
+            android:id="@+id/version_info"
+            android:icon="@drawable/outline_info_24"
+            android:title="Version:1.0.0"
+            app:showAsAction="always"/>
     </group>
 </menu>

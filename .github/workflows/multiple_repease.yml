@@ -31,7 +31,7 @@ jobs:
     strategy:
       matrix:
         subdomain: ${{ fromJson(needs.fetch_subdomains.outputs.subdomains) }}
-    continue-on-error: true  # Allow the job to fail without affecting other subdomain deployments
+    continue-on-error: true
     env:
       GITHUB_ACCESS_KEY: ${{ secrets.GH_ACCESS_KEY }}
       GITHUB_USERNAME: ${{ secrets.GH_USERNAME }}
@@ -44,7 +44,7 @@ jobs:
           curl -f https://${{ matrix.subdomain }}.testpress.in/api/v2.5/admin/android/app-config/ -H "API-access-key: $API_ACCESS_KEY"
         continue-on-error: true
         # Capture the result of validation
-        echo "validate_result=$?" >> $GITHUB_ENV
+        echo "VALIDATE_RESULT=${{ job.status }}" >> $GITHUB_ENV
 
       - name: Setup JDK 11
         uses: actions/setup-java@v3
@@ -97,7 +97,7 @@ jobs:
           bundle exec fastlane release_update_to subdomain:${{ matrix.subdomain }} release_option:draft
         continue-on-error: true
         # Capture the result of deployment
-        echo "deploy_result=$?" >> $GITHUB_ENV
+        echo "DEPLOY_RESULT=${{ job.status }}" >> $GITHUB_ENV
 
       - name: Log Failure
         if: ${{ failure() }}
@@ -109,7 +109,7 @@ jobs:
     needs: deploy_app
     runs-on: ubuntu-latest
     steps:
-      - name: Validate Release Update Jobs
+      - name: Generate and Upload Report
         run: |
           echo "Generating report on deployment results..."
           
@@ -121,10 +121,11 @@ jobs:
           echo "Subdomain | Status" > report.md
           echo "----------|--------" >> report.md
           
-          # Aggregate results from each deployment
+          # Read environment variables from all deployment jobs
           for subdomain in $(echo "${{ fromJson(needs.fetch_subdomains.outputs.subdomains) }}" | jq -r '.[]'); do
-            deploy_result=$(cat $GITHUB_ENV | grep "deploy_result_${subdomain}" | cut -d'=' -f2)
-            if [ "$deploy_result" -eq 0 ]; then
+            validate_result=$(grep "^VALIDATE_RESULT_${subdomain}=" $GITHUB_ENV | cut -d'=' -f2)
+            deploy_result=$(grep "^DEPLOY_RESULT_${subdomain}=" $GITHUB_ENV | cut -d'=' -f2)
+            if [ "$deploy_result" == "success" ]; then
               success_count=$((success_count + 1))
               echo "${subdomain} | Success" >> report.md
             else
@@ -146,7 +147,6 @@ jobs:
           mv report.md reports/
           tar -czf reports.tar.gz reports/
           echo "Report uploaded."
-        # Optionally add artifact upload here
         uses: actions/upload-artifact@v2
         with:
           name: deployment-report

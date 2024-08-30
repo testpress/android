@@ -99,6 +99,10 @@ jobs:
           bundle exec fastlane release_update_to subdomain:${{ matrix.subdomain }} release_option:draft || echo "DEPLOY_FAILED=${{ matrix.subdomain }}" >> deployment_results.txt
         continue-on-error: true
 
+      - name: Install jq
+        run: |
+          sudo apt-get update && sudo apt-get install -y jq
+
       - name: Update success or failure lists
         run: |
           if [ "${{ steps.deploy.outcome }}" == "success" ]; then
@@ -114,6 +118,10 @@ jobs:
     needs: deploy_app
     runs-on: ubuntu-latest
     steps:
+      - name: Install jq for Validation
+        run: |
+          sudo apt-get update && sudo apt-get install -y jq
+
       - name: Validate Release Update Jobs
         shell: bash
         run: |

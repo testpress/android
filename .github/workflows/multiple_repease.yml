@@ -14,7 +14,7 @@ jobs:
       subdomains: ${{ steps.fetch.outputs.subdomains }}
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Fetch subdomains
         id: fetch
@@ -58,7 +58,7 @@ jobs:
         uses: android-actions/setup-android@v2
 
       - name: Caching Gradle packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.gradle/caches
@@ -68,7 +68,7 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Checkout the repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup Ruby and Fastlane
         uses: ruby/setup-ruby@v1

@@ -55,7 +55,7 @@ jobs:
           java-version: 11
 
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v2
 
       - name: Caching Gradle packages
         uses: actions/cache@v4

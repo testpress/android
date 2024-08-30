@@ -82,7 +82,7 @@ jobs:
         run: |
           export LC_ALL=en_US.UTF-8
           export LANG=en_US.UTF-8
-          bundle exec fastlane release_update_to subdomain:${{ matrix.app }}
+          bundle exec fastlane release_update_to subdomain:${{ matrix.app }} release_option:${{ github.event.inputs.release_option }}
         continue-on-error: true
 
       - name: Output Failed Matrix

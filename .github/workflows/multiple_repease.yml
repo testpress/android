@@ -140,10 +140,12 @@ jobs:
               failure_count=$((failure_count + 1))
               subdomain=${line#DEPLOY_FAILED=}
               echo "${subdomain} | Deployment Failure" >> report.md
-            else
-              success_count=$((success_count + 1))
+            elif [[ $line == VALIDATE_FAILED* ]]; then
+              failure_count=$((failure_count + 1))
               subdomain=${line#VALIDATE_FAILED=}
               echo "${subdomain} | Validation Failure" >> report.md
+            else
+              success_count=$((success_count + 1))
             fi
           done < deployment_results.txt
 

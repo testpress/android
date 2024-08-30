@@ -94,9 +94,9 @@ jobs:
         continue-on-error: true
 
       - name: Log Failure
-          if: failure()  # Log the failure if the above steps failed
-          run: |
-            echo "Deployment failed for subdomain: ${{ matrix.subdomain }}"
+        if: ${{ failure() }}  # Runs this step only if any previous step in the job fails
+        run: |
+          echo "Deployment failed for subdomain: ${{ matrix.subdomain }}"
 
   # Step 3: Validate All Jobs
   validate_release:

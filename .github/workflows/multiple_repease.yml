@@ -1,6 +1,9 @@
 name: Release Update Testing
 
 on:
+  push:
+    branches:
+      - '**'
   workflow_dispatch:
 
 jobs:

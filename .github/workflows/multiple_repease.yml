@@ -24,6 +24,11 @@ jobs:
           SUBDOMAINS=$(cat subdomains.json)
           echo "::set-output name=subdomains::$SUBDOMAINS"
 
+      - name: Initialize success and failure lists
+        run: |
+          echo "SUCCESS_LIST=[]" >> $GITHUB_ENV
+          echo "FAILURE_LIST=[]" >> $GITHUB_ENV
+
   # Step 2: Deploy App for Each Subdomain
   deploy_app:
     needs: fetch_subdomains
@@ -38,10 +43,9 @@ jobs:
       API_ACCESS_KEY: ${{ secrets.API_ACCESS_KEY }}
     steps:
       - name: Validate subdomain
-        id: validate
         if: ${{ matrix.subdomain }} != 'all'
         run: |
-          curl -f https://${{ matrix.subdomain }}.testpress.in/api/v2.5/admin/android/app-config/ -H "API-access-key: $API_ACCESS_KEY" || echo "VALIDATE_FAILED=${{ matrix.subdomain }}" >> validation_results.txt
+          curl -f https://${{ matrix.subdomain }}.testpress.in/api/v2.5/admin/android/app-config/ -H "API-access-key: $API_ACCESS_KEY"
         continue-on-error: true
 
       - name: Setup JDK 11
@@ -92,77 +96,26 @@ jobs:
         run: |
           export LC_ALL=en_US.UTF-8
           export LANG=en_US.UTF-8
-          bundle exec fastlane release_update_to subdomain:${{ matrix.subdomain }} release_option:draft || echo "DEPLOY_FAILED=${{ matrix.subdomain }}" >> deployment_results.txt
+          bundle exec fastlane release_update_to subdomain:${{ matrix.subdomain }} release_option:draft
         continue-on-error: true
 
-      - name: Upload deployment results
-        uses: actions/upload-artifact@v2
-        with:
-          name: deployment-results
-          path: deployment_results.txt
-
-      - name: Upload validation results
-        uses: actions/upload-artifact@v2
-        with:
-          name: validation-results
-          path: validation_results.txt
+      - name: Update success or failure lists
+        run: |
+          if [ "${{ steps.deploy.outcome }}" == "success" ]; then
+            echo "SUCCESS_LIST=$(echo $SUCCESS_LIST | jq --arg subdomain "${{ matrix.subdomain }}" '. + [$subdomain]')" >> $GITHUB_ENV
+          else
+            echo "FAILURE_LIST=$(echo $FAILURE_LIST | jq --arg subdomain "${{ matrix.subdomain }}" '. + [$subdomain]')" >> $GITHUB_ENV
+          fi
 
   # Step 3: Validate All Jobs
   validate_release:
     needs: deploy_app
     runs-on: ubuntu-latest
     steps:
-      - name: Download deployment results
-        uses: actions/download-artifact@v2
-        with:
-          name: deployment-results
-
-      - name: Download validation results
-        uses: actions/download-artifact@v2
-        with:
-          name: validation-results
-
-      - name: Generate and Upload Report
+      - name: Validate Release Update Jobs
         run: |
-          echo "Generating report on deployment results..."
-
-          # Initialize counters
-          success_count=0
-          failure_count=0
-          
-          # Report header
-          echo "Subdomain | Status" > report.md
-          echo "----------|--------" >> report.md
-          
-          # Read deployment results
-          while IFS= read -r line; do
-            if [[ $line == DEPLOY_FAILED* ]]; then
-              failure_count=$((failure_count + 1))
-              subdomain=${line#DEPLOY_FAILED=}
-              echo "${subdomain} | Deployment Failure" >> report.md
-            elif [[ $line == VALIDATE_FAILED* ]]; then
-              failure_count=$((failure_count + 1))
-              subdomain=${line#VALIDATE_FAILED=}
-              echo "${subdomain} | Validation Failure" >> report.md
-            else
-              success_count=$((success_count + 1))
-            fi
-          done < deployment_results.txt
-
-          # Print total counts
-          echo "Total Success: $success_count"
-          echo "Total Failure: $failure_count"
-          
-          # Output the report
-          cat report.md
-          
-          # Optionally upload the report as an artifact
-          echo "Uploading the report..."
-          mkdir -p reports
-          mv report.md reports/
-          tar -czf reports.tar.gz reports/
-          echo "Report uploaded."
-        uses: actions/upload-artifact@v2
-        with:
-          name: deployment-report
-          path: reports.tar.gz
+          echo "Validating the results of all deployment jobs..."
+          echo "Successful Subdomains: $SUCCESS_LIST"
+          echo "Failed Subdomains: $FAILURE_LIST"
+          echo "Total Successful: $(echo $SUCCESS_LIST | jq '. | length')"
+          echo "Total Failed: $(echo $FAILURE_LIST | jq '. | length')"

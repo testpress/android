@@ -96,5 +96,5 @@ jobs:
         run: |
           export LC_ALL=en_US.UTF-8
           export LANG=en_US.UTF-8
-          bundle exec fastlane release_update_to subdomain:${{ matrix.subdomain }} release_option:draft || echo "DEPLOY_FAILED=${{ matrix.subdomain }}" >> deployment_results.txt
+          bundle exec fastlane release_update_to subdomain:${{ matrix.subdomain }} release_option:draft
         continue-on-error: true

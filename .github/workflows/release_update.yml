@@ -27,117 +27,8 @@ jobs:
     strategy:
       matrix:
         app:
-          - csce
-          - makeiteasy
-          - rvmfs
-          - helpbiotechacademy
-          - pnvermaclasses
-          - rays
-          - teammatesacademy
-          - wingsway
-          - photoncsa
-          - chandramaniiasacademy
-          - academy99
-          - mahilawacademyapp
-          - ssgrbccallindiamockexams
-          - ekamias
-          - lms
-          - geniusgateway
-          - eenadupratibha
-          - aramias
-          - vishalparihar
-          - terzaghi
-          - jobsecura
-          - lawnagari
-          - finominaleducation
-          - ajacommerceacademy
-          - iiipi
-          - cnp
-          - catjee
-          - dentalpulseacademy
-          - abhyasa
-          - civils360ias
-          - ignite
-          - elceducation
-          - eea
-          - lalsacademy
-          - karpomtamizhaacademy
-          - catking
-          - reproneet
-          - keshavclasses
-          - gowthamtnpscclasses
-          - preppias
-          - ibs
-          - delhiias
-          - a2ztraining
-          - metier
-          - amalgmpg
-          - primedirection
-          - xandylearning
-          - lakshyagyananant
-          - cdclasses
-          - clinilaunchresearch
-          - meenakshiacademy
-          - prospectias
-          - rcreddyiasstudycircle
-          - edzorblaw
-          - erudite
-          - teachtech
-          - scoreacademytvm
-          - mist
-          - wincentre
-          - koncpt
-          - drdilip
-          - cuetbaba
-          - ignoudost
-          - aceachievers
-          - mindworkzz
-          - fortuneiasacademy
-          - lucentias
-          - metagate
-          - verandalearning
-          - yashclasses
-          - talentmed
-          - kakatiya
-          - upscprep
-          - koncptss
-          - bpscconceptwallah
-          - theamazeacademy
-          - join2learn
-          - klass
-          - classmate
-          - macoltelugumaterials
-          - drm
-          - meritplus
-          - kpclasses
-          - heritageonline
-          - suresuccessmagic
-          - prepayurveda
-          - ipec
-          - pulsemedicalinstitute
-          - corejuniorcollege
-          - careacademy
-          - higeducampus
-          - sikhyajoti
-          - shoonyaacademy
-          - cubitacademy
-          - leapias
-          - lawxpertsmv
-          - thapovaninstitute
-          - suyamias
-          - phasor
-          - tuvrnifeacademy
-          - hindalcoindustries
-          - nextehub
-          - verbalmentor
-          - brilliant
-          - visiondefenceacademy
-          - shriphulajibaba
-          - suryachandrapalaceschool
-          - languagepillar
-          - dailyrevision
-          - demo
-          - ranjitharpathology
+          - lmsdemo
+          - 12345
 
     steps:
       - name: Validate subdomain
@@ -192,6 +83,7 @@ jobs:
           export LC_ALL=en_US.UTF-8
           export LANG=en_US.UTF-8
           bundle exec fastlane release_update_to subdomain:${{ matrix.app }}
+        continue-on-error: true
 
       - name: Output Failed Matrix
         if: matrix.status != 'success'

@@ -96,15 +96,17 @@ jobs:
         run: |
           export LC_ALL=en_US.UTF-8
           export LANG=en_US.UTF-8
-          bundle exec fastlane release_update_to subdomain:${{ matrix.subdomain }} release_option:draft
+          bundle exec fastlane release_update_to subdomain:${{ matrix.subdomain }} release_option:draft || echo "DEPLOY_FAILED=${{ matrix.subdomain }}" >> deployment_results.txt
         continue-on-error: true
 
       - name: Update success or failure lists
         run: |
           if [ "${{ steps.deploy.outcome }}" == "success" ]; then
-            echo "SUCCESS_LIST=$(echo $SUCCESS_LIST | jq --arg subdomain "${{ matrix.subdomain }}" '. + [$subdomain]')" >> $GITHUB_ENV
+            SUCCESS_LIST=$(echo $SUCCESS_LIST | jq --arg subdomain "${{ matrix.subdomain }}" '. + [$subdomain]')
+            echo "SUCCESS_LIST=$SUCCESS_LIST" >> $GITHUB_ENV
           else
-            echo "FAILURE_LIST=$(echo $FAILURE_LIST | jq --arg subdomain "${{ matrix.subdomain }}" '. + [$subdomain]')" >> $GITHUB_ENV
+            FAILURE_LIST=$(echo $FAILURE_LIST | jq --arg subdomain "${{ matrix.subdomain }}" '. + [$subdomain]')
+            echo "FAILURE_LIST=$FAILURE_LIST" >> $GITHUB_ENV
           fi
 
   # Step 3: Validate All Jobs
@@ -113,6 +115,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Validate Release Update Jobs
+        shell: bash
         run: |
           echo "Validating the results of all deployment jobs..."
           echo "Successful Subdomains: $SUCCESS_LIST"

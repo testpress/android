@@ -1,0 +1,108 @@
+name: Release Update
+
+on:
+  workflow_dispatch:
+
+jobs:
+  # Step 1: Fetch Subdomains
+  fetch_subdomains:
+    runs-on: ubuntu-latest
+    outputs:
+      subdomains: ${{ steps.fetch.outputs.subdomains }}
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+
+      - name: Fetch subdomains
+        id: fetch
+        run: |
+          # Simulating subdomain fetching, replace this with the actual fetching logic if needed
+          echo '["lmsdemo", "1234", "lmss"]' > subdomains.json
+          SUBDOMAINS=$(cat subdomains.json)
+          echo "::set-output name=subdomains::$SUBDOMAINS"
+
+  # Step 2: Deploy App for Each Subdomain
+  deploy_app:
+    needs: fetch_subdomains
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        subdomain: ${{ fromJson(needs.fetch_subdomains.outputs.subdomains) }}
+    env:
+      GITHUB_ACCESS_KEY: ${{ secrets.GH_ACCESS_KEY }}
+      GITHUB_USERNAME: ${{ secrets.GH_USERNAME }}
+      API_ACCESS_KEY: ${{ secrets.API_ACCESS_KEY }}
+    steps:
+      - name: Validate subdomain
+        if: ${{ matrix.subdomain }} != 'all'
+        run: |
+          curl -f https://${{ matrix.subdomain }}.testpress.in/api/v2.5/admin/android/app-config/ -H "API-access-key: $API_ACCESS_KEY"
+
+      - name: Setup JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: "corretto"
+          java-version: 11
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+
+      - name: Caching Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - name: Setup ruby and fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+          bundler-cache: true
+
+      - name: Cache Zoom SDK files
+        id: zoom-cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ./mobilertc
+            ./commonlib
+          key: zoom_sdk_files
+
+      - name: Setup Zoom SDK
+        if: steps.zoom-cache.outputs.cache-hit != 'true'
+        run: |
+          wget https://media.testpress.in/static/android/zoom_sdk.zip
+          unzip -o ./zoom_sdk.zip
+
+      - name: Build and deploy app
+        run: |
+          export LC_ALL=en_US.UTF-8
+          export LANG=en_US.UTF-8
+          bundle exec fastlane release_update_to subdomain:${{ matrix.subdomain }} release_option:complete
+
+      - name: Store app artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.subdomain }}-app
+          path: |
+            app/build/outputs/apk/release/app-release.apk
+            app/build/outputs/bundle/release/app-release.aab
+            app/build/outputs/apk/debug/app-debug.apk
+
+  # Step 3: Validate All Jobs
+  validate_release:
+    needs: deploy_app
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate Release Update Jobs
+        run: |
+          echo "Validating the results of all deployment jobs..."
+          # Replace this command with the validation logic of your choice
+          echo "All jobs completed successfully."

@@ -1,4 +1,5 @@
 package in.testpress.testpress.ui;
+import in.testpress.RequestCode;
 import in.testpress.course.ui.CourseListFragment;
 
 import android.Manifest;
@@ -371,7 +372,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 if (viewPager.getVisibility() != View.VISIBLE) {
                     initScreen();
                 }
-                askNotificationPermission();
+                askNotificationAndStoragePermission();
             }
         }.execute();
     }
@@ -748,9 +749,23 @@ public class MainActivity extends TestpressFragmentActivity {
         }
     }
 
-    private void askNotificationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS},1000);
+    private void askNotificationAndStoragePermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            requestPermissions(new String[]{
+                    Manifest.permission.POST_NOTIFICATIONS,
+                    Manifest.permission.READ_MEDIA_IMAGES,
+                    Manifest.permission.READ_MEDIA_VIDEO,
+                    Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
+            }, RequestCode.PERMISSION);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions(new String[]{
+                    Manifest.permission.POST_NOTIFICATIONS,
+                    Manifest.permission.READ_MEDIA_IMAGES,
+                    Manifest.permission.READ_MEDIA_VIDEO
+            }, RequestCode.PERMISSION);
+        } else {
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, RequestCode.PERMISSION);
+
         }
     }
 

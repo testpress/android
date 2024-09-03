@@ -9,7 +9,7 @@ on:
         default: "all"
 
       release_option:
-        description: "Choose the type of release. 'Complete' for a full release or 'Draft' for a pre-release version."
+        description: "Choose the type of release. 'Completed' for a full release or 'Draft' for a pre-release version."
         default: "completed"
         type: choice
         options:

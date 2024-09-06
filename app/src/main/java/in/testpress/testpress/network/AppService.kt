@@ -5,10 +5,11 @@ import `in`.testpress.network.TestpressApiClient
 import `in`.testpress.testpress.BuildConfig
 import `in`.testpress.testpress.core.Constants
 import `in`.testpress.testpress.models.InstituteSettings
+import `in`.testpress.testpress.models.pojo.DashboardResponse
 import `in`.testpress.testpress.models.pojo.GenerateOTPResponse
 import `in`.testpress.testpress.models.pojo.OTPLoginResponse
 import android.content.Context
-import retrofit.http.GET
+import retrofit2.http.GET
 import retrofit2.http.Body
 import retrofit2.http.POST
 import kotlin.collections.HashMap
@@ -17,6 +18,10 @@ const val OTP_URL = "/api/v2.5/auth/generate-otp/"
 const val VERIFY_OTP_URL = "/api/v2.5/auth/otp-login/"
 
 interface AppService {
+
+    @GET("/api/v2.4/dashboard/")
+    fun getDashBoardData():RetrofitCall<DashboardResponse>
+
     @GET(Constants.Http.URL_INSTITUTE_SETTINGS_FRAG)
     fun getInstituteSettings(): RetrofitCall<InstituteSettings>
 
@@ -30,6 +35,10 @@ interface AppService {
 
 class AppNetwork(context: Context) : TestpressApiClient(BuildConfig.BASE_URL, context) {
     private fun getAppService() = retrofit.create(AppService::class.java)
+
+    fun getDashBoardData():RetrofitCall<DashboardResponse>{
+        return getAppService().getDashBoardData()
+    }
 
     fun getInstituteSettings(): RetrofitCall<InstituteSettings> {
         return getAppService().getInstituteSettings()

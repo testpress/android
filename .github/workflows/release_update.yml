@@ -80,7 +80,7 @@ jobs:
           bundle exec fastlane release_update_to subdomain:${{ github.event.inputs.subdomain }} release_option:${{ github.event.inputs.release_option }}
 
       - name: Store app artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: app
           path: |

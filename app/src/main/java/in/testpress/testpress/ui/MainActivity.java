@@ -322,6 +322,9 @@ public class MainActivity extends TestpressFragmentActivity {
             menu.findItem(R.id.recorded_lessons).setVisible(true);
             menu.findItem(R.id.mocks).setVisible(true);
             menu.findItem(R.id.e_books).setVisible(true);
+            menu.findItem(R.id.live_lectures_cat).setVisible(true);
+            menu.findItem(R.id.live_lectures_non_cat).setVisible(true);
+            menu.findItem(R.id.live_lectures_gd_watpi).setVisible(true);
         }
     }
 

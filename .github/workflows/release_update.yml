@@ -10,11 +10,11 @@ on:
 
       release_option:
         description: "Choose the type of release. 'Completed' for a full release or 'Draft' for a pre-release version."
+        default: "completed"
         type: choice
         options:
           - "completed"
           - "draft"
-        default: "completed"
 
 jobs:
   release_update:

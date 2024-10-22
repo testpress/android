@@ -20,7 +20,7 @@ jobs:
         id: fetch
         run: |
           # Simulating subdomain fetching; replace this with the actual fetching logic if needed
-          echo '["lmsdemo", "1234", "lmss"]' > subdomains.json
+          echo '[ "3ritechnologies", "aceachievers", "bpscconceptwallah", "catking", "civils360ias", "clinilaunchresearch", "delhiias", "dentalpulseacademy", "edzorblaw", "eecigate", "ekamias", "elajen", "eea", "erudite", "evolutioneducare", "elceducation", "fortuneiasacademy", "heritageonline", "igate", "ibs", "jkrc", "onlinejkshahclasses", "kpias", "kshitivivan", "legacyiasacademy", "logiceducation", "lucentias", "meritplus", "metagate", "metier", "mindworkzz", "mplus", "nammakpsc", "pnvermaclasses", "preppias", "rcreddyiasstudycircle", "rvmfs", "upscprep", "verandalearning", "wincentre", "xandylearning", "wellnessdesk", "Digiprepkit", "lms", "eenadupratibha", "lakshyagyananant", "ignoudost", "cuetbaba", "terzaghi", "gowthamtnpscclasses", "lalsacademy", "rajsacademy", "saavalclasses", "zaitoonvirtualcampus", "a2ztraining", "meritzone" ]' > subdomains.json
           SUBDOMAINS=$(cat subdomains.json)
           echo "::set-output name=subdomains::$SUBDOMAINS"
 

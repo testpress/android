@@ -39,9 +39,8 @@ public class CourseCarouselAdapter extends RecyclerView.Adapter<CourseCarouselAd
     private ImageLoader imageLoader;
     private DisplayImageOptions options;
     private Context context;
-    private HashMap<Long, Integer> notesCountHashMap = new HashMap<>();
-    private HashMap<Long, Integer> videosCountHashMap = new HashMap<>();
-    private HashMap<Long, Integer> examsCountHashMap = new HashMap<>();
+    private HashMap<Long, Integer> contentCountHashMap = new HashMap<>();
+    private HashMap<Long, Integer> chapterCountHashMap = new HashMap<>();
 
     public CourseCarouselAdapter(DashboardResponse response, DashboardSection currentSection, Context context) {
         this.response = response;
@@ -55,19 +54,16 @@ public class CourseCarouselAdapter extends RecyclerView.Adapter<CourseCarouselAd
 
     private void populateContentsCount() {
         for (Product product: products) {
-            int notesCount = 0;
-            int videosCount = 0;
-            int examsCount = 0;
+            int contentCount = 0;
+            int chapterCount = 0;
 
             for (Integer item: product.getCourseIds()) {
                 long courseId = Long.valueOf(item);
-                notesCount += response.getCourseHashMap().get(courseId).getHtmlContentsCount();
-                videosCount += response.getCourseHashMap().get(courseId).getVideosCount();
-                examsCount += response.getCourseHashMap().get(courseId).getExamsCount();
+                contentCount += response.getCourseHashMap().get(courseId).getContentsCount();
+                chapterCount += response.getCourseHashMap().get(courseId).getChaptersCount();
             }
-            notesCountHashMap.put(product.getId(), notesCount);
-            videosCountHashMap.put(product.getId(), videosCount);
-            examsCountHashMap.put(product.getId(), examsCount);
+            contentCountHashMap.put(product.getId(), contentCount);
+            chapterCountHashMap.put(product.getId(), chapterCount);
         }
     }
 
@@ -117,48 +113,22 @@ public class CourseCarouselAdapter extends RecyclerView.Adapter<CourseCarouselAd
     }
 
     private void displayContentsCount(CourseCarouselAdapter.MyViewHolder holder, Product product) {
-        showOrHideNotesCount(holder, product);
         showOrHideVideoCount(holder, product);
-        showOrHideExamCount(holder, product);
-
-        if (product.getCourseIds().size() == 0) {
-            holder.notesCount.setText("Offline");
-            holder.videoContentLayout.setVisibility(View.GONE);
-            holder.examsContentLayout.setVisibility(View.GONE);
-        }
-    }
-
-    private void showOrHideNotesCount(CourseCarouselAdapter.MyViewHolder holder, Product product) {
-        Integer notesCount = notesCountHashMap.get(product.getId());
-        String notesCountText = context.getResources().getQuantityString(
-                R.plurals.notes_count, notesCount, notesCount);
-        holder.notesCount.setText(notesCountText);
-
-        if (notesCount <= 0) {
-            holder.notesContentLayout.setVisibility(View.GONE);
-        }
+        showOrHideChapterCount(holder, product);
     }
 
     private void showOrHideVideoCount(CourseCarouselAdapter.MyViewHolder holder, Product product) {
-        Integer videosCount = videosCountHashMap.get(product.getId());
+        Integer contentCount = contentCountHashMap.get(product.getId());
         String videosCountText = context.getResources().getQuantityString(
-                R.plurals.videos_count, videosCount, videosCount);
-        holder.videosCount.setText(videosCountText);
-
-        if (videosCount <= 0) {
-            holder.videoContentLayout.setVisibility(View.GONE);
-        }
+                R.plurals.content_count, contentCount, contentCount);
+        holder.contentCount.setText(videosCountText);
     }
 
-    private void showOrHideExamCount(CourseCarouselAdapter.MyViewHolder holder, Product product) {
-        Integer examsCount = examsCountHashMap.get(product.getId());
+    private void showOrHideChapterCount(CourseCarouselAdapter.MyViewHolder holder, Product product) {
+        Integer chapterCount = chapterCountHashMap.get(product.getId());
         String examsCountText = context.getResources().getQuantityString(
-                R.plurals.exams_count, examsCount, examsCount);
-        holder.examsCount.setText(examsCountText);
-
-        if (examsCount <= 0) {
-            holder.examsContentLayout.setVisibility(View.GONE);
-        }
+                R.plurals.chapter_count, chapterCount, chapterCount);
+        holder.chapterCount.setText(examsCountText);
     }
 
     @Override
@@ -167,25 +137,22 @@ public class CourseCarouselAdapter extends RecyclerView.Adapter<CourseCarouselAd
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView title, examsCount, videosCount, notesCount;
+        TextView title, chapterCount, contentCount;
         ImageView image;
-        LinearLayout examsContentLayout, notesContentLayout, videoContentLayout;
+        LinearLayout chapterLayout, contentLayout;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.title);
-            examsCount = (TextView) itemView.findViewById(R.id.exams_count);
-            videosCount = (TextView) itemView.findViewById(R.id.videos_count);
-            notesCount = (TextView) itemView.findViewById(R.id.notes_count);
+            chapterCount = (TextView) itemView.findViewById(R.id.chapter_count);
+            contentCount = (TextView) itemView.findViewById(R.id.content_count);
             image = (ImageView) itemView.findViewById(R.id.image_view);
-            examsContentLayout = itemView.findViewById(R.id.exam_content_layout);
-            notesContentLayout = itemView.findViewById(R.id.notes_content_layout);
-            videoContentLayout = itemView.findViewById(R.id.video_content_layout);
+            chapterLayout = itemView.findViewById(R.id.chapter_layout);
+            contentLayout = itemView.findViewById(R.id.content_layout);
 
             title.setTypeface(UIUtils.getLatoSemiBoldFont(context));
-            examsCount.setTypeface(UIUtils.getLatoSemiBoldFont(context));
-            videosCount.setTypeface(UIUtils.getLatoSemiBoldFont(context));
-            notesCount.setTypeface(UIUtils.getLatoSemiBoldFont(context));
+            chapterCount.setTypeface(UIUtils.getLatoSemiBoldFont(context));
+            contentCount.setTypeface(UIUtils.getLatoSemiBoldFont(context));
         }
     }
 }

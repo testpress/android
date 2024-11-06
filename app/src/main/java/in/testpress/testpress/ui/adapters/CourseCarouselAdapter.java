@@ -113,11 +113,11 @@ public class CourseCarouselAdapter extends RecyclerView.Adapter<CourseCarouselAd
     }
 
     private void displayContentsCount(CourseCarouselAdapter.MyViewHolder holder, Product product) {
-        showOrHideVideoCount(holder, product);
+        showOrHideContentCount(holder, product);
         showOrHideChapterCount(holder, product);
     }
 
-    private void showOrHideVideoCount(CourseCarouselAdapter.MyViewHolder holder, Product product) {
+    private void showOrHideContentCount(CourseCarouselAdapter.MyViewHolder holder, Product product) {
         Integer contentCount = contentCountHashMap.get(product.getId());
         String videosCountText = context.getResources().getQuantityString(
                 R.plurals.content_count, contentCount, contentCount);

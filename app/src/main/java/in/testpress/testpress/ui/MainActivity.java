@@ -10,10 +10,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
@@ -76,6 +78,7 @@ import in.testpress.testpress.util.AppChecker;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.SafeAsyncTask;
+import in.testpress.testpress.util.SalesforceSdkInitializer;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.testpress.util.UpdateAppDialogManager;
@@ -375,6 +378,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 if (viewPager.getVisibility() != View.VISIBLE) {
                     initScreen();
                 }
+                initSalesForceSDK();
                 askNotificationAndStoragePermission();
             }
         }.execute();
@@ -786,4 +790,36 @@ public class MainActivity extends TestpressFragmentActivity {
         editor.apply();
     }
 
+    private void initSalesForceSDK() {
+        if (Boolean.TRUE.equals(mInstituteSettings.getSalesforceSdkEnabled())) {
+            SalesforceSdkInitializer salesforceSdkInitializer = new SalesforceSdkInitializer(this);
+            salesforceSdkInitializer.initialize(mInstituteSettings);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && requestCode == RequestCode.PERMISSION) {
+            if (isNotificationPermissionGranted(permissions, grantResults)) {
+                onNotificationPermissionGranted();
+            }
+        }
+    }
+
+    private boolean isNotificationPermissionGranted(@NonNull String[] permissions, @NonNull int[] grantResults) {
+        for (int i = 0; i < permissions.length; i++) {
+            if (Manifest.permission.POST_NOTIFICATIONS.equals(permissions[i]) && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void onNotificationPermissionGranted() {
+        if (Boolean.TRUE.equals(mInstituteSettings.getSalesforceSdkEnabled())) {
+            SalesforceSdkInitializer.notificationPermissionGranted();
+        }
+    }
 }

@@ -37,6 +37,7 @@ allprojects {
         jcenter()
         maven {url "https://phonepe.mycloudrepo.io/public/repositories/phonepe-intentsdk-android"}
         maven { url "https://github.com/testpress/Android-Image-Cropper/raw/main" }
+        maven { url "https://salesforce-marketingcloud.github.io/MarketingCloudSDK-Android/repository" }
 
     }
 }

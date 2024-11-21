@@ -10,10 +10,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
@@ -789,7 +791,35 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     private void initSalesForceSDK() {
-        SalesforceSdkInitializer salesforceSdkInitializer = new SalesforceSdkInitializer(this);
-        salesforceSdkInitializer.initialize(mInstituteSettings);
+        if (Boolean.TRUE.equals(mInstituteSettings.getSalesforceSdkEnabled())) {
+            SalesforceSdkInitializer salesforceSdkInitializer = new SalesforceSdkInitializer(this);
+            salesforceSdkInitializer.initialize(mInstituteSettings);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && requestCode == RequestCode.PERMISSION) {
+            handleNotificationPermissionResult(permissions, grantResults);
+        }
+    }
+
+    private void handleNotificationPermissionResult(@NonNull String[] permissions, @NonNull int[] grantResults) {
+        for (int i = 0; i < permissions.length; i++) {
+            if (Manifest.permission.POST_NOTIFICATIONS.equals(permissions[i])) {
+                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                    onNotificationPermissionGranted();
+                }
+                return;
+            }
+        }
+    }
+
+    private void onNotificationPermissionGranted() {
+        if (Boolean.TRUE.equals(mInstituteSettings.getSalesforceSdkEnabled())) {
+            SalesforceSdkInitializer.notificationPermissionGranted();
+        }
     }
 }

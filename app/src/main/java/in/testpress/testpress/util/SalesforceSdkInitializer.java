@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.Log;
 
 
+import androidx.annotation.NonNull;
+
 import com.salesforce.marketingcloud.MCLogListener;
 import com.salesforce.marketingcloud.MarketingCloudConfig;
 import com.salesforce.marketingcloud.MarketingCloudSdk;
@@ -11,8 +13,11 @@ import com.salesforce.marketingcloud.notifications.NotificationCustomizationOpti
 import com.salesforce.marketingcloud.sfmcsdk.BuildConfig;
 import com.salesforce.marketingcloud.sfmcsdk.SFMCSdk;
 import com.salesforce.marketingcloud.sfmcsdk.SFMCSdkModuleConfig;
+import com.salesforce.marketingcloud.sfmcsdk.SFMCSdkReadyListener;
 import com.salesforce.marketingcloud.sfmcsdk.components.logging.LogLevel;
 import com.salesforce.marketingcloud.sfmcsdk.components.logging.LogListener;
+import com.salesforce.marketingcloud.sfmcsdk.modules.push.PushModuleInterface;
+import com.salesforce.marketingcloud.sfmcsdk.modules.push.PushModuleReadyListener;
 
 import in.testpress.testpress.R;
 import in.testpress.testpress.models.InstituteSettings;
@@ -28,12 +33,10 @@ public class SalesforceSdkInitializer {
 
     public void initialize(InstituteSettings settings) {
         this.instituteSettings = settings;
-        Log.d("TAG", "initialize1: "+instituteSettings.getBaseUrl());
         configureLogging();
         MarketingCloudConfig marketingCloudConfig = buildMarketingCloudConfig();
         SFMCSdkModuleConfig sdkModuleConfig = buildSFMCSdkModuleConfig(marketingCloudConfig);
         SFMCSdk.Companion.configure(context, sdkModuleConfig);
-        Log.d("TAG", "initialize2: "+instituteSettings.getBaseUrl());
     }
 
     private void configureLogging() {
@@ -45,10 +48,10 @@ public class SalesforceSdkInitializer {
 
     private MarketingCloudConfig buildMarketingCloudConfig() {
         return MarketingCloudConfig.Companion.builder()
-                .setApplicationId("b0562d0e-76e4-44a8-9725-ffe64392534b")
-                .setAccessToken("orq2HdhvFgq4qJDdn7OH4J3U")
-                .setSenderId("423776142021")
-                .setMarketingCloudServerUrl("https://mczgg3rvb2rq3vslc0q19lzt-pp0.device.marketingcloudapis.com/")
+                .setApplicationId(instituteSettings.getSalesforceMcApplicationId())
+                .setAccessToken(instituteSettings.getSalesforceMcAccessToken())
+                .setSenderId(instituteSettings.getSalesforceFcmSenderId())
+                .setMarketingCloudServerUrl(instituteSettings.getSalesforceMarketingCloudUrl())
                 .setNotificationCustomizationOptions(
                         NotificationCustomizationOptions.create(R.drawable.ic_stat_notification)
                 )
@@ -61,5 +64,18 @@ public class SalesforceSdkInitializer {
             return null;
         });
     }
-}
 
+    public static void notificationPermissionGranted() {
+        SFMCSdk.Companion.requestSdk(new SFMCSdkReadyListener() {
+            @Override
+            public void ready(@NonNull SFMCSdk sfmcSdk) {
+                sfmcSdk.mp(new PushModuleReadyListener() {
+                    @Override
+                    public void ready(@NonNull PushModuleInterface pushModuleInterface) {
+                        pushModuleInterface.getPushMessageManager().enablePush();
+                    }
+                });
+            }
+        });
+    }
+}

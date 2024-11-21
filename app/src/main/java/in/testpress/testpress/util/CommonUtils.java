@@ -18,8 +18,7 @@ import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.List;
 
@@ -118,19 +117,18 @@ public class CommonUtils {
     public static void registerDevice(final Activity activity,
                                       final TestpressService testpressService) {
 
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                    public void onComplete(@NonNull Task<String> task) {
                         if (!task.isSuccessful()) {
                             Log.d("registerDevice", "getInstanceId failed", task.getException());
                             return;
                         }
-
-                        // Get new Instance ID token
-                        //noinspection ConstantConditions
-                        String token = task.getResult().getToken();
+                        // Get new FCM registration token
+                        String token = task.getResult();
                         registerDevice(activity, token, testpressService);
+
                     }
                 });
     }

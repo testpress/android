@@ -128,7 +128,6 @@ public class CommonUtils {
                         // Get new FCM registration token
                         String token = task.getResult();
                         registerDevice(activity, token, testpressService);
-
                     }
                 });
     }

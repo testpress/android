@@ -76,6 +76,7 @@ import in.testpress.testpress.util.AppChecker;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.SafeAsyncTask;
+import in.testpress.testpress.util.SalesforceSdkInitializer;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.testpress.util.UpdateAppDialogManager;
@@ -375,6 +376,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 if (viewPager.getVisibility() != View.VISIBLE) {
                     initScreen();
                 }
+                initSalesForceSDK();
                 askNotificationAndStoragePermission();
             }
         }.execute();
@@ -786,4 +788,8 @@ public class MainActivity extends TestpressFragmentActivity {
         editor.apply();
     }
 
+    private void initSalesForceSDK() {
+        SalesforceSdkInitializer salesforceSdkInitializer = new SalesforceSdkInitializer(this);
+        salesforceSdkInitializer.initialize(mInstituteSettings);
+    }
 }

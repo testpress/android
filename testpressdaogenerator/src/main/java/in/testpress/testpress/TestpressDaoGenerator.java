@@ -7,7 +7,7 @@ import de.greenrobot.daogenerator.Schema;
 
 public class TestpressDaoGenerator {
     public static void main(String args[]) throws Exception {
-        Schema schema = new Schema(42, "in.testpress.testpress.models");
+        Schema schema = new Schema(43, "in.testpress.testpress.models");
 
         Entity post = schema.addEntity("Post");
         post.addLongProperty("id").primaryKey();
@@ -103,6 +103,11 @@ public class TestpressDaoGenerator {
         instituteSettings.addStringProperty("currentPaymentApp");
         instituteSettings.addStringProperty("customRegistrationUrl");
         instituteSettings.addBooleanProperty("disableStoreInApp");
+        instituteSettings.addBooleanProperty("salesforceSdkEnabled");
+        instituteSettings.addStringProperty("salesforceMcApplicationId");
+        instituteSettings.addStringProperty("salesforceMcAccessToken");
+        instituteSettings.addStringProperty("salesforceFcmSenderId");
+        instituteSettings.addStringProperty("salesforceMarketingCloudUrl");
 
         Entity rssFeed = schema.addEntity("RssItem");
         rssFeed.addLongProperty("id").primaryKey().autoincrement();

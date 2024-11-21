@@ -80,6 +80,11 @@ public class InstituteSettings {
     private String currentPaymentApp;
     private String customRegistrationUrl;
     private Boolean disableStoreInApp;
+    private Boolean salesforceSdkEnabled;
+    private String salesforceMcApplicationId;
+    private String salesforceMcAccessToken;
+    private String salesforceFcmSenderId;
+    private String salesforceMarketingCloudUrl;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
@@ -91,7 +96,7 @@ public class InstituteSettings {
         this.baseUrl = baseUrl;
     }
 
-    public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, Boolean facebookLoginEnabled, Boolean googleLoginEnabled, boolean commentsVotingEnabled, Boolean bookmarksEnabled, Boolean forumEnabled, String forumLabel, Boolean twilioEnabled, Boolean allow_profile_edit, String learnLabel, String leaderboardLabel, String dashboardLabel, String bookmarksLabel, String loginLabel, String loginPasswordLabel, String aboutUs, Boolean disableStudentAnalytics, Boolean customRegistrationEnabled, Boolean enableParallelLoginRestriction, Integer maxParallelLogins, Integer lockoutLimit, String cooloffTime, String appToolbarLogo, String appShareLink, String serverTime, Boolean allowScreenshotInApp, String androidSentryDns, Boolean leaderboardEnabled, String threatsAndTargetsLabel, Boolean isVideoDownloadEnabled, Boolean isHelpdeskEnabled, IntegerList allowedLoginMethods, Boolean showShareButton, String facebookAppId, Integer maxAllowedDownloadedVideos, Boolean disableForgotPassword, Boolean disableStudentReport, Boolean enableCustomTest, String currentPaymentApp, String customRegistrationUrl, Boolean disableStoreInApp) {
+    public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, Boolean facebookLoginEnabled, Boolean googleLoginEnabled, boolean commentsVotingEnabled, Boolean bookmarksEnabled, Boolean forumEnabled, String forumLabel, Boolean twilioEnabled, Boolean allow_profile_edit, String learnLabel, String leaderboardLabel, String dashboardLabel, String bookmarksLabel, String loginLabel, String loginPasswordLabel, String aboutUs, Boolean disableStudentAnalytics, Boolean customRegistrationEnabled, Boolean enableParallelLoginRestriction, Integer maxParallelLogins, Integer lockoutLimit, String cooloffTime, String appToolbarLogo, String appShareLink, String serverTime, Boolean allowScreenshotInApp, String androidSentryDns, Boolean leaderboardEnabled, String threatsAndTargetsLabel, Boolean isVideoDownloadEnabled, Boolean isHelpdeskEnabled, IntegerList allowedLoginMethods, Boolean showShareButton, String facebookAppId, Integer maxAllowedDownloadedVideos, Boolean disableForgotPassword, Boolean disableStudentReport, Boolean enableCustomTest, String currentPaymentApp, String customRegistrationUrl, Boolean disableStoreInApp, Boolean salesforceSdkEnabled, String salesforceMcApplicationId, String salesforceMcAccessToken, String salesforceFcmSenderId, String salesforceMarketingCloudUrl) {
         this.baseUrl = baseUrl;
         this.verificationMethod = verificationMethod;
         this.allowSignup = allowSignup;
@@ -150,6 +155,11 @@ public class InstituteSettings {
         this.currentPaymentApp = currentPaymentApp;
         this.customRegistrationUrl = customRegistrationUrl;
         this.disableStoreInApp = disableStoreInApp;
+        this.salesforceSdkEnabled = salesforceSdkEnabled;
+        this.salesforceMcApplicationId = salesforceMcApplicationId;
+        this.salesforceMcAccessToken = salesforceMcAccessToken;
+        this.salesforceFcmSenderId = salesforceFcmSenderId;
+        this.salesforceMarketingCloudUrl = salesforceMarketingCloudUrl;
     }
 
     public String getBaseUrl() {
@@ -614,6 +624,46 @@ public class InstituteSettings {
 
     public void setDisableStoreInApp(Boolean disableStoreInApp) {
         this.disableStoreInApp = disableStoreInApp;
+    }
+
+    public Boolean getSalesforceSdkEnabled() {
+        return salesforceSdkEnabled;
+    }
+
+    public void setSalesforceSdkEnabled(Boolean salesforceSdkEnabled) {
+        this.salesforceSdkEnabled = salesforceSdkEnabled;
+    }
+
+    public String getSalesforceMcApplicationId() {
+        return salesforceMcApplicationId;
+    }
+
+    public void setSalesforceMcApplicationId(String salesforceMcApplicationId) {
+        this.salesforceMcApplicationId = salesforceMcApplicationId;
+    }
+
+    public String getSalesforceMcAccessToken() {
+        return salesforceMcAccessToken;
+    }
+
+    public void setSalesforceMcAccessToken(String salesforceMcAccessToken) {
+        this.salesforceMcAccessToken = salesforceMcAccessToken;
+    }
+
+    public String getSalesforceFcmSenderId() {
+        return salesforceFcmSenderId;
+    }
+
+    public void setSalesforceFcmSenderId(String salesforceFcmSenderId) {
+        this.salesforceFcmSenderId = salesforceFcmSenderId;
+    }
+
+    public String getSalesforceMarketingCloudUrl() {
+        return salesforceMarketingCloudUrl;
+    }
+
+    public void setSalesforceMarketingCloudUrl(String salesforceMarketingCloudUrl) {
+        this.salesforceMarketingCloudUrl = salesforceMarketingCloudUrl;
     }
 
     // KEEP METHODS - put your custom methods here

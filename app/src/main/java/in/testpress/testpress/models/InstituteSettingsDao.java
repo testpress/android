@@ -84,6 +84,11 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         public final static Property CurrentPaymentApp = new Property(55, String.class, "currentPaymentApp", false, "CURRENT_PAYMENT_APP");
         public final static Property CustomRegistrationUrl = new Property(56, String.class, "customRegistrationUrl", false, "CUSTOM_REGISTRATION_URL");
         public final static Property DisableStoreInApp = new Property(57, Boolean.class, "disableStoreInApp", false, "DISABLE_STORE_IN_APP");
+        public final static Property SalesforceSdkEnabled = new Property(58, Boolean.class, "salesforceSdkEnabled", false, "SALESFORCE_SDK_ENABLED");
+        public final static Property SalesforceMcApplicationId = new Property(59, String.class, "salesforceMcApplicationId", false, "SALESFORCE_MC_APPLICATION_ID");
+        public final static Property SalesforceMcAccessToken = new Property(60, String.class, "salesforceMcAccessToken", false, "SALESFORCE_MC_ACCESS_TOKEN");
+        public final static Property SalesforceFcmSenderId = new Property(61, String.class, "salesforceFcmSenderId", false, "SALESFORCE_FCM_SENDER_ID");
+        public final static Property SalesforceMarketingCloudUrl = new Property(62, String.class, "salesforceMarketingCloudUrl", false, "SALESFORCE_MARKETING_CLOUD_URL");
     };
 
     private final IntegerListConverter allowedLoginMethodsConverter = new IntegerListConverter();
@@ -157,7 +162,12 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
                 "\"ENABLE_CUSTOM_TEST\" INTEGER," + // 54: enableCustomTest
                 "\"CURRENT_PAYMENT_APP\" TEXT," + // 55: currentPaymentApp
                 "\"CUSTOM_REGISTRATION_URL\" TEXT," + // 56: customRegistrationUrl
-                "\"DISABLE_STORE_IN_APP\" INTEGER);"); // 57: disableStoreInApp
+                "\"DISABLE_STORE_IN_APP\" INTEGER," + // 57: disableStoreInApp
+                "\"SALESFORCE_SDK_ENABLED\" INTEGER," + // 58: salesforceSdkEnabled
+                "\"SALESFORCE_MC_APPLICATION_ID\" TEXT," + // 59: salesforceMcApplicationId
+                "\"SALESFORCE_MC_ACCESS_TOKEN\" TEXT," + // 60: salesforceMcAccessToken
+                "\"SALESFORCE_FCM_SENDER_ID\" TEXT," + // 61: salesforceFcmSenderId
+                "\"SALESFORCE_MARKETING_CLOUD_URL\" TEXT);"); // 62: salesforceMarketingCloudUrl
     }
 
     /** Drops the underlying database table. */
@@ -456,6 +466,31 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         if (disableStoreInApp != null) {
             stmt.bindLong(58, disableStoreInApp ? 1L: 0L);
         }
+ 
+        Boolean salesforceSdkEnabled = entity.getSalesforceSdkEnabled();
+        if (salesforceSdkEnabled != null) {
+            stmt.bindLong(59, salesforceSdkEnabled ? 1L: 0L);
+        }
+ 
+        String salesforceMcApplicationId = entity.getSalesforceMcApplicationId();
+        if (salesforceMcApplicationId != null) {
+            stmt.bindString(60, salesforceMcApplicationId);
+        }
+ 
+        String salesforceMcAccessToken = entity.getSalesforceMcAccessToken();
+        if (salesforceMcAccessToken != null) {
+            stmt.bindString(61, salesforceMcAccessToken);
+        }
+ 
+        String salesforceFcmSenderId = entity.getSalesforceFcmSenderId();
+        if (salesforceFcmSenderId != null) {
+            stmt.bindString(62, salesforceFcmSenderId);
+        }
+ 
+        String salesforceMarketingCloudUrl = entity.getSalesforceMarketingCloudUrl();
+        if (salesforceMarketingCloudUrl != null) {
+            stmt.bindString(63, salesforceMarketingCloudUrl);
+        }
     }
 
     /** @inheritdoc */
@@ -525,7 +560,12 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             cursor.isNull(offset + 54) ? null : cursor.getShort(offset + 54) != 0, // enableCustomTest
             cursor.isNull(offset + 55) ? null : cursor.getString(offset + 55), // currentPaymentApp
             cursor.isNull(offset + 56) ? null : cursor.getString(offset + 56), // customRegistrationUrl
-            cursor.isNull(offset + 57) ? null : cursor.getShort(offset + 57) != 0 // disableStoreInApp
+            cursor.isNull(offset + 57) ? null : cursor.getShort(offset + 57) != 0, // disableStoreInApp
+            cursor.isNull(offset + 58) ? null : cursor.getShort(offset + 58) != 0, // salesforceSdkEnabled
+            cursor.isNull(offset + 59) ? null : cursor.getString(offset + 59), // salesforceMcApplicationId
+            cursor.isNull(offset + 60) ? null : cursor.getString(offset + 60), // salesforceMcAccessToken
+            cursor.isNull(offset + 61) ? null : cursor.getString(offset + 61), // salesforceFcmSenderId
+            cursor.isNull(offset + 62) ? null : cursor.getString(offset + 62) // salesforceMarketingCloudUrl
         );
         return entity;
     }
@@ -591,6 +631,11 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         entity.setCurrentPaymentApp(cursor.isNull(offset + 55) ? null : cursor.getString(offset + 55));
         entity.setCustomRegistrationUrl(cursor.isNull(offset + 56) ? null : cursor.getString(offset + 56));
         entity.setDisableStoreInApp(cursor.isNull(offset + 57) ? null : cursor.getShort(offset + 57) != 0);
+        entity.setSalesforceSdkEnabled(cursor.isNull(offset + 58) ? null : cursor.getShort(offset + 58) != 0);
+        entity.setSalesforceMcApplicationId(cursor.isNull(offset + 59) ? null : cursor.getString(offset + 59));
+        entity.setSalesforceMcAccessToken(cursor.isNull(offset + 60) ? null : cursor.getString(offset + 60));
+        entity.setSalesforceFcmSenderId(cursor.isNull(offset + 61) ? null : cursor.getString(offset + 61));
+        entity.setSalesforceMarketingCloudUrl(cursor.isNull(offset + 62) ? null : cursor.getString(offset + 62));
      }
     
     /** @inheritdoc */

@@ -802,19 +802,19 @@ public class MainActivity extends TestpressFragmentActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && requestCode == RequestCode.PERMISSION) {
-            handleNotificationPermissionResult(permissions, grantResults);
+            if (isNotificationPermissionGranted(permissions, grantResults)) {
+                onNotificationPermissionGranted();
+            }
         }
     }
 
-    private void handleNotificationPermissionResult(@NonNull String[] permissions, @NonNull int[] grantResults) {
+    private boolean isNotificationPermissionGranted(@NonNull String[] permissions, @NonNull int[] grantResults) {
         for (int i = 0; i < permissions.length; i++) {
-            if (Manifest.permission.POST_NOTIFICATIONS.equals(permissions[i])) {
-                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                    onNotificationPermissionGranted();
-                }
-                return;
+            if (Manifest.permission.POST_NOTIFICATIONS.equals(permissions[i]) && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                return true;
             }
         }
+        return false;
     }
 
     private void onNotificationPermissionGranted() {

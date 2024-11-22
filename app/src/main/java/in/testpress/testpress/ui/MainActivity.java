@@ -71,7 +71,7 @@ import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.models.Update;
-import in.testpress.testpress.ui.fragments.DashboardFragment;
+import in.testpress.testpress.ui.fragments.DashBoardFragment;
 import in.testpress.testpress.ui.fragments.DiscussionFragmentv2;
 import in.testpress.testpress.ui.utils.HandleMainMenu;
 import in.testpress.testpress.util.AppChecker;
@@ -82,7 +82,6 @@ import in.testpress.testpress.util.SalesforceSdkInitializer;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.testpress.util.UpdateAppDialogManager;
-import in.testpress.ui.fragments.DiscussionFragment;
 import io.sentry.android.core.SentryAndroid;
 
 import static in.testpress.testpress.BuildConfig.ALLOW_ANONYMOUS_USER;
@@ -395,7 +394,7 @@ public class MainActivity extends TestpressFragmentActivity {
         }
 
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
-            addMenuItem(R.string.dashboard, R.drawable.ic_dashboard, new DashboardFragment());
+            addMenuItem(R.string.dashboard, R.drawable.ic_dashboard, new DashBoardFragment());
         } else {
             addMenuItem(R.string.dashboard, R.drawable.profile_default, new MainMenuFragment());
         }

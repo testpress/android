@@ -1,18 +1,12 @@
 package in.testpress.testpress.ui.fragments;
 
+import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
+import static in.testpress.testpress.util.PreferenceManager.getDashboardDataPreferences;
+
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,14 +14,19 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.github.kevinsawicki.wishlist.Toaster;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -40,18 +39,15 @@ import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
+import in.testpress.testpress.repository.DashBoardRepository;
 import in.testpress.testpress.ui.ThrowableLoader;
 import in.testpress.testpress.ui.adapters.DashboardAdapter;
+import in.testpress.testpress.viewmodel.DashBoardViewModel;
 import io.sentry.Sentry;
 import io.sentry.protocol.User;
 
-import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
-import static in.testpress.testpress.util.PreferenceManager.getDashboardDataPreferences;
-import static in.testpress.testpress.util.PreferenceManager.setDashboardData;
 
-
-public class DashboardFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<DashboardResponse> {
+public class DashboardFragment extends Fragment {
 
     private ArrayList<String> sections = new ArrayList<>();
     @InjectView(R.id.recycler_View)
@@ -77,14 +73,21 @@ public class DashboardFragment extends Fragment implements
     private DaoSession daoSession;
     protected Exception exception;
     DashboardResponse dashboardResponse;
-
+    private DashBoardViewModel viewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         Injector.inject(this);
         super.onCreate(savedInstanceState);
-        initLoader();
+        initViewModel();
         setUsernameInSentry();
+    }
+
+    private void initViewModel() {
+        viewModel = DashBoardViewModel.Companion.initializeViewModel(
+                this,
+                new DashBoardRepository(requireContext())
+        );
     }
 
     private void setUsernameInSentry() {
@@ -98,6 +101,14 @@ public class DashboardFragment extends Fragment implements
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Injector.inject(this);
+        getActivity().invalidateOptionsMenu();
+        return inflater.inflate(R.layout.dashboard_view, null);
+
+    }
+
+    @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
@@ -106,6 +117,7 @@ public class DashboardFragment extends Fragment implements
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         swipeRefreshLayout.setEnabled(true);
+
         showDataFromCacheIfAvailable();
         addOnClickListeners();
     }
@@ -114,26 +126,8 @@ public class DashboardFragment extends Fragment implements
         if (!getSections().isEmpty()) {
             adapter.setResponse(getDashboardDataPreferences(requireContext()));
         } else {
-            showLoading();
+            loadData();
         }
-    }
-
-    private void showLoading() {
-        loadingPlaceholder.setVisibility(View.VISIBLE);
-        loadingPlaceholder.startShimmer();
-    }
-
-    private void hideShimmer() {
-        loadingPlaceholder.stopShimmer();
-        loadingPlaceholder.setVisibility(View.GONE);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Injector.inject(this);
-        getActivity().invalidateOptionsMenu();
-        return inflater.inflate(R.layout.dashboard_view, null);
-
     }
 
     private void addOnClickListeners() {
@@ -157,46 +151,46 @@ public class DashboardFragment extends Fragment implements
 
     public void refresh() {
         if (getActivity() != null) {
-            getLoaderManager().restartLoader(0, null, this);
+            loadData();
         }
+    }
+
+    private void loadData() {
+        viewModel.loadData().observe(getViewLifecycleOwner(), dashboard -> {
+            showLoadingImage();
+            switch (dashboard.getStatus()) {
+                case SUCCESS: {
+                    swipeRefreshLayout.setRefreshing(false);
+                    adapter.setResponse(Objects.requireNonNull(dashboard.getData()));
+                    hideShimmer();
+                    break;
+                }
+                case ERROR: {
+                    hideShimmer();
+                    setEmptyText();
+                    break;
+                }
+            }
+        });
+    }
+
+    private void showLoadingImage() {
+        loadingPlaceholder.setVisibility(View.VISIBLE);
+        loadingPlaceholder.startShimmer();
+    }
+
+    private void hideShimmer() {
+        loadingPlaceholder.stopShimmer();
+        loadingPlaceholder.setVisibility(View.GONE);
+    }
+
+    private void setEmptyText() {
+        setEmptyText(R.string.no_data_available, R.string.try_after_some_time,
+                R.drawable.ic_error_outline_black_18dp);
     }
 
     private List<DashboardSection> getSections() {
         return getDashboardDataPreferences(getContext()).getAvailableSections();
-    }
-
-    @NonNull
-    @Override
-    public Loader<DashboardResponse> onCreateLoader(int id, @Nullable Bundle args) {
-        return new ThrowableLoader<DashboardResponse>(getContext(), dashboardResponse) {
-
-            @Override
-            public DashboardResponse loadData() throws Exception {
-                try {
-                    return serviceProvider.getService(getActivity()).getDashboardData();
-                } catch (Exception exception) {
-                    throw exception;
-                }
-            }
-        };
-    }
-
-    @Override
-    public void onLoadFinished(@NonNull Loader<DashboardResponse> loader, DashboardResponse data) {
-        final Exception exception = getException(loader);
-        swipeRefreshLayout.setRefreshing(false);
-        hideShimmer();
-        if (exception != null) {
-            this.exception = exception;
-            getLoaderManager().destroyLoader(loader.getId());
-            adapter.setResponse(getDashboardDataPreferences(getContext()));
-            return;
-        }
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(data);
-        setDashboardData(getContext(), json);
-        adapter.setResponse(data);
-        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -205,10 +199,6 @@ public class DashboardFragment extends Fragment implements
         refresh();
     }
 
-    private void setEmptyText() {
-        setEmptyText(R.string.no_data_available, R.string.try_after_some_time,
-                R.drawable.ic_error_outline_black_18dp);
-    }
 
     protected int getErrorMessage(Exception exception) {
         if (exception instanceof IOException) {
@@ -241,18 +231,6 @@ public class DashboardFragment extends Fragment implements
         emptyTitleView.setCompoundDrawablesWithIntrinsicBounds(icon, 0, 0, 0);
         emptyDescView.setText(description);
         retryButton.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onLoaderReset(@NonNull Loader<DashboardResponse> loader) {
-
-    }
-
-    private void initLoader() {
-        if (firstCallback) {
-            getLoaderManager().initLoader(0, null, this);
-            firstCallback = false;
-        }
     }
 
 }

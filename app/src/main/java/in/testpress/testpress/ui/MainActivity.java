@@ -26,6 +26,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -136,6 +137,8 @@ public class MainActivity extends TestpressFragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         ButterKnife.inject(this);
+
+        Log.d("TAG", "onCreate: ");
 
         if (savedInstanceState != null) {
             mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM);
@@ -517,7 +520,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 if (mInstituteSettings == null) {
                     onFinishFetchingInstituteSettings(instituteSettings);
                 } else if (isUserAuthenticated && mInstituteSettings.getForceStudentData()) {
-                    checkForForceUserData();
+                    //checkForForceUserData();
                 } else {
                     showMainActivityContents();
                 }
@@ -551,7 +554,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 syncVideoWatchedData();
 
                 if (isUserAuthenticated && mInstituteSettings.getForceStudentData()) {
-                    checkForForceUserData();
+                    //checkForForceUserData();
                 }
             }
         }
@@ -650,15 +653,18 @@ public class MainActivity extends TestpressFragmentActivity {
         }
     }
 
-    public void callWebViewActivity(String url) {
-
-        if (!Strings.toString(url).isEmpty()) {
-            Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
-            intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Mandatory Update");
-            intent.putExtra(WebViewActivity.SHOW_LOGOUT, "true");
-            intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + url + "&next=/settings/force/mobile/");
-            startActivity(intent);
-        }
+    public void openEnforceDataActivity(){
+        Log.d("TAG", "openEnforceDataActivity: "+ BASE_URL + "/settings/force/mobile/");
+        this.startActivity(
+                EnforceDataActivity.Companion.createIntent(
+                        this,
+                        "Mandatory Update",
+                        BASE_URL + "/settings/force/mobile/",
+                        true,
+                        false,
+                        EnforceDataActivity.class
+                )
+        );
     }
 
     public void checkForForceUserData() {
@@ -695,50 +701,10 @@ public class MainActivity extends TestpressFragmentActivity {
                 if (!checkPermission.getIsDataCollected()) {
                     hideMainActivityContents();
 
-                    if (!Strings.toString(ssoUrl).isEmpty()) {
-                        callWebViewActivity(ssoUrl);
-                    } else {
-                        fetchSsoLink();
-                    }
+                    openEnforceDataActivity();
                 } else {
                     showMainActivityContents();
                 }
-            }
-        }.execute();
-    }
-
-    public void fetchSsoLink() {
-        new SafeAsyncTask<SsoUrl>() {
-            @Override
-            public SsoUrl call() throws Exception {
-                return serviceProvider.getService(MainActivity.this).getSsoUrl();
-            }
-
-            @Override
-            protected void onException(final Exception exception) throws RuntimeException {
-                hideMainActivityContents();
-
-                if (exception.getCause() instanceof IOException) {
-                    setEmptyText(R.string.network_error, R.string.no_internet_try_again,
-                            R.drawable.ic_error_outline_black_18dp);
-                } else {
-                    setEmptyText(R.string.network_error, R.string.try_after_sometime,
-                            R.drawable.ic_error_outline_black_18dp);
-                }
-                retryButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        emptyView.setVisibility(View.GONE);
-                        checkForForceUserData();
-                    }
-                });
-            }
-
-            @Override
-            protected void onSuccess(final SsoUrl ssoLink) throws Exception {
-                showMainActivityContents();
-                ssoUrl = ssoLink.getSsoUrl();
-                callWebViewActivity(ssoLink.getSsoUrl());
             }
         }.execute();
     }

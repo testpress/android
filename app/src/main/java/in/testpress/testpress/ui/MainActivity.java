@@ -138,8 +138,6 @@ public class MainActivity extends TestpressFragmentActivity {
         setContentView(R.layout.main_activity);
         ButterKnife.inject(this);
 
-        Log.d("TAG", "onCreate: ");
-
         if (savedInstanceState != null) {
             mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM);
         }
@@ -520,7 +518,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 if (mInstituteSettings == null) {
                     onFinishFetchingInstituteSettings(instituteSettings);
                 } else if (isUserAuthenticated && mInstituteSettings.getForceStudentData()) {
-                    //checkForForceUserData();
+                    checkForForceUserData();
                 } else {
                     showMainActivityContents();
                 }
@@ -554,7 +552,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 syncVideoWatchedData();
 
                 if (isUserAuthenticated && mInstituteSettings.getForceStudentData()) {
-                    //checkForForceUserData();
+                    checkForForceUserData();
                 }
             }
         }
@@ -654,7 +652,6 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     public void openEnforceDataActivity(){
-        Log.d("TAG", "openEnforceDataActivity: "+ BASE_URL + "/settings/force/mobile/");
         this.startActivity(
                 EnforceDataActivity.Companion.createIntent(
                         this,

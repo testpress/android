@@ -52,7 +52,7 @@ class EnforceDataActivity : AbstractWebViewActivity() {
         webViewFragment.addJavascriptInterface(JavaScriptInterface(), "AndroidInterface")
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.logout, menu)
         return true
     }

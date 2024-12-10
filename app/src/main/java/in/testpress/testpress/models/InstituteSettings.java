@@ -85,6 +85,8 @@ public class InstituteSettings {
     private String salesforceMcAccessToken;
     private String salesforceFcmSenderId;
     private String salesforceMarketingCloudUrl;
+    private String videoWatermarkType;
+    private String videoWatermarkPosition;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
@@ -96,7 +98,7 @@ public class InstituteSettings {
         this.baseUrl = baseUrl;
     }
 
-    public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, Boolean facebookLoginEnabled, Boolean googleLoginEnabled, boolean commentsVotingEnabled, Boolean bookmarksEnabled, Boolean forumEnabled, String forumLabel, Boolean twilioEnabled, Boolean allow_profile_edit, String learnLabel, String leaderboardLabel, String dashboardLabel, String bookmarksLabel, String loginLabel, String loginPasswordLabel, String aboutUs, Boolean disableStudentAnalytics, Boolean customRegistrationEnabled, Boolean enableParallelLoginRestriction, Integer maxParallelLogins, Integer lockoutLimit, String cooloffTime, String appToolbarLogo, String appShareLink, String serverTime, Boolean allowScreenshotInApp, String androidSentryDns, Boolean leaderboardEnabled, String threatsAndTargetsLabel, Boolean isVideoDownloadEnabled, Boolean isHelpdeskEnabled, IntegerList allowedLoginMethods, Boolean showShareButton, String facebookAppId, Integer maxAllowedDownloadedVideos, Boolean disableForgotPassword, Boolean disableStudentReport, Boolean enableCustomTest, String currentPaymentApp, String customRegistrationUrl, Boolean disableStoreInApp, Boolean salesforceSdkEnabled, String salesforceMcApplicationId, String salesforceMcAccessToken, String salesforceFcmSenderId, String salesforceMarketingCloudUrl) {
+    public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, Boolean facebookLoginEnabled, Boolean googleLoginEnabled, boolean commentsVotingEnabled, Boolean bookmarksEnabled, Boolean forumEnabled, String forumLabel, Boolean twilioEnabled, Boolean allow_profile_edit, String learnLabel, String leaderboardLabel, String dashboardLabel, String bookmarksLabel, String loginLabel, String loginPasswordLabel, String aboutUs, Boolean disableStudentAnalytics, Boolean customRegistrationEnabled, Boolean enableParallelLoginRestriction, Integer maxParallelLogins, Integer lockoutLimit, String cooloffTime, String appToolbarLogo, String appShareLink, String serverTime, Boolean allowScreenshotInApp, String androidSentryDns, Boolean leaderboardEnabled, String threatsAndTargetsLabel, Boolean isVideoDownloadEnabled, Boolean isHelpdeskEnabled, IntegerList allowedLoginMethods, Boolean showShareButton, String facebookAppId, Integer maxAllowedDownloadedVideos, Boolean disableForgotPassword, Boolean disableStudentReport, Boolean enableCustomTest, String currentPaymentApp, String customRegistrationUrl, Boolean disableStoreInApp, Boolean salesforceSdkEnabled, String salesforceMcApplicationId, String salesforceMcAccessToken, String salesforceFcmSenderId, String salesforceMarketingCloudUrl, String videoWatermarkType, String videoWatermarkPosition) {
         this.baseUrl = baseUrl;
         this.verificationMethod = verificationMethod;
         this.allowSignup = allowSignup;
@@ -160,6 +162,8 @@ public class InstituteSettings {
         this.salesforceMcAccessToken = salesforceMcAccessToken;
         this.salesforceFcmSenderId = salesforceFcmSenderId;
         this.salesforceMarketingCloudUrl = salesforceMarketingCloudUrl;
+        this.videoWatermarkType = videoWatermarkType;
+        this.videoWatermarkPosition = videoWatermarkPosition;
     }
 
     public String getBaseUrl() {
@@ -664,6 +668,22 @@ public class InstituteSettings {
 
     public void setSalesforceMarketingCloudUrl(String salesforceMarketingCloudUrl) {
         this.salesforceMarketingCloudUrl = salesforceMarketingCloudUrl;
+    }
+
+    public String getVideoWatermarkType() {
+        return videoWatermarkType;
+    }
+
+    public void setVideoWatermarkType(String videoWatermarkType) {
+        this.videoWatermarkType = videoWatermarkType;
+    }
+
+    public String getVideoWatermarkPosition() {
+        return videoWatermarkPosition;
+    }
+
+    public void setVideoWatermarkPosition(String videoWatermarkPosition) {
+        this.videoWatermarkPosition = videoWatermarkPosition;
     }
 
     // KEEP METHODS - put your custom methods here

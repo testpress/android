@@ -89,6 +89,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         public final static Property SalesforceMcAccessToken = new Property(60, String.class, "salesforceMcAccessToken", false, "SALESFORCE_MC_ACCESS_TOKEN");
         public final static Property SalesforceFcmSenderId = new Property(61, String.class, "salesforceFcmSenderId", false, "SALESFORCE_FCM_SENDER_ID");
         public final static Property SalesforceMarketingCloudUrl = new Property(62, String.class, "salesforceMarketingCloudUrl", false, "SALESFORCE_MARKETING_CLOUD_URL");
+        public final static Property VideoWatermarkType = new Property(63, String.class, "videoWatermarkType", false, "VIDEO_WATERMARK_TYPE");
+        public final static Property VideoWatermarkPosition = new Property(64, String.class, "videoWatermarkPosition", false, "VIDEO_WATERMARK_POSITION");
     };
 
     private final IntegerListConverter allowedLoginMethodsConverter = new IntegerListConverter();
@@ -167,7 +169,9 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
                 "\"SALESFORCE_MC_APPLICATION_ID\" TEXT," + // 59: salesforceMcApplicationId
                 "\"SALESFORCE_MC_ACCESS_TOKEN\" TEXT," + // 60: salesforceMcAccessToken
                 "\"SALESFORCE_FCM_SENDER_ID\" TEXT," + // 61: salesforceFcmSenderId
-                "\"SALESFORCE_MARKETING_CLOUD_URL\" TEXT);"); // 62: salesforceMarketingCloudUrl
+                "\"SALESFORCE_MARKETING_CLOUD_URL\" TEXT," + // 62: salesforceMarketingCloudUrl
+                "\"VIDEO_WATERMARK_TYPE\" TEXT," + // 63: videoWatermarkType
+                "\"VIDEO_WATERMARK_POSITION\" TEXT);"); // 64: videoWatermarkPosition
     }
 
     /** Drops the underlying database table. */
@@ -491,6 +495,16 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         if (salesforceMarketingCloudUrl != null) {
             stmt.bindString(63, salesforceMarketingCloudUrl);
         }
+ 
+        String videoWatermarkType = entity.getVideoWatermarkType();
+        if (videoWatermarkType != null) {
+            stmt.bindString(64, videoWatermarkType);
+        }
+ 
+        String videoWatermarkPosition = entity.getVideoWatermarkPosition();
+        if (videoWatermarkPosition != null) {
+            stmt.bindString(65, videoWatermarkPosition);
+        }
     }
 
     /** @inheritdoc */
@@ -565,7 +579,9 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             cursor.isNull(offset + 59) ? null : cursor.getString(offset + 59), // salesforceMcApplicationId
             cursor.isNull(offset + 60) ? null : cursor.getString(offset + 60), // salesforceMcAccessToken
             cursor.isNull(offset + 61) ? null : cursor.getString(offset + 61), // salesforceFcmSenderId
-            cursor.isNull(offset + 62) ? null : cursor.getString(offset + 62) // salesforceMarketingCloudUrl
+            cursor.isNull(offset + 62) ? null : cursor.getString(offset + 62), // salesforceMarketingCloudUrl
+            cursor.isNull(offset + 63) ? null : cursor.getString(offset + 63), // videoWatermarkType
+            cursor.isNull(offset + 64) ? null : cursor.getString(offset + 64) // videoWatermarkPosition
         );
         return entity;
     }
@@ -636,6 +652,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         entity.setSalesforceMcAccessToken(cursor.isNull(offset + 60) ? null : cursor.getString(offset + 60));
         entity.setSalesforceFcmSenderId(cursor.isNull(offset + 61) ? null : cursor.getString(offset + 61));
         entity.setSalesforceMarketingCloudUrl(cursor.isNull(offset + 62) ? null : cursor.getString(offset + 62));
+        entity.setVideoWatermarkType(cursor.isNull(offset + 63) ? null : cursor.getString(offset + 63));
+        entity.setVideoWatermarkPosition(cursor.isNull(offset + 64) ? null : cursor.getString(offset + 64));
      }
     
     /** @inheritdoc */

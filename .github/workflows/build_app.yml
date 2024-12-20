@@ -22,11 +22,11 @@ jobs:
         run: |
           curl -f https://${{ github.event.inputs.subdomain }}.testpress.in/api/v2.5/admin/android/app-config/ -H "API-access-key: $API_ACCESS_KEY"
 
-      - name: Setup JDK 11
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          distribution: "corretto"
-          java-version: 11
+          distribution: "temurin"
+          java-version: 17
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2

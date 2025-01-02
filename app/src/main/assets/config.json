@@ -1,7 +1,7 @@
 {
-  "version" : "1.1.7",
-  "version_code" : 9,
-  "testpress_site_subdomain" : "sandbox",
+  "version" : "1.0.0",
+  "version_code" : 1,
+  "testpress_site_subdomain" : "staging",
   "package_name" : "in.testpress.sandbox",
   "app_name" : "Testpress Sandbox",
   "share_message": "Good app to prepare for online exams.",

@@ -13,6 +13,10 @@ object AppChecker {
         return context.getString(R.string.testpress_site_subdomain) == "lmsdemo"
     }
 
+    fun isCatkingApp(context: Context): Boolean {
+        return context.getString(R.string.testpress_site_subdomain) == "catking"
+    }
+
     fun isBrilliantPalaClassesApp(context: Context): Boolean {
         return context.getString(R.string.testpress_site_subdomain) == "brilliantpalaelearn"
     }

@@ -21,6 +21,14 @@
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
 <!--    <uses-sdk tools:overrideLibrary="us.zoom.androidlib,us.zoom.videomeetings"/>-->
 
+    <!-- Permissions added by Zoom SDK that are not required, so they are being removed -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_PHONE_CALL" tools:node="remove" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" tools:node="remove" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" tools:node="remove" />
+
+    <!-- Permissions added by Google Play Services SDK that are not needed, so they are being removed -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>
+
     <application
         android:name=".TestpressApplication"
         android:allowBackup="true"
@@ -52,14 +60,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="@string/host_url"/>
-                <data android:scheme="http" android:host="@string/host_url" />
-                <data android:scheme="https" android:host="@string/white_labeled_host_url"/>
-                <data android:scheme="http" android:host="@string/white_labeled_host_url"/>
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="@string/host_url" />
+                <data android:host="@string/white_labeled_host_url" />
             </intent-filter>
         </activity>
         <activity
@@ -236,6 +244,10 @@
             android:configChanges="orientation|keyboardHidden|screenSize"/>
 
         <activity android:name=".ui.AccountDeleteActivity"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
+
+        <activity android:name=".ui.EnforceDataActivity"
             android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"/>
 

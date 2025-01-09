@@ -122,6 +122,24 @@ public class HandleMainMenu {
             case  R.id.student_report:
                 launchStudentReportActivity();
                 break;
+            case  R.id.recorded_lessons:
+                openCakingExternalURL("Recorded Lessons","/external_site/?endpoint=recorded_lectures");
+                break;
+            case  R.id.mocks:
+                openCakingExternalURL("Mocks","/external_site/?endpoint=mocks");
+                break;
+            case  R.id.e_books:
+                openCakingExternalURL("E-Books","/external_site/?endpoint=e-books");
+                break;
+            case  R.id.live_lectures_cat:
+                openCakingExternalURL("CAT","/external_site/?endpoint=cat/40-days-challenge");
+                break;
+            case  R.id.live_lectures_non_cat:
+                openCakingExternalURL("NON-CAT","/external_site/?endpoint=noncat/non-cat-40-days-challenge");
+                break;
+            case  R.id.live_lectures_gd_watpi:
+                openCakingExternalURL("GD WATPI","/external_site/?endpoint=gdwatpi/todays-classes");
+                break;
             case  R.id.proctored_exam:
                 launchProctoredExamActivity();
                 break;
@@ -206,6 +224,7 @@ public class HandleMainMenu {
                         activity.getString(R.string.student_report),
                         WHITE_LABELED_HOST_URL + URL_STUDENT_REPORT_FLAG,
                         true,
+                        false,
                         WebViewWithSSOActivity.class
                 )
         );
@@ -218,6 +237,7 @@ public class HandleMainMenu {
                         activity.getString(R.string.proctored_exam),
                         WHITE_LABELED_HOST_URL + URL_PROCTORED_EXAM_FLAG,
                         true,
+                        false,
                         WebViewWithSSOActivity.class
                 )
         );
@@ -229,6 +249,7 @@ public class HandleMainMenu {
                         activity,
                         activity.getString(R.string.privacy_policy),
                         BASE_URL + URL_PRIVACY_POLICY_FLAG,
+                        false,
                         false,
                         WebViewWithSSOActivity.class
                 )
@@ -242,6 +263,7 @@ public class HandleMainMenu {
                         title,
                         WHITE_LABELED_HOST_URL + "/discussions/new",
                         true,
+                        false,
                         WebViewWithSSOActivity.class
                 )
         );
@@ -249,5 +271,18 @@ public class HandleMainMenu {
 
     private void launchOfflineExamListActivity() {
         activity.startActivity(new Intent(activity, OfflineExamListActivity.class));
+    }
+
+    private void openCakingExternalURL(String title, String url) {
+        activity.startActivity(
+                WebViewWithSSOActivity.Companion.createIntent(
+                        activity,
+                        title,
+                        BASE_URL + url,
+                        true,
+                        true,
+                        WebViewWithSSOActivity.class
+                )
+        );
     }
 }

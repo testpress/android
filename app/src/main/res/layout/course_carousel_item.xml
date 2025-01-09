@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:id="@+id/exam_content_layout"
+        android:id="@+id/chapter_layout"
         android:orientation="horizontal">
 
         <ImageView
@@ -52,11 +52,11 @@
             android:src="@drawable/ic_exam_grey" />
 
         <TextView
-            android:id="@+id/exams_count"
+            android:id="@+id/chapter_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
-            android:text="20 Exams"
+            android:text="20 Chapters"
             android:textSize="12sp" />
     </LinearLayout>
 
@@ -65,44 +65,21 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:id="@+id/video_content_layout"
+        android:id="@+id/content_layout"
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/video_icon"
+            android:id="@+id/content_icon"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:src="@drawable/ic_video_grey" />
 
         <TextView
-            android:id="@+id/videos_count"
+            android:id="@+id/content_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
-            android:text="10 Videos"
-            android:textSize="12sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:gravity="center"
-        android:id="@+id/notes_content_layout"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/doc_icon"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:src="@drawable/ic_news_grey" />
-
-        <TextView
-            android:id="@+id/notes_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="7dp"
-            android:text="25 Docs"
+            android:text="10 Contents"
             android:textSize="12sp" />
     </LinearLayout>
 </LinearLayout>

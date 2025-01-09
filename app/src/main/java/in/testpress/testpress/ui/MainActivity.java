@@ -1,4 +1,5 @@
 package in.testpress.testpress.ui;
+import in.testpress.RequestCode;
 import in.testpress.course.ui.CourseListFragment;
 
 import android.Manifest;
@@ -9,10 +10,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
@@ -23,6 +26,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -71,9 +75,11 @@ import in.testpress.testpress.models.Update;
 import in.testpress.testpress.ui.fragments.DashboardFragment;
 import in.testpress.testpress.ui.fragments.DiscussionFragmentv2;
 import in.testpress.testpress.ui.utils.HandleMainMenu;
+import in.testpress.testpress.util.AppChecker;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.SafeAsyncTask;
+import in.testpress.testpress.util.SalesforceSdkInitializer;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.testpress.util.UpdateAppDialogManager;
@@ -179,14 +185,10 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private void setupEasterEgg() {
         Menu navigationMenu = navigationView.getMenu();
-        final MenuItem rateUsButton = navigationMenu.findItem(R.id.rate_us);
+        final MenuItem versionInfo = navigationMenu.findItem(R.id.version_info);
         Button button = new Button(this);
         button.setAlpha(0);
-        rateUsButton.setActionView(button);
-        rateUsButton.getActionView().setVisibility(View.GONE);
-
-
-        findViewById(R.id.version_info).setOnLongClickListener(new View.OnLongClickListener() {
+        button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 Toast.makeText(getApplicationContext(), "App version is " + getString(R.string.version), Toast.LENGTH_SHORT).show();
@@ -201,11 +203,11 @@ public class MainActivity extends TestpressFragmentActivity {
             }
         });
 
-        findViewById(R.id.version_info).setOnClickListener(new View.OnClickListener() {
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (isEasterEggEnabled(getApplicationContext())) {
-                    if (touchCountToEnableScreenShot == 3) {
+                    if (touchCountToEnableScreenShot == 4) {
                         enableScreenShot(getApplicationContext());
                         touchCountToEnableScreenShot = 0;
                     } else {
@@ -216,6 +218,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 }
             }
         });
+        versionInfo.setActionView(button);
     }
 
     private void setUpNavigationDrawer() {
@@ -243,6 +246,7 @@ public class MainActivity extends TestpressFragmentActivity {
         showOfflineExamBasedOnInstituteSettings(navigationView.getMenu());
         showDiscussionsButtonBasedOnInstituteSettings(navigationView.getMenu());
         showBookmarkButtonBasedOnInstituteSettings(navigationView.getMenu());
+        showCustomOptions(navigationView.getMenu());
         updateMenuItemNames(navigationView.getMenu());
         final HandleMainMenu handleMainMenu = new HandleMainMenu(MainActivity.this, serviceProvider);
         navigationView.setNavigationItemSelectedListener(
@@ -318,12 +322,24 @@ public class MainActivity extends TestpressFragmentActivity {
         }
     }
 
+    private void showCustomOptions(Menu menu) {
+        if (mInstituteSettings != null && AppChecker.INSTANCE.isCatkingApp(this)) {
+            menu.findItem(R.id.recorded_lessons).setVisible(true);
+            menu.findItem(R.id.mocks).setVisible(true);
+            menu.findItem(R.id.e_books).setVisible(true);
+            menu.findItem(R.id.live_lectures_cat).setVisible(true);
+            menu.findItem(R.id.live_lectures_non_cat).setVisible(true);
+            menu.findItem(R.id.live_lectures_gd_watpi).setVisible(true);
+        }
+    }
+
     private void updateMenuItemNames(Menu menu) {
         if (mInstituteSettings != null) {
             menu.findItem(R.id.posts).setVisible(Boolean.TRUE.equals(mInstituteSettings.getPostsEnabled()));
             menu.findItem(R.id.posts).setTitle(Strings.toString(mInstituteSettings.getPostsLabel()));
             menu.findItem(R.id.bookmarks).setTitle(Strings.toString(mInstituteSettings.getBookmarksLabel()));
         }
+        menu.findItem(R.id.version_info).setTitle("Version - "+getString(R.string.version));
     }
 
     @Override
@@ -364,7 +380,8 @@ public class MainActivity extends TestpressFragmentActivity {
                 if (viewPager.getVisibility() != View.VISIBLE) {
                     initScreen();
                 }
-                askNotificationPermission();
+                initSalesForceSDK();
+                askNotificationAndStoragePermission();
             }
         }.execute();
     }
@@ -501,7 +518,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
                 if (mInstituteSettings == null) {
                     onFinishFetchingInstituteSettings(instituteSettings);
-                } else if (mInstituteSettings.getForceStudentData()) {
+                } else if (isUserAuthenticated && mInstituteSettings.getForceStudentData()) {
                     checkForForceUserData();
                 } else {
                     showMainActivityContents();
@@ -535,7 +552,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 updateTestpressSession();
                 syncVideoWatchedData();
 
-                if (mInstituteSettings.getForceStudentData()) {
+                if (isUserAuthenticated && mInstituteSettings.getForceStudentData()) {
                     checkForForceUserData();
                 }
             }
@@ -628,22 +645,24 @@ public class MainActivity extends TestpressFragmentActivity {
         if (navigationView != null) {
             hideMenuItemsForUnauthenticatedUser(navigationView.getMenu());
         }
-        if (mInstituteSettings != null && mInstituteSettings.getForceStudentData()) {
+        if (isUserAuthenticated && mInstituteSettings != null && mInstituteSettings.getForceStudentData()) {
             checkForForceUserData();
         } else {
             showMainActivityContents();
         }
     }
 
-    public void callWebViewActivity(String url) {
-
-        if (!Strings.toString(url).isEmpty()) {
-            Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
-            intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Mandatory Update");
-            intent.putExtra(WebViewActivity.SHOW_LOGOUT, "true");
-            intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + url + "&next=/settings/force/mobile/");
-            startActivity(intent);
-        }
+    public void openEnforceDataActivity(){
+        this.startActivity(
+                EnforceDataActivity.Companion.createIntent(
+                        this,
+                        "Mandatory Update",
+                        BASE_URL + "/settings/force/mobile/",
+                        true,
+                        false,
+                        EnforceDataActivity.class
+                )
+        );
     }
 
     public void checkForForceUserData() {
@@ -680,50 +699,10 @@ public class MainActivity extends TestpressFragmentActivity {
                 if (!checkPermission.getIsDataCollected()) {
                     hideMainActivityContents();
 
-                    if (!Strings.toString(ssoUrl).isEmpty()) {
-                        callWebViewActivity(ssoUrl);
-                    } else {
-                        fetchSsoLink();
-                    }
+                    openEnforceDataActivity();
                 } else {
                     showMainActivityContents();
                 }
-            }
-        }.execute();
-    }
-
-    public void fetchSsoLink() {
-        new SafeAsyncTask<SsoUrl>() {
-            @Override
-            public SsoUrl call() throws Exception {
-                return serviceProvider.getService(MainActivity.this).getSsoUrl();
-            }
-
-            @Override
-            protected void onException(final Exception exception) throws RuntimeException {
-                hideMainActivityContents();
-
-                if (exception.getCause() instanceof IOException) {
-                    setEmptyText(R.string.network_error, R.string.no_internet_try_again,
-                            R.drawable.ic_error_outline_black_18dp);
-                } else {
-                    setEmptyText(R.string.network_error, R.string.try_after_sometime,
-                            R.drawable.ic_error_outline_black_18dp);
-                }
-                retryButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        emptyView.setVisibility(View.GONE);
-                        checkForForceUserData();
-                    }
-                });
-            }
-
-            @Override
-            protected void onSuccess(final SsoUrl ssoLink) throws Exception {
-                showMainActivityContents();
-                ssoUrl = ssoLink.getSsoUrl();
-                callWebViewActivity(ssoLink.getSsoUrl());
             }
         }.execute();
     }
@@ -741,9 +720,23 @@ public class MainActivity extends TestpressFragmentActivity {
         }
     }
 
-    private void askNotificationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS},1000);
+    private void askNotificationAndStoragePermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            requestPermissions(new String[]{
+                    Manifest.permission.POST_NOTIFICATIONS,
+                    Manifest.permission.READ_MEDIA_IMAGES,
+                    Manifest.permission.READ_MEDIA_VIDEO,
+                    Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
+            }, RequestCode.PERMISSION);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions(new String[]{
+                    Manifest.permission.POST_NOTIFICATIONS,
+                    Manifest.permission.READ_MEDIA_IMAGES,
+                    Manifest.permission.READ_MEDIA_VIDEO
+            }, RequestCode.PERMISSION);
+        } else {
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, RequestCode.PERMISSION);
+
         }
     }
 
@@ -761,4 +754,36 @@ public class MainActivity extends TestpressFragmentActivity {
         editor.apply();
     }
 
+    private void initSalesForceSDK() {
+        if (Boolean.TRUE.equals(mInstituteSettings.getSalesforceSdkEnabled())) {
+            SalesforceSdkInitializer salesforceSdkInitializer = new SalesforceSdkInitializer(this);
+            salesforceSdkInitializer.initialize(mInstituteSettings);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && requestCode == RequestCode.PERMISSION) {
+            if (isNotificationPermissionGranted(permissions, grantResults)) {
+                onNotificationPermissionGranted();
+            }
+        }
+    }
+
+    private boolean isNotificationPermissionGranted(@NonNull String[] permissions, @NonNull int[] grantResults) {
+        for (int i = 0; i < permissions.length; i++) {
+            if (Manifest.permission.POST_NOTIFICATIONS.equals(permissions[i]) && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void onNotificationPermissionGranted() {
+        if (Boolean.TRUE.equals(mInstituteSettings.getSalesforceSdkEnabled())) {
+            SalesforceSdkInitializer.notificationPermissionGranted();
+        }
+    }
 }

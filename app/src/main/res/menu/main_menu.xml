@@ -32,7 +32,7 @@
             android:id="@+id/discussions"
             android:title="Discussions"
             android:visible="false"
-            android:icon="@drawable/ic_baseline_message_24"
+            android:icon="@drawable/chat_icon"
             app:showAsAction="never"/>
         <item
             android:id="@+id/doubts"

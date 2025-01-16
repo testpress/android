@@ -5,7 +5,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 ext {
-    testpressSDK = '1.4.158'
+    testpressSDK = '1.4.179'
 }
 
 def jsonFile = file('src/main/assets/config.json')
@@ -27,7 +27,6 @@ dependencies {
     implementation 'com.github.kevinsawicki:wishlist:0.9@aar'
 
     if (json.zoom_enabled) {
-        implementation project(':commonlib')
         implementation project(':mobilertc')
     }
 
@@ -53,12 +52,12 @@ dependencies {
     implementation 'com.github.testpress:store:' + testpressSDK
 
     // Gcm
-    implementation 'com.google.firebase:firebase-core:19.0.0'
-    implementation 'com.google.firebase:firebase-messaging:19.0.1'
+    implementation 'com.google.firebase:firebase-core:21.1.1'
+    implementation 'com.google.firebase:firebase-messaging:24.1.0'
     implementation 'org.greenrobot:eventbus:3.1.1'
 
     // Google Sign In
-    implementation 'com.google.android.gms:play-services-auth:20.2.0'
+    implementation 'com.google.android.gms:play-services-auth:20.7.0'
 
     // Facebook SDK
     implementation 'com.facebook.android:facebook-android-sdk:8.2.0'
@@ -69,7 +68,7 @@ dependencies {
 
     // Country code picker
     // https://github.com/hbb20/CountryCodePickerProject/wiki
-    implementation "com.github.hbb20:CountryCodePickerProject:2.4.2"
+    implementation "com.hbb20:ccp:2.7.0"
     implementation 'io.michaelrocks:libphonenumber-android:8.12.57'
 
     implementation 'io.sentry:sentry-android:6.4.2'
@@ -103,6 +102,7 @@ dependencies {
 
     implementation 'com.github.mhiew:android-pdf-viewer:3.2.0-beta.1'
     implementation 'com.github.alexto9090:PRDownloader:1.0'
+    implementation 'com.salesforce.marketingcloud:marketingcloudsdk:8.0.7'
 }
 
 def key_alias = "sample"
@@ -121,7 +121,7 @@ try {
 
 android {
 
-    compileSdkVersion 33
+    compileSdkVersion 34
     buildToolsVersion '30.0.3'
     ndkVersion "23.2.8568313"
 
@@ -149,7 +149,7 @@ android {
 
     defaultConfig {
         minSdkVersion 23
-        targetSdkVersion 33
+        targetSdkVersion 34
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         versionName json.version
@@ -160,7 +160,7 @@ android {
         buildConfigField "String", "BASE_URL", '"https://' + host_url + '"'
         resValue "string", "app_name", json.app_name
         resValue "string", "testpress_site_subdomain", json.testpress_site_subdomain
-        resValue "string", "version", "v " + json.version
+        resValue "string", "version", json.version
         resValue "string", "share_message", json.share_message
         resValue "string", "facebook_app_id", json.facebook_app_id
         resValue "string", "fb_login_protocol_scheme", json.facebook_app_id

@@ -5,16 +5,17 @@ lane :build_app_files do |params|
 end
 
 lane :release_update_to do |params|
+  release_option = params[:release_option]
   if params[:subdomain] == "all"
     subdomains = fetch_subdomains
     subdomains.each do |subdomain|
       if ['verandalearning', 'brilliantpalalms', 'brilliantpalaclasses', "race"].include? subdomain
         next
       end
-      release_update(subdomain: subdomain)
+      release_update(subdomain: subdomain, release_option: release_option)
     end
   else
-    release_update(subdomain: params[:subdomain])
+    release_update(subdomain: params[:subdomain], release_option: release_option)
   end
 end
 
@@ -23,7 +24,11 @@ desc "Release updates"
 lane :release_update do |params|
   app_config = update_app_version(subdomain: params[:subdomain])
   generate_customized_app_files(app_config: app_config)
-  deploy_app(play_console_key_file: app_config["play_console_key_file"], package_name: app_config["package_name"])
+  deploy_app(
+    play_console_key_file: app_config["play_console_key_file"],
+    package_name: app_config["package_name"],
+    release_option: params[:release_option]
+  )
 end
 
 desc "Generate Customized app for an institute"
@@ -75,7 +80,8 @@ lane :deploy_app do |params|
   upload_to_play_store(
     skip_upload_apk: true,
     package_name: params[:package_name],
-    json_key: "%s/app/private_key.json"%File.expand_path("..", Dir.pwd)
+    json_key: "%s/app/private_key.json"%File.expand_path("..", Dir.pwd),
+    release_status: params[:release_option]
   )
 end
 

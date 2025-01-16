@@ -2,8 +2,10 @@ package `in`.testpress.testpress.ui.utils
 
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Context.RECEIVER_EXPORTED
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.common.api.CommonStatusCodes
@@ -50,7 +52,11 @@ class AutoDetectOTP(val context: Context) {
                 }
             }
         }
-        appCompatActivity.application.registerReceiver(broadcastReceiver, intentFilter)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            appCompatActivity.application.registerReceiver(broadcastReceiver, intentFilter, RECEIVER_EXPORTED)
+        } else {
+            appCompatActivity.application.registerReceiver(broadcastReceiver, intentFilter)
+        }
     }
 
     fun stopSmsReceiver() {

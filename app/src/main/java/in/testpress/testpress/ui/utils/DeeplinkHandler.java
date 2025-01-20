@@ -82,7 +82,7 @@ public class DeeplinkHandler {
                     }
                     break;
                 case "password":
-                    gotoActivity(ResetPasswordActivity.class, false);
+                    openBrowserForResetPassword(uri);
                     break;
                 case "analytics":
                     authenticateUserAndOpen(uri);
@@ -118,6 +118,11 @@ public class DeeplinkHandler {
         } else {
             openBrowserOrGotoHome(uri, fromSplashScreen);
         }
+    }
+
+    private void openBrowserForResetPassword(Uri uri) {
+        CommonUtils.openUrlInBrowser(activity, uri);
+        activity.finish();
     }
 
     private void openBrowserOrGotoHome(Uri uri, boolean fromSplashScreen) {
@@ -218,6 +223,7 @@ public class DeeplinkHandler {
                 "Discussion",
                 BASE_URL + "/discussions/new/" + discussionSlug,
                 true,
+                false,
                 WebViewWithSSOActivity.class
         ), 1000);
     }

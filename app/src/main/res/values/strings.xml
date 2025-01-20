@@ -174,16 +174,12 @@
 
     <string name="terms_and_conditions">Terms And Conditions</string>
 
-    <plurals name="notes_count">
-        <item quantity="one">1 Doc</item>
-        <item quantity="other">%d Docs</item>
+    <plurals name="content_count">
+        <item quantity="one">1 Content</item>
+        <item quantity="other">%d Contents</item>
     </plurals>
-    <plurals name="videos_count">
-        <item quantity="one">1 Video</item>
-        <item quantity="other">%d Videos</item>
-    </plurals>
-    <plurals name="exams_count">
-        <item quantity="one">1 Exam</item>
-        <item quantity="other">%d Exams</item>
+    <plurals name="chapter_count">
+        <item quantity="one">1 Chapter</item>
+        <item quantity="other">%d Chapters</item>
     </plurals>
 </resources>

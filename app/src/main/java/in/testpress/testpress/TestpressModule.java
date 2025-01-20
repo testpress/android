@@ -32,6 +32,7 @@ import in.testpress.testpress.ui.DoubtsActivity;
 import in.testpress.testpress.ui.QRCodeActivity;
 import in.testpress.testpress.ui.DrupalRssListActivity;
 import in.testpress.testpress.ui.DrupalRssListFragment;
+import in.testpress.testpress.ui.EnforceDataActivity;
 import in.testpress.testpress.ui.ForumActivity;
 import in.testpress.testpress.ui.ForumListActivity;
 import in.testpress.testpress.ui.ForumListFragment;
@@ -100,7 +101,8 @@ import static in.testpress.testpress.BuildConfig.BASE_URL;
                 PhoneAuthenticationFragment.class,
                 OTPVerificationFragment.class,
                 TermsAndConditionActivity.class,
-                AccountDeleteActivity.class
+                AccountDeleteActivity.class,
+                EnforceDataActivity.class
         }
 )
 public class TestpressModule {

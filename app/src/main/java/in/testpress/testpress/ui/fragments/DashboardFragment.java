@@ -199,12 +199,6 @@ public class DashboardFragment extends Fragment implements
         adapter.notifyDataSetChanged();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        refresh();
-    }
-
     private void setEmptyText() {
         setEmptyText(R.string.no_data_available, R.string.try_after_some_time,
                 R.drawable.ic_error_outline_black_18dp);

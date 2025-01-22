@@ -441,7 +441,9 @@ public class MainActivity extends TestpressFragmentActivity {
         }
 
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
-            addMenuItem(R.string.home, R.drawable.ic_baseline_home_24, new DashboardFragment());
+            if (mInstituteSettings.getDashboardEnabled()){
+                addMenuItem(R.string.home, R.drawable.ic_baseline_home_24, new DashboardFragment());
+            }
         } else {
             addMenuItem(R.string.dashboard, R.drawable.profile_default, new MainMenuFragment());
         }

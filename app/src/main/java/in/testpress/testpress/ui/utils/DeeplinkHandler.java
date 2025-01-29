@@ -28,6 +28,7 @@ import in.testpress.util.Assert;
 
 import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.BuildConfig.WHITE_LABELED_HOST_URL;
 import static in.testpress.testpress.core.Constants.Http.CHAPTERS_PATH;
 import static in.testpress.testpress.ui.PostActivity.DETAIL_URL;
 
@@ -221,7 +222,7 @@ public class DeeplinkHandler {
         activity.startActivityForResult(WebViewWithSSOActivity.Companion.createIntent(
                 activity,
                 "Discussion",
-                BASE_URL + "/discussions/new/" + discussionSlug,
+                WHITE_LABELED_HOST_URL + "/discussions/new/" + discussionSlug,
                 true,
                 false,
                 WebViewWithSSOActivity.class

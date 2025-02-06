@@ -221,13 +221,15 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.config
-            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            minifyEnabled true
+            shrinkResources true
             // zipAlign false // this is default for debug
         }
         release {
             signingConfig signingConfigs.config
-            // minifyEnabled true
-            // proguardFile '..\proguard.cfg'
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             // signingConfig signingConfigs.release
             // zipAlign true // this is default for release
             // testPackageName 'in.testpress.testpress.tests'

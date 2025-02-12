@@ -89,6 +89,7 @@ import io.sentry.android.core.SentryAndroid;
 import static in.testpress.testpress.BuildConfig.ALLOW_ANONYMOUS_USER;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.BuildConfig.WHITE_LABELED_HOST_URL;
 import static in.testpress.testpress.ui.TermsAndConditionActivityKt.TERMS_AND_CONDITIONS;
 import static in.testpress.testpress.ui.utils.EasterEggUtils.enableOrDisableEasterEgg;
 import static in.testpress.testpress.ui.utils.EasterEggUtils.enableScreenShot;
@@ -659,7 +660,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 EnforceDataActivity.Companion.createIntent(
                         this,
                         "Mandatory Update",
-                        BASE_URL + "/settings/force/mobile/",
+                        WHITE_LABELED_HOST_URL + "/settings/force/mobile/",
                         true,
                         false,
                         EnforceDataActivity.class

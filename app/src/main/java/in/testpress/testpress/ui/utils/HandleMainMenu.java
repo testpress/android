@@ -249,7 +249,7 @@ public class HandleMainMenu {
                 WebViewWithSSOActivity.Companion.createIntent(
                         activity,
                         activity.getString(R.string.privacy_policy),
-                        BASE_URL + URL_PRIVACY_POLICY_FLAG,
+                        WHITE_LABELED_HOST_URL + URL_PRIVACY_POLICY_FLAG,
                         false,
                         false,
                         WebViewWithSSOActivity.class
@@ -292,7 +292,7 @@ public class HandleMainMenu {
                 WebViewWithSSOActivity.Companion.createIntent(
                         activity,
                         title,
-                        BASE_URL + url,
+                        WHITE_LABELED_HOST_URL + url,
                         true,
                         true,
                         WebViewWithSSOActivity.class

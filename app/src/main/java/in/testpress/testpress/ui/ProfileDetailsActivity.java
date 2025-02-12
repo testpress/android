@@ -76,6 +76,7 @@ import in.testpress.testpress.util.Strings;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.BuildConfig.WHITE_LABELED_HOST_URL;
 
 public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         implements LoaderManager.LoaderCallbacks<ProfileDetails> {
@@ -181,7 +182,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
                         AccountDeleteActivity.Companion.createIntent(
                                 ProfileDetailsActivity.this,
                                 "Delete Account",
-                                BASE_URL + "/settings/account/delete/",
+                                WHITE_LABELED_HOST_URL + "/settings/account/delete/",
                                 true,
                                 false,
                                 AccountDeleteActivity.class

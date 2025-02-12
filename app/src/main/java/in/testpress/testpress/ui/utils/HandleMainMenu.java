@@ -261,7 +261,7 @@ public class HandleMainMenu {
                 WebViewWithSSOActivity.Companion.createIntent(
                         activity,
                         title,
-                        BASE_URL + url,
+                        WHITE_LABELED_HOST_URL + url,
                         true,
                         true,
                         WebViewWithSSOActivity.class

@@ -534,6 +534,7 @@ public class PostsListFragment extends Fragment implements
                 getLoaderManager().restartLoader(REFRESH_LOADER_ID, null, PostsListFragment.this);
                 categories.clear();
                 categoryPager.clear();
+                posts.clear();
                 fetchCategories();
             }
         });
@@ -567,6 +568,8 @@ public class PostsListFragment extends Fragment implements
                 Ln.e("Post category for " + post.getTitle() + " is null");
             }
         }
+        categoryDao.deleteAll();
+        postDao.deleteAll();
         categoryDao.insertOrReplaceInTx(categories);
         postDao.insertOrReplaceInTx(posts);
         LogAllPosts();

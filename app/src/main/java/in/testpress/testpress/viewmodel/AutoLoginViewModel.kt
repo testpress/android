@@ -5,6 +5,7 @@ import `in`.testpress.testpress.models.InstituteSettings
 import `in`.testpress.testpress.repository.TestPressSessionRepository
 import android.content.Context
 import androidx.lifecycle.ViewModel
+import `in`.testpress.testpress.BuildConfig
 
 class AutoLoginViewModel: ViewModel() {
 
@@ -14,6 +15,7 @@ class AutoLoginViewModel: ViewModel() {
 
     fun initializeTestPressSession(context: Context,instituteSettings: InstituteSettings, username: String, password: String, testPressService: TestpressService) {
         val settings = `in`.testpress.models.InstituteSettings(instituteSettings.baseUrl)
+                .setWhiteLabeledHostUrl(BuildConfig.WHITE_LABELED_HOST_URL)
                 .setBookmarksEnabled(instituteSettings.bookmarksEnabled)
                 .setCoursesFrontend(instituteSettings.showGameFrontend)
                 .setCoursesGamificationEnabled(instituteSettings.coursesEnableGamification)

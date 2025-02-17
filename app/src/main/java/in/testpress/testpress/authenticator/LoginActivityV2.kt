@@ -231,6 +231,7 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
 
     private fun getInstituteSettings(): `in`.testpress.models.InstituteSettings {
         val settings = `in`.testpress.models.InstituteSettings(instituteSettings.baseUrl)
+            .setWhiteLabeledHostUrl(BuildConfig.WHITE_LABELED_HOST_URL)
             .setBookmarksEnabled(instituteSettings.bookmarksEnabled)
             .setCoursesFrontend(instituteSettings.showGameFrontend)
             .setCoursesGamificationEnabled(instituteSettings.coursesEnableGamification)

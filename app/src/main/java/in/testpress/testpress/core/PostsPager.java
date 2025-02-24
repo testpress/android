@@ -19,7 +19,6 @@ import retrofit.RetrofitError;
 public class PostsPager extends ResourcePager<Post> {
 
     TestpressApiResponse<Post> response;
-    String latestModifiedDate;
     SimpleDateFormat simpleDateFormat;
     PostDao postDao;
 
@@ -56,7 +55,7 @@ public class PostsPager extends ResourcePager<Post> {
             }
         }
         if (url != null) {
-            response = service.getPosts(url, queryParams, latestModifiedDate);
+            response = service.getPosts(url, queryParams);
             return response.getResults();
         }
         return Collections.emptyList();
@@ -135,9 +134,5 @@ public class PostsPager extends ResourcePager<Post> {
 
     public int getTotalCount() {
         return response.getCount();
-    }
-
-    public void setLatestModifiedDate(String latestModifiedDate) {
-        this.latestModifiedDate = latestModifiedDate;
     }
 }

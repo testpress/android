@@ -31,7 +31,7 @@ jobs:
           ruby-version: 2.7
 
       - name: Caching ruby dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: 'vendor/bundle'
           key: ${{ runner.os }}-gems-${{ secrets.GEMS_CACHE_VERSION }}-${{ hashFiles('**/Gemfile.lock') }}
@@ -40,7 +40,7 @@ jobs:
 
       - name: Cache Zoom SDK files
         id: zoom-cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ./mobilertc
@@ -54,7 +54,7 @@ jobs:
           unzip -o ./zoom_sdk.zip
 
       - name: Caching Gradle packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.gradle/caches

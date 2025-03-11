@@ -20,6 +20,10 @@ open class AutoLoginFragment: RegistrationBaseFragment() {
     }
 
     override fun initViewModelObservers() {
+        binding.countryCodePicker.setOnCountryChangeListener {
+            viewModel.countryCode.value = binding.countryCodePicker.selectedCountryNameCode
+        }
+
         viewModel.isUserDataValid.observe(viewLifecycleOwner, Observer {
             if (it) {
                 register()

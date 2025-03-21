@@ -645,12 +645,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     }
 
     @OnClick(id.forgot_password) public void verify() {
-        if(internetConnectivityChecker.isConnected()) {
-            Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
-            startActivity(intent);
-        } else {
-            internetConnectivityChecker.showAlert();
-        }
+        showAlert("Please update your password at https://admissions.brilliantpala.org/ to continue");
     }
 
     @OnClick(id.google_sign_in_button) public void googleSignIn() {

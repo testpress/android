@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import in.testpress.course.ui.LeaderboardActivity;
+import in.testpress.course.ui.AvailableCoursesListActivity;
 import in.testpress.testpress.R;
 import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
@@ -45,7 +45,7 @@ public class CourseCarouselViewHolder extends BaseCarouselViewHolder {
         seeAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, LeaderboardActivity.class);
+                Intent intent = new Intent(context, AvailableCoursesListActivity.class);
                 context.startActivity(intent);
             }
         });

@@ -26,8 +26,7 @@ public interface PostService {
     @GET("/{posts_url}")
     TestpressApiResponse<Post> getPosts(
             @EncodedPath("posts_url") String postUrl,
-            @QueryMap Map<String, String> options,
-            @Header("If-Modified-Since") String latestModifiedDate
+            @QueryMap Map<String, String> options
     );
 
     @GET("/{forums_url}")

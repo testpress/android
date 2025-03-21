@@ -125,9 +125,8 @@
                             android:layout_marginRight="5dp"
                             android:background="@drawable/blue_rounded_border_edittext"
                             android:paddingTop="10dp"
-                            app:ccp_autoDetectCountry="true"
-                            app:ccp_defaultNameCode="IND"
-                            android:visibility="gone"
+                            app:ccp_countryPreference="in"
+                            android:visibility="visible"
                             app:ccp_showFlag="false"
                             app:ccp_textSize="12sp" />
 

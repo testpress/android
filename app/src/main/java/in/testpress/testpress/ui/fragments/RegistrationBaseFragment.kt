@@ -37,6 +37,7 @@ abstract class RegistrationBaseFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initViewModel()
         initViewModelObservers()
+        initCounterCodePickerListener()
         hideErrorMessageOnTextChange()
         showPasswordToggleOnTextChange()
     }
@@ -51,6 +52,12 @@ abstract class RegistrationBaseFragment: Fragment() {
     }
 
     abstract fun initViewModelObservers()
+
+    private fun initCounterCodePickerListener(){
+        binding.countryCodePicker.setOnCountryChangeListener {
+            viewModel.countryCode.value = binding.countryCodePicker.selectedCountryNameCode
+        }
+    }
 
     fun onRegisterException(exception: Exception?) {
         binding.buttonRegister.isEnabled = true

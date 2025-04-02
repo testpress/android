@@ -322,11 +322,11 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     public void setLoginLabel(InstituteSettings instituteSettings) {
 
         if (!Strings.toString(in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_username, instituteSettings)).isEmpty()) {
-            usernameInputLayout.setHint(in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_username, instituteSettings));
+            usernameText.setHint(in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_username, instituteSettings));
         }
 
         if (!Strings.toString(in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_password, instituteSettings)).isEmpty()) {
-            passwordInputLayout.setHint(in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_password, instituteSettings));
+            passwordText.setHint(in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_password, instituteSettings));
         }
     }
 

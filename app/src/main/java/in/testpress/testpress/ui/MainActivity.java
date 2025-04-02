@@ -63,6 +63,7 @@ import in.testpress.exam.ui.AnalyticsFragment;
 import in.testpress.course.TestpressCourse;
 import in.testpress.course.fragments.DownloadsFragment;
 import in.testpress.course.repository.VideoWatchDataRepository;
+import in.testpress.course.ui.MyCoursesFragment;
 import in.testpress.database.OfflineVideoDao;
 import in.testpress.database.TestpressDatabase;
 import in.testpress.exam.ui.view.NonSwipeableViewPager;

@@ -2,7 +2,13 @@ name: Generate Debug APK for a branch
 
 on:
   workflow_dispatch:
-
+    inputs:
+      branch_name:
+        description: 'Branch name to build'
+        required: true
+      local_domain:
+        description: 'Local IP/domain only (e.g., 192.168.1.101, lmsdemo.testpres.in)'
+        required: true
 
 jobs:
   deploy:
@@ -68,13 +74,17 @@ jobs:
           bundle config --global set deploy_platform_default x86_64-linux
           bundle install
 
+      - name: Replace host_url in build.gradle
+        run: |
+          sed -i "s|def host_url = '.*'|def host_url = '${{ github.event.inputs.local_domain }}'|" app/build.gradle
+
       - name: Build and distribute app
         run: |
           export LC_ALL=en_US.UTF-8
           export LANG=en_US.UTF-8
           bundle exec fastlane generate_debug_apk
-      
-      - name: Upload AAB
+
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app

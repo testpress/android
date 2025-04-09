@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       local_domain:
-        description: 'Local IP/domain only (e.g., 192.168.1.101, lmsdemo.testpres.in)'
+        description: 'Local domain only(Ngrok) (e.g., 2e83-49-296-98-140.ngrok-free.app)'
         required: true
 
 jobs:

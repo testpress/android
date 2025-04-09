@@ -3,9 +3,6 @@ name: Generate Debug APK for a branch
 on:
   workflow_dispatch:
     inputs:
-      branch_name:
-        description: 'Branch name to build'
-        required: true
       local_domain:
         description: 'Local IP/domain only (e.g., 192.168.1.101, lmsdemo.testpres.in)'
         required: true

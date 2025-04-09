@@ -73,7 +73,7 @@ jobs:
 
       - name: Replace host_url in build.gradle
         run: |
-          sed -i "s|def host_url = json\.testpress_site_subdomain \+ '.*'|def host_url = '${{ github.event.inputs.local_domain }}'|" app/build.gradle
+          sed -i "/def host_url/c\def host_url = '\${{ github.event.inputs.local_domain }}'" app/build.gradle
 
       - name: Build and distribute app
         run: |

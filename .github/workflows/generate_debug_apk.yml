@@ -3,7 +3,7 @@ name: Generate Debug APK for a branch
 on:
   workflow_dispatch:
     inputs:
-      local_domain:
+      domain:
         description: 'Enter the domain only (e.g., 2e83-49-296-98-140.ngrok-free.app, lmsdemo.testpress.in)'
         required: true
 
@@ -73,7 +73,7 @@ jobs:
 
       - name: Replace host_url in build.gradle
         run: |
-          sed -i "/def host_url/c\def host_url = '\${{ github.event.inputs.local_domain }}'" app/build.gradle
+          sed -i "/def host_url/c\def host_url = '\${{ github.event.inputs.domain }}'" app/build.gradle
 
       - name: Build and distribute app
         run: |

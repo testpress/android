@@ -454,11 +454,12 @@ public class MainActivity extends TestpressFragmentActivity {
             //noinspection ConstantConditions
             addMenuItem(R.string.classes, R.drawable.ic_baseline_menu_book_24, getCoursesFragment(new ArrayList<String>(Arrays.asList("classes"))));
             addMenuItem(R.string.tests, R.drawable.ic_exam, getCoursesFragment(new ArrayList<String>(Arrays.asList("exams"))));
-            AnalyticsFragment analyticsFragment = new AnalyticsFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString(ANALYTICS_URL_FRAG, SUBJECT_ANALYTICS_PATH);
-            analyticsFragment.setArguments(bundle);
-            addMenuItem(R.string.analytics, R.drawable.analytics, analyticsFragment);
+            addMenuItem(R.string.info, R.drawable.round_smart_display_24, getCoursesFragment(new ArrayList<String>(Arrays.asList("info"))));
+//            AnalyticsFragment analyticsFragment = new AnalyticsFragment();
+//            Bundle bundle = new Bundle();
+//            bundle.putString(ANALYTICS_URL_FRAG, SUBJECT_ANALYTICS_PATH);
+//            analyticsFragment.setArguments(bundle);
+//            addMenuItem(R.string.analytics, R.drawable.analytics, analyticsFragment);
 
 //            if (mInstituteSettings.getCoursesEnableGamification()) {
 //                //noinspection ConstantConditions

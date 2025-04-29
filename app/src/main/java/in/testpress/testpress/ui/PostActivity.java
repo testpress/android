@@ -86,7 +86,6 @@ public class PostActivity extends TestpressFragmentActivity implements
     public static final String SHORT_WEB_URL = "shortWebUrl";
     public static final String DETAIL_URL = "detail_url";
     public static final String UPDATE_TIME_SPAN = "updateTimeSpan";
-    public static final int NEW_COMMENT_SYNC_INTERVAL = 10000; // 10 sec
     private static final int PREVIOUS_COMMENTS_LOADER_ID = 0;
     private static final int NEW_COMMENTS_LOADER_ID = 1;
 
@@ -132,19 +131,6 @@ public class PostActivity extends TestpressFragmentActivity implements
     @InjectView(R.id.scroll_view) NestedScrollView scrollView;
     @InjectView(android.R.id.content) View activityRootLayout;
     @InjectView(R.id.new_comments_available_label) LinearLayout newCommentsAvailableLabel;
-
-    private Handler newCommentsHandler;
-    private Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            //noinspection ArraysAsListWithZeroOrOneArgument
-            commentsAdapter.notifyItemRangeChanged(0, commentsAdapter.getItemCount(),
-                    UPDATE_TIME_SPAN); // Update the time in comments
-
-            getNewCommentsPager().reset();
-            getSupportLoaderManager().restartLoader(NEW_COMMENTS_LOADER_ID, null, PostActivity.this);
-        }
-    };
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -486,10 +472,6 @@ public class PostActivity extends TestpressFragmentActivity implements
             commentBoxLayout.setVisibility(View.VISIBLE);
         }
         previousCommentsLoadingLayout.setVisibility(View.GONE);
-        if (newCommentsHandler == null) {
-            newCommentsHandler = new Handler();
-            newCommentsHandler.postDelayed(runnable, NEW_COMMENT_SYNC_INTERVAL);
-        }
     }
 
     void onNewCommentsLoadFinished(Loader<List<Comment>> loader, List<Comment> comments) {
@@ -506,8 +488,6 @@ public class PostActivity extends TestpressFragmentActivity implements
                             Snackbar.LENGTH_SHORT).show();
                 }
                 loadNewCommentsLayout.setVisibility(View.VISIBLE);
-            } else {
-                newCommentsHandler.postDelayed(runnable, NEW_COMMENT_SYNC_INTERVAL);
             }
             return;
         }
@@ -539,7 +519,6 @@ public class PostActivity extends TestpressFragmentActivity implements
                 newCommentsAvailableLabel.setVisibility(View.VISIBLE);
             }
         }
-        newCommentsHandler.postDelayed(runnable, NEW_COMMENT_SYNC_INTERVAL);
     }
 
     @OnClick(R.id.send) void sendComment() {
@@ -586,9 +565,6 @@ public class PostActivity extends TestpressFragmentActivity implements
                 Snackbar.make(activityRootLayout, R.string.comment_posted,
                         Snackbar.LENGTH_SHORT).show();
 
-                if (newCommentsHandler != null) {
-                    newCommentsHandler.removeCallbacks(runnable);
-                }
                 postedNewComment = true;
                 getNewCommentsPager().reset();
                 getSupportLoaderManager()
@@ -727,14 +703,6 @@ public class PostActivity extends TestpressFragmentActivity implements
     public void onPause() {
         super.onPause();
         content.onPause();
-    }
-
-    @Override
-    public void onDestroy () {
-        if (newCommentsHandler != null) {
-            newCommentsHandler.removeCallbacks(runnable);
-        }
-        super.onDestroy ();
     }
 
     @Override

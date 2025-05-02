@@ -305,13 +305,6 @@ public class PostsListFragment extends Fragment implements
         if (refreshPager == null) {
             refreshPager = new PostsPager(getTestpressService(), postDao);
             refreshPager.setQueryParams("order", "-published_date");
-            if (postDao.count() > 0) {
-                Post latest = postDao.queryBuilder().orderDesc(PostDao.Properties.ModifiedDate)
-                        .list().get(0);
-                refreshPager.setLatestModifiedDate(latest.getModified());
-                LogLatestPostModifiedDate(latest);
-                LogAllPosts();
-            }
         }
     }
 
@@ -321,7 +314,6 @@ public class PostsListFragment extends Fragment implements
         Post lastPost = postDao.queryBuilder().orderDesc(PostDao.Properties
                 .Published).list().get((int) postDao.count() - 1);
         pager.setQueryParams("until", lastPost.getPublishedDate());
-        pager.setLatestModifiedDate(null);
     }
 
     @Override
@@ -361,6 +353,8 @@ public class PostsListFragment extends Fragment implements
         //If no data is available in the local database, directly insert
         //display from database
         Ln.e(swipeLayout.isRefreshing());
+        postDao.deleteAll();
+        categoryDao.deleteAll();
         if ((postDao.count() == 0) || items == null || items.isEmpty()) {
 
             //Remove the swipe refresh icon and the sticky notification if any
@@ -525,12 +519,6 @@ public class PostsListFragment extends Fragment implements
                 isUserSwiped = true;
                 refreshPager.clear();
                 refreshPager.setQueryParams("order", "-published_date");
-                if (postDao.count() > 0) {
-                    Post latest = postDao.queryBuilder().orderDesc(PostDao.Properties
-                            .ModifiedDate).list().get(0);
-                    refreshPager.setLatestModifiedDate(latest.getModified());
-                    LogLatestPostModifiedDate(latest);
-                }
                 getLoaderManager().restartLoader(REFRESH_LOADER_ID, null, PostsListFragment.this);
                 categories.clear();
                 categoryPager.clear();
@@ -654,13 +642,6 @@ public class PostsListFragment extends Fragment implements
             for (Post p : dbPosts)
                 Ln.d(p.getTitle() + " " + p.getPublishedDate() + "\n");
         }
-    }
-
-    void LogLatestPostModifiedDate(Post latest) {
-        Date date = new Date(latest.getModifiedDate());
-        Format format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        Ln.d("Latest post available is " + latest.getTitle()
-                + " modified on " + format.format(date) + " - " + latest.getModifiedDate());
     }
 
     @Override

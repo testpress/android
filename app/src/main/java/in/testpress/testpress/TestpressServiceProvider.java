@@ -107,6 +107,7 @@ public class TestpressServiceProvider {
 
             if (instituteSettingsList.isEmpty()) {
                 settings = new in.testpress.models.InstituteSettings(BASE_URL);
+                settings.setWhiteLabeledHostUrl(BuildConfig.WHITE_LABELED_HOST_URL);
                 settings.setScreenshotDisabled(true);
                 settings.setVideoDownloadEnabled(true);
                 settings.setShowPDFVertically(SHOW_PDF_VERTICALLY);

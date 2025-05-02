@@ -1,5 +1,6 @@
 package in.testpress.testpress.ui;
 import in.testpress.RequestCode;
+import in.testpress.course.ui.AvailableCourseListFragment;
 import in.testpress.course.ui.CourseListFragment;
 
 import android.Manifest;
@@ -57,6 +58,7 @@ import in.testpress.course.TestpressCourse;
 import in.testpress.course.fragments.DownloadsFragment;
 import in.testpress.exam.TestpressExam;
 import in.testpress.course.repository.VideoWatchDataRepository;
+import in.testpress.course.ui.MyCoursesFragment;
 import in.testpress.database.OfflineVideoDao;
 import in.testpress.database.TestpressDatabase;
 import in.testpress.exam.ui.view.NonSwipeableViewPager;
@@ -408,8 +410,11 @@ public class MainActivity extends TestpressFragmentActivity {
         // Show courses list if game front end is enabled, otherwise hide bottom bar
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             //noinspection ConstantConditions
-            addMenuItem(R.string.learn, R.drawable.learn,
-                    courseListFragment = TestpressCourse.getCoursesListFragment(this, TestpressSdk.getTestpressSession(this)));
+            addMenuItem(R.string.learn, R.drawable.learn, new MyCoursesFragment());
+
+            if (Boolean.TRUE.equals(!mInstituteSettings.getDisableStoreInApp())){
+                addMenuItem(R.string.store, R.drawable.home_store_image, new AvailableCourseListFragment());
+            }
 
             if (mInstituteSettings.getCoursesEnableGamification()) {
                 //noinspection ConstantConditions

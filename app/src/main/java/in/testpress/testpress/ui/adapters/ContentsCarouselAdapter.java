@@ -85,10 +85,8 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
 
             showThumbnail(content, holder);
             setIconAndChapterTitle(content, holder);
-            showOrHideVideoAccessories(content, holder);
             showOrHideExamAccessories(content, holder);
             showReadTimeForHtmlContent(content, holder);
-            showIconForAttachmentContent(content, holder);
             showProgressBarForResumeVideos(position, holder);
 
 
@@ -112,8 +110,6 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
         } else {
             showThumbnailForVideo(content, holder);
         }
-        holder.image.setColorFilter(Color.parseColor("#22000000"));
-
     }
 
     private void showThumbnailForVideo(Content content, ItemViewHolder holder) {
@@ -126,13 +122,6 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
             } else {
                 holder.image.setBackgroundColor(Color.parseColor("#77000000"));
             }
-        }
-    }
-
-    private void showIconForAttachmentContent(Content content, ItemViewHolder holder) {
-        if (content.getAttachmentId() != null) {
-            holder.playIcon.setImageResource(R.drawable.ic_attachment);
-            holder.playIcon.setVisibility(View.VISIBLE);
         }
     }
 
@@ -193,15 +182,6 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
         }
     }
 
-    private void showOrHideVideoAccessories(Content content, ItemViewHolder holder) {
-        if (content.getVideoId() != null) {
-            holder.playIcon.setVisibility(View.VISIBLE);
-            holder.playIcon.setImageResource(R.drawable.play);
-        } else {
-            holder.playIcon.setVisibility(View.GONE);
-        }
-    }
-
     private void showOrHideExamAccessories(Content content, ItemViewHolder holder) {
         if (content.getExamId() != null) {
             Exam exam = response.getExamHashMap().get(content.getExamId());
@@ -221,7 +201,7 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
-        ImageView image, playIcon, contentTypeIcon;
+        ImageView image, contentTypeIcon;
         TextView title, numberOfQuestions, subtitle, infoSubtitle;
         LinearLayout infoLayout, videoProgressLayout;
         ProgressBar videoProgress;
@@ -229,7 +209,6 @@ public class ContentsCarouselAdapter extends RecyclerView.Adapter<ContentsCarous
         public ItemViewHolder(View itemView) {
             super(itemView);
             image = (ImageView) itemView.findViewById(R.id.image_view);
-            playIcon = (ImageView) itemView.findViewById(R.id.play_icon);
             contentTypeIcon = (ImageView) itemView.findViewById(R.id.content_type_icon);
             infoLayout = (LinearLayout) itemView.findViewById(R.id.info_layout);
             videoProgressLayout = (LinearLayout) itemView.findViewById(R.id.video_progress_layout);

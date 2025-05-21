@@ -84,7 +84,6 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     @Inject TestpressServiceProvider serviceProvider;
     @Inject TestpressService testpressService;
     @InjectView(R.id.profile_photo) ImageView profilePhoto;
-    @InjectView(R.id.edit_profile) ImageView editProfile;
     @InjectView(R.id.edit_profile_photo) ImageView imageEditButton;
     @InjectView(R.id.display_name) TextView displayName;
     @InjectView(R.id.collapsing_toolbar)
@@ -127,6 +126,8 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     DisplayImageOptions options;
     Menu menu;
     Button deleteAccountButton;
+
+    Button editProfileButton;
     static final private int SELECT_IMAGE = 100;
     public String ssoUrl;
 
@@ -171,6 +172,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         getSupportLoaderManager().initLoader(0, null, this);
         fetchSsoLink();
         initializeDeleteAccountButton();
+        initializeEditProfileButton();
     }
 
     private void initializeDeleteAccountButton() {
@@ -188,6 +190,26 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
                                 AccountDeleteActivity.class
                         )
                 );
+            }
+        });
+    }
+
+    private void initializeEditProfileButton() {
+        editProfileButton = findViewById(R.id.edit_profile);
+        editProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (fetchInstituteSetting().getAllow_profile_edit() && !Strings.toString(profileDetails.getUsername()).isEmpty()) {
+
+                    if (!Strings.toString(ssoUrl).isEmpty()) {
+                        Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
+                        intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Edit Profile");
+                        intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + ssoUrl+"&next=/settings/profile/mobile/");
+                        startActivity(intent);
+                    } else {
+                        Toaster.showLong(ProfileDetailsActivity.this, R.string.edit_profile_error);
+                    }
+                }
             }
         });
     }
@@ -225,7 +247,6 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
             this.profileDetails = profileDetails;
         }
         profileDetailsView.setVisibility(View.VISIBLE);
-        editProfile.setVisibility(View.VISIBLE);
         displayProfileDetails(this.profileDetails);
     }
 
@@ -657,22 +678,6 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         }
 
         return null;
-    }
-
-    @OnClick(R.id.edit_profile)
-    public void editActions(View v) {
-
-        if (fetchInstituteSetting().getAllow_profile_edit() && !Strings.toString(profileDetails.getUsername()).isEmpty()) {
-
-            if (!Strings.toString(ssoUrl).isEmpty()) {
-                Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
-                intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Edit Profile");
-                intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + ssoUrl+"&next=/settings/profile/mobile/");
-                startActivity(intent);
-            } else {
-                Toaster.showLong(ProfileDetailsActivity.this, R.string.edit_profile_error);
-            }
-        }
     }
 
     public void fetchSsoLink() {

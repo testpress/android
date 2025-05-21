@@ -8,7 +8,6 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.view.MenuItem;
 
-import in.testpress.testpress.Injector;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -50,7 +49,7 @@ public class TestpressFragmentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Injector.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
 
         // Directly subscribing in parent class won't work, only child class subscribers will work. https://github.com/square/otto/issues/26
         busEventListener = new Object() {

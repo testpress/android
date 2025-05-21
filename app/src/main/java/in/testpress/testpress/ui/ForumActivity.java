@@ -59,7 +59,6 @@ import in.testpress.exam.models.Vote;
 import in.testpress.exam.util.ImageUtils;
 import in.testpress.models.FileDetails;
 import in.testpress.network.TestpressApiClient;
-import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -172,7 +171,7 @@ public class ForumActivity extends TestpressFragmentActivity implements
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.forum_details_layout);
-        Injector.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
         ButterKnife.inject(this);
         activity = this;
         grayColor = ContextCompat.getColor(this, R.color.testpress_text_gray_medium);

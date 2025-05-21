@@ -4,7 +4,7 @@ import `in`.testpress.core.TestpressCallback
 import `in`.testpress.core.TestpressException
 import `in`.testpress.core.TestpressUserDetails
 import `in`.testpress.models.ProfileDetails
-import `in`.testpress.testpress.Injector
+import `in`.testpress.testpress.TestpressApplication
 import `in`.testpress.testpress.R
 import `in`.testpress.testpress.TestpressServiceProvider
 import `in`.testpress.testpress.authenticator.LogoutService
@@ -59,7 +59,7 @@ class TermsAndConditionActivity : BaseToolBarActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Injector.inject(this)
+        TestpressApplication.getAppComponent().inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.terms_and_condition_activity)
         ButterKnife.inject(this)

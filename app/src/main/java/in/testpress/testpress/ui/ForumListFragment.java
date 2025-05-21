@@ -48,7 +48,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import de.greenrobot.dao.query.LazyList;
 import in.testpress.core.TestpressSdk;
-import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -145,7 +144,7 @@ public class ForumListFragment extends Fragment implements
         userDao = daoSession.getUserDao();
         categoryDao = daoSession.getCategoryDao();
         setHasOptionsMenu(true);
-        Injector.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
         //noinspection ConstantConditions
         mTopLevelSpinnerAdapter = new ExploreSpinnerAdapter(getActivity().getLayoutInflater(),
                 getActivity().getResources(), true);

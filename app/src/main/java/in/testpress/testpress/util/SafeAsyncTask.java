@@ -183,7 +183,6 @@ public abstract class SafeAsyncTask<ResultT> implements Callable<ResultT> {
                     doException(e);
                 } catch (Exception f) {
                     // logged but ignored
-                    Ln.e(f);
                 }
 
             } catch (final Throwable t) {
@@ -191,7 +190,6 @@ public abstract class SafeAsyncTask<ResultT> implements Callable<ResultT> {
                     doThrowable(t);
                 } catch (Exception f) {
                     // logged but ignored
-                    Ln.e(f);
                 }
             } finally {
                 doFinally();

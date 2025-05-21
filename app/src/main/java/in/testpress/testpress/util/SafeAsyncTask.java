@@ -149,7 +149,7 @@ public abstract class SafeAsyncTask<ResultT> implements Callable<ResultT> {
     }
 
     protected void onThrowable(Throwable t) throws RuntimeException {
-
+        // Intentionally swallowed: subclasses may override for custom handling.
     }
 
     /**

@@ -64,7 +64,6 @@ import in.testpress.testpress.models.ForumDao;
 import in.testpress.testpress.models.User;
 import in.testpress.testpress.models.UserDao;
 import in.testpress.testpress.util.CommonUtils;
-import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.util.ViewUtils;
 
@@ -442,7 +441,6 @@ public class ForumListFragment extends Fragment implements
                 }
 
                 if (!categories.isEmpty()) {
-                    Ln.e("Setting visible");
                     Toolbar toolbar;
                     if (getActivity() instanceof MainActivity) {
                         toolbar = ((MainActivity) (getActivity())).getActionBarToolbar();
@@ -505,8 +503,6 @@ public class ForumListFragment extends Fragment implements
                 Forum latest = forumDao.queryBuilder().orderDesc(ForumDao.Properties.ModifiedDate)
                         .list().get(0);
                 refreshPager.setLatestModifiedDate(latest.getModified());
-                LogLatestForumModifiedDate(latest);
-                LogAllForums();
             }
         }
     }
@@ -555,7 +551,6 @@ public class ForumListFragment extends Fragment implements
     void onRefreshLoadFinished(List<Forum> items) {
         //If no data is available in the local database, directly insert
         //display from database
-        Ln.e(swipeLayout.isRefreshing());
         if ((forumDao.count() == 0) || items == null || items.isEmpty()) {
             //Remove the swipe refresh icon and the sticky notification if any
             swipeLayout.setRefreshing(false);
@@ -582,7 +577,6 @@ public class ForumListFragment extends Fragment implements
         } else {
             //If data is already available in the local database, then
             //notify user about the new data to view latest data.
-            Ln.d(MISSED_POSTS_THRESHOLD >= refreshPager.getTotalCount());
             if (MISSED_POSTS_THRESHOLD >= refreshPager.getTotalCount()) {
                 if (refreshPager.hasNext()) {
                     refreshPager.clearQueryParams();
@@ -620,7 +614,6 @@ public class ForumListFragment extends Fragment implements
 
     //This just notifies the adapter that new data is now available in db
     void displayDataFromDB() {
-        Ln.d("Adapter notifyDataSetChanged displayDataFromDB");
         adapter.notifyDataSetChanged();
 
         if (forumDao.count() == 0 || (pager != null && !pager.hasMore() && adapter.getCount() == 0)) {
@@ -676,7 +669,6 @@ public class ForumListFragment extends Fragment implements
         if (listView != null && (forumDao.count() != 0) && !isScrollingUp &&
                 (listView.getLastVisiblePosition() + 3) >= adapter.getWrappedAdapter().getCount()) {
 
-            Ln.d("Onscroll showing more");
 
             if (pager == null) {
                 if (listView.getVisibility() != View.VISIBLE) {
@@ -723,7 +715,6 @@ public class ForumListFragment extends Fragment implements
                     Forum latest = forumDao.queryBuilder().orderDesc(ForumDao.Properties
                             .ModifiedDate).list().get(0);
                     refreshPager.setLatestModifiedDate(latest.getModified());
-                    LogLatestForumModifiedDate(latest);
                 }
                 getLoaderManager().restartLoader(REFRESH_LOADER_ID, null, ForumListFragment.this);
                 categories.clear();
@@ -738,7 +729,6 @@ public class ForumListFragment extends Fragment implements
         mStickyView.setVisibility(View.GONE);
         //Remove the swipe refresh icon if present
         swipeLayout.setRefreshing(false);
-        Ln.d(MISSED_POSTS_THRESHOLD < refreshPager.getTotalCount());
         if (MISSED_POSTS_THRESHOLD < refreshPager.getTotalCount()) {
             clearDB();
             onRefresh();
@@ -769,7 +759,6 @@ public class ForumListFragment extends Fragment implements
             }
             forumDao.insertOrReplace(forumTemp);
         }
-        LogAllForums();
     }
 
     private void setPanelOpen(boolean open) {
@@ -851,28 +840,10 @@ public class ForumListFragment extends Fragment implements
     }
 
     void clearDB() {
-        Ln.d("ClearDB");
         forumDao.deleteAll();
         refreshPager.removeQueryParams("since");
         pager = null;
         displayDataFromDB();
-    }
-
-    void LogAllForums() {
-        if (forumDao.count() > 0) {
-            List<Forum> dbForums = forumDao.queryBuilder().orderDesc(ForumDao.Properties.Published)
-                    .listLazy();
-            for (Forum f : dbForums)
-                Ln.d(f.getTitle() + " " + f.getPublishedDate() + "\n");
-        }
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    void LogLatestForumModifiedDate(Forum latest) {
-        Date date = new Date(latest.getModifiedDate());
-        Format format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        Ln.d("Latest post available is " + latest.getTitle()
-                + " modified on " + format.format(date) + " - " + latest.getModifiedDate());
     }
 
     @Override

@@ -7,7 +7,6 @@ import android.content.Context;
 
 import javax.inject.Inject;
 
-import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
@@ -55,7 +54,7 @@ public class LogoutService {
                     return removeAccountFuture.getResult();
                 }
             } else {
-                Ln.w("accountManagerWithContext is null");
+
             }
 
             return false;
@@ -65,7 +64,6 @@ public class LogoutService {
         protected void onSuccess(final Boolean accountWasRemoved) throws Exception {
             super.onSuccess(accountWasRemoved);
 
-            Ln.d("Logout succeeded: %s", accountWasRemoved);
             onSuccess.run();
 
         }
@@ -74,7 +72,6 @@ public class LogoutService {
         protected void onException(final Exception e) throws RuntimeException {
             super.onException(e);
 
-            Ln.e(e.getCause(), "Logout failed.");
         }
     }
 }

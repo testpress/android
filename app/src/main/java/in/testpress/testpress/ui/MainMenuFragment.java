@@ -51,7 +51,6 @@ import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.TestpressApiErrorResponse;
 import in.testpress.testpress.util.CommonUtils;
-import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
@@ -320,7 +319,6 @@ public class MainMenuFragment extends Fragment {
                 if (getActivity() == null) {
                     return;
                 }
-                Ln.e("On success");
                 if (categories.isEmpty()) {
                     quickLinksContainer.setVisibility(View.GONE);
                 } else {

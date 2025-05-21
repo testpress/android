@@ -5,7 +5,6 @@ import android.content.pm.PackageInfo;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 
-import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.Strings;
 
 import java.lang.reflect.Method;

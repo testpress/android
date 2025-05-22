@@ -593,47 +593,45 @@
         <!--android:layout_margin="@dimen/fab_margin"-->
         <!--android:clickable="true"/>-->
 
+    <!-- OutlinedButton And OutlinedButton Icon -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
+        android:gravity="end"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginHorizontal="16dp"
         android:layout_marginBottom="16dp">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/delete_account"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="match_parent"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
-            android:layout_weight="1"
-            android:backgroundTint="@color/testpress_red"
             android:text="Delete Account"
             android:textAllCaps="false"
-            android:textColor="@color/white"
+            android:textColor="#444746"
+            android:textSize="14sp"
             android:textStyle="bold"
             android:visibility="visible"
-            app:cornerRadius="25dp"
-            app:strokeWidth="0dp"/>
+            app:strokeColor="#c5c8c6" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/edit_profile"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="match_parent"
+            style="@style/Widget.Material3.Button.Icon"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:layout_weight="1"
-            android:backgroundTint="@color/green"
             android:text="Edit Profile"
             android:textAllCaps="false"
             android:textColor="@color/white"
+            android:textSize="14sp"
             android:textStyle="bold"
             android:visibility="visible"
-            app:cornerRadius="24dp"
-            app:strokeWidth="0dp"/>
-
+            app:icon="@drawable/ic_edit_white_24dp"
+            app:iconTint="@color/white" />
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

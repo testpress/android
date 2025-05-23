@@ -61,7 +61,6 @@ import in.testpress.database.OfflineVideoDao;
 import in.testpress.database.TestpressDatabase;
 import in.testpress.exam.ui.view.NonSwipeableViewPager;
 import in.testpress.testpress.BuildConfig;
-import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -136,7 +135,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        Injector.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         ButterKnife.inject(this);

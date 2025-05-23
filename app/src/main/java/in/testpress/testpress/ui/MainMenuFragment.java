@@ -36,7 +36,6 @@ import in.testpress.core.TestpressSession;
 import in.testpress.exam.TestpressExam;
 import in.testpress.course.TestpressCourse;
 import in.testpress.store.TestpressStore;
-import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -79,7 +78,7 @@ public class MainMenuFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Injector.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
         getActivity().invalidateOptionsMenu();
         return inflater.inflate(R.layout.main_menu_grid_view, null);
     }

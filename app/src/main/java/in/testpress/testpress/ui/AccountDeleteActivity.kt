@@ -1,6 +1,6 @@
 package `in`.testpress.testpress.ui
 
-import `in`.testpress.testpress.Injector
+import `in`.testpress.testpress.TestpressApplication
 import `in`.testpress.testpress.TestpressServiceProvider
 import `in`.testpress.testpress.authenticator.LogoutService
 import `in`.testpress.testpress.core.TestpressService
@@ -21,7 +21,7 @@ class AccountDeleteActivity : AbstractWebViewActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Injector.inject(this)
+        TestpressApplication.getAppComponent().inject(this)
     }
 
     override fun onWebViewInitializationSuccess() {

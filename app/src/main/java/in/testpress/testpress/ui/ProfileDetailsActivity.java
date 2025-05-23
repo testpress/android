@@ -58,7 +58,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import in.testpress.exam.util.ImageUtils;
-import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -139,7 +138,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
             return;
         }
         setContentView(R.layout.profile_detail_layout);
-        Injector.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
         ButterKnife.inject(this);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

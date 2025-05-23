@@ -19,7 +19,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import in.testpress.testpress.Injector;
+import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.R;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.ResetPassword;
@@ -42,7 +42,7 @@ public class ResetPasswordActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
-        Injector.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
         ButterKnife.inject(this);
         resetErrorMessage = R.string.reset_error_message;
         email.addTextChangedListener(watcher);

@@ -25,6 +25,7 @@ public class TestpressApplication extends Application {
     private static TestpressApplication instance;
     public static DaoSession daoSession;
     private static SQLiteDatabase database;
+    private static AppComponent appComponent;
 
     /**
      * Create main application
@@ -49,12 +50,20 @@ public class TestpressApplication extends Application {
         instance = this;
 
         // Perform injection
-        Injector.init(getRootModule(), this);
+        appComponent = DaggerAppComponent.builder()
+                .androidModule(new AndroidModule())
+                .testpressModule(new TestpressModule())
+                .build();
+
         initImageLoader(getApplicationContext());
         SQLiteDatabase db = getDatabase(this);
         DaoMaster daoMaster = new DaoMaster(db);
         daoSession = daoMaster.newSession();
         NotificationHelper.createChannels(this);
+    }
+
+    public static AppComponent getAppComponent() {
+        return appComponent;
     }
 
     public static SQLiteDatabase getDatabase(@NonNull Context context) {
@@ -95,10 +104,6 @@ public class TestpressApplication extends Application {
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
-    }
-
-    private Object getRootModule() {
-        return new RootModule();
     }
     /**
      * Create main application

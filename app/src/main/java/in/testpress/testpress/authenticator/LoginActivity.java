@@ -62,7 +62,6 @@ import in.testpress.core.TestpressSession;
 import in.testpress.course.services.VideoDownloadService;
 import in.testpress.database.TestpressDatabase;
 import in.testpress.testpress.BuildConfig;
-import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.R.id;
 import in.testpress.testpress.R.layout;
@@ -176,7 +175,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
-        Injector.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
 
         accountManager = AccountManager.get(this);
 

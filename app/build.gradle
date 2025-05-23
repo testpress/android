@@ -18,8 +18,8 @@ dependencies {
     def fragment_version = "1.4.1"
 
     // Dependency Injection
-    implementation 'com.squareup.dagger:dagger:1.0.1'
-    implementation 'com.squareup.dagger:dagger-compiler:1.0.1'
+    implementation 'com.google.dagger:dagger:2.48'
+    kapt 'com.google.dagger:dagger-compiler:2.48'
     implementation 'com.jakewharton:butterknife:6.1.0'
     implementation "ru.tinkoff.scrollingpagerindicator:scrollingpagerindicator:1.1.0"
 

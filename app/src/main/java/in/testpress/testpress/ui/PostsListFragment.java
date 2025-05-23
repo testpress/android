@@ -37,7 +37,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import de.greenrobot.dao.query.LazyList;
-import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -115,7 +114,7 @@ public class PostsListFragment extends Fragment implements
         categoryDao = daoSession.getCategoryDao();
         //Enable options. This will trigger onCreateOptionsMenu
         setHasOptionsMenu(true);
-        Injector.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
         mTopLevelSpinnerAdapter = new ExploreSpinnerAdapter(getActivity().getLayoutInflater(),
                 getActivity().getResources(), true);
         mTopLevelSpinnerAdapter.addItem("", getString(R.string.all_posts), false, 0);

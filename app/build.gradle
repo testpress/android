@@ -20,8 +20,7 @@ dependencies {
     // Dependency Injection
     implementation 'com.google.dagger:dagger:2.48'
     kapt 'com.google.dagger:dagger-compiler:2.48'
-    //implementation 'com.squareup.dagger:dagger-compiler:1.0.1'
-    // com.google.dagger:dagger:2.48
+
     implementation 'com.jakewharton:butterknife:6.1.0'
     implementation "ru.tinkoff.scrollingpagerindicator:scrollingpagerindicator:1.1.0"
 

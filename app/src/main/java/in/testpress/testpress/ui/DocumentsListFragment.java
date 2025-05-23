@@ -26,8 +26,8 @@ public class DocumentsListFragment extends PagedItemFragment<Notes> {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        TestpressApplication.getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
+        TestpressApplication.getAppComponent().inject(this);
     }
 
     @Override

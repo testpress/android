@@ -130,7 +130,6 @@ public class DashboardFragment extends Fragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        TestpressApplication.getAppComponent().inject(this);
         getActivity().invalidateOptionsMenu();
         return inflater.inflate(R.layout.dashboard_view, null);
 

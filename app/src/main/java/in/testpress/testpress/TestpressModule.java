@@ -37,12 +37,6 @@ public class TestpressModule {
         return new PostFromAnyThreadBus();
     }
 
-//    @Provides
-//    @Singleton
-//    LogoutService provideLogoutService(final Context context, final AccountManager accountManager) {
-//        return new LogoutService(context, accountManager);
-//    }
-
     @Provides
     TestpressService provideTestpressService(RestAdapter.Builder restAdapter) {
         return new TestpressService(restAdapter);

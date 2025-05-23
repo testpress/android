@@ -105,10 +105,6 @@ public class TestpressApplication extends Application {
         super.attachBaseContext(base);
         MultiDex.install(this);
     }
-
-    private Object getRootModule() {
-        return new RootModule();
-    }
     /**
      * Create main application
      *

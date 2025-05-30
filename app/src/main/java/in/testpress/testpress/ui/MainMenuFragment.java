@@ -54,6 +54,7 @@ import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.ui.UserDevicesActivity;
+import in.testpress.ui.WebViewWithSSOActivity;
 import io.sentry.Sentry;
 import io.sentry.protocol.User;
 import retrofit.RetrofitError;
@@ -61,6 +62,7 @@ import retrofit.RetrofitError;
 import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.BuildConfig.WHITE_LABELED_HOST_URL;
 import static in.testpress.testpress.ui.DrupalRssListFragment.RSS_FEED_URL;
 
 public class MainMenuFragment extends Fragment {
@@ -197,9 +199,9 @@ public class MainMenuFragment extends Fragment {
                         startActivity(intent);
                         break;
                     case R.string.forum:
-                        intent = new Intent(getActivity(), ForumListActivity.class);
-                        intent.putExtra("userAuthenticated", isUserAuthenticated);
-                        startActivity(intent);
+                        String label = instituteSettings.getForumLabel();
+                        label = label != null ? label : "Discussion";
+                        launchDiscussionActivity(label);
                         break;
                     case R.string.analytics:
                         checkAuthenticatedUser(R.string.analytics);
@@ -347,6 +349,19 @@ public class MainMenuFragment extends Fragment {
         if (testpressApiErrorResponse.getDetail().equals("Invalid signature")) {
             serviceProvider.logout(getActivity(), testpressService, serviceProvider, logoutService);
         }
+    }
+
+    private void launchDiscussionActivity(String title) {
+        requireActivity().startActivity(
+                WebViewWithSSOActivity.Companion.createIntent(
+                        requireActivity(),
+                        title,
+                        WHITE_LABELED_HOST_URL + "/discussions/new",
+                        true,
+                        false,
+                        WebViewWithSSOActivity.class
+                )
+        );
     }
 
     public static class StarredCategoryAdapter

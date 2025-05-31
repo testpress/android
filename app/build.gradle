@@ -183,7 +183,7 @@ android {
         versionName json.version
         versionCode json.version_code
 
-        def host_url = '2e83-49-206-98-130.ngrok-free.app'
+        def host_url = 'a0ad-106-198-44-16.ngrok-free.app'
         resValue "string", "host_url", host_url
         buildConfigField "String", "BASE_URL", '"https://' + host_url + '"'
         resValue "string", "app_name", json.app_name

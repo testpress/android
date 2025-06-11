@@ -235,7 +235,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"/>
 
         <activity android:name=".ui.EnforceDataActivity"
-            android:theme="@style/AppTheme"
+            android:theme="@style/TestpressWebViewTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"/>
 
     </application>

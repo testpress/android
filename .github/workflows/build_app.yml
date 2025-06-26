@@ -11,7 +11,10 @@ on:
         description: "Build split APKs by ABI?"
         required: false
         default: "false"
-
+        type: choice
+        options:
+          - "false"
+          - "true"
 
 jobs:
   build_app:

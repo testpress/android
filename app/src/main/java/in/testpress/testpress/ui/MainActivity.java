@@ -63,7 +63,6 @@ import in.testpress.database.OfflineVideoDao;
 import in.testpress.database.TestpressDatabase;
 import in.testpress.exam.ui.view.NonSwipeableViewPager;
 import in.testpress.testpress.BuildConfig;
-import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -74,10 +73,8 @@ import in.testpress.testpress.models.CheckPermission;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
-import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.models.Update;
 import in.testpress.testpress.ui.fragments.DashboardFragment;
-import in.testpress.testpress.ui.fragments.DiscussionFragmentv2;
 import in.testpress.testpress.ui.utils.HandleMainMenu;
 import in.testpress.testpress.util.AppChecker;
 import in.testpress.testpress.util.CommonUtils;
@@ -87,7 +84,6 @@ import in.testpress.testpress.util.SalesforceSdkInitializer;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.testpress.util.UpdateAppDialogManager;
-import in.testpress.ui.fragments.DiscussionFragment;
 import io.sentry.android.core.SentryAndroid;
 
 import static in.testpress.testpress.BuildConfig.ALLOW_ANONYMOUS_USER;
@@ -138,7 +134,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        Injector.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         ButterKnife.inject(this);

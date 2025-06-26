@@ -5,7 +5,7 @@ import `in`.testpress.core.TestpressException
 import `in`.testpress.core.TestpressSdk
 import `in`.testpress.core.TestpressSession
 import `in`.testpress.testpress.BuildConfig
-import `in`.testpress.testpress.Injector
+import `in`.testpress.testpress.TestpressApplication
 import `in`.testpress.testpress.R
 import `in`.testpress.testpress.authenticator.LoginActivity
 import `in`.testpress.testpress.authenticator.LoginActivityV2
@@ -47,7 +47,7 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Injector.inject(this)
+        TestpressApplication.getAppComponent().inject(this)
         accountManager = AccountManager.get(requireContext())
     }
 

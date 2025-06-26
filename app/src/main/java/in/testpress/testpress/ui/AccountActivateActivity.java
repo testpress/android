@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import in.testpress.testpress.Injector;
+import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.R;
 import in.testpress.testpress.authenticator.LoginActivity;
 import in.testpress.testpress.core.TestpressService;
@@ -51,7 +51,7 @@ public class AccountActivateActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Injector.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
         setContentView(R.layout.activity_account_activate);
         ButterKnife.inject(this);
         UIUtils.setIndeterminateDrawable(this, progressBar, 4);

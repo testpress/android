@@ -13,7 +13,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import in.testpress.core.TestpressException;
-import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.core.TestpressService;
@@ -40,7 +39,7 @@ public class DrupalRssListFragment extends BaseListViewFragment<RssItem> {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Injector.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
         rssFeedDao = TestpressApplication.getDaoSession().getRssItemDao();
     }
 

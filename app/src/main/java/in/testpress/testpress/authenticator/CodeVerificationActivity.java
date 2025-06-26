@@ -41,7 +41,6 @@ import in.testpress.core.TestpressException;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.testpress.BuildConfig;
-import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.core.Constants;
@@ -95,7 +94,7 @@ public class CodeVerificationActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        Injector.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
         setContentView(R.layout.code_verify_activity);
         ButterKnife.inject(this);
         final Intent intent = getIntent();

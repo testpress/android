@@ -62,7 +62,6 @@ import in.testpress.core.TestpressSession;
 import in.testpress.course.services.VideoDownloadService;
 import in.testpress.database.TestpressDatabase;
 import in.testpress.testpress.BuildConfig;
-import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.R.id;
 import in.testpress.testpress.R.layout;
@@ -80,7 +79,6 @@ import in.testpress.testpress.ui.WebViewActivity;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.InternetConnectivityChecker;
-import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.util.UIUtils;
 import in.testpress.testpress.util.Strings;
@@ -177,7 +175,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
-        Injector.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
 
         accountManager = AccountManager.get(this);
 
@@ -573,7 +571,6 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
                 finishConfirmCredentials(true);
             }
         } else {
-            Ln.d("onAuthenticationResult: failed to authenticate");
             if (requestNewAccount) {
                 Toaster.showLong(LoginActivity.this,
                         R.string.message_auth_failed_new_account);

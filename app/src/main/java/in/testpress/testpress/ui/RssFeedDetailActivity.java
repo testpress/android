@@ -23,7 +23,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import in.testpress.core.TestpressSdk;
-import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.core.TestpressService;
@@ -55,7 +54,7 @@ public class RssFeedDetailActivity extends BaseToolBarActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rss_feed_detail);
-        Injector.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
         ButterKnife.inject(this);
         postDetails.setVisibility(View.GONE);
         rssItemDao = TestpressApplication.getDaoSession().getRssItemDao();

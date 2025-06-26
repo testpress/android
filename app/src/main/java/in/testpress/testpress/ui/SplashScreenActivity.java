@@ -17,7 +17,7 @@ import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
 import in.testpress.store.TestpressStore;
-import in.testpress.testpress.Injector;
+import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.ui.utils.DeeplinkHandler;
@@ -47,7 +47,7 @@ public class SplashScreenActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        Injector.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
         ButterKnife.inject(this);
         UpdateAppDialogManager.monitor(this);
 

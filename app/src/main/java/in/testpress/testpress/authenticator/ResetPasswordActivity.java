@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.GravityEnum;
@@ -19,7 +20,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import in.testpress.testpress.Injector;
+import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.R;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.ResetPassword;
@@ -37,15 +38,17 @@ public class ResetPasswordActivity extends FragmentActivity {
     @InjectView(R.id.form) LinearLayout formContainer;
     @InjectView(R.id.success_complete) LinearLayout successContainer;
     private final TextWatcher watcher = validationTextWatcher();
+    private RelativeLayout forgotPasswordContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
-        Injector.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
         ButterKnife.inject(this);
         resetErrorMessage = R.string.reset_error_message;
         email.addTextChangedListener(watcher);
+        forgotPasswordContainer = findViewById(R.id.forgot_password_container);
     }
 
     @OnClick(R.id.b_reset_password) public void reset(){
@@ -81,6 +84,7 @@ public class ResetPasswordActivity extends FragmentActivity {
                     progressDialog.dismiss();
                     formContainer.setVisibility(View.GONE);
                     successContainer.setVisibility(View.VISIBLE);
+                    forgotPasswordContainer.setVisibility(View.GONE);
                 }
             }.execute();
         }

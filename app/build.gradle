@@ -5,7 +5,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 ext {
-    testpressSDK = '1.4.194'
+    testpressSDK = '1.4.208'
 }
 
 def jsonFile = file('src/main/assets/config.json')
@@ -18,8 +18,8 @@ dependencies {
     def fragment_version = "1.4.1"
 
     // Dependency Injection
-    implementation 'com.squareup.dagger:dagger:1.0.1'
-    implementation 'com.squareup.dagger:dagger-compiler:1.0.1'
+    implementation 'com.google.dagger:dagger:2.48'
+    kapt 'com.google.dagger:dagger-compiler:2.48'
     implementation 'com.jakewharton:butterknife:6.1.0'
     implementation "ru.tinkoff.scrollingpagerindicator:scrollingpagerindicator:1.1.0"
 
@@ -102,6 +102,20 @@ dependencies {
     implementation 'com.github.mhiew:android-pdf-viewer:3.2.0-beta.1'
     implementation 'com.github.alexto9090:PRDownloader:1.0'
     implementation 'com.salesforce.marketingcloud:marketingcloudsdk:8.0.7'
+
+    def composeBom = platform('androidx.compose:compose-bom:2023.09.01')
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+
+    implementation "androidx.compose.runtime:runtime"
+    implementation "androidx.compose.ui:ui"
+    implementation "androidx.compose.foundation:foundation"
+    implementation "androidx.compose.foundation:foundation-layout"
+    implementation "androidx.compose.material3:material3"
+    implementation "androidx.compose.runtime:runtime-livedata"
+    implementation "androidx.compose.ui:ui-tooling"
+
+    implementation "com.google.android.material:material:1.8.0"
 }
 
 def key_alias = "sample"
@@ -135,6 +149,11 @@ android {
 
     buildFeatures {
         viewBinding true
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion '1.4.1'
     }
 
     compileOptions {
@@ -144,6 +163,16 @@ android {
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+
+    def enableSplitApk = project.hasProperty('enableSplitApk') && project.property('enableSplitApk') == 'true'
+    splits {
+        abi {
+            enable enableSplitApk
+            reset()
+            include 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+            universalApk true
+        }
     }
 
     defaultConfig {

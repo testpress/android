@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import in.testpress.testpress.Injector;
+import in.testpress.testpress.TestpressApplication;
 
 import butterknife.ButterKnife;
 
@@ -21,7 +21,7 @@ public abstract class TestpressActivity extends Activity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Injector.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
     }
 
     @Override

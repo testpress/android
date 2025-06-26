@@ -26,6 +26,7 @@ import in.testpress.testpress.ui.PostActivity;
 import in.testpress.testpress.ui.PostsListFragment;
 import in.testpress.testpress.ui.ProfileDetailsActivity;
 import in.testpress.testpress.ui.ProfilePhotoActivity;
+import in.testpress.testpress.ui.QRCodeActivity;
 import in.testpress.testpress.ui.RssFeedDetailActivity;
 import in.testpress.testpress.ui.SplashScreenActivity;
 import in.testpress.testpress.ui.TermsAndConditionActivity;
@@ -73,5 +74,6 @@ public interface AppComponent {
     void inject(EnforceDataActivity enforceDataActivity);
     void inject(TestpressFragmentActivity testpressFragmentActivity);
     void inject(BaseAuthenticatedActivity baseAuthenticatedActivity);
+    void inject(QRCodeActivity qrCodeActivity);
     void inject(TestpressActivity testpressActivity);
 }

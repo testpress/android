@@ -72,7 +72,7 @@ lane :generate_app_file do |signing_config|
       "android.injected.signing.store.password" => signing_config[:keystore_password],
       "android.injected.signing.key.alias" => signing_config[:key_alias],
       "android.injected.signing.key.password" => signing_config[:key_password],
-      "enableSplitApk" => signing_config[:split_apk] == "true"
+      "enableSplitApk" => signing_config[:split_apk].to_s
     }
   )
 end

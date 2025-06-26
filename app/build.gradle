@@ -166,6 +166,7 @@ android {
     }
 
     def enableSplitApk = project.hasProperty('enableSplitApk') && project.property('enableSplitApk') == 'true'
+    println "--------------------------------enableSplitApk: $enableSplitApk"
     splits {
         abi {
             enable enableSplitApk

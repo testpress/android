@@ -751,6 +751,7 @@ public class MainActivity extends TestpressFragmentActivity {
             }, RequestCode.PERMISSION);
         } else {
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, RequestCode.PERMISSION);
+
         }
     }
 

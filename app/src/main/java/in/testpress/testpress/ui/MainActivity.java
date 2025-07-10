@@ -750,9 +750,7 @@ public class MainActivity extends TestpressFragmentActivity {
                     Manifest.permission.READ_MEDIA_VIDEO
             }, RequestCode.PERMISSION);
         } else {
-            requestPermissions(new String[]{
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-            }, RequestCode.PERMISSION);
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, RequestCode.PERMISSION);
         }
     }
 

@@ -19,7 +19,7 @@ fun Application.syncDownloads() {
                 OfflineAttachmentSyncManager(this@syncDownloads.applicationContext, dao)
             syncManager.syncDownloads()
         } catch (e: Exception) {
-            Log.e("SampleApplication", "Failed to sync downloads", e)
+            Log.e("DownloadSync", "Failed to sync downloads", e)
         }
     }
 }

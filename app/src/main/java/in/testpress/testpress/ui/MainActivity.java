@@ -1,5 +1,8 @@
 package in.testpress.testpress.ui;
 import in.testpress.RequestCode;
+import in.testpress.course.fragments.OfflineDownloadsTabsFragment;
+import in.testpress.course.repository.OfflineAttachmentsRepository;
+import in.testpress.course.services.OfflineAttachmentDownloadManager;
 import in.testpress.course.ui.AvailableCourseListFragment;
 import in.testpress.course.ui.CourseListFragment;
 
@@ -59,6 +62,7 @@ import in.testpress.course.repository.VideoWatchDataRepository;
 import in.testpress.course.ui.MyCoursesFragment;
 import in.testpress.database.OfflineVideoDao;
 import in.testpress.database.TestpressDatabase;
+import in.testpress.database.dao.OfflineAttachmentsDao;
 import in.testpress.exam.ui.view.NonSwipeableViewPager;
 import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.R;
@@ -155,6 +159,7 @@ public class MainActivity extends TestpressFragmentActivity {
             checkUpdate();
         }
         setupEasterEgg();
+        initOfflineAttachmentDownloadManager();
     }
 
     @Override
@@ -218,6 +223,13 @@ public class MainActivity extends TestpressFragmentActivity {
             }
         });
         versionInfo.setActionView(button);
+    }
+
+    private void initOfflineAttachmentDownloadManager() {
+        OfflineAttachmentsDao offlineAttachmentDao = TestpressDatabase.Companion.invoke(this).offlineAttachmentDao();
+        OfflineAttachmentsRepository offlineAttachmentsRepository =new OfflineAttachmentsRepository(offlineAttachmentDao);
+        OfflineAttachmentDownloadManager.Companion.init(offlineAttachmentsRepository);
+        OfflineAttachmentDownloadManager.Companion.getInstance().restartDownloadProgressTracking(this);
     }
 
     private void setUpNavigationDrawer() {
@@ -416,8 +428,8 @@ public class MainActivity extends TestpressFragmentActivity {
                         TestpressCourse.getLeaderboardFragment(this, TestpressSdk.getTestpressSession(this)));
             }
             if (mInstituteSettings.getIsVideoDownloadEnabled()) {
-                DownloadsFragment downloadsFragment = new DownloadsFragment();
-                addMenuItem(R.string.downloads, R.drawable.ic_downloads, downloadsFragment);
+                OfflineDownloadsTabsFragment offlineDownloadsTabsFragment = new OfflineDownloadsTabsFragment();
+                addMenuItem(R.string.downloads, R.drawable.ic_downloads, offlineDownloadsTabsFragment);
             }
         } else {
             grid.setVisibility(View.GONE);
@@ -738,8 +750,10 @@ public class MainActivity extends TestpressFragmentActivity {
                     Manifest.permission.READ_MEDIA_VIDEO
             }, RequestCode.PERMISSION);
         } else {
-            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, RequestCode.PERMISSION);
-
+            requestPermissions(new String[]{
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+            }, RequestCode.PERMISSION);
         }
     }
 

@@ -25,11 +25,6 @@ jobs:
           distribution: "temurin"
           java-version: 17
 
-      - name: Debug domain input characters
-        run: |
-          echo "Domain input: '${{ github.event.inputs.domain }}'"
-          echo "${{ github.event.inputs.domain }}" | od -c
-
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
 

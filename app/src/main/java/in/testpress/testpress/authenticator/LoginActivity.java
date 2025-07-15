@@ -50,10 +50,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
 import in.testpress.core.TestpressCallback;
 import in.testpress.core.TestpressException;
 import in.testpress.core.TestpressSDKDatabase;
@@ -63,7 +59,6 @@ import in.testpress.course.services.VideoDownloadService;
 import in.testpress.database.TestpressDatabase;
 import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.R;
-import in.testpress.testpress.R.id;
 import in.testpress.testpress.R.layout;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.core.Constants;
@@ -120,30 +115,26 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     @Inject TestpressService testpressService;
 
     @Inject Bus bus;
-
-    @InjectView(id.login_layout) LinearLayout loginLayout;
-    @InjectView(id.username_textInput_layout)
+    LinearLayout loginLayout;
     TextInputLayout usernameInputLayout;
-    @InjectView(id.password_textInput_layout) TextInputLayout passwordInputLayout;
-    @InjectView(id.et_username) EditText usernameText;
-    @InjectView(id.username_error) TextView usernameError;
-    @InjectView(id.password_error) TextView passwordError;
-    @InjectView(id.et_password) protected EditText passwordText;
-    @InjectView(id.b_signin) protected Button signInButton;
-    @InjectView(id.b_resend_activation) protected TextView ResendVerificationCodeButton;
-    @InjectView(id.or) protected TextView orLabel;
-    @InjectView(id.fb_login_button) protected LoginButton fbLoginButton;
-    @InjectView(id.google_sign_in_button) protected Button googleLoginButton;
-    @InjectView(id.social_sign_in_buttons) protected LinearLayout socialLoginLayout;
-    @InjectView(id.signup) protected TextView signUpButton;
-    @InjectView(id.privacyPolicy) protected TextView privacyPolicy;
-
-
-    @InjectView(id.pb_loading) ProgressBar progressBar;
-    @InjectView(R.id.empty_container) LinearLayout emptyView;
-    @InjectView(R.id.empty_title) TextView emptyTitleView;
-    @InjectView(R.id.empty_description) TextView emptyDescView;
-    @InjectView(R.id.retry_button) Button retryButton;
+    TextInputLayout passwordInputLayout;
+    EditText usernameText;
+    TextView usernameError;
+    TextView passwordError;
+    protected EditText passwordText;
+    protected Button signInButton;
+    protected TextView ResendVerificationCodeButton;
+    protected TextView orLabel;
+    protected LoginButton fbLoginButton;
+    protected Button googleLoginButton;
+    protected LinearLayout socialLoginLayout;
+    protected TextView signUpButton;
+    protected TextView privacyPolicy;
+    ProgressBar progressBar;
+    LinearLayout emptyView;
+    TextView emptyTitleView;
+    TextView emptyDescView;
+    Button retryButton;
 
 
     private String authToken;
@@ -188,7 +179,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
         setContentView(layout.login_activity);
 
-        ButterKnife.inject(this);
+        bindViews();
         UIUtils.setIndeterminateDrawable(this, progressBar, 4);
         passwordText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
@@ -309,6 +300,37 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
                 }
             });
         }
+    }
+
+    private void bindViews() {
+        loginLayout = findViewById(R.id.login_layout);
+        usernameInputLayout = findViewById(R.id.username_textInput_layout);
+        passwordInputLayout = findViewById(R.id.password_textInput_layout);
+        usernameText = findViewById(R.id.et_username);
+        usernameError = findViewById(R.id.username_error);
+        passwordError = findViewById(R.id.password_error);
+        passwordText = findViewById(R.id.et_password);
+        signInButton = findViewById(R.id.b_signin);
+        ResendVerificationCodeButton = findViewById(R.id.b_resend_activation);
+        orLabel = findViewById(R.id.or);
+        fbLoginButton = findViewById(R.id.fb_login_button);
+        googleLoginButton = findViewById(R.id.google_sign_in_button);
+        socialLoginLayout = findViewById(R.id.social_sign_in_buttons);
+        signUpButton = findViewById(R.id.signup);
+        privacyPolicy = findViewById(R.id.privacyPolicy);
+
+        progressBar = findViewById(R.id.pb_loading);
+        emptyView = findViewById(R.id.empty_container);
+        emptyTitleView = findViewById(R.id.empty_title);
+        emptyDescView = findViewById(R.id.empty_description);
+        retryButton = findViewById(R.id.retry_button);
+
+        signInButton.setOnClickListener(v -> signIn());
+        ResendVerificationCodeButton.setOnClickListener(v -> openResendVerificationCode());
+        googleLoginButton.setOnClickListener(v -> googleSignIn());
+        signUpButton.setOnClickListener(v -> signUp());
+        privacyPolicy.setOnClickListener(v -> initWebView());
+        findViewById(R.id.forgot_password).setOnClickListener(v -> verify());
     }
 
     public void setLoginLabel(InstituteSettings instituteSettings) {
@@ -590,7 +612,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
                 .show();
     }
 
-    @OnClick(id.b_signin) public void signIn() {
+    private void signIn() {
         if (!populated(usernameText)) {
             usernameError.setVisibility(View.VISIBLE);
             usernameError.setText(getString(R.string.empty_input_error));
@@ -608,7 +630,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         }
     }
 
-    @OnClick(id.signup) public void signUp() {
+    private void signUp() {
         if(instituteSettings.getCustomRegistrationEnabled() != null && instituteSettings.getCustomRegistrationEnabled()) {
             Intent intent = new Intent(this, WebViewActivity.class);
             intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Register");
@@ -628,14 +650,14 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
     }
 
-    @OnClick(id.b_resend_activation) public void openResendVerificationCode() {
+    private void openResendVerificationCode() {
         Intent intent = new Intent(LoginActivity.this, WebViewActivity.class);
         intent.putExtra(URL_TO_OPEN, BASE_URL+"/resend/");
         intent.putExtra(ACTIVITY_TITLE, "Resend Verification SMS");
         startActivity(intent);
     }
 
-    @OnClick(id.forgot_password) public void verify() {
+    private void verify() {
         if(internetConnectivityChecker.isConnected()) {
             Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
             startActivity(intent);
@@ -644,12 +666,12 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         }
     }
 
-    @OnClick(id.google_sign_in_button) public void googleSignIn() {
+    private void googleSignIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
         startActivityForResult(signInIntent, REQUEST_CODE_GOOGLE_SIGN_IN);
     }
 
-    @OnClick(id.privacyPolicy) public void initWebView() {
+    private void initWebView() {
         Intent intent = new Intent(LoginActivity.this, WebViewActivity.class);
         intent.putExtra(URL_TO_OPEN, BASE_URL+"/privacy");
         intent.putExtra(ACTIVITY_TITLE, "Privacy Policy");

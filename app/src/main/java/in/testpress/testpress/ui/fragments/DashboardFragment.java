@@ -81,7 +81,6 @@ public class DashboardFragment extends Fragment implements
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         bindViews(view);
-
         adapter = new DashboardAdapter(getContext(), new DashboardResponse(), serviceProvider);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

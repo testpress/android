@@ -66,79 +66,58 @@ public class HandleMainMenu {
 
     public void handleMenuOptionClick(int itemId) {
         Intent intent;
-        switch (itemId) {
-            case R.id.share:
-                shareApp();
-                break;
-            case R.id.rate_us:
-                rateApp();
-                break;
-            case R.id.privacy_policy:
-                openPrivacyPolicy();
-                break;
-            case R.id.logout:
-                ((MainActivity) activity).logout();
-                break;
-            case R.id.bookmarks:
-                checkAuthenticationAndOpen(R.string.bookmarks);
-                break;
-            case R.id.posts:
-                String custom_title = UIUtils.getMenuItemName(R.string.posts, instituteSettings);
-                intent = new Intent(activity, PostsListActivity.class);
-                intent.putExtra("userAuthenticated", isUserAuthenticated);
-                intent.putExtra("title", custom_title);
-                activity.startActivity(intent);
-                break;
-            case R.id.analytics:
-                checkAuthenticationAndOpen(R.string.analytics);
-                break;
-            case R.id.login_activity:
-                intent = new Intent(activity, UserDevicesActivity.class);
-                activity.startActivity(intent);
-                break;
-            case R.id.doubts:
-                Log.d("TAG", "handleMenuOptionClick: ");
-                intent = new Intent(activity, DoubtsActivity.class);
-                activity.startActivity(intent);
-                break;
-            case R.id.offline_exam_list:
-                launchOfflineExamListActivity();
-                break;
-            case R.id.discussions:
-                String label = instituteSettings.getForumLabel();
-                label = label != null ? label : "Discussion";
-                launchDiscussionActivity(label);
-                break;
-            case R.id.profile:
-                intent = new Intent(activity, ProfileDetailsActivity.class);
-                activity.startActivity(intent);
-                break;
-            case R.id.login:
-                intent = new Intent(activity, LoginActivity.class);
-                intent.putExtra(Constants.DEEP_LINK_TO, "home");
-                activity.startActivity(intent);
-                break;
-            case  R.id.student_report:
-                launchStudentReportActivity();
-                break;
-            case  R.id.recorded_lessons:
-                openCakingExternalURL("Recorded Lessons","/external_site/?endpoint=recorded_lectures");
-                break;
-            case  R.id.mocks:
-                openCakingExternalURL("Mocks","/external_site/?endpoint=mocks");
-                break;
-            case  R.id.e_books:
-                openCakingExternalURL("E-Books","/external_site/?endpoint=e-books");
-                break;
-            case  R.id.live_lectures_cat:
-                openCakingExternalURL("CAT","/external_site/?endpoint=cat/40-days-challenge");
-                break;
-            case  R.id.live_lectures_non_cat:
-                openCakingExternalURL("NON-CAT","/external_site/?endpoint=noncat/non-cat-40-days-challenge");
-                break;
-            case  R.id.live_lectures_gd_watpi:
-                openCakingExternalURL("GD WATPI","/external_site/?endpoint=gdwatpi/todays-classes");
-                break;
+        if (itemId == R.id.share) {
+            shareApp();
+        } else if (itemId == R.id.rate_us) {
+            rateApp();
+        } else if (itemId == R.id.privacy_policy) {
+            openPrivacyPolicy();
+        } else if (itemId == R.id.logout) {
+            ((MainActivity) activity).logout();
+        } else if (itemId == R.id.bookmarks) {
+            checkAuthenticationAndOpen(R.string.bookmarks);
+        } else if (itemId == R.id.posts) {
+            String custom_title = UIUtils.getMenuItemName(R.string.posts, instituteSettings);
+            intent = new Intent(activity, PostsListActivity.class);
+            intent.putExtra("userAuthenticated", isUserAuthenticated);
+            intent.putExtra("title", custom_title);
+            activity.startActivity(intent);
+        } else if (itemId == R.id.analytics) {
+            checkAuthenticationAndOpen(R.string.analytics);
+        } else if (itemId == R.id.login_activity) {
+            intent = new Intent(activity, UserDevicesActivity.class);
+            activity.startActivity(intent);
+        } else if (itemId == R.id.doubts) {
+            Log.d("TAG", "handleMenuOptionClick: ");
+            intent = new Intent(activity, DoubtsActivity.class);
+            activity.startActivity(intent);
+        } else if (itemId == R.id.offline_exam_list) {
+            launchOfflineExamListActivity();
+        } else if (itemId == R.id.discussions) {
+            String label = instituteSettings.getForumLabel();
+            label = label != null ? label : "Discussion";
+            launchDiscussionActivity(label);
+        } else if (itemId == R.id.profile) {
+            intent = new Intent(activity, ProfileDetailsActivity.class);
+            activity.startActivity(intent);
+        } else if (itemId == R.id.login) {
+            intent = new Intent(activity, LoginActivity.class);
+            intent.putExtra(Constants.DEEP_LINK_TO, "home");
+            activity.startActivity(intent);
+        } else if (itemId == R.id.student_report) {
+            launchStudentReportActivity();
+        } else if (itemId == R.id.recorded_lessons) {
+            openCakingExternalURL("Recorded Lessons", "/external_site/?endpoint=recorded_lectures");
+        } else if (itemId == R.id.mocks) {
+            openCakingExternalURL("Mocks", "/external_site/?endpoint=mocks");
+        } else if (itemId == R.id.e_books) {
+            openCakingExternalURL("E-Books", "/external_site/?endpoint=e-books");
+        } else if (itemId == R.id.live_lectures_cat) {
+            openCakingExternalURL("CAT", "/external_site/?endpoint=cat/40-days-challenge");
+        } else if (itemId == R.id.live_lectures_non_cat) {
+            openCakingExternalURL("NON-CAT", "/external_site/?endpoint=noncat/non-cat-40-days-challenge");
+        } else if (itemId == R.id.live_lectures_gd_watpi) {
+            openCakingExternalURL("GD WATPI", "/external_site/?endpoint=gdwatpi/todays-classes");
         }
     }
 
@@ -169,23 +148,19 @@ public class HandleMainMenu {
     void showSDK(int clickedMenuTitleResId) {
         TestpressSession session = TestpressSdk.getTestpressSession(activity);
         assert session != null;
-        switch (clickedMenuTitleResId) {
-            case R.string.my_exams:
-                TestpressExam.showCategories(activity, true, session);
-                break;
-            case R.string.bookmarks:
-                TestpressCourse.showBookmarks(activity, session);
-                break;
-            case R.string.analytics:
-                TestpressExam.showAnalytics(activity, SUBJECT_ANALYTICS_PATH, session);
-                break;
-            case R.string.store:
-                String title = UIUtils.getMenuItemName(R.string.store, instituteSettings);
-                Intent intent = new Intent();
-                intent.putExtra("title", title);
-                activity.setIntent(intent);
-                TestpressStore.show(activity, session);
-                break;
+
+        if (clickedMenuTitleResId == R.string.my_exams) {
+            TestpressExam.showCategories(activity, true, session);
+        } else if (clickedMenuTitleResId == R.string.bookmarks) {
+            TestpressCourse.showBookmarks(activity, session);
+        } else if (clickedMenuTitleResId == R.string.analytics) {
+            TestpressExam.showAnalytics(activity, SUBJECT_ANALYTICS_PATH, session);
+        } else if (clickedMenuTitleResId == R.string.store) {
+            String title = UIUtils.getMenuItemName(R.string.store, instituteSettings);
+            Intent intent = new Intent();
+            intent.putExtra("title", title);
+            activity.setIntent(intent);
+            TestpressStore.show(activity, session);
         }
     }
 

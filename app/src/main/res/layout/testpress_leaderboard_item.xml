@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/stats_layout"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <TextView
+        android:id="@+id/rank"
+        android:minWidth="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:textSize="13sp"
+        android:text="200" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <in.testpress.ui.view.RoundedImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="10dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/testpress_profile_image_place_holder"
+                android:id="@+id/user_image" />
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:text="Username"
+                android:textColor="@color/testpress_black"
+                android:textSize="13sp"
+                android:lineSpacingExtra="6sp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:id="@+id/username" />
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/testpress_trophy_outline" />
+
+            <TextView
+                android:id="@+id/trophies"
+                android:minWidth="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1339"
+                android:textSize="13sp"
+                android:textColor="@color/testpress_text_gray_medium" />
+
+            <TextView
+                android:id="@+id/difference"
+                android:minWidth="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:gravity="right"
+                android:text="200"
+                android:textSize="13sp" />
+
+            <ImageView
+                android:id="@+id/difference_image"
+                android:layout_width="7dp"
+                android:layout_height="5dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="20dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/testpress_arrow_up_green" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/testpress_gray_light" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -134,7 +134,7 @@ try {
 android {
 
     compileSdkVersion 35
-    buildToolsVersion '30.0.3'
+    buildToolsVersion '34.0.0'
     ndkVersion "23.2.8568313"
     namespace 'in.testpress.testpress'
 
@@ -173,7 +173,7 @@ android {
 
     defaultConfig {
         minSdkVersion 23
-        targetSdkVersion 34
+        targetSdkVersion 35
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         versionName json.version

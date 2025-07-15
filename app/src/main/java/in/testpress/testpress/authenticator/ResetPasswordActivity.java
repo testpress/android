@@ -30,13 +30,13 @@ import in.testpress.testpress.util.SafeAsyncTask;
 public class ResetPasswordActivity extends FragmentActivity {
 
     @Inject TestpressService testpressService;
-    @InjectView(R.id.et_useremail) EditText email;
-    @InjectView(R.id.email_error) TextView emailError;
-    @InjectView(R.id.b_reset_password) Button resetButton;
+    EditText email;
+    TextView emailError;
+    Button resetButton;
     public int resetErrorMessage;
-    @InjectView(R.id.success_ok) Button okButton;
-    @InjectView(R.id.form) LinearLayout formContainer;
-    @InjectView(R.id.success_complete) LinearLayout successContainer;
+    Button okButton;
+    LinearLayout formContainer;
+    LinearLayout successContainer;
     private final TextWatcher watcher = validationTextWatcher();
     private RelativeLayout forgotPasswordContainer;
 
@@ -45,13 +45,25 @@ public class ResetPasswordActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
         TestpressApplication.getAppComponent().inject(this);
-        ButterKnife.inject(this);
+        bindViews();
         resetErrorMessage = R.string.reset_error_message;
         email.addTextChangedListener(watcher);
         forgotPasswordContainer = findViewById(R.id.forgot_password_container);
     }
 
-    @OnClick(R.id.b_reset_password) public void reset(){
+    private void bindViews() {
+        email = findViewById(R.id.et_useremail);
+        emailError = findViewById(R.id.email_error);
+        resetButton = findViewById(R.id.b_reset_password);
+        okButton = findViewById(R.id.success_ok);
+        formContainer = findViewById(R.id.form);
+        successContainer = findViewById(R.id.success_complete);
+
+        resetButton.setOnClickListener(v -> reset());
+        okButton.setOnClickListener(v -> passwordResetDone());
+    }
+
+    private void reset(){
         if(validate()) {
             final MaterialDialog progressDialog = new MaterialDialog.Builder(this)
                     .title(R.string.loading)
@@ -90,7 +102,7 @@ public class ResetPasswordActivity extends FragmentActivity {
         }
     }
 
-    @OnClick(R.id.success_ok) public void passwordResetDone() {
+    private void passwordResetDone() {
         finish();
     }
 

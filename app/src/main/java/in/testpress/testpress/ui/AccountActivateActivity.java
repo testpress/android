@@ -18,10 +18,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.R;
 import in.testpress.testpress.authenticator.LoginActivity;
@@ -38,28 +34,42 @@ public class AccountActivateActivity extends AppCompatActivity {
 
     @Inject TestpressService testpressService;
 
-    @InjectView(R.id.pb_loading) ProgressBar progressBar;
-    @InjectView(R.id.empty_container) LinearLayout emptyView;
-    @InjectView(R.id.empty_title) TextView emptyTitleView;
-    @InjectView(R.id.empty_description) TextView emptyDescView;
-    @InjectView(R.id.retry_button) Button retryButton;
-    @InjectView(R.id.success_complete) LinearLayout successContainer;
-    @InjectView(R.id.success_image) ImageView successImage;
-    @InjectView(R.id.success_title) TextView successTitle;
-    @InjectView(R.id.success_description) TextView successDescription;
+    ProgressBar progressBar;
+    LinearLayout emptyView;
+    TextView emptyTitleView;
+    TextView emptyDescView;
+    Button retryButton;
+    LinearLayout successContainer;
+    ImageView successImage;
+    TextView successTitle;
+    TextView successDescription;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         TestpressApplication.getAppComponent().inject(this);
         setContentView(R.layout.activity_account_activate);
-        ButterKnife.inject(this);
+        bindViews();
         UIUtils.setIndeterminateDrawable(this, progressBar, 4);
 
         String urlFrag = getIntent().getStringExtra(ACTIVATE_URL_FRAG);
         Assert.assertNotNull("ACTIVATE_URL_FRAG must not be null.", urlFrag);
         Log.e("sssss",urlFrag);
         activateAccount(urlFrag.substring(1));
+    }
+
+    private void bindViews() {
+        progressBar = findViewById(R.id.pb_loading);
+        emptyView = findViewById(R.id.empty_container);
+        emptyTitleView = findViewById(R.id.empty_title);
+        emptyDescView = findViewById(R.id.empty_description);
+        retryButton = findViewById(R.id.retry_button);
+        successContainer = findViewById(R.id.success_complete);
+        successImage = findViewById(R.id.success_image);
+        successTitle = findViewById(R.id.success_title);
+        successDescription = findViewById(R.id.success_description);
+
+        findViewById(R.id.success_ok).setOnClickListener(v -> login());
     }
 
     private void activateAccount(final String urlFrag) {
@@ -117,7 +127,7 @@ public class AccountActivateActivity extends AppCompatActivity {
         }.execute();
     }
 
-    @OnClick(R.id.success_ok) public void login() {
+    private void login() {
         if (CommonUtils.isUserAuthenticated(this)) {
             finish();
         } else {

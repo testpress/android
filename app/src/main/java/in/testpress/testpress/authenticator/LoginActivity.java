@@ -179,7 +179,8 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
         setContentView(layout.login_activity);
 
-        bindViews();
+        initializeViews();
+        setupClickListeners();
         UIUtils.setIndeterminateDrawable(this, progressBar, 4);
         passwordText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
@@ -302,7 +303,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         }
     }
 
-    private void bindViews() {
+    private void initializeViews() {
         loginLayout = findViewById(R.id.login_layout);
         usernameInputLayout = findViewById(R.id.username_textInput_layout);
         passwordInputLayout = findViewById(R.id.password_textInput_layout);
@@ -318,13 +319,14 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         socialLoginLayout = findViewById(R.id.social_sign_in_buttons);
         signUpButton = findViewById(R.id.signup);
         privacyPolicy = findViewById(R.id.privacyPolicy);
-
         progressBar = findViewById(R.id.pb_loading);
         emptyView = findViewById(R.id.empty_container);
         emptyTitleView = findViewById(R.id.empty_title);
         emptyDescView = findViewById(R.id.empty_description);
         retryButton = findViewById(R.id.retry_button);
+    }
 
+    private void setupClickListeners() {
         signInButton.setOnClickListener(v -> signIn());
         ResendVerificationCodeButton.setOnClickListener(v -> openResendVerificationCode());
         googleLoginButton.setOnClickListener(v -> googleSignIn());

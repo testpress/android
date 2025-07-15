@@ -64,14 +64,14 @@ import static in.testpress.testpress.BuildConfig.BASE_URL;
 
 public class CodeVerificationActivity extends AppCompatActivity {
     @Inject TestpressService testpressService;
-    TextView welcomeText;
-    TextView verificationCodeError;
-    EditText usernameText;
-    EditText verificationCodeText;
-    Button verifyButton;
-    ProgressBar progressBar;
-    TextView countText;
-    LinearLayout smsReceivingLayout;
+    private TextView welcomeText;
+    private TextView verificationCodeError;
+    private EditText usernameText;
+    private EditText verificationCodeText;
+    private Button verifyButton;
+    private ProgressBar progressBar;
+    private TextView countText;
+    private LinearLayout smsReceivingLayout;
 
     private String username;
     private String password;
@@ -143,23 +143,12 @@ public class CodeVerificationActivity extends AppCompatActivity {
         countText = findViewById(R.id.count);
         smsReceivingLayout = findViewById(R.id.sms_receiving_layout);
 
-        verifyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                verify();
-            }
-        });
-
-        findViewById(R.id.b_manually_verify).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                manuallyVerify();
-            }
-        });
+        verifyButton.setOnClickListener(v -> verify());
+        findViewById(R.id.b_manually_verify).setOnClickListener(v -> manuallyVerify());
     }
 
 
-    public void verify() {
+    private void verify() {
         if(internetConnectivityChecker.isConnected()) {
             if (username == null) {
                 username = usernameText.getText().toString().trim();
@@ -221,7 +210,7 @@ public class CodeVerificationActivity extends AppCompatActivity {
         }
     }
 
-    public void manuallyVerify() { //user have to enter code
+    private void manuallyVerify() { //user have to enter code
         timer.cancel();
         timer.onFinish();
     }

@@ -33,9 +33,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
 import in.testpress.core.TestpressCallback;
 import in.testpress.core.TestpressException;
 import in.testpress.core.TestpressSdk;
@@ -67,14 +64,14 @@ import static in.testpress.testpress.BuildConfig.BASE_URL;
 
 public class CodeVerificationActivity extends AppCompatActivity {
     @Inject TestpressService testpressService;
-    @InjectView(R.id.welcome) TextView welcomeText;
-    @InjectView(R.id.verification_code_error) TextView verificationCodeError;
-    @InjectView(R.id.et_username) EditText usernameText;
-    @InjectView(R.id.et_verificationCode) EditText verificationCodeText;
-    @InjectView(R.id.b_verify) Button verifyButton;
-    @InjectView(R.id.progressbar) ProgressBar progressBar;
-    @InjectView(R.id.count) TextView countText;
-    @InjectView(R.id.sms_receiving_layout) LinearLayout smsReceivingLayout;
+    TextView welcomeText;
+    TextView verificationCodeError;
+    EditText usernameText;
+    EditText verificationCodeText;
+    Button verifyButton;
+    ProgressBar progressBar;
+    TextView countText;
+    LinearLayout smsReceivingLayout;
 
     private String username;
     private String password;
@@ -96,7 +93,7 @@ public class CodeVerificationActivity extends AppCompatActivity {
         super.onCreate(bundle);
         TestpressApplication.getAppComponent().inject(this);
         setContentView(R.layout.code_verify_activity);
-        ButterKnife.inject(this);
+        bindViews();
         final Intent intent = getIntent();
         fetchInstituteSettingLocalDB();
         username = intent.getStringExtra("username");
@@ -136,7 +133,33 @@ public class CodeVerificationActivity extends AppCompatActivity {
         accountManager = AccountManager.get(this);
     }
 
-    @OnClick(R.id.b_verify) public void verify() {
+    private void bindViews() {
+        welcomeText = findViewById(R.id.welcome);
+        verificationCodeError = findViewById(R.id.verification_code_error);
+        usernameText = findViewById(R.id.et_username);
+        verificationCodeText = findViewById(R.id.et_verificationCode);
+        verifyButton = findViewById(R.id.b_verify);
+        progressBar = findViewById(R.id.progressbar);
+        countText = findViewById(R.id.count);
+        smsReceivingLayout = findViewById(R.id.sms_receiving_layout);
+
+        verifyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                verify();
+            }
+        });
+
+        findViewById(R.id.b_manually_verify).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                manuallyVerify();
+            }
+        });
+    }
+
+
+    public void verify() {
         if(internetConnectivityChecker.isConnected()) {
             if (username == null) {
                 username = usernameText.getText().toString().trim();
@@ -198,7 +221,7 @@ public class CodeVerificationActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick(R.id.b_manually_verify) public void manuallyVerify() { //user have to enter code
+    public void manuallyVerify() { //user have to enter code
         timer.cancel();
         timer.onFinish();
     }

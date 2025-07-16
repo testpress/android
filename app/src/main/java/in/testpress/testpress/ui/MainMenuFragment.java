@@ -235,7 +235,6 @@ public class MainMenuFragment extends Fragment {
         quickLinksContainer = view.findViewById(R.id.quick_links_container);
     }
 
-
     void checkAuthenticatedUser(final int clickedMenuTitleResId) {
         if (!CommonUtils.isUserAuthenticated(getActivity())) {
             serviceProvider.logout(getActivity(), testpressService,

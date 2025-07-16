@@ -57,8 +57,6 @@ class TermsAndConditionActivity : BaseToolBarActivity() {
         setContentView(R.layout.terms_and_condition_activity)
         bindViews()
         supportActionBar?.title = getString(R.string.terms_and_conditions)
-        progressBar = findViewById(R.id.terms_and_condition_pb_loading)
-        webView = findViewById(R.id.terms_and_condition_web_view)
     }
 
     private fun bindViews() {
@@ -66,6 +64,8 @@ class TermsAndConditionActivity : BaseToolBarActivity() {
         emptyTitleView = findViewById(R.id.empty_title)
         emptyDescView = findViewById(R.id.empty_description)
         retryButton = findViewById(R.id.retry_button)
+        progressBar = findViewById(R.id.terms_and_condition_pb_loading)
+        webView = findViewById(R.id.terms_and_condition_web_view)
     }
 
     override fun onResume() {

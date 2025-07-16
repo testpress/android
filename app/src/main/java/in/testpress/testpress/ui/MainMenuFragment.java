@@ -29,8 +29,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.exam.TestpressExam;
@@ -71,8 +69,7 @@ public class MainMenuFragment extends Fragment {
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected LogoutService logoutService;
     GridView grid;
-    @InjectView(R.id.recyclerview) RecyclerView recyclerView;
-    @InjectView(R.id.quick_links_container)
+    RecyclerView recyclerView;
     LinearLayout quickLinksContainer;
     Account[] account;
 
@@ -88,7 +85,7 @@ public class MainMenuFragment extends Fragment {
     @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        bindViews(view);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         fetchStarredCategories();
         AccountManager manager = (AccountManager) getActivity().getSystemService(Context.ACCOUNT_SERVICE);
@@ -232,6 +229,12 @@ public class MainMenuFragment extends Fragment {
             }
         });
     }
+
+    private void bindViews(View view) {
+        recyclerView = view.findViewById(R.id.recyclerview);
+        quickLinksContainer = view.findViewById(R.id.quick_links_container);
+    }
+
 
     void checkAuthenticatedUser(final int clickedMenuTitleResId) {
         if (!CommonUtils.isUserAuthenticated(getActivity())) {

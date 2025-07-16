@@ -525,7 +525,7 @@ public class PostsListFragment extends Fragment implements
         });
     }
 
-    public void displayNewPosts() {
+    private void displayNewPosts() {
         mStickyView.setVisibility(View.GONE);
         //Remove the swipe refresh icon if present
         swipeLayout.setRefreshing(false);

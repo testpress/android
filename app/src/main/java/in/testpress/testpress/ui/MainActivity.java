@@ -53,8 +53,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
 import in.testpress.course.TestpressCourse;
 import in.testpress.course.fragments.DownloadsFragment;
@@ -105,20 +103,17 @@ public class MainActivity extends TestpressFragmentActivity {
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected TestpressService testpressService;
     @Inject protected LogoutService logoutService;
-    @InjectView(R.id.empty_container) LinearLayout emptyView;
-    @InjectView(R.id.empty_title) TextView emptyTitleView;
-    @InjectView(R.id.empty_description) TextView emptyDescView;
-    @InjectView(R.id.retry_button) Button retryButton;
+    private LinearLayout emptyView;
+    private TextView emptyTitleView;
+    private TextView emptyDescView;
+    private Button retryButton;
 
-    @InjectView(R.id.coordinator_layout) CoordinatorLayout coordinatorLayout;
-    @InjectView(R.id.progressbar) RelativeLayout progressBarLayout;
-    @InjectView(R.id.viewpager)
-    NonSwipeableViewPager viewPager;
-    @InjectView(R.id.grid) GridView grid;
-    @InjectView(R.id.drawer_layout)
-    DrawerLayout drawer;
-    @InjectView(R.id.navigation_view)
-    NavigationView navigationView;
+    private CoordinatorLayout coordinatorLayout;
+    private RelativeLayout progressBarLayout;
+    private NonSwipeableViewPager viewPager;
+    private GridView grid;
+    private DrawerLayout drawer;
+    private NavigationView navigationView;
 
     private ActionBarDrawerToggle drawerToggle;
     private int mSelectedItem;
@@ -139,7 +134,7 @@ public class MainActivity extends TestpressFragmentActivity {
         TestpressApplication.getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-        ButterKnife.inject(this);
+        bindViews();
 
         if (savedInstanceState != null) {
             mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM);
@@ -161,6 +156,21 @@ public class MainActivity extends TestpressFragmentActivity {
         setupEasterEgg();
         initOfflineAttachmentDownloadManager();
     }
+
+    private void bindViews() {
+        emptyView = findViewById(R.id.empty_container);
+        emptyTitleView = findViewById(R.id.empty_title);
+        emptyDescView = findViewById(R.id.empty_description);
+        retryButton = findViewById(R.id.retry_button);
+
+        coordinatorLayout = findViewById(R.id.coordinator_layout);
+        progressBarLayout = findViewById(R.id.progressbar);
+        viewPager = findViewById(R.id.viewpager);
+        grid = findViewById(R.id.grid);
+        drawer = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.navigation_view);
+    }
+
 
     @Override
     public void onBackPressed() {

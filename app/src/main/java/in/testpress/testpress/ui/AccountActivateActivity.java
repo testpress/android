@@ -34,15 +34,15 @@ public class AccountActivateActivity extends AppCompatActivity {
 
     @Inject TestpressService testpressService;
 
-    ProgressBar progressBar;
-    LinearLayout emptyView;
-    TextView emptyTitleView;
-    TextView emptyDescView;
-    Button retryButton;
-    LinearLayout successContainer;
-    ImageView successImage;
-    TextView successTitle;
-    TextView successDescription;
+    private ProgressBar progressBar;
+    private LinearLayout emptyView;
+    private TextView emptyTitleView;
+    private TextView emptyDescView;
+    private Button retryButton;
+    private LinearLayout successContainer;
+    private ImageView successImage;
+    private TextView successTitle;
+    private TextView successDescription;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -127,7 +127,7 @@ public class AccountActivateActivity extends AppCompatActivity {
         }.execute();
     }
 
-    private void login() {
+    public void login() {
         if (CommonUtils.isUserAuthenticated(this)) {
             finish();
         } else {

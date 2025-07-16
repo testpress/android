@@ -153,8 +153,7 @@ public class PostsListFragment extends Fragment implements
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.swipe_refresh_list, null);
-        return view;
+        return inflater.inflate(R.layout.swipe_refresh_list, null);
     }
 
     @Override

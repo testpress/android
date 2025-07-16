@@ -30,13 +30,13 @@ import in.testpress.testpress.util.SafeAsyncTask;
 public class ResetPasswordActivity extends FragmentActivity {
 
     @Inject TestpressService testpressService;
-    EditText email;
-    TextView emailError;
-    Button resetButton;
+    private EditText email;
+    private TextView emailError;
+    private Button resetButton;
     public int resetErrorMessage;
-    Button okButton;
-    LinearLayout formContainer;
-    LinearLayout successContainer;
+    private Button okButton;
+    private LinearLayout formContainer;
+    private LinearLayout successContainer;
     private final TextWatcher watcher = validationTextWatcher();
     private RelativeLayout forgotPasswordContainer;
 

@@ -103,17 +103,17 @@ public class MainActivity extends TestpressFragmentActivity {
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected TestpressService testpressService;
     @Inject protected LogoutService logoutService;
-    LinearLayout emptyView;
-    TextView emptyTitleView;
-    TextView emptyDescView;
-    Button retryButton;
+    private LinearLayout emptyView;
+    private TextView emptyTitleView;
+    private TextView emptyDescView;
+    private Button retryButton;
 
-    CoordinatorLayout coordinatorLayout;
-    RelativeLayout progressBarLayout;
-    NonSwipeableViewPager viewPager;
-    GridView grid;
-    DrawerLayout drawer;
-    NavigationView navigationView;
+    private CoordinatorLayout coordinatorLayout;
+    private RelativeLayout progressBarLayout;
+    private NonSwipeableViewPager viewPager;
+    private GridView grid;
+    private DrawerLayout drawer;
+    private NavigationView navigationView;
 
     private ActionBarDrawerToggle drawerToggle;
     private int mSelectedItem;

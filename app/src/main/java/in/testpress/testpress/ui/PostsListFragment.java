@@ -33,9 +33,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
 import de.greenrobot.dao.query.LazyList;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
@@ -61,16 +58,13 @@ public class PostsListFragment extends Fragment implements
     protected TestpressServiceProvider serviceProvider;
     @Inject
     protected LogoutService logoutService;
-    @InjectView(android.R.id.list)
     ListView listView;
-    @InjectView(R.id.sticky)
     TextView mStickyView;
-    @InjectView(R.id.swipe_container)
     SwipeRefreshLayout swipeLayout;
-    @InjectView(R.id.empty_container) LinearLayout emptyView;
-    @InjectView(R.id.empty_title) TextView emptyTitleView;
-    @InjectView(R.id.empty_description) TextView emptyDescView;
-    @InjectView(R.id.retry_button) Button retryButton;
+    LinearLayout emptyView;
+    TextView emptyTitleView;
+    TextView emptyDescView;
+    Button retryButton;
     HeaderFooterListAdapter<PostsListAdapter> adapter;
     PostsPager refreshPager;
     PostsPager pager;
@@ -159,18 +153,30 @@ public class PostsListFragment extends Fragment implements
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.swipe_refresh_list, null);
-        ButterKnife.inject(this, view);
-        return view;
+        return inflater.inflate(R.layout.swipe_refresh_list, null);
     }
 
     @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        bindViews(view);
         adapter = new HeaderFooterListAdapter<PostsListAdapter>(listView, new PostsListAdapter
                 (getActivity(), R.layout.post_list_item));
         listView.setAdapter(adapter);
         loadingLayout = LayoutInflater.from(getActivity()).inflate(R.layout.loading_layout, null);
+    }
+
+    private void bindViews(View view) {
+        listView = view.findViewById(android.R.id.list);
+        mStickyView = view.findViewById(R.id.sticky);
+        swipeLayout = view.findViewById(R.id.swipe_container);
+        emptyView = view.findViewById(R.id.empty_container);
+        emptyTitleView = view.findViewById(R.id.empty_title);
+        emptyDescView = view.findViewById(R.id.empty_description);
+        retryButton = view.findViewById(R.id.retry_button);
+
+        retryButton.setOnClickListener(v-> refreshWithProgress());
+        mStickyView.setOnClickListener(v -> displayNewPosts());
     }
 
     @Override
@@ -518,8 +524,7 @@ public class PostsListFragment extends Fragment implements
         });
     }
 
-    @OnClick(R.id.sticky)
-    public void displayNewPosts() {
+    private void displayNewPosts() {
         mStickyView.setVisibility(View.GONE);
         //Remove the swipe refresh icon if present
         swipeLayout.setRefreshing(false);
@@ -570,14 +575,7 @@ public class PostsListFragment extends Fragment implements
         super.onStop();
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.reset(this);
-    }
-
-    @OnClick(R.id.retry_button)
-    protected void refreshWithProgress() {
+    private void refreshWithProgress() {
         emptyView.setVisibility(View.GONE);
         swipeLayout.post(new Runnable() {
             @Override

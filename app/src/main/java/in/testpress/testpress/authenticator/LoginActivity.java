@@ -123,7 +123,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     TextView passwordError;
     protected EditText passwordText;
     protected Button signInButton;
-    protected TextView ResendVerificationCodeButton;
+    protected TextView resendVerificationCodeButton;
     protected TextView orLabel;
     protected LoginButton fbLoginButton;
     protected Button googleLoginButton;
@@ -312,7 +312,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         passwordError = findViewById(R.id.password_error);
         passwordText = findViewById(R.id.et_password);
         signInButton = findViewById(R.id.b_signin);
-        ResendVerificationCodeButton = findViewById(R.id.b_resend_activation);
+        resendVerificationCodeButton = findViewById(R.id.b_resend_activation);
         orLabel = findViewById(R.id.or);
         fbLoginButton = findViewById(R.id.fb_login_button);
         googleLoginButton = findViewById(R.id.google_sign_in_button);
@@ -328,7 +328,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
     private void setupClickListeners() {
         signInButton.setOnClickListener(v -> signIn());
-        ResendVerificationCodeButton.setOnClickListener(v -> openResendVerificationCode());
+        resendVerificationCodeButton.setOnClickListener(v -> openResendVerificationCode());
         googleLoginButton.setOnClickListener(v -> googleSignIn());
         signUpButton.setOnClickListener(v -> signUp());
         privacyPolicy.setOnClickListener(v -> initWebView());
@@ -349,9 +349,9 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
     public void setVisibilityResendVerificationSMS(InstituteSettings instituteSettings){
         if (instituteSettings.getVerificationMethod().equals("M")) {
-            ResendVerificationCodeButton.setVisibility(View.VISIBLE);
+            resendVerificationCodeButton.setVisibility(View.VISIBLE);
         } else {
-            ResendVerificationCodeButton.setVisibility(View.GONE);
+            resendVerificationCodeButton.setVisibility(View.GONE);
         }
     }
 

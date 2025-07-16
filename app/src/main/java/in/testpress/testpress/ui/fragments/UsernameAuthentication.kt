@@ -193,6 +193,7 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
 
     private fun authenticate(userId: String, accessToken: String) {
         val settings = `in`.testpress.models.InstituteSettings(instituteSettings.baseUrl)
+            .setWhiteLabeledHostUrl(BuildConfig.WHITE_LABELED_HOST_URL)
             .setBookmarksEnabled(instituteSettings.bookmarksEnabled)
             .setCoursesFrontend(instituteSettings.showGameFrontend)
             .setCoursesGamificationEnabled(instituteSettings.coursesEnableGamification)

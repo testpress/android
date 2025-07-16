@@ -32,6 +32,7 @@ open class RegisterViewModel(
     val phoneNumber = MutableLiveData<String>()
     val password = MutableLiveData<String>()
     val confirmPassword = MutableLiveData<String>()
+    val countryCode = MutableLiveData<String>().apply { value = "IN" } // Default to India
 
     fun isUserDetailsValid() {
         val isValid = UserDataValidator(binding, verificationMethod, isTwilioEnabled).isValid()
@@ -51,7 +52,8 @@ open class RegisterViewModel(
                 username = username.value!!,
                 email = email.value!!,
                 password = password.value!!,
-                phoneNumber = phoneNumber.value!!
+                phoneNumber = phoneNumber.value!!,
+                countryCode = countryCode.value!!
         )
     }
 

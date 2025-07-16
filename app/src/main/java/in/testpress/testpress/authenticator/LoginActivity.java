@@ -61,6 +61,7 @@ import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.course.services.VideoDownloadService;
 import in.testpress.database.TestpressDatabase;
+import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.R.id;
@@ -377,6 +378,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
         in.testpress.models.InstituteSettings settings =
                 new in.testpress.models.InstituteSettings(instituteSettings.getBaseUrl())
+                        .setWhiteLabeledHostUrl(BuildConfig.WHITE_LABELED_HOST_URL)
                         .setBookmarksEnabled(instituteSettings.getBookmarksEnabled())
                         .setCoursesFrontend(instituteSettings.getShowGameFrontend())
                         .setCoursesGamificationEnabled(instituteSettings.getCoursesEnableGamification())

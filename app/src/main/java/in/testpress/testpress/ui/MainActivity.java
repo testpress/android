@@ -1,5 +1,6 @@
 package in.testpress.testpress.ui;
 import in.testpress.RequestCode;
+import in.testpress.course.ui.AvailableCourseListFragment;
 import in.testpress.course.ui.CourseListFragment;
 
 import android.Manifest;
@@ -55,6 +56,7 @@ import in.testpress.core.TestpressSdk;
 import in.testpress.course.TestpressCourse;
 import in.testpress.course.fragments.DownloadsFragment;
 import in.testpress.course.repository.VideoWatchDataRepository;
+import in.testpress.course.ui.MyCoursesFragment;
 import in.testpress.database.OfflineVideoDao;
 import in.testpress.database.TestpressDatabase;
 import in.testpress.exam.ui.view.NonSwipeableViewPager;
@@ -281,7 +283,6 @@ public class MainActivity extends TestpressFragmentActivity {
             if (mInstituteSettings != null){
                 menu.findItem(R.id.student_report).setVisible(mInstituteSettings.isStudentReportEnabled());
             }
-            menu.findItem(R.id.proctored_exam).setVisible(true);
         }
     }
 

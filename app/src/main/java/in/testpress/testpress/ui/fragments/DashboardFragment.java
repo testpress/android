@@ -31,8 +31,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -54,20 +52,13 @@ public class DashboardFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<DashboardResponse> {
 
     private ArrayList<String> sections = new ArrayList<>();
-    @InjectView(R.id.recycler_View)
-    RecyclerView recyclerView;
-    @InjectView(R.id.empty_container)
-    LinearLayout emptyView;
-    @InjectView(R.id.empty_title)
-    TextView emptyTitleView;
-    @InjectView(R.id.empty_description)
-    TextView emptyDescView;
-    @InjectView(R.id.retry_button)
-    Button retryButton;
-    @InjectView(R.id.swipe_container)
-    SwipeRefreshLayout swipeRefreshLayout;
-    @InjectView(R.id.shimmer_view_container)
-    ShimmerFrameLayout loadingPlaceholder;
+    private RecyclerView recyclerView;
+    private LinearLayout emptyView;
+    private TextView emptyTitleView;
+    private TextView emptyDescView;
+    private Button retryButton;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private ShimmerFrameLayout loadingPlaceholder;
 
     @Inject
     protected TestpressServiceProvider serviceProvider;
@@ -100,7 +91,7 @@ public class DashboardFragment extends Fragment implements
     @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        bindViews(view);
 
         adapter = new DashboardAdapter(getContext(), new DashboardResponse(), serviceProvider);
         recyclerView.setAdapter(adapter);
@@ -108,6 +99,16 @@ public class DashboardFragment extends Fragment implements
         swipeRefreshLayout.setEnabled(true);
         showDataFromCacheIfAvailable();
         addOnClickListeners();
+    }
+
+    private void bindViews(View view) {
+        recyclerView = view.findViewById(R.id.recycler_View);
+        emptyView = view.findViewById(R.id.empty_container);
+        emptyTitleView = view.findViewById(R.id.empty_title);
+        emptyDescView = view.findViewById(R.id.empty_description);
+        retryButton = view.findViewById(R.id.retry_button);
+        swipeRefreshLayout = view.findViewById(R.id.swipe_container);
+        loadingPlaceholder = view.findViewById(R.id.shimmer_view_container);
     }
 
     private void showDataFromCacheIfAvailable() {

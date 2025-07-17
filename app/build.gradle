@@ -137,6 +137,7 @@ android {
     compileSdkVersion 34
     buildToolsVersion '30.0.3'
     ndkVersion "23.2.8568313"
+    namespace 'in.testpress.testpress'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

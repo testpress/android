@@ -128,13 +128,6 @@
             android:configChanges="orientation|keyboardHidden|screenSize" />
 
         <activity
-            android:name=".ui.CreateForumActivity"
-            android:label="Create Forum Post"
-            android:theme="@style/AppTheme"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
-
-        <activity
             android:name=".authenticator.RegisterActivity"
             android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"

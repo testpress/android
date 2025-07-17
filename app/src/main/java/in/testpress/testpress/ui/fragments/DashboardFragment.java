@@ -18,15 +18,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.github.kevinsawicki.wishlist.Toaster;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -34,8 +30,6 @@ import javax.inject.Inject;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
-import in.testpress.testpress.core.TestpressService;
-import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
 import in.testpress.testpress.ui.ThrowableLoader;
@@ -51,11 +45,8 @@ import static in.testpress.testpress.util.PreferenceManager.setDashboardData;
 public class DashboardFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<DashboardResponse> {
 
-    private ArrayList<String> sections = new ArrayList<>();
     private RecyclerView recyclerView;
     private LinearLayout emptyView;
-    private TextView emptyTitleView;
-    private TextView emptyDescView;
     private Button retryButton;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ShimmerFrameLayout loadingPlaceholder;
@@ -63,9 +54,7 @@ public class DashboardFragment extends Fragment implements
     @Inject
     protected TestpressServiceProvider serviceProvider;
     private DashboardAdapter adapter;
-    private TestpressService testpressService;
     private boolean firstCallback = true;
-    private DaoSession daoSession;
     protected Exception exception;
     DashboardResponse dashboardResponse;
 
@@ -104,8 +93,6 @@ public class DashboardFragment extends Fragment implements
     private void bindViews(View view) {
         recyclerView = view.findViewById(R.id.recycler_View);
         emptyView = view.findViewById(R.id.empty_container);
-        emptyTitleView = view.findViewById(R.id.empty_title);
-        emptyDescView = view.findViewById(R.id.empty_description);
         retryButton = view.findViewById(R.id.retry_button);
         swipeRefreshLayout = view.findViewById(R.id.swipe_container);
         loadingPlaceholder = view.findViewById(R.id.shimmer_view_container);
@@ -199,42 +186,12 @@ public class DashboardFragment extends Fragment implements
         adapter.notifyDataSetChanged();
     }
 
-    private void setEmptyText() {
-        setEmptyText(R.string.no_data_available, R.string.try_after_some_time,
-                R.drawable.ic_error_outline_black_18dp);
-    }
-
-    protected int getErrorMessage(Exception exception) {
-        if (exception instanceof IOException) {
-            if (getSections().isEmpty()) {
-                setEmptyText(R.string.authentication_failed, R.string.testpress_please_login,
-                        R.drawable.ic_error_outline_black_18dp);
-            }
-            return R.string.testpress_authentication_failed;
-        } else {
-            if (getSections().isEmpty()) {
-                setEmptyText(R.string.testpress_error_loading_contents,
-                        R.string.testpress_some_thing_went_wrong_try_again,
-                        R.drawable.ic_error_outline_black_18dp);
-            }
-        }
-        return R.string.testpress_some_thing_went_wrong_try_again;
-    }
-
     protected Exception getException(final Loader<DashboardResponse> loader) {
         if (loader instanceof ThrowableLoader) {
             return ((ThrowableLoader<DashboardResponse>) loader).clearException();
         } else {
             return null;
         }
-    }
-
-    private void setEmptyText(final int title, final int description, final int icon) {
-        emptyView.setVisibility(View.VISIBLE);
-        emptyTitleView.setText(title);
-        emptyTitleView.setCompoundDrawablesWithIntrinsicBounds(icon, 0, 0, 0);
-        emptyDescView.setText(description);
-        retryButton.setVisibility(View.VISIBLE);
     }
 
     @Override

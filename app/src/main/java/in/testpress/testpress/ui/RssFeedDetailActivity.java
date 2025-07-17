@@ -23,6 +23,7 @@ import in.testpress.core.TestpressSdk;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.core.TestpressService;
+import in.testpress.testpress.databinding.ActivityRssFeedDetailBinding;
 import in.testpress.testpress.models.RssItem;
 import in.testpress.testpress.models.RssItemDao;
 import in.testpress.testpress.util.ShareUtil;
@@ -45,12 +46,14 @@ public class RssFeedDetailActivity extends BaseToolBarActivity {
     private Button viewInWebsiteButton;
     private LinearLayout postDetails;
     private RelativeLayout progressBar;
-    private View activityRootLayout;
+    private ActivityRssFeedDetailBinding binding;
+
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_rss_feed_detail);
+        binding = ActivityRssFeedDetailBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         TestpressApplication.getAppComponent().inject(this);
         bindViews();
         postDetails.setVisibility(View.GONE);
@@ -67,13 +70,12 @@ public class RssFeedDetailActivity extends BaseToolBarActivity {
     }
 
     private void bindViews() {
-        content = findViewById(R.id.content);
-        title = findViewById(R.id.title);
-        date = findViewById(R.id.date);
-        viewInWebsiteButton = findViewById(R.id.view_in_website);
-        postDetails = findViewById(R.id.post_details);
-        progressBar = findViewById(R.id.pb_loading);
-        activityRootLayout = findViewById(android.R.id.content);
+        content = binding.content;
+        title = binding.title;
+        date = binding.date;
+        viewInWebsiteButton = binding.viewInWebsite;
+        postDetails = binding.postDetails;
+        progressBar = binding.pbLoading;
 
         viewInWebsiteButton.setOnClickListener(v -> viewInWebsite());
     }

@@ -11,8 +11,6 @@ import android.widget.ImageView;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
@@ -38,7 +36,7 @@ public class SplashScreenActivity extends Activity {
     @Inject
     protected TestpressServiceProvider serviceProvider;
 
-    @InjectView(R.id.splash_image) ImageView splashImage;
+    private ImageView splashImage;
 
     // Splash screen timer
     private static final int SPLASH_TIME_OUT = 2000;
@@ -48,7 +46,7 @@ public class SplashScreenActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         TestpressApplication.getAppComponent().inject(this);
-        ButterKnife.inject(this);
+        splashImage = findViewById(R.id.splash_image);
         UpdateAppDialogManager.monitor(this);
 
         if (isNotificationPresent()) {

@@ -19,9 +19,6 @@ import android.widget.TextView;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
 import in.testpress.core.TestpressSdk;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
@@ -42,20 +39,20 @@ public class RssFeedDetailActivity extends BaseToolBarActivity {
 
     @Inject protected TestpressService testpressService;
 
-    @InjectView(R.id.content) WebView content;
-    @InjectView(R.id.title) TextView title;
-    @InjectView(R.id.date) TextView date;
-    @InjectView(R.id.view_in_website) Button viewInWebsiteButton;
-    @InjectView(R.id.post_details) LinearLayout postDetails;
-    @InjectView(R.id.pb_loading) RelativeLayout progressBar;
-    @InjectView(android.R.id.content) View activityRootLayout;
+    private WebView content;
+    private TextView title;
+    private TextView date;
+    private Button viewInWebsiteButton;
+    private LinearLayout postDetails;
+    private RelativeLayout progressBar;
+    private View activityRootLayout;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rss_feed_detail);
         TestpressApplication.getAppComponent().inject(this);
-        ButterKnife.inject(this);
+        bindViews();
         postDetails.setVisibility(View.GONE);
         rssItemDao = TestpressApplication.getDaoSession().getRssItemDao();
         date.setTypeface(TestpressSdk.getRubikRegularFont(this));
@@ -67,6 +64,18 @@ public class RssFeedDetailActivity extends BaseToolBarActivity {
                 .where(RssItemDao.Properties.Link.eq(url)).list().get(0);
 
         displayPost();
+    }
+
+    private void bindViews() {
+        content = findViewById(R.id.content);
+        title = findViewById(R.id.title);
+        date = findViewById(R.id.date);
+        viewInWebsiteButton = findViewById(R.id.view_in_website);
+        postDetails = findViewById(R.id.post_details);
+        progressBar = findViewById(R.id.pb_loading);
+        activityRootLayout = findViewById(android.R.id.content);
+
+        viewInWebsiteButton.setOnClickListener(v -> viewInWebsite());
     }
 
     @Override
@@ -123,7 +132,7 @@ public class RssFeedDetailActivity extends BaseToolBarActivity {
                 "<style>img{display: inline;height: auto;max-width: 100%;}</style>";
     }
 
-    @OnClick(R.id.view_in_website) void viewInWebsite() {
+    private void viewInWebsite() {
         UIUtils.openInBrowser(this, rssItem.getLink());
     }
 

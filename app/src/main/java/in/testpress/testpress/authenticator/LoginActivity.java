@@ -433,7 +433,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
                                 showAlert(getString(R.string.invalid_username_or_password));
                             }
                         } else {
-                            showAlert(getString(R.string.testpress_some_thing_went_wrong_try_again));
+                            showAlert(getString(R.string.something_went_wrong_please_try_after));
                         }
                     }
                 });

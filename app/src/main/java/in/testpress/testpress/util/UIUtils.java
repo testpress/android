@@ -78,29 +78,28 @@ public class UIUtils {
     }
 
     public static String getMenuItemName(int titleResId, InstituteSettings instituteSettings) {
-        switch (titleResId) {
-            case R.string.dashboard:
-                return Strings.toString(instituteSettings.getDashboardLabel());
-            case R.string.leaderboard:
-                return Strings.toString(instituteSettings.getLeaderboardLabel());
-            case R.string.bookmarks:
-                return Strings.toString(instituteSettings.getBookmarksLabel());
-            case R.string.documents:
-                return Strings.toString(instituteSettings.getDocumentsLabel());
-            case R.string.store:
-                return Strings.toString(instituteSettings.getStoreLabel());
-            case R.string.posts:
-                return Strings.toString(instituteSettings.getPostsLabel());
-            case R.string.learn:
-                return Strings.toString(instituteSettings.getLearnLabel());
-            case R.string.label_username:
-                return Strings.toString(instituteSettings.getLoginLabel());
-            case R.string.label_password:
-                return Strings.toString(instituteSettings.getLoginPasswordLabel());
-            case R.string.discussions:
-                return Strings.toString(instituteSettings.getForumLabel());
-            default:
-                return "";
+        if (titleResId == R.string.dashboard) {
+            return Strings.toString(instituteSettings.getDashboardLabel());
+        } else if (titleResId == R.string.leaderboard) {
+            return Strings.toString(instituteSettings.getLeaderboardLabel());
+        } else if (titleResId == R.string.bookmarks) {
+            return Strings.toString(instituteSettings.getBookmarksLabel());
+        } else if (titleResId == R.string.documents) {
+            return Strings.toString(instituteSettings.getDocumentsLabel());
+        } else if (titleResId == R.string.store) {
+            return Strings.toString(instituteSettings.getStoreLabel());
+        } else if (titleResId == R.string.posts) {
+            return Strings.toString(instituteSettings.getPostsLabel());
+        } else if (titleResId == R.string.learn) {
+            return Strings.toString(instituteSettings.getLearnLabel());
+        } else if (titleResId == R.string.label_username) {
+            return Strings.toString(instituteSettings.getLoginLabel());
+        } else if (titleResId == R.string.label_password) {
+            return Strings.toString(instituteSettings.getLoginPasswordLabel());
+        } else if (titleResId == R.string.discussions) {
+            return Strings.toString(instituteSettings.getForumLabel());
+        } else {
+            return "";
         }
     }
 

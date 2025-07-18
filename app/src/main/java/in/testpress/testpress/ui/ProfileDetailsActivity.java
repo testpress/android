@@ -650,21 +650,20 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                return super.onOptionsItemSelected(item);
-            case R.id.refresh:
-                progressBar.setVisibility(View.VISIBLE);
-                getSupportLoaderManager().restartLoader(0, null, this);
-                return true;
-            case R.id.tick:
-                saveDetails();
-                return true;
-            case R.id.cancel:
-                displayProfileDetails(profileDetails);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == android.R.id.home){
+            return super.onOptionsItemSelected(item);
+        } else if (item.getItemId() == R.id.refresh) {
+            progressBar.setVisibility(View.VISIBLE);
+            getSupportLoaderManager().restartLoader(0, null, this);
+            return true;
+        } else if (item.getItemId() == R.id.tick) {
+            saveDetails();
+            return true;
+        } else if (item.getItemId() == R.id.cancel) {
+            displayProfileDetails(profileDetails);
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
 

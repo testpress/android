@@ -222,7 +222,7 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
                                 UIUtils.showAlert(this@LoginActivityV2,getString(R.string.invalid_username_or_password))
                             }
                         } else {
-                            UIUtils.showAlert(this@LoginActivityV2,getString(R.string.testpress_some_thing_went_wrong_try_again))
+                            UIUtils.showAlert(this@LoginActivityV2,getString(R.string.something_went_wrong_please_try_after))
                         }
                     }
                 })

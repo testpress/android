@@ -81,7 +81,7 @@ public class UIUtils {
         switch (titleResId) {
             case R.string.dashboard:
                 return Strings.toString(instituteSettings.getDashboardLabel());
-            case R.string.testpress_leaderboard:
+            case R.string.leaderboard:
                 return Strings.toString(instituteSettings.getLeaderboardLabel());
             case R.string.bookmarks:
                 return Strings.toString(instituteSettings.getBookmarksLabel());

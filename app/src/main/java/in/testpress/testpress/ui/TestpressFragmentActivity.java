@@ -15,7 +15,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -89,7 +88,6 @@ public class TestpressFragmentActivity extends AppCompatActivity {
     public void setContentView(final int layoutResId) {
         super.setContentView(layoutResId);
 
-        ButterKnife.inject(this);
         Toolbar toolbar = getActionBarToolbar();
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);

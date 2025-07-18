@@ -156,75 +156,59 @@ public class MainMenuFragment extends Fragment {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 Intent intent;
                 String custom_title;
-                switch ((int) id) {
-                    case R.string.about_us:
-                        intent = new Intent(getActivity(), AboutUsActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.string.my_exams:
-                        checkAuthenticatedUser(R.string.my_exams);
-                        break;
-                    case R.string.bookmarks:
-                        checkAuthenticatedUser(R.string.bookmarks);
-                        break;
-                    case R.string.store:
-                        checkAuthenticatedUser(R.string.store);
-                        break;
-                    case R.string.documents:
-                        custom_title = UIUtils.getMenuItemName(R.string.documents, mInstituteSettings);
-                        intent = new Intent(getActivity(), DocumentsListActivity.class);
-                        intent.putExtra("title", custom_title);
-                        startActivity(intent);
-                        break;
-                    case R.string.orders:
-                        intent = new Intent(getActivity(), OrdersListActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.string.rss_posts:
-                        intent = new Intent(getActivity(), DrupalRssListActivity.class);
-                        intent.putExtra(RSS_FEED_URL, "https://www.wired.com/feed/");
-                        startActivity(intent);
-                        break;
-                    case R.string.posts:
-                        custom_title = UIUtils.getMenuItemName(R.string.posts, mInstituteSettings);
-                        intent = new Intent(getActivity(), PostsListActivity.class);
-                        intent.putExtra("userAuthenticated", isUserAuthenticated);
-                        intent.putExtra("title", custom_title);
-                        startActivity(intent);
-                        break;
-                    case R.string.forum:
-                        String label = instituteSettings.getForumLabel();
-                        label = label != null ? label : "Discussion";
-                        launchDiscussionActivity(label);
-                        break;
-                    case R.string.analytics:
-                        checkAuthenticatedUser(R.string.analytics);
-                        break;
-                    case R.string.profile:
-                        intent = new Intent(getActivity(), ProfileDetailsActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.string.share:
-                        shareApp();
-                        break;
-                    case R.string.rate_us:
-                        rateApp();
-                        break;
-                    case R.string.logout:
-                        ((MainActivity) getActivity()).logout();
-                        break;
-                    case R.string.login:
-                        intent = new Intent(getActivity(), LoginActivity.class);
-                        intent.putExtra(Constants.DEEP_LINK_TO, "home");
-                        startActivity(intent);
-                        break;
-                    case R.string.login_activity:
-                        intent = new Intent(getActivity(), UserDevicesActivity.class);
-                        startActivity(intent);
-                        break;
+                int itemId = (int) id;
+
+                if (itemId == R.string.about_us) {
+                    intent = new Intent(getActivity(), AboutUsActivity.class);
+                    startActivity(intent);
+                } else if (itemId == R.string.my_exams) {
+                    checkAuthenticatedUser(R.string.my_exams);
+                } else if (itemId == R.string.bookmarks) {
+                    checkAuthenticatedUser(R.string.bookmarks);
+                } else if (itemId == R.string.store) {
+                    checkAuthenticatedUser(R.string.store);
+                } else if (itemId == R.string.documents) {
+                    custom_title = UIUtils.getMenuItemName(R.string.documents, mInstituteSettings);
+                    intent = new Intent(getActivity(), DocumentsListActivity.class);
+                    intent.putExtra("title", custom_title);
+                    startActivity(intent);
+                } else if (itemId == R.string.orders) {
+                    intent = new Intent(getActivity(), OrdersListActivity.class);
+                    startActivity(intent);
+                } else if (itemId == R.string.rss_posts) {
+                    intent = new Intent(getActivity(), DrupalRssListActivity.class);
+                    intent.putExtra(RSS_FEED_URL, "https://www.wired.com/feed/");
+                    startActivity(intent);
+                } else if (itemId == R.string.posts) {
+                    custom_title = UIUtils.getMenuItemName(R.string.posts, mInstituteSettings);
+                    intent = new Intent(getActivity(), PostsListActivity.class);
+                    intent.putExtra("userAuthenticated", isUserAuthenticated);
+                    intent.putExtra("title", custom_title);
+                    startActivity(intent);
+                } else if (itemId == R.string.forum) {
+                    String label = instituteSettings.getForumLabel();
+                    label = label != null ? label : "Discussion";
+                    launchDiscussionActivity(label);
+                } else if (itemId == R.string.analytics) {
+                    checkAuthenticatedUser(R.string.analytics);
+                } else if (itemId == R.string.profile) {
+                    intent = new Intent(getActivity(), ProfileDetailsActivity.class);
+                    startActivity(intent);
+                } else if (itemId == R.string.share) {
+                    shareApp();
+                } else if (itemId == R.string.rate_us) {
+                    rateApp();
+                } else if (itemId == R.string.logout) {
+                    ((MainActivity) getActivity()).logout();
+                } else if (itemId == R.string.login) {
+                    intent = new Intent(getActivity(), LoginActivity.class);
+                    intent.putExtra(Constants.DEEP_LINK_TO, "home");
+                    startActivity(intent);
+                } else if (itemId == R.string.login_activity) {
+                    intent = new Intent(getActivity(), UserDevicesActivity.class);
+                    startActivity(intent);
                 }
             }
         });
@@ -263,23 +247,19 @@ public class MainMenuFragment extends Fragment {
         //noinspection ConstantConditions
         TestpressSession session = TestpressSdk.getTestpressSession(getActivity());
         assert session != null;
-        switch (clickedMenuTitleResId) {
-            case R.string.my_exams:
-                TestpressExam.showCategories(getActivity(), true, session);
-                break;
-            case R.string.bookmarks:
-                TestpressCourse.showBookmarks(getActivity(), session);
-                break;
-            case R.string.analytics:
-                TestpressExam.showAnalytics(getActivity(), SUBJECT_ANALYTICS_PATH, session);
-                break;
-            case R.string.store:
-                String title = UIUtils.getMenuItemName(R.string.store, mInstituteSettings);
-                Intent intent = new Intent();
-                intent.putExtra("title", title);
-                getActivity().setIntent(intent);
-                TestpressStore.show(getActivity(), session);
-                break;
+
+        if (clickedMenuTitleResId == R.string.my_exams) {
+            TestpressExam.showCategories(getActivity(), true, session);
+        } else if (clickedMenuTitleResId == R.string.bookmarks) {
+            TestpressCourse.showBookmarks(getActivity(), session);
+        } else if (clickedMenuTitleResId == R.string.analytics) {
+            TestpressExam.showAnalytics(getActivity(), SUBJECT_ANALYTICS_PATH, session);
+        } else if (clickedMenuTitleResId == R.string.store) {
+            String title = UIUtils.getMenuItemName(R.string.store, mInstituteSettings);
+            Intent intent = new Intent();
+            intent.putExtra("title", title);
+            getActivity().setIntent(intent);
+            TestpressStore.show(getActivity(), session);
         }
     }
 
@@ -396,7 +376,7 @@ public class MainMenuFragment extends Fragment {
         }
 
         public StarredCategoryAdapter(Context context, List<Category> items) {
-            context.getTheme().resolveAttribute(R.attr.selectableItemBackground, mTypedValue, true);
+            context.getTheme().resolveAttribute(androidx.appcompat.R.attr.selectableItemBackground, mTypedValue, true);
             mBackground = mTypedValue.resourceId;
             mValues = items;
         }

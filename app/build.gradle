@@ -133,21 +133,17 @@ try {
 
 android {
 
-    compileSdkVersion 34
-    buildToolsVersion '30.0.3'
+    compileSdkVersion 35
+    buildToolsVersion '34.0.0'
     ndkVersion "23.2.8568313"
     namespace 'in.testpress.testpress'
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
 
     dataBinding {
         enabled = true
     }
 
     buildFeatures {
+        buildConfig true
         viewBinding true
         compose true
     }
@@ -157,12 +153,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
     def enableSplitApk = project.hasProperty('enableSplitApk') && project.property('enableSplitApk') == 'true'
@@ -177,7 +173,7 @@ android {
 
     defaultConfig {
         minSdkVersion 23
-        targetSdkVersion 34
+        targetSdkVersion 35
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         versionName json.version

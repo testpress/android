@@ -171,6 +171,16 @@
     <string name="close_drawer">Close Navigation Drawer</string>
     <string name="privacy_policy_dialogue">By signing in you acknowledge our  </string>
     <string name="privacy_policy"><a href='#'> Privacy Policy</a></string>
+    <string name="testpress_please_login">Please login to see this exams</string>
+    <string name="testpress_authentication_failed">Authentication failed</string>
+    <string name="testpress_error_loading_contents">Loading contents failed</string>
+    <string name="testpress_some_thing_went_wrong_try_again">Some thing went wrong, please try again later.</string>
+    <string name="testpress_leaderboard">Leaderboard</string>
+    <string name="testpress_no_internet_connection">No internet connection</string>
+    <string name="testpress_network_error">Network Error</string>
+    <string name="testpress_no_internet_try_again">Please check your internet connection &amp; try again.</string>
+    <string name="testpress_error_loading_courses">Loading courses failed</string>
+    <string name="testpress_update">Update</string>
 
     <string name="terms_and_conditions">Terms And Conditions</string>
 

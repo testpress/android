@@ -434,7 +434,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
             if (mInstituteSettings.getCoursesEnableGamification()) {
                 //noinspection ConstantConditions
-                addMenuItem(R.string.testpress_leaderboard, R.drawable.leaderboard,
+                addMenuItem(R.string.leaderboard, R.drawable.leaderboard,
                         TestpressCourse.getLeaderboardFragment(this, TestpressSdk.getTestpressSession(this)));
             }
             if (mInstituteSettings.getIsVideoDownloadEnabled()) {

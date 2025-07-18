@@ -720,10 +720,10 @@ public class PostActivity extends TestpressFragmentActivity implements
     void handleExceptionOnSendComment(Exception exception) {
         progressDialog.dismiss();
         if (exception.getCause() instanceof IOException) {
-            Snackbar.make(activityRootLayout, R.string.testpress_no_internet_connection,
+            Snackbar.make(activityRootLayout, R.string.no_internet_connection,
                     Snackbar.LENGTH_SHORT).show();
         } else {
-            Snackbar.make(activityRootLayout, R.string.testpress_network_error,
+            Snackbar.make(activityRootLayout, R.string.network_error,
                     Snackbar.LENGTH_SHORT).show();
         }
     }

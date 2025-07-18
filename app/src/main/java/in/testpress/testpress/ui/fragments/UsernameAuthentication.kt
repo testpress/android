@@ -219,7 +219,7 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
                             UIUtils.showAlert(requireContext(),getString(R.string.invalid_username_or_password))
                         }
                     } else {
-                        UIUtils.showAlert(requireContext(),getString(R.string.testpress_some_thing_went_wrong_try_again))
+                        UIUtils.showAlert(requireContext(),getString(R.string.something_went_wrong_please_try_after))
                     }
                 }
             })

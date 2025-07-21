@@ -152,12 +152,11 @@ public abstract class ItemListFragment<E> extends Fragment
         if (!isUsable()) {
             return false;
         }
-        if (id.refresh == item.getItemId()){
+        if (item.getItemId() == id.refresh) {
             refreshWithProgress();
             return true;
-        } else {
-            return super.onOptionsItemSelected(item);
         }
+        return super.onOptionsItemSelected(item);
     }
 
     /**

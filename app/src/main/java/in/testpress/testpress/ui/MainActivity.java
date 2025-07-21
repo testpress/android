@@ -283,6 +283,7 @@ public class MainActivity extends TestpressFragmentActivity {
             if (mInstituteSettings != null){
                 menu.findItem(R.id.student_report).setVisible(mInstituteSettings.isStudentReportEnabled());
             }
+            menu.findItem(R.id.proctored_exam).setVisible(true);
         }
     }
 

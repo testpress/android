@@ -180,6 +180,7 @@ public class MainMenuFragment extends Fragment {
     }
 
     private void initializeMenuActions(boolean isUserAuthenticated) {
+        menuActions.clear();
         menuActions.put(R.string.about_us, () -> {
             Intent intent = new Intent(getActivity(), AboutUsActivity.class);
             startActivity(intent);

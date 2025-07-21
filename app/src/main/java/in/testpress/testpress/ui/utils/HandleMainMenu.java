@@ -49,7 +49,7 @@ public class HandleMainMenu {
     private InstituteSettings instituteSettings;
     Account[] account;
     boolean isUserAuthenticated;
-    private final HashMap<Integer,Runnable> menuActions =new HashMap<>();
+    private final HashMap<Integer, Runnable> menuActions = new HashMap<>();
 
     public HandleMainMenu(Activity activity, TestpressServiceProvider serviceProvider) {
         this.activity = activity;
@@ -72,8 +72,8 @@ public class HandleMainMenu {
         menuActions.put(R.id.share, this::shareApp);
         menuActions.put(R.id.rate_us, this::rateApp);
         menuActions.put(R.id.privacy_policy, this::openPrivacyPolicy);
-        menuActions.put(R.id.logout, () -> { ((MainActivity) activity).logout(); });
-        menuActions.put(R.id.bookmarks, () -> { checkAuthenticationAndOpen(R.string.bookmarks); });
+        menuActions.put(R.id.logout, () -> ((MainActivity) activity).logout());
+        menuActions.put(R.id.bookmarks, () -> checkAuthenticationAndOpen(R.string.bookmarks));
         menuActions.put(R.id.posts, () -> {
             String custom_title = UIUtils.getMenuItemName(R.string.posts, instituteSettings);
             Intent intent = new Intent(activity, PostsListActivity.class);
@@ -81,7 +81,7 @@ public class HandleMainMenu {
             intent.putExtra("title", custom_title);
             activity.startActivity(intent);
         });
-        menuActions.put(R.id.analytics, () -> { checkAuthenticationAndOpen(R.string.analytics); });
+        menuActions.put(R.id.analytics, () -> checkAuthenticationAndOpen(R.string.analytics));
         menuActions.put(R.id.login_activity, () -> {
             Intent intent = new Intent(activity, UserDevicesActivity.class);
             activity.startActivity(intent);
@@ -106,24 +106,12 @@ public class HandleMainMenu {
             activity.startActivity(intent);
         });
         menuActions.put(R.id.student_report, this::launchStudentReportActivity);
-        menuActions.put(R.id.recorded_lessons, () -> {
-            openCakingExternalURL("Recorded Lessons","/external_site/?endpoint=recorded_lectures");
-        });
-        menuActions.put(R.id.mocks, () -> {
-            openCakingExternalURL("Mocks","/external_site/?endpoint=mocks");
-        });
-        menuActions.put(R.id.e_books, () -> {
-            openCakingExternalURL("E-Books","/external_site/?endpoint=e-books");
-        });
-        menuActions.put(R.id.live_lectures_cat, () -> {
-            openCakingExternalURL("CAT","/external_site/?endpoint=cat/40-days-challenge");
-        });
-        menuActions.put(R.id.live_lectures_non_cat, () -> {
-            openCakingExternalURL("NON-CAT","/external_site/?endpoint=noncat/non-cat-40-days-challenge");
-        });
-        menuActions.put(R.id.live_lectures_gd_watpi, () -> {
-            openCakingExternalURL("GD WATPI","/external_site/?endpoint=gdwatpi/todays-classes");
-        });
+        menuActions.put(R.id.recorded_lessons, () -> openCakingExternalURL("Recorded Lessons", "/external_site/?endpoint=recorded_lectures"));
+        menuActions.put(R.id.mocks, () -> openCakingExternalURL("Mocks", "/external_site/?endpoint=mocks"));
+        menuActions.put(R.id.e_books, () -> openCakingExternalURL("E-Books", "/external_site/?endpoint=e-books"));
+        menuActions.put(R.id.live_lectures_cat, () -> openCakingExternalURL("CAT", "/external_site/?endpoint=cat/40-days-challenge"));
+        menuActions.put(R.id.live_lectures_non_cat, () -> openCakingExternalURL("NON-CAT", "/external_site/?endpoint=noncat/non-cat-40-days-challenge"));
+        menuActions.put(R.id.live_lectures_gd_watpi, () -> openCakingExternalURL("GD WATPI", "/external_site/?endpoint=gdwatpi/todays-classes"));
     }
 
     public void handleMenuOptionClick(int itemId) {
@@ -162,18 +150,21 @@ public class HandleMainMenu {
     void showSDK(int clickedMenuTitleResId) {
         TestpressSession session = TestpressSdk.getTestpressSession(activity);
         assert session != null;
-        if (R.string.my_exams == clickedMenuTitleResId){
-            TestpressExam.showCategories(activity, true, session);
-        } else if (R.string.bookmarks == clickedMenuTitleResId) {
-            TestpressCourse.showBookmarks(activity, session);
-        } else if (R.string.analytics== clickedMenuTitleResId) {
-            TestpressExam.showAnalytics(activity, SUBJECT_ANALYTICS_PATH, session);
-        } else if (R.string.store == clickedMenuTitleResId) {
+        HashMap<Integer, Runnable> sdkActions = new HashMap<>();
+        sdkActions.put(R.string.my_exams, () -> TestpressExam.showCategories(activity, true, session));
+        sdkActions.put(R.string.bookmarks, () -> TestpressCourse.showBookmarks(activity, session));
+        sdkActions.put(R.string.analytics, () -> TestpressExam.showAnalytics(activity, SUBJECT_ANALYTICS_PATH, session));
+        sdkActions.put(R.string.store, () -> {
             String title = UIUtils.getMenuItemName(R.string.store, instituteSettings);
             Intent intent = new Intent();
             intent.putExtra("title", title);
             activity.setIntent(intent);
             TestpressStore.show(activity, session);
+        });
+
+        Runnable action = sdkActions.get(clickedMenuTitleResId);
+        if (action != null) {
+            action.run();
         }
     }
 

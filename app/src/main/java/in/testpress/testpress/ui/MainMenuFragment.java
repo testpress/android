@@ -394,7 +394,7 @@ public class MainMenuFragment extends Fragment {
         }
 
         public StarredCategoryAdapter(Context context, List<Category> items) {
-            context.getTheme().resolveAttribute(R.attr.selectableItemBackground, mTypedValue, true);
+            context.getTheme().resolveAttribute(androidx.appcompat.R.attr.selectableItemBackground, mTypedValue, true);
             mBackground = mTypedValue.resourceId;
             mValues = items;
         }

@@ -126,6 +126,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     Button editProfileButton;
     static final private int SELECT_IMAGE = 100;
     public String ssoUrl;
+    private final HashMap<Integer, Runnable> menuActions = new HashMap<>();
 
 
     @Override
@@ -169,6 +170,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         fetchSsoLink();
         initializeDeleteAccountButton();
         initializeEditProfileButton();
+        setupMenuActions();
     }
 
     private void bindViews() {
@@ -250,6 +252,15 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
                 }
             }
         });
+    }
+
+    private void setupMenuActions() {
+        menuActions.put(R.id.refresh, () -> {
+            progressBar.setVisibility(View.VISIBLE);
+            getSupportLoaderManager().restartLoader(0, null, this);
+        });
+        menuActions.put(R.id.tick, this::saveDetails);
+        menuActions.put(R.id.cancel, () -> displayProfileDetails(profileDetails));
     }
 
     @Override
@@ -654,14 +665,6 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         if (item.getItemId() == android.R.id.home) {
             return super.onOptionsItemSelected(item);
         }
-
-        HashMap<Integer, Runnable> menuActions = new HashMap<>();
-        menuActions.put(R.id.refresh, () -> {
-            progressBar.setVisibility(View.VISIBLE);
-            getSupportLoaderManager().restartLoader(0, null, this);
-        });
-        menuActions.put(R.id.tick, this::saveDetails);
-        menuActions.put(R.id.cancel, () -> displayProfileDetails(profileDetails));
 
         Runnable action = menuActions.get(item.getItemId());
         if (action != null) {

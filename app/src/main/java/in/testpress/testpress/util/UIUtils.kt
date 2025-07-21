@@ -3,8 +3,8 @@ package `in`.testpress.testpress.util
 import `in`.testpress.testpress.R
 import `in`.testpress.testpress.models.InstituteSettings
 
-fun getMenuItemName(titleResId: Int, instituteSettings: InstituteSettings): String {
-    return when (titleResId) {
+fun getMenuItemName(titleResId: Int, instituteSettings: InstituteSettings): String =
+    when (titleResId) {
         R.string.dashboard -> Strings.toString(instituteSettings.dashboardLabel)
         R.string.leaderboard -> Strings.toString(instituteSettings.leaderboardLabel)
         R.string.bookmarks -> Strings.toString(instituteSettings.bookmarksLabel)
@@ -17,4 +17,3 @@ fun getMenuItemName(titleResId: Int, instituteSettings: InstituteSettings): Stri
         R.string.discussions -> Strings.toString(instituteSettings.forumLabel)
         else -> ""
     }
-}

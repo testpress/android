@@ -47,6 +47,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -650,21 +651,24 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                return super.onOptionsItemSelected(item);
-            case R.id.refresh:
-                progressBar.setVisibility(View.VISIBLE);
-                getSupportLoaderManager().restartLoader(0, null, this);
-                return true;
-            case R.id.tick:
-                saveDetails();
-                return true;
-            case R.id.cancel:
-                displayProfileDetails(profileDetails);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == android.R.id.home) {
+            return super.onOptionsItemSelected(item);
+        }
+
+        HashMap<Integer, Runnable> menuActions = new HashMap<>();
+        menuActions.put(R.id.refresh, () -> {
+            progressBar.setVisibility(View.VISIBLE);
+            getSupportLoaderManager().restartLoader(0, null, this);
+        });
+        menuActions.put(R.id.tick, this::saveDetails);
+        menuActions.put(R.id.cancel, () -> displayProfileDetails(profileDetails));
+
+        Runnable action = menuActions.get(item.getItemId());
+        if (action != null) {
+            action.run();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
 

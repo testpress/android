@@ -152,12 +152,11 @@ public abstract class ItemListFragment<E> extends Fragment
         if (!isUsable()) {
             return false;
         }
-        switch (item.getItemId()) {
-            case id.refresh:
-                refreshWithProgress();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (id.refresh == item.getItemId()){
+            refreshWithProgress();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
 

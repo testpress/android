@@ -78,6 +78,8 @@ public class MainMenuFragment extends Fragment {
 
     private InstituteSettings mInstituteSettings;
     private final HashMap<Integer, Runnable> menuActions = new HashMap<>();
+    private final Map<Integer, Runnable> sdkActions = new HashMap<>();
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -169,6 +171,7 @@ public class MainMenuFragment extends Fragment {
             }
         });
         initializeMenuActions(isUserAuthenticated);
+        initializeSdkActions();
     }
 
     private void bindViews(View view) {
@@ -230,6 +233,22 @@ public class MainMenuFragment extends Fragment {
         });
     }
 
+    private void initializeSdkActions() {
+        TestpressSession session = TestpressSdk.getTestpressSession(getActivity());
+        assert session != null;
+        sdkActions.clear();
+        sdkActions.put(R.string.my_exams, () -> TestpressExam.showCategories(getActivity(), true, session));
+        sdkActions.put(R.string.bookmarks, () -> TestpressCourse.showBookmarks(getActivity(), session));
+        sdkActions.put(R.string.analytics, () -> TestpressExam.showAnalytics(getActivity(), SUBJECT_ANALYTICS_PATH, session));
+        sdkActions.put(R.string.store, () -> {
+            String title = UIUtils.getMenuItemName(R.string.store, mInstituteSettings);
+            Intent intent = new Intent();
+            intent.putExtra("title", title);
+            getActivity().setIntent(intent);
+            TestpressStore.show(getActivity(), session);
+        });
+    }
+
     void checkAuthenticatedUser(final int clickedMenuTitleResId) {
         if (!CommonUtils.isUserAuthenticated(getActivity())) {
             serviceProvider.logout(getActivity(), testpressService,
@@ -255,21 +274,6 @@ public class MainMenuFragment extends Fragment {
     }
 
     void showSDK(int clickedMenuTitleResId) {
-        //noinspection ConstantConditions
-        TestpressSession session = TestpressSdk.getTestpressSession(getActivity());
-        assert session != null;
-        HashMap<Integer, Runnable> sdkActions = new HashMap<>();
-        sdkActions.put(R.string.my_exams, () -> TestpressExam.showCategories(getActivity(), true, session));
-        sdkActions.put(R.string.bookmarks, () -> TestpressCourse.showBookmarks(getActivity(), session));
-        sdkActions.put(R.string.analytics, () -> TestpressExam.showAnalytics(getActivity(), SUBJECT_ANALYTICS_PATH, session));
-        sdkActions.put(R.string.store, () -> {
-            String title = UIUtils.getMenuItemName(R.string.store, mInstituteSettings);
-            Intent intent = new Intent();
-            intent.putExtra("title", title);
-            getActivity().setIntent(intent);
-            TestpressStore.show(getActivity(), session);
-        });
-
         Runnable action = sdkActions.get(clickedMenuTitleResId);
         if (action != null) {
             action.run();

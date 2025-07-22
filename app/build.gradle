@@ -135,8 +135,8 @@ try {
 android {
 
     compileSdkVersion 34
-    buildToolsVersion '30.0.3'
-    ndkVersion "23.2.8568313"
+    buildToolsVersion '34.0.0'
+    ndkVersion "25.1.8937393"
     namespace 'in.testpress.testpress'
 
     dataBinding {
@@ -144,6 +144,7 @@ android {
     }
 
     buildFeatures {
+        buildConfig true
         viewBinding true
         compose true
     }

@@ -19,6 +19,7 @@ import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import in.testpress.testpress.util.ActivityLifecycleCallbacksKt;
 import in.testpress.testpress.util.ApplicationKt;
 import in.testpress.testpress.util.NotificationHelper;
 
@@ -62,6 +63,7 @@ public class TestpressApplication extends Application {
         daoSession = daoMaster.newSession();
         NotificationHelper.createChannels(this);
         ApplicationKt.syncDownloads(this);
+        registerActivityLifecycleCallbacks(ActivityLifecycleCallbacksKt.getActivityLifecycleCallbacks());
     }
 
     public static AppComponent getAppComponent() {

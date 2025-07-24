@@ -7,7 +7,7 @@ import `in`.testpress.util.applySystemBarColors
 
 val activityLifecycleCallbacks = object : Application.ActivityLifecycleCallbacks {
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        activity.applySystemBarColors(activity.window.decorView.rootView)
+        activity.applySystemBarColors(activity.window.decorView)
     }
 
     override fun onActivityStarted(activity: Activity) {}

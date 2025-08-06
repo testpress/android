@@ -189,14 +189,14 @@ public class MainActivity extends TestpressFragmentActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (!isProductPurchaseSuccessful(requestCode, resultCode)) return;
-        int targetIndex = mInstituteSettings.getDashboardEnabled() ? 1 : 0;
         try {
-            onItemSelected(targetIndex);
-            if (mMenuItemFragments != null && targetIndex < mMenuItemFragments.size()) {
-                Fragment fragment = mMenuItemFragments.get(targetIndex);
+            for (int i = 0; i < mMenuItemFragments.size(); i++) {
+                Fragment fragment = mMenuItemFragments.get(i);
                 if (fragment instanceof MyCoursesFragment) {
+                    onItemSelected(i);
                     ((MyCoursesFragment) fragment).clearItemsAndRefresh();
                     viewPager.setCurrentItem(mSelectedItem);
+                    break;
                 }
             }
         } catch (Exception e) {

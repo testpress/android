@@ -188,9 +188,20 @@ public class MainActivity extends TestpressFragmentActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (isProductPurchaseSuccessful(requestCode, resultCode)) {
-            courseListFragment.onActivityResult(requestCode, resultCode, data);
-         }
+        if (!isProductPurchaseSuccessful(requestCode, resultCode)) return;
+        int targetIndex = mInstituteSettings.getDashboardEnabled() ? 1 : 0;
+        try {
+            onItemSelected(targetIndex);
+            if (mMenuItemFragments != null && targetIndex < mMenuItemFragments.size()) {
+                Fragment fragment = mMenuItemFragments.get(targetIndex);
+                if (fragment instanceof MyCoursesFragment) {
+                    ((MyCoursesFragment) fragment).clearItemsAndRefresh();
+                    viewPager.setCurrentItem(mSelectedItem);
+                }
+            }
+        } catch (Exception e) {
+            Log.e("onActivityResult", "Unexpected error during purchase result handling", e);
+        }
     }
 
     private boolean isProductPurchaseSuccessful(int requestCode, int resultCode){

@@ -128,6 +128,7 @@ public class MainActivity extends TestpressFragmentActivity {
     private boolean isInitScreenCalledOnce;
     private CourseListFragment courseListFragment;
     int touchCountToEnableScreenShot = 0;
+    private boolean isCheckingForceUserData = false;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -702,6 +703,12 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     public void checkForForceUserData() {
+        // Prevent multiple simultaneous calls
+        if (isCheckingForceUserData) {
+            return;
+        }
+        isCheckingForceUserData = true;
+        
         new SafeAsyncTask<CheckPermission>() {
             @Override
             public CheckPermission call() throws Exception {
@@ -710,6 +717,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
             @Override
             protected void onException(final Exception exception) throws RuntimeException {
+                isCheckingForceUserData = false;
                 hideMainActivityContents();
 
                 if (exception.getCause() instanceof IOException) {
@@ -730,6 +738,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
             @Override
             protected void onSuccess(final CheckPermission checkPermission) {
+                isCheckingForceUserData = false;
                 progressBarLayout.setVisibility(View.GONE);
 
                 if (!checkPermission.getIsDataCollected()) {

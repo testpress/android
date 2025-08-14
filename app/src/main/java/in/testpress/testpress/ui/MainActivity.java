@@ -722,7 +722,7 @@ public class MainActivity extends TestpressFragmentActivity {
                         @Override
                         public void onClick(View v) {
                             emptyView.setVisibility(View.GONE);
-                            fetchInstituteSettings();
+                            checkForForceUserData();
                         }
                     });
                 }

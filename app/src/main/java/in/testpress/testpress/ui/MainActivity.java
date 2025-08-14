@@ -710,22 +710,22 @@ public class MainActivity extends TestpressFragmentActivity {
 
             @Override
             protected void onException(final Exception exception) throws RuntimeException {
-                hideMainActivityContents();
-
                 if (exception.getCause() instanceof IOException) {
-                    setEmptyText(R.string.network_error, R.string.no_internet_try_again,
-                            R.drawable.ic_error_outline_black_18dp);
+                    // If it's an internet error, do nothing here.
+                    // Raising the error would prevent the user from accessing the app
+                    // if "enforce data" mode is enabled.
                 } else {
+                    hideMainActivityContents();
                     setEmptyText(R.string.network_error, R.string.try_after_sometime,
                             R.drawable.ic_error_outline_black_18dp);
+                    retryButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            emptyView.setVisibility(View.GONE);
+                            checkForForceUserData();
+                        }
+                    });
                 }
-                retryButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        emptyView.setVisibility(View.GONE);
-                        fetchInstituteSettings();
-                    }
-                });
             }
 
             @Override

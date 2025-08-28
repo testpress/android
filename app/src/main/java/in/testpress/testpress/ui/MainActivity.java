@@ -126,6 +126,7 @@ public class MainActivity extends TestpressFragmentActivity {
     private boolean isUserAuthenticated;
     public String ssoUrl;
     private boolean isInitScreenCalledOnce;
+    private static boolean isEnforceFormShown = false;
     private CourseListFragment courseListFragment;
     int touchCountToEnableScreenShot = 0;
 
@@ -689,6 +690,8 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     public void openEnforceDataActivity(){
+        if (isEnforceFormShown) return;
+        isEnforceFormShown = true;
         this.startActivity(
                 EnforceDataActivity.Companion.createIntent(
                         this,
@@ -821,5 +824,11 @@ public class MainActivity extends TestpressFragmentActivity {
         if (Boolean.TRUE.equals(mInstituteSettings.getSalesforceSdkEnabled())) {
             SalesforceSdkInitializer.notificationPermissionGranted();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MainActivity.isEnforceFormShown = false;
     }
 }

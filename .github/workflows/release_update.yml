@@ -35,6 +35,8 @@ jobs:
           if echo "$SPECIAL_SUBDOMAINS" | grep -w "$SUBDOMAIN" > /dev/null; then
             if [ "$BRANCH_NAME" != "$SUBDOMAIN" ]; then
               echo "Error: For subdomain '$SUBDOMAIN', workflow must run on branch '$SUBDOMAIN'. Current branch is '$BRANCH_NAME'."
+              echo "This is because the '$SUBDOMAIN' institute has a customized UI maintained in a separate branch named '$SUBDOMAIN'."
+              echo "Please merge the latest changes from 'master' into the '$SUBDOMAIN' branch and run this release update from that branch."
               exit 1
             fi
           else

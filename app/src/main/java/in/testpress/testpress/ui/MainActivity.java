@@ -829,6 +829,8 @@ public class MainActivity extends TestpressFragmentActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        MainActivity.isEnforceFormShown = false;
+        if (isFinishing()) {
+            MainActivity.isEnforceFormShown = false;
+        }
     }
 }

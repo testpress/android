@@ -127,6 +127,7 @@ public class MainActivity extends TestpressFragmentActivity {
     public String ssoUrl;
     private boolean isInitScreenCalledOnce;
     private static boolean isEnforceFormShown = false;
+    private static final int REQUEST_ENFORCE_FORM = 1001;
     private CourseListFragment courseListFragment;
     int touchCountToEnableScreenShot = 0;
 
@@ -189,6 +190,16 @@ public class MainActivity extends TestpressFragmentActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_ENFORCE_FORM) {
+            isEnforceFormShown = false;
+
+            if (mInstituteSettings != null && mInstituteSettings.getForceStudentData()) {
+                checkForForceUserData();
+            }
+            return;
+        }
+
         if (!isProductPurchaseSuccessful(requestCode, resultCode)) return;
         try {
             for (int i = 0; i < mMenuItemFragments.size(); i++) {
@@ -692,16 +703,15 @@ public class MainActivity extends TestpressFragmentActivity {
     public void openEnforceDataActivity(){
         if (isEnforceFormShown) return;
         isEnforceFormShown = true;
-        this.startActivity(
-                EnforceDataActivity.Companion.createIntent(
-                        this,
-                        "Mandatory Update",
-                        WHITE_LABELED_HOST_URL + "/settings/force/mobile/",
-                        true,
-                        false,
-                        EnforceDataActivity.class
-                )
+        Intent intent = EnforceDataActivity.Companion.createIntent(
+            this,
+            "Mandatory Update",
+            WHITE_LABELED_HOST_URL + "/settings/force/mobile/",
+            true,
+            false,
+            EnforceDataActivity.class
         );
+        startActivityForResult(intent, REQUEST_ENFORCE_FORM);
     }
 
     public void checkForForceUserData() {

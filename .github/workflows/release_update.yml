@@ -25,6 +25,22 @@ jobs:
       API_ACCESS_KEY: ${{ secrets.API_ACCESS_KEY }}
 
     steps:
+      - name: Validate branch based on subdomain
+        run: |
+          echo "Current branch: $GITHUB_REF"
+          SUBDOMAIN="${{ github.event.inputs.subdomain }}"
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+          # Define the special subdomains
+          SPECIAL_SUBDOMAINS="brilliantpalalms brilliantpalaelearn race"
+          if echo "$SPECIAL_SUBDOMAINS" | grep -w "$SUBDOMAIN" > /dev/null; then
+            if [ "$BRANCH_NAME" != "$SUBDOMAIN" ]; then
+              echo "Error: For subdomain '$SUBDOMAIN', workflow must run on branch '$SUBDOMAIN'. Current branch is '$BRANCH_NAME'."
+              exit 1
+            fi
+          else
+            echo "Subdomain '$SUBDOMAIN' can run on any branch. Current branch is '$BRANCH_NAME'."
+          fi
+
       - name: Validate subdomain
         if: ${{ github.event.inputs.subdomain }} != 'all'
         run: |

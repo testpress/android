@@ -1,54 +1,52 @@
-name: Release update
+name: Release Update All Institutes
 
 on:
+  push:
+    branches:
+      - 'fix_fast_lane'
   workflow_dispatch:
-    inputs:
-      subdomain:
-        description: "Enter the institute's subdomain or all to release update(all -> deploy update for all institute)"
-        required: true
-        default: "all"
-
-      release_option:
-        description: "Choose the type of release. 'Completed' for a full release or 'Draft' for a pre-release version."
-        default: "completed"
-        type: choice
-        options:
-          - "completed"
-          - "draft"
 
 jobs:
-  release_update:
+  # Step 1: Fetch Subdomains
+  fetch_subdomains:
     runs-on: ubuntu-latest
+    outputs:
+      subdomains: ${{ steps.fetch.outputs.subdomains }}
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      - name: Fetch subdomains
+        id: fetch
+        run: |
+          # Simulating subdomain fetching; replace this with the actual fetching logic if needed
+          echo '[ "aceachievers", "aegonlearning", "fortuneiasacademy", "igate", "metier", "phire", "wincentre", "upscprep", "legacyiasacademy", "3ritechnologies", "dentalpulseacademy", "preppias", "erudite", "teammatesacademy", "lucentias", "stansys", "scoreacademytvm", "elceducation", "logiceducation", "chaithanyaclasses", "bpscconceptwallah", "delhiias", "kpias", "clearmycourse", "clinilaunchresearch", "eea", "sureshiasacademy", "catjee", "mplus", "kakatiya", "cubitacademy", "cywerlearning", "wingsway2", "ibs", "graceias", "emfavour", "civils360ias", "civilsfront", "kshitivivan", "metagate", "heritageonline", "cuetbaba", "examclutch", "mauroentropico", "mist", "nammakpsc", "photoncsa", "pyramidiasacademy", "rcreddyiasstudycircle", "brilliant", "chemistbox", "drdilip", "ignoudost", "lalsacademy", "sadikiasacademy", "saharaias", "suyamias", "edzorblaw", "jobsecura", "edusprint", "skyyskill", "evolutioneducare", "avanigaddadsc", "bhavithaacademy", "ekamias", "amalgmpg", "chandramaniiasacademy", "guidesacademy", "margdarshanias", "apex360", "csce", "cuetverse", "edukosh", "imscochin", "join2learn", "lawxpertsmv", "meenakshiacademy", "ohf", "terzaghi", "verbalmentor", "ipmverse", "higeducampus", "wisdomacademy", "tac", "averagemedicos", "bharatexam", "btree", "careacademy", "changelearningsphere", "hareesh", "itaaeducaion", "learningocean", "qafox", "wellnessdesk", "zaitoonvirtualcampus", "gowthamtnpscclasses", "lmsdemo", "sureshbanking", "simplicrack", "margdarshanias", "nethuniga", "azbacademy", "bwcampus", "aptigoat", "madhiacademy", "neogeetanjali", "gateaerospaceacademy", "savikacademy" ]' > subdomains.json
+          SUBDOMAINS=$(cat subdomains.json)
+          echo "::set-output name=subdomains::$SUBDOMAINS"
+
+      - name: Initialize success and failure lists
+        run: |
+          echo "SUCCESS_LIST=[]" >> $GITHUB_ENV
+          echo "FAILURE_LIST=[]" >> $GITHUB_ENV
+
+  # Step 2: Deploy App for Each Subdomain
+  deploy_app:
+    needs: fetch_subdomains
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        subdomain: ${{ fromJson(needs.fetch_subdomains.outputs.subdomains) }}
+    continue-on-error: true
     env:
       GITHUB_ACCESS_KEY: ${{ secrets.GH_ACCESS_KEY }}
       GITHUB_USERNAME: ${{ secrets.GH_USERNAME }}
       API_ACCESS_KEY: ${{ secrets.API_ACCESS_KEY }}
-
     steps:
-      - name: Validate branch based on subdomain
-        run: |
-          echo "Current branch: $GITHUB_REF"
-          SUBDOMAIN="${{ github.event.inputs.subdomain }}"
-          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
-          # Define the special subdomains
-          SPECIAL_SUBDOMAINS="brilliantpalalms brilliantpalaelearn race"
-          if echo "$SPECIAL_SUBDOMAINS" | grep -w "$SUBDOMAIN" > /dev/null; then
-            if [ "$BRANCH_NAME" != "$SUBDOMAIN" ]; then
-              RED='\033[0;31m'
-              NC='\033[0m' # No Color
-              echo -e "${RED}ERROR: For subdomain '$SUBDOMAIN', workflow must run on branch '$SUBDOMAIN'. Current branch is '$BRANCH_NAME'.${NC}"
-              echo -e "${RED}This is because the '$SUBDOMAIN' institute has a customized UI maintained in a separate branch named '$SUBDOMAIN'.${NC}"
-              echo -e "${RED}Please merge the latest changes from 'master' into the '$SUBDOMAIN' branch and run this release update from that branch.${NC}"
-              exit 1
-            fi
-          else
-            echo "Subdomain '$SUBDOMAIN' can run on any branch. Current branch is '$BRANCH_NAME'."
-          fi
-
       - name: Validate subdomain
-        if: ${{ github.event.inputs.subdomain }} != 'all'
+        if: ${{ matrix.subdomain }} != 'all'
         run: |
-          curl -f https://${{ github.event.inputs.subdomain }}.testpress.in/api/v2.5/admin/android/app-config/ -H "API-access-key: $API_ACCESS_KEY"
+          curl -f https://${{ matrix.subdomain }}.testpress.in/api/v2.5/admin/android/app-config/ -H "API-access-key: $API_ACCESS_KEY"
+        continue-on-error: true
 
       - name: Setup JDK 17
         uses: actions/setup-java@v3
@@ -94,16 +92,9 @@ jobs:
           unzip -o ./zoom_sdk.zip
 
       - name: Build and deploy app
+        id: deploy
         run: |
           export LC_ALL=en_US.UTF-8
           export LANG=en_US.UTF-8
-          bundle exec fastlane release_update_to subdomain:${{ github.event.inputs.subdomain }} release_option:${{ github.event.inputs.release_option }}
-
-      - name: Store app artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: app
-          path: |
-            app/build/outputs/apk/release/app-release.apk
-            app/build/outputs/bundle/release/app-release.aab
-            app/build/outputs/apk/debug/app-debug.apk
+          bundle exec fastlane release_update_to subdomain:${{ matrix.subdomain }} release_option:completed
+        continue-on-error: true

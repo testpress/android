@@ -143,7 +143,8 @@ public class TestpressServiceProvider {
                         .setShowOfflineExamEndingAlert(true)
                         .setDisableStoreInApp(instituteSettings.getDisableStoreInApp())
                         .setVideoWatermarkType(instituteSettings.getVideoWatermarkType())
-                        .setVideoWatermarkPosition(instituteSettings.getVideoWatermarkPosition());
+                        .setVideoWatermarkPosition(instituteSettings.getVideoWatermarkPosition())
+                        .setUseNewDiscountFeat(instituteSettings.getUseNewDiscountFeat());
                 appLink = instituteSettings.getAppShareLink();
             }
             settings.setAppShareText(SHARE_MESSAGE + activity.getString(R.string.get_it_at) + appLink);

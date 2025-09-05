@@ -35,6 +35,9 @@
     <string name="try_after_sometime">Please try after sometime</string>
     <string name="something_went_wrong_please_try_after">Something went wrong, please try after sometime</string>
     <string name="edit_profile_error">Right now edit profile is unavailable. Try again later.</string>
+    <string name="max_login_limit_exceeded_error">Your account has been locked as it has exceeded maximum devices it can be used.</string>
+    <string name="account_unlock_info">Your account will automatically get unlocked within </string>
+    <string name="error_loading_courses">Loading courses failed</string>
 
     <!-- AuthenticatorActivity -->
     <string name="label_username">Username</string>
@@ -120,8 +123,10 @@
     <string name="dashboard">Dashboard</string>
     <string name="home">Home</string>
     <string name="bookmarks">Bookmarks</string>
+    <string name="leaderboard">Leaderboard</string>
     <string name="about_us">About Us</string>
     <string name="student_report">Student Report</string>
+    <string name="update">Update</string>
 
     <string name="view_in_website">View in Website</string>
 

@@ -10,8 +10,6 @@
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -28,6 +26,20 @@
 
     <!-- Permissions added by Google Play Services SDK that are not needed, so they are being removed -->
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>
+
+    <!-- Devices running Android 9 (API level 28) or lower -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
+
+    <!-- Devices running Android 12L (API level 32) or lower -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+
+    <!-- Devices running Android 13 (API level 33) or higher -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+
+    <!-- To handle the reselection within the app on devices running Android 14
+         or higher if your app targets Android 14 (API level 34) or higher. -->
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
 
     <application
         android:name=".TestpressApplication"
@@ -115,20 +127,6 @@
             android:configChanges="orientation|keyboardHidden|screenSize" />
 
         <activity
-            android:name=".ui.ForumActivity"
-            android:theme="@style/AppTheme"
-            android:label="Article"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
-
-        <activity
-            android:name=".ui.CreateForumActivity"
-            android:label="Create Forum Post"
-            android:theme="@style/AppTheme"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
-
-        <activity
             android:name=".authenticator.RegisterActivity"
             android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -155,18 +153,6 @@
             android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Articles" />
-
-        <activity
-            android:name=".ui.DisscussionActivity"
-            android:theme="@style/AppTheme"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="Discussions" />
-
-        <activity
-            android:name=".ui.DisscussionActivity"
-            android:theme="@style/AppTheme"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="Discussions" />
 
         <activity
             android:name=".ui.OrdersListActivity"
@@ -241,7 +227,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"/>
 
         <activity android:name=".ui.EnforceDataActivity"
-            android:theme="@style/AppTheme"
+            android:theme="@style/TestpressWebViewTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"/>
 
     </application>

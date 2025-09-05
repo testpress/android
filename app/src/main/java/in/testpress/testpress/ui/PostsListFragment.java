@@ -33,11 +33,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
 import de.greenrobot.dao.query.LazyList;
-import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -51,7 +47,6 @@ import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.util.CommonUtils;
-import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 
 public class PostsListFragment extends Fragment implements
@@ -63,16 +58,13 @@ public class PostsListFragment extends Fragment implements
     protected TestpressServiceProvider serviceProvider;
     @Inject
     protected LogoutService logoutService;
-    @InjectView(android.R.id.list)
     ListView listView;
-    @InjectView(R.id.sticky)
     TextView mStickyView;
-    @InjectView(R.id.swipe_container)
     SwipeRefreshLayout swipeLayout;
-    @InjectView(R.id.empty_container) LinearLayout emptyView;
-    @InjectView(R.id.empty_title) TextView emptyTitleView;
-    @InjectView(R.id.empty_description) TextView emptyDescView;
-    @InjectView(R.id.retry_button) Button retryButton;
+    LinearLayout emptyView;
+    TextView emptyTitleView;
+    TextView emptyDescView;
+    Button retryButton;
     HeaderFooterListAdapter<PostsListAdapter> adapter;
     PostsPager refreshPager;
     PostsPager pager;
@@ -116,7 +108,7 @@ public class PostsListFragment extends Fragment implements
         categoryDao = daoSession.getCategoryDao();
         //Enable options. This will trigger onCreateOptionsMenu
         setHasOptionsMenu(true);
-        Injector.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
         mTopLevelSpinnerAdapter = new ExploreSpinnerAdapter(getActivity().getLayoutInflater(),
                 getActivity().getResources(), true);
         mTopLevelSpinnerAdapter.addItem("", getString(R.string.all_posts), false, 0);
@@ -132,7 +124,6 @@ public class PostsListFragment extends Fragment implements
 
         Spinner spinner = (Spinner) mSpinnerContainer.findViewById(R.id.actionbar_spinner);
         spinner.setAdapter(mTopLevelSpinnerAdapter);
-        Ln.e("Getting actiobar toolbar");
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> spinner, View view, int position, long
@@ -162,18 +153,30 @@ public class PostsListFragment extends Fragment implements
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.swipe_refresh_list, null);
-        ButterKnife.inject(this, view);
-        return view;
+        return inflater.inflate(R.layout.swipe_refresh_list, null);
     }
 
     @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        bindViews(view);
         adapter = new HeaderFooterListAdapter<PostsListAdapter>(listView, new PostsListAdapter
                 (getActivity(), R.layout.post_list_item));
         listView.setAdapter(adapter);
         loadingLayout = LayoutInflater.from(getActivity()).inflate(R.layout.loading_layout, null);
+    }
+
+    private void bindViews(View view) {
+        listView = view.findViewById(android.R.id.list);
+        mStickyView = view.findViewById(R.id.sticky);
+        swipeLayout = view.findViewById(R.id.swipe_container);
+        emptyView = view.findViewById(R.id.empty_container);
+        emptyTitleView = view.findViewById(R.id.empty_title);
+        emptyDescView = view.findViewById(R.id.empty_description);
+        retryButton = view.findViewById(R.id.retry_button);
+
+        retryButton.setOnClickListener(v-> refreshWithProgress());
+        mStickyView.setOnClickListener(v -> displayNewPosts());
     }
 
     @Override
@@ -233,7 +236,6 @@ public class PostsListFragment extends Fragment implements
             }
 
             protected void onSuccess(final List<Category> categories) throws Exception {
-                Ln.e("On success");
                 categoryDao.insertOrReplaceInTx(categories);
                 for (final Category category : categories) {
                     mTopLevelSpinnerAdapter.addItem("" + category.getId(), category.getName(), true,
@@ -248,7 +250,6 @@ public class PostsListFragment extends Fragment implements
                 }
 
                 if (!categories.isEmpty()) {
-                    Ln.e("Setting visible");
                     mSpinnerContainer.setVisibility(View.VISIBLE);
                     Toolbar toolbar;
                     if (getActivity() instanceof MainActivity) {
@@ -352,7 +353,6 @@ public class PostsListFragment extends Fragment implements
     void onRefreshLoadFinished(List<Post> items) {
         //If no data is available in the local database, directly insert
         //display from database
-        Ln.e(swipeLayout.isRefreshing());
         postDao.deleteAll();
         categoryDao.deleteAll();
         if ((postDao.count() == 0) || items == null || items.isEmpty()) {
@@ -384,7 +384,6 @@ public class PostsListFragment extends Fragment implements
             if (refreshPager == null) {
                 return;
             }
-            Ln.d(MISSED_POSTS_THRESHOLD >= refreshPager.getTotalCount());
             if (MISSED_POSTS_THRESHOLD >= refreshPager.getTotalCount()) {
                 if (refreshPager.hasNext()) {
                     refreshPager.clearQueryParams();
@@ -422,7 +421,6 @@ public class PostsListFragment extends Fragment implements
 
     //This just notifies the adapter that new data is now available in db
     void displayDataFromDB() {
-        Ln.d("Adapter notifyDataSetChanged displayDataFromDB");
         adapter.notifyDataSetChanged();
 
         if (postDao.count() == 0 || (pager != null && !pager.hasMore() && adapter.getCount() == 0)) {
@@ -477,7 +475,6 @@ public class PostsListFragment extends Fragment implements
         if (listView != null && (postDao.count() != 0) && !isScrollingUp &&
                 (listView.getLastVisiblePosition() + 3) >= adapter.getWrappedAdapter().getCount()) {
 
-            Ln.d("Onscroll showing more");
 
             if (pager == null) {
                 if (listView.getVisibility() != View.VISIBLE) {
@@ -527,13 +524,10 @@ public class PostsListFragment extends Fragment implements
         });
     }
 
-    @OnClick(R.id.sticky)
-    public void displayNewPosts() {
-        Ln.d("Sticky Clicked");
+    private void displayNewPosts() {
         mStickyView.setVisibility(View.GONE);
         //Remove the swipe refresh icon if present
         swipeLayout.setRefreshing(false);
-        Ln.d(MISSED_POSTS_THRESHOLD < refreshPager.getTotalCount());
         if (MISSED_POSTS_THRESHOLD < refreshPager.getTotalCount()) {
             clearDB();
             onRefresh();
@@ -552,12 +546,11 @@ public class PostsListFragment extends Fragment implements
             if (post.getRawCategory() != null) {
                 categories.add(post.getRawCategory());
             } else {
-                Ln.e("Post category for " + post.getTitle() + " is null");
+
             }
         }
         categoryDao.insertOrReplaceInTx(categories);
         postDao.insertOrReplaceInTx(posts);
-        LogAllPosts();
     }
 
     protected int getErrorMessage(Exception exception) {
@@ -582,14 +575,7 @@ public class PostsListFragment extends Fragment implements
         super.onStop();
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.reset(this);
-    }
-
-    @OnClick(R.id.retry_button)
-    protected void refreshWithProgress() {
+    private void refreshWithProgress() {
         emptyView.setVisibility(View.GONE);
         swipeLayout.post(new Runnable() {
             @Override
@@ -628,26 +614,15 @@ public class PostsListFragment extends Fragment implements
     }
 
     void clearDB() {
-        Ln.d("ClearDB");
         postDao.deleteAll();
         refreshPager.removeQueryParams("since");
         pager = null;
         displayDataFromDB();
     }
 
-    void LogAllPosts() {
-        if (postDao.count() > 0) {
-            List<Post> dbPosts = postDao.queryBuilder().orderDesc(PostDao.Properties.Published)
-                    .listLazy();
-            for (Post p : dbPosts)
-                Ln.d(p.getTitle() + " " + p.getPublishedDate() + "\n");
-        }
-    }
-
     @Override
     public void setUserVisibleHint(final boolean visible) {
         super.setUserVisibleHint(visible);
-        Ln.e("setUserVisibleHunt");
         if (visible && getActivity() != null) {
             Toolbar toolbar;
             if (getActivity() instanceof MainActivity) {

@@ -1,7 +1,7 @@
 desc "Build customized app for an institute"
 lane :build_app_files do |params|
   app_config = get_app_config(subdomain: params[:subdomain])
-  generate_customized_app_files(app_config: app_config)
+  generate_customized_app_files(app_config: app_config, split_apk: params[:split_apk])
 end
 
 lane :release_update_to do |params|
@@ -34,10 +34,11 @@ end
 desc "Generate Customized app for an institute"
 lane :generate_customized_app_files do |params|
   config = params[:app_config]
+  split_apk = params[:split_apk]
   replace_images(app_config: config)
   replace_google_services_json(google_services_json: config["google_services_json"].to_json)
   modify_config_json_file(config_json: config.to_json)
-  generate_app_file(keystore_file_path: config["keystore_file"], keystore_password: config["keystore_password"], key_alias: config["key_alias"], key_password: config["key_password"])
+  generate_app_file(keystore_file_path: config["keystore_file"], keystore_password: config["keystore_password"], key_alias: config["key_alias"], key_password: config["key_password"], split_apk: split_apk)
 end
 
 desc "Replace images"
@@ -64,14 +65,16 @@ desc "Generate Android App Bundle"
 lane :generate_app_file do |signing_config|
   download_file(url: signing_config[:keystore_file_path], destination_path: './app/keystore.jks')
   gradle(
-  tasks: ["bundleRelease", "assembleRelease", "assembleDebug"],
-  print_command: false,
-  properties: {
-    "android.injected.signing.store.file" => "%s/app/keystore.jks"%File.expand_path("..", Dir.pwd),
-    "android.injected.signing.store.password" => signing_config[:keystore_password],
-    "android.injected.signing.key.alias" => signing_config[:key_alias],
-    "android.injected.signing.key.password" => signing_config[:key_password],
-  })
+    tasks: ["bundleRelease", "assembleRelease", "assembleDebug"],
+    print_command: false,
+    properties: {
+      "android.injected.signing.store.file" => "%s/app/keystore.jks"%File.expand_path("..", Dir.pwd),
+      "android.injected.signing.store.password" => signing_config[:keystore_password],
+      "android.injected.signing.key.alias" => signing_config[:key_alias],
+      "android.injected.signing.key.password" => signing_config[:key_password],
+      "enableSplitApk" => signing_config[:split_apk].to_s
+    }
+  )
 end
 
 desc "Deploying the app to play store"

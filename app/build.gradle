@@ -68,7 +68,7 @@ dependencies {
     implementation "com.hbb20:ccp:2.7.0"
     implementation 'io.michaelrocks:libphonenumber-android:8.12.57'
 
-    implementation 'io.sentry:sentry-android:6.4.2'
+    implementation 'io.sentry:sentry-android:8.0.0'
     implementation 'org.slf4j:slf4j-nop:1.7.25'
 
 

@@ -39,6 +39,10 @@ module Fastlane
                     temp_app_name = app_config_json[key]
                     # Replace single quotes with escaped single quotes
                     config_json[key] = temp_app_name.gsub("\'", "\\\\'")
+                elsif key == "share_message"
+                    temp_share_message = app_config_json[key]
+                    # Replace single quotes with escaped single quotes for XML compatibility
+                    config_json[key] = temp_share_message.gsub("\'", "\\\\'")
                 else
                     config_json[key] = app_config_json[key]
                 end

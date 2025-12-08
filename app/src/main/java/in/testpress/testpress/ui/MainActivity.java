@@ -1,5 +1,8 @@
 package in.testpress.testpress.ui;
 import in.testpress.RequestCode;
+import in.testpress.course.fragments.OfflineDownloadsTabsFragment;
+import in.testpress.course.repository.OfflineAttachmentsRepository;
+import in.testpress.course.services.OfflineAttachmentDownloadManager;
 import in.testpress.course.ui.AvailableCourseListFragment;
 import in.testpress.course.ui.CourseListFragment;
 
@@ -50,8 +53,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
 import in.testpress.course.TestpressCourse;
 import in.testpress.course.fragments.DownloadsFragment;
@@ -59,9 +60,9 @@ import in.testpress.course.repository.VideoWatchDataRepository;
 import in.testpress.course.ui.MyCoursesFragment;
 import in.testpress.database.OfflineVideoDao;
 import in.testpress.database.TestpressDatabase;
+import in.testpress.database.dao.OfflineAttachmentsDao;
 import in.testpress.exam.ui.view.NonSwipeableViewPager;
 import in.testpress.testpress.BuildConfig;
-import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -72,10 +73,8 @@ import in.testpress.testpress.models.CheckPermission;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
-import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.models.Update;
 import in.testpress.testpress.ui.fragments.DashboardFragment;
-import in.testpress.testpress.ui.fragments.DiscussionFragmentv2;
 import in.testpress.testpress.ui.utils.HandleMainMenu;
 import in.testpress.testpress.util.AppChecker;
 import in.testpress.testpress.util.CommonUtils;
@@ -85,7 +84,6 @@ import in.testpress.testpress.util.SalesforceSdkInitializer;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.testpress.util.UpdateAppDialogManager;
-import in.testpress.ui.fragments.DiscussionFragment;
 import io.sentry.android.core.SentryAndroid;
 
 import static in.testpress.testpress.BuildConfig.ALLOW_ANONYMOUS_USER;
@@ -105,20 +103,17 @@ public class MainActivity extends TestpressFragmentActivity {
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected TestpressService testpressService;
     @Inject protected LogoutService logoutService;
-    @InjectView(R.id.empty_container) LinearLayout emptyView;
-    @InjectView(R.id.empty_title) TextView emptyTitleView;
-    @InjectView(R.id.empty_description) TextView emptyDescView;
-    @InjectView(R.id.retry_button) Button retryButton;
+    private LinearLayout emptyView;
+    private TextView emptyTitleView;
+    private TextView emptyDescView;
+    private Button retryButton;
 
-    @InjectView(R.id.coordinator_layout) CoordinatorLayout coordinatorLayout;
-    @InjectView(R.id.progressbar) RelativeLayout progressBarLayout;
-    @InjectView(R.id.viewpager)
-    NonSwipeableViewPager viewPager;
-    @InjectView(R.id.grid) GridView grid;
-    @InjectView(R.id.drawer_layout)
-    DrawerLayout drawer;
-    @InjectView(R.id.navigation_view)
-    NavigationView navigationView;
+    private CoordinatorLayout coordinatorLayout;
+    private RelativeLayout progressBarLayout;
+    private NonSwipeableViewPager viewPager;
+    private GridView grid;
+    private DrawerLayout drawer;
+    private NavigationView navigationView;
 
     private ActionBarDrawerToggle drawerToggle;
     private int mSelectedItem;
@@ -136,10 +131,10 @@ public class MainActivity extends TestpressFragmentActivity {
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        Injector.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-        ButterKnife.inject(this);
+        bindViews();
 
         if (savedInstanceState != null) {
             mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM);
@@ -159,7 +154,23 @@ public class MainActivity extends TestpressFragmentActivity {
             checkUpdate();
         }
         setupEasterEgg();
+        initOfflineAttachmentDownloadManager();
     }
+
+    private void bindViews() {
+        emptyView = findViewById(R.id.empty_container);
+        emptyTitleView = findViewById(R.id.empty_title);
+        emptyDescView = findViewById(R.id.empty_description);
+        retryButton = findViewById(R.id.retry_button);
+
+        coordinatorLayout = findViewById(R.id.coordinator_layout);
+        progressBarLayout = findViewById(R.id.progressbar);
+        viewPager = findViewById(R.id.viewpager);
+        grid = findViewById(R.id.grid);
+        drawer = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.navigation_view);
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -177,9 +188,20 @@ public class MainActivity extends TestpressFragmentActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (isProductPurchaseSuccessful(requestCode, resultCode)) {
-            courseListFragment.onActivityResult(requestCode, resultCode, data);
-         }
+        if (!isProductPurchaseSuccessful(requestCode, resultCode)) return;
+        try {
+            for (int i = 0; i < mMenuItemFragments.size(); i++) {
+                Fragment fragment = mMenuItemFragments.get(i);
+                if (fragment instanceof MyCoursesFragment) {
+                    onItemSelected(i);
+                    ((MyCoursesFragment) fragment).clearItemsAndRefresh();
+                    viewPager.setCurrentItem(mSelectedItem);
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            Log.e("onActivityResult", "Unexpected error during purchase result handling", e);
+        }
     }
 
     private boolean isProductPurchaseSuccessful(int requestCode, int resultCode){
@@ -222,6 +244,13 @@ public class MainActivity extends TestpressFragmentActivity {
             }
         });
         versionInfo.setActionView(button);
+    }
+
+    private void initOfflineAttachmentDownloadManager() {
+        OfflineAttachmentsDao offlineAttachmentDao = TestpressDatabase.Companion.invoke(this).offlineAttachmentDao();
+        OfflineAttachmentsRepository offlineAttachmentsRepository =new OfflineAttachmentsRepository(offlineAttachmentDao);
+        OfflineAttachmentDownloadManager.Companion.init(offlineAttachmentsRepository);
+        OfflineAttachmentDownloadManager.Companion.getInstance().restartDownloadProgressTracking(this);
     }
 
     private void setUpNavigationDrawer() {
@@ -414,12 +443,12 @@ public class MainActivity extends TestpressFragmentActivity {
 
             if (mInstituteSettings.getCoursesEnableGamification()) {
                 //noinspection ConstantConditions
-                addMenuItem(R.string.testpress_leaderboard, R.drawable.leaderboard,
+                addMenuItem(R.string.leaderboard, R.drawable.leaderboard,
                         TestpressCourse.getLeaderboardFragment(this, TestpressSdk.getTestpressSession(this)));
             }
             if (mInstituteSettings.getIsVideoDownloadEnabled()) {
-                DownloadsFragment downloadsFragment = new DownloadsFragment();
-                addMenuItem(R.string.downloads, R.drawable.ic_downloads, downloadsFragment);
+                OfflineDownloadsTabsFragment offlineDownloadsTabsFragment = new OfflineDownloadsTabsFragment();
+                addMenuItem(R.string.downloads, R.drawable.ic_downloads, offlineDownloadsTabsFragment);
             }
         } else {
             grid.setVisibility(View.GONE);
@@ -679,22 +708,22 @@ public class MainActivity extends TestpressFragmentActivity {
 
             @Override
             protected void onException(final Exception exception) throws RuntimeException {
-                hideMainActivityContents();
-
                 if (exception.getCause() instanceof IOException) {
-                    setEmptyText(R.string.network_error, R.string.no_internet_try_again,
-                            R.drawable.ic_error_outline_black_18dp);
+                    // If it's an internet error, do nothing here.
+                    // Raising the error would prevent the user from accessing the app
+                    // if "enforce data" mode is enabled.
                 } else {
+                    hideMainActivityContents();
                     setEmptyText(R.string.network_error, R.string.try_after_sometime,
                             R.drawable.ic_error_outline_black_18dp);
+                    retryButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            emptyView.setVisibility(View.GONE);
+                            checkForForceUserData();
+                        }
+                    });
                 }
-                retryButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        emptyView.setVisibility(View.GONE);
-                        fetchInstituteSettings();
-                    }
-                });
             }
 
             @Override
@@ -726,21 +755,17 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     private void askNotificationAndStoragePermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             requestPermissions(new String[]{
-                    Manifest.permission.POST_NOTIFICATIONS,
-                    Manifest.permission.READ_MEDIA_IMAGES,
-                    Manifest.permission.READ_MEDIA_VIDEO,
-                    Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
+                    Manifest.permission.POST_NOTIFICATIONS
             }, RequestCode.PERMISSION);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             requestPermissions(new String[]{
-                    Manifest.permission.POST_NOTIFICATIONS,
-                    Manifest.permission.READ_MEDIA_IMAGES,
-                    Manifest.permission.READ_MEDIA_VIDEO
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.POST_NOTIFICATIONS
             }, RequestCode.PERMISSION);
         } else {
-            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, RequestCode.PERMISSION);
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, RequestCode.PERMISSION);
 
         }
     }

@@ -10,7 +10,6 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.widget.ImageView;
 
-import in.testpress.testpress.util.Ln;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,14 +59,12 @@ public final class ImageUtils {
             return BitmapFactory.decodeFileDescriptor(file.getFD(), null,
                     options);
         } catch (IOException e) {
-            Ln.d(e, "Could not get cached bitmap.");
             return null;
         } finally {
             if (file != null)
                 try {
                     file.close();
                 } catch (IOException e) {
-                    Ln.d(e, "Could not get cached bitmap.");
                 }
         }
     }
@@ -88,14 +85,12 @@ public final class ImageUtils {
             BitmapFactory.decodeFileDescriptor(file.getFD(), null, options);
             return new Point(options.outWidth, options.outHeight);
         } catch (final IOException e) {
-            Ln.d(e, "Could not get size.");
             return null;
         } finally {
             if (file != null) {
                 try {
                     file.close();
                 } catch (final IOException e) {
-                    Ln.d(e, "Could not get size.");
                 }
             }
         }

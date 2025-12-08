@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import javax.inject.Inject;
 
-import in.testpress.testpress.Injector;
+import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.TestpressService;
@@ -22,7 +22,7 @@ public class BaseAuthenticatedActivity extends BaseToolBarActivity {
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Injector.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
         if (!CommonUtils.isUserAuthenticated(this)) {
             serviceProvider.logout(this, testpressService, serviceProvider, logoutService);
         }

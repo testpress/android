@@ -5,7 +5,6 @@ import android.app.Instrumentation;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import androidx.annotation.NonNull;
-import androidx.multidex.MultiDex;
 
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -19,12 +18,15 @@ import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import in.testpress.testpress.util.ActivityLifecycleCallbacksKt;
+import in.testpress.testpress.util.ApplicationKt;
 import in.testpress.testpress.util.NotificationHelper;
 
 public class TestpressApplication extends Application {
     private static TestpressApplication instance;
     public static DaoSession daoSession;
     private static SQLiteDatabase database;
+    private static AppComponent appComponent;
 
     /**
      * Create main application
@@ -49,12 +51,22 @@ public class TestpressApplication extends Application {
         instance = this;
 
         // Perform injection
-        Injector.init(getRootModule(), this);
+        appComponent = DaggerAppComponent.builder()
+                .androidModule(new AndroidModule())
+                .testpressModule(new TestpressModule())
+                .build();
+
         initImageLoader(getApplicationContext());
         SQLiteDatabase db = getDatabase(this);
         DaoMaster daoMaster = new DaoMaster(db);
         daoSession = daoMaster.newSession();
         NotificationHelper.createChannels(this);
+        ApplicationKt.syncDownloads(this);
+        registerActivityLifecycleCallbacks(ActivityLifecycleCallbacksKt.getActivityLifecycleCallbacks());
+    }
+
+    public static AppComponent getAppComponent() {
+        return appComponent;
     }
 
     public static SQLiteDatabase getDatabase(@NonNull Context context) {
@@ -94,11 +106,6 @@ public class TestpressApplication extends Application {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        MultiDex.install(this);
-    }
-
-    private Object getRootModule() {
-        return new RootModule();
     }
     /**
      * Create main application

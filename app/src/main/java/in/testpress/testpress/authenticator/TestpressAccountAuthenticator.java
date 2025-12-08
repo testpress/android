@@ -9,8 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import in.testpress.testpress.util.Ln;
-
 import static android.accounts.AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE;
 import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
 import static android.accounts.AccountManager.KEY_ACCOUNT_TYPE;
@@ -34,7 +32,6 @@ public class TestpressAccountAuthenticator extends AbstractAccountAuthenticator 
     public Bundle getAuthToken(final AccountAuthenticatorResponse response,
                                final Account account, final String authTokenType,
                                final Bundle options) throws NetworkErrorException {
-        Ln.d("Attempting to get authToken");
 
         final String authToken = AccountManager.get(context).peekAuthToken(account, authTokenType);
 

@@ -78,7 +78,30 @@ public class UIUtils {
     }
 
     public static String getMenuItemName(int titleResId, InstituteSettings instituteSettings) {
-        return UIUtilsKt.getMenuItemName(titleResId, instituteSettings);
+        switch (titleResId) {
+            case R.string.dashboard:
+                return Strings.toString(instituteSettings.getDashboardLabel());
+            case R.string.testpress_leaderboard:
+                return Strings.toString(instituteSettings.getLeaderboardLabel());
+            case R.string.bookmarks:
+                return Strings.toString(instituteSettings.getBookmarksLabel());
+            case R.string.documents:
+                return Strings.toString(instituteSettings.getDocumentsLabel());
+            case R.string.store:
+                return Strings.toString(instituteSettings.getStoreLabel());
+            case R.string.posts:
+                return Strings.toString(instituteSettings.getPostsLabel());
+            case R.string.learn:
+                return Strings.toString(instituteSettings.getLearnLabel());
+            case R.string.label_username:
+                return Strings.toString(instituteSettings.getLoginLabel());
+            case R.string.label_password:
+                return Strings.toString(instituteSettings.getLoginPasswordLabel());
+            case R.string.discussions:
+                return Strings.toString(instituteSettings.getForumLabel());
+            default:
+                return "";
+        }
     }
 
     public static Typeface getLatoSemiBoldFont(@NonNull Context context) {

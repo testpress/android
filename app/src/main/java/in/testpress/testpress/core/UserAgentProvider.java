@@ -5,6 +5,7 @@ import android.content.pm.PackageInfo;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 
+import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.Strings;
 
 import java.lang.reflect.Method;
@@ -39,23 +40,10 @@ public class UserAgentProvider implements Provider<String> {
 
     private static final String APP_NAME = "testpress";
 
-    protected ApplicationInfo appInfo;
-    protected PackageInfo info;
-    protected TelephonyManager telephonyManager;
-    protected ClassLoader classLoader;
-
-    @Inject
-    public UserAgentProvider(
-            ApplicationInfo appInfo,
-            PackageInfo info,
-            TelephonyManager telephonyManager,
-            ClassLoader classLoader
-    ) {
-        this.appInfo = appInfo;
-        this.info = info;
-        this.telephonyManager = telephonyManager;
-        this.classLoader = classLoader;
-    }
+    @Inject protected ApplicationInfo appInfo;
+    @Inject protected PackageInfo info;
+    @Inject protected TelephonyManager telephonyManager;
+    @Inject protected ClassLoader classLoader;
 
     protected String userAgent;
 

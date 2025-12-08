@@ -7,14 +7,7 @@ on:
         description: "Which subdomain you want to build the android app"
         required: true
         default: "sandbox"
-      split_apk:
-        description: "Build split APKs by ABI?"
-        required: false
-        default: "false"
-        type: choice
-        options:
-          - "false"
-          - "true"
+
 
 jobs:
   build_app:
@@ -76,13 +69,13 @@ jobs:
         run: |
           export LC_ALL=en_US.UTF-8
           export LANG=en_US.UTF-8
-          bundle exec fastlane build_app_files subdomain:${{ github.event.inputs.subdomain }} split_apk:${{ github.event.inputs.split_apk }}
+          bundle exec fastlane build_app_files subdomain:${{ github.event.inputs.subdomain }}
 
       - name: Store app artifacts
         uses: actions/upload-artifact@v4
         with:
           name: app
           path: |
-            app/build/outputs/apk/release/*.apk
+            app/build/outputs/apk/release/app-release.apk
             app/build/outputs/bundle/release/app-release.aab
             app/build/outputs/apk/debug/app-debug.apk

@@ -2,7 +2,7 @@ package `in`.testpress.testpress.ui.fragments
 
 import `in`.testpress.core.TestpressSdk
 import `in`.testpress.enums.Status
-import `in`.testpress.testpress.TestpressApplication
+import `in`.testpress.testpress.Injector
 import `in`.testpress.testpress.core.TestpressService
 import `in`.testpress.testpress.databinding.OtpVerificationLayoutBinding
 import `in`.testpress.testpress.models.InstituteSettings
@@ -39,7 +39,7 @@ class OTPVerificationFragment: BaseAuthenticationFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        TestpressApplication.getAppComponent().inject(this)
+        Injector.inject(this)
         initViewModel()
         accountManager = AccountManager.get(requireContext())
         autoFillOTP()

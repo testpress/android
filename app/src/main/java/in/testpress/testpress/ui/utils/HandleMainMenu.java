@@ -42,15 +42,12 @@ import static in.testpress.testpress.core.Constants.Http.URL_PRIVACY_POLICY_FLAG
 import static in.testpress.testpress.core.Constants.Http.URL_PROCTORED_EXAM_FLAG;
 import static in.testpress.testpress.core.Constants.Http.URL_STUDENT_REPORT_FLAG;
 
-import java.util.HashMap;
-
 public class HandleMainMenu {
     private Activity activity;
     private TestpressServiceProvider serviceProvider;
     private InstituteSettings instituteSettings;
     Account[] account;
     boolean isUserAuthenticated;
-    private final HashMap<Integer, Runnable> menuActions = new HashMap<>();
 
     public HandleMainMenu(Activity activity, TestpressServiceProvider serviceProvider) {
         this.activity = activity;
@@ -176,21 +173,23 @@ public class HandleMainMenu {
     void showSDK(int clickedMenuTitleResId) {
         TestpressSession session = TestpressSdk.getTestpressSession(activity);
         assert session != null;
-        HashMap<Integer, Runnable> sdkActions = new HashMap<>();
-        sdkActions.put(R.string.my_exams, () -> TestpressExam.showCategories(activity, true, session));
-        sdkActions.put(R.string.bookmarks, () -> TestpressCourse.showBookmarks(activity, session));
-        sdkActions.put(R.string.analytics, () -> TestpressExam.showAnalytics(activity, SUBJECT_ANALYTICS_PATH, session));
-        sdkActions.put(R.string.store, () -> {
-            String title = UIUtils.getMenuItemName(R.string.store, instituteSettings);
-            Intent intent = new Intent();
-            intent.putExtra("title", title);
-            activity.setIntent(intent);
-            TestpressStore.show(activity, session);
-        });
-
-        Runnable action = sdkActions.get(clickedMenuTitleResId);
-        if (action != null) {
-            action.run();
+        switch (clickedMenuTitleResId) {
+            case R.string.my_exams:
+                TestpressExam.showCategories(activity, true, session);
+                break;
+            case R.string.bookmarks:
+                TestpressCourse.showBookmarks(activity, session);
+                break;
+            case R.string.analytics:
+                TestpressExam.showAnalytics(activity, SUBJECT_ANALYTICS_PATH, session);
+                break;
+            case R.string.store:
+                String title = UIUtils.getMenuItemName(R.string.store, instituteSettings);
+                Intent intent = new Intent();
+                intent.putExtra("title", title);
+                activity.setIntent(intent);
+                TestpressStore.show(activity, session);
+                break;
         }
     }
 

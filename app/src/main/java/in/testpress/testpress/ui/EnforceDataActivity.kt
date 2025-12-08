@@ -11,7 +11,7 @@ import android.webkit.JavascriptInterface
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import `in`.testpress.testpress.TestpressApplication
+import `in`.testpress.testpress.Injector
 import `in`.testpress.testpress.R
 import `in`.testpress.testpress.TestpressServiceProvider
 import `in`.testpress.testpress.authenticator.LogoutService
@@ -31,7 +31,7 @@ class EnforceDataActivity : AbstractWebViewActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        TestpressApplication.getAppComponent().inject(this)
+        Injector.inject(this)
         if(!isPermissionGranted(Manifest.permission.CAMERA)){
             askCameraPermission()
         }

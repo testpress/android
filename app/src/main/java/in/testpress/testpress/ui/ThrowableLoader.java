@@ -3,6 +3,7 @@ package in.testpress.testpress.ui;
 
 import android.content.Context;
 
+import in.testpress.testpress.util.Ln;
 
 
 /**
@@ -34,6 +35,7 @@ public abstract class ThrowableLoader<D> extends AsyncLoader<D> {
         try {
             return loadData();
         } catch (final Exception e) {
+            Ln.d(e, "Exception loading data");
             exception = e;
             return data;
         }

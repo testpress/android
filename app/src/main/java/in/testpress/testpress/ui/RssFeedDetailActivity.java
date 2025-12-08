@@ -19,11 +19,14 @@ import android.widget.TextView;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import in.testpress.core.TestpressSdk;
+import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.core.TestpressService;
-import in.testpress.testpress.databinding.ActivityRssFeedDetailBinding;
 import in.testpress.testpress.models.RssItem;
 import in.testpress.testpress.models.RssItemDao;
 import in.testpress.testpress.util.ShareUtil;
@@ -40,22 +43,20 @@ public class RssFeedDetailActivity extends BaseToolBarActivity {
 
     @Inject protected TestpressService testpressService;
 
-    private WebView content;
-    private TextView title;
-    private TextView date;
-    private Button viewInWebsiteButton;
-    private LinearLayout postDetails;
-    private RelativeLayout progressBar;
-    private ActivityRssFeedDetailBinding binding;
-
+    @InjectView(R.id.content) WebView content;
+    @InjectView(R.id.title) TextView title;
+    @InjectView(R.id.date) TextView date;
+    @InjectView(R.id.view_in_website) Button viewInWebsiteButton;
+    @InjectView(R.id.post_details) LinearLayout postDetails;
+    @InjectView(R.id.pb_loading) RelativeLayout progressBar;
+    @InjectView(android.R.id.content) View activityRootLayout;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityRssFeedDetailBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        TestpressApplication.getAppComponent().inject(this);
-        bindViews();
+        setContentView(R.layout.activity_rss_feed_detail);
+        Injector.inject(this);
+        ButterKnife.inject(this);
         postDetails.setVisibility(View.GONE);
         rssItemDao = TestpressApplication.getDaoSession().getRssItemDao();
         date.setTypeface(TestpressSdk.getRubikRegularFont(this));
@@ -67,17 +68,6 @@ public class RssFeedDetailActivity extends BaseToolBarActivity {
                 .where(RssItemDao.Properties.Link.eq(url)).list().get(0);
 
         displayPost();
-    }
-
-    private void bindViews() {
-        content = binding.content;
-        title = binding.title;
-        date = binding.date;
-        viewInWebsiteButton = binding.viewInWebsite;
-        postDetails = binding.postDetails;
-        progressBar = binding.pbLoading;
-
-        viewInWebsiteButton.setOnClickListener(v -> viewInWebsite());
     }
 
     @Override
@@ -134,7 +124,7 @@ public class RssFeedDetailActivity extends BaseToolBarActivity {
                 "<style>img{display: inline;height: auto;max-width: 100%;}</style>";
     }
 
-    private void viewInWebsite() {
+    @OnClick(R.id.view_in_website) void viewInWebsite() {
         UIUtils.openInBrowser(this, rssItem.getLink());
     }
 

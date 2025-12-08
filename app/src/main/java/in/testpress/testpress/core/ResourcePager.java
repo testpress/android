@@ -11,6 +11,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import in.testpress.testpress.Injector;
 import in.testpress.testpress.TestpressServiceProvider;
 
 

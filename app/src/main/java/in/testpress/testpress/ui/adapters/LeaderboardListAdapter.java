@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -81,6 +82,7 @@ public class LeaderboardListAdapter extends RecyclerView.Adapter<LeaderboardList
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView rank, username, trophies;
+        ImageView differenceImage;
         RoundedImageView userImage;
 
         public MyViewHolder(View itemView) {
@@ -89,6 +91,7 @@ public class LeaderboardListAdapter extends RecyclerView.Adapter<LeaderboardList
             username = (TextView) itemView.findViewById(R.id.username);
             trophies = (TextView) itemView.findViewById(R.id.trophies);
             userImage = (RoundedImageView) itemView.findViewById(R.id.user_image);
+            differenceImage = (ImageView) itemView.findViewById(R.id.difference_image);
             rank.setTypeface(UIUtils.getLatoSemiBoldFont(context));
             username.setTypeface(UIUtils.getLatoSemiBoldFont(context));
             trophies.setTypeface(UIUtils.getLatoSemiBoldFont(context));

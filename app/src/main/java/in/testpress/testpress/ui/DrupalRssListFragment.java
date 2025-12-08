@@ -13,6 +13,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import in.testpress.core.TestpressException;
+import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.core.TestpressService;
@@ -39,7 +40,7 @@ public class DrupalRssListFragment extends BaseListViewFragment<RssItem> {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TestpressApplication.getAppComponent().inject(this);
+        Injector.inject(this);
         rssFeedDao = TestpressApplication.getDaoSession().getRssItemDao();
     }
 
@@ -129,20 +130,20 @@ public class DrupalRssListFragment extends BaseListViewFragment<RssItem> {
     @Override
     protected int getErrorMessage(TestpressException exception) {
         if (exception.isUnauthenticated()) {
-            setEmptyText(R.string.authentication_failed, R.string.please_login,
+            setEmptyText(R.string.testpress_authentication_failed, R.string.testpress_please_login,
                     R.drawable.ic_error_outline_black_18dp);
-            return R.string.authentication_failed;
+            return R.string.testpress_authentication_failed;
         } else if (exception.isNetworkError()) {
             Log.e("sssss", "isNetworkError");
-            setEmptyText(R.string.network_error, R.string.no_internet_try_again,
+            setEmptyText(R.string.testpress_network_error, R.string.testpress_no_internet_try_again,
                     R.drawable.ic_error_outline_black_18dp);
-            return R.string.no_internet_try_again;
+            return R.string.testpress_no_internet_try_again;
         } else {
-            setEmptyText(R.string.error_loading_courses,
-                    R.string.something_went_wrong_please_try_after,
+            setEmptyText(R.string.testpress_error_loading_courses,
+                    R.string.testpress_some_thing_went_wrong_try_again,
                     R.drawable.ic_error_outline_black_18dp);
         }
-        return R.string.something_went_wrong_please_try_after;
+        return R.string.testpress_some_thing_went_wrong_try_again;
     }
 
     @Override

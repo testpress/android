@@ -2,7 +2,7 @@ package `in`.testpress.testpress.ui.fragments
 
 import `in`.testpress.enums.Status
 import `in`.testpress.testpress.BuildConfig
-import `in`.testpress.testpress.TestpressApplication
+import `in`.testpress.testpress.Injector
 import `in`.testpress.testpress.R
 import `in`.testpress.testpress.core.Constants.Http
 import `in`.testpress.testpress.core.TestpressService
@@ -49,7 +49,7 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        TestpressApplication.getAppComponent().inject(this)
+        Injector.inject(this)
         initViewModel()
         showUserMobileNumbers(phonePickIntentResultLauncher)
     }

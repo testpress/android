@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.GravityEnum;
@@ -17,7 +16,10 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import javax.inject.Inject;
 
-import in.testpress.testpress.TestpressApplication;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.ResetPassword;
@@ -27,40 +29,26 @@ import in.testpress.testpress.util.SafeAsyncTask;
 public class ResetPasswordActivity extends FragmentActivity {
 
     @Inject TestpressService testpressService;
-    private EditText email;
-    private TextView emailError;
-    private Button resetButton;
+    @InjectView(R.id.et_useremail) EditText email;
+    @InjectView(R.id.email_error) TextView emailError;
+    @InjectView(R.id.b_reset_password) Button resetButton;
     public int resetErrorMessage;
-    private Button okButton;
-    private LinearLayout formContainer;
-    private LinearLayout successContainer;
+    @InjectView(R.id.success_ok) Button okButton;
+    @InjectView(R.id.form) LinearLayout formContainer;
+    @InjectView(R.id.success_complete) LinearLayout successContainer;
     private final TextWatcher watcher = validationTextWatcher();
-    private RelativeLayout forgotPasswordContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
-        TestpressApplication.getAppComponent().inject(this);
-        bindViews();
+        Injector.inject(this);
+        ButterKnife.inject(this);
         resetErrorMessage = R.string.reset_error_message;
         email.addTextChangedListener(watcher);
-        forgotPasswordContainer = findViewById(R.id.forgot_password_container);
     }
 
-    private void bindViews() {
-        email = findViewById(R.id.et_useremail);
-        emailError = findViewById(R.id.email_error);
-        resetButton = findViewById(R.id.b_reset_password);
-        okButton = findViewById(R.id.success_ok);
-        formContainer = findViewById(R.id.form);
-        successContainer = findViewById(R.id.success_complete);
-
-        resetButton.setOnClickListener(v -> reset());
-        okButton.setOnClickListener(v -> passwordResetDone());
-    }
-
-    private void reset(){
+    @OnClick(R.id.b_reset_password) public void reset(){
         if(validate()) {
             final MaterialDialog progressDialog = new MaterialDialog.Builder(this)
                     .title(R.string.loading)
@@ -93,13 +81,12 @@ public class ResetPasswordActivity extends FragmentActivity {
                     progressDialog.dismiss();
                     formContainer.setVisibility(View.GONE);
                     successContainer.setVisibility(View.VISIBLE);
-                    forgotPasswordContainer.setVisibility(View.GONE);
                 }
             }.execute();
         }
     }
 
-    private void passwordResetDone() {
+    @OnClick(R.id.success_ok) public void passwordResetDone() {
         finish();
     }
 

@@ -3,7 +3,7 @@ package `in`.testpress.testpress.authenticator
 import `in`.testpress.core.TestpressSDKDatabase
 import `in`.testpress.course.services.VideoDownloadService
 import `in`.testpress.database.TestpressDatabase.Companion.invoke
-import `in`.testpress.testpress.TestpressApplication
+import `in`.testpress.testpress.Injector
 import `in`.testpress.testpress.R
 import `in`.testpress.testpress.authenticator.LoginActivity.REQUEST_CODE_REGISTER_USER
 import `in`.testpress.testpress.core.TestpressService
@@ -33,7 +33,7 @@ open class RegisterActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        TestpressApplication.getAppComponent().inject(this)
+        Injector.inject(this)
         setContentView(R.layout.fragment_layout)
         deleteDownloadedVideos(this)
         TestpressSDKDatabase.clearDatabase(this)

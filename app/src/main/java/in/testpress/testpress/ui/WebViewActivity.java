@@ -42,7 +42,7 @@ import java.util.Date;
 import javax.inject.Inject;
 
 import in.testpress.testpress.BuildConfig;
-import in.testpress.testpress.TestpressApplication;
+import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
@@ -119,7 +119,7 @@ public class WebViewActivity extends BaseToolBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TestpressApplication.getAppComponent().inject(this);
+        Injector.inject(this);
         setContentView(R.layout.generic_webview_layout);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

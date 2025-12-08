@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.view.MenuItem;
 
+import in.testpress.testpress.Injector;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -15,6 +16,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -26,6 +28,7 @@ import in.testpress.testpress.events.UnAuthorizedUserErrorEvent;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
+import in.testpress.testpress.util.Ln;
 import in.testpress.ui.UserDevicesActivity;
 
 import static in.testpress.testpress.BuildConfig.BASE_URL;
@@ -48,7 +51,7 @@ public class TestpressFragmentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TestpressApplication.getAppComponent().inject(this);
+        Injector.inject(this);
 
         // Directly subscribing in parent class won't work, only child class subscribers will work. https://github.com/square/otto/issues/26
         busEventListener = new Object() {
@@ -64,6 +67,7 @@ public class TestpressFragmentActivity extends AppCompatActivity {
                 try {
                     serviceProvider.logout(TestpressFragmentActivity.this, testpressService, serviceProvider, logoutService);
                 } catch (Exception e) {
+                    Ln.e("Exception : " + e.getLocalizedMessage());
 //                    Sentry.capture(e);
                 }
             }
@@ -88,6 +92,7 @@ public class TestpressFragmentActivity extends AppCompatActivity {
     public void setContentView(final int layoutResId) {
         super.setContentView(layoutResId);
 
+        ButterKnife.inject(this);
         Toolbar toolbar = getActionBarToolbar();
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -174,6 +179,7 @@ public class TestpressFragmentActivity extends AppCompatActivity {
             try {
                 in.testpress.util.UIUtils.showAlert(TestpressFragmentActivity.this, "Account Locked", message);
             } catch (Exception e) {
+                Ln.e("Exception : " + e.getLocalizedMessage());
 //                Sentry.capture(e);
             }
         }

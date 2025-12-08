@@ -6,7 +6,7 @@ import `in`.testpress.core.TestpressSdk
 import `in`.testpress.core.TestpressSession
 import `in`.testpress.enums.Status
 import `in`.testpress.testpress.BuildConfig
-import `in`.testpress.testpress.TestpressApplication
+import `in`.testpress.testpress.Injector
 import `in`.testpress.testpress.R
 import `in`.testpress.testpress.core.Constants
 import `in`.testpress.testpress.core.TestpressService
@@ -62,7 +62,7 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        TestpressApplication.getAppComponent().inject(this)
+        Injector.inject(this)
         setContentView(R.layout.container_layout_without_toolbar)
         loadingDialog = LoadingDialog(this)
         accountManager = AccountManager.get(this)
@@ -222,7 +222,7 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
                                 UIUtils.showAlert(this@LoginActivityV2,getString(R.string.invalid_username_or_password))
                             }
                         } else {
-                            UIUtils.showAlert(this@LoginActivityV2,getString(R.string.something_went_wrong_please_try_after))
+                            UIUtils.showAlert(this@LoginActivityV2,getString(R.string.testpress_some_thing_went_wrong_try_again))
                         }
                     }
                 })

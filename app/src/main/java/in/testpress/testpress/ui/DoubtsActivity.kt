@@ -4,7 +4,7 @@ import `in`.testpress.core.TestpressException
 import `in`.testpress.fragments.EmptyViewFragment
 import `in`.testpress.fragments.EmptyViewListener
 import `in`.testpress.testpress.BuildConfig
-import `in`.testpress.testpress.TestpressApplication
+import `in`.testpress.testpress.Injector
 import `in`.testpress.testpress.R
 import `in`.testpress.testpress.TestpressServiceProvider
 import `in`.testpress.testpress.databinding.ContainerLayoutBinding
@@ -24,7 +24,7 @@ class DoubtsActivity: TestpressFragmentActivity(), EmptyViewListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        TestpressApplication.getAppComponent().inject(this)
+        Injector.inject(this)
         binding = ContainerLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
         fetchSsoLink()

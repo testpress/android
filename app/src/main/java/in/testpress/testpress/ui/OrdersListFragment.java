@@ -14,7 +14,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import in.testpress.testpress.TestpressApplication;
+import butterknife.ButterKnife;
+import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
@@ -31,7 +32,8 @@ public class OrdersListFragment extends PagedItemFragment<Order> {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        TestpressApplication.getAppComponent().inject(this);
+        Injector.inject(this);
+        ButterKnife.inject(this.getActivity());
         super.onCreate(savedInstanceState);
     }
 

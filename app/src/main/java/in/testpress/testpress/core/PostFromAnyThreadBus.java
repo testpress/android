@@ -3,6 +3,7 @@ package in.testpress.testpress.core;
 import android.os.Handler;
 import android.os.Looper;
 
+import in.testpress.testpress.util.Ln;
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
 
@@ -50,6 +51,7 @@ public class PostFromAnyThreadBus extends Bus
         catch (IllegalArgumentException e)
         {
             // TODO: use Crashlytics unhandled exception logging
+            Ln.e(e);
         }
     }
 }

@@ -14,8 +14,6 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,18 +23,20 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.exam.TestpressExam;
 import in.testpress.course.TestpressCourse;
 import in.testpress.store.TestpressStore;
+import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -51,11 +51,11 @@ import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.TestpressApiErrorResponse;
 import in.testpress.testpress.util.CommonUtils;
+import in.testpress.testpress.util.Ln;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.ui.UserDevicesActivity;
-import in.testpress.ui.WebViewWithSSOActivity;
 import io.sentry.Sentry;
 import io.sentry.protocol.User;
 import retrofit.RetrofitError;
@@ -63,7 +63,6 @@ import retrofit.RetrofitError;
 import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
-import static in.testpress.testpress.BuildConfig.WHITE_LABELED_HOST_URL;
 import static in.testpress.testpress.ui.DrupalRssListFragment.RSS_FEED_URL;
 
 public class MainMenuFragment extends Fragment {
@@ -72,18 +71,16 @@ public class MainMenuFragment extends Fragment {
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected LogoutService logoutService;
     GridView grid;
-    RecyclerView recyclerView;
+    @InjectView(R.id.recyclerview) RecyclerView recyclerView;
+    @InjectView(R.id.quick_links_container)
     LinearLayout quickLinksContainer;
     Account[] account;
 
     private InstituteSettings mInstituteSettings;
-    private final HashMap<Integer, Runnable> menuActions = new HashMap<>();
-    private final Map<Integer, Runnable> sdkActions = new HashMap<>();
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        TestpressApplication.getAppComponent().inject(this);
+        Injector.inject(this);
         getActivity().invalidateOptionsMenu();
         return inflater.inflate(R.layout.main_menu_grid_view, null);
     }
@@ -91,7 +88,7 @@ public class MainMenuFragment extends Fragment {
     @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        bindViews(view);
+        ButterKnife.inject(this, view);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         fetchStarredCategories();
         AccountManager manager = (AccountManager) getActivity().getSystemService(Context.ACCOUNT_SERVICE);
@@ -162,91 +159,77 @@ public class MainMenuFragment extends Fragment {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Runnable action = menuActions.get((int) id);
-                if (action != null) {
-                    action.run();
-                } else {
-                    Log.w("Menu", "No action found for menu item id: " + id);
+
+                Intent intent;
+                String custom_title;
+                switch ((int) id) {
+                    case R.string.about_us:
+                        intent = new Intent(getActivity(), AboutUsActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.string.my_exams:
+                        checkAuthenticatedUser(R.string.my_exams);
+                        break;
+                    case R.string.bookmarks:
+                        checkAuthenticatedUser(R.string.bookmarks);
+                        break;
+                    case R.string.store:
+                        checkAuthenticatedUser(R.string.store);
+                        break;
+                    case R.string.documents:
+                        custom_title = UIUtils.getMenuItemName(R.string.documents, mInstituteSettings);
+                        intent = new Intent(getActivity(), DocumentsListActivity.class);
+                        intent.putExtra("title", custom_title);
+                        startActivity(intent);
+                        break;
+                    case R.string.orders:
+                        intent = new Intent(getActivity(), OrdersListActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.string.rss_posts:
+                        intent = new Intent(getActivity(), DrupalRssListActivity.class);
+                        intent.putExtra(RSS_FEED_URL, "https://www.wired.com/feed/");
+                        startActivity(intent);
+                        break;
+                    case R.string.posts:
+                        custom_title = UIUtils.getMenuItemName(R.string.posts, mInstituteSettings);
+                        intent = new Intent(getActivity(), PostsListActivity.class);
+                        intent.putExtra("userAuthenticated", isUserAuthenticated);
+                        intent.putExtra("title", custom_title);
+                        startActivity(intent);
+                        break;
+                    case R.string.forum:
+                        intent = new Intent(getActivity(), ForumListActivity.class);
+                        intent.putExtra("userAuthenticated", isUserAuthenticated);
+                        startActivity(intent);
+                        break;
+                    case R.string.analytics:
+                        checkAuthenticatedUser(R.string.analytics);
+                        break;
+                    case R.string.profile:
+                        intent = new Intent(getActivity(), ProfileDetailsActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.string.share:
+                        shareApp();
+                        break;
+                    case R.string.rate_us:
+                        rateApp();
+                        break;
+                    case R.string.logout:
+                        ((MainActivity) getActivity()).logout();
+                        break;
+                    case R.string.login:
+                        intent = new Intent(getActivity(), LoginActivity.class);
+                        intent.putExtra(Constants.DEEP_LINK_TO, "home");
+                        startActivity(intent);
+                        break;
+                    case R.string.login_activity:
+                        intent = new Intent(getActivity(), UserDevicesActivity.class);
+                        startActivity(intent);
+                        break;
                 }
             }
-        });
-        initializeMenuActions(isUserAuthenticated);
-        initializeSdkActions();
-    }
-
-    private void bindViews(View view) {
-        recyclerView = view.findViewById(R.id.recyclerview);
-        quickLinksContainer = view.findViewById(R.id.quick_links_container);
-    }
-
-    private void initializeMenuActions(boolean isUserAuthenticated) {
-        menuActions.clear();
-        menuActions.put(R.string.about_us, () -> {
-            Intent intent = new Intent(getActivity(), AboutUsActivity.class);
-            startActivity(intent);
-        });
-        menuActions.put(R.string.my_exams, () -> checkAuthenticatedUser(R.string.my_exams));
-        menuActions.put(R.string.bookmarks, () -> checkAuthenticatedUser(R.string.bookmarks));
-        menuActions.put(R.string.store, () -> checkAuthenticatedUser(R.string.store));
-        menuActions.put(R.string.documents, () -> {
-            String custom_title = UIUtils.getMenuItemName(R.string.documents, mInstituteSettings);
-            Intent intent = new Intent(getActivity(), DocumentsListActivity.class);
-            intent.putExtra("title", custom_title);
-            startActivity(intent);
-        });
-        menuActions.put(R.string.orders, () -> {
-            Intent intent = new Intent(getActivity(), OrdersListActivity.class);
-            startActivity(intent);
-        });
-        menuActions.put(R.string.rss_posts, () -> {
-            Intent intent = new Intent(getActivity(), DrupalRssListActivity.class);
-            intent.putExtra(RSS_FEED_URL, "https://www.wired.com/feed/");
-            startActivity(intent);
-        });
-        menuActions.put(R.string.posts, () -> {
-            String custom_title = UIUtils.getMenuItemName(R.string.posts, mInstituteSettings);
-            Intent intent = new Intent(getActivity(), PostsListActivity.class);
-            intent.putExtra("userAuthenticated", isUserAuthenticated);
-            intent.putExtra("title", custom_title);
-            startActivity(intent);
-        });
-        menuActions.put(R.string.forum, () -> {
-            String label = mInstituteSettings.getForumLabel();
-            label = label != null ? label : "Discussion";
-            launchDiscussionActivity(label);
-        });
-        menuActions.put(R.string.analytics, () -> checkAuthenticatedUser(R.string.analytics));
-        menuActions.put(R.string.profile, () -> {
-            Intent intent = new Intent(getActivity(), ProfileDetailsActivity.class);
-            startActivity(intent);
-        });
-        menuActions.put(R.string.share, this::shareApp);
-        menuActions.put(R.string.rate_us, this::rateApp);
-        menuActions.put(R.string.logout, () -> ((MainActivity) getActivity()).logout());
-        menuActions.put(R.string.login, () -> {
-            Intent intent = new Intent(getActivity(), LoginActivity.class);
-            intent.putExtra(Constants.DEEP_LINK_TO, "home");
-            startActivity(intent);
-        });
-        menuActions.put(R.string.login_activity, () -> {
-            Intent intent = new Intent(getActivity(), UserDevicesActivity.class);
-            startActivity(intent);
-        });
-    }
-
-    private void initializeSdkActions() {
-        TestpressSession session = TestpressSdk.getTestpressSession(getActivity());
-        assert session != null;
-        sdkActions.clear();
-        sdkActions.put(R.string.my_exams, () -> TestpressExam.showCategories(getActivity(), true, session));
-        sdkActions.put(R.string.bookmarks, () -> TestpressCourse.showBookmarks(getActivity(), session));
-        sdkActions.put(R.string.analytics, () -> TestpressExam.showAnalytics(getActivity(), SUBJECT_ANALYTICS_PATH, session));
-        sdkActions.put(R.string.store, () -> {
-            String title = UIUtils.getMenuItemName(R.string.store, mInstituteSettings);
-            Intent intent = new Intent();
-            intent.putExtra("title", title);
-            getActivity().setIntent(intent);
-            TestpressStore.show(getActivity(), session);
         });
     }
 
@@ -275,9 +258,26 @@ public class MainMenuFragment extends Fragment {
     }
 
     void showSDK(int clickedMenuTitleResId) {
-        Runnable action = sdkActions.get(clickedMenuTitleResId);
-        if (action != null) {
-            action.run();
+        //noinspection ConstantConditions
+        TestpressSession session = TestpressSdk.getTestpressSession(getActivity());
+        assert session != null;
+        switch (clickedMenuTitleResId) {
+            case R.string.my_exams:
+                TestpressExam.showCategories(getActivity(), true, session);
+                break;
+            case R.string.bookmarks:
+                TestpressCourse.showBookmarks(getActivity(), session);
+                break;
+            case R.string.analytics:
+                TestpressExam.showAnalytics(getActivity(), SUBJECT_ANALYTICS_PATH, session);
+                break;
+            case R.string.store:
+                String title = UIUtils.getMenuItemName(R.string.store, mInstituteSettings);
+                Intent intent = new Intent();
+                intent.putExtra("title", title);
+                getActivity().setIntent(intent);
+                TestpressStore.show(getActivity(), session);
+                break;
         }
     }
 
@@ -320,6 +320,7 @@ public class MainMenuFragment extends Fragment {
                 if (getActivity() == null) {
                     return;
                 }
+                Ln.e("On success");
                 if (categories.isEmpty()) {
                     quickLinksContainer.setVisibility(View.GONE);
                 } else {
@@ -349,19 +350,6 @@ public class MainMenuFragment extends Fragment {
         if (testpressApiErrorResponse.getDetail().equals("Invalid signature")) {
             serviceProvider.logout(getActivity(), testpressService, serviceProvider, logoutService);
         }
-    }
-
-    private void launchDiscussionActivity(String title) {
-        requireActivity().startActivity(
-                WebViewWithSSOActivity.Companion.createIntent(
-                        requireActivity(),
-                        title,
-                        WHITE_LABELED_HOST_URL + "/discussions/new",
-                        true,
-                        false,
-                        WebViewWithSSOActivity.class
-                )
-        );
     }
 
     public static class StarredCategoryAdapter
@@ -394,7 +382,7 @@ public class MainMenuFragment extends Fragment {
         }
 
         public StarredCategoryAdapter(Context context, List<Category> items) {
-            context.getTheme().resolveAttribute(androidx.appcompat.R.attr.selectableItemBackground, mTypedValue, true);
+            context.getTheme().resolveAttribute(R.attr.selectableItemBackground, mTypedValue, true);
             mBackground = mTypedValue.resourceId;
             mValues = items;
         }

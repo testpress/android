@@ -35,20 +35,22 @@ public class RestErrorHandler implements ErrorHandler {
 
     @Override
     public Throwable handleError(RetrofitError cause) {
+        TestpressApiErrorResponse errorResponse = (TestpressApiErrorResponse) cause.getBodyAs(TestpressApiErrorResponse.class);
+
+        if (errorResponse.getErrorCode() != null) {
+            bus.post(new CustomErrorEvent(errorResponse.getErrorCode(), errorResponse.getDetail()));
+        }
+
         if(cause != null) {
             if (cause.isNetworkError()) {
                 bus.post(new NetworkErrorEvent(cause));
-            } else if (isUnAuthorized(cause)) {
+            } else if(isUnAuthorized(cause)) {
                 bus.post(new UnAuthorizedErrorEvent(cause));
-            } else if (isUnAuthorizedUser(cause)) {
+            } else if(isUnAuthorizedUser(cause)) {
                 bus.post(new UnAuthorizedUserErrorEvent());
-            } else {
-                TestpressApiErrorResponse errorResponse = (TestpressApiErrorResponse) cause.getBodyAs(TestpressApiErrorResponse.class);
-                if (errorResponse != null && errorResponse.getErrorCode() != null) {
-                    bus.post(new CustomErrorEvent(errorResponse.getErrorCode(), errorResponse.getDetail()));
-                } else {
-                    bus.post(new RestAdapterErrorEvent(cause));
-                }
+            }
+            else {
+                bus.post(new RestAdapterErrorEvent(cause));
             }
         }
 

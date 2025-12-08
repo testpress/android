@@ -14,6 +14,7 @@ import java.util.TimeZone;
 import in.testpress.testpress.models.Forum;
 import in.testpress.testpress.models.ForumDao;
 import in.testpress.testpress.models.TestpressApiResponse;
+import in.testpress.testpress.util.Ln;
 import retrofit.RetrofitError;
 
 public class ForumsPager extends ResourcePager<Forum> {
@@ -95,7 +96,7 @@ public class ForumsPager extends ResourcePager<Forum> {
 
             page++;
         } catch (ParseException e) {
-
+            Ln.d("ParseException " + e);
         } catch (Exception e) {
             hasMore = false;
             throw e;

@@ -66,86 +66,62 @@ public class HandleMainMenu {
         AccountManager manager = (AccountManager) activity.getSystemService(Context.ACCOUNT_SERVICE);
         account = manager.getAccountsByType(APPLICATION_ID);
         isUserAuthenticated = account.length > 0;
+        initializeMenuActions();
+    }
+
+    void initializeMenuActions() {
+        menuActions.put(R.id.share, this::shareApp);
+        menuActions.put(R.id.rate_us, this::rateApp);
+        menuActions.put(R.id.privacy_policy, this::openPrivacyPolicy);
+        menuActions.put(R.id.logout, () -> ((MainActivity) activity).logout());
+        menuActions.put(R.id.bookmarks, () -> checkAuthenticationAndOpen(R.string.bookmarks));
+        menuActions.put(R.id.posts, () -> {
+            String custom_title = UIUtils.getMenuItemName(R.string.posts, instituteSettings);
+            Intent intent = new Intent(activity, PostsListActivity.class);
+            intent.putExtra("userAuthenticated", isUserAuthenticated);
+            intent.putExtra("title", custom_title);
+            activity.startActivity(intent);
+        });
+        menuActions.put(R.id.analytics, () -> checkAuthenticationAndOpen(R.string.analytics));
+        menuActions.put(R.id.login_activity, () -> {
+            Intent intent = new Intent(activity, UserDevicesActivity.class);
+            activity.startActivity(intent);
+        });
+        menuActions.put(R.id.doubts, () -> {
+            Intent intent = new Intent(activity, DoubtsActivity.class);
+            activity.startActivity(intent);
+        });
+        menuActions.put(R.id.offline_exam_list, this::launchOfflineExamListActivity);
+        menuActions.put(R.id.discussions, () -> {
+            String label = instituteSettings.getForumLabel();
+            label = label != null ? label : "Discussion";
+            launchDiscussionActivity(label);
+        });
+        menuActions.put(R.id.profile, () -> {
+            Intent intent = new Intent(activity, ProfileDetailsActivity.class);
+            activity.startActivity(intent);
+        });
+        menuActions.put(R.id.login, () -> {
+            Intent intent = new Intent(activity, LoginActivity.class);
+            intent.putExtra(Constants.DEEP_LINK_TO, "home");
+            activity.startActivity(intent);
+        });
+        menuActions.put(R.id.student_report, this::launchStudentReportActivity);
+        menuActions.put(R.id.recorded_lessons, () -> openCakingExternalURL("Recorded Lessons", "/external_site/?endpoint=recorded_lectures"));
+        menuActions.put(R.id.mocks, () -> openCakingExternalURL("Mocks", "/external_site/?endpoint=mocks"));
+        menuActions.put(R.id.e_books, () -> openCakingExternalURL("E-Books", "/external_site/?endpoint=e-books"));
+        menuActions.put(R.id.live_lectures_cat, () -> openCakingExternalURL("CAT", "/external_site/?endpoint=cat/40-days-challenge"));
+        menuActions.put(R.id.live_lectures_non_cat, () -> openCakingExternalURL("NON-CAT", "/external_site/?endpoint=noncat/non-cat-40-days-challenge"));
+        menuActions.put(R.id.live_lectures_gd_watpi, () -> openCakingExternalURL("GD WATPI", "/external_site/?endpoint=gdwatpi/todays-classes"));
+        menuActions.put(R.id.proctored_exam, this::launchProctoredExamActivity);
     }
 
     public void handleMenuOptionClick(int itemId) {
-        Intent intent;
-        switch (itemId) {
-            case R.id.share:
-                shareApp();
-                break;
-            case R.id.rate_us:
-                rateApp();
-                break;
-            case R.id.privacy_policy:
-                openPrivacyPolicy();
-                break;
-            case R.id.logout:
-                ((MainActivity) activity).logout();
-                break;
-            case R.id.bookmarks:
-                checkAuthenticationAndOpen(R.string.bookmarks);
-                break;
-            case R.id.posts:
-                String custom_title = UIUtils.getMenuItemName(R.string.posts, instituteSettings);
-                intent = new Intent(activity, PostsListActivity.class);
-                intent.putExtra("userAuthenticated", isUserAuthenticated);
-                intent.putExtra("title", custom_title);
-                activity.startActivity(intent);
-                break;
-            case R.id.analytics:
-                checkAuthenticationAndOpen(R.string.analytics);
-                break;
-            case R.id.login_activity:
-                intent = new Intent(activity, UserDevicesActivity.class);
-                activity.startActivity(intent);
-                break;
-            case R.id.doubts:
-                Log.d("TAG", "handleMenuOptionClick: ");
-                intent = new Intent(activity, DoubtsActivity.class);
-                activity.startActivity(intent);
-                break;
-            case R.id.offline_exam_list:
-                launchOfflineExamListActivity();
-                break;
-            case R.id.discussions:
-                String label = instituteSettings.getForumLabel();
-                label = label != null ? label : "Discussion";
-                launchDiscussionActivity(label);
-                break;
-            case R.id.profile:
-                intent = new Intent(activity, ProfileDetailsActivity.class);
-                activity.startActivity(intent);
-                break;
-            case R.id.login:
-                intent = new Intent(activity, LoginActivity.class);
-                intent.putExtra(Constants.DEEP_LINK_TO, "home");
-                activity.startActivity(intent);
-                break;
-            case  R.id.student_report:
-                launchStudentReportActivity();
-                break;
-            case  R.id.recorded_lessons:
-                openCakingExternalURL("Recorded Lessons","/external_site/?endpoint=recorded_lectures");
-                break;
-            case  R.id.mocks:
-                openCakingExternalURL("Mocks","/external_site/?endpoint=mocks");
-                break;
-            case  R.id.e_books:
-                openCakingExternalURL("E-Books","/external_site/?endpoint=e-books");
-                break;
-            case  R.id.live_lectures_cat:
-                openCakingExternalURL("CAT","/external_site/?endpoint=cat/40-days-challenge");
-                break;
-            case  R.id.live_lectures_non_cat:
-                openCakingExternalURL("NON-CAT","/external_site/?endpoint=noncat/non-cat-40-days-challenge");
-                break;
-            case  R.id.live_lectures_gd_watpi:
-                openCakingExternalURL("GD WATPI","/external_site/?endpoint=gdwatpi/todays-classes");
-                break;
-            case  R.id.proctored_exam:
-                launchProctoredExamActivity();
-                break;
+        Runnable action = menuActions.get((int) itemId);
+        if (action != null) {
+            action.run();
+        } else {
+            Log.w("Menu", "No action found for menu item id: " + itemId);
         }
     }
 

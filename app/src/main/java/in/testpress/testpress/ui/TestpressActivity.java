@@ -5,9 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import in.testpress.testpress.Injector;
+import in.testpress.testpress.TestpressApplication;
 
-import butterknife.ButterKnife;
 
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP;
 import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
@@ -21,15 +20,7 @@ public abstract class TestpressActivity extends Activity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Injector.inject(this);
-    }
-
-    @Override
-    public void setContentView(final int layoutResId) {
-        super.setContentView(layoutResId);
-
-        // Used to inject views with the Butterknife library
-        ButterKnife.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
     }
 
     @Override

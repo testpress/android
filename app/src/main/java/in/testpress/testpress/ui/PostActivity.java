@@ -47,16 +47,12 @@ import java.util.TimeZone;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
 import in.testpress.core.TestpressCallback;
 import in.testpress.core.TestpressException;
 import in.testpress.core.TestpressSdk;
 import in.testpress.exam.util.ImageUtils;
 import in.testpress.models.FileDetails;
 import in.testpress.network.TestpressApiClient;
-import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -104,40 +100,40 @@ public class PostActivity extends TestpressFragmentActivity implements
 
     @Inject protected TestpressService testpressService;
     @Inject protected TestpressServiceProvider serviceProvider;
-    @InjectView(R.id.content) WebView content;
-    @InjectView(R.id.title) TextView title;
-    @InjectView(R.id.summary) TextView summary;
-    @InjectView(R.id.summary_layout) LinearLayout summaryLayout;
-    @InjectView(R.id.date) TextView date;
-    @InjectView(R.id.content_empty_view) TextView contentEmptyView;
-    @InjectView(R.id.postDetails) RelativeLayout postDetails;
-    @InjectView(R.id.pb_loading) ProgressBar progressBar;
-    @InjectView(R.id.empty_container) LinearLayout emptyView;
-    @InjectView(R.id.empty_title) TextView emptyTitleView;
-    @InjectView(R.id.empty_description) TextView emptyDescView;
-    @InjectView(R.id.retry_button) Button retryButton;
-    @InjectView(R.id.comments_layout) LinearLayout commentsLayout;
-    @InjectView(R.id.loading_previous_comments_layout) LinearLayout previousCommentsLoadingLayout;
-    @InjectView(R.id.loading_new_comments_layout) LinearLayout newCommentsLoadingLayout;
-    @InjectView(R.id.comments_list_view) RecyclerView listView;
-    @InjectView(R.id.load_previous_comments_layout) LinearLayout loadPreviousCommentsLayout;
-    @InjectView(R.id.load_previous_comments) TextView loadPreviousCommentsText;
-    @InjectView(R.id.load_new_comments_layout) LinearLayout loadNewCommentsLayout;
-    @InjectView(R.id.load_new_comments_text) TextView loadNewCommentsText;
-    @InjectView(R.id.comments_label) TextView commentsLabel;
-    @InjectView(R.id.comments_empty_view) TextView commentsEmptyView;
-    @InjectView(R.id.comment_box) EditText commentsEditText;
-    @InjectView(R.id.comment_box_layout) LinearLayout commentBoxLayout;
-    @InjectView(R.id.scroll_view) NestedScrollView scrollView;
-    @InjectView(android.R.id.content) View activityRootLayout;
-    @InjectView(R.id.new_comments_available_label) LinearLayout newCommentsAvailableLabel;
+    WebView content;
+    TextView title;
+    TextView summary;
+    LinearLayout summaryLayout;
+    TextView date;
+    TextView contentEmptyView;
+    RelativeLayout postDetails;
+    ProgressBar progressBar;
+    LinearLayout emptyView;
+    TextView emptyTitleView;
+    TextView emptyDescView;
+    Button retryButton;
+    LinearLayout commentsLayout;
+    LinearLayout previousCommentsLoadingLayout;
+    LinearLayout newCommentsLoadingLayout;
+    RecyclerView listView;
+    LinearLayout loadPreviousCommentsLayout;
+    TextView loadPreviousCommentsText;
+    LinearLayout loadNewCommentsLayout;
+    TextView loadNewCommentsText;
+    TextView commentsLabel;
+    TextView commentsEmptyView;
+    EditText commentsEditText;
+    LinearLayout commentBoxLayout;
+    NestedScrollView scrollView;
+    View activityRootLayout;
+    LinearLayout newCommentsAvailableLabel;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.post_details_layout);
-        Injector.inject(this);
-        ButterKnife.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
+        bindViews();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         postDetails.setVisibility(View.GONE);
         progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
@@ -172,6 +168,39 @@ public class PostActivity extends TestpressFragmentActivity implements
             // If it content_html is null then fetch the post
             fetchPost();
         }
+    }
+
+    private void bindViews() {
+        content = findViewById(R.id.content);
+        title = findViewById(R.id.title);
+        summary = findViewById(R.id.summary);
+        summaryLayout = findViewById(R.id.summary_layout);
+        date = findViewById(R.id.date);
+        contentEmptyView = findViewById(R.id.content_empty_view);
+        postDetails = findViewById(R.id.postDetails);
+        progressBar = findViewById(R.id.pb_loading);
+        emptyView = findViewById(R.id.empty_container);
+        emptyTitleView = findViewById(R.id.empty_title);
+        emptyDescView = findViewById(R.id.empty_description);
+        retryButton = findViewById(R.id.retry_button);
+        commentsLayout = findViewById(R.id.comments_layout);
+        previousCommentsLoadingLayout = findViewById(R.id.loading_previous_comments_layout);
+        newCommentsLoadingLayout = findViewById(R.id.loading_new_comments_layout);
+        listView = findViewById(R.id.comments_list_view);
+        loadPreviousCommentsLayout = findViewById(R.id.load_previous_comments_layout);
+        loadPreviousCommentsText = findViewById(R.id.load_previous_comments);
+        loadNewCommentsLayout = findViewById(R.id.load_new_comments_layout);
+        loadNewCommentsText = findViewById(R.id.load_new_comments_text);
+        commentsLabel = findViewById(R.id.comments_label);
+        commentsEmptyView = findViewById(R.id.comments_empty_view);
+        commentsEditText = findViewById(R.id.comment_box);
+        commentBoxLayout = findViewById(R.id.comment_box_layout);
+        scrollView = findViewById(R.id.scroll_view);
+        activityRootLayout = findViewById(android.R.id.content);
+        newCommentsAvailableLabel = findViewById(R.id.new_comments_available_label);
+
+        findViewById(R.id.send).setOnClickListener(v -> sendComment());
+        findViewById(R.id.image_comment_button).setOnClickListener(v -> pickImage());
     }
 
     @Override
@@ -521,7 +550,7 @@ public class PostActivity extends TestpressFragmentActivity implements
         }
     }
 
-    @OnClick(R.id.send) void sendComment() {
+    private void sendComment() {
         final String comment = commentsEditText.getText().toString().trim();
         if (comment.isEmpty()) {
             return;
@@ -573,7 +602,7 @@ public class PostActivity extends TestpressFragmentActivity implements
         }.execute();
     }
 
-    @OnClick(R.id.image_comment_button) void pickImage() {
+    private void pickImage() {
         CropImage.startPickImageActivity(this);
     }
 
@@ -691,10 +720,10 @@ public class PostActivity extends TestpressFragmentActivity implements
     void handleExceptionOnSendComment(Exception exception) {
         progressDialog.dismiss();
         if (exception.getCause() instanceof IOException) {
-            Snackbar.make(activityRootLayout, R.string.testpress_no_internet_connection,
+            Snackbar.make(activityRootLayout, R.string.no_internet_connection,
                     Snackbar.LENGTH_SHORT).show();
         } else {
-            Snackbar.make(activityRootLayout, R.string.testpress_network_error,
+            Snackbar.make(activityRootLayout, R.string.network_error,
                     Snackbar.LENGTH_SHORT).show();
         }
     }

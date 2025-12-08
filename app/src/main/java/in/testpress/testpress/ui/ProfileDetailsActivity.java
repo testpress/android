@@ -47,6 +47,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -54,11 +55,7 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
 import in.testpress.exam.util.ImageUtils;
-import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -83,40 +80,38 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
 
     @Inject TestpressServiceProvider serviceProvider;
     @Inject TestpressService testpressService;
-    @InjectView(R.id.profile_photo) ImageView profilePhoto;
-    @InjectView(R.id.edit_profile) ImageView editProfile;
-    @InjectView(R.id.edit_profile_photo) ImageView imageEditButton;
-    @InjectView(R.id.display_name) TextView displayName;
-    @InjectView(R.id.collapsing_toolbar)
+    ImageView profilePhoto;
+    ImageView imageEditButton;
+    TextView displayName;
     CollapsingToolbarLayout collapsingToolbar;
-    @InjectView(R.id.first_name) EditText firstName;
-    @InjectView(R.id.last_name) EditText lastName;
-    @InjectView(R.id.email) AppCompatTextView email;
-    @InjectView(R.id.username) AppCompatTextView username;
-    @InjectView(R.id.gender) Spinner gender;
-    @InjectView(R.id.address) AppCompatTextView address;
-    @InjectView(R.id.phone) AppCompatTextView phone;
-    @InjectView(R.id.date_of_birth) EditText dateOfBirth;
-    @InjectView(R.id.datepicker) ImageButton datePicker;
-    @InjectView(R.id.city) EditText city;
-    @InjectView(R.id.state) Spinner state;
-    @InjectView(R.id.pin_code) EditText pinCode;
-    @InjectView(R.id.first_name_container) TableRow firstNameRow;
-    @InjectView(R.id.last_name_container) TableRow lastNameRow;
-    @InjectView(R.id.email_container) LinearLayout mailIdRow;
-    @InjectView(R.id.username_container) LinearLayout usernameContainer;
-    @InjectView(R.id.gender_container) TableRow genderRow;
-    @InjectView(R.id.address_container) LinearLayout addressRow;
-    @InjectView(R.id.mobile_container) TableRow mobileNoRow;
-    @InjectView(R.id.city_container) TableRow cityRow;
-    @InjectView(R.id.date_of_birth_container) TableRow dobRow;
-    @InjectView(R.id.state_container) TableRow stateRow;
-    @InjectView(R.id.pincode_container) TableRow pinCodeRow;
-    @InjectView(R.id.empty) TextView emptyView;
-    @InjectView(R.id.edit) ImageView editButton;
-    @InjectView(R.id.save) Button saveButton;
-    @InjectView(R.id.profile_details) RelativeLayout profileDetailsView;
-    @InjectView(R.id.horizontal_progress_bar) ProgressBar horizontalProgressBar;
+    EditText firstName;
+    EditText lastName;
+    AppCompatTextView email;
+    AppCompatTextView username;
+    Spinner gender;
+    AppCompatTextView address;
+    AppCompatTextView phone;
+    EditText dateOfBirth;
+    ImageButton datePicker;
+    EditText city;
+    Spinner state;
+    EditText pinCode;
+    TableRow firstNameRow;
+    TableRow lastNameRow;
+    LinearLayout mailIdRow;
+    LinearLayout usernameContainer;
+    TableRow genderRow;
+    LinearLayout addressRow;
+    TableRow mobileNoRow;
+    TableRow cityRow;
+    TableRow dobRow;
+    TableRow stateRow;
+    TableRow pinCodeRow;
+    TextView emptyView;
+    ImageView editButton;
+    Button saveButton;
+    RelativeLayout profileDetailsView;
+    ProgressBar horizontalProgressBar;
     ProgressBar progressBar;
     ProfileDetails profileDetails;
     ArrayAdapter<String> genderSpinnerAdapter;
@@ -127,8 +122,11 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
     DisplayImageOptions options;
     Menu menu;
     Button deleteAccountButton;
+
+    Button editProfileButton;
     static final private int SELECT_IMAGE = 100;
     public String ssoUrl;
+    private final HashMap<Integer, Runnable> menuActions = new HashMap<>();
 
 
     @Override
@@ -138,8 +136,8 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
             return;
         }
         setContentView(R.layout.profile_detail_layout);
-        Injector.inject(this);
-        ButterKnife.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
+        bindViews();
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -171,6 +169,50 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         getSupportLoaderManager().initLoader(0, null, this);
         fetchSsoLink();
         initializeDeleteAccountButton();
+        initializeEditProfileButton();
+        setupMenuActions();
+    }
+
+    private void bindViews() {
+        profilePhoto = findViewById(R.id.profile_photo);
+        imageEditButton = findViewById(R.id.edit_profile_photo);
+        displayName = findViewById(R.id.display_name);
+        collapsingToolbar = findViewById(R.id.collapsing_toolbar);
+        firstName = findViewById(R.id.first_name);
+        lastName = findViewById(R.id.last_name);
+        email = findViewById(R.id.email);
+        username = findViewById(R.id.username);
+        gender = findViewById(R.id.gender);
+        address = findViewById(R.id.address);
+        phone = findViewById(R.id.phone);
+        dateOfBirth = findViewById(R.id.date_of_birth);
+        datePicker = findViewById(R.id.datepicker);
+        city = findViewById(R.id.city);
+        state = findViewById(R.id.state);
+        pinCode = findViewById(R.id.pin_code);
+        firstNameRow = findViewById(R.id.first_name_container);
+        lastNameRow = findViewById(R.id.last_name_container);
+        mailIdRow = findViewById(R.id.email_container);
+        usernameContainer = findViewById(R.id.username_container);
+        genderRow = findViewById(R.id.gender_container);
+        addressRow = findViewById(R.id.address_container);
+        mobileNoRow = findViewById(R.id.mobile_container);
+        cityRow = findViewById(R.id.city_container);
+        dobRow = findViewById(R.id.date_of_birth_container);
+        stateRow = findViewById(R.id.state_container);
+        pinCodeRow = findViewById(R.id.pincode_container);
+
+        emptyView = findViewById(R.id.empty);
+        editButton = findViewById(R.id.edit);
+        saveButton = findViewById(R.id.save);
+        profileDetailsView = findViewById(R.id.profile_details);
+        horizontalProgressBar = findViewById(R.id.horizontal_progress_bar);
+
+        profilePhoto.setOnClickListener(v -> displayProfilePhoto());
+        imageEditButton.setOnClickListener(v -> selectImageFromMobile());
+        datePicker.setOnClickListener(v -> pickDate());
+        editButton.setOnClickListener(v -> editProfileDetails());
+        saveButton.setOnClickListener(v -> saveDetails());
     }
 
     private void initializeDeleteAccountButton() {
@@ -190,6 +232,35 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
                 );
             }
         });
+    }
+
+    private void initializeEditProfileButton() {
+        editProfileButton = findViewById(R.id.edit_profile);
+        editProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (fetchInstituteSetting().getAllow_profile_edit() && !Strings.toString(profileDetails.getUsername()).isEmpty()) {
+
+                    if (!Strings.toString(ssoUrl).isEmpty()) {
+                        Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
+                        intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Edit Profile");
+                        intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + ssoUrl+"&next=/settings/profile/mobile/");
+                        startActivity(intent);
+                    } else {
+                        Toaster.showLong(ProfileDetailsActivity.this, R.string.edit_profile_error);
+                    }
+                }
+            }
+        });
+    }
+
+    private void setupMenuActions() {
+        menuActions.put(R.id.refresh, () -> {
+            progressBar.setVisibility(View.VISIBLE);
+            getSupportLoaderManager().restartLoader(0, null, this);
+        });
+        menuActions.put(R.id.tick, this::saveDetails);
+        menuActions.put(R.id.cancel, () -> displayProfileDetails(profileDetails));
     }
 
     @Override
@@ -225,7 +296,6 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
             this.profileDetails = profileDetails;
         }
         profileDetailsView.setVisibility(View.VISIBLE);
-        editProfile.setVisibility(View.VISIBLE);
         displayProfileDetails(this.profileDetails);
     }
 
@@ -298,8 +368,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         }
     }
 
-    @OnClick(R.id.edit)
-    public void editProfileDetails() {
+    private void editProfileDetails() {
         menu.setGroupVisible(R.id.editMode, true);
         menu.setGroupVisible(R.id.viewMode, false);
         editButton.setVisibility(View.GONE);
@@ -315,8 +384,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         }
     }
 
-    @OnClick(R.id.profile_photo)
-    public void displayProfilePhoto() {
+    private void displayProfilePhoto() {
         if (profileDetails != null && fetchInstituteSetting().getAllow_profile_edit()) {
             Intent intent = new Intent(this, ProfilePhotoActivity.class);
             intent.putExtra("profilePhoto", profileDetails.getPhoto());
@@ -324,8 +392,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         }
     }
 
-    @OnClick(R.id.edit_profile_photo)
-    public void selectImageFromMobile() {
+    private void selectImageFromMobile() {
         CropImage.startPickImageActivity(this);
     }
 
@@ -381,8 +448,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         saveProfilePhoto(croppedImageDetails, encodedImage);
     }
 
-    @OnClick(R.id.save)
-    public void saveDetails() {
+    private void saveDetails() {
         if(validate()) {
             final MaterialDialog progressDialog = new MaterialDialog.Builder(this)
                     .title(R.string.loading)
@@ -515,7 +581,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         return true;
     }
 
-    @OnClick(R.id.datepicker) public void pickDate() {
+    private void pickDate() {
         if(datePickerDate == null) {
             //if birthdate is null then set current date
             if (profileDetails.getBirthDate() != null) {
@@ -596,21 +662,16 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                return super.onOptionsItemSelected(item);
-            case R.id.refresh:
-                progressBar.setVisibility(View.VISIBLE);
-                getSupportLoaderManager().restartLoader(0, null, this);
-                return true;
-            case R.id.tick:
-                saveDetails();
-                return true;
-            case R.id.cancel:
-                displayProfileDetails(profileDetails);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == android.R.id.home) {
+            return super.onOptionsItemSelected(item);
+        }
+
+        Runnable action = menuActions.get(item.getItemId());
+        if (action != null) {
+            action.run();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
 
@@ -657,22 +718,6 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         }
 
         return null;
-    }
-
-    @OnClick(R.id.edit_profile)
-    public void editActions(View v) {
-
-        if (fetchInstituteSetting().getAllow_profile_edit() && !Strings.toString(profileDetails.getUsername()).isEmpty()) {
-
-            if (!Strings.toString(ssoUrl).isEmpty()) {
-                Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
-                intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Edit Profile");
-                intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + ssoUrl+"&next=/settings/profile/mobile/");
-                startActivity(intent);
-            } else {
-                Toaster.showLong(ProfileDetailsActivity.this, R.string.edit_profile_error);
-            }
-        }
     }
 
     public void fetchSsoLink() {

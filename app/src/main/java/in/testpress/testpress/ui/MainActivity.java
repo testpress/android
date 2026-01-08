@@ -74,7 +74,7 @@ import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.Update;
-import in.testpress.testpress.ui.fragments.DashboardFragment;
+import in.testpress.testpress.ui.compose.dashboard.NewDashboardFragment; // New Compose dashboard
 import in.testpress.testpress.ui.utils.HandleMainMenu;
 import in.testpress.testpress.util.AppChecker;
 import in.testpress.testpress.util.CommonUtils;
@@ -429,7 +429,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             if (mInstituteSettings.getDashboardEnabled()){
-                addMenuItem(R.string.dashboard, R.drawable.ic_dashboard, new DashboardFragment());
+                addMenuItem(R.string.dashboard, R.drawable.ic_dashboard, NewDashboardFragment.Companion.newInstance());
             }
         } else {
             addMenuItem(R.string.dashboard, R.drawable.profile_default, new MainMenuFragment());
@@ -496,6 +496,16 @@ public class MainActivity extends TestpressFragmentActivity {
         mSelectedItem = position;
         mBottomBarAdapter.setSelectedPosition(position);
         mBottomBarAdapter.notifyDataSetChanged();
+
+        if (position == 0 && mInstituteSettings != null && mInstituteSettings.getDashboardEnabled()) {
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().hide();
+            }
+        } else {
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().show();
+            }
+        }
 
         if (!UIUtils.getMenuItemName(mMenuItemTitleIds.get(position), mInstituteSettings).isEmpty()) {
             updateToolbarText(UIUtils.getMenuItemName(mMenuItemTitleIds.get(position), mInstituteSettings));

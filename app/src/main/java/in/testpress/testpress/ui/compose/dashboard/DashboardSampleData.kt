@@ -238,26 +238,30 @@ object DashboardSampleData {
     val promotionalBanners = listOf(
         PromotionalBanner(
             id = "1",
-            title = "New Test Series Available",
-            description = "JEE Advanced 2026 - Full-length mock tests now live",
-            tag = "NEW",
-            bgColor = "#EFF6FF",
-            textColor = "#1E3A8A"
+            icon = "📚",
+            title = "Study Smart, Not Hard",
+            description = "Master complex topics with our structured learning paths - Physics, Chemistry & Math all in one place",
+            tag = null,
+            bgColor = "#EFF6FF", // Blue 50
+            textColor = "#1E3A8A" // Blue 900
         ),
         PromotionalBanner(
             id = "2",
-            title = "Results Announced",
-            description = "Congratulations to our top performers in the December mock test",
-            tag = "RESULTS",
-            bgColor = "#F0FDF4",
-            textColor = "#14532D"
+            icon = "🎯",
+            title = "Your Daily Study Companion",
+            description = "Track progress across 45+ chapters with video lessons, practice sets, and chapter tests designed by experts",
+            tag = null,
+            bgColor = "#F0FDF4", // Green 50
+            textColor = "#14532D" // Green 900
         ),
         PromotionalBanner(
             id = "3",
-            title = "Special Doubt Session",
-            description = "Live doubt clearing session this Sunday at 4 PM",
-            bgColor = "#FAF5FF",
-            textColor = "#581C87"
+            icon = "⚡",
+            title = "Learn at Your Pace",
+            description = "180+ hours of content available 24/7 - watch recordings, download notes, and practice anytime",
+            tag = null,
+            bgColor = "#FAF5FF", // Purple 50
+            textColor = "#581C87" // Purple 900
         )
     )
     

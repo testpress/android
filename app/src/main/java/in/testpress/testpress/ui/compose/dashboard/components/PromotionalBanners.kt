@@ -136,19 +136,30 @@ fun BannerCard(banner: PromotionalBanner) {
                 
                 // Text Content
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text(
-                        text = banner.title,
-                        fontSize = 14.sp, // Reduced to 14sp to balance with description
-                        fontWeight = FontWeight.SemiBold,
-                        color = textColor,
-                        maxLines = 1
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(bottom = 2.dp)
+                    ) {
+                        Text(
+                            text = banner.icon,
+                            fontSize = 18.sp,
+                            color = Color.Unspecified,
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                        Text(
+                            text = banner.title,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = textColor,
+                            maxLines = 1
+                        )
+                    }
                     Text(
                         text = banner.description,
-                        fontSize = 14.sp, // Increased to 14sp as requested
-                        color = textColor.copy(alpha = 0.8f),
-                        maxLines = 2,
-                        lineHeight = 20.sp, // Increased line height
+                        fontSize = 13.sp, // Reduced to 13sp for hierarchy
+                        color = textColor.copy(alpha = 0.9f),
+                        maxLines = 3,
+                        lineHeight = 18.sp,
                         letterSpacing = 0.sp
                     )
                 }

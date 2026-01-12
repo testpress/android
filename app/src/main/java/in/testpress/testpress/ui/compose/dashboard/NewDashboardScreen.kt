@@ -15,6 +15,7 @@ import `in`.testpress.testpress.ui.compose.dashboard.components.ContextualHeroCa
 import `in`.testpress.testpress.ui.compose.dashboard.components.TodaysSnapshot
 import `in`.testpress.testpress.ui.compose.dashboard.components.StudyMomentumSection
 import `in`.testpress.testpress.ui.compose.dashboard.components.PromotionalBannerSection
+import `in`.testpress.testpress.ui.compose.dashboard.components.QuickAccessShortcuts
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.Alignment
@@ -32,6 +33,7 @@ fun NewDashboardScreen(
     val tests = remember { DashboardSampleData.tests }
     val studyMomentum = remember { DashboardSampleData.studyMomentum }
     val promotionalBanners = remember { DashboardSampleData.promotionalBanners }
+    val shortcuts = remember { DashboardSampleData.quickAccessShortcuts }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -82,7 +84,7 @@ fun NewDashboardScreen(
                 }
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(24.dp))
             
             StudyMomentumSection(
                 momentum = studyMomentum
@@ -94,7 +96,13 @@ fun NewDashboardScreen(
                 banners = promotionalBanners
             )
             
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
+
+            QuickAccessShortcuts(
+                shortcuts = shortcuts
+            )
+            
+            Spacer(modifier = Modifier.height(30.dp))
         }
     }
 }

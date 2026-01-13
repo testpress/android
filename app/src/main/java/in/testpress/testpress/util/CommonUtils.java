@@ -160,4 +160,15 @@ public class CommonUtils {
                 PackageManager.DONT_KILL_APP);
     }
 
+    public static String[] getUserCredentials(Context context) {
+        AccountManager manager = (AccountManager) context.getSystemService(ACCOUNT_SERVICE);
+        Account[] account = manager.getAccountsByType(APPLICATION_ID);
+        if (account.length > 0) {
+            String username = account[0].name;
+            String password = manager.getPassword(account[0]);
+            return new String[] {username, password};
+            }
+        return new String[] {"", ""};
+    }
+
 }

@@ -451,7 +451,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
             if (Boolean.TRUE.equals(!mInstituteSettings.getDisableStoreInApp())){
                 if (isEPratibha()) {
-                    addEPratibhaWebViewFragment(getString(R.string.store));
+                    addEPratibhaWebViewFragment();
                 } else {
                     addMenuItem(R.string.store, R.drawable.home_store_image, new AvailableCourseListFragment());
                 }
@@ -506,11 +506,11 @@ public class MainActivity extends TestpressFragmentActivity {
         progressBarLayout.setVisibility(View.GONE);
     }
 
-    private void addEPratibhaWebViewFragment(String storeLabel) {
+    private void addEPratibhaWebViewFragment() {
         String[] credentials = CommonUtils.getUserCredentials(this);
         WebViewFragment webViewFragment = new WebViewFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(WebViewFragment.URL_TO_OPEN, "https://www.epratibha.net/mobile-login/?email=" + credentials[0] + "&pass=" + credentials[1]);
+        bundle.putString(WebViewFragment.URL_TO_OPEN, Constants.Http.EPRATIBHA_SSO_URL + "?email=" + credentials[0] + "&pass=" + credentials[1]);
         bundle.putBoolean(WebViewFragment.SHOW_LOADING_BETWEEN_PAGES, true);
         bundle.putBoolean(WebViewFragment.IS_AUTHENTICATION_REQUIRED, false);
         bundle.putBoolean(WebViewFragment.ALLOW_NON_INSTITUTE_URL_IN_WEB_VIEW, true);

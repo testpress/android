@@ -166,7 +166,7 @@ public class CommonUtils {
         if (account.length > 0) {
             String username = account[0].name;
             String password = manager.getPassword(account[0]);
-            return new String[] {username, password};
+            return new String[] {username, password != null ? password : ""};
             }
         return new String[] {"", ""};
     }

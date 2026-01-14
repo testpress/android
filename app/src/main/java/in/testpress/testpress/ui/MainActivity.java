@@ -175,7 +175,8 @@ public class MainActivity extends TestpressFragmentActivity {
 
     @Override
     public void onBackPressed() {
-        if (isBackPressConsumedByWebView()) {
+        if (shouldHandleWebViewBackPress()) {
+            handleWebViewBackPress();
             return;
         }
 
@@ -190,16 +191,25 @@ public class MainActivity extends TestpressFragmentActivity {
         }
     }
 
-    private boolean isBackPressConsumedByWebView() {
-        Fragment currentFragment = mMenuItemFragments.get(viewPager.getCurrentItem());
-        if (currentFragment instanceof WebViewFragment) {
-            WebViewFragment webViewFragment = (WebViewFragment) currentFragment;
-            if (webViewFragment.canGoBack()) {
-                webViewFragment.goBack();
-                return true;
-            }
+    private boolean shouldHandleWebViewBackPress() {
+        WebViewFragment webView = getCurrentWebViewFragment();
+        return webView != null && webView.canGoBack();
+    }
+
+    private void handleWebViewBackPress() {
+        WebViewFragment webView = getCurrentWebViewFragment();
+        if (webView != null) {
+            webView.goBack();
         }
-        return false;
+    }
+
+    @Nullable
+    private WebViewFragment getCurrentWebViewFragment() {
+        Fragment fragment = mMenuItemFragments.get(viewPager.getCurrentItem());
+        if (fragment instanceof WebViewFragment) {
+            return (WebViewFragment) fragment;
+        }
+        return null;
     }
 
     @Override

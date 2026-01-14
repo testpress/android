@@ -175,13 +175,8 @@ public class MainActivity extends TestpressFragmentActivity {
 
     @Override
     public void onBackPressed() {
-        Fragment currentFragment = mMenuItemFragments.get(viewPager.getCurrentItem());
-        if (currentFragment instanceof WebViewFragment) {
-            WebViewFragment webViewFragment = (WebViewFragment) currentFragment;
-            if (webViewFragment.canGoBack()) {
-                webViewFragment.goBack();
-                return;
-            }
+        if (isBackPressConsumedByWebView()) {
+            return;
         }
 
         if (courseListFragment != null && viewPager.getCurrentItem() == 1) {
@@ -193,6 +188,18 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    private boolean isBackPressConsumedByWebView() {
+        Fragment currentFragment = mMenuItemFragments.get(viewPager.getCurrentItem());
+        if (currentFragment instanceof WebViewFragment) {
+            WebViewFragment webViewFragment = (WebViewFragment) currentFragment;
+            if (webViewFragment.canGoBack()) {
+                webViewFragment.goBack();
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -450,7 +457,7 @@ public class MainActivity extends TestpressFragmentActivity {
             addMenuItem(R.string.learn, R.drawable.learn, new MyCoursesFragment());
 
             if (Boolean.TRUE.equals(!mInstituteSettings.getDisableStoreInApp())){
-                if (isEPratibha()) {
+                if (isEPratibhaApp()) {
                     addEPratibhaWebViewFragment();
                 } else {
                     addMenuItem(R.string.store, R.drawable.home_store_image, new AvailableCourseListFragment());

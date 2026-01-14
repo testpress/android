@@ -58,6 +58,7 @@ import in.testpress.course.TestpressCourse;
 import in.testpress.course.fragments.DownloadsFragment;
 import in.testpress.course.repository.VideoWatchDataRepository;
 import in.testpress.course.ui.MyCoursesFragment;
+import in.testpress.fragments.WebViewFragment;
 import in.testpress.database.OfflineVideoDao;
 import in.testpress.database.TestpressDatabase;
 import in.testpress.database.dao.OfflineAttachmentsDao;
@@ -174,6 +175,11 @@ public class MainActivity extends TestpressFragmentActivity {
 
     @Override
     public void onBackPressed() {
+        if (shouldHandleWebViewBackPress()) {
+            handleWebViewBackPress();
+            return;
+        }
+
         if (courseListFragment != null && viewPager.getCurrentItem() == 1) {
             if (courseListFragment.onBackPress()) {
                 viewPager.setCurrentItem(0);
@@ -183,6 +189,27 @@ public class MainActivity extends TestpressFragmentActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    private boolean shouldHandleWebViewBackPress() {
+        WebViewFragment webView = getCurrentWebViewFragment();
+        return webView != null && webView.canGoBack();
+    }
+
+    private void handleWebViewBackPress() {
+        WebViewFragment webView = getCurrentWebViewFragment();
+        if (webView != null) {
+            webView.goBack();
+        }
+    }
+
+    @Nullable
+    private WebViewFragment getCurrentWebViewFragment() {
+        Fragment fragment = mMenuItemFragments.get(viewPager.getCurrentItem());
+        if (fragment instanceof WebViewFragment) {
+            return (WebViewFragment) fragment;
+        }
+        return null;
     }
 
     @Override
@@ -440,7 +467,11 @@ public class MainActivity extends TestpressFragmentActivity {
             addMenuItem(R.string.learn, R.drawable.learn, new MyCoursesFragment());
 
             if (Boolean.TRUE.equals(!mInstituteSettings.getDisableStoreInApp())){
-                addMenuItem(R.string.store, R.drawable.home_store_image, new AvailableCourseListFragment());
+                if (isEPratibhaApp()) {
+                    addEPratibhaWebViewFragment();
+                } else {
+                    addMenuItem(R.string.store, R.drawable.home_store_image, new AvailableCourseListFragment());
+                }
             }
 
             if (mInstituteSettings.getCoursesEnableGamification()) {
@@ -490,6 +521,19 @@ public class MainActivity extends TestpressFragmentActivity {
         viewPager.setVisibility(View.VISIBLE);
         onItemSelected(mSelectedItem);
         progressBarLayout.setVisibility(View.GONE);
+    }
+
+    private void addEPratibhaWebViewFragment() {
+        String[] credentials = CommonUtils.getUserCredentials(this);
+        WebViewFragment webViewFragment = new WebViewFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(WebViewFragment.URL_TO_OPEN, Constants.Http.EPRATIBHA_SSO_URL + "?email=" + credentials[0] + "&pass=" + credentials[1]);
+        bundle.putBoolean(WebViewFragment.SHOW_LOADING_BETWEEN_PAGES, true);
+        bundle.putBoolean(WebViewFragment.IS_AUTHENTICATION_REQUIRED, false);
+        bundle.putBoolean(WebViewFragment.ALLOW_NON_INSTITUTE_URL_IN_WEB_VIEW, true);
+        bundle.putBoolean(WebViewFragment.ENABLE_SWIPE_REFRESH, true);
+        webViewFragment.setArguments(bundle);
+        addMenuItem(R.string.store, R.drawable.home_store_image, webViewFragment);
     }
 
     private void onItemSelected(int position) {
@@ -774,6 +818,10 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private Boolean isVerandaLearningApp(){
         return getApplicationContext().getPackageName().equals("com.verandalearning");
+    }
+
+    private Boolean isEPratibhaApp() {
+        return getApplicationContext().getPackageName().equals("net.epratibha.www");
     }
 
     private Boolean hasAgreedTermsAndConditions(){

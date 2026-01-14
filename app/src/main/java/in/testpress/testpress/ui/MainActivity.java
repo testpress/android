@@ -810,8 +810,8 @@ public class MainActivity extends TestpressFragmentActivity {
         return getApplicationContext().getPackageName().equals("com.verandalearning");
     }
 
-    private Boolean isEPratibha() {
-        return getString(R.string.testpress_site_subdomain).equals("eenadupratibha");
+    private Boolean isEPratibhaApp() {
+        return getApplicationContext().getPackageName().equals("net.epratibha.www");
     }
 
     private Boolean hasAgreedTermsAndConditions(){

@@ -10,6 +10,8 @@ import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.OperationCanceledException;
+import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -733,6 +735,9 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     public void openEnforceDataActivity(){
+        if (isEnforceDataActivityOnTop()){
+            return;
+        }
         this.startActivity(
                 EnforceDataActivity.Companion.createIntent(
                         this,
@@ -744,6 +749,14 @@ public class MainActivity extends TestpressFragmentActivity {
                 )
         );
     }
+
+    public boolean isEnforceDataActivityOnTop() {
+        ActivityManager am = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
+        ComponentName topActivity = taskInfo.get(0).topActivity;
+        return topActivity != null && topActivity.getClassName().contains("EnforceDataActivity");
+    }
+
 
     public void checkForForceUserData() {
         new SafeAsyncTask<CheckPermission>() {

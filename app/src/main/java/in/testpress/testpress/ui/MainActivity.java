@@ -1,4 +1,5 @@
 package in.testpress.testpress.ui;
+
 import in.testpress.RequestCode;
 import in.testpress.course.fragments.OfflineDownloadsTabsFragment;
 import in.testpress.course.repository.OfflineAttachmentsRepository;
@@ -66,6 +67,7 @@ import in.testpress.course.TestpressCourse;
 import in.testpress.course.fragments.DownloadsFragment;
 import in.testpress.course.repository.VideoWatchDataRepository;
 import in.testpress.course.ui.MyCoursesFragment;
+import in.testpress.fragments.WebViewFragment;
 import in.testpress.database.OfflineVideoDao;
 import in.testpress.database.TestpressDatabase;
 import in.testpress.database.dao.OfflineAttachmentsDao;
@@ -111,9 +113,12 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private static final String SELECTED_ITEM = "selectedItem";
 
-    @Inject protected TestpressServiceProvider serviceProvider;
-    @Inject protected TestpressService testpressService;
-    @Inject protected LogoutService logoutService;
+    @Inject
+    protected TestpressServiceProvider serviceProvider;
+    @Inject
+    protected TestpressService testpressService;
+    @Inject
+    protected LogoutService logoutService;
     private LinearLayout emptyView;
     private TextView emptyTitleView;
     private TextView emptyDescView;
@@ -185,9 +190,13 @@ public class MainActivity extends TestpressFragmentActivity {
         logo = findViewById(R.id.toolbar_logo);
     }
 
-
     @Override
     public void onBackPressed() {
+        if (shouldHandleWebViewBackPress()) {
+            handleWebViewBackPress();
+            return;
+        }
+
         if (courseListFragment != null && viewPager.getCurrentItem() == 1) {
             if (courseListFragment.onBackPress()) {
                 viewPager.setCurrentItem(0);
@@ -199,10 +208,32 @@ public class MainActivity extends TestpressFragmentActivity {
         }
     }
 
+    private boolean shouldHandleWebViewBackPress() {
+        WebViewFragment webView = getCurrentWebViewFragment();
+        return webView != null && webView.canGoBack();
+    }
+
+    private void handleWebViewBackPress() {
+        WebViewFragment webView = getCurrentWebViewFragment();
+        if (webView != null) {
+            webView.goBack();
+        }
+    }
+
+    @Nullable
+    private WebViewFragment getCurrentWebViewFragment() {
+        Fragment fragment = mMenuItemFragments.get(viewPager.getCurrentItem());
+        if (fragment instanceof WebViewFragment) {
+            return (WebViewFragment) fragment;
+        }
+        return null;
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (!isProductPurchaseSuccessful(requestCode, resultCode)) return;
+        if (!isProductPurchaseSuccessful(requestCode, resultCode))
+            return;
         try {
             for (int i = 0; i < mMenuItemFragments.size(); i++) {
                 Fragment fragment = mMenuItemFragments.get(i);
@@ -218,7 +249,7 @@ public class MainActivity extends TestpressFragmentActivity {
         }
     }
 
-    private boolean isProductPurchaseSuccessful(int requestCode, int resultCode){
+    private boolean isProductPurchaseSuccessful(int requestCode, int resultCode) {
         return requestCode == STORE_REQUEST_CODE && resultCode == RESULT_OK;
     }
 
@@ -230,7 +261,8 @@ public class MainActivity extends TestpressFragmentActivity {
         button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Toast.makeText(getApplicationContext(), "App version is " + getString(R.string.version), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "App version is " + getString(R.string.version),
+                        Toast.LENGTH_SHORT).show();
                 enableOrDisableEasterEgg(getApplicationContext(), true);
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -262,7 +294,8 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private void initOfflineAttachmentDownloadManager() {
         OfflineAttachmentsDao offlineAttachmentDao = TestpressDatabase.Companion.invoke(this).offlineAttachmentDao();
-        OfflineAttachmentsRepository offlineAttachmentsRepository =new OfflineAttachmentsRepository(offlineAttachmentDao);
+        OfflineAttachmentsRepository offlineAttachmentsRepository = new OfflineAttachmentsRepository(
+                offlineAttachmentDao);
         OfflineAttachmentDownloadManager.Companion.init(offlineAttachmentsRepository);
         OfflineAttachmentDownloadManager.Companion.getInstance().restartDownloadProgressTracking(this);
     }
@@ -281,8 +314,7 @@ public class MainActivity extends TestpressFragmentActivity {
     private ActionBarDrawerToggle setupDrawerToggle() {
         return new ActionBarDrawerToggle(
                 this, drawer, getActionBarToolbar(),
-                R.string.open_drawer,  R.string.close_drawer
-        );
+                R.string.open_drawer, R.string.close_drawer);
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
@@ -296,19 +328,20 @@ public class MainActivity extends TestpressFragmentActivity {
         updateMenuItemNames(navigationView.getMenu());
         final HandleMainMenu handleMainMenu = new HandleMainMenu(MainActivity.this, serviceProvider);
         navigationView.setNavigationItemSelectedListener(
-            new NavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(MenuItem menuItem) {
-                    handleMainMenu.handleMenuOptionClick(menuItem.getItemId());
-                    return true;
-                }
-        });
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        handleMainMenu.handleMenuOptionClick(menuItem.getItemId());
+                        return true;
+                    }
+                });
     }
 
     private void customiseToolbar() {
         toolbar.setBackgroundColor(getResources().getColor(R.color.testpress_color_primary));
-//        toolbar.getOverflowIcon().setColorFilter(getResources().getColor(R.color.testpress_color_primary), PorterDuff.Mode.SRC_ATOP);
-//        toolbar.setTitleTextColor(getResources().getColor(R.color.testpress_color_primary));
+        // toolbar.getOverflowIcon().setColorFilter(getResources().getColor(R.color.testpress_color_primary),
+        // PorterDuff.Mode.SRC_ATOP);
+        // toolbar.setTitleTextColor(getResources().getColor(R.color.testpress_color_primary));
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         showLogoInToolbar();
     }
@@ -343,7 +376,7 @@ public class MainActivity extends TestpressFragmentActivity {
             menu.findItem(R.id.profile).setVisible(true);
             menu.findItem(R.id.downloads).setVisible(true);
             menu.findItem(R.id.login).setVisible(false);
-            if (mInstituteSettings != null){
+            if (mInstituteSettings != null) {
                 menu.findItem(R.id.discussions).setVisible(Boolean.TRUE.equals(mInstituteSettings.getForumEnabled()));
                 menu.findItem(R.id.student_report).setVisible(mInstituteSettings.isStudentReportEnabled());
                 menu.findItem(R.id.custom_test).setVisible(mInstituteSettings.isCustomTestEnabled());
@@ -351,13 +384,13 @@ public class MainActivity extends TestpressFragmentActivity {
         }
     }
 
-    private void showShareButtonBasedOnInstituteSettings(Menu menu){
+    private void showShareButtonBasedOnInstituteSettings(Menu menu) {
         if (mInstituteSettings != null) {
             menu.findItem(R.id.share).setVisible(Boolean.TRUE.equals(mInstituteSettings.getShowShareButton()));
         }
     }
 
-    private void showRateUsButtonBasedOnInstituteSettings(Menu menu){
+    private void showRateUsButtonBasedOnInstituteSettings(Menu menu) {
         if (mInstituteSettings != null) {
             menu.findItem(R.id.rate_us).setVisible(Boolean.TRUE.equals(mInstituteSettings.getShowShareButton()));
         }
@@ -375,7 +408,8 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private void showOfflineExamBasedOnInstituteSettings(Menu menu) {
         if (mInstituteSettings != null) {
-            menu.findItem(R.id.offline_exam_list).setVisible(Boolean.TRUE.equals(mInstituteSettings.getEnableOfflineExam(this)));
+            menu.findItem(R.id.offline_exam_list)
+                    .setVisible(Boolean.TRUE.equals(mInstituteSettings.getEnableOfflineExam(this)));
         }
     }
 
@@ -406,7 +440,7 @@ public class MainActivity extends TestpressFragmentActivity {
             menu.findItem(R.id.posts).setTitle(Strings.toString(mInstituteSettings.getPostsLabel()));
             menu.findItem(R.id.bookmarks).setTitle(Strings.toString(mInstituteSettings.getBookmarksLabel()));
         }
-        menu.findItem(R.id.version_info).setTitle("Version - "+getString(R.string.version));
+        menu.findItem(R.id.version_info).setTitle("Version - " + getString(R.string.version));
     }
 
     @Override
@@ -464,8 +498,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private void initScreen() {
         isInitScreenCalledOnce = true;
-        SharedPreferences preferences =
-                getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
         if (!preferences.getBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false)) {
             GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
             apiAvailability.makeGooglePlayServicesAvailable(this);
@@ -473,7 +506,7 @@ public class MainActivity extends TestpressFragmentActivity {
         }
 
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
-            if (mInstituteSettings.getDashboardEnabled()){
+            if (mInstituteSettings.getDashboardEnabled()) {
                 addMenuItem(R.string.home, R.drawable.ic_baseline_home_24, new DashboardFragment());
             }
         } else {
@@ -481,26 +514,31 @@ public class MainActivity extends TestpressFragmentActivity {
         }
         // Show courses list if game front end is enabled, otherwise hide bottom bar
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
-            //noinspection ConstantConditions
-            addMenuItem(R.string.classes, R.drawable.ic_baseline_menu_book_24, getCoursesFragment(new ArrayList<String>(Arrays.asList("classes"))));
-            addMenuItem(R.string.tests, R.drawable.ic_exam, getCoursesFragment(new ArrayList<String>(Arrays.asList("exams"))));
-            addMenuItem(R.string.info, R.drawable.round_smart_display_24, getCoursesFragment(new ArrayList<String>(Arrays.asList("info"))));
-//            AnalyticsFragment analyticsFragment = new AnalyticsFragment();
-//            Bundle bundle = new Bundle();
-//            bundle.putString(ANALYTICS_URL_FRAG, SUBJECT_ANALYTICS_PATH);
-//            analyticsFragment.setArguments(bundle);
-//            addMenuItem(R.string.analytics, R.drawable.analytics, analyticsFragment);
+            // noinspection ConstantConditions
+            addMenuItem(R.string.classes, R.drawable.ic_baseline_menu_book_24,
+                    getCoursesFragment(new ArrayList<String>(Arrays.asList("classes"))));
+            addMenuItem(R.string.tests, R.drawable.ic_exam,
+                    getCoursesFragment(new ArrayList<String>(Arrays.asList("exams"))));
+            addMenuItem(R.string.info, R.drawable.round_smart_display_24,
+                    getCoursesFragment(new ArrayList<String>(Arrays.asList("info"))));
+            // AnalyticsFragment analyticsFragment = new AnalyticsFragment();
+            // Bundle bundle = new Bundle();
+            // bundle.putString(ANALYTICS_URL_FRAG, SUBJECT_ANALYTICS_PATH);
+            // analyticsFragment.setArguments(bundle);
+            // addMenuItem(R.string.analytics, R.drawable.analytics, analyticsFragment);
 
-//            if (mInstituteSettings.getCoursesEnableGamification()) {
-//                //noinspection ConstantConditions
-//                addMenuItem(R.string.testpress_leaderboard, R.drawable.leaderboard,
-//                        TestpressCourse.getLeaderboardFragment(this, TestpressSdk.getTestpressSession(this)));
-//            }
-//            if (mInstituteSettings.getForumEnabled()) {
-//                addMenuItem(R.string.discussions, R.drawable.chat_icon, new ForumListFragment());
-//            }
-//            DownloadsFragment downloadsFragment = new DownloadsFragment();
-//            addMenuItem(R.string.downloads, R.drawable.ic_downloads, downloadsFragment);
+            // if (mInstituteSettings.getCoursesEnableGamification()) {
+            // //noinspection ConstantConditions
+            // addMenuItem(R.string.testpress_leaderboard, R.drawable.leaderboard,
+            // TestpressCourse.getLeaderboardFragment(this,
+            // TestpressSdk.getTestpressSession(this)));
+            // }
+            // if (mInstituteSettings.getForumEnabled()) {
+            // addMenuItem(R.string.discussions, R.drawable.chat_icon, new
+            // ForumListFragment());
+            // }
+            // DownloadsFragment downloadsFragment = new DownloadsFragment();
+            // addMenuItem(R.string.downloads, R.drawable.ic_downloads, downloadsFragment);
         } else {
             grid.setVisibility(View.GONE);
         }
@@ -541,13 +579,29 @@ public class MainActivity extends TestpressFragmentActivity {
         progressBarLayout.setVisibility(View.GONE);
     }
 
+    private void addEPratibhaWebViewFragment() {
+        String[] credentials = CommonUtils.getUserCredentials(this);
+        WebViewFragment webViewFragment = new WebViewFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(WebViewFragment.URL_TO_OPEN,
+                Constants.Http.EPRATIBHA_SSO_URL + "?email=" + credentials[0] + "&pass=" + credentials[1]);
+        bundle.putBoolean(WebViewFragment.SHOW_LOADING_BETWEEN_PAGES, true);
+        bundle.putBoolean(WebViewFragment.IS_AUTHENTICATION_REQUIRED, false);
+        bundle.putBoolean(WebViewFragment.ALLOW_NON_INSTITUTE_URL_IN_WEB_VIEW, true);
+        bundle.putBoolean(WebViewFragment.ENABLE_SWIPE_REFRESH, true);
+        webViewFragment.setArguments(bundle);
+        addMenuItem(R.string.store, R.drawable.home_store_image, webViewFragment);
+    }
+
     private void onItemSelected(int position) {
         mSelectedItem = position;
         mBottomBarAdapter.setSelectedPosition(position);
         mBottomBarAdapter.notifyDataSetChanged();
 
-        if (!in.testpress.testpress.util.UIUtils.getMenuItemName(mMenuItemTitleIds.get(position), mInstituteSettings).isEmpty()) {
-            updateToolbarText(in.testpress.testpress.util.UIUtils.getMenuItemName(mMenuItemTitleIds.get(position), mInstituteSettings));
+        if (!in.testpress.testpress.util.UIUtils.getMenuItemName(mMenuItemTitleIds.get(position), mInstituteSettings)
+                .isEmpty()) {
+            updateToolbarText(in.testpress.testpress.util.UIUtils.getMenuItemName(mMenuItemTitleIds.get(position),
+                    mInstituteSettings));
         } else {
             updateToolbarText(getString(mMenuItemTitleIds.get(position)));
         }
@@ -622,12 +676,13 @@ public class MainActivity extends TestpressFragmentActivity {
                     options.setDsn(instituteSettings.getAndroidSentryDns());
                     options.setEnableAutoSessionTracking(true);
                 });
-        //noinspection ConstantConditions
+        // noinspection ConstantConditions
         if (!isUserAuthenticated && !ALLOW_ANONYMOUS_USER) {
-            // Show login screen if user not logged in else update institute settings in TestpressSDK
+            // Show login screen if user not logged in else update institute settings in
+            // TestpressSDK
             updateTestpressSession();
         } else {
-            if(isVerandaLearningApp() && !hasAgreedTermsAndConditions()){
+            if (isVerandaLearningApp() && !hasAgreedTermsAndConditions()) {
                 startActivity(TermsAndConditionActivity.Companion.createIntent(MainActivity.this));
             }
             initScreen();
@@ -657,7 +712,8 @@ public class MainActivity extends TestpressFragmentActivity {
         new SafeAsyncTask<Update>() {
             @Override
             public Update call() {
-                return testpressService.checkUpdate("" + BuildConfig.VERSION_CODE, getApplicationContext().getPackageName());
+                return testpressService.checkUpdate("" + BuildConfig.VERSION_CODE,
+                        getApplicationContext().getPackageName());
             }
 
             @Override
@@ -668,7 +724,7 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             protected void onSuccess(final Update update) {
                 progressBarLayout.setVisibility(View.GONE);
-                if(update.getUpdateRequired()) {
+                if (update.getUpdateRequired()) {
                     if (update.getForce()) {
                         UpdateAppDialogManager
                                 .showDialog(MainActivity.this, true, update.getMessage());
@@ -737,7 +793,7 @@ public class MainActivity extends TestpressFragmentActivity {
         }
     }
 
-    public void openEnforceDataActivity(){
+    public void openEnforceDataActivity() {
         this.startActivity(
                 EnforceDataActivity.Companion.createIntent(
                         this,
@@ -745,9 +801,7 @@ public class MainActivity extends TestpressFragmentActivity {
                         WHITE_LABELED_HOST_URL + "/settings/force/mobile/",
                         true,
                         false,
-                        EnforceDataActivity.class
-                )
-        );
+                        EnforceDataActivity.class));
     }
 
     public void checkForForceUserData() {
@@ -792,12 +846,12 @@ public class MainActivity extends TestpressFragmentActivity {
         }.execute();
     }
 
-    public void hideMainActivityContents(){
+    public void hideMainActivityContents() {
         grid.setVisibility(View.GONE);
         viewPager.setVisibility(View.GONE);
     }
 
-    public void showMainActivityContents(){
+    public void showMainActivityContents() {
 
         if (isInitScreenCalledOnce) {
             viewPager.setVisibility(View.VISIBLE);
@@ -807,25 +861,29 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private void askNotificationAndStoragePermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requestPermissions(new String[]{
+            requestPermissions(new String[] {
                     Manifest.permission.POST_NOTIFICATIONS
             }, RequestCode.PERMISSION);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            requestPermissions(new String[]{
+            requestPermissions(new String[] {
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.POST_NOTIFICATIONS
             }, RequestCode.PERMISSION);
         } else {
-            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, RequestCode.PERMISSION);
+            requestPermissions(new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }, RequestCode.PERMISSION);
 
         }
     }
 
-    private Boolean isVerandaLearningApp(){
+    private Boolean isVerandaLearningApp() {
         return getApplicationContext().getPackageName().equals("com.verandalearning");
     }
 
-    private Boolean hasAgreedTermsAndConditions(){
+    private Boolean isEPratibhaApp() {
+        return getApplicationContext().getPackageName().equals("net.epratibha.www");
+    }
+
+    private Boolean hasAgreedTermsAndConditions() {
         return getSharedPreferences(TERMS_AND_CONDITIONS, Context.MODE_PRIVATE).getBoolean(TERMS_AND_CONDITIONS, false);
     }
 
@@ -843,7 +901,8 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && requestCode == RequestCode.PERMISSION) {
@@ -855,7 +914,8 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private boolean isNotificationPermissionGranted(@NonNull String[] permissions, @NonNull int[] grantResults) {
         for (int i = 0; i < permissions.length; i++) {
-            if (Manifest.permission.POST_NOTIFICATIONS.equals(permissions[i]) && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+            if (Manifest.permission.POST_NOTIFICATIONS.equals(permissions[i])
+                    && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
                 return true;
             }
         }

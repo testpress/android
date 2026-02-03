@@ -109,6 +109,8 @@ public final class Constants {
         public static final String SINCE = "since";
         public static final String UNTIL = "until";
         public static final String ORDER = "order";
+
+        public static final String EPRATIBHA_SSO_URL = "https://www.epratibha.net/mobile-login/";
     }
 
     public static final class RequestCode {

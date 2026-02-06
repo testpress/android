@@ -150,6 +150,7 @@ public class TestpressServiceProvider {
             settings.setGrowthHackEnabled(GROWTH_HACKS_ENABLED);
             settings.setAppName(activity.getString(R.string.app_name));
             settings.setIsCustomMeetingUIEnabled(ZOOM_CUSTOM_MEETING_UI_ENABLED);
+            settings.enableFacebookEventTracking(activity.getString(R.string.facebook_app_id), activity.getApplication());
             TestpressSdk.setTestpressSession(activity, new TestpressSession(settings, authToken));
         }
 

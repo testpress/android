@@ -103,6 +103,7 @@ public class TestpressServiceProvider {
 
             in.testpress.models.InstituteSettings settings;
             String appLink = "https://play.google.com/store/apps/details?id=" + activity.getPackageName();
+            String facebookAppId = null;
 
             if (instituteSettingsList.isEmpty()) {
                 settings = new in.testpress.models.InstituteSettings(BASE_URL);
@@ -112,6 +113,7 @@ public class TestpressServiceProvider {
                 settings.setShowPDFVertically(SHOW_PDF_VERTICALLY);
             } else {
                 InstituteSettings instituteSettings = instituteSettingsList.get(0);
+                facebookAppId = instituteSettings.getFacebookAppId();
                 settings = new in.testpress.models.InstituteSettings(instituteSettings.getBaseUrl())
                         .setWhiteLabeledHostUrl(BuildConfig.WHITE_LABELED_HOST_URL)
                         .setCurrentPaymentApp(instituteSettings.getCurrentPaymentApp())
@@ -150,6 +152,10 @@ public class TestpressServiceProvider {
             settings.setGrowthHackEnabled(GROWTH_HACKS_ENABLED);
             settings.setAppName(activity.getString(R.string.app_name));
             settings.setIsCustomMeetingUIEnabled(ZOOM_CUSTOM_MEETING_UI_ENABLED);
+            if (facebookAppId != null && !facebookAppId.isEmpty()) {
+                settings.enableFacebookEventTracking(facebookAppId, activity.getApplication());
+            }
+
             TestpressSdk.setTestpressSession(activity, new TestpressSession(settings, authToken));
         }
 

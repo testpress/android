@@ -2,6 +2,7 @@ package in.testpress.testpress;
 
 
 import android.accounts.AccountManager;
+import android.content.Context;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -38,8 +39,8 @@ public class TestpressModule {
     }
 
     @Provides
-    TestpressService provideTestpressService(RestAdapter.Builder restAdapter) {
-        return new TestpressService(restAdapter);
+    TestpressService provideTestpressService(RestAdapter.Builder restAdapter, Context context) {
+        return new TestpressService(restAdapter, context);
     }
 
     @Provides
@@ -78,8 +79,8 @@ public class TestpressModule {
     }
 
     @Provides
-    RestAdapterRequestInterceptor provideRestAdapterRequestInterceptor(UserAgentProvider userAgentProvider) {
-        return new RestAdapterRequestInterceptor(userAgentProvider);
+    RestAdapterRequestInterceptor provideRestAdapterRequestInterceptor(UserAgentProvider userAgentProvider, Context context) {
+        return new RestAdapterRequestInterceptor(userAgentProvider, context);
     }
 
     @Provides

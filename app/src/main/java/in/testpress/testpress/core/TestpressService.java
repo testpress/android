@@ -5,14 +5,10 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
-import android.content.Context;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import in.testpress.util.DeviceIdentifier;
 
 import in.testpress.exam.models.Vote;
 import in.testpress.testpress.models.Category;
@@ -45,7 +41,6 @@ import retrofit.client.OkClient;
 public class TestpressService {
     private RestAdapter.Builder restAdapter;
     private String authToken;
-    private Context context;
 
     public TestpressService() {
     }
@@ -55,15 +50,13 @@ public class TestpressService {
      *
      * @param restAdapter The RestAdapter that allows HTTP Communication.
      */
-    public TestpressService(RestAdapter.Builder restAdapter, Context context) {
+    public TestpressService(RestAdapter.Builder restAdapter) {
         this.restAdapter = restAdapter;
-        this.context = context;
     }
 
-    public TestpressService(RestAdapter.Builder restAdapter, String authToken, Context context) {
+    public TestpressService(RestAdapter.Builder restAdapter, String authToken) {
         this.restAdapter = restAdapter;
         this.authToken = authToken;
-        this.context = context;
     }
 
     public void setAuthToken(String authToken) {
@@ -82,11 +75,6 @@ public class TestpressService {
                 public Response intercept(Chain chain) throws IOException {
                     Request.Builder header = chain.request().newBuilder();
                     header.addHeader("Authorization", getAuthToken());
-                    if (context != null) {
-                        String deviceId = DeviceIdentifier.INSTANCE.get(context);
-                        header.addHeader(DeviceIdentifier.HEADER_DEVICE_UID, deviceId);
-                        header.addHeader(DeviceIdentifier.HEADER_DEVICE_TYPE, DeviceIdentifier.DEVICE_TYPE_MOBILE);
-                    }
                     return chain.proceed(header.build());
                 }
             };

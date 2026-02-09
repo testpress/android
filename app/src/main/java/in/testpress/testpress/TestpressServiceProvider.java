@@ -160,7 +160,7 @@ public class TestpressServiceProvider {
         }
 
         // TODO: See how that affects the testpress service.
-        return new TestpressService(restAdapter, authToken, activity);
+        return new TestpressService(restAdapter, authToken);
     }
 
     public void logout(final Activity activity, TestpressService testpressService,

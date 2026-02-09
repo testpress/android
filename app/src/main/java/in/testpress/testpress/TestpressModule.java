@@ -39,8 +39,8 @@ public class TestpressModule {
     }
 
     @Provides
-    TestpressService provideTestpressService(RestAdapter.Builder restAdapter, Context context) {
-        return new TestpressService(restAdapter, context);
+    TestpressService provideTestpressService(RestAdapter.Builder restAdapter) {
+        return new TestpressService(restAdapter);
     }
 
     @Provides

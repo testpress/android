@@ -1,6 +1,5 @@
 package in.testpress.testpress.authenticator;
 
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
@@ -112,9 +111,11 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
     private AccountManager accountManager;
 
-    @Inject TestpressService testpressService;
+    @Inject
+    TestpressService testpressService;
 
-    @Inject Bus bus;
+    @Inject
+    Bus bus;
     LinearLayout loginLayout;
     TextInputLayout usernameInputLayout;
     TextInputLayout passwordInputLayout;
@@ -135,7 +136,6 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     TextView emptyTitleView;
     TextView emptyDescView;
     Button retryButton;
-
 
     private String authToken;
     private String authTokenType;
@@ -185,7 +185,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         passwordText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
             public boolean onEditorAction(final TextView v, final int actionId,
-                                          final KeyEvent event) {
+                    final KeyEvent event) {
                 if (actionId == IME_ACTION_SEND) {
                     signIn();
                     return true;
@@ -229,7 +229,6 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             }
         });
 
-
         usernameText.setSingleLine();
         usernameText.requestFocus();
         passwordText.setTypeface(Typeface.DEFAULT);
@@ -238,7 +237,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(
                 GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
-                .requestIdToken(getString(R.string.server_client_id))
+                .requestIdToken("589544710202-n1re9gbmod6pphlkkdiln5e39t7jsh87.apps.googleusercontent.com")
                 .build();
         googleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
@@ -269,7 +268,6 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
         setLoginLabel(instituteSettings);
         setVisibilityResendVerificationSMS(instituteSettings);
-
 
         if (!instituteSettings.getFacebookAppId().isEmpty() && AccessToken.getCurrentAccessToken() != null) {
             LoginManager.getInstance().logOut();
@@ -337,17 +335,24 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
     public void setLoginLabel(InstituteSettings instituteSettings) {
 
-        if (!Strings.toString(in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_username, instituteSettings)).isEmpty()) {
-            usernameInputLayout.setHint(in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_username, instituteSettings));
+        if (!Strings
+                .toString(
+                        in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_username, instituteSettings))
+                .isEmpty()) {
+            usernameInputLayout.setHint(
+                    in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_username, instituteSettings));
         }
 
-        if (!Strings.toString(in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_password, instituteSettings)).isEmpty()) {
-            passwordInputLayout.setHint(in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_password, instituteSettings));
+        if (!Strings
+                .toString(
+                        in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_password, instituteSettings))
+                .isEmpty()) {
+            passwordInputLayout.setHint(
+                    in.testpress.testpress.util.UIUtils.getMenuItemName(R.string.label_password, instituteSettings));
         }
     }
 
-
-    public void setVisibilityResendVerificationSMS(InstituteSettings instituteSettings){
+    public void setVisibilityResendVerificationSMS(InstituteSettings instituteSettings) {
         if (instituteSettings.getVerificationMethod().equals("M")) {
             resendVerificationCodeButton.setVisibility(View.VISIBLE);
         } else {
@@ -396,17 +401,17 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     }
 
     private void authenticate(final String userId, String accessToken,
-                              final TestpressSdk.Provider provider) {
+            final TestpressSdk.Provider provider) {
 
-        in.testpress.models.InstituteSettings settings =
-                new in.testpress.models.InstituteSettings(instituteSettings.getBaseUrl())
-                        .setWhiteLabeledHostUrl(BuildConfig.WHITE_LABELED_HOST_URL)
-                        .setBookmarksEnabled(instituteSettings.getBookmarksEnabled())
-                        .setCoursesFrontend(instituteSettings.getShowGameFrontend())
-                        .setCoursesGamificationEnabled(instituteSettings.getCoursesEnableGamification())
-                        .setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled())
-                        .setAndroidSentryDns(instituteSettings.getAndroidSentryDns())
-                        .setAccessCodeEnabled(false);
+        in.testpress.models.InstituteSettings settings = new in.testpress.models.InstituteSettings(
+                instituteSettings.getBaseUrl())
+                .setWhiteLabeledHostUrl(BuildConfig.WHITE_LABELED_HOST_URL)
+                .setBookmarksEnabled(instituteSettings.getBookmarksEnabled())
+                .setCoursesFrontend(instituteSettings.getShowGameFrontend())
+                .setCoursesGamificationEnabled(instituteSettings.getCoursesEnableGamification())
+                .setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled())
+                .setAndroidSentryDns(instituteSettings.getAndroidSentryDns())
+                .setAccessCodeEnabled(false);
 
         TestpressSdk.initialize(this, settings, userId, accessToken, provider,
                 new TestpressCallback<TestpressSession>() {
@@ -446,7 +451,6 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
                 !instituteSettings.getGoogleLoginEnabled());
         ViewUtils.setGone(signUpButton, !instituteSettings.getAllowSignup());
     }
-
 
     @Override
     protected void onResume() {
@@ -515,8 +519,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
      */
 
     protected void finishLogin() {
-        SharedPreferences sharedPreferences =
-                getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(Constants.GCM_PREFERENCE_NAME, Context.MODE_PRIVATE);
         sharedPreferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
         CommonUtils.registerDevice(this, testpressService);
         final Account account = new Account(username, APPLICATION_ID);
@@ -624,7 +627,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             passwordError.setText(getString(R.string.empty_input_error));
         }
         if (populated(usernameText) && populated(passwordText)) {
-            if(internetConnectivityChecker.isConnected()) {
+            if (internetConnectivityChecker.isConnected()) {
                 handleLogin(signInButton);
             } else {
                 internetConnectivityChecker.showAlert();
@@ -633,16 +636,16 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     }
 
     private void signUp() {
-        if(instituteSettings.getCustomRegistrationEnabled() != null && instituteSettings.getCustomRegistrationEnabled()) {
+        if (instituteSettings.getCustomRegistrationEnabled() != null
+                && instituteSettings.getCustomRegistrationEnabled()) {
             Intent intent = new Intent(this, WebViewActivity.class);
             intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Register");
             intent.putExtra(WebViewActivity.SHOW_LOGOUT, "false");
             intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + "/register/");
             startActivity(intent);
-        }
-        else if(internetConnectivityChecker.isConnected()) {
+        } else if (internetConnectivityChecker.isConnected()) {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-            if(getIntent().getExtras() != null) {
+            if (getIntent().getExtras() != null) {
                 intent.putExtras(getIntent().getExtras());
             }
             startActivityForResult(intent, REQUEST_CODE_REGISTER_USER);
@@ -654,13 +657,13 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
     private void openResendVerificationCode() {
         Intent intent = new Intent(LoginActivity.this, WebViewActivity.class);
-        intent.putExtra(URL_TO_OPEN, BASE_URL+"/resend/");
+        intent.putExtra(URL_TO_OPEN, BASE_URL + "/resend/");
         intent.putExtra(ACTIVITY_TITLE, "Resend Verification SMS");
         startActivity(intent);
     }
 
     private void verify() {
-        if(internetConnectivityChecker.isConnected()) {
+        if (internetConnectivityChecker.isConnected()) {
             Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
             startActivity(intent);
         } else {
@@ -675,7 +678,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
     private void initWebView() {
         Intent intent = new Intent(LoginActivity.this, WebViewActivity.class);
-        intent.putExtra(URL_TO_OPEN, BASE_URL+"/privacy");
+        intent.putExtra(URL_TO_OPEN, BASE_URL + "/privacy");
         intent.putExtra(ACTIVITY_TITLE, "Privacy Policy");
         startActivity(intent);
     }
@@ -690,7 +693,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         } else if (requestCode == REQUEST_CODE_GOOGLE_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result != null && result.isSuccess()) {
-                //noinspection ConstantConditions
+                // noinspection ConstantConditions
                 if (result.getSignInAccount().getGivenName() == null ||
                         result.getSignInAccount().getGivenName().isEmpty()) {
                     username = result.getSignInAccount().getGivenName();

@@ -104,7 +104,7 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
             GoogleSignInOptions.DEFAULT_SIGN_IN
         )
             .requestEmail()
-            .requestIdToken(getString(R.string.server_client_id))
+            .requestIdToken("589544710202-n1re9gbmod6pphlkkdiln5e39t7jsh87.apps.googleusercontent.com")
             .build()
         googleApiClient = GoogleSignIn.getClient(this, googleSignInOptions)
     }

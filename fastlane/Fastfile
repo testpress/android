@@ -34,6 +34,7 @@ end
 desc "Generate Customized app for an institute"
 lane :generate_customized_app_files do |params|
   config = params[:app_config]
+  config["server_client_id"] = "589544710202-n1re9gbmod6pphlkkdiln5e39t7jsh87.apps.googleusercontent.com"
   split_apk = params[:split_apk]
   replace_images(app_config: config)
   replace_google_services_json(google_services_json: config["google_services_json"].to_json)

@@ -182,4 +182,7 @@
         <item quantity="one">1 Chapter</item>
         <item quantity="other">%d Chapters</item>
     </plurals>
+    <string name="testpress_device_not_allowed">Device Not Allowed</string>
+    <string name="testpress_device_not_authorized_description">You are not authorized to use this device. Please contact support.</string>
+    <string name="testpress_login_with_different_account">Login with different account</string>
 </resources>

@@ -68,6 +68,7 @@ import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.PostDao;
+import in.testpress.testpress.ui.DeviceNotAllowedActivity;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.PostActivity;
 import in.testpress.testpress.ui.WebViewActivity;
@@ -165,6 +166,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
+        DeviceNotAllowedActivity.resetShowing();
 
         TestpressApplication.getAppComponent().inject(this);
 

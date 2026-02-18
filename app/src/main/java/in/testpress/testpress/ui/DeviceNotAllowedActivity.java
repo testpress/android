@@ -45,11 +45,6 @@ public class DeviceNotAllowedActivity extends AppCompatActivity {
         // Disable back button to force user to logout
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
     public static void resetShowing() {
         isShowing = false;
     }

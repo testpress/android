@@ -151,7 +151,7 @@ public class TestpressFragmentActivity extends AppCompatActivity {
     }
 
     protected void onReceiveCustomErrorEvent(final CustomErrorEvent customErrorEvent) {
-        if (customErrorEvent.getErrorCode().equals("device_not_allowed")) {
+        if (customErrorEvent.getErrorCode().equals(getString(R.string.DEVICE_NOT_ALLOWED_ERROR_CODE))) {
             if (DeviceNotAllowedActivity.isShowing) {
                 return;
             }

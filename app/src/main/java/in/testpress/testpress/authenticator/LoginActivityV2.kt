@@ -12,6 +12,7 @@ import `in`.testpress.testpress.core.Constants
 import `in`.testpress.testpress.core.TestpressService
 import `in`.testpress.testpress.models.InstituteSettings
 import `in`.testpress.testpress.repository.InstituteRepository
+import `in`.testpress.testpress.ui.DeviceNotAllowedActivity
 import `in`.testpress.testpress.ui.TERMS_AND_CONDITIONS
 import `in`.testpress.testpress.ui.TermsAndConditionActivity
 import `in`.testpress.testpress.ui.fragments.OTPVerificationFragment
@@ -62,6 +63,7 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        DeviceNotAllowedActivity.resetShowing()
         TestpressApplication.getAppComponent().inject(this)
         setContentView(R.layout.container_layout_without_toolbar)
         loadingDialog = LoadingDialog(this)

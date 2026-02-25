@@ -4,6 +4,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import javax.inject.Inject;
 
@@ -30,6 +31,20 @@ public class DeviceNotAllowedActivity extends AppCompatActivity {
         isShowing = true;
         setContentView(R.layout.device_not_allowed);
         TestpressApplication.getAppComponent().inject(this);
+
+        TextView titleView = findViewById(R.id.title);
+        TextView descriptionView = findViewById(R.id.description);
+
+        String title = getIntent().getStringExtra("title");
+        String description = getIntent().getStringExtra("description");
+
+        if (title != null && !title.isEmpty()) {
+            titleView.setText(title);
+        }
+
+        if (description != null && !description.isEmpty()) {
+            descriptionView.setText(description);
+        }
 
         Button logoutButton = findViewById(R.id.logout_button);
         logoutButton.setOnClickListener(new View.OnClickListener() {

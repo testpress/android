@@ -151,11 +151,14 @@ public class TestpressFragmentActivity extends AppCompatActivity {
     }
 
     protected void onReceiveCustomErrorEvent(final CustomErrorEvent customErrorEvent) {
-        if (customErrorEvent.getErrorCode().equals(getString(R.string.DEVICE_NOT_ALLOWED_ERROR_CODE))) {
+        if (customErrorEvent.getErrorCode().equals(getString(R.string.DEVICE_ALREADY_BOUND_ERROR_CODE)) ||
+                customErrorEvent.getErrorCode().equals(getString(R.string.UNAUTHORIZED_DEVICE_ERROR_CODE))) {
             if (DeviceNotAllowedActivity.isShowing) {
                 return;
             }
             Intent intent = new Intent(this, DeviceNotAllowedActivity.class);
+            intent.putExtra("title", customErrorEvent.getTitle());
+            intent.putExtra("description", customErrorEvent.getDetail());
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         } else if (customErrorEvent.getErrorCode().equals(getString(R.string.PARALLEL_LOGIN_RESTRICTION_ERROR_CODE))) {

@@ -45,7 +45,8 @@ public class RestErrorHandler implements ErrorHandler {
             } else {
                 TestpressApiErrorResponse errorResponse = (TestpressApiErrorResponse) cause.getBodyAs(TestpressApiErrorResponse.class);
                 if (errorResponse != null && errorResponse.getErrorCode() != null) {
-                    bus.post(new CustomErrorEvent(errorResponse.getErrorCode(), errorResponse.getDetail()));
+                    bus.post(new CustomErrorEvent(errorResponse.getErrorCode(), errorResponse.getDetail(),
+                            errorResponse.getTitle()));
                 } else {
                     bus.post(new RestAdapterErrorEvent(cause));
                 }

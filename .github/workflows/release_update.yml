@@ -5,7 +5,7 @@ on:
     inputs:
       mode:
         description: "Release mode: 'all' releases updates for all institutes. 'batch' releases updates for the provided comma-separated list."
-        default: "all"
+        default: "batch"
         type: choice
         options:
           - "all"

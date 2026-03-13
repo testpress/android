@@ -1,6 +1,12 @@
 name: Release update
 
 on:
+  push:
+    branches:
+      - "**"
+    paths:
+      - "fastlane/**"
+      - ".github/workflows/release_update.yml"
   workflow_dispatch:
     inputs:
       mode:
@@ -25,6 +31,7 @@ on:
 
 jobs:
   release_update:
+    if: ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     env:
       GITHUB_ACCESS_KEY: ${{ secrets.GH_ACCESS_KEY }}
@@ -101,7 +108,7 @@ jobs:
           bundle exec fastlane release_update_batch subdomains:"${{ github.event.inputs.subdomains }}" release_option:${{ github.event.inputs.release_option }}
 
       - name: Store app artifacts
-        if: ${{ github.event.inputs.mode == 'all' }}
+        if: ${{ always() && github.event.inputs.mode == 'all' }}
         uses: actions/upload-artifact@v4
         with:
           name: app
@@ -111,7 +118,7 @@ jobs:
             app/build/outputs/apk/debug/app-debug.apk
 
       - name: Store batch app artifacts
-        if: ${{ github.event.inputs.mode == 'batch' }}
+        if: ${{ always() && github.event.inputs.mode == 'batch' }}
         uses: actions/upload-artifact@v4
         with:
           name: batch-app-artifacts
@@ -119,9 +126,98 @@ jobs:
             batch_artifacts
 
       - name: Store batch summary
-        if: ${{ github.event.inputs.mode }} == 'batch'
+        if: ${{ always() && github.event.inputs.mode == 'batch' }}
         uses: actions/upload-artifact@v4
         with:
           name: batch-summary
+          path: |
+            release_update_batch_summary.json
+
+  push_batch_build:
+    if: ${{ github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_ACCESS_KEY: ${{ secrets.GH_ACCESS_KEY }}
+      GITHUB_USERNAME: ${{ secrets.GH_USERNAME }}
+      API_ACCESS_KEY: ${{ secrets.API_ACCESS_KEY }}
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      - name: Validate secrets
+        run: |
+          if [ -z "$(echo "$API_ACCESS_KEY" | tr -d '[:space:]')" ]; then
+            echo "ERROR: API_ACCESS_KEY is not available."
+            exit 1
+          fi
+          if [ -z "$(echo "$GITHUB_USERNAME" | tr -d '[:space:]')" ]; then
+            echo "ERROR: GITHUB_USERNAME is not available (required for GitHub Packages Maven auth)."
+            exit 1
+          fi
+          if [ -z "$(echo "$GITHUB_ACCESS_KEY" | tr -d '[:space:]')" ]; then
+            echo "ERROR: GITHUB_ACCESS_KEY is not available (required for GitHub Packages Maven auth)."
+            exit 1
+          fi
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: 17
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+
+      - name: Caching Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Setup ruby and fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+          bundler-cache: true
+
+      - name: Cache Zoom SDK files
+        id: zoom-cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ./mobilertc
+            ./commonlib
+          key: zoom_sdk_files
+
+      - name: Setup Zoom SDK
+        if: steps.zoom-cache.outputs.cache-hit != 'true'
+        run: |
+          wget https://media.testpress.in/static/android/zoom_sdk.zip
+          unzip -o ./zoom_sdk.zip
+
+      - name: Batch release (draft)
+        run: |
+          export LC_ALL=en_US.UTF-8
+          export LANG=en_US.UTF-8
+          bundle exec fastlane release_update_batch subdomains:"lms,lmsdemo" release_option:draft
+
+      - name: Store push batch app artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: push-batch-app-artifacts
+          path: |
+            batch_artifacts
+
+      - name: Store push batch release summary
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: push-batch-release-summary
           path: |
             release_update_batch_summary.json

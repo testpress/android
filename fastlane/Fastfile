@@ -2,6 +2,10 @@ require 'json'
 require 'fileutils'
 require 'time'
 
+def workspace_root
+  ENV["GITHUB_WORKSPACE"].to_s.strip.empty? ? Dir.pwd : ENV["GITHUB_WORKSPACE"].to_s
+end
+
 desc "Build customized app for an institute"
 lane :build_app_files do |params|
   app_config = get_app_config(subdomain: params[:subdomain])
@@ -12,6 +16,7 @@ desc "Release updates for a comma-separated batch of subdomains (always continue
 lane :release_update_batch do |params|
   raw_subdomains = params[:subdomains].to_s
   release_option = params[:release_option]
+  root = workspace_root
 
   subdomains = raw_subdomains
                 .split(/[,\s]+/)
@@ -32,9 +37,9 @@ lane :release_update_batch do |params|
   skipped = []
 
   expected_artifacts = [
-    { "src" => File.join("app", "build", "outputs", "bundle", "release", "app-release.aab"), "dst" => "app-release.aab" },
-    { "src" => File.join("app", "build", "outputs", "apk", "release", "app-release.apk"), "dst" => "app-release.apk" },
-    { "src" => File.join("app", "build", "outputs", "apk", "debug", "app-debug.apk"), "dst" => "app-debug.apk" }
+    { "src" => File.join(root, "app", "build", "outputs", "bundle", "release", "app-release.aab"), "dst" => "app-release.aab" },
+    { "src" => File.join(root, "app", "build", "outputs", "apk", "release", "app-release.apk"), "dst" => "app-release.apk" },
+    { "src" => File.join(root, "app", "build", "outputs", "apk", "debug", "app-debug.apk"), "dst" => "app-debug.apk" }
   ].freeze
 
   subdomains.each do |subdomain|
@@ -60,7 +65,7 @@ lane :release_update_batch do |params|
       generate_customized_app_files(app_config: app_config)
 
       current_step = "collect_artifacts"
-      artifact_root = File.join("batch_artifacts", subdomain)
+      artifact_root = File.join(root, "batch_artifacts", subdomain)
       FileUtils.mkdir_p(artifact_root)
 
       missing = []
@@ -107,7 +112,7 @@ lane :release_update_batch do |params|
     }
   }
 
-  File.write("release_update_batch_summary.json", JSON.pretty_generate(summary))
+  File.write(File.join(root, "release_update_batch_summary.json"), JSON.pretty_generate(summary))
 
   UI.message("Batch release summary: requested=#{subdomains.length}, succeeded=#{succeeded.length}, failed=#{failed.length}, skipped=#{skipped.length}")
   if failed.any?

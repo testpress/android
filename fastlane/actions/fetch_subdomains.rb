@@ -12,9 +12,6 @@ module Fastlane
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = true
         response = http.request(request)
-        unless response.is_a?(Net::HTTPSuccess)
-          UI.user_error!("Fetch subdomains failed: HTTP #{response.code} - #{response.body}")
-        end
         return JSON.parse(response.body)
       end
     end

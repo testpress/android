@@ -1,6 +1,9 @@
 name: Release update
 
 on:
+  push:
+    branches:
+      - "**"
   workflow_dispatch:
     inputs:
       mode:
@@ -13,7 +16,7 @@ on:
       subdomains:
         description: "Batch mode only: comma-separated subdomains (example: inst1,inst2,inst3). Can contain a single subdomain."
         required: false
-        default: ""
+        default: "lmsdemo,lms"
 
       release_option:
         description: "Choose the type of release. 'Completed' for a full release or 'Draft' for a pre-release version."

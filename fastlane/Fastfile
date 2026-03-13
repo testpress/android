@@ -40,6 +40,16 @@ lane :release_update_batch do |params|
       next
     end
 
+    begin
+      config = get_app_config(subdomain: subdomain)
+      unless config.is_a?(Hash) && config["package_name"].to_s.strip != ""
+        raise "Invalid app-config response (missing package_name)"
+      end
+    rescue => e
+      failed << { "subdomain" => subdomain, "step" => "validate_subdomain", "error" => e.message }
+      next
+    end
+
     app_config = nil
     begin
       app_config = update_app_version(subdomain: subdomain)

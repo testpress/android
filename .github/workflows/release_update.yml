@@ -137,6 +137,8 @@ jobs:
     if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     env:
+      GITHUB_ACCESS_KEY: ${{ secrets.GH_ACCESS_KEY }}
+      GITHUB_USERNAME: ${{ secrets.GH_USERNAME }}
       API_ACCESS_KEY: ${{ secrets.API_ACCESS_KEY }}
 
     steps:
@@ -147,6 +149,14 @@ jobs:
         run: |
           if [ -z "$(echo "$API_ACCESS_KEY" | tr -d '[:space:]')" ]; then
             echo "ERROR: API_ACCESS_KEY is not available."
+            exit 1
+          fi
+          if [ -z "$(echo "$GITHUB_USERNAME" | tr -d '[:space:]')" ]; then
+            echo "ERROR: GITHUB_USERNAME is not available (required for GitHub Packages Maven auth)."
+            exit 1
+          fi
+          if [ -z "$(echo "$GITHUB_ACCESS_KEY" | tr -d '[:space:]')" ]; then
+            echo "ERROR: GITHUB_ACCESS_KEY is not available (required for GitHub Packages Maven auth)."
             exit 1
           fi
 

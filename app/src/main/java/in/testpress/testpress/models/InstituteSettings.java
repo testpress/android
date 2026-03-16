@@ -701,7 +701,7 @@ public class InstituteSettings {
     }
 
     public Boolean getRequireQuestionReportDescription() {
-        return requireQuestionReportDescription != null && requireQuestionReportDescription;
+        return requireQuestionReportDescription;
     }
 
     public InstituteSettings setRequireQuestionReportDescription(Boolean requireQuestionReportDescription) {
@@ -710,7 +710,7 @@ public class InstituteSettings {
     }
 
     public Integer getQuestionReportDescriptionMinLength() {
-        return questionReportDescriptionMinLength != null ? questionReportDescriptionMinLength : 0;
+        return questionReportDescriptionMinLength;
     }
 
     public InstituteSettings setQuestionReportDescriptionMinLength(Integer questionReportDescriptionMinLength) {

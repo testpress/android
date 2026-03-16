@@ -92,6 +92,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         public final static Property VideoWatermarkType = new Property(63, String.class, "videoWatermarkType", false, "VIDEO_WATERMARK_TYPE");
         public final static Property VideoWatermarkPosition = new Property(64, String.class, "videoWatermarkPosition", false, "VIDEO_WATERMARK_POSITION");
         public final static Property UseNewDiscountFeat = new Property(65, Boolean.class, "useNewDiscountFeat", false, "USE_NEW_DISCOUNT_FEAT");
+        public final static Property RequireQuestionReportDescription = new Property(66, Boolean.class, "requireQuestionReportDescription", false, "REQUIRE_QUESTION_REPORT_DESCRIPTION");
+        public final static Property QuestionReportDescriptionMinLength = new Property(67, Integer.class, "questionReportDescriptionMinLength", false, "QUESTION_REPORT_DESCRIPTION_MIN_LENGTH");
     };
 
     private final IntegerListConverter allowedLoginMethodsConverter = new IntegerListConverter();
@@ -173,7 +175,9 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
                 "\"SALESFORCE_MARKETING_CLOUD_URL\" TEXT," + // 62: salesforceMarketingCloudUrl
                 "\"VIDEO_WATERMARK_TYPE\" TEXT," + // 63: videoWatermarkType
                 "\"VIDEO_WATERMARK_POSITION\" TEXT," + // 64: videoWatermarkPosition
-                "\"USE_NEW_DISCOUNT_FEAT\" INTEGER);"); // 65: useNewDiscountFeat
+                "\"USE_NEW_DISCOUNT_FEAT\" INTEGER," + // 65: useNewDiscountFeat
+                "\"REQUIRE_QUESTION_REPORT_DESCRIPTION\" INTEGER," + // 66: requireQuestionReportDescription
+                "\"QUESTION_REPORT_DESCRIPTION_MIN_LENGTH\" INTEGER);"); // 67: questionReportDescriptionMinLength
     }
 
     /** Drops the underlying database table. */
@@ -512,6 +516,16 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         if (useNewDiscountFeat != null) {
             stmt.bindLong(66, useNewDiscountFeat ? 1L: 0L);
         }
+
+        Boolean requireQuestionReportDescription = entity.getRequireQuestionReportDescription();
+        if (requireQuestionReportDescription != null) {
+            stmt.bindLong(67, requireQuestionReportDescription ? 1L: 0L);
+        }
+
+        Integer questionReportDescriptionMinLength = entity.getQuestionReportDescriptionMinLength();
+        if (questionReportDescriptionMinLength != null) {
+            stmt.bindLong(68, questionReportDescriptionMinLength);
+        }
     }
 
     /** @inheritdoc */
@@ -589,7 +603,9 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             cursor.isNull(offset + 62) ? null : cursor.getString(offset + 62), // salesforceMarketingCloudUrl
             cursor.isNull(offset + 63) ? null : cursor.getString(offset + 63), // videoWatermarkType
             cursor.isNull(offset + 64) ? null : cursor.getString(offset + 64), // videoWatermarkPosition
-            cursor.isNull(offset + 65) ? null : cursor.getShort(offset + 65) != 0 // useNewDiscountFeat
+            cursor.isNull(offset + 65) ? null : cursor.getShort(offset + 65) != 0, // useNewDiscountFeat
+            cursor.isNull(offset + 66) ? null : cursor.getShort(offset + 66) != 0, // requireQuestionReportDescription
+            cursor.isNull(offset + 67) ? null : cursor.getInt(offset + 67) // questionReportDescriptionMinLength
         );
         return entity;
     }
@@ -663,6 +679,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         entity.setVideoWatermarkType(cursor.isNull(offset + 63) ? null : cursor.getString(offset + 63));
         entity.setVideoWatermarkPosition(cursor.isNull(offset + 64) ? null : cursor.getString(offset + 64));
         entity.setUseNewDiscountFeat(cursor.isNull(offset + 65) ? null : cursor.getShort(offset + 65) != 0);
+        entity.setRequireQuestionReportDescription(cursor.isNull(offset + 66) ? null : cursor.getShort(offset + 66) != 0);
+        entity.setQuestionReportDescriptionMinLength(cursor.isNull(offset + 67) ? null : cursor.getInt(offset + 67));
      }
     
     /** @inheritdoc */

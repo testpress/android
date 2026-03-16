@@ -88,6 +88,8 @@ public class InstituteSettings {
     private String videoWatermarkType;
     private String videoWatermarkPosition;
     private Boolean useNewDiscountFeat;
+    private Boolean requireQuestionReportDescription;
+    private Integer questionReportDescriptionMinLength;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
@@ -99,7 +101,7 @@ public class InstituteSettings {
         this.baseUrl = baseUrl;
     }
 
-    public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, Boolean facebookLoginEnabled, Boolean googleLoginEnabled, boolean commentsVotingEnabled, Boolean bookmarksEnabled, Boolean forumEnabled, String forumLabel, Boolean twilioEnabled, Boolean allow_profile_edit, String learnLabel, String leaderboardLabel, String dashboardLabel, String bookmarksLabel, String loginLabel, String loginPasswordLabel, String aboutUs, Boolean disableStudentAnalytics, Boolean customRegistrationEnabled, Boolean enableParallelLoginRestriction, Integer maxParallelLogins, Integer lockoutLimit, String cooloffTime, String appToolbarLogo, String appShareLink, String serverTime, Boolean allowScreenshotInApp, String androidSentryDns, Boolean leaderboardEnabled, String threatsAndTargetsLabel, Boolean isVideoDownloadEnabled, Boolean isHelpdeskEnabled, IntegerList allowedLoginMethods, Boolean showShareButton, String facebookAppId, Integer maxAllowedDownloadedVideos, Boolean disableForgotPassword, Boolean disableStudentReport, Boolean enableCustomTest, String currentPaymentApp, String customRegistrationUrl, Boolean disableStoreInApp, Boolean salesforceSdkEnabled, String salesforceMcApplicationId, String salesforceMcAccessToken, String salesforceFcmSenderId, String salesforceMarketingCloudUrl, String videoWatermarkType, String videoWatermarkPosition, Boolean useNewDiscountFeat) {
+    public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, Boolean facebookLoginEnabled, Boolean googleLoginEnabled, boolean commentsVotingEnabled, Boolean bookmarksEnabled, Boolean forumEnabled, String forumLabel, Boolean twilioEnabled, Boolean allow_profile_edit, String learnLabel, String leaderboardLabel, String dashboardLabel, String bookmarksLabel, String loginLabel, String loginPasswordLabel, String aboutUs, Boolean disableStudentAnalytics, Boolean customRegistrationEnabled, Boolean enableParallelLoginRestriction, Integer maxParallelLogins, Integer lockoutLimit, String cooloffTime, String appToolbarLogo, String appShareLink, String serverTime, Boolean allowScreenshotInApp, String androidSentryDns, Boolean leaderboardEnabled, String threatsAndTargetsLabel, Boolean isVideoDownloadEnabled, Boolean isHelpdeskEnabled, IntegerList allowedLoginMethods, Boolean showShareButton, String facebookAppId, Integer maxAllowedDownloadedVideos, Boolean disableForgotPassword, Boolean disableStudentReport, Boolean enableCustomTest, String currentPaymentApp, String customRegistrationUrl, Boolean disableStoreInApp, Boolean salesforceSdkEnabled, String salesforceMcApplicationId, String salesforceMcAccessToken, String salesforceFcmSenderId, String salesforceMarketingCloudUrl, String videoWatermarkType, String videoWatermarkPosition, Boolean useNewDiscountFeat, Boolean requireQuestionReportDescription, Integer questionReportDescriptionMinLength) {
         this.baseUrl = baseUrl;
         this.verificationMethod = verificationMethod;
         this.allowSignup = allowSignup;
@@ -166,6 +168,8 @@ public class InstituteSettings {
         this.videoWatermarkType = videoWatermarkType;
         this.videoWatermarkPosition = videoWatermarkPosition;
         this.useNewDiscountFeat = useNewDiscountFeat;
+        this.requireQuestionReportDescription = requireQuestionReportDescription;
+        this.questionReportDescriptionMinLength = questionReportDescriptionMinLength;
     }
 
     public String getBaseUrl() {
@@ -694,6 +698,24 @@ public class InstituteSettings {
 
     public void setUseNewDiscountFeat(Boolean useNewDiscountFeat) {
         this.useNewDiscountFeat = useNewDiscountFeat;
+    }
+
+    public Boolean getRequireQuestionReportDescription() {
+        return requireQuestionReportDescription;
+    }
+
+    public InstituteSettings setRequireQuestionReportDescription(Boolean requireQuestionReportDescription) {
+        this.requireQuestionReportDescription = requireQuestionReportDescription;
+        return this;
+    }
+
+    public Integer getQuestionReportDescriptionMinLength() {
+        return questionReportDescriptionMinLength;
+    }
+
+    public InstituteSettings setQuestionReportDescriptionMinLength(Integer questionReportDescriptionMinLength) {
+        this.questionReportDescriptionMinLength = questionReportDescriptionMinLength;
+        return this;
     }
 
     // KEEP METHODS - put your custom methods here

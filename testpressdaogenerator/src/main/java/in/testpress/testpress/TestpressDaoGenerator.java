@@ -7,7 +7,7 @@ import de.greenrobot.daogenerator.Schema;
 
 public class TestpressDaoGenerator {
     public static void main(String args[]) throws Exception {
-        Schema schema = new Schema(45, "in.testpress.testpress.models");
+        Schema schema = new Schema(46, "in.testpress.testpress.models");
 
         Entity post = schema.addEntity("Post");
         post.addLongProperty("id").primaryKey();
@@ -111,6 +111,8 @@ public class TestpressDaoGenerator {
         instituteSettings.addStringProperty("videoWatermarkType");
         instituteSettings.addStringProperty("videoWatermarkPosition");
         instituteSettings.addBooleanProperty("useNewDiscountFeat");
+        instituteSettings.addBooleanProperty("requireQuestionReportDescription");
+        instituteSettings.addIntProperty("questionReportDescriptionMinLength");
 
         Entity rssFeed = schema.addEntity("RssItem");
         rssFeed.addLongProperty("id").primaryKey().autoincrement();

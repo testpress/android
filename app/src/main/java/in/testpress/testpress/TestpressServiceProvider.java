@@ -145,7 +145,9 @@ public class TestpressServiceProvider {
                         .setDisableStoreInApp(instituteSettings.getDisableStoreInApp())
                         .setVideoWatermarkType(instituteSettings.getVideoWatermarkType())
                         .setVideoWatermarkPosition(instituteSettings.getVideoWatermarkPosition())
-                        .setUseNewDiscountFeat(instituteSettings.getUseNewDiscountFeat());
+                        .setUseNewDiscountFeat(instituteSettings.getUseNewDiscountFeat())
+                        .setRequireQuestionReportDescription(instituteSettings.getRequireQuestionReportDescription())
+                        .setQuestionReportDescriptionMinLength(instituteSettings.getQuestionReportDescriptionMinLength());
                 appLink = instituteSettings.getAppShareLink();
             }
             settings.setAppShareText(SHARE_MESSAGE + activity.getString(R.string.get_it_at) + appLink);

@@ -60,7 +60,7 @@ public class UpdateAppDialogManager {
                 .theme(Theme.LIGHT)
                 .title(R.string.update_your_app)
                 .content(message)
-                .positiveText(R.string.testpress_update)
+                .positiveText(R.string.update)
                 .positiveColorRes(R.color.material_green)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override

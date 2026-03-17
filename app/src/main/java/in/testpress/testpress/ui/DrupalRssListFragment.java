@@ -129,20 +129,20 @@ public class DrupalRssListFragment extends BaseListViewFragment<RssItem> {
     @Override
     protected int getErrorMessage(TestpressException exception) {
         if (exception.isUnauthenticated()) {
-            setEmptyText(R.string.testpress_authentication_failed, R.string.testpress_please_login,
+            setEmptyText(R.string.authentication_failed, R.string.please_login,
                     R.drawable.ic_error_outline_black_18dp);
-            return R.string.testpress_authentication_failed;
+            return R.string.authentication_failed;
         } else if (exception.isNetworkError()) {
             Log.e("sssss", "isNetworkError");
-            setEmptyText(R.string.testpress_network_error, R.string.testpress_no_internet_try_again,
+            setEmptyText(R.string.network_error, R.string.no_internet_try_again,
                     R.drawable.ic_error_outline_black_18dp);
-            return R.string.testpress_no_internet_try_again;
+            return R.string.no_internet_try_again;
         } else {
-            setEmptyText(R.string.testpress_error_loading_courses,
-                    R.string.testpress_some_thing_went_wrong_try_again,
+            setEmptyText(R.string.error_loading_courses,
+                    R.string.something_went_wrong_please_try_after,
                     R.drawable.ic_error_outline_black_18dp);
         }
-        return R.string.testpress_some_thing_went_wrong_try_again;
+        return R.string.something_went_wrong_please_try_after;
     }
 
     @Override

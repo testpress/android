@@ -20,8 +20,6 @@ import android.view.View
 import android.webkit.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
-import butterknife.ButterKnife
-import butterknife.InjectView
 import java.io.IOException
 import javax.inject.Inject
 
@@ -37,15 +35,10 @@ class TermsAndConditionActivity : BaseToolBarActivity() {
     @Inject
     lateinit var logoutService: LogoutService
 
-    @InjectView(R.id.empty_container)
     lateinit var emptyView: LinearLayout
-    @InjectView(R.id.empty_title)
     lateinit var emptyTitleView: TextView
-    @InjectView(R.id.empty_description)
     lateinit var emptyDescView: TextView
-    @InjectView(R.id.retry_button)
     lateinit var retryButton: Button
-
     lateinit var webView: WebView
     lateinit var progressBar: ProgressBar
     lateinit var profileDetails: ProfileDetails
@@ -62,8 +55,15 @@ class TermsAndConditionActivity : BaseToolBarActivity() {
         TestpressApplication.getAppComponent().inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.terms_and_condition_activity)
-        ButterKnife.inject(this)
+        bindViews()
         supportActionBar?.title = getString(R.string.terms_and_conditions)
+    }
+
+    private fun bindViews() {
+        emptyView = findViewById(R.id.empty_container)
+        emptyTitleView = findViewById(R.id.empty_title)
+        emptyDescView = findViewById(R.id.empty_description)
+        retryButton = findViewById(R.id.retry_button)
         progressBar = findViewById(R.id.terms_and_condition_pb_loading)
         webView = findViewById(R.id.terms_and_condition_web_view)
     }

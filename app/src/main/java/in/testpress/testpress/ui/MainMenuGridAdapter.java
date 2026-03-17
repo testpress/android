@@ -50,19 +50,19 @@ public class MainMenuGridAdapter extends BaseAdapter {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null) {
             grid = inflater.inflate(R.layout.menu_grid_item, null);
-            TextView textView = (TextView) grid.findViewById(R.id.menuName);
-            ImageView imageView = (ImageView)grid.findViewById(R.id.menuIcon);
-            int titleResId = mMenuItemTitleIds.get(position);
-
-            if (!UIUtils.getMenuItemName(titleResId, instituteSettings).isEmpty()) {
-                textView.setText(UIUtils.getMenuItemName(titleResId, instituteSettings));
-            } else {
-                textView.setText(titleResId);
-            }
-            imageView.setImageResource(mMenuItemIds.get(titleResId));
         } else {
-            grid = (View) convertView;
+            grid = convertView;
         }
+        TextView textView = (TextView) grid.findViewById(R.id.menuName);
+        ImageView imageView = (ImageView) grid.findViewById(R.id.menuIcon);
+        int titleResId = mMenuItemTitleIds.get(position);
+
+        if (!UIUtils.getMenuItemName(titleResId, instituteSettings).isEmpty()) {
+            textView.setText(UIUtils.getMenuItemName(titleResId, instituteSettings));
+        } else {
+            textView.setText(titleResId);
+        }
+        imageView.setImageResource(mMenuItemIds.get(titleResId));
         return grid;
     }
 

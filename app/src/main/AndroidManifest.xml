@@ -10,8 +10,6 @@
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -28,6 +26,12 @@
 
     <!-- Permissions added by Google Play Services SDK that are not needed, so they are being removed -->
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>
+
+    <!-- Devices running Android 9 (API level 28) or lower -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
+
+    <!-- Devices running Android 12L (API level 32) or lower -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
 
     <application
         android:name=".TestpressApplication"
@@ -126,13 +130,6 @@
             android:label="Article"
             android:windowSoftInputMode="stateHidden"
             android:configChanges="orientation|keyboardHidden|screenSize" />
-
-        <activity
-            android:name=".ui.CreateForumActivity"
-            android:label="Create Forum Post"
-            android:theme="@style/AppTheme"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
 
         <activity
             android:name=".authenticator.RegisterActivity"
@@ -242,6 +239,10 @@
 
         <activity android:name=".ui.EnforceDataActivity"
             android:theme="@style/TestpressWebViewTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
+
+        <activity android:name=".ui.DeviceNotAllowedActivity"
+            android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"/>
 
     </application>

@@ -19,8 +19,6 @@ import java.io.IOException;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
@@ -35,12 +33,12 @@ import static com.nostra13.universalimageloader.core.assist.FailReason.FailType.
 public class QRCodeActivity extends BaseAuthenticatedActivity {
 
     @Inject TestpressServiceProvider serviceProvider;
-    @InjectView(R.id.pb_loading) ProgressBar progressBar;
-    @InjectView(R.id.empty_container) LinearLayout emptyView;
-    @InjectView(R.id.empty_title) TextView emptyTitleView;
-    @InjectView(R.id.empty_description) TextView emptyDescView;
-    @InjectView(R.id.retry_button) Button retryButton;
-    @InjectView(R.id.qr_code_layout) LinearLayout qrCodeLayout;
+    ProgressBar progressBar;
+    LinearLayout emptyView;
+    TextView emptyTitleView;
+    TextView emptyDescView;
+    Button retryButton;
+    LinearLayout qrCodeLayout;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -49,7 +47,7 @@ public class QRCodeActivity extends BaseAuthenticatedActivity {
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         TestpressApplication.getAppComponent().inject(this);
-        ButterKnife.inject(this);
+        bindViews();
         progressBar.setVisibility(View.VISIBLE);
         ProfileDetails profileDetails = ProfileDetails.getProfileDetailsFromPreferences(this);
         if (profileDetails == null) {
@@ -58,6 +56,15 @@ public class QRCodeActivity extends BaseAuthenticatedActivity {
         } else {
             displayQRCode(profileDetails);
         }
+    }
+
+    private void bindViews() {
+        progressBar = (ProgressBar) findViewById(R.id.pb_loading);
+        emptyView = (LinearLayout) findViewById(R.id.empty_container);
+        emptyTitleView = (TextView) findViewById(R.id.empty_title);
+        emptyDescView = (TextView) findViewById(R.id.empty_description);
+        retryButton = (Button) findViewById(R.id.retry_button);
+        qrCodeLayout = (LinearLayout) findViewById(R.id.qr_code_layout);
     }
 
     private void fetchProfileDetails() {

@@ -15,7 +15,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -89,7 +88,6 @@ public class TestpressFragmentActivity extends AppCompatActivity {
     public void setContentView(final int layoutResId) {
         super.setContentView(layoutResId);
 
-        ButterKnife.inject(this);
         Toolbar toolbar = getActionBarToolbar();
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -145,8 +143,25 @@ public class TestpressFragmentActivity extends AppCompatActivity {
         eventBus.unregister(this);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        eventBus.unregister(busEventListener);
+        eventBus.unregister(unauthorisedUserErrorBusListener);
+    }
+
     protected void onReceiveCustomErrorEvent(final CustomErrorEvent customErrorEvent) {
-        if (customErrorEvent.getErrorCode().equals(getString(R.string.PARALLEL_LOGIN_RESTRICTION_ERROR_CODE))) {
+        if (customErrorEvent.getErrorCode().equals(getString(R.string.DEVICE_ALREADY_BOUND_ERROR_CODE)) ||
+                customErrorEvent.getErrorCode().equals(getString(R.string.UNAUTHORIZED_DEVICE_ERROR_CODE))) {
+            if (DeviceNotAllowedActivity.isShowing) {
+                return;
+            }
+            Intent intent = new Intent(this, DeviceNotAllowedActivity.class);
+            intent.putExtra("title", customErrorEvent.getTitle());
+            intent.putExtra("description", customErrorEvent.getDetail());
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } else if (customErrorEvent.getErrorCode().equals(getString(R.string.PARALLEL_LOGIN_RESTRICTION_ERROR_CODE))) {
             Intent intent = new Intent(this, UserDevicesActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
                     Intent.FLAG_ACTIVITY_NEW_TASK);

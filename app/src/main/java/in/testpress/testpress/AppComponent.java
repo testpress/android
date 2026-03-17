@@ -11,7 +11,7 @@ import in.testpress.testpress.authenticator.ResetPasswordActivity;
 import in.testpress.testpress.ui.AccountActivateActivity;
 import in.testpress.testpress.ui.AccountDeleteActivity;
 import in.testpress.testpress.ui.BaseAuthenticatedActivity;
-import in.testpress.testpress.ui.CreateForumActivity;
+import in.testpress.testpress.ui.DeviceNotAllowedActivity;
 import in.testpress.testpress.ui.DocumentsListActivity;
 import in.testpress.testpress.ui.DocumentsListFragment;
 import in.testpress.testpress.ui.DoubtsActivity;
@@ -61,7 +61,6 @@ public interface AppComponent {
     void inject(DrupalRssListFragment drupalRssListFragment);
     void inject(RssFeedDetailActivity rssFeedDetailActivity);
     void inject(AccountActivateActivity accountActivateActivity);
-    void inject(CreateForumActivity createForumActivity);
     void inject(WebViewActivity webViewActivity);
     void inject(DashboardFragment dashboardFragment);
     void inject(DoubtsActivity doubtsActivity);
@@ -76,4 +75,5 @@ public interface AppComponent {
     void inject(BaseAuthenticatedActivity baseAuthenticatedActivity);
     void inject(QRCodeActivity qrCodeActivity);
     void inject(TestpressActivity testpressActivity);
+    void inject(DeviceNotAllowedActivity deviceNotAllowedActivity);
 }

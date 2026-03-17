@@ -5,7 +5,6 @@ import android.app.Instrumentation;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import androidx.annotation.NonNull;
-import androidx.multidex.MultiDex;
 
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -19,6 +18,8 @@ import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import in.testpress.testpress.util.ActivityLifecycleCallbacksKt;
+import in.testpress.testpress.util.ApplicationKt;
 import in.testpress.testpress.util.NotificationHelper;
 
 public class TestpressApplication extends Application {
@@ -60,6 +61,8 @@ public class TestpressApplication extends Application {
         DaoMaster daoMaster = new DaoMaster(db);
         daoSession = daoMaster.newSession();
         NotificationHelper.createChannels(this);
+        ApplicationKt.syncDownloads(this);
+        registerActivityLifecycleCallbacks(ActivityLifecycleCallbacksKt.getActivityLifecycleCallbacks());
     }
 
     public static AppComponent getAppComponent() {
@@ -103,7 +106,6 @@ public class TestpressApplication extends Application {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        MultiDex.install(this);
     }
     /**
      * Create main application

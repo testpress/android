@@ -101,6 +101,8 @@ public class DeeplinkHandler {
                     authenticateUserAndOpen(uri);
                     break;
                 case "courses":
+                    authenticateUserAndOpen(uri);
+                    break;
                 case "learn":
                 case "leaderboard":
                 case "dashboard":
@@ -175,6 +177,9 @@ public class DeeplinkHandler {
                             case "discussions":
                                 deepLinkToDiscussions(uri);
                                 break;
+                            case "courses":
+                                deepLinkToCourse(uri, testpressSession);
+                                break;
                         }
                     }
                 });
@@ -192,6 +197,23 @@ public class DeeplinkHandler {
                 break;
             case 3:
                 TestpressCourse.showContentDetail(activity, uri.getLastPathSegment(), testpressSession);
+                break;
+        }
+    }
+
+    private void deepLinkToCourse(Uri uri, TestpressSession testpressSession) {
+        final List<String> pathSegments = uri.getPathSegments();
+        switch (pathSegments.size()) {
+            case 1:
+                TestpressCourse.show(activity, testpressSession);
+                break;
+            case 4:
+                if (pathSegments.get(2).equals("contents")) {
+                    TestpressCourse.showContentDetail(activity, uri.getLastPathSegment(), testpressSession);
+                    break;
+                }
+            default:
+                gotoHome();
                 break;
         }
     }

@@ -197,8 +197,9 @@ android {
         resValue "color", "login_top_background", (isAdvanced && json.login_top_background) ? json.login_top_background : "#FFFFFF"
         resValue "color", "login_bottom_background", (isAdvanced && json.login_bottom_background) ? json.login_bottom_background : json.primary_color
         resValue "color", "login_heading", (isAdvanced && json.login_heading_text_color) ? json.login_heading_text_color : "#828282"
-        resValue "color", "login_app_name", (isAdvanced && json.login_app_name_text_color) ? json.login_app_name_text_color : "#000000"
+        resValue "color", "app_name_text_color", (isAdvanced && json.app_name_text_color) ? json.app_name_text_color : "#000000"
         resValue "color", "login_instruction", (isAdvanced && json.login_instruction_text_color) ? json.login_instruction_text_color : "#4f4f4f"
+        resValue "color", "login_input_field_hint", (isAdvanced && json.login_input_field_hint_color) ? json.login_input_field_hint_color : "#aaaaaa"
         resValue "color", "login_button_primary_bg", (isAdvanced && json.login_button_primary_bg_color) ? json.login_button_primary_bg_color : json.secondary_color
         resValue "color", "login_button_primary_text", (isAdvanced && json.login_button_primary_text_color) ? json.login_button_primary_text_color : "#FFFFFF"
         resValue "color", "login_button_secondary_bg", (isAdvanced && json.login_button_secondary_bg_color) ? json.login_button_secondary_bg_color : json.tertiary_color

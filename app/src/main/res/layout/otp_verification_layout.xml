@@ -54,7 +54,7 @@
                 android:text="@string/app_name"
                 android:textStyle="bold"
                 android:fontFamily="@font/inter"
-                android:textColor="@color/login_app_name"
+                android:textColor="@color/app_name_text_color"
                 android:textSize="31sp"/>
 
         </LinearLayout>
@@ -99,7 +99,7 @@
                 android:maxLines="1"
                 android:inputType="number"
                 android:paddingLeft="10dp"
-                android:textColorHint="#aaaaaa"
+                android:textColorHint="@color/login_input_field_hint"
                 android:background="@android:color/transparent"
                 android:imeOptions="actionDone"
                 android:textColor="@color/white"
@@ -124,21 +124,22 @@
             android:text="Proceed" />
 
 
-        <com.google.android.material.button.MaterialButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/resentOtp"
-            android:textSize="14sp"
-            android:paddingVertical="15dp"
-            android:textAllCaps="false"
-            android:layout_marginBottom="10dp"
-            android:textStyle="normal"
-            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-            android:backgroundTint="@color/login_button_secondary_bg"
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/resentOtp"
+                android:textSize="14sp"
+                android:paddingVertical="15dp"
+                android:textAllCaps="false"
+                android:layout_marginBottom="10dp"
+                android:textStyle="normal"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                android:backgroundTint="@color/login_button_secondary_bg"
                 android:textColor="@color/login_button_secondary_text"
-            android:elevation="0dp"
-            app:cornerRadius="8dp"
-            android:text="Resend OTP" />
+                app:backgroundTintMode="add"
+                android:elevation="0dp"
+                app:cornerRadius="8dp"
+                android:text="Resend OTP" />
 
 
     </LinearLayout>

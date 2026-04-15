@@ -64,7 +64,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter"
                     android:text="@string/app_name"
-                    android:textColor="@color/login_app_name"
+                    android:textColor="@color/app_name_text_color"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
@@ -124,7 +124,7 @@
                     android:maxLines="1"
                     android:paddingLeft="10dp"
                     android:textColor="@color/white"
-                    android:textColorHint="#aaaaaa"
+                    android:textColorHint="@color/login_input_field_hint"
                     android:textCursorDrawable="@null" />
             </LinearLayout>
 
@@ -134,7 +134,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:background="@drawable/rounded_corner_with_transparent_bg"
-                android:textColorHint="#aaaaaa"
+                android:textColorHint="@color/login_input_field_hint"
                 app:hintEnabled="false"
                 app:passwordToggleEnabled="true"
                 app:passwordToggleTint="#fff">
@@ -151,7 +151,7 @@
                     android:maxLines="1"
                     android:paddingLeft="10dp"
                     android:textColor="@color/white"
-                    android:textColorHint="#aaaaaa"
+                    android:textColorHint="@color/login_input_field_hint"
                     android:textCursorDrawable="@null" />
             </com.google.android.material.textfield.TextInputLayout>
 

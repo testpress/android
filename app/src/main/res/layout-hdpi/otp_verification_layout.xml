@@ -65,7 +65,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter"
                     android:text="@string/app_name"
-                    android:textColor="@color/login_app_name"
+                    android:textColor="@color/app_name_text_color"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
@@ -117,7 +117,7 @@
                     android:maxLines="1"
                     android:inputType="number"
                     android:paddingLeft="10dp"
-                    android:textColorHint="#aaaaaa"
+                    android:textColorHint="@color/login_input_field_hint"
                     android:background="@android:color/transparent"
                     android:imeOptions="actionDone"
                     android:textColor="@color/white"

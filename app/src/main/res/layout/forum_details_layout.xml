@@ -36,7 +36,7 @@
                     android:paddingLeft="20dp"
                     android:paddingRight="20dp"
                     android:textSize="24sp"
-                    android:textColor="@color/login_app_name"/>
+                    android:textColor="@color/app_name_text_color"/>
 
                 <LinearLayout
                     android:id="@+id/user_details_layout"

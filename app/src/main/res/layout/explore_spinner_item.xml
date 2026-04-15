@@ -9,7 +9,7 @@
         android:paddingBottom="10dp"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:textColor="@color/testpress_black"
+        android:textColor="@color/login_app_name"
         android:textSize="16sp"
         android:maxLines="1"
         android:ellipsize="end"

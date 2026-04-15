@@ -36,7 +36,7 @@
                     android:paddingLeft="20dp"
                     android:paddingRight="20dp"
                     android:textSize="24sp"
-                    android:textColor="@color/testpress_black"/>
+                    android:textColor="@color/login_app_name"/>
 
                 <LinearLayout
                     android:id="@+id/user_details_layout"

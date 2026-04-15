@@ -36,7 +36,7 @@
         android:lineSpacingExtra="6sp"
         android:maxLines="1"
         android:text="Username"
-        android:textColor="@color/testpress_black"
+        android:textColor="@color/login_app_name"
         android:textSize="14sp" />
 
     <ImageView

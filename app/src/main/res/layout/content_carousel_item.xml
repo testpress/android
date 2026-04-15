@@ -110,7 +110,7 @@
             android:maxLines="1"
             android:layout_height="15dp"
             android:layout_weight="0.5"
-            android:background="@drawable/rounded_corner"
+            android:background="@drawable/rounded_corner_with_transparent_bg"
             android:gravity="center_vertical"
             android:ellipsize="end"
             android:maxLength="24"

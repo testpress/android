@@ -14,7 +14,7 @@
         android:weightSum="10"
         android:layout_marginHorizontal="30dp"
         android:orientation="vertical"
-        android:background="@color/testpress_white">
+        android:background="@color/login_top_background">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -45,7 +45,7 @@
                 android:text="Get Started with"
                 android:textStyle="bold"
                 android:fontFamily="@font/inter"
-                android:textColor="#828282"
+                android:textColor="@color/login_heading"
                 android:textSize="28sp"/>
 
             <TextView
@@ -54,7 +54,7 @@
                 android:text="@string/app_name"
                 android:textStyle="bold"
                 android:fontFamily="@font/inter"
-                android:textColor="@color/testpress_black"
+                android:textColor="@color/login_app_name"
                 android:textSize="31sp"/>
 
         </LinearLayout>
@@ -70,7 +70,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:textColor="#4f4f4f"
+                android:textColor="@color/login_instruction"
                 android:layout_marginBottom="5sp"
                 android:text="We have sent you an OTP"/>
         </LinearLayout>
@@ -83,7 +83,7 @@
         android:layout_weight="2"
         android:padding="30dp"
         android:orientation="vertical"
-        android:background="@color/testpress_color_primary">
+        android:background="@color/login_bottom_background">
 
 
         <LinearLayout
@@ -116,7 +116,8 @@
             android:textStyle="normal"
             android:paddingVertical="15dp"
             style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-            android:backgroundTint="@color/testpress_color_secondary"
+            android:backgroundTint="@color/login_button_primary_bg"
+                android:textColor="@color/login_button_primary_text"
             android:elevation="0dp"
             android:textAllCaps="false"
             app:cornerRadius="8dp"
@@ -133,7 +134,8 @@
             android:layout_marginBottom="10dp"
             android:textStyle="normal"
             style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-            android:backgroundTint="@color/testpress_color_tertiary"
+            android:backgroundTint="@color/login_button_secondary_bg"
+                android:textColor="@color/login_button_secondary_text"
             app:backgroundTintMode="add"
             android:elevation="0dp"
             app:cornerRadius="8dp"

@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/testpress_color_primary"
+    android:background="@color/login_bottom_background"
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/testpress_white">
+        android:background="@color/login_top_background">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginHorizontal="20dp"
-            android:background="@color/testpress_white"
+            android:background="@color/login_top_background"
             android:orientation="vertical"
             app:layout_constraintBottom_toTopOf="@id/guideline"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -55,7 +55,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter"
                     android:text="Get Started with"
-                    android:textColor="#828282"
+                    android:textColor="@color/login_heading"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -64,7 +64,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter"
                     android:text="@string/app_name"
-                    android:textColor="@color/testpress_black"
+                    android:textColor="@color/login_app_name"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
@@ -84,7 +84,7 @@
                     android:layout_marginBottom="5sp"
                     android:fontFamily="@font/inter"
                     android:text="Choose your preferred or given way of login."
-                    android:textColor="#4f4f4f"
+                    android:textColor="@color/login_instruction"
                     android:textSize="13sp" />
             </LinearLayout>
 
@@ -93,7 +93,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@color/testpress_color_primary"
+            android:background="@color/login_bottom_background"
             android:gravity="center_vertical"
             android:orientation="vertical"
             android:padding="20dp"
@@ -134,7 +134,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:background="@drawable/rounded_corner_with_transparent_bg"
-                android:textColorHint="#B9B8B8"
+                android:textColorHint="#aaaaaa"
                 app:hintEnabled="false"
                 app:passwordToggleEnabled="true"
                 app:passwordToggleTint="#fff">
@@ -161,7 +161,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:backgroundTint="@color/testpress_color_secondary"
+                android:backgroundTint="@color/login_button_primary_bg"
+                android:textColor="@color/login_button_primary_text"
                 android:elevation="0dp"
                 android:fontFamily="@font/inter"
                 android:paddingVertical="5dp"
@@ -178,7 +179,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:backgroundTint="@color/testpress_color_tertiary"
+                android:backgroundTint="@color/login_button_secondary_bg"
+                android:textColor="@color/login_button_secondary_text"
                 android:elevation="0dp"
                 android:fontFamily="@font/inter"
                 android:paddingVertical="5dp"
@@ -195,7 +197,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:backgroundTint="@color/testpress_color_tertiary"
+                android:backgroundTint="@color/login_button_secondary_bg"
+                android:textColor="@color/login_button_secondary_text"
                 android:elevation="0dp"
                 android:fontFamily="@font/inter"
                 android:paddingVertical="5dp"
@@ -212,7 +215,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:backgroundTint="@color/testpress_color_tertiary"
+                android:backgroundTint="@color/login_button_secondary_bg"
+                android:textColor="@color/login_button_secondary_text"
                 android:elevation="0dp"
                 android:fontFamily="@font/inter"
                 android:paddingVertical="5dp"
@@ -237,7 +241,7 @@
                     android:fontFamily="@font/inter"
                     android:gravity="center_horizontal"
                     android:text="Or continue with"
-                    android:textColor="#828282" />
+                    android:textColor="@color/login_heading" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -250,7 +254,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="10dp"
-                        android:background="@drawable/rounded_corner"
+                        android:background="@drawable/rounded_corner_with_transparent_bg"
                         android:padding="8dp"
                         android:src="@drawable/ic_google" />
 

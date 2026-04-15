@@ -242,6 +242,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="20dp"
+                    android:backgroundTint="@color/login_button_primary_bg"
+                    android:textColor="@color/login_button_primary_text"
                     android:text="Register"
                     android:onClick="@{() -> viewModel.isUserDetailsValid()}"/>
             </LinearLayout>

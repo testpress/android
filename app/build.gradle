@@ -193,6 +193,16 @@ android {
         resValue "color", "primary", json.primary_color
         resValue "color", "secondary", json.secondary_color
         resValue "color", "tertiary", json.tertiary_color
+        def isAdvanced = json.is_advanced_colors_enabled ?: false
+        resValue "color", "login_top_background", (isAdvanced && json.login_top_background) ? json.login_top_background : "#FFFFFF"
+        resValue "color", "login_bottom_background", (isAdvanced && json.login_bottom_background) ? json.login_bottom_background : json.primary_color
+        resValue "color", "login_heading", (isAdvanced && json.login_heading_text_color) ? json.login_heading_text_color : "#828282"
+        resValue "color", "login_app_name", (isAdvanced && json.login_app_name_text_color) ? json.login_app_name_text_color : "#000000"
+        resValue "color", "login_instruction", (isAdvanced && json.login_instruction_text_color) ? json.login_instruction_text_color : "#4f4f4f"
+        resValue "color", "login_button_primary_bg", (isAdvanced && json.login_button_primary_bg_color) ? json.login_button_primary_bg_color : json.secondary_color
+        resValue "color", "login_button_primary_text", (isAdvanced && json.login_button_primary_text_color) ? json.login_button_primary_text_color : "#FFFFFF"
+        resValue "color", "login_button_secondary_bg", (isAdvanced && json.login_button_secondary_bg_color) ? json.login_button_secondary_bg_color : json.tertiary_color
+        resValue "color", "login_button_secondary_text", (isAdvanced && json.login_button_secondary_text_color) ? json.login_button_secondary_text_color : "#FFFFFF"
         buildConfigField "boolean", "ALLOW_ANONYMOUS_USER", "" + json.allow_anonymous_user
         buildConfigField "boolean", "GROWTH_HACKS_ENABLED", "" + json.is_growth_hacks_enabled
         buildConfigField "boolean", "SHOW_PDF_VERTICALLY", "" + json.show_pdf_vertically

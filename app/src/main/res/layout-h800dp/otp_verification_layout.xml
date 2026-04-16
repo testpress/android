@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white"
+    android:background="@color/login_primary_color"
     android:weightSum="4">
 
     <LinearLayout
@@ -14,7 +14,7 @@
         android:weightSum="10"
         android:layout_marginHorizontal="30dp"
         android:orientation="vertical"
-        android:background="@color/testpress_white">
+        android:background="@color/login_primary_color">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -45,7 +45,7 @@
                 android:text="Get Started with"
                 android:textStyle="bold"
                 android:fontFamily="@font/inter"
-                android:textColor="#828282"
+                android:textColor="@color/login_primary_text_color"
                 android:textSize="28sp"/>
 
             <TextView
@@ -54,7 +54,7 @@
                 android:text="@string/app_name"
                 android:textStyle="bold"
                 android:fontFamily="@font/inter"
-                android:textColor="@color/testpress_black"
+                android:textColor="@color/login_primary_text_color"
                 android:textSize="31sp"/>
 
         </LinearLayout>
@@ -70,7 +70,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:textColor="#4f4f4f"
+                android:textColor="@color/login_primary_text_color"
                 android:layout_marginBottom="5sp"
                 android:text="We have sent you an OTP"/>
         </LinearLayout>
@@ -83,7 +83,7 @@
         android:layout_weight="2"
         android:padding="30dp"
         android:orientation="vertical"
-        android:background="@color/testpress_color_primary">
+        android:background="@color/login_secondary_color">
 
 
         <LinearLayout
@@ -99,10 +99,10 @@
                 android:maxLines="1"
                 android:inputType="number"
                 android:paddingLeft="10dp"
-                android:textColorHint="#aaaaaa"
                 android:background="@android:color/transparent"
                 android:imeOptions="actionDone"
-                android:textColor="@color/white"
+                android:textColor="@color/login_input_text_color"
+                android:textColorHint="@color/login_input_hint_color"
                 android:hint="Enter OTP" />
 
         </LinearLayout>
@@ -116,11 +116,12 @@
             android:textStyle="normal"
             android:paddingVertical="15dp"
             style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-            android:backgroundTint="@color/testpress_color_secondary"
+            android:backgroundTint="@color/login_primary_button_color"
             android:elevation="0dp"
             android:textAllCaps="false"
             app:cornerRadius="8dp"
-            android:text="Proceed" />
+            android:text="Proceed"
+            android:textColor="@color/login_primary_button_text_color" />
 
 
         <com.google.android.material.button.MaterialButton
@@ -133,11 +134,12 @@
             android:layout_marginBottom="10dp"
             android:textStyle="normal"
             style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-            android:backgroundTint="@color/testpress_color_tertiary"
+            android:backgroundTint="@color/login_tertiary_button_color"
             app:backgroundTintMode="add"
             android:elevation="0dp"
             app:cornerRadius="8dp"
-            android:text="Resend OTP" />
+            android:text="Resend OTP"
+            android:textColor="@color/login_tertiary_button_text_color" />
 
 
     </LinearLayout>

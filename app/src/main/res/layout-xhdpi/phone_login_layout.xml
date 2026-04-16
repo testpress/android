@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/testpress_color_primary"
+    android:background="@color/login_secondary_color"
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/testpress_white">
+        android:background="@color/login_primary_color">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginHorizontal="30dp"
-            android:background="@color/testpress_white"
+            android:background="@color/login_primary_color"
             android:orientation="vertical"
             app:layout_constraintBottom_toTopOf="@id/guideline"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -55,7 +55,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter"
                     android:text="Get Started with"
-                    android:textColor="#828282"
+                    android:textColor="@color/login_primary_text_color"
                     android:textSize="28sp"
                     android:textStyle="bold" />
 
@@ -64,7 +64,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter"
                     android:text="@string/app_name"
-                    android:textColor="@color/testpress_black"
+                    android:textColor="@color/login_primary_text_color"
                     android:textSize="31sp"
                     android:textStyle="bold" />
 
@@ -84,7 +84,7 @@
                     android:layout_marginBottom="5sp"
                     android:fontFamily="@font/inter"
                     android:text="Choose your preferred or given way of login."
-                    android:textColor="#4f4f4f" />
+                    android:textColor="@color/login_primary_text_color" />
             </LinearLayout>
 
         </RelativeLayout>
@@ -95,7 +95,7 @@
             android:padding="30dp"
             android:orientation="vertical"
             android:gravity="center_vertical"
-            android:background="@color/testpress_color_primary"
+            android:background="@color/login_secondary_color"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -107,7 +107,7 @@
             android:layout_height="50dp"
             android:background="@drawable/rounded_corner_with_transparent_bg"
             android:gravity="center_vertical">
-            <com.hbb20.CountryCodePicker
+                <com.hbb20.CountryCodePicker
                 android:id="@+id/countryCode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -115,23 +115,23 @@
                 android:paddingLeft="10dp"
                 app:ccp_showNameCode="false"
                 app:ccpDialog_showCloseIcon="true"
-                app:ccp_contentColor="#ddd"
+                    app:ccp_contentColor="@color/login_input_hint_color"
                 app:ccp_countryPreference="in"
                 />
-            <androidx.appcompat.widget.AppCompatEditText
+                <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/phoneNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:inputType="phone"
                 android:fontFamily="@font/inter"
-                android:textColorHint="#aaaaaa"
+                    android:textColorHint="@color/login_input_hint_color"
                 android:paddingEnd="10dp"
                 android:textCursorDrawable="@null"
                 android:background="@android:color/transparent"
                 android:imeOptions="actionDone"
-                android:textColor="@color/white"
-                android:hint="Phone Number" />
+                    android:textColor="@color/login_input_text_color"
+                    android:hint="Phone Number" />
 
         </LinearLayout>
         <com.google.android.material.button.MaterialButton
@@ -144,12 +144,13 @@
             android:textStyle="normal"
             android:paddingVertical="15dp"
             style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-            android:backgroundTint="@color/testpress_color_secondary"
+            android:backgroundTint="@color/login_primary_button_color"
             android:elevation="0dp"
             android:fontFamily="@font/inter"
             android:textAllCaps="false"
             app:cornerRadius="8dp"
-            android:text="Proceed" />
+            android:text="Proceed"
+            android:textColor="@color/login_primary_button_text_color" />
 
         <com.google.android.material.button.MaterialButton
             android:layout_width="match_parent"
@@ -161,12 +162,13 @@
             android:layout_marginBottom="10dp"
             android:textStyle="normal"
             android:fontFamily="@font/inter"
-            android:backgroundTint="@color/testpress_color_tertiary"
+            android:backgroundTint="@color/login_tertiary_button_color"
             style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             app:backgroundTintMode="add"
             android:elevation="0dp"
             app:cornerRadius="8dp"
-            android:text="Use Username &amp; Password" />
+            android:text="Use Username &amp; Password"
+            android:textColor="@color/login_tertiary_button_text_color" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -181,7 +183,7 @@
                 android:fontFamily="@font/inter"
                 android:gravity="center_horizontal"
                 android:text="Or continue with"
-                android:textColor="#828282" />
+                android:textColor="@color/login_secondary_text_color" />
 
             <LinearLayout
             android:layout_width="match_parent"
@@ -228,7 +230,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/privacy_policy_dialogue"
-                android:textColor="@color/white"
+                android:textColor="@color/login_secondary_text_color"
                 android:gravity="center" />
 
             <TextView
@@ -236,7 +238,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:textColor="@color/white"
+                android:textColor="@color/login_secondary_text_color"
                 android:text="@string/privacy_policy_text"/>
 
         </LinearLayout>

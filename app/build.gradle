@@ -11,6 +11,18 @@ ext {
 def jsonFile = file('src/main/assets/config.json')
 def json = new JsonSlurper().parseText(jsonFile.text)
 
+def isAdvancedColorsEnabled = (json instanceof Map) && (json.is_advanced_colors_enabled == true)
+
+def advancedColorOrFallback = { String key, String fallbackHex ->
+    if (isAdvancedColorsEnabled && (json instanceof Map) && json.containsKey(key)) {
+        def value = json[key]
+        if (value != null && !value.toString().trim().isEmpty()) {
+            return value.toString()
+        }
+    }
+    return fallbackHex
+}
+
 
 dependencies {
 
@@ -193,6 +205,22 @@ android {
         resValue "color", "primary", json.primary_color
         resValue "color", "secondary", json.secondary_color
         resValue "color", "tertiary", json.tertiary_color
+        buildConfigField "boolean", "ADVANCED_COLORS_ENABLED", "" + isAdvancedColorsEnabled
+
+        resValue "color", "login_primary_color", advancedColorOrFallback("login_primary_color", "#FFFFFF")
+        resValue "color", "login_secondary_color", advancedColorOrFallback("login_secondary_color", json.primary_color)
+        resValue "color", "login_primary_text_color", advancedColorOrFallback("login_primary_text_color", "#333333")
+        resValue "color", "login_secondary_text_color", advancedColorOrFallback("login_secondary_text_color", "#FFFFFF")
+
+        resValue "color", "login_primary_button_color", advancedColorOrFallback("login_primary_button_color", json.secondary_color)
+        resValue "color", "login_primary_button_text_color", advancedColorOrFallback("login_primary_button_text_color", "#FFFFFF")
+
+        resValue "color", "login_tertiary_button_color", advancedColorOrFallback("login_tertiary_button_color", json.tertiary_color)
+        resValue "color", "login_tertiary_button_text_color", advancedColorOrFallback("login_tertiary_button_text_color", "#FFFFFF")
+
+        resValue "color", "login_input_text_color", advancedColorOrFallback("login_input_text_color", "#FFFFFF")
+        resValue "color", "login_input_hint_color", advancedColorOrFallback("login_input_hint_color", "#AAAAAA")
+
         buildConfigField "boolean", "ALLOW_ANONYMOUS_USER", "" + json.allow_anonymous_user
         buildConfigField "boolean", "GROWTH_HACKS_ENABLED", "" + json.is_growth_hacks_enabled
         buildConfigField "boolean", "SHOW_PDF_VERTICALLY", "" + json.show_pdf_vertically

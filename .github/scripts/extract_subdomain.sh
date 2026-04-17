@@ -39,6 +39,7 @@ done
 
 # Join with comma
 RESULT=$(IFS=, ; echo "${SUBDOMAINS[*]}")
+echo "Final Subdomains List: $RESULT"
 echo "result=$RESULT" >> $GITHUB_OUTPUT
 echo "SUBDOMAIN=$RESULT" >> $GITHUB_ENV
 # For backward compatibility if single subdomain is expected in SUBDOMAINS env

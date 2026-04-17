@@ -3,10 +3,10 @@ name: Bulid app files
 on:
   workflow_dispatch:
     inputs:
-      subdomain:
-        description: "Which subdomain you want to build the android app"
+      url:
+        description: "URL of the site (e.g., subdomain.testpress.in or custom domain)"
         required: true
-        default: "sandbox"
+        default: "sandbox.testpress.in"
       split_apk:
         description: "Build split APKs by ABI?"
         required: false
@@ -25,9 +25,34 @@ jobs:
       API_ACCESS_KEY: ${{ secrets.API_ACCESS_KEY }}
 
     steps:
+      - name: Extract subdomain
+        id: extract_subdomain
+        run: |
+          URL="${{ github.event.inputs.url }}"
+          # Strip protocol (http:// or https://) and any trailing paths
+          CLEAN_URL=$(echo "$URL" | sed -e 's|^[^/]*//||' -e 's|/.*$||')
+          echo "Processing URL: $CLEAN_URL"
+
+          if [[ "$CLEAN_URL" == *".testpress.in" ]]; then
+            FINAL_URL="$CLEAN_URL"
+          else
+            # Get CNAME and pick the first one matching testpress.in
+            DIG_RESULT=$(dig "$CLEAN_URL" CNAME +short | sed 's/\.$//')
+            FINAL_URL=$(echo "$DIG_RESULT" | grep "testpress.in" | head -n 1)
+          fi
+
+          if [[ -z "$FINAL_URL" ]]; then
+            echo "Error: Could not determine testpress subdomain for $URL"
+            exit 1
+          fi
+
+          SUBDOMAIN=$(echo "$FINAL_URL" | cut -d'.' -f1)
+          echo "Extracted Subdomain: $SUBDOMAIN"
+          echo "SUBDOMAIN=$SUBDOMAIN" >> $GITHUB_ENV
+
       - name: Validate subdomain
         run: |
-          curl -f https://${{ github.event.inputs.subdomain }}.testpress.in/api/v2.5/admin/android/app-config/ -H "API-access-key: $API_ACCESS_KEY"
+          curl -f https://$SUBDOMAIN.testpress.in/api/v2.5/admin/android/app-config/ -H "API-access-key: $API_ACCESS_KEY"
 
       - name: Setup JDK 17
         uses: actions/setup-java@v3
@@ -76,7 +101,7 @@ jobs:
         run: |
           export LC_ALL=en_US.UTF-8
           export LANG=en_US.UTF-8
-          bundle exec fastlane build_app_files subdomain:${{ github.event.inputs.subdomain }} split_apk:${{ github.event.inputs.split_apk }}
+          bundle exec fastlane build_app_files subdomain:$SUBDOMAIN split_apk:${{ github.event.inputs.split_apk }}
 
       - name: Store app artifacts
         uses: actions/upload-artifact@v4

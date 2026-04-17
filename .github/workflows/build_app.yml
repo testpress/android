@@ -26,29 +26,9 @@ jobs:
 
     steps:
       - name: Extract subdomain
-        id: extract_subdomain
-        run: |
-          URL="${{ github.event.inputs.url }}"
-          # Strip protocol (http:// or https://) and any trailing paths
-          CLEAN_URL=$(echo "$URL" | sed -e 's|^[^/]*//||' -e 's|/.*$||')
-          echo "Processing URL: $CLEAN_URL"
-
-          if [[ "$CLEAN_URL" == *".testpress.in" ]]; then
-            FINAL_URL="$CLEAN_URL"
-          else
-            # Get CNAME and pick the first one matching testpress.in
-            DIG_RESULT=$(dig "$CLEAN_URL" CNAME +short | sed 's/\.$//')
-            FINAL_URL=$(echo "$DIG_RESULT" | grep "testpress.in" | head -n 1)
-          fi
-
-          if [[ -z "$FINAL_URL" ]]; then
-            echo "Error: Could not determine testpress subdomain for $URL"
-            exit 1
-          fi
-
-          SUBDOMAIN=$(echo "$FINAL_URL" | cut -d'.' -f1)
-          echo "Extracted Subdomain: $SUBDOMAIN"
-          echo "SUBDOMAIN=$SUBDOMAIN" >> $GITHUB_ENV
+        uses: ./.github/actions/extract-subdomain
+        with:
+          url: ${{ github.event.inputs.url }}
 
       - name: Validate subdomain
         run: |

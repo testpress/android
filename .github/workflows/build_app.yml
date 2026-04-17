@@ -25,6 +25,9 @@ jobs:
       API_ACCESS_KEY: ${{ secrets.API_ACCESS_KEY }}
 
     steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
       - name: Extract subdomain
         uses: ./.github/actions/extract-subdomain
         with:
@@ -52,9 +55,6 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-
-      - name: Checkout the repository
-        uses: actions/checkout@v2
 
       - name: Setup ruby and fastlane
         uses: ruby/setup-ruby@v1

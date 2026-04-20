@@ -29,7 +29,7 @@ lane :release_update_batch do |params|
   end
 
   current_branch = sh("git rev-parse --abbrev-ref HEAD", log: false).strip
-  special_branch_subdomains = %w[brilliantpalalms brilliantpalaelearn race]
+  special_branch_subdomains = %w[brilliantpalalms brilliantpalaelearn race clear100x]
 
   started_at = Time.now
   succeeded = []
@@ -125,7 +125,7 @@ lane :release_update_to do |params|
   if params[:subdomain] == "all"
     subdomains = fetch_subdomains
     subdomains.each do |subdomain|
-      if ['verandalearning', 'brilliantpalalms', 'brilliantpalaclasses', "race"].include? subdomain
+      if ['verandalearning', 'brilliantpalalms', 'brilliantpalaclasses', 'race', 'clear100x'].include? subdomain
         next
       end
       release_update(subdomain: subdomain, release_option: release_option)

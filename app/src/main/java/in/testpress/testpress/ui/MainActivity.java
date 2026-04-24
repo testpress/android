@@ -525,15 +525,8 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private void addEPratibhaWebViewFragment() {
         String[] credentials = CommonUtils.getUserCredentials(this);
-        WebViewFragment webViewFragment = new WebViewFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(WebViewFragment.URL_TO_OPEN, Constants.Http.EPRATIBHA_SSO_URL + "?email=" + credentials[0] + "&pass=" + credentials[1]);
-        bundle.putBoolean(WebViewFragment.SHOW_LOADING_BETWEEN_PAGES, true);
-        bundle.putBoolean(WebViewFragment.IS_AUTHENTICATION_REQUIRED, false);
-        bundle.putBoolean(WebViewFragment.ALLOW_NON_INSTITUTE_URL_IN_WEB_VIEW, true);
-        bundle.putBoolean(WebViewFragment.ENABLE_SWIPE_REFRESH, true);
-        webViewFragment.setArguments(bundle);
-        addMenuItem(R.string.store, R.drawable.home_store_image, webViewFragment);
+        CustomWebViewFragment customWebViewFragment = CustomWebViewFragment.newInstance(credentials[0], credentials[1]);
+        addMenuItem(R.string.store, R.drawable.home_store_image, customWebViewFragment);
     }
 
     private void onItemSelected(int position) {

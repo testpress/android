@@ -525,7 +525,11 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private void addEPratibhaWebViewFragment() {
         String[] credentials = CommonUtils.getUserCredentials(this);
-        CustomWebViewFragment customWebViewFragment = CustomWebViewFragment.newInstance(credentials[0], credentials[1]);
+        CustomWebViewFragment customWebViewFragment = CustomWebViewFragment.newInstance(
+                Constants.Http.EPRATIBHA_SSO_URL, 
+                credentials[0], 
+                credentials[1]
+        );
         addMenuItem(R.string.store, R.drawable.home_store_image, customWebViewFragment);
     }
 

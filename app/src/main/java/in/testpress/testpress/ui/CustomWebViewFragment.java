@@ -19,16 +19,23 @@ import in.testpress.testpress.core.Constants;
 public class CustomWebViewFragment extends Fragment {
 
     private WebView webView;
+    
+    public static final String ARG_URL_TO_OPEN = "url_to_open";
     public static final String ARG_EMAIL = "email";
     public static final String ARG_PASS = "pass";
 
-    public static CustomWebViewFragment newInstance(String email, String pass) {
+    public static CustomWebViewFragment newInstance(String url, String email, String pass) {
         CustomWebViewFragment fragment = new CustomWebViewFragment();
         Bundle args = new Bundle();
+        args.putString(ARG_URL_TO_OPEN, url);
         args.putString(ARG_EMAIL, email);
         args.putString(ARG_PASS, pass);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public static CustomWebViewFragment newInstance(String email, String pass) {
+        return newInstance(Constants.Http.EPRATIBHA_SSO_URL, email, pass);
     }
 
     @Override
@@ -44,8 +51,8 @@ public class CustomWebViewFragment extends Fragment {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
         webView.getSettings().setDatabaseEnabled(true);
-        webView.getSettings().setAllowFileAccess(true);
-        webView.getSettings().setAllowContentAccess(true);
+        webView.getSettings().setAllowFileAccess(false);
+        webView.getSettings().setAllowContentAccess(false);
         
         webView.setWebViewClient(new WebViewClient() {
             @Override
@@ -60,9 +67,10 @@ public class CustomWebViewFragment extends Fragment {
             }
             
             private boolean handleUpiUrl(String url, WebView view) {
-                if (url.startsWith("upi://") || url.contains("upi://") || 
-                    url.startsWith("gpay://") || url.startsWith("phonepe://") || 
-                    url.startsWith("paytm://")) {
+                Uri uri = Uri.parse(url);
+                String scheme = uri.getScheme();
+                if ("upi".equals(scheme) || "gpay".equals(scheme) || 
+                    "phonepe".equals(scheme) || "paytm".equals(scheme)) {
                     try {
                         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                         if (view.getContext().getPackageManager().resolveActivity(intent, 0) != null) {
@@ -79,15 +87,23 @@ public class CustomWebViewFragment extends Fragment {
             }
         });
         
-        String url = Constants.Http.EPRATIBHA_SSO_URL;
+        String baseUrl = Constants.Http.EPRATIBHA_SSO_URL;
         if (getArguments() != null) {
+            if (getArguments().containsKey(ARG_URL_TO_OPEN)) {
+                baseUrl = getArguments().getString(ARG_URL_TO_OPEN, Constants.Http.EPRATIBHA_SSO_URL);
+            }
             String email = getArguments().getString(ARG_EMAIL, "");
             String pass = getArguments().getString(ARG_PASS, "");
             if (!email.isEmpty()) {
-                url += "?email=" + email + "&pass=" + pass;
+                Uri uri = Uri.parse(baseUrl)
+                        .buildUpon()
+                        .appendQueryParameter("email", email)
+                        .appendQueryParameter("pass", pass)
+                        .build();
+                baseUrl = uri.toString();
             }
         }
-        webView.loadUrl(url);
+        webView.loadUrl(baseUrl);
         
         return webView;
     }

@@ -3,10 +3,10 @@ name: Bulid app files
 on:
   workflow_dispatch:
     inputs:
-      subdomain:
-        description: "Which subdomain you want to build the android app"
+      url:
+        description: "URL of the site (e.g., subdomain.testpress.in or custom domain)"
         required: true
-        default: "sandbox"
+        default: "sandbox.testpress.in"
       split_apk:
         description: "Build split APKs by ABI?"
         required: false
@@ -25,9 +25,17 @@ jobs:
       API_ACCESS_KEY: ${{ secrets.API_ACCESS_KEY }}
 
     steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - name: Extract subdomain
+        uses: ./.github/actions/extract-subdomain
+        with:
+          url: ${{ github.event.inputs.url }}
+
       - name: Validate subdomain
         run: |
-          curl -f https://${{ github.event.inputs.subdomain }}.testpress.in/api/v2.5/admin/android/app-config/ -H "API-access-key: $API_ACCESS_KEY"
+          curl -f https://$SUBDOMAIN.testpress.in/api/v2.5/admin/android/app-config/ -H "API-access-key: $API_ACCESS_KEY"
 
       - name: Setup JDK 17
         uses: actions/setup-java@v3
@@ -47,9 +55,6 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-
-      - name: Checkout the repository
-        uses: actions/checkout@v2
 
       - name: Setup ruby and fastlane
         uses: ruby/setup-ruby@v1
@@ -76,7 +81,7 @@ jobs:
         run: |
           export LC_ALL=en_US.UTF-8
           export LANG=en_US.UTF-8
-          bundle exec fastlane build_app_files subdomain:${{ github.event.inputs.subdomain }} split_apk:${{ github.event.inputs.split_apk }}
+          bundle exec fastlane build_app_files subdomain:$SUBDOMAIN split_apk:${{ github.event.inputs.split_apk }}
 
       - name: Store app artifacts
         uses: actions/upload-artifact@v4

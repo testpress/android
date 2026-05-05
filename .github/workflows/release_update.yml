@@ -10,8 +10,8 @@ on:
         options:
           - "all"
           - "batch"
-      subdomains:
-        description: "Batch mode only: comma-separated subdomains (example: inst1,inst2,inst3). Can contain a single subdomain."
+      urls:
+        description: "Batch mode only: comma-separated URLs (example: https://inst1.testpress.in, https://customdomain.com). Can contain a single URL."
         required: false
         default: ""
 
@@ -32,13 +32,16 @@ jobs:
       API_ACCESS_KEY: ${{ secrets.API_ACCESS_KEY }}
 
     steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
       - name: Validate inputs
         run: |
           MODE="${{ github.event.inputs.mode }}"
-          SUBDOMAINS="${{ github.event.inputs.subdomains }}"
+          URLS="${{ github.event.inputs.urls }}"
           if [ "$MODE" = "batch" ]; then
-            if [ -z "$(echo "$SUBDOMAINS" | tr -d '[:space:]')" ]; then
-              echo "ERROR: mode=batch requires non-empty 'subdomains' input (comma-separated)."
+            if [ -z "$(echo "$URLS" | tr -d '[:space:]')" ]; then
+              echo "ERROR: mode=batch requires non-empty 'urls' input (comma-separated)."
               exit 1
             fi
           fi
@@ -62,9 +65,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Checkout the repository
-        uses: actions/checkout@v2
-
       - name: Setup ruby and fastlane
         uses: ruby/setup-ruby@v1
         with:
@@ -86,6 +86,12 @@ jobs:
           wget https://media.testpress.in/static/android/zoom_sdk.zip
           unzip -o ./zoom_sdk.zip
 
+      - name: Extract subdomains
+        if: ${{ github.event.inputs.mode == 'batch' }}
+        uses: ./.github/actions/extract-subdomain
+        with:
+          url: ${{ github.event.inputs.urls }}
+
       - name: Build and deploy app (all)
         if: ${{ github.event.inputs.mode == 'all' }}
         run: |
@@ -98,7 +104,7 @@ jobs:
         run: |
           export LC_ALL=en_US.UTF-8
           export LANG=en_US.UTF-8
-          bundle exec fastlane release_update_batch subdomains:"${{ github.event.inputs.subdomains }}" release_option:${{ github.event.inputs.release_option }}
+          bundle exec fastlane release_update_batch subdomains:"$SUBDOMAINS" release_option:${{ github.event.inputs.release_option }}
 
       - name: Store app artifacts
         if: ${{ github.event.inputs.mode == 'all' }}

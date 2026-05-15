@@ -235,6 +235,9 @@ public class PostsListFragment extends Fragment implements
             }
 
             protected void onSuccess(final List<Category> categories) throws Exception {
+                if (getActivity() == null) {
+                    return;
+                }
                 categoryDao.insertOrReplaceInTx(categories);
                 initializeSpinnerAdapter();
                 for (final Category category : categories) {

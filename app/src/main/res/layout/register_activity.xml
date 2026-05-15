@@ -38,7 +38,7 @@
                     android:layout_marginBottom="24dp"
                     android:src="@drawable/login_screen_image" />
 
-                <!-- Name Label -->
+                <!-- Full Name Label -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
                             style="@style/Input"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/input_height"
-                            android:hint="Name"
+                            android:hint="@string/label_name"
                             android:text="@={viewModel.firstName}"
                             android:imeOptions="actionNext"
                             android:maxLines="1"

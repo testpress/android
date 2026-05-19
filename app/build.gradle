@@ -162,7 +162,7 @@ android {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
-    def enableSplitApk = project.hasProperty('enableSplitApk') && project.property('enableSplitApk') == 'true'
+    def enableSplitApk = project.hasProperty('enableSplitApk') && project.property('enableSplitApk').toString() == 'true'
     splits {
         abi {
             enable enableSplitApk

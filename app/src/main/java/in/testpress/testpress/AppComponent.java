@@ -15,6 +15,7 @@ import in.testpress.testpress.ui.DeviceNotAllowedActivity;
 import in.testpress.testpress.ui.DocumentsListActivity;
 import in.testpress.testpress.ui.DocumentsListFragment;
 import in.testpress.testpress.ui.DoubtsActivity;
+import in.testpress.testpress.ui.QotdActivity;
 import in.testpress.testpress.ui.DrupalRssListActivity;
 import in.testpress.testpress.ui.DrupalRssListFragment;
 import in.testpress.testpress.ui.EnforceDataActivity;
@@ -63,6 +64,7 @@ public interface AppComponent {
     void inject(WebViewActivity webViewActivity);
     void inject(DashboardFragment dashboardFragment);
     void inject(DoubtsActivity doubtsActivity);
+    void inject(QotdActivity qotdActivity);
     void inject(LoginActivityV2 loginActivityV2);
     void inject(UsernameAuthentication usernameAuthentication);
     void inject(PhoneAuthenticationFragment phoneAuthenticationFragment);

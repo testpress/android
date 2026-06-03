@@ -518,17 +518,17 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         if (useNewDiscountFeat != null) {
             stmt.bindLong(66, useNewDiscountFeat ? 1L: 0L);
         }
-
+ 
         Boolean requireQuestionReportDescription = entity.getRequireQuestionReportDescription();
         if (requireQuestionReportDescription != null) {
             stmt.bindLong(67, requireQuestionReportDescription ? 1L: 0L);
         }
-
+ 
         Integer questionReportDescriptionMinLength = entity.getQuestionReportDescriptionMinLength();
         if (questionReportDescriptionMinLength != null) {
             stmt.bindLong(68, questionReportDescriptionMinLength);
         }
-
+ 
         Boolean qotdEnabled = entity.getQotdEnabled();
         if (qotdEnabled != null) {
             stmt.bindLong(69, qotdEnabled ? 1L: 0L);

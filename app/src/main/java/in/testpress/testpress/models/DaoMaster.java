@@ -20,7 +20,7 @@ import in.testpress.testpress.models.UserDao;
  * Master of DAO (schema version 46): knows all DAOs.
 */
 public class DaoMaster extends AbstractDaoMaster {
-    public static final int SCHEMA_VERSION = 46;
+    public static final int SCHEMA_VERSION = 47;
 
     /** Creates underlying database table using DAOs. */
     public static void createAllTables(SQLiteDatabase db, boolean ifNotExists) {

@@ -382,8 +382,11 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     private void showDailyQuestionsBasedOnInstituteSettings(Menu menu) {
-        if (mInstituteSettings != null) {
-            menu.findItem(R.id.daily_questions).setVisible(Boolean.TRUE.equals(mInstituteSettings.getQotdEnabled()));
+        if (mInstituteSettings != null && menu != null) {
+            MenuItem dailyQuestionsItem = menu.findItem(R.id.daily_questions);
+            if (dailyQuestionsItem != null) {
+                dailyQuestionsItem.setVisible(Boolean.TRUE.equals(mInstituteSettings.getQotdEnabled()));
+            }
         }
     }
 

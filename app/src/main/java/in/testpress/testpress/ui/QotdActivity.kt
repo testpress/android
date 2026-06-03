@@ -25,6 +25,8 @@ class QotdActivity : TestpressFragmentActivity(), EmptyViewListener {
     lateinit var serviceProvider: TestpressServiceProvider
     lateinit var emptyViewFragment: EmptyViewFragment
     private lateinit var binding: ContainerLayoutBinding
+    private var redrawRunnable: Runnable? = null
+    private val handler = android.os.Handler(android.os.Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,8 +45,8 @@ class QotdActivity : TestpressFragmentActivity(), EmptyViewListener {
     private fun fetchSsoLink() {
         object : SafeAsyncTask<SsoUrl?>() {
             @Throws(Exception::class)
-            override fun call(): SsoUrl {
-                return serviceProvider.getService(this@QotdActivity).getSsoUrl()
+            override fun call(): SsoUrl? {
+                return serviceProvider.getService(this@QotdActivity)?.getSsoUrl()
             }
 
             override fun onException(exception: java.lang.Exception?) {
@@ -56,8 +58,13 @@ class QotdActivity : TestpressFragmentActivity(), EmptyViewListener {
             override fun onSuccess(ssoLink: SsoUrl?) {
                 super.onSuccess(ssoLink)
                 hideLoading()
-                val url = BuildConfig.BASE_URL + ssoLink?.ssoUrl + "&next=/qotd/"
-                loadWebView(url)
+                val ssoUrlPath = ssoLink?.ssoUrl
+                if (ssoUrlPath.isNullOrEmpty()) {
+                    showErrorView(Exception("Failed to retrieve a valid SSO URL"))
+                } else {
+                    val url = BuildConfig.BASE_URL + ssoUrlPath + "&next=/qotd/"
+                    loadWebView(url)
+                }
             }
         }.execute()
     }
@@ -79,7 +86,6 @@ class QotdActivity : TestpressFragmentActivity(), EmptyViewListener {
     }
 
     private fun forceChartRedraw() {
-        val handler = android.os.Handler(android.os.Looper.getMainLooper())
         val runnable = object : Runnable {
             var attempts = 0
             override fun run() {
@@ -90,6 +96,7 @@ class QotdActivity : TestpressFragmentActivity(), EmptyViewListener {
                 handler.postDelayed(this, 1000)
             }
         }
+        redrawRunnable = runnable
         handler.postDelayed(runnable, 1500)
     }
 
@@ -142,5 +149,10 @@ class QotdActivity : TestpressFragmentActivity(), EmptyViewListener {
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onDestroy() {
+        redrawRunnable?.let { handler.removeCallbacks(it) }
+        super.onDestroy()
     }
 }

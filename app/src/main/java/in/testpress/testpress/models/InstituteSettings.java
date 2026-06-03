@@ -724,9 +724,8 @@ public class InstituteSettings {
         return qotdEnabled;
     }
 
-    public InstituteSettings setQotdEnabled(Boolean qotdEnabled) {
+    public void setQotdEnabled(Boolean qotdEnabled) {
         this.qotdEnabled = qotdEnabled;
-        return this;
     }
 
     // KEEP METHODS - put your custom methods here

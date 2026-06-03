@@ -94,6 +94,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         public final static Property UseNewDiscountFeat = new Property(65, Boolean.class, "useNewDiscountFeat", false, "USE_NEW_DISCOUNT_FEAT");
         public final static Property RequireQuestionReportDescription = new Property(66, Boolean.class, "requireQuestionReportDescription", false, "REQUIRE_QUESTION_REPORT_DESCRIPTION");
         public final static Property QuestionReportDescriptionMinLength = new Property(67, Integer.class, "questionReportDescriptionMinLength", false, "QUESTION_REPORT_DESCRIPTION_MIN_LENGTH");
+        public final static Property QotdEnabled = new Property(68, Boolean.class, "qotdEnabled", false, "QOTD_ENABLED");
     };
 
     private final IntegerListConverter allowedLoginMethodsConverter = new IntegerListConverter();
@@ -177,7 +178,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
                 "\"VIDEO_WATERMARK_POSITION\" TEXT," + // 64: videoWatermarkPosition
                 "\"USE_NEW_DISCOUNT_FEAT\" INTEGER," + // 65: useNewDiscountFeat
                 "\"REQUIRE_QUESTION_REPORT_DESCRIPTION\" INTEGER," + // 66: requireQuestionReportDescription
-                "\"QUESTION_REPORT_DESCRIPTION_MIN_LENGTH\" INTEGER);"); // 67: questionReportDescriptionMinLength
+                "\"QUESTION_REPORT_DESCRIPTION_MIN_LENGTH\" INTEGER," + // 67: questionReportDescriptionMinLength
+                "\"QOTD_ENABLED\" INTEGER);"); // 68: qotdEnabled
     }
 
     /** Drops the underlying database table. */
@@ -516,15 +518,20 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         if (useNewDiscountFeat != null) {
             stmt.bindLong(66, useNewDiscountFeat ? 1L: 0L);
         }
-
+ 
         Boolean requireQuestionReportDescription = entity.getRequireQuestionReportDescription();
         if (requireQuestionReportDescription != null) {
             stmt.bindLong(67, requireQuestionReportDescription ? 1L: 0L);
         }
-
+ 
         Integer questionReportDescriptionMinLength = entity.getQuestionReportDescriptionMinLength();
         if (questionReportDescriptionMinLength != null) {
             stmt.bindLong(68, questionReportDescriptionMinLength);
+        }
+ 
+        Boolean qotdEnabled = entity.getQotdEnabled();
+        if (qotdEnabled != null) {
+            stmt.bindLong(69, qotdEnabled ? 1L: 0L);
         }
     }
 
@@ -605,7 +612,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             cursor.isNull(offset + 64) ? null : cursor.getString(offset + 64), // videoWatermarkPosition
             cursor.isNull(offset + 65) ? null : cursor.getShort(offset + 65) != 0, // useNewDiscountFeat
             cursor.isNull(offset + 66) ? null : cursor.getShort(offset + 66) != 0, // requireQuestionReportDescription
-            cursor.isNull(offset + 67) ? null : cursor.getInt(offset + 67) // questionReportDescriptionMinLength
+            cursor.isNull(offset + 67) ? null : cursor.getInt(offset + 67), // questionReportDescriptionMinLength
+            cursor.isNull(offset + 68) ? null : cursor.getShort(offset + 68) != 0 // qotdEnabled
         );
         return entity;
     }
@@ -681,6 +689,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         entity.setUseNewDiscountFeat(cursor.isNull(offset + 65) ? null : cursor.getShort(offset + 65) != 0);
         entity.setRequireQuestionReportDescription(cursor.isNull(offset + 66) ? null : cursor.getShort(offset + 66) != 0);
         entity.setQuestionReportDescriptionMinLength(cursor.isNull(offset + 67) ? null : cursor.getInt(offset + 67));
+        entity.setQotdEnabled(cursor.isNull(offset + 68) ? null : cursor.getShort(offset + 68) != 0);
      }
     
     /** @inheritdoc */

@@ -306,6 +306,7 @@ public class MainActivity extends TestpressFragmentActivity {
         showDiscussionsButtonBasedOnInstituteSettings(navigationView.getMenu());
         showBookmarkButtonBasedOnInstituteSettings(navigationView.getMenu());
         showCustomOptions(navigationView.getMenu());
+        showDailyQuestionsBasedOnInstituteSettings(navigationView.getMenu());
         updateMenuItemNames(navigationView.getMenu());
         final HandleMainMenu handleMainMenu = new HandleMainMenu(MainActivity.this, serviceProvider);
         navigationView.setNavigationItemSelectedListener(
@@ -377,6 +378,15 @@ public class MainActivity extends TestpressFragmentActivity {
                     : getString(R.string.bookmarks);
             menu.findItem(R.id.bookmarks).setTitle(BookmarksLabel);
             menu.findItem(R.id.bookmarks).setVisible(Boolean.TRUE.equals(mInstituteSettings.getBookmarksEnabled()));
+        }
+    }
+
+    private void showDailyQuestionsBasedOnInstituteSettings(Menu menu) {
+        if (mInstituteSettings != null && menu != null) {
+            MenuItem dailyQuestionsItem = menu.findItem(R.id.daily_questions);
+            if (dailyQuestionsItem != null) {
+                dailyQuestionsItem.setVisible(Boolean.TRUE.equals(mInstituteSettings.getQotdEnabled()));
+            }
         }
     }
 

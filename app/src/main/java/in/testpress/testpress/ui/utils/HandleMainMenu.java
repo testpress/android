@@ -32,6 +32,7 @@ import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.ui.UserDevicesActivity;
+import in.testpress.testpress.ui.QotdActivity;
 import in.testpress.ui.WebViewWithSSOActivity;
 
 import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
@@ -106,6 +107,7 @@ public class HandleMainMenu {
             activity.startActivity(intent);
         });
         menuActions.put(R.id.student_report, this::launchStudentReportActivity);
+        menuActions.put(R.id.daily_questions, this::openDailyQuestions);
         menuActions.put(R.id.recorded_lessons, () -> openCakingExternalURL("Recorded Lessons", "/external_site/?endpoint=recorded_lectures"));
         menuActions.put(R.id.mocks, () -> openCakingExternalURL("Mocks", "/external_site/?endpoint=mocks"));
         menuActions.put(R.id.e_books, () -> openCakingExternalURL("E-Books", "/external_site/?endpoint=e-books"));
@@ -203,6 +205,11 @@ public class HandleMainMenu {
                         WebViewWithSSOActivity.class
                 )
         );
+    }
+
+    private void openDailyQuestions() {
+        Intent intent = new Intent(activity, QotdActivity.class);
+        activity.startActivity(intent);
     }
 
     private void openPrivacyPolicy() {

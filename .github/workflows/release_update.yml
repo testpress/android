@@ -111,6 +111,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app
+          retention-days: 7
           path: |
             app/build/outputs/apk/release/app-release.apk
             app/build/outputs/bundle/release/app-release.aab
@@ -121,6 +122,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: batch-app-artifacts
+          retention-days: 7
           path: |
             batch_artifacts
 
@@ -129,5 +131,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: batch-summary
+          retention-days: 7
           path: |
             release_update_batch_summary.json

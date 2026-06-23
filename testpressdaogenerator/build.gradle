@@ -1,4 +1,11 @@
 apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = 'in.testpress.testpress.TestpressDaoGenerator'
+
+run {
+    workingDir = rootProject.projectDir
+}
 
 dependencies {
     implementation 'de.greenrobot:greendao-generator:2.0.0'

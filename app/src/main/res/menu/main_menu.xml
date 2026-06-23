@@ -58,6 +58,12 @@
             android:icon="@drawable/ic_baseline_auto_fix_high_24"
             app:showAsAction="never"/>
         <item
+            android:id="@+id/daily_questions"
+            android:title="Daily Questions"
+            android:icon="@drawable/ic_calendar"
+            android:visible="false"
+            app:showAsAction="never"/>
+        <item
             android:id="@+id/recorded_lessons"
             android:icon="@drawable/outline_smart_display_24"
             android:title="Recorded Lessons"

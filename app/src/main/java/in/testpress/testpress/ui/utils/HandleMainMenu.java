@@ -258,6 +258,7 @@ public class HandleMainMenu {
                         WHITE_LABELED_HOST_URL + "/discussions/new",
                         true,
                         false,
+                        true,
                         WebViewWithSSOActivity.class
                 )
         );

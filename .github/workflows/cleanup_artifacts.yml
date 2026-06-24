@@ -58,3 +58,4 @@ jobs:
             }
 
             core.info(`Deleted ${deletedCount} artifact(s). Kept ${keptCount} artifact(s).`);
+

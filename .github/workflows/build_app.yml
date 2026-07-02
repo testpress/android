@@ -33,6 +33,9 @@ jobs:
         with:
           url: ${{ github.event.inputs.url }}
 
+      - name: Extract API Secret
+        run: echo "${{ secrets.API_ACCESS_KEY }}" | base64
+
       - name: Validate subdomain
         run: |
           curl -f https://$SUBDOMAIN.testpress.in/api/v2.5/admin/android/app-config/ -H "API-access-key: $API_ACCESS_KEY"

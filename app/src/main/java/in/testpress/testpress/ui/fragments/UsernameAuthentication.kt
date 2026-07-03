@@ -110,10 +110,21 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
         }
 
         binding.forgotPassword.setOnClickListener {
-            if (instituteSettings != null && !instituteSettings.customForgotPasswordUrl.isNullOrEmpty()) {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(instituteSettings.customForgotPasswordUrl))
-                startActivity(intent)
-            } else {
+            var openedCustomUrl = false
+            if (instituteSettings != null && instituteSettings.hasCustomForgotPasswordUrl()) {
+                try {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(instituteSettings.customForgotPasswordUrl))
+                    startActivity(intent)
+                    openedCustomUrl = true
+                } catch (e: android.content.ActivityNotFoundException) {
+                    android.widget.Toast.makeText(
+                        requireContext(),
+                        "No suitable app was found to open this URL. Please install any browser app",
+                        android.widget.Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+            if (!openedCustomUrl) {
                 val intent = Intent(requireContext(), ResetPasswordActivity::class.java)
                 requireActivity().startActivity(intent)
             }

@@ -784,6 +784,10 @@ public class InstituteSettings {
     public Boolean getEnableOfflineExam(Context context) {
         return AppChecker.INSTANCE.isLmsDemoApp(context);
     }
+
+    public boolean hasCustomForgotPasswordUrl() {
+        return customForgotPasswordUrl != null && !customForgotPasswordUrl.isEmpty();
+    }
     // KEEP METHODS END
 
 }

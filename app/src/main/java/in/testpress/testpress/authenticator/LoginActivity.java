@@ -5,6 +5,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -663,8 +664,22 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
     private void verify() {
         if(internetConnectivityChecker.isConnected()) {
-            Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
-            startActivity(intent);
+            boolean openedCustomUrl = false;
+            if (instituteSettings != null && instituteSettings.hasCustomForgotPasswordUrl()) {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(instituteSettings.getCustomForgotPasswordUrl()));
+                    startActivity(intent);
+                    openedCustomUrl = true;
+                } catch (android.content.ActivityNotFoundException e) {
+                    android.widget.Toast.makeText(getApplicationContext(),
+                            "No suitable app was found to open this URL. Please install any browser app",
+                            android.widget.Toast.LENGTH_SHORT).show();
+                }
+            }
+            if (!openedCustomUrl) {
+                Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
+                startActivity(intent);
+            }
         } else {
             internetConnectivityChecker.showAlert();
         }

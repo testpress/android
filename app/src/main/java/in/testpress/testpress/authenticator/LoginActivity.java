@@ -663,8 +663,13 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
     private void verify() {
         if(internetConnectivityChecker.isConnected()) {
-            Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
-            startActivity(intent);
+            if (instituteSettings != null && instituteSettings.getCustomForgotPasswordUrl() != null && !instituteSettings.getCustomForgotPasswordUrl().isEmpty()) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(instituteSettings.getCustomForgotPasswordUrl()));
+                startActivity(intent);
+            } else {
+                Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
+                startActivity(intent);
+            }
         } else {
             internetConnectivityChecker.showAlert();
         }

@@ -23,6 +23,7 @@ import android.accounts.AccountManager
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -108,6 +109,16 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
             loginNavigation?.goToPhoneAuthentication()
         }
 
+        binding.forgotPassword.setOnClickListener {
+            if (instituteSettings != null && !instituteSettings.customForgotPasswordUrl.isNullOrEmpty()) {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(instituteSettings.customForgotPasswordUrl))
+                startActivity(intent)
+            } else {
+                val intent = Intent(requireContext(), ResetPasswordActivity::class.java)
+                requireActivity().startActivity(intent)
+            }
+        }
+
         binding.signIn.setOnClickListener {
             if (binding.username.isEmpty() or binding.password.isEmpty()) {
                 if (binding.username.isEmpty()) {
@@ -121,10 +132,6 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
             }
         }
 
-        binding.forgotPassword.setOnClickListener {
-            val intent = Intent(requireContext(), ResetPasswordActivity::class.java)
-            requireActivity().startActivity(intent)
-        }
 
         binding.googleSignIn.setOnClickListener {
             loginNavigation?.signInWithGoogle()

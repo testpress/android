@@ -2,7 +2,7 @@ package in.testpress.testpress.ui;
 import in.testpress.RequestCode;
 import in.testpress.course.fragments.OfflineDownloadsTabsFragment;
 import in.testpress.course.repository.OfflineAttachmentsRepository;
-import in.testpress.course.services.OfflineAttachmentDownloadManager;
+import in.testpress.course.services.NewOfflineAttachmentDownloadManager;
 import in.testpress.course.ui.AvailableCourseListFragment;
 import in.testpress.course.ui.CourseListFragment;
 
@@ -276,8 +276,8 @@ public class MainActivity extends TestpressFragmentActivity {
     private void initOfflineAttachmentDownloadManager() {
         OfflineAttachmentsDao offlineAttachmentDao = TestpressDatabase.Companion.invoke(this).offlineAttachmentDao();
         OfflineAttachmentsRepository offlineAttachmentsRepository =new OfflineAttachmentsRepository(offlineAttachmentDao);
-        OfflineAttachmentDownloadManager.Companion.init(offlineAttachmentsRepository);
-        OfflineAttachmentDownloadManager.Companion.getInstance().restartDownloadProgressTracking(this);
+        NewOfflineAttachmentDownloadManager.Companion.init(offlineAttachmentsRepository);
+        NewOfflineAttachmentDownloadManager.Companion.getInstance().restartDownloadProgressTracking(this);
     }
 
     private void setUpNavigationDrawer() {

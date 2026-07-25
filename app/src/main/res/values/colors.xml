@@ -65,4 +65,13 @@
     <color name="testpress_vote_indicator">#298cdd</color>
     <color name="light_grey">#efefef</color>
 
+    <!-- ── Exam Results Screen ──────────────────────────────────────────────── -->
+    <color name="exam_result_screen_bg">#F0F2F8</color>
+    <color name="exam_result_header_bg">#E8EBF7</color>
+    <color name="exam_result_cell_text">#333333</color>
+    <color name="exam_result_divider">#DADCE0</color>
+    <color name="exam_result_row_alt">#FAFBFF</color>
+    <color name="exam_result_tab_text">#666666</color>
+    <color name="exam_result_pagination_border">#C5CAE9</color>
+
 </resources>

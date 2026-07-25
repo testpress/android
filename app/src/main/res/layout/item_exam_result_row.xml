@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Single data row in the exam results table.
+    The background is toggled between white and exam_result_row_alt by the adapter
+    for alternating row colours that match the web design.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/row_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingVertical="14dp"
+    android:minWidth="@dimen/exam_result_min_row_width">
+
+    <!-- Date -->
+    <TextView
+        android:id="@+id/tv_date"
+        android:layout_width="@dimen/col_date"
+        android:layout_height="wrap_content"
+        android:textColor="@color/primary"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:paddingHorizontal="6dp"
+        android:gravity="center_vertical"/>
+
+    <!-- Exam Name -->
+    <TextView
+        android:id="@+id/tv_exam_name"
+        android:layout_width="@dimen/col_exam"
+        android:layout_height="wrap_content"
+        android:textColor="@color/exam_result_cell_text"
+        android:textSize="13sp"
+        android:paddingHorizontal="6dp"
+        android:gravity="center_vertical"/>
+
+    <!-- Physics -->
+    <TextView
+        android:id="@+id/tv_physics"
+        android:layout_width="@dimen/col_subject"
+        android:layout_height="wrap_content"
+        android:textColor="@color/exam_result_cell_text"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- Chemistry -->
+    <TextView
+        android:id="@+id/tv_chemistry"
+        android:layout_width="@dimen/col_subject"
+        android:layout_height="wrap_content"
+        android:textColor="@color/exam_result_cell_text"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- Biology -->
+    <TextView
+        android:id="@+id/tv_biology"
+        android:layout_width="@dimen/col_subject"
+        android:layout_height="wrap_content"
+        android:textColor="@color/exam_result_cell_text"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- Maths -->
+    <TextView
+        android:id="@+id/tv_maths"
+        android:layout_width="@dimen/col_subject"
+        android:layout_height="wrap_content"
+        android:textColor="@color/exam_result_cell_text"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- Aptitude -->
+    <TextView
+        android:id="@+id/tv_aptitude"
+        android:layout_width="@dimen/col_subject"
+        android:layout_height="wrap_content"
+        android:textColor="@color/exam_result_cell_text"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- Drawing -->
+    <TextView
+        android:id="@+id/tv_drawing"
+        android:layout_width="@dimen/col_subject"
+        android:layout_height="wrap_content"
+        android:textColor="@color/exam_result_cell_text"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- P-I -->
+    <TextView
+        android:id="@+id/tv_p1"
+        android:layout_width="@dimen/col_subject"
+        android:layout_height="wrap_content"
+        android:textColor="@color/exam_result_cell_text"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- P-II -->
+    <TextView
+        android:id="@+id/tv_p2"
+        android:layout_width="@dimen/col_subject"
+        android:layout_height="wrap_content"
+        android:textColor="@color/exam_result_cell_text"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- Total -->
+    <TextView
+        android:id="@+id/tv_total"
+        android:layout_width="@dimen/col_score"
+        android:layout_height="wrap_content"
+        android:textColor="@color/exam_result_cell_text"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- Max -->
+    <TextView
+        android:id="@+id/tv_max"
+        android:layout_width="@dimen/col_score"
+        android:layout_height="wrap_content"
+        android:textColor="@color/exam_result_cell_text"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- Highest -->
+    <TextView
+        android:id="@+id/tv_highest"
+        android:layout_width="@dimen/col_score"
+        android:layout_height="wrap_content"
+        android:textColor="@color/exam_result_cell_text"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- Percentage -->
+    <TextView
+        android:id="@+id/tv_percent"
+        android:layout_width="@dimen/col_percent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/exam_result_cell_text"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- Grade -->
+    <TextView
+        android:id="@+id/tv_grade"
+        android:layout_width="@dimen/col_grade"
+        android:layout_height="wrap_content"
+        android:textColor="@color/primary"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- Rank -->
+    <TextView
+        android:id="@+id/tv_rank"
+        android:layout_width="@dimen/col_rank"
+        android:layout_height="wrap_content"
+        android:textColor="@color/exam_result_cell_text"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- Appeared -->
+    <TextView
+        android:id="@+id/tv_appeared"
+        android:layout_width="@dimen/col_appeared"
+        android:layout_height="wrap_content"
+        android:textColor="@color/exam_result_cell_text"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- OMR indicator -->
+    <TextView
+        android:id="@+id/tv_omr"
+        android:layout_width="@dimen/col_omr"
+        android:layout_height="wrap_content"
+        android:textColor="@color/exam_result_cell_text"
+        android:textSize="13sp"
+        android:gravity="center"
+        android:paddingEnd="6dp"/>
+
+</LinearLayout>

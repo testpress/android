@@ -189,4 +189,14 @@
         <item quantity="other">%d Chapters</item>
     </plurals>
     <string name="testpress_login_with_different_account">Login with different account</string>
+
+    <!-- ── Exam Results ──────────────────────────────────────────────────────── -->
+    <string name="exam_results">Results</string>
+    <string name="exam_results_model_tab">Model Exam</string>
+    <string name="exam_results_weekly_tab">Weekly Exam</string>
+    <string name="exam_results_previous">&#8249; Previous</string>
+    <string name="exam_results_next">Next &#8250;</string>
+    <string name="no_results">No results found</string>
+    <string name="error_loading_results">Failed to load exam results. Please try again.</string>
+
 </resources>

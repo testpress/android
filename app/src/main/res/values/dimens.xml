@@ -46,4 +46,19 @@
     <dimen name="text_margin">16dp</dimen>
     <dimen name="input_height">60dp</dimen>
     <dimen name="tab_input_width">400dp</dimen>
+
+    <!-- ── Exam Results Table Column Widths ────────────────────────────────── -->
+    <!-- Total row width ≈ 1170dp; must be inside HorizontalScrollView -->
+    <dimen name="col_date">104dp</dimen>
+    <dimen name="col_exam">200dp</dimen>
+    <dimen name="col_subject">52dp</dimen>
+    <dimen name="col_score">62dp</dimen>
+    <dimen name="col_percent">56dp</dimen>
+    <dimen name="col_grade">58dp</dimen>
+    <dimen name="col_rank">56dp</dimen>
+    <dimen name="col_appeared">84dp</dimen>
+    <dimen name="col_omr">56dp</dimen>
+    <!-- Approximate sum of all columns — used as minWidth on row containers -->
+    <dimen name="exam_result_min_row_width">1150dp</dimen>
+
 </resources>

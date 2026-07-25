@@ -85,8 +85,18 @@ class ExamResultViewModel : ViewModel() {
     fun retry() = fetchResults()
 
 
+    override fun onCleared() {
+        super.onCleared()
+        repository.cancelPendingRequests()
+    }
+
     private fun fetchResults() {
-        if (studentNo.isEmpty()) return
+        if (studentNo.isEmpty()) {
+            _isLoading.value = false
+            _error.value = "Student details not found. Please log in again."
+            _results.value = emptyList()
+            return
+        }
 
         repository.fetchResults(
             studentNo = studentNo,
@@ -101,7 +111,8 @@ class ExamResultViewModel : ViewModel() {
                     }
                     is ExamResultState.Success -> {
                         _isLoading.value = false
-                        _results.value = state.response.data ?: emptyList()
+                        val dataList = state.response.data ?: emptyList()
+                        _results.value = if (pageLimit > 0) dataList.take(pageLimit) else dataList
                         val pages = if (state.response.limit > 0) {
                             ceil(state.response.totalCount.toDouble() / state.response.limit).toInt()
                                 .coerceAtLeast(1)

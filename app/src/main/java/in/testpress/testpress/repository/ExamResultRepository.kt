@@ -7,7 +7,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
 sealed class ExamResultState {
     object Loading : ExamResultState()
     data class Success(val response: ExamResultResponse) : ExamResultState()
@@ -20,15 +19,11 @@ class ExamResultRepository {
         const val FALLBACK_LIMIT = 10
     }
 
+    private var currentCall: Call<ExamResultResponse>? = null
+
     /**
      * Fetches a page of exam results for the given student and exam type.
-     *
-     * @param studentNo The student's login username.
-     * @param examType  Either [in.testpress.testpress.network.ExamType.MODEL] or
-     *                  [in.testpress.testpress.network.ExamType.WEEKLY].
-     * @param pageNo    1-based page number.
-     * @param limit     Number of items per page (calculated from screen size by the Fragment).
-     * @param onResult  Callback invoked on the main thread with the resulting state.
+     * Cancels any ongoing call before starting a new request.
      */
     fun fetchResults(
         studentNo: String,
@@ -37,20 +32,27 @@ class ExamResultRepository {
         limit: Int,
         onResult: (ExamResultState) -> Unit
     ) {
+        cancelPendingRequests()
+
         onResult(ExamResultState.Loading)
 
-        ExamResultApiClient.service.fetchExamResults(
+        val call = ExamResultApiClient.service.fetchExamResults(
             token = EXAM_RESULT_API_TOKEN,
             studentNo = studentNo,
             pageNo = pageNo,
             limit = limit,
             examType = examType
-        ).enqueue(object : Callback<ExamResultResponse> {
+        )
+        currentCall = call
+
+        call.enqueue(object : Callback<ExamResultResponse> {
 
             override fun onResponse(
                 call: Call<ExamResultResponse>,
                 response: Response<ExamResultResponse>
             ) {
+                if (call.isCanceled) return
+
                 val body = response.body()
                 when {
                     !response.isSuccessful -> {
@@ -69,8 +71,14 @@ class ExamResultRepository {
             }
 
             override fun onFailure(call: Call<ExamResultResponse>, t: Throwable) {
+                if (call.isCanceled) return
                 onResult(ExamResultState.Error(t.message ?: "Network error"))
             }
         })
+    }
+
+    fun cancelPendingRequests() {
+        currentCall?.cancel()
+        currentCall = null
     }
 }

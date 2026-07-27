@@ -703,8 +703,6 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         }
     }
 
-
-
     @Override
     public void onLoaderReset(final Loader<ProfileDetails> loader) {
         // Intentionally left blank

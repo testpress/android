@@ -82,10 +82,11 @@ public class TestpressFragmentActivity extends AppCompatActivity {
                     } else {
                         setEnabled(false);
                         getOnBackPressedDispatcher().onBackPressed();
-                        setEnabled(true);
                     }
                 } catch (IllegalStateException e) {
                     supportFinishAfterTransition();
+                } finally {
+                    setEnabled(true);
                 }
             }
         });
@@ -134,8 +135,6 @@ public class TestpressFragmentActivity extends AppCompatActivity {
         }
         return false;
     }
-
-
 
     @Override
     protected void onResume() {

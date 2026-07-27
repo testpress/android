@@ -13,7 +13,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
@@ -21,7 +20,6 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -363,8 +361,6 @@ public class WebViewActivity extends BaseToolBarActivity {
         return File.createTempFile(imageFileName, ".jpg", storageDir);
     }
 
-
-
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -396,8 +392,6 @@ public class WebViewActivity extends BaseToolBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
 
     public void logout() {
         new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)

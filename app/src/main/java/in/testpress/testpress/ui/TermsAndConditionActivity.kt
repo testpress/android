@@ -141,8 +141,6 @@ class TermsAndConditionActivity : BaseToolBarActivity() {
         }
     }
 
-
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.logout_terms_and_conditions, menu)
         return super.onCreateOptionsMenu(menu)

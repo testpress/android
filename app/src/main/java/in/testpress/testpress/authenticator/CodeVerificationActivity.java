@@ -13,6 +13,7 @@ import android.os.CountDownTimer;
 import android.provider.Settings;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.activity.OnBackPressedCallback;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -131,7 +132,7 @@ public class CodeVerificationActivity extends AppCompatActivity {
             }
         });
         accountManager = AccountManager.get(this);
-        getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
                 if (username == null) {
@@ -352,8 +353,6 @@ public class CodeVerificationActivity extends AppCompatActivity {
                 })
                 .show();
     }
-
-
 
     private void fetchInstituteSettingLocalDB() {
         DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();

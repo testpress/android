@@ -21,6 +21,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.widget.Toolbar;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -172,6 +173,27 @@ public class MainActivity extends TestpressFragmentActivity {
         }
         setupEasterEgg();
         initOfflineAttachmentDownloadManager();
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (shouldHandleWebViewBackPress()) {
+                    handleWebViewBackPress();
+                    return;
+                }
+
+                if (courseListFragment != null && viewPager.getCurrentItem() == 1) {
+                    if (courseListFragment.onBackPress()) {
+                        viewPager.setCurrentItem(0);
+                    }
+                } else if (viewPager.getCurrentItem() != 0) {
+                    viewPager.setCurrentItem(0);
+                } else {
+                    setEnabled(false);
+                    getOnBackPressedDispatcher().onBackPressed();
+                    setEnabled(true);
+                }
+            }
+        });
     }
 
     private void bindViews() {
@@ -190,23 +212,6 @@ public class MainActivity extends TestpressFragmentActivity {
         logo = findViewById(R.id.toolbar_logo);
     }
 
-    @Override
-    public void onBackPressed() {
-        if (shouldHandleWebViewBackPress()) {
-            handleWebViewBackPress();
-            return;
-        }
-
-        if (courseListFragment != null && viewPager.getCurrentItem() == 1) {
-            if (courseListFragment.onBackPress()) {
-                viewPager.setCurrentItem(0);
-            }
-        } else if (viewPager.getCurrentItem() != 0) {
-            viewPager.setCurrentItem(0);
-        } else {
-            super.onBackPressed();
-        }
-    }
 
     private boolean shouldHandleWebViewBackPress() {
         WebViewFragment webView = getCurrentWebViewFragment();

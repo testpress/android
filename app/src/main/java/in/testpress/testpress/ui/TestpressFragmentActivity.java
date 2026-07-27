@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.MenuItem;
@@ -72,6 +73,23 @@ public class TestpressFragmentActivity extends AppCompatActivity {
 
         eventBus.register(busEventListener);
         eventBus.register(unauthorisedUserErrorBusListener);
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                try {
+                    if (isFromDeeplink()) {
+                        goToHome();
+                    } else {
+                        setEnabled(false);
+                        getOnBackPressedDispatcher().onBackPressed();
+                    }
+                } catch (IllegalStateException e) {
+                    supportFinishAfterTransition();
+                } finally {
+                    setEnabled(true);
+                }
+            }
+        });
     }
 
     public Toolbar getActionBarToolbar() {
@@ -111,24 +129,11 @@ public class TestpressFragmentActivity extends AppCompatActivity {
             if (isFromDeeplink()) {
                 goToHome();
             } else {
-                onBackPressed();
+                getOnBackPressedDispatcher().onBackPressed();
             }
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void onBackPressed() {
-        try {
-            if (isFromDeeplink()) {
-                goToHome();
-            } else {
-                super.onBackPressed();
-            }
-        } catch (IllegalStateException e) {
-            supportFinishAfterTransition();
-        }
     }
 
     @Override

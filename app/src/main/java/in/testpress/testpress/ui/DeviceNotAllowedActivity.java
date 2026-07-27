@@ -2,6 +2,7 @@ package in.testpress.testpress.ui;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.activity.OnBackPressedCallback;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -53,11 +54,12 @@ public class DeviceNotAllowedActivity extends AppCompatActivity {
                 serviceProvider.logout(DeviceNotAllowedActivity.this, testpressService, serviceProvider, logoutService);
             }
         });
-    }
-
-    @Override
-    public void onBackPressed() {
-        // Disable back button to force user to logout
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Disable back button to force user to logout
+            }
+        });
     }
 
     public static void resetShowing() {

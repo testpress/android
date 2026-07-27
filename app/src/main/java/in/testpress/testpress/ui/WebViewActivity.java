@@ -13,14 +13,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
+import androidx.activity.OnBackPressedCallback;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -299,6 +298,19 @@ public class WebViewActivity extends BaseToolBarActivity {
                 return true;
             }
         });
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (getIntent().getBooleanExtra(ENABLE_BACK, false) && webView.canGoBack()) {
+                    reload = true;
+                    webView.goBack();
+                } else if (webView.canGoBack()) {
+                    webView.goBack();
+                } else {
+                    finish();
+                }
+            }
+        });
     }
 
     private Boolean isInstituteURL(String url){
@@ -350,27 +362,6 @@ public class WebViewActivity extends BaseToolBarActivity {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
-
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
-
-            switch (keyCode) {
-                case KeyEvent.KEYCODE_BACK:
-
-                    if (webView.canGoBack()) {
-                        webView.goBack();
-                    } else {
-                        finish();
-                    }
-
-                    return true;
-            }
-        }
-
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
     }
@@ -400,16 +391,6 @@ public class WebViewActivity extends BaseToolBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (getIntent().getBooleanExtra(ENABLE_BACK, false) && webView.canGoBack()) {
-            reload = true;
-            webView.goBack();
-        } else {
-            super.onBackPressed();
-        }
     }
 
     public void logout() {

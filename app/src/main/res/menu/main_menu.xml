@@ -53,6 +53,12 @@
             android:visible="false"
             app:showAsAction="never"/>
         <item
+            android:id="@+id/exam_results"
+            android:title="Results"
+            android:icon="@drawable/ic_exam_results"
+            android:visible="false"
+            app:showAsAction="never"/>
+        <item
             android:id="@+id/custom_test"
             android:title="Custom Test"
             android:icon="@drawable/ic_baseline_auto_fix_high_24"

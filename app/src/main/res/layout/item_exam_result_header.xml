@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Header row for the exam results table.
+    Must be wrapped inside a HorizontalScrollView that is synchronised
+    with the data RecyclerView below it.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@color/exam_result_header_bg"
+    android:paddingVertical="12dp"
+    android:minWidth="@dimen/exam_result_min_row_width">
+
+    <!-- Date -->
+    <TextView
+        android:layout_width="@dimen/col_date"
+        android:layout_height="wrap_content"
+        android:text="Date"
+        android:textColor="@color/primary"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:paddingHorizontal="6dp"
+        android:gravity="center_vertical"/>
+
+    <!-- Exam Name -->
+    <TextView
+        android:layout_width="@dimen/col_exam"
+        android:layout_height="wrap_content"
+        android:text="Exam"
+        android:textColor="@color/primary"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:paddingHorizontal="6dp"
+        android:gravity="center_vertical"/>
+
+    <!-- Physics -->
+    <TextView
+        android:layout_width="@dimen/col_subject"
+        android:layout_height="wrap_content"
+        android:text="PHY"
+        android:textColor="@color/primary"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- Chemistry -->
+    <TextView
+        android:layout_width="@dimen/col_subject"
+        android:layout_height="wrap_content"
+        android:text="CHE"
+        android:textColor="@color/primary"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- Biology -->
+    <TextView
+        android:layout_width="@dimen/col_subject"
+        android:layout_height="wrap_content"
+        android:text="BIO"
+        android:textColor="@color/primary"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- Maths -->
+    <TextView
+        android:layout_width="@dimen/col_subject"
+        android:layout_height="wrap_content"
+        android:text="Mat"
+        android:textColor="@color/primary"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- Aptitude -->
+    <TextView
+        android:layout_width="@dimen/col_subject"
+        android:layout_height="wrap_content"
+        android:text="APT"
+        android:textColor="@color/primary"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- Drawing -->
+    <TextView
+        android:layout_width="@dimen/col_subject"
+        android:layout_height="wrap_content"
+        android:text="DRW"
+        android:textColor="@color/primary"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- P-I -->
+    <TextView
+        android:layout_width="@dimen/col_subject"
+        android:layout_height="wrap_content"
+        android:text="P-I"
+        android:textColor="@color/primary"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- P-II -->
+    <TextView
+        android:layout_width="@dimen/col_subject"
+        android:layout_height="wrap_content"
+        android:text="P-II"
+        android:textColor="@color/primary"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- Total -->
+    <TextView
+        android:layout_width="@dimen/col_score"
+        android:layout_height="wrap_content"
+        android:text="Total"
+        android:textColor="@color/primary"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- Max -->
+    <TextView
+        android:layout_width="@dimen/col_score"
+        android:layout_height="wrap_content"
+        android:text="Max"
+        android:textColor="@color/primary"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- Highest -->
+    <TextView
+        android:layout_width="@dimen/col_score"
+        android:layout_height="wrap_content"
+        android:text="Highest"
+        android:textColor="@color/primary"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- Percentage -->
+    <TextView
+        android:layout_width="@dimen/col_percent"
+        android:layout_height="wrap_content"
+        android:text="%"
+        android:textColor="@color/primary"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- Grade -->
+    <TextView
+        android:layout_width="@dimen/col_grade"
+        android:layout_height="wrap_content"
+        android:text="Grade"
+        android:textColor="@color/primary"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- Rank -->
+    <TextView
+        android:layout_width="@dimen/col_rank"
+        android:layout_height="wrap_content"
+        android:text="Rank"
+        android:textColor="@color/primary"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- Appeared -->
+    <TextView
+        android:layout_width="@dimen/col_appeared"
+        android:layout_height="wrap_content"
+        android:text="Appeared"
+        android:textColor="@color/primary"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <!-- OMR -->
+    <TextView
+        android:layout_width="@dimen/col_omr"
+        android:layout_height="wrap_content"
+        android:text="OMR"
+        android:textColor="@color/primary"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:gravity="center"
+        android:paddingEnd="6dp"/>
+
+</LinearLayout>

@@ -28,6 +28,7 @@ import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.ui.DoubtsActivity;
+import in.testpress.testpress.ui.ExamResultActivity;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.PostsListActivity;
 import in.testpress.testpress.ui.ProfileDetailsActivity;
@@ -118,6 +119,7 @@ public class HandleMainMenu {
             activity.startActivity(intent);
         });
         menuActions.put(R.id.student_report, this::launchStudentReportActivity);
+        menuActions.put(R.id.exam_results, this::launchExamResultActivity);
         menuActions.put(R.id.daily_questions, this::openDailyQuestions);
         menuActions.put(R.id.custom_test, this::launchCustomTestActivity);
         menuActions.put(R.id.recorded_lessons, () -> openCakingExternalURL("Recorded Lessons", "/external_site/?endpoint=recorded_lectures"));
@@ -266,6 +268,11 @@ public class HandleMainMenu {
 
     private void launchOfflineExamListActivity() {
         activity.startActivity(new Intent(activity, OfflineExamListActivity.class));
+    }
+
+    private void launchExamResultActivity() {
+        Intent intent = new Intent(activity, ExamResultActivity.class);
+        activity.startActivity(intent);
     }
 
     private void openCakingExternalURL(String title, String url) {

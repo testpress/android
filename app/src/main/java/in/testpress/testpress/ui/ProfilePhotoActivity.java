@@ -65,7 +65,7 @@ public class ProfilePhotoActivity extends TestpressFragmentActivity {
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         if(item.getItemId() == android.R.id.home) {
-            super.onBackPressed();
+            getOnBackPressedDispatcher().onBackPressed();
             return true;
         } else if(item.getItemId() == R.id.edit) {
             //handled on onActivityResult of ProfileDetailsActivity

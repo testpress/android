@@ -13,6 +13,7 @@ import android.os.CountDownTimer;
 import android.provider.Settings;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.activity.OnBackPressedCallback;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -131,6 +132,16 @@ public class CodeVerificationActivity extends AppCompatActivity {
             }
         });
         accountManager = AccountManager.get(this);
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (username == null) {
+                    Intent intent = new Intent(CodeVerificationActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        });
     }
 
     private void bindViews() {
@@ -341,15 +352,6 @@ public class CodeVerificationActivity extends AppCompatActivity {
                     }
                 })
                 .show();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if(username == null) { //onBackPressed go to login screen only if username is null
-            Intent intent = new Intent(CodeVerificationActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
     }
 
     private void fetchInstituteSettingLocalDB() {

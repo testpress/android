@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import androidx.annotation.NonNull;
 import androidx.loader.app.LoaderManager;
+import androidx.activity.OnBackPressedCallback;
 import androidx.loader.content.Loader;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
@@ -171,6 +172,18 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         initializeDeleteAccountButton();
         initializeEditProfileButton();
         setupMenuActions();
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (firstNameRow.getVisibility() == View.VISIBLE) {
+                    cancelEditing();
+                } else {
+                    setEnabled(false);
+                    getOnBackPressedDispatcher().onBackPressed();
+                    setEnabled(true);
+                }
+            }
+        });
     }
 
     private void bindViews() {
@@ -690,15 +703,7 @@ public class ProfileDetailsActivity extends BaseAuthenticatedActivity
         }
     }
 
-    @Override
-    public void onBackPressed(){
-        //if backpress from edit mode then display the existing profile detail
-        if(firstNameRow.getVisibility() == View.VISIBLE) {
-            cancelEditing();
-        } else {
-            super.onBackPressed();
-        }
-    }
+
 
     @Override
     public void onLoaderReset(final Loader<ProfileDetails> loader) {

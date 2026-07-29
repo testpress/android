@@ -119,6 +119,12 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 }
 
+configurations.all {
+    // Exclude legacy Kotlin android extensions to prevent duplicate class packaging conflicts 
+    // with the modern kotlin-parcelize-runtime library pulled in by newer dependencies.
+    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-android-extensions-runtime'
+}
+
 def key_alias = "sample"
 def key_password = "sample"
 def store_file = "testpress_debug_keystore.jks"
@@ -148,7 +154,6 @@ android {
         viewBinding true
         compose true
     }
-
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17

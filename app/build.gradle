@@ -3,6 +3,7 @@ import groovy.json.JsonSlurper
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
 ext {
     testpressSDK = '1.4.288'
@@ -18,8 +19,8 @@ dependencies {
     def fragment_version = "1.4.1"
 
     // Dependency Injection
-    implementation 'com.google.dagger:dagger:2.48'
-    kapt 'com.google.dagger:dagger-compiler:2.48'
+    implementation 'com.google.dagger:dagger:2.60.1'
+    kapt 'com.google.dagger:dagger-compiler:2.60.1'
     implementation "ru.tinkoff.scrollingpagerindicator:scrollingpagerindicator:1.1.0"
 
     implementation 'com.github.kevinsawicki:wishlist:0.9@aar'
@@ -148,9 +149,6 @@ android {
         compose true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion '1.5.11'
-    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17

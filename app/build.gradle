@@ -187,9 +187,11 @@ android {
         resValue "string", "testpress_site_subdomain", json.testpress_site_subdomain
         resValue "string", "version", json.version
         resValue "string", "share_message", json.share_message
-        resValue "string", "facebook_app_id", json.facebook_app_id
-        resValue "string", "fb_login_protocol_scheme", json.facebook_app_id
-        resValue "string", "server_client_id", json.server_client_id
+        def facebookAppId = json.facebook_app_id ?: ""
+        resValue "string", "facebook_app_id", facebookAppId
+        resValue "string", "fb_login_protocol_scheme", facebookAppId
+        def serverClientId = json.server_client_id ?: ""
+        resValue "string", "server_client_id", serverClientId
         resValue "color", "primary", json.primary_color
         resValue "color", "secondary", json.secondary_color
         resValue "color", "tertiary", json.tertiary_color

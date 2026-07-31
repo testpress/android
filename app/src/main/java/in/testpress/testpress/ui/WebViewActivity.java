@@ -274,6 +274,7 @@ public class WebViewActivity extends BaseToolBarActivity {
                                 getApplicationContext().getPackageName() + ".fileprovider",
                                 photoFile);
                         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageUri);
+                        takePictureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     } else {
                         takePictureIntent = null;
                     }
@@ -359,6 +360,9 @@ public class WebViewActivity extends BaseToolBarActivity {
         @SuppressLint("SimpleDateFormat") String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "img_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        if (storageDir == null) {
+            throw new IOException("External storage is unavailable");
+        }
         return File.createTempFile(imageFileName, ".jpg", storageDir);
     }
 

@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import androidx.core.content.FileProvider;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -65,7 +66,7 @@ public class WebViewActivity extends BaseToolBarActivity {
     private ProgressBar pb_loading;
     private SwipeRefreshLayout swipeContainer;
     WebView webView;
-    private String mCapturedMessage;
+    private Uri mCapturedImageUri;
     private ValueCallback<Uri> mUploadMessage;
     private ValueCallback<Uri[]> mUploadMessages;
     private String url;
@@ -88,21 +89,19 @@ public class WebViewActivity extends BaseToolBarActivity {
                     if (null == mUploadMessages) {
                         return;
                     }
-                    if (intent == null) {
+                    if (intent == null || intent.getData() == null) {
                         //Capture Photo if no image available
-                        if (mCapturedMessage != null) {
-                            results = new Uri[]{Uri.parse(mCapturedMessage)};
+                        if (mCapturedImageUri != null) {
+                            results = new Uri[]{mCapturedImageUri};
                         }
                     } else {
-                        String dataString = intent.getDataString();
-                        if (dataString != null) {
-                            results = new Uri[]{Uri.parse(dataString)};
-                        }
+                        results = new Uri[]{intent.getData()};
                     }
                 }
             }
             mUploadMessages.onReceiveValue(results);
             mUploadMessages = null;
+            mCapturedImageUri = null;
         } else {
 
             if (requestCode == FILE_CHOOSER_RESULT_CODE) {
@@ -266,13 +265,16 @@ public class WebViewActivity extends BaseToolBarActivity {
 
                     try {
                         photoFile = createImageFile();
-                        takePictureIntent.putExtra("PhotoPath", mCapturedMessage);
                     } catch (IOException ex) {
                         Log.e(TAG, "Image file creation failed", ex);
                     }
                     if (photoFile != null) {
-                        mCapturedMessage = "file:" + photoFile.getAbsolutePath();
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                        mCapturedImageUri = FileProvider.getUriForFile(
+                                WebViewActivity.this,
+                                getApplicationContext().getPackageName() + ".fileprovider",
+                                photoFile);
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageUri);
+                        takePictureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     } else {
                         takePictureIntent = null;
                     }
@@ -357,7 +359,10 @@ public class WebViewActivity extends BaseToolBarActivity {
 
         @SuppressLint("SimpleDateFormat") String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "img_" + timeStamp + "_";
-        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        if (storageDir == null) {
+            throw new IOException("External storage is unavailable");
+        }
         return File.createTempFile(imageFileName, ".jpg", storageDir);
     }
 

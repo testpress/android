@@ -692,6 +692,8 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         if (googleApiClient != null) {
             Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
             startActivityForResult(signInIntent, REQUEST_CODE_GOOGLE_SIGN_IN);
+        } else {
+            showAlert(getString(R.string.google_signin_not_configured));
         }
     }
 

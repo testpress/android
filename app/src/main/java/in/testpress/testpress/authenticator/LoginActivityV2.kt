@@ -115,7 +115,7 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
 
     private fun initializeGoogleSignIn() {
         val serverClientId = getString(R.string.server_client_id)
-        if (serverClientId.isNullOrBlank()) {
+        if (serverClientId.isBlank()) {
             return
         }
         val googleSignInOptions = GoogleSignInOptions.Builder(
@@ -138,6 +138,8 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
     override fun signInWithGoogle() {
         if (::googleApiClient.isInitialized) {
             handleGoogleSignIn.launch(googleApiClient.signInIntent)
+        } else {
+            UIUtils.showAlert(this, getString(R.string.google_signin_not_configured))
         }
     }
 

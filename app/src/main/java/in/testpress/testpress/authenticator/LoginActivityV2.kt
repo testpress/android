@@ -114,11 +114,15 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
     }
 
     private fun initializeGoogleSignIn() {
+        val serverClientId = getString(R.string.server_client_id)
+        if (serverClientId.isBlank()) {
+            return
+        }
         val googleSignInOptions = GoogleSignInOptions.Builder(
             GoogleSignInOptions.DEFAULT_SIGN_IN
         )
             .requestEmail()
-            .requestIdToken(getString(R.string.server_client_id))
+            .requestIdToken(serverClientId)
             .build()
         googleApiClient = GoogleSignIn.getClient(this, googleSignInOptions)
     }
@@ -132,7 +136,11 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
     }
 
     override fun signInWithGoogle() {
-        handleGoogleSignIn.launch(googleApiClient.signInIntent)
+        if (::googleApiClient.isInitialized) {
+            handleGoogleSignIn.launch(googleApiClient.signInIntent)
+        } else {
+            UIUtils.showAlert(this, getString(R.string.google_signin_not_configured))
+        }
     }
 
     override fun goToOTPVerification(phoneNumber: String, countryCode: String) {

@@ -238,24 +238,27 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         passwordText.setTypeface(Typeface.DEFAULT);
         passwordText.setTransformationMethod(new PasswordTransformationMethod());
         callbackManager = CallbackManager.Factory.create();
-        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(
-                GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .requestIdToken(getString(R.string.server_client_id))
-                .build();
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                        if (connectionResult.getErrorMessage() != null) {
-                            showAlert(connectionResult.getErrorMessage());
-                        } else {
-                            showAlert(connectionResult.toString());
+        String serverClientId = getString(R.string.server_client_id);
+        if (serverClientId != null && !serverClientId.trim().isEmpty()) {
+            GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(
+                    GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestEmail()
+                    .requestIdToken(serverClientId)
+                    .build();
+            googleApiClient = new GoogleApiClient.Builder(this)
+                    .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+                        @Override
+                        public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                            if (connectionResult.getErrorMessage() != null) {
+                                showAlert(connectionResult.getErrorMessage());
+                            } else {
+                                showAlert(connectionResult.toString());
+                            }
                         }
-                    }
-                })
-                .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
-                .build();
+                    })
+                    .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
+                    .build();
+        }
         orLabel.setTypeface(TestpressSdk.getRubikMediumFont(this));
         DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
         instituteSettingsDao = daoSession.getInstituteSettingsDao();
@@ -686,8 +689,12 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     }
 
     private void googleSignIn() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-        startActivityForResult(signInIntent, REQUEST_CODE_GOOGLE_SIGN_IN);
+        if (googleApiClient != null) {
+            Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+            startActivityForResult(signInIntent, REQUEST_CODE_GOOGLE_SIGN_IN);
+        } else {
+            showAlert(getString(R.string.google_signin_not_configured));
+        }
     }
 
     private void initWebView() {

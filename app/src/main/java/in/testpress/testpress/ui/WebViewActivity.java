@@ -278,24 +278,30 @@ public class WebViewActivity extends BaseToolBarActivity {
                     } else {
                         takePictureIntent = null;
                     }
-                }
-
-                Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
-                contentSelectionIntent.setType("*/*");
-                Intent[] intentArray;
-
-                if (takePictureIntent != null) {
-                    intentArray = new Intent[]{takePictureIntent};
                 } else {
-                    intentArray = new Intent[0];
+                    takePictureIntent = null;
                 }
 
-                Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
-                chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
-                chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser");
-                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
-                startActivityForResult(chooserIntent, FILE_CHOOSER_RESULT_CODE);
+                if (fileChooserParams.isCaptureEnabled() && takePictureIntent != null) {
+                    startActivityForResult(takePictureIntent, FILE_CHOOSER_RESULT_CODE);
+                } else {
+                    Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                    contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
+                    contentSelectionIntent.setType("*/*");
+                    Intent[] intentArray;
+
+                    if (takePictureIntent != null) {
+                        intentArray = new Intent[]{takePictureIntent};
+                    } else {
+                        intentArray = new Intent[0];
+                    }
+
+                    Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
+                    chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
+                    chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser");
+                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
+                    startActivityForResult(chooserIntent, FILE_CHOOSER_RESULT_CODE);
+                }
 
                 return true;
             }

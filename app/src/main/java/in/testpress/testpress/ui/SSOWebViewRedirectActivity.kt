@@ -75,11 +75,13 @@ class SSOWebViewRedirectActivity: TestpressFragmentActivity(), EmptyViewListener
     private fun openTicketsInWebview(ssoLink: SsoUrl?) {
         val webviewIntent = Intent(this@SSOWebViewRedirectActivity, WebViewActivity::class.java)
         webviewIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP;
-        val title = intent.getStringExtra("title") ?: "Doubts"
-        val nextPath = intent.getStringExtra("nextPath") ?: "/tickets/mobile/"
+        val title = intent.getStringExtra(EXTRA_TITLE) ?: "Doubts"
+        val nextPath = intent.getStringExtra(EXTRA_NEXT_PATH) ?: "/tickets/mobile/"
+        val allowExternal = intent.getBooleanExtra(EXTRA_ALLOW_EXTERNAL, false)
         webviewIntent.putExtra(WebViewActivity.ACTIVITY_TITLE, title)
         webviewIntent.putExtra(WebViewActivity.ENABLE_BACK, true)
         webviewIntent.putExtra(WebViewActivity.SHOW_LOADING, false)
+        webviewIntent.putExtra(WebViewActivity.ALLOW_EXTERNAL_LINK, allowExternal)
         webviewIntent.putExtra(
             WebViewActivity.URL_TO_OPEN,
             BuildConfig.WHITE_LABELED_HOST_URL + ssoLink?.ssoUrl + "&next=" + nextPath
@@ -97,5 +99,11 @@ class SSOWebViewRedirectActivity: TestpressFragmentActivity(), EmptyViewListener
 
     override fun onRetryClick() {
         fetchSsoLink()
+    }
+
+    companion object {
+        const val EXTRA_TITLE = "title"
+        const val EXTRA_NEXT_PATH = "nextPath"
+        const val EXTRA_ALLOW_EXTERNAL = "allowExternal"
     }
 }

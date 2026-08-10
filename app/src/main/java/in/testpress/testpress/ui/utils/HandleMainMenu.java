@@ -89,8 +89,8 @@ public class HandleMainMenu {
         });
         menuActions.put(R.id.doubts, () -> {
             Intent intent = new Intent(activity, SSOWebViewRedirectActivity.class);
-            intent.putExtra("title", "Doubts");
-            intent.putExtra("nextPath", "/tickets/mobile/");
+            intent.putExtra(SSOWebViewRedirectActivity.EXTRA_TITLE, "Doubts");
+            intent.putExtra(SSOWebViewRedirectActivity.EXTRA_NEXT_PATH, "/tickets/mobile/");
             activity.startActivity(intent);
         });
         menuActions.put(R.id.offline_exam_list, this::launchOfflineExamListActivity);
@@ -229,8 +229,9 @@ public class HandleMainMenu {
 
     private void launchDiscussionActivity(String title) {
         Intent intent = new Intent(activity, SSOWebViewRedirectActivity.class);
-        intent.putExtra("title", title);
-        intent.putExtra("nextPath", "/discussions/new");
+        intent.putExtra(SSOWebViewRedirectActivity.EXTRA_TITLE, title);
+        intent.putExtra(SSOWebViewRedirectActivity.EXTRA_NEXT_PATH, "/discussions/new");
+        intent.putExtra(SSOWebViewRedirectActivity.EXTRA_ALLOW_EXTERNAL, true);
         activity.startActivity(intent);
     }
 

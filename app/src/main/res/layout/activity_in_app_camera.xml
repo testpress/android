@@ -18,6 +18,7 @@
         android:layout_marginBottom="50dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_shutter"
+        android:contentDescription="@string/capture_photo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -30,6 +31,7 @@
         android:layout_marginEnd="16dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@android:drawable/ic_menu_close_clear_cancel"
+        android:contentDescription="@string/close_camera"
         app:tint="@android:color/white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

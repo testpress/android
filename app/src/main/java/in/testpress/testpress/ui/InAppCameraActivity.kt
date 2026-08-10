@@ -18,6 +18,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -29,8 +30,8 @@ import `in`.testpress.testpress.R
 class InAppCameraActivity : AppCompatActivity() {
 
     private var imageCapture: ImageCapture? = null
-    private lateinit var cameraExecutor: ExecutorService
     private lateinit var viewFinder: PreviewView
+    private var isCapturing = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,18 +47,29 @@ class InAppCameraActivity : AppCompatActivity() {
             )
         }
 
-        findViewById<ImageButton>(R.id.image_capture_button).setOnClickListener { takePhoto() }
+        findViewById<ImageButton>(R.id.image_capture_button).setOnClickListener { 
+            if (!isCapturing) {
+                isCapturing = true
+                takePhoto() 
+            }
+        }
         findViewById<ImageButton>(R.id.close_button).setOnClickListener { finish() }
-
-        cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
     private fun takePhoto() {
         val imageCapture = imageCapture ?: return
 
-        val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        val timeStamp = SimpleDateFormat(FILENAME_FORMAT, Locale.US).format(Date())
-        val photoFile = File.createTempFile("img_${timeStamp}_", ".jpg", storageDir)
+        val photoFile: File
+        try {
+            val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+            val timeStamp = SimpleDateFormat(FILENAME_FORMAT, Locale.US).format(Date())
+            photoFile = File.createTempFile("img_${timeStamp}_", ".jpg", storageDir)
+        } catch (ex: Exception) {
+            Log.e(TAG, "Image file creation failed", ex)
+            Toast.makeText(this, R.string.image_creation_failed, Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
 
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
 
@@ -71,10 +83,15 @@ class InAppCameraActivity : AppCompatActivity() {
                 }
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val savedUri = output.savedUri ?: android.net.Uri.fromFile(photoFile)
+                    val savedUri = output.savedUri ?: FileProvider.getUriForFile(
+                        this@InAppCameraActivity,
+                        applicationContext.packageName + ".fileprovider",
+                        photoFile
+                    )
                     val intent = Intent().apply {
                         data = savedUri
                     }
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
                     setResult(Activity.RESULT_OK, intent)
                     finish()
                 }
@@ -118,7 +135,7 @@ class InAppCameraActivity : AppCompatActivity() {
             if (allPermissionsGranted()) {
                 startCamera()
             } else {
-                Toast.makeText(this, "Camera permissions not granted by the user.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, R.string.camera_permission_denied, Toast.LENGTH_SHORT).show()
                 finish()
             }
         }
@@ -130,7 +147,6 @@ class InAppCameraActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        cameraExecutor.shutdown()
     }
 
     companion object {

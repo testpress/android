@@ -24,7 +24,7 @@ import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
-import in.testpress.testpress.ui.DoubtsActivity;
+import in.testpress.testpress.ui.SSOWebViewRedirectActivity;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.PostsListActivity;
 import in.testpress.testpress.ui.ProfileDetailsActivity;
@@ -88,7 +88,9 @@ public class HandleMainMenu {
             activity.startActivity(intent);
         });
         menuActions.put(R.id.doubts, () -> {
-            Intent intent = new Intent(activity, DoubtsActivity.class);
+            Intent intent = new Intent(activity, SSOWebViewRedirectActivity.class);
+            intent.putExtra("title", "Doubts");
+            intent.putExtra("nextPath", "/tickets/mobile/");
             activity.startActivity(intent);
         });
         menuActions.put(R.id.offline_exam_list, this::launchOfflineExamListActivity);
@@ -226,17 +228,10 @@ public class HandleMainMenu {
     }
 
     private void launchDiscussionActivity(String title) {
-        activity.startActivity(
-                WebViewWithSSOActivity.Companion.createIntent(
-                        activity,
-                        title,
-                        WHITE_LABELED_HOST_URL + "/discussions/new",
-                        true,
-                        false,
-                        true,
-                        WebViewWithSSOActivity.class
-                )
-        );
+        Intent intent = new Intent(activity, SSOWebViewRedirectActivity.class);
+        intent.putExtra("title", title);
+        intent.putExtra("nextPath", "/discussions/new");
+        activity.startActivity(intent);
     }
 
     private void launchOfflineExamListActivity() {

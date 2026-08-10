@@ -158,10 +158,9 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Verify" />
         <activity
-            android:name=".ui.DoubtsActivity"
+            android:name=".ui.SSOWebViewRedirectActivity"
             android:theme="@style/AppTheme"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="Doubts" />
+            android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity
             android:name=".ui.QotdActivity"
             android:theme="@style/AppTheme"
@@ -242,6 +241,11 @@
             android:theme="@style/TestpressWebViewTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Web View" />
+            
+        <activity android:name=".ui.InAppCameraActivity"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Camera"/>
 
         <activity android:name=".ui.TermsAndConditionActivity"
             android:theme="@style/AppTheme"

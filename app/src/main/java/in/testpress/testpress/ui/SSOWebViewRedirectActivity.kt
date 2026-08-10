@@ -16,7 +16,7 @@ import android.view.View
 import java.io.IOException
 import javax.inject.Inject
 
-class DoubtsActivity: TestpressFragmentActivity(), EmptyViewListener {
+class SSOWebViewRedirectActivity: TestpressFragmentActivity(), EmptyViewListener {
     @Inject
     lateinit var serviceProvider: TestpressServiceProvider
     lateinit var emptyViewFragment: EmptyViewFragment
@@ -36,7 +36,7 @@ class DoubtsActivity: TestpressFragmentActivity(), EmptyViewListener {
         object : SafeAsyncTask<SsoUrl?>() {
             @Throws(Exception::class)
             override fun call(): SsoUrl {
-                return serviceProvider.getService(this@DoubtsActivity).getSsoUrl()
+                return serviceProvider.getService(this@SSOWebViewRedirectActivity).getSsoUrl()
             }
 
             override fun onException(exception: java.lang.Exception?) {
@@ -73,16 +73,18 @@ class DoubtsActivity: TestpressFragmentActivity(), EmptyViewListener {
     }
 
     private fun openTicketsInWebview(ssoLink: SsoUrl?) {
-        val intent = Intent(this@DoubtsActivity, WebViewActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP;
-        intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Doubts")
-        intent.putExtra(WebViewActivity.ENABLE_BACK, true)
-        intent.putExtra(WebViewActivity.SHOW_LOADING, false)
-        intent.putExtra(
+        val webviewIntent = Intent(this@SSOWebViewRedirectActivity, WebViewActivity::class.java)
+        webviewIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP;
+        val title = intent.getStringExtra("title") ?: "Doubts"
+        val nextPath = intent.getStringExtra("nextPath") ?: "/tickets/mobile/"
+        webviewIntent.putExtra(WebViewActivity.ACTIVITY_TITLE, title)
+        webviewIntent.putExtra(WebViewActivity.ENABLE_BACK, true)
+        webviewIntent.putExtra(WebViewActivity.SHOW_LOADING, false)
+        webviewIntent.putExtra(
             WebViewActivity.URL_TO_OPEN,
-            BuildConfig.BASE_URL + ssoLink?.ssoUrl + "&next=/tickets/mobile/"
+            BuildConfig.WHITE_LABELED_HOST_URL + ssoLink?.ssoUrl + "&next=" + nextPath
         )
-        startActivity(intent)
+        startActivity(webviewIntent)
         finish()
     }
 

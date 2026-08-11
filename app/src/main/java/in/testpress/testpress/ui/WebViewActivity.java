@@ -5,15 +5,12 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import androidx.core.content.FileProvider;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
@@ -86,22 +83,13 @@ public class WebViewActivity extends BaseToolBarActivity {
             if (resultCode == Activity.RESULT_OK) {
                 if (requestCode == FILE_CHOOSER_RESULT_CODE) {
 
-                    if (null == mUploadMessages) {
-                        return;
-                    }
-                    if (intent == null || intent.getData() == null) {
-                        //Capture Photo if no image available
-                        if (mCapturedImageUri != null) {
-                            results = new Uri[]{mCapturedImageUri};
-                        }
-                    } else {
+                    if (intent != null && intent.getData() != null) {
                         results = new Uri[]{intent.getData()};
                     }
                 }
             }
             mUploadMessages.onReceiveValue(results);
             mUploadMessages = null;
-            mCapturedImageUri = null;
         } else {
 
             if (requestCode == FILE_CHOOSER_RESULT_CODE) {
@@ -218,7 +206,7 @@ public class WebViewActivity extends BaseToolBarActivity {
                 Intent i = new Intent(Intent.ACTION_GET_CONTENT);
                 i.addCategory(Intent.CATEGORY_OPENABLE);
                 i.setType("*/*");
-                WebViewActivity.this.startActivityForResult(Intent.createChooser(i, "File Chooser"), FILE_CHOOSER_RESULT_CODE);
+                WebViewActivity.this.startActivityForResult(i, FILE_CHOOSER_RESULT_CODE);
             }
 
             // For Android 3.0+, above method not supported in some android 3+ versions, in such case we use this
@@ -228,9 +216,7 @@ public class WebViewActivity extends BaseToolBarActivity {
                 Intent i = new Intent(Intent.ACTION_GET_CONTENT);
                 i.addCategory(Intent.CATEGORY_OPENABLE);
                 i.setType("*/*");
-                WebViewActivity.this.startActivityForResult(
-                        Intent.createChooser(i, "File Browser"),
-                        FILE_CHOOSER_RESULT_CODE);
+                WebViewActivity.this.startActivityForResult(i, FILE_CHOOSER_RESULT_CODE);
             }
 
             //For Android 4.1+
@@ -240,7 +226,7 @@ public class WebViewActivity extends BaseToolBarActivity {
                 Intent i = new Intent(Intent.ACTION_GET_CONTENT);
                 i.addCategory(Intent.CATEGORY_OPENABLE);
                 i.setType("*/*");
-                WebViewActivity.this.startActivityForResult(Intent.createChooser(i, "File Chooser"), WebViewActivity.FILE_CHOOSER_RESULT_CODE);
+                WebViewActivity.this.startActivityForResult(i, WebViewActivity.FILE_CHOOSER_RESULT_CODE);
             }
 
             @Override
@@ -258,49 +244,15 @@ public class WebViewActivity extends BaseToolBarActivity {
                 }
 
                 mUploadMessages = filePathCallback;
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (takePictureIntent.resolveActivity(WebViewActivity.this.getPackageManager()) != null) {
 
-                    File photoFile = null;
-
-                    try {
-                        photoFile = createImageFile();
-                    } catch (IOException ex) {
-                        Log.e(TAG, "Image file creation failed", ex);
-                    }
-                    if (photoFile != null) {
-                        mCapturedImageUri = FileProvider.getUriForFile(
-                                WebViewActivity.this,
-                                getApplicationContext().getPackageName() + ".fileprovider",
-                                photoFile);
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageUri);
-                        takePictureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    } else {
-                        takePictureIntent = null;
-                    }
-                } else {
-                    takePictureIntent = null;
-                }
-
-                if (fileChooserParams.isCaptureEnabled() && takePictureIntent != null) {
+                if (fileChooserParams.isCaptureEnabled()) {
+                    Intent takePictureIntent = new Intent(WebViewActivity.this, InAppCameraActivity.class);
                     startActivityForResult(takePictureIntent, FILE_CHOOSER_RESULT_CODE);
                 } else {
                     Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
                     contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
                     contentSelectionIntent.setType("*/*");
-                    Intent[] intentArray;
-
-                    if (takePictureIntent != null) {
-                        intentArray = new Intent[]{takePictureIntent};
-                    } else {
-                        intentArray = new Intent[0];
-                    }
-
-                    Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
-                    chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
-                    chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser");
-                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
-                    startActivityForResult(chooserIntent, FILE_CHOOSER_RESULT_CODE);
+                    startActivityForResult(contentSelectionIntent, FILE_CHOOSER_RESULT_CODE);
                 }
 
                 return true;
@@ -360,17 +312,7 @@ public class WebViewActivity extends BaseToolBarActivity {
         this.url = url;
     }
 
-    // Create an image file
-    private File createImageFile() throws IOException {
 
-        @SuppressLint("SimpleDateFormat") String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "img_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        if (storageDir == null) {
-            throw new IOException("External storage is unavailable");
-        }
-        return File.createTempFile(imageFileName, ".jpg", storageDir);
-    }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {

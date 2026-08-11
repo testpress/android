@@ -191,6 +191,11 @@
     </plurals>
     <string name="testpress_login_with_different_account">Login with different account</string>
 
+    <string name="capture_photo">Capture photo</string>
+    <string name="close_camera">Close camera</string>
+    <string name="camera_permission_denied">Camera permissions not granted by the user.</string>
+    <string name="image_creation_failed">Failed to create image file.</string>
+    
     <!-- ── Exam Results ──────────────────────────────────────────────────────── -->
     <string name="exam_results">Results</string>
     <string name="exam_results_model_tab">Model Exam</string>
@@ -199,5 +204,4 @@
     <string name="exam_results_next">Next &#8250;</string>
     <string name="no_results">No results found</string>
     <string name="error_loading_results">Failed to load exam results. Please try again.</string>
-
 </resources>

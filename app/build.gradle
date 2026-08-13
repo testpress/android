@@ -6,7 +6,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
 ext {
-    testpressSDK = '1.4.294'
+    testpressSDK = '1.4.296'
 }
 
 def jsonFile = file('src/main/assets/config.json')
@@ -183,7 +183,7 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 26
+        minSdkVersion 28
         targetSdkVersion 36
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 

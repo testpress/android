@@ -3,46 +3,92 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="in.testpress.testpress">
 
+    <queries>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+    </queries>
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
 <!--    <uses-sdk tools:overrideLibrary="us.zoom.androidlib,us.zoom.videomeetings"/>-->
+
+    <!-- Permissions added by Zoom SDK that are not required, so they are being removed -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_PHONE_CALL" tools:node="remove" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" tools:node="remove" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" tools:node="remove" />
+
+    <!-- Permissions added by Google Play Services SDK that are not needed, so they are being removed -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>
+
+    <!-- Devices running Android 9 (API level 28) or lower -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
+
+    <!-- Devices running Android 12L (API level 32) or lower -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
 
     <application
         android:name=".TestpressApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.Testpress.Dark">
+        android:requestLegacyExternalStorage="true"
+        android:preserveLegacyExternalStorage="true"
+        tools:replace="android:theme,android:allowBackup"
+        android:theme="@style/Theme.Testpress.Dark"
+        android:exported="true"
+        >
         <meta-data android:name="io.sentry.auto-init" android:value="false" />
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
         <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_stat_notification" />
         <meta-data android:name="com.google.firebase.messaging.default_notification_color" android:resource="@color/testpress_color_primary" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider_paths" />
+        </provider>
 
         <activity
             android:name=".ui.SplashScreenActivity"
             android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:exported="true"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="@string/host_url"/>
-                <data android:scheme="http" android:host="@string/host_url" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="@string/host_url" />
+                <data android:host="@string/white_labeled_host_url" />
             </intent-filter>
         </activity>
         <activity
@@ -53,7 +99,9 @@
 
         <service
             android:name=".authenticator.AccountAuthenticatorService"
-            android:process=":auth">
+            android:process=":auth"
+            android:exported="true"
+            >
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
@@ -64,7 +112,10 @@
         </service>
 
         <!-- [START gcm_listener] -->
-        <service android:name=".core.TestpressGCMListenerService">
+        <service 
+            android:name=".core.TestpressGCMListenerService" 
+            android:exported="true"
+            >
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -73,6 +124,13 @@
 
         <activity
             android:name=".authenticator.LoginActivity"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden"
+            android:excludeFromRecents="true" />
+
+
+        <activity
+            android:name=".authenticator.LoginActivityV2"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden"
             android:excludeFromRecents="true">
@@ -91,20 +149,6 @@
             android:configChanges="orientation|keyboardHidden|screenSize" />
 
         <activity
-            android:name=".ui.ForumActivity"
-            android:theme="@style/AppTheme"
-            android:label="Article"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
-
-        <activity
-            android:name=".ui.CreateForumActivity"
-            android:label="Create Forum Post"
-            android:theme="@style/AppTheme"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
-
-        <activity
             android:name=".authenticator.RegisterActivity"
             android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -114,6 +158,14 @@
             android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Verify" />
+        <activity
+            android:name=".ui.SSOWebViewRedirectActivity"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity
+            android:name=".ui.QotdActivity"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
 
         <activity
             android:name=".ui.DocumentsListActivity"
@@ -126,12 +178,6 @@
             android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Articles" />
-
-        <activity
-            android:name=".ui.ForumListActivity"
-            android:theme="@style/AppTheme"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="Discussions" />
 
         <activity
             android:name=".ui.OrdersListActivity"
@@ -193,9 +239,30 @@
 
         <activity
             android:name=".ui.WebViewActivity"
-            android:theme="@style/AppTheme"
+            android:theme="@style/TestpressWebViewTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Web View" />
+            
+        <activity android:name=".ui.InAppCameraActivity"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Camera"/>
+
+        <activity android:name=".ui.TermsAndConditionActivity"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
+
+        <activity android:name=".ui.AccountDeleteActivity"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
+
+        <activity android:name=".ui.EnforceDataActivity"
+            android:theme="@style/TestpressWebViewTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
+
+        <activity android:name=".ui.DeviceNotAllowedActivity"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
 
     </application>
 

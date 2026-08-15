@@ -23,10 +23,12 @@ import in.testpress.testpress.ui.PostActivity;
 import in.testpress.testpress.ui.PostsListActivity;
 import in.testpress.testpress.ui.ProfileDetailsActivity;
 import in.testpress.testpress.util.CommonUtils;
+import in.testpress.ui.WebViewWithSSOActivity;
 import in.testpress.util.Assert;
 
 import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.BuildConfig.WHITE_LABELED_HOST_URL;
 import static in.testpress.testpress.core.Constants.Http.CHAPTERS_PATH;
 import static in.testpress.testpress.ui.PostActivity.DETAIL_URL;
 
@@ -81,7 +83,7 @@ public class DeeplinkHandler {
                     }
                     break;
                 case "password":
-                    gotoActivity(ResetPasswordActivity.class, false);
+                    openBrowserForResetPassword(uri);
                     break;
                 case "analytics":
                     authenticateUserAndOpen(uri);
@@ -99,6 +101,8 @@ public class DeeplinkHandler {
                     authenticateUserAndOpen(uri);
                     break;
                 case "courses":
+                    authenticateUserAndOpen(uri);
+                    break;
                 case "learn":
                 case "leaderboard":
                 case "dashboard":
@@ -107,6 +111,7 @@ public class DeeplinkHandler {
                 case "store":
                 case "market":
                 case "products":
+                case "discussions":
                     authenticateUserAndOpen(uri);
                     break;
                 default:
@@ -116,6 +121,11 @@ public class DeeplinkHandler {
         } else {
             openBrowserOrGotoHome(uri, fromSplashScreen);
         }
+    }
+
+    private void openBrowserForResetPassword(Uri uri) {
+        CommonUtils.openUrlInBrowser(activity, uri);
+        activity.finish();
     }
 
     private void openBrowserOrGotoHome(Uri uri, boolean fromSplashScreen) {
@@ -143,22 +153,17 @@ public class DeeplinkHandler {
                         switch (pathSegments.get(0)) {
                             case "exams":
                                 if (pathSegments.size() == 2) {
-                                    if (!pathSegments.get(1).equals("available") ||
-                                            !pathSegments.get(1).equals("upcoming") ||
-                                            !pathSegments.get(1).equals("history")) {
-
-                                        TestpressExam.showExamAttemptedState(
-                                                activity,
-                                                pathSegments.get(1),
-                                                testpressSession
-                                        );
-                                        return;
+                                    if (pathSegments.get(1).equals("available") ||
+                                            pathSegments.get(1).equals("upcoming") ||
+                                            pathSegments.get(1).equals("history")) {
+                                        TestpressExam.show(activity, testpressSession);
+                                        activity.finish();
+                                    }
+                                    else {
+                                        gotoHome();
                                     }
                                 }
-                                TestpressExam.show(activity, testpressSession);
-                                activity.finish();
                                 break;
-
                             case "analytics":
                                 TestpressExam.showAnalytics(activity, SUBJECT_ANALYTICS_PATH,
                                         testpressSession);
@@ -168,6 +173,12 @@ public class DeeplinkHandler {
                                 break;
                             case "products":
                                 deepLinkToProduct(uri, testpressSession);
+                                break;
+                            case "discussions":
+                                deepLinkToDiscussions(uri);
+                                break;
+                            case "courses":
+                                deepLinkToCourse(uri, testpressSession);
                                 break;
                         }
                     }
@@ -190,6 +201,17 @@ public class DeeplinkHandler {
         }
     }
 
+    private void deepLinkToCourse(Uri uri, TestpressSession testpressSession) {
+        final List<String> pathSegments = uri.getPathSegments();
+        if (pathSegments.size() == 1) {
+            TestpressCourse.show(activity, testpressSession);
+        } else if (pathSegments.size() == 4 && pathSegments.get(2).equals("contents")) {
+            TestpressCourse.showContentDetail(activity, uri.getLastPathSegment(), testpressSession);
+        } else {
+            gotoHome();
+        }
+    }
+
     private void deepLinkToProduct(Uri uri, TestpressSession testpressSession) {
         final List<String> pathSegments = uri.getPathSegments();
         if (pathSegments.size() == 2) {
@@ -199,6 +221,29 @@ public class DeeplinkHandler {
         } else {
             TestpressStore.show(activity, testpressSession);
         }
+    }
+
+    private void deepLinkToDiscussions(Uri uri) {
+        final List<String> pathSegments = uri.getPathSegments();
+        if (pathSegments.size() == 3) {
+            String discussionSlug = uri.getLastPathSegment();
+            assert discussionSlug != null;
+            openDiscussionActivity(discussionSlug);
+        } else {
+            gotoHome();
+        }
+    }
+
+    private void openDiscussionActivity(String discussionSlug) {
+        activity.startActivityForResult(WebViewWithSSOActivity.Companion.createIntent(
+                activity,
+                "Discussion",
+                WHITE_LABELED_HOST_URL + "/discussions/new/" + discussionSlug,
+                true,
+                false,
+                true,
+                WebViewWithSSOActivity.class
+        ), 1000);
     }
 
     private void gotoAccountActivate(String activateUrlFrag) {

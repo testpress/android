@@ -29,7 +29,7 @@ public final class Constants {
         /**
          * Authentication URL
          */
-        public static final String URL_AUTH_FRAG = "/api/v2.2/auth-token/";
+        public static final String URL_AUTH_FRAG = "/api/v2.3/auth-token/";
 
         /**
          * New User Register URL
@@ -76,7 +76,7 @@ public final class Constants {
         public static final String URL_POSTS_FRAG =  "api/v2.2/posts/";
         public static final String URL_CATEGORIES_FRAG = URL_POSTS_FRAG + "categories/";
 
-        public static final String URL_FORUMS_FRAG =  "api/v2.3/forum/";
+        public static final String URL_FORUMS_FRAG =  "api/v2.5/discussions/";
 
         public static final String URL_COMMENTS_FRAG =  "/comments/";
 
@@ -92,6 +92,16 @@ public final class Constants {
         public static final String URL_PAYMENT_RESPONSE_HANDLER = BASE_URL + "/payments/response/payu/";
 
         /**
+         * Student Report URL
+         */
+        public static final String URL_STUDENT_REPORT_FLAG = "/report/";
+
+        /**
+         * Privacy Policy URL
+         */
+        public static final String URL_PRIVACY_POLICY_FLAG = "/privacy/";
+
+        /**
          * Query Params
          */
         public static final String PARENT = "parent";
@@ -99,6 +109,8 @@ public final class Constants {
         public static final String SINCE = "since";
         public static final String UNTIL = "until";
         public static final String ORDER = "order";
+
+        public static final String EPRATIBHA_SSO_URL = "https://www.epratibha.net/mobile-login/";
     }
 
     public static final class RequestCode {

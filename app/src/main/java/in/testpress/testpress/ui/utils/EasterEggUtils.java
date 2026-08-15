@@ -7,7 +7,10 @@ import android.widget.Toast;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.models.InstituteSettings;
+import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.core.Constants;
+import in.testpress.testpress.models.DaoSession;
+import in.testpress.testpress.models.InstituteSettingsDao;
 
 public class EasterEggUtils {
     public static final String EASTER_EGG = "easterEgg";
@@ -33,6 +36,13 @@ public class EasterEggUtils {
         TestpressSession session = TestpressSdk.getTestpressSession(context);
         session.setInstituteSettings(instituteSettings);
         TestpressSdk.setTestpressSession(context,  session);
+
+        in.testpress.testpress.models.InstituteSettings appInstituteSettings = in.testpress.testpress.models.InstituteSettings.getInstance();
+        appInstituteSettings.setAllowScreenshotInApp(true);
+        DaoSession daoSession = TestpressApplication.getDaoSession();
+        InstituteSettingsDao instituteSettingsDao = daoSession.getInstituteSettingsDao();
+        instituteSettingsDao.insertOrReplace(appInstituteSettings);
+
         Toast.makeText(context, "Screenshot is enabled ", Toast.LENGTH_SHORT).show();
     }
 }

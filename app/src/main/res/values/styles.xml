@@ -101,13 +101,24 @@
         <item name="android:background">#FFFFFF</item>
     </style>
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar.Bridge">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorAccent">@color/primary</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="colorControlNormal">@color/white</item>
         <item name="android:textColorPrimary">@color/white</item>
+        <item name="colorButtonNormal">@color/primary</item>
+        <item name="android:statusBarColor">@color/primary</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/popupMenuTextAppearance</item>
+    </style>
+
+    <style name="TestpressWebViewTheme" parent="Theme.MaterialComponents.Light.DarkActionBar.Bridge">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorAccent">@color/primary</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorControlNormal">@color/white</item>
         <item name="colorButtonNormal">@color/primary</item>
         <item name="android:statusBarColor">@color/primary</item>
         <item name="android:textAppearanceLargePopupMenu">@style/popupMenuTextAppearance</item>

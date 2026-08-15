@@ -6,6 +6,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.text.TextUtils;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
@@ -29,6 +32,7 @@ import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.ui.MainActivity;
+import in.testpress.testpress.util.AppChecker;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.util.UIUtils;
@@ -36,8 +40,10 @@ import retrofit.RestAdapter;
 
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.BuildConfig.DISPLAY_USERNAME_ON_VIDEO;
+import static in.testpress.testpress.BuildConfig.SHOW_PDF_VERTICALLY;
 import static in.testpress.testpress.BuildConfig.GROWTH_HACKS_ENABLED;
 import static in.testpress.testpress.BuildConfig.SHARE_MESSAGE;
+import static in.testpress.testpress.BuildConfig.ZOOM_CUSTOM_MEETING_UI_ENABLED;
 import static in.testpress.testpress.util.PreferenceManager.setDashboardData;
 
 public class TestpressServiceProvider {
@@ -52,10 +58,28 @@ public class TestpressServiceProvider {
 
     public void invalidateAuthToken(Context context) {
         authToken = null;
-        FacebookSdk.sdkInitialize(context.getApplicationContext());
-        LoginManager.getInstance().logOut();
+        if (hasFacebookAppID(context)) {
+            FacebookSdk.sdkInitialize(context.getApplicationContext());
+            LoginManager.getInstance().logOut();
+        }
         TestpressSdk.clearActiveSession(context);
     }
+
+    private boolean hasFacebookAppID(Context context){
+        ApplicationInfo applicationInfo = getApplicationInfo(context);
+        if (applicationInfo == null) return false;
+        String appId = applicationInfo.metaData.getString(FacebookSdk.APPLICATION_ID_PROPERTY);
+        return !TextUtils.isEmpty(appId);
+    }
+
+    private ApplicationInfo getApplicationInfo(Context context){
+        try {
+            return context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+        } catch (PackageManager.NameNotFoundException e) {
+            return null;
+        }
+    }
+
     /**
      * Get service for configured key provider
      * <p/>
@@ -79,13 +103,20 @@ public class TestpressServiceProvider {
 
             in.testpress.models.InstituteSettings settings;
             String appLink = "https://play.google.com/store/apps/details?id=" + activity.getPackageName();
+            String facebookAppId = null;
 
             if (instituteSettingsList.isEmpty()) {
                 settings = new in.testpress.models.InstituteSettings(BASE_URL);
+                settings.setWhiteLabeledHostUrl(BuildConfig.WHITE_LABELED_HOST_URL);
                 settings.setScreenshotDisabled(true);
+                settings.setVideoDownloadEnabled(true);
+                settings.setShowPDFVertically(SHOW_PDF_VERTICALLY);
             } else {
                 InstituteSettings instituteSettings = instituteSettingsList.get(0);
+                facebookAppId = instituteSettings.getFacebookAppId();
                 settings = new in.testpress.models.InstituteSettings(instituteSettings.getBaseUrl())
+                        .setWhiteLabeledHostUrl(BuildConfig.WHITE_LABELED_HOST_URL)
+                        .setCurrentPaymentApp(instituteSettings.getCurrentPaymentApp())
                         .setBookmarksEnabled(instituteSettings.getBookmarksEnabled())
                         .setCoursesFrontend(instituteSettings.getShowGameFrontend())
                         .setCoursesGamificationEnabled(instituteSettings.getCoursesEnableGamification())
@@ -100,11 +131,33 @@ public class TestpressServiceProvider {
                         .setStoreLabel(instituteSettings.getStoreLabel())
                         .setAppToolbarLogo(instituteSettings.getAppToolbarLogo())
                         .setAppShareLink(instituteSettings.getAppShareLink())
-                        .setServerTime(instituteSettings.serverTime());
+                        .setServerTime(instituteSettings.serverTime())
+                        .setLeaderboardLabel(instituteSettings.getLeaderboardLabel())
+                        .setVideoDownloadEnabled(instituteSettings.getIsVideoDownloadEnabled())
+                        .setThreatsAndTargetsLabel(instituteSettings.getThreatsAndTargetsLabel())
+                        .setShowPDFVertically(SHOW_PDF_VERTICALLY)
+                        .setMaxAllowedDownloadedVideos(instituteSettings.getMaxAllowedDownloadedVideos())
+                        .setEnableCustomTest(instituteSettings.getEnableCustomTest())
+                        .setStoreEnabled(instituteSettings.getStoreEnabled())
+                        .setAndroidSentryDns(instituteSettings.getAndroidSentryDns())
+                        .setDisableImageFullscreenZoomInExam(instituteSettings.getDisableImageFullscreenZoomInExam(activity))
+                        .setEnableOfflineExam(instituteSettings.getEnableOfflineExam(activity))
+                        .setDisableStoreInApp(instituteSettings.getDisableStoreInApp())
+                        .setVideoWatermarkType(instituteSettings.getVideoWatermarkType())
+                        .setVideoWatermarkPosition(instituteSettings.getVideoWatermarkPosition())
+                        .setUseNewDiscountFeat(instituteSettings.getUseNewDiscountFeat())
+                        .setRequireQuestionReportDescription(Boolean.TRUE.equals(instituteSettings.getRequireQuestionReportDescription()))
+                        .setQuestionReportDescriptionMinLength(instituteSettings.getQuestionReportDescriptionMinLength() != null ? instituteSettings.getQuestionReportDescriptionMinLength() : 0);
                 appLink = instituteSettings.getAppShareLink();
             }
             settings.setAppShareText(SHARE_MESSAGE + activity.getString(R.string.get_it_at) + appLink);
             settings.setGrowthHackEnabled(GROWTH_HACKS_ENABLED);
+            settings.setAppName(activity.getString(R.string.app_name));
+            settings.setIsCustomMeetingUIEnabled(ZOOM_CUSTOM_MEETING_UI_ENABLED);
+            if (facebookAppId != null && !facebookAppId.isEmpty()) {
+                settings.enableFacebookEventTracking(facebookAppId, activity.getApplication());
+            }
+
             TestpressSdk.setTestpressSession(activity, new TestpressSession(settings, authToken));
         }
 

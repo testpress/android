@@ -1,5 +1,12 @@
 package in.testpress.testpress.ui;
+import in.testpress.RequestCode;
+import in.testpress.course.fragments.OfflineDownloadsTabsFragment;
+import in.testpress.course.repository.OfflineAttachmentsRepository;
+import in.testpress.course.services.NewOfflineAttachmentDownloadManager;
+import in.testpress.course.ui.AvailableCourseListFragment;
+import in.testpress.course.ui.CourseListFragment;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.OperationCanceledException;
@@ -7,7 +14,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.activity.OnBackPressedCallback;
+import androidx.appcompat.widget.Toolbar;
+import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
 import androidx.viewpager.widget.ViewPager;
@@ -24,7 +39,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,15 +55,17 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
-import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
 import in.testpress.course.fragments.DownloadsFragment;
+import in.testpress.course.repository.VideoWatchDataRepository;
+import in.testpress.course.ui.MyCoursesFragment;
+import in.testpress.fragments.WebViewFragment;
+import in.testpress.database.OfflineVideoDao;
+import in.testpress.database.TestpressDatabase;
+import in.testpress.database.dao.OfflineAttachmentsDao;
 import in.testpress.exam.ui.view.NonSwipeableViewPager;
 import in.testpress.testpress.BuildConfig;
-import in.testpress.testpress.Injector;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -60,13 +76,14 @@ import in.testpress.testpress.models.CheckPermission;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
-import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.models.Update;
 import in.testpress.testpress.ui.fragments.DashboardFragment;
 import in.testpress.testpress.ui.utils.HandleMainMenu;
+import in.testpress.testpress.util.AppChecker;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.SafeAsyncTask;
+import in.testpress.testpress.util.SalesforceSdkInitializer;
 import in.testpress.testpress.util.Strings;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.testpress.util.UpdateAppDialogManager;
@@ -75,9 +92,12 @@ import io.sentry.android.core.SentryAndroid;
 import static in.testpress.testpress.BuildConfig.ALLOW_ANONYMOUS_USER;
 import static in.testpress.testpress.BuildConfig.APPLICATION_ID;
 import static in.testpress.testpress.BuildConfig.BASE_URL;
+import static in.testpress.testpress.BuildConfig.WHITE_LABELED_HOST_URL;
+import static in.testpress.testpress.ui.TermsAndConditionActivityKt.TERMS_AND_CONDITIONS;
 import static in.testpress.testpress.ui.utils.EasterEggUtils.enableOrDisableEasterEgg;
 import static in.testpress.testpress.ui.utils.EasterEggUtils.enableScreenShot;
 import static in.testpress.testpress.ui.utils.EasterEggUtils.isEasterEggEnabled;
+import static in.testpress.store.TestpressStore.STORE_REQUEST_CODE;
 
 public class MainActivity extends TestpressFragmentActivity {
 
@@ -86,20 +106,17 @@ public class MainActivity extends TestpressFragmentActivity {
     @Inject protected TestpressServiceProvider serviceProvider;
     @Inject protected TestpressService testpressService;
     @Inject protected LogoutService logoutService;
-    @InjectView(R.id.empty_container) LinearLayout emptyView;
-    @InjectView(R.id.empty_title) TextView emptyTitleView;
-    @InjectView(R.id.empty_description) TextView emptyDescView;
-    @InjectView(R.id.retry_button) Button retryButton;
+    private LinearLayout emptyView;
+    private TextView emptyTitleView;
+    private TextView emptyDescView;
+    private Button retryButton;
 
-    @InjectView(R.id.coordinator_layout) CoordinatorLayout coordinatorLayout;
-    @InjectView(R.id.progressbar) RelativeLayout progressBarLayout;
-    @InjectView(R.id.viewpager)
-    NonSwipeableViewPager viewPager;
-    @InjectView(R.id.grid) GridView grid;
-    @InjectView(R.id.drawer_layout)
-    DrawerLayout drawer;
-    @InjectView(R.id.navigation_view)
-    NavigationView navigationView;
+    private CoordinatorLayout coordinatorLayout;
+    private RelativeLayout progressBarLayout;
+    private NonSwipeableViewPager viewPager;
+    private GridView grid;
+    private DrawerLayout drawer;
+    private NavigationView navigationView;
 
     private ActionBarDrawerToggle drawerToggle;
     private int mSelectedItem;
@@ -112,13 +129,15 @@ public class MainActivity extends TestpressFragmentActivity {
     private boolean isUserAuthenticated;
     public String ssoUrl;
     private boolean isInitScreenCalledOnce;
+    private CourseListFragment courseListFragment;
+    int touchCountToEnableScreenShot = 0;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        Injector.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-        ButterKnife.inject(this);
+        bindViews();
 
         if (savedInstanceState != null) {
             mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM);
@@ -138,36 +157,103 @@ public class MainActivity extends TestpressFragmentActivity {
             checkUpdate();
         }
         setupEasterEgg();
+        initOfflineAttachmentDownloadManager();
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (shouldHandleWebViewBackPress()) {
+                    handleWebViewBackPress();
+                    return;
+                }
+
+                if (courseListFragment != null && viewPager.getCurrentItem() == 1) {
+                    if (courseListFragment.onBackPress()) {
+                        viewPager.setCurrentItem(0);
+                    }
+                } else if (viewPager.getCurrentItem() != 0) {
+                    viewPager.setCurrentItem(0);
+                } else {
+                    setEnabled(false);
+                    getOnBackPressedDispatcher().onBackPressed();
+                    setEnabled(true);
+                }
+            }
+        });
+    }
+
+    private void bindViews() {
+        emptyView = findViewById(R.id.empty_container);
+        emptyTitleView = findViewById(R.id.empty_title);
+        emptyDescView = findViewById(R.id.empty_description);
+        retryButton = findViewById(R.id.retry_button);
+
+        coordinatorLayout = findViewById(R.id.coordinator_layout);
+        progressBarLayout = findViewById(R.id.progressbar);
+        viewPager = findViewById(R.id.viewpager);
+        grid = findViewById(R.id.grid);
+        drawer = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.navigation_view);
+    }
+
+
+
+    private boolean shouldHandleWebViewBackPress() {
+        WebViewFragment webView = getCurrentWebViewFragment();
+        return webView != null && webView.canGoBack();
+    }
+
+    private void handleWebViewBackPress() {
+        WebViewFragment webView = getCurrentWebViewFragment();
+        if (webView != null) {
+            webView.goBack();
+        }
+    }
+
+    @Nullable
+    private WebViewFragment getCurrentWebViewFragment() {
+        Fragment fragment = mMenuItemFragments.get(viewPager.getCurrentItem());
+        if (fragment instanceof WebViewFragment) {
+            return (WebViewFragment) fragment;
+        }
+        return null;
     }
 
     @Override
-    public void onBackPressed() {
-        if (viewPager.getCurrentItem() != 0) {
-            viewPager.setCurrentItem(0);
-        } else {
-            super.onBackPressed();
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (!isProductPurchaseSuccessful(requestCode, resultCode)) return;
+        try {
+            for (int i = 0; i < mMenuItemFragments.size(); i++) {
+                Fragment fragment = mMenuItemFragments.get(i);
+                if (fragment instanceof MyCoursesFragment) {
+                    onItemSelected(i);
+                    ((MyCoursesFragment) fragment).clearItemsAndRefresh();
+                    viewPager.setCurrentItem(mSelectedItem);
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            Log.e("onActivityResult", "Unexpected error during purchase result handling", e);
         }
+    }
+
+    private boolean isProductPurchaseSuccessful(int requestCode, int resultCode){
+        return requestCode == STORE_REQUEST_CODE && resultCode == RESULT_OK;
     }
 
     private void setupEasterEgg() {
         Menu navigationMenu = navigationView.getMenu();
-        final MenuItem rateUsButton = navigationMenu.findItem(R.id.rate_us);
+        final MenuItem versionInfo = navigationMenu.findItem(R.id.version_info);
         Button button = new Button(this);
         button.setAlpha(0);
-        rateUsButton.setActionView(button);
-        rateUsButton.getActionView().setVisibility(View.GONE);
-
-
-        findViewById(R.id.version_info).setOnLongClickListener(new View.OnLongClickListener() {
+        button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 Toast.makeText(getApplicationContext(), "App version is " + getString(R.string.version), Toast.LENGTH_SHORT).show();
                 enableOrDisableEasterEgg(getApplicationContext(), true);
-                rateUsButton.getActionView().setVisibility(View.VISIBLE);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        rateUsButton.getActionView().setVisibility(View.GONE);
                         enableOrDisableEasterEgg(getApplicationContext(), false);
                     }
                 }, 7000);
@@ -175,15 +261,29 @@ public class MainActivity extends TestpressFragmentActivity {
             }
         });
 
-        rateUsButton.getActionView().setOnLongClickListener(new View.OnLongClickListener() {
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View view) {
+            public void onClick(View view) {
                 if (isEasterEggEnabled(getApplicationContext())) {
-                    enableScreenShot(getApplicationContext());
+                    if (touchCountToEnableScreenShot == 4) {
+                        enableScreenShot(getApplicationContext());
+                        touchCountToEnableScreenShot = 0;
+                    } else {
+                        touchCountToEnableScreenShot++;
+                    }
+                } else {
+                    touchCountToEnableScreenShot = 0;
                 }
-                return false;
             }
         });
+        versionInfo.setActionView(button);
+    }
+
+    private void initOfflineAttachmentDownloadManager() {
+        OfflineAttachmentsDao offlineAttachmentDao = TestpressDatabase.Companion.invoke(this).offlineAttachmentDao();
+        OfflineAttachmentsRepository offlineAttachmentsRepository =new OfflineAttachmentsRepository(offlineAttachmentDao);
+        NewOfflineAttachmentDownloadManager.Companion.init(offlineAttachmentsRepository);
+        NewOfflineAttachmentDownloadManager.Companion.getInstance().restartDownloadProgressTracking(this);
     }
 
     private void setUpNavigationDrawer() {
@@ -206,6 +306,14 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private void setupDrawerContent(NavigationView navigationView) {
         hideMenuItemsForUnauthenticatedUser(navigationView.getMenu());
+        showShareButtonBasedOnInstituteSettings(navigationView.getMenu());
+        showRateUsButtonBasedOnInstituteSettings(navigationView.getMenu());
+        showOfflineExamBasedOnInstituteSettings(navigationView.getMenu());
+        showDiscussionsButtonBasedOnInstituteSettings(navigationView.getMenu());
+        showBookmarkButtonBasedOnInstituteSettings(navigationView.getMenu());
+        showCustomOptions(navigationView.getMenu());
+        showDailyQuestionsBasedOnInstituteSettings(navigationView.getMenu());
+        updateMenuItemNames(navigationView.getMenu());
         final HandleMainMenu handleMainMenu = new HandleMainMenu(MainActivity.this, serviceProvider);
         navigationView.setNavigationItemSelectedListener(
             new NavigationView.OnNavigationItemSelectedListener() {
@@ -226,15 +334,86 @@ public class MainActivity extends TestpressFragmentActivity {
             menu.findItem(R.id.login_activity).setVisible(false);
             menu.findItem(R.id.analytics).setVisible(false);
             menu.findItem(R.id.profile).setVisible(false);
-            menu.findItem(R.id.bookmarks).setVisible(false);
         } else {
             menu.findItem(R.id.logout).setVisible(true);
+            if (mInstituteSettings != null) {
+                menu.findItem(R.id.doubts).setVisible(Boolean.TRUE.equals(mInstituteSettings.getIsHelpdeskEnabled()));
+            }
             menu.findItem(R.id.login_activity).setVisible(true);
             menu.findItem(R.id.analytics).setVisible(true);
             menu.findItem(R.id.profile).setVisible(true);
-            menu.findItem(R.id.bookmarks).setVisible(true);
             menu.findItem(R.id.login).setVisible(false);
+            if (mInstituteSettings != null){
+                menu.findItem(R.id.student_report).setVisible(mInstituteSettings.isStudentReportEnabled());
+            }
         }
+    }
+
+    private void showShareButtonBasedOnInstituteSettings(Menu menu){
+        if (mInstituteSettings != null) {
+            menu.findItem(R.id.share).setVisible(Boolean.TRUE.equals(mInstituteSettings.getShowShareButton()));
+        }
+    }
+
+    private void showRateUsButtonBasedOnInstituteSettings(Menu menu){
+        if (mInstituteSettings != null) {
+            menu.findItem(R.id.rate_us).setVisible(Boolean.TRUE.equals(mInstituteSettings.getShowShareButton()));
+        }
+    }
+
+    private void showDiscussionsButtonBasedOnInstituteSettings(Menu menu) {
+        if (mInstituteSettings != null) {
+            String discussionsLabel = (mInstituteSettings.getForumLabel() != null)
+                    ? mInstituteSettings.getForumLabel()
+                    : getString(R.string.discussions);
+            menu.findItem(R.id.discussions).setTitle(discussionsLabel);
+            menu.findItem(R.id.discussions).setVisible(Boolean.TRUE.equals(mInstituteSettings.getForumEnabled()));
+        }
+    }
+
+    private void showOfflineExamBasedOnInstituteSettings(Menu menu) {
+        if (mInstituteSettings != null) {
+            menu.findItem(R.id.offline_exam_list).setVisible(Boolean.TRUE.equals(mInstituteSettings.getEnableOfflineExam(this)));
+        }
+    }
+
+    private void showBookmarkButtonBasedOnInstituteSettings(Menu menu) {
+        if (mInstituteSettings != null) {
+            String BookmarksLabel = (mInstituteSettings.getBookmarksLabel() != null)
+                    ? mInstituteSettings.getBookmarksLabel()
+                    : getString(R.string.bookmarks);
+            menu.findItem(R.id.bookmarks).setTitle(BookmarksLabel);
+            menu.findItem(R.id.bookmarks).setVisible(Boolean.TRUE.equals(mInstituteSettings.getBookmarksEnabled()));
+        }
+    }
+
+    private void showDailyQuestionsBasedOnInstituteSettings(Menu menu) {
+        if (mInstituteSettings != null && menu != null) {
+            MenuItem dailyQuestionsItem = menu.findItem(R.id.daily_questions);
+            if (dailyQuestionsItem != null) {
+                dailyQuestionsItem.setVisible(Boolean.TRUE.equals(mInstituteSettings.getQotdEnabled()));
+            }
+        }
+    }
+
+    private void showCustomOptions(Menu menu) {
+        if (mInstituteSettings != null && AppChecker.INSTANCE.isCatkingApp(this)) {
+            menu.findItem(R.id.recorded_lessons).setVisible(true);
+            menu.findItem(R.id.mocks).setVisible(true);
+            menu.findItem(R.id.e_books).setVisible(true);
+            menu.findItem(R.id.live_lectures_cat).setVisible(true);
+            menu.findItem(R.id.live_lectures_non_cat).setVisible(true);
+            menu.findItem(R.id.live_lectures_gd_watpi).setVisible(true);
+        }
+    }
+
+    private void updateMenuItemNames(Menu menu) {
+        if (mInstituteSettings != null) {
+            menu.findItem(R.id.posts).setVisible(Boolean.TRUE.equals(mInstituteSettings.getPostsEnabled()));
+            menu.findItem(R.id.posts).setTitle(Strings.toString(mInstituteSettings.getPostsLabel()));
+            menu.findItem(R.id.bookmarks).setTitle(Strings.toString(mInstituteSettings.getBookmarksLabel()));
+        }
+        menu.findItem(R.id.version_info).setTitle("Version - "+getString(R.string.version));
     }
 
     @Override
@@ -275,6 +454,8 @@ public class MainActivity extends TestpressFragmentActivity {
                 if (viewPager.getVisibility() != View.VISIBLE) {
                     initScreen();
                 }
+                initSalesForceSDK();
+                askNotificationAndStoragePermission();
             }
         }.execute();
     }
@@ -290,26 +471,34 @@ public class MainActivity extends TestpressFragmentActivity {
         }
 
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
-            addMenuItem(R.string.dashboard, R.drawable.ic_dashboard, new DashboardFragment());
+            if (mInstituteSettings.getDashboardEnabled()){
+                addMenuItem(R.string.dashboard, R.drawable.ic_dashboard, new DashboardFragment());
+            }
         } else {
             addMenuItem(R.string.dashboard, R.drawable.profile_default, new MainMenuFragment());
         }
         // Show courses list if game front end is enabled, otherwise hide bottom bar
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             //noinspection ConstantConditions
-            addMenuItem(R.string.learn, R.drawable.learn,
-                    TestpressCourse.getMyCoursesFragment(this, TestpressSdk.getTestpressSession(this)));
+            addMenuItem(R.string.learn, R.drawable.learn, new MyCoursesFragment());
+
+            if (Boolean.TRUE.equals(!mInstituteSettings.getDisableStoreInApp())){
+                if (isEPratibhaApp()) {
+                    addEPratibhaWebViewFragment();
+                } else {
+                    addMenuItem(R.string.store, R.drawable.home_store_image, new AvailableCourseListFragment());
+                }
+            }
 
             if (mInstituteSettings.getCoursesEnableGamification()) {
                 //noinspection ConstantConditions
-                addMenuItem(R.string.testpress_leaderboard, R.drawable.leaderboard,
+                addMenuItem(R.string.leaderboard, R.drawable.leaderboard,
                         TestpressCourse.getLeaderboardFragment(this, TestpressSdk.getTestpressSession(this)));
             }
-            if (mInstituteSettings.getForumEnabled()) {
-                addMenuItem(R.string.discussions, R.drawable.chat_icon, new ForumListFragment());
+            if (mInstituteSettings.getIsVideoDownloadEnabled()) {
+                OfflineDownloadsTabsFragment offlineDownloadsTabsFragment = new OfflineDownloadsTabsFragment();
+                addMenuItem(R.string.downloads, R.drawable.ic_downloads, offlineDownloadsTabsFragment);
             }
-            DownloadsFragment downloadsFragment = new DownloadsFragment();
-            addMenuItem(R.string.downloads, R.drawable.ic_downloads, downloadsFragment);
         } else {
             grid.setVisibility(View.GONE);
         }
@@ -336,6 +525,7 @@ public class MainActivity extends TestpressFragmentActivity {
                     serviceProvider.logout(MainActivity.this, testpressService, serviceProvider,
                             logoutService);
                 }
+                invalidateOptionsMenu();
             }
 
             @Override
@@ -347,6 +537,19 @@ public class MainActivity extends TestpressFragmentActivity {
         viewPager.setVisibility(View.VISIBLE);
         onItemSelected(mSelectedItem);
         progressBarLayout.setVisibility(View.GONE);
+    }
+
+    private void addEPratibhaWebViewFragment() {
+        String[] credentials = CommonUtils.getUserCredentials(this);
+        WebViewFragment webViewFragment = new WebViewFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(WebViewFragment.URL_TO_OPEN, Constants.Http.EPRATIBHA_SSO_URL + "?email=" + credentials[0] + "&pass=" + credentials[1]);
+        bundle.putBoolean(WebViewFragment.SHOW_LOADING_BETWEEN_PAGES, true);
+        bundle.putBoolean(WebViewFragment.IS_AUTHENTICATION_REQUIRED, false);
+        bundle.putBoolean(WebViewFragment.ALLOW_NON_INSTITUTE_URL_IN_WEB_VIEW, true);
+        bundle.putBoolean(WebViewFragment.ENABLE_SWIPE_REFRESH, true);
+        webViewFragment.setArguments(bundle);
+        addMenuItem(R.string.store, R.drawable.home_store_image, webViewFragment);
     }
 
     private void onItemSelected(int position) {
@@ -374,8 +577,12 @@ public class MainActivity extends TestpressFragmentActivity {
         }
         new SafeAsyncTask<InstituteSettings>() {
             @Override
-            public InstituteSettings call() {
-                return testpressService.getInstituteSettings();
+            public InstituteSettings call() throws Exception {
+                if (isUserAuthenticated) {
+                    return serviceProvider.getService(MainActivity.this).getInstituteSettings();
+                } else {
+                    return testpressService.getInstituteSettings();
+                }
             }
 
             @Override
@@ -407,7 +614,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
                 if (mInstituteSettings == null) {
                     onFinishFetchingInstituteSettings(instituteSettings);
-                } else if (mInstituteSettings.getForceStudentData()) {
+                } else if (isUserAuthenticated && mInstituteSettings.getForceStudentData()) {
                     checkForForceUserData();
                 } else {
                     showMainActivityContents();
@@ -424,24 +631,34 @@ public class MainActivity extends TestpressFragmentActivity {
                 this,
                 options -> {
                     options.setDsn(instituteSettings.getAndroidSentryDns());
-                    options.setEnableSessionTracking(true);
+                    options.setEnableAutoSessionTracking(true);
                 });
         //noinspection ConstantConditions
         if (!isUserAuthenticated && !ALLOW_ANONYMOUS_USER) {
             // Show login screen if user not logged in else update institute settings in TestpressSDK
             updateTestpressSession();
         } else {
+            if(isVerandaLearningApp() && !hasAgreedTermsAndConditions()){
+                startActivity(TermsAndConditionActivity.Companion.createIntent(MainActivity.this));
+            }
             initScreen();
             showMainActivityContents();
 
             if (isUserAuthenticated) {
                 updateTestpressSession();
+                syncVideoWatchedData();
 
-                if (mInstituteSettings.getForceStudentData()) {
+                if (isUserAuthenticated && mInstituteSettings.getForceStudentData()) {
                     checkForForceUserData();
                 }
             }
         }
+    }
+
+    private void syncVideoWatchedData() {
+        OfflineVideoDao offlineVideoDao = TestpressDatabase.Companion.invoke(this).offlineVideoDao();
+        VideoWatchDataRepository videoWatchDataRepository = new VideoWatchDataRepository(this, offlineVideoDao);
+        AsyncTask.execute((Runnable) videoWatchDataRepository::sync);
     }
 
     private void checkUpdate() {
@@ -495,6 +712,7 @@ public class MainActivity extends TestpressFragmentActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.dismiss();
+                                setTermsAndConditionNotAgreed();
                                 serviceProvider.logout(MainActivity.this, testpressService,
                                         serviceProvider, logoutService);
                             }
@@ -519,25 +737,28 @@ public class MainActivity extends TestpressFragmentActivity {
     @Override
     public void onResume() {
         super.onResume();
+
         if (navigationView != null) {
             hideMenuItemsForUnauthenticatedUser(navigationView.getMenu());
         }
-        if (mInstituteSettings != null && mInstituteSettings.getForceStudentData()) {
+        if (isUserAuthenticated && mInstituteSettings != null && mInstituteSettings.getForceStudentData()) {
             checkForForceUserData();
         } else {
             showMainActivityContents();
         }
     }
 
-    public void callWebViewActivity(String url) {
-
-        if (!Strings.toString(url).isEmpty()) {
-            Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
-            intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Mandatory Update");
-            intent.putExtra(WebViewActivity.SHOW_LOGOUT, "true");
-            intent.putExtra(WebViewActivity.URL_TO_OPEN, BASE_URL + url + "&next=/settings/force/mobile/");
-            startActivity(intent);
-        }
+    public void openEnforceDataActivity(){
+        this.startActivity(
+                EnforceDataActivity.Companion.createIntent(
+                        this,
+                        "Mandatory Update",
+                        WHITE_LABELED_HOST_URL + "/settings/force/mobile/",
+                        true,
+                        false,
+                        EnforceDataActivity.class
+                )
+        );
     }
 
     public void checkForForceUserData() {
@@ -549,22 +770,22 @@ public class MainActivity extends TestpressFragmentActivity {
 
             @Override
             protected void onException(final Exception exception) throws RuntimeException {
-                hideMainActivityContents();
-
                 if (exception.getCause() instanceof IOException) {
-                    setEmptyText(R.string.network_error, R.string.no_internet_try_again,
-                            R.drawable.ic_error_outline_black_18dp);
+                    // If it's an internet error, do nothing here.
+                    // Raising the error would prevent the user from accessing the app
+                    // if "enforce data" mode is enabled.
                 } else {
+                    hideMainActivityContents();
                     setEmptyText(R.string.network_error, R.string.try_after_sometime,
                             R.drawable.ic_error_outline_black_18dp);
+                    retryButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            emptyView.setVisibility(View.GONE);
+                            checkForForceUserData();
+                        }
+                    });
                 }
-                retryButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        emptyView.setVisibility(View.GONE);
-                        fetchInstituteSettings();
-                    }
-                });
             }
 
             @Override
@@ -574,50 +795,10 @@ public class MainActivity extends TestpressFragmentActivity {
                 if (!checkPermission.getIsDataCollected()) {
                     hideMainActivityContents();
 
-                    if (!Strings.toString(ssoUrl).isEmpty()) {
-                        callWebViewActivity(ssoUrl);
-                    } else {
-                        fetchSsoLink();
-                    }
+                    openEnforceDataActivity();
                 } else {
                     showMainActivityContents();
                 }
-            }
-        }.execute();
-    }
-
-    public void fetchSsoLink() {
-        new SafeAsyncTask<SsoUrl>() {
-            @Override
-            public SsoUrl call() throws Exception {
-                return serviceProvider.getService(MainActivity.this).getSsoUrl();
-            }
-
-            @Override
-            protected void onException(final Exception exception) throws RuntimeException {
-                hideMainActivityContents();
-
-                if (exception.getCause() instanceof IOException) {
-                    setEmptyText(R.string.network_error, R.string.no_internet_try_again,
-                            R.drawable.ic_error_outline_black_18dp);
-                } else {
-                    setEmptyText(R.string.network_error, R.string.try_after_sometime,
-                            R.drawable.ic_error_outline_black_18dp);
-                }
-                retryButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        emptyView.setVisibility(View.GONE);
-                        checkForForceUserData();
-                    }
-                });
-            }
-
-            @Override
-            protected void onSuccess(final SsoUrl ssoLink) throws Exception {
-                showMainActivityContents();
-                ssoUrl = ssoLink.getSsoUrl();
-                callWebViewActivity(ssoLink.getSsoUrl());
             }
         }.execute();
     }
@@ -632,6 +813,73 @@ public class MainActivity extends TestpressFragmentActivity {
         if (isInitScreenCalledOnce) {
             viewPager.setVisibility(View.VISIBLE);
             grid.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void askNotificationAndStoragePermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions(new String[]{
+                    Manifest.permission.POST_NOTIFICATIONS
+            }, RequestCode.PERMISSION);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            requestPermissions(new String[]{
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.POST_NOTIFICATIONS
+            }, RequestCode.PERMISSION);
+        } else {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, RequestCode.PERMISSION);
+
+        }
+    }
+
+    private Boolean isVerandaLearningApp(){
+        return getApplicationContext().getPackageName().equals("com.verandalearning");
+    }
+
+    private Boolean isEPratibhaApp() {
+        return getApplicationContext().getPackageName().equals("net.epratibha.www");
+    }
+
+    private Boolean hasAgreedTermsAndConditions(){
+        return getSharedPreferences(TERMS_AND_CONDITIONS, Context.MODE_PRIVATE).getBoolean(TERMS_AND_CONDITIONS, false);
+    }
+
+    private void setTermsAndConditionNotAgreed() {
+        SharedPreferences.Editor editor = getSharedPreferences(TERMS_AND_CONDITIONS, MODE_PRIVATE).edit();
+        editor.putBoolean(TERMS_AND_CONDITIONS, false);
+        editor.apply();
+    }
+
+    private void initSalesForceSDK() {
+        if (Boolean.TRUE.equals(mInstituteSettings.getSalesforceSdkEnabled())) {
+            SalesforceSdkInitializer salesforceSdkInitializer = new SalesforceSdkInitializer(this);
+            salesforceSdkInitializer.initialize(mInstituteSettings);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && requestCode == RequestCode.PERMISSION) {
+            if (isNotificationPermissionGranted(permissions, grantResults)) {
+                onNotificationPermissionGranted();
+            }
+        }
+    }
+
+    private boolean isNotificationPermissionGranted(@NonNull String[] permissions, @NonNull int[] grantResults) {
+        for (int i = 0; i < permissions.length; i++) {
+            if (Manifest.permission.POST_NOTIFICATIONS.equals(permissions[i]) && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void onNotificationPermissionGranted() {
+        if (Boolean.TRUE.equals(mInstituteSettings.getSalesforceSdkEnabled())) {
+            SalesforceSdkInitializer.notificationPermissionGranted();
         }
     }
 }

@@ -4,11 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.MenuItem;
 
-import in.testpress.testpress.Injector;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -16,7 +16,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.TestpressServiceProvider;
@@ -28,7 +27,6 @@ import in.testpress.testpress.events.UnAuthorizedUserErrorEvent;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
-import in.testpress.testpress.util.Ln;
 import in.testpress.ui.UserDevicesActivity;
 
 import static in.testpress.testpress.BuildConfig.BASE_URL;
@@ -51,7 +49,7 @@ public class TestpressFragmentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Injector.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
 
         // Directly subscribing in parent class won't work, only child class subscribers will work. https://github.com/square/otto/issues/26
         busEventListener = new Object() {
@@ -67,7 +65,6 @@ public class TestpressFragmentActivity extends AppCompatActivity {
                 try {
                     serviceProvider.logout(TestpressFragmentActivity.this, testpressService, serviceProvider, logoutService);
                 } catch (Exception e) {
-                    Ln.e("Exception : " + e.getLocalizedMessage());
 //                    Sentry.capture(e);
                 }
             }
@@ -76,6 +73,23 @@ public class TestpressFragmentActivity extends AppCompatActivity {
 
         eventBus.register(busEventListener);
         eventBus.register(unauthorisedUserErrorBusListener);
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                try {
+                    if (isFromDeeplink()) {
+                        goToHome();
+                    } else {
+                        setEnabled(false);
+                        getOnBackPressedDispatcher().onBackPressed();
+                    }
+                } catch (IllegalStateException e) {
+                    supportFinishAfterTransition();
+                } finally {
+                    setEnabled(true);
+                }
+            }
+        });
     }
 
     public Toolbar getActionBarToolbar() {
@@ -92,7 +106,6 @@ public class TestpressFragmentActivity extends AppCompatActivity {
     public void setContentView(final int layoutResId) {
         super.setContentView(layoutResId);
 
-        ButterKnife.inject(this);
         Toolbar toolbar = getActionBarToolbar();
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -116,24 +129,11 @@ public class TestpressFragmentActivity extends AppCompatActivity {
             if (isFromDeeplink()) {
                 goToHome();
             } else {
-                onBackPressed();
+                getOnBackPressedDispatcher().onBackPressed();
             }
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void onBackPressed() {
-        try {
-            if (isFromDeeplink()) {
-                goToHome();
-            } else {
-                super.onBackPressed();
-            }
-        } catch (IllegalStateException e) {
-            supportFinishAfterTransition();
-        }
     }
 
     @Override
@@ -148,8 +148,25 @@ public class TestpressFragmentActivity extends AppCompatActivity {
         eventBus.unregister(this);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        eventBus.unregister(busEventListener);
+        eventBus.unregister(unauthorisedUserErrorBusListener);
+    }
+
     protected void onReceiveCustomErrorEvent(final CustomErrorEvent customErrorEvent) {
-        if (customErrorEvent.getErrorCode().equals(getString(R.string.PARALLEL_LOGIN_RESTRICTION_ERROR_CODE))) {
+        if (customErrorEvent.getErrorCode().equals(getString(R.string.DEVICE_ALREADY_BOUND_ERROR_CODE)) ||
+                customErrorEvent.getErrorCode().equals(getString(R.string.UNAUTHORIZED_DEVICE_ERROR_CODE))) {
+            if (DeviceNotAllowedActivity.isShowing) {
+                return;
+            }
+            Intent intent = new Intent(this, DeviceNotAllowedActivity.class);
+            intent.putExtra("title", customErrorEvent.getTitle());
+            intent.putExtra("description", customErrorEvent.getDetail());
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } else if (customErrorEvent.getErrorCode().equals(getString(R.string.PARALLEL_LOGIN_RESTRICTION_ERROR_CODE))) {
             Intent intent = new Intent(this, UserDevicesActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
                     Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -179,7 +196,6 @@ public class TestpressFragmentActivity extends AppCompatActivity {
             try {
                 in.testpress.util.UIUtils.showAlert(TestpressFragmentActivity.this, "Account Locked", message);
             } catch (Exception e) {
-                Ln.e("Exception : " + e.getLocalizedMessage());
 //                Sentry.capture(e);
             }
         }

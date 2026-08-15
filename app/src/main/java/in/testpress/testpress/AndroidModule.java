@@ -19,7 +19,7 @@ import dagger.Provides;
 /**
  * Module for all Android related provisions
  */
-@Module(complete = false, library = true)
+@Module
 public class AndroidModule {
 
     @Provides

@@ -13,7 +13,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import in.testpress.testpress.Injector;
+import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.core.DocumentsPager;
@@ -26,8 +26,8 @@ public class DocumentsListFragment extends PagedItemFragment<Notes> {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Injector.inject(this);
         super.onCreate(savedInstanceState);
+        TestpressApplication.getAppComponent().inject(this);
     }
 
     @Override

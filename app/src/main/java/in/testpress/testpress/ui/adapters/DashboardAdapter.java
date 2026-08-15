@@ -1,6 +1,7 @@
 package in.testpress.testpress.ui.adapters;
 
 import android.content.Context;
+
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,13 +13,13 @@ import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.models.pojo.DashboardSection;
+import in.testpress.testpress.ui.view_holders.AutoScrollCarouselViewHolder;
 import in.testpress.testpress.ui.view_holders.BaseCarouselViewHolder;
 import in.testpress.testpress.ui.view_holders.ContentsCarouselViewHolder;
 import in.testpress.testpress.ui.view_holders.CourseCarouselViewHolder;
 import in.testpress.testpress.ui.view_holders.LeaderboardViewHolder;
 import in.testpress.testpress.ui.view_holders.OffersCarouselViewHolder;
 import in.testpress.testpress.ui.view_holders.PostsCarouselViewHolder;
-import in.testpress.testpress.util.Strings;
 
 import static in.testpress.testpress.BuildConfig.BASE_URL;
 import static in.testpress.testpress.TestpressApplication.daoSession;
@@ -36,6 +37,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private final int OFFERS_CAROUSEL = 5;
     private final int LEADERBOARD_LIST = 6;
     private final int STATS_CHART = 7;
+    private final int CAROUSEL = 8;
 
 
     public DashboardAdapter(Context context, DashboardResponse response, TestpressServiceProvider serviceProvider) {
@@ -52,6 +54,9 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public int getItemViewType(int position) {
         String contentType = sections.get(position).getContentType();
+        if (sections.get(position).getDisplayType() == "CAROUSEL") {
+            return CAROUSEL;
+        }
         switch (contentType) {
             case "post":
                 return POST_CAROUSEL;
@@ -102,6 +107,9 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             case LEADERBOARD_LIST:
                 holder = new LeaderboardViewHolder(view, context);
                 break;
+            case CAROUSEL:
+                holder = new AutoScrollCarouselViewHolder(view, context);
+                break;
             default:
                 holder = new BaseCarouselViewHolder(view);
                 break;
@@ -112,23 +120,28 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        switch (holder.getItemViewType()) {
-            case CONTENT_CAROUSEL:
-                ((ContentsCarouselViewHolder) holder).display(response, context);
-                break;
-            case POST_CAROUSEL:
-                ((PostsCarouselViewHolder) holder).display(response, context);
-                break;
-            case OFFERS_CAROUSEL:
-                ((OffersCarouselViewHolder) holder).display(response, context, serviceProvider);
-                break;
-            case COURSE_CAROUSEL:
-                ((CourseCarouselViewHolder) holder).display(response, context);
-                break;
-            case LEADERBOARD_LIST:
-                ((LeaderboardViewHolder) holder).display(response, context);
-                break;
-        }
+        try {
+            switch (holder.getItemViewType()) {
+                case CONTENT_CAROUSEL:
+                    ((ContentsCarouselViewHolder) holder).display(response, context);
+                    break;
+                case POST_CAROUSEL:
+                    ((PostsCarouselViewHolder) holder).display(response, context);
+                    break;
+                case OFFERS_CAROUSEL:
+                    ((OffersCarouselViewHolder) holder).display(response, context, serviceProvider);
+                    break;
+                case COURSE_CAROUSEL:
+                    ((CourseCarouselViewHolder) holder).display(response, context);
+                    break;
+                case LEADERBOARD_LIST:
+                    ((LeaderboardViewHolder) holder).display(response, context);
+                    break;
+                case CAROUSEL:
+                    ((AutoScrollCarouselViewHolder) holder).display(response, serviceProvider);
+                    break;
+            }
+        } catch(Exception e) {}
     }
 
     public Boolean isLeaderBoardEnabled() {

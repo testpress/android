@@ -59,9 +59,10 @@ public class ForumDao extends AbstractDao<Forum, Long> {
         public final static Property TypeOfVote = new Property(30, Integer.class, "typeOfVote", false, "TYPE_OF_VOTE");
         public final static Property Published = new Property(31, Long.class, "published", false, "PUBLISHED");
         public final static Property ModifiedDate = new Property(32, Long.class, "modifiedDate", false, "MODIFIED_DATE");
-        public final static Property CreatorId = new Property(33, Long.class, "creatorId", false, "CREATOR_ID");
-        public final static Property CommentorId = new Property(34, Long.class, "commentorId", false, "COMMENTOR_ID");
-        public final static Property CategoryId = new Property(35, Long.class, "categoryId", false, "CATEGORY_ID");
+        public final static Property HasAnswer = new Property(33, Boolean.class, "hasAnswer", false, "HAS_ANSWER");
+        public final static Property CreatorId = new Property(34, Long.class, "creatorId", false, "CREATOR_ID");
+        public final static Property CommentorId = new Property(35, Long.class, "commentorId", false, "COMMENTOR_ID");
+        public final static Property CategoryId = new Property(36, Long.class, "categoryId", false, "CATEGORY_ID");
     };
 
     private DaoSession daoSession;
@@ -113,9 +114,10 @@ public class ForumDao extends AbstractDao<Forum, Long> {
                 "\"TYPE_OF_VOTE\" INTEGER," + // 30: typeOfVote
                 "\"PUBLISHED\" INTEGER," + // 31: published
                 "\"MODIFIED_DATE\" INTEGER," + // 32: modifiedDate
-                "\"CREATOR_ID\" INTEGER," + // 33: creatorId
-                "\"COMMENTOR_ID\" INTEGER," + // 34: commentorId
-                "\"CATEGORY_ID\" INTEGER);"); // 35: categoryId
+                "\"HAS_ANSWER\" INTEGER," + // 33: hasAnswer
+                "\"CREATOR_ID\" INTEGER," + // 34: creatorId
+                "\"COMMENTOR_ID\" INTEGER," + // 35: commentorId
+                "\"CATEGORY_ID\" INTEGER);"); // 36: categoryId
     }
 
     /** Drops the underlying database table. */
@@ -294,19 +296,24 @@ public class ForumDao extends AbstractDao<Forum, Long> {
             stmt.bindLong(33, modifiedDate);
         }
  
+        Boolean hasAnswer = entity.getHasAnswer();
+        if (hasAnswer != null) {
+            stmt.bindLong(34, hasAnswer ? 1L: 0L);
+        }
+ 
         Long creatorId = entity.getCreatorId();
         if (creatorId != null) {
-            stmt.bindLong(34, creatorId);
+            stmt.bindLong(35, creatorId);
         }
  
         Long commentorId = entity.getCommentorId();
         if (commentorId != null) {
-            stmt.bindLong(35, commentorId);
+            stmt.bindLong(36, commentorId);
         }
  
         Long categoryId = entity.getCategoryId();
         if (categoryId != null) {
-            stmt.bindLong(36, categoryId);
+            stmt.bindLong(37, categoryId);
         }
     }
 
@@ -359,9 +366,10 @@ public class ForumDao extends AbstractDao<Forum, Long> {
             cursor.isNull(offset + 30) ? null : cursor.getInt(offset + 30), // typeOfVote
             cursor.isNull(offset + 31) ? null : cursor.getLong(offset + 31), // published
             cursor.isNull(offset + 32) ? null : cursor.getLong(offset + 32), // modifiedDate
-            cursor.isNull(offset + 33) ? null : cursor.getLong(offset + 33), // creatorId
-            cursor.isNull(offset + 34) ? null : cursor.getLong(offset + 34), // commentorId
-            cursor.isNull(offset + 35) ? null : cursor.getLong(offset + 35) // categoryId
+            cursor.isNull(offset + 33) ? null : cursor.getShort(offset + 33) != 0, // hasAnswer
+            cursor.isNull(offset + 34) ? null : cursor.getLong(offset + 34), // creatorId
+            cursor.isNull(offset + 35) ? null : cursor.getLong(offset + 35), // commentorId
+            cursor.isNull(offset + 36) ? null : cursor.getLong(offset + 36) // categoryId
         );
         return entity;
     }
@@ -402,9 +410,10 @@ public class ForumDao extends AbstractDao<Forum, Long> {
         entity.setTypeOfVote(cursor.isNull(offset + 30) ? null : cursor.getInt(offset + 30));
         entity.setPublished(cursor.isNull(offset + 31) ? null : cursor.getLong(offset + 31));
         entity.setModifiedDate(cursor.isNull(offset + 32) ? null : cursor.getLong(offset + 32));
-        entity.setCreatorId(cursor.isNull(offset + 33) ? null : cursor.getLong(offset + 33));
-        entity.setCommentorId(cursor.isNull(offset + 34) ? null : cursor.getLong(offset + 34));
-        entity.setCategoryId(cursor.isNull(offset + 35) ? null : cursor.getLong(offset + 35));
+        entity.setHasAnswer(cursor.isNull(offset + 33) ? null : cursor.getShort(offset + 33) != 0);
+        entity.setCreatorId(cursor.isNull(offset + 34) ? null : cursor.getLong(offset + 34));
+        entity.setCommentorId(cursor.isNull(offset + 35) ? null : cursor.getLong(offset + 35));
+        entity.setCategoryId(cursor.isNull(offset + 36) ? null : cursor.getLong(offset + 36));
      }
     
     /** @inheritdoc */

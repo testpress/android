@@ -11,18 +11,18 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
+import androidx.activity.OnBackPressedCallback;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.CookieManager;
+import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -38,7 +38,8 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
-import in.testpress.testpress.Injector;
+import in.testpress.testpress.BuildConfig;
+import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LogoutService;
@@ -49,7 +50,10 @@ public class WebViewActivity extends BaseToolBarActivity {
     private static final String TAG = WebViewActivity.class.getSimpleName();
     public static final String URL_TO_OPEN = "URL";
     public static final String ACTIVITY_TITLE = "TITLE";
+    public static final String ENABLE_BACK = "ENABLE_BACK";
     public static final String SHOW_LOGOUT = "SHOW_LOGOUT";
+    public static final String SHOW_LOADING = "SHOW_LOADING";
+    public static final String ALLOW_EXTERNAL_LINK = "ALLOW_EXTERNAL_LINK";
     private final static int FILE_CHOOSER_RESULT_CODE = 1;
 
     @Inject protected TestpressServiceProvider serviceProvider;
@@ -57,12 +61,16 @@ public class WebViewActivity extends BaseToolBarActivity {
     @Inject protected LogoutService logoutService;
 
     private ProgressBar pb_loading;
+    private SwipeRefreshLayout swipeContainer;
     WebView webView;
-    private String mCapturedMessage;
+    private Uri mCapturedImageUri;
     private ValueCallback<Uri> mUploadMessage;
     private ValueCallback<Uri[]> mUploadMessages;
     private String url;
     private boolean showLogout;
+    private boolean showLoading = true;
+    private boolean reload = false;
+    private boolean allowExternalLink = false;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -75,19 +83,8 @@ public class WebViewActivity extends BaseToolBarActivity {
             if (resultCode == Activity.RESULT_OK) {
                 if (requestCode == FILE_CHOOSER_RESULT_CODE) {
 
-                    if (null == mUploadMessages) {
-                        return;
-                    }
-                    if (intent == null) {
-                        //Capture Photo if no image available
-                        if (mCapturedMessage != null) {
-                            results = new Uri[]{Uri.parse(mCapturedMessage)};
-                        }
-                    } else {
-                        String dataString = intent.getDataString();
-                        if (dataString != null) {
-                            results = new Uri[]{Uri.parse(dataString)};
-                        }
+                    if (intent != null && intent.getData() != null) {
+                        results = new Uri[]{intent.getData()};
                     }
                 }
             }
@@ -108,14 +105,19 @@ public class WebViewActivity extends BaseToolBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Injector.inject(this);
+        TestpressApplication.getAppComponent().inject(this);
         setContentView(R.layout.generic_webview_layout);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         pb_loading = this.findViewById(R.id.pb_loading);
+        initializeSwipeToRefresh();
 
         Intent intent = getIntent();
 
+        parseIntent();
+        if (!showLoading) {
+            pb_loading.setVisibility(View.GONE);
+        }
         if (intent.hasExtra(URL_TO_OPEN) && intent.getExtras().getString(URL_TO_OPEN) != "") {
             setUrl(intent.getExtras().getString(URL_TO_OPEN));
         } else {
@@ -130,9 +132,14 @@ public class WebViewActivity extends BaseToolBarActivity {
             getSupportActionBar().setTitle(intent.getExtras().getString(ACTIVITY_TITLE));
         }
 
+        if (intent.hasExtra(ALLOW_EXTERNAL_LINK)) {
+            allowExternalLink = intent.getExtras().getBoolean(ALLOW_EXTERNAL_LINK);
+        }
 
-        if (Build.VERSION.SDK_INT >= 23 && (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)) {
-            ActivityCompat.requestPermissions(WebViewActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, 1);
+
+        if (Build.VERSION.SDK_INT >= 23 &&
+                (isPermissionGranted(Manifest.permission.RECORD_AUDIO) || isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE) || isPermissionGranted(Manifest.permission.CAMERA))) {
+            ActivityCompat.requestPermissions(WebViewActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO}, 1);
         }
 
         webView = (WebView) findViewById(R.id.web_view);
@@ -159,12 +166,23 @@ public class WebViewActivity extends BaseToolBarActivity {
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                pb_loading.setVisibility(View.VISIBLE);
+                if (reload) {
+                    webView.reload();
+                    reload = false;
+                }
+                if (showLoading) {
+                    pb_loading.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                return false;
+                if (allowExternalLink || isInstituteURL(url)) {
+                    view.loadUrl(url);
+                } else {
+                    openInExternal(url);
+                }
+                return true;
             }
 
             @Override
@@ -188,7 +206,7 @@ public class WebViewActivity extends BaseToolBarActivity {
                 Intent i = new Intent(Intent.ACTION_GET_CONTENT);
                 i.addCategory(Intent.CATEGORY_OPENABLE);
                 i.setType("*/*");
-                WebViewActivity.this.startActivityForResult(Intent.createChooser(i, "File Chooser"), FILE_CHOOSER_RESULT_CODE);
+                WebViewActivity.this.startActivityForResult(i, FILE_CHOOSER_RESULT_CODE);
             }
 
             // For Android 3.0+, above method not supported in some android 3+ versions, in such case we use this
@@ -198,9 +216,7 @@ public class WebViewActivity extends BaseToolBarActivity {
                 Intent i = new Intent(Intent.ACTION_GET_CONTENT);
                 i.addCategory(Intent.CATEGORY_OPENABLE);
                 i.setType("*/*");
-                WebViewActivity.this.startActivityForResult(
-                        Intent.createChooser(i, "File Browser"),
-                        FILE_CHOOSER_RESULT_CODE);
+                WebViewActivity.this.startActivityForResult(i, FILE_CHOOSER_RESULT_CODE);
             }
 
             //For Android 4.1+
@@ -210,7 +226,12 @@ public class WebViewActivity extends BaseToolBarActivity {
                 Intent i = new Intent(Intent.ACTION_GET_CONTENT);
                 i.addCategory(Intent.CATEGORY_OPENABLE);
                 i.setType("*/*");
-                WebViewActivity.this.startActivityForResult(Intent.createChooser(i, "File Chooser"), WebViewActivity.FILE_CHOOSER_RESULT_CODE);
+                WebViewActivity.this.startActivityForResult(i, WebViewActivity.FILE_CHOOSER_RESULT_CODE);
+            }
+
+            @Override
+            public void onPermissionRequest(PermissionRequest request) {
+                runOnUiThread(() -> request.grant(request.getResources()));
             }
 
             //For Android 5.0+
@@ -223,43 +244,66 @@ public class WebViewActivity extends BaseToolBarActivity {
                 }
 
                 mUploadMessages = filePathCallback;
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (takePictureIntent.resolveActivity(WebViewActivity.this.getPackageManager()) != null) {
 
-                    File photoFile = null;
-
-                    try {
-                        photoFile = createImageFile();
-                        takePictureIntent.putExtra("PhotoPath", mCapturedMessage);
-                    } catch (IOException ex) {
-                        Log.e(TAG, "Image file creation failed", ex);
-                    }
-                    if (photoFile != null) {
-                        mCapturedMessage = "file:" + photoFile.getAbsolutePath();
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-                    } else {
-                        takePictureIntent = null;
-                    }
-                }
-
-                Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
-                contentSelectionIntent.setType("*/*");
-                Intent[] intentArray;
-
-                if (takePictureIntent != null) {
-                    intentArray = new Intent[]{takePictureIntent};
+                if (fileChooserParams.isCaptureEnabled()) {
+                    Intent takePictureIntent = new Intent(WebViewActivity.this, InAppCameraActivity.class);
+                    startActivityForResult(takePictureIntent, FILE_CHOOSER_RESULT_CODE);
                 } else {
-                    intentArray = new Intent[0];
+                    Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                    contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
+                    contentSelectionIntent.setType("*/*");
+                    startActivityForResult(contentSelectionIntent, FILE_CHOOSER_RESULT_CODE);
                 }
-
-                Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
-                chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
-                chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser");
-                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
-                startActivityForResult(chooserIntent, FILE_CHOOSER_RESULT_CODE);
 
                 return true;
+            }
+        });
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (getIntent().getBooleanExtra(ENABLE_BACK, false) && webView.canGoBack()) {
+                    reload = true;
+                    webView.goBack();
+                } else if (webView.canGoBack()) {
+                    webView.goBack();
+                } else {
+                    finish();
+                }
+            }
+        });
+    }
+
+    private Boolean isInstituteURL(String url){
+        return url.contains(BuildConfig.BASE_URL) || url.contains(BuildConfig.WHITE_LABELED_HOST_URL);
+    }
+
+    private void openInExternal(String url){
+        try {
+            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(i);
+        } catch (Exception e){
+            Toast.makeText(getApplicationContext(),"No suitable app was found to open this URL. Please install any browser app",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void parseIntent() {
+        Intent intent = getIntent();
+        if (intent.hasExtra(SHOW_LOADING) && !intent.getExtras().getBoolean(SHOW_LOADING, true)) {
+            showLoading = false;
+        }
+    }
+    
+    private boolean isPermissionGranted(String permissionName) {
+        return ContextCompat.checkSelfPermission(this, permissionName) != PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void initializeSwipeToRefresh() {
+        swipeContainer = this.findViewById(R.id.swipe_container);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                webView.reload();
+                swipeContainer.setRefreshing(false);
             }
         });
     }
@@ -268,35 +312,7 @@ public class WebViewActivity extends BaseToolBarActivity {
         this.url = url;
     }
 
-    // Create an image file
-    private File createImageFile() throws IOException {
 
-        @SuppressLint("SimpleDateFormat") String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "img_" + timeStamp + "_";
-        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        return File.createTempFile(imageFileName, ".jpg", storageDir);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
-
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
-
-            switch (keyCode) {
-                case KeyEvent.KEYCODE_BACK:
-
-                    if (webView.canGoBack()) {
-                        webView.goBack();
-                    } else {
-                        finish();
-                    }
-
-                    return true;
-            }
-        }
-
-        return super.onKeyDown(keyCode, event);
-    }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {

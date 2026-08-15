@@ -12,14 +12,12 @@ import java.util.TimeZone;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.models.TestpressApiResponse;
-import in.testpress.testpress.util.Ln;
 import retrofit.RetrofitError;
 
 
 public class PostsPager extends ResourcePager<Post> {
 
     TestpressApiResponse<Post> response;
-    String latestModifiedDate;
     SimpleDateFormat simpleDateFormat;
     PostDao postDao;
 
@@ -56,7 +54,7 @@ public class PostsPager extends ResourcePager<Post> {
             }
         }
         if (url != null) {
-            response = service.getPosts(url, queryParams, latestModifiedDate);
+            response = service.getPosts(url, queryParams);
             return response.getResults();
         }
         return Collections.emptyList();
@@ -69,13 +67,10 @@ public class PostsPager extends ResourcePager<Post> {
         boolean emptyPage = false;
         try {
             for (int i = 0; i < count && hasNext(); i++) {
-                Ln.d("PostsPager Getting Items");
                 List<Post> resourcePage = getItems(page, -1);
-                Ln.d("PostsPager Items Received");
                 emptyPage = resourcePage.isEmpty();
                 if (emptyPage)
                     break;
-                Ln.d("Looping through resources");
                 for (Post resource : resourcePage) {
                     resource = register(resource);
                     if (resource == null)
@@ -83,12 +78,10 @@ public class PostsPager extends ResourcePager<Post> {
                     if(resource.getRawCategory() != null) {
                         resource.setCategory(resource.getRawCategory());
                     }
-                    Ln.d("Category ID " + resource.getCategoryId());
                     resource.setPublished(simpleDateFormat.parse(resource.getPublishedDate()).getTime());
                     resource.setModifiedDate(simpleDateFormat.parse(resource.getModified()).getTime());
                     resources.put(getId(resource), resource);
                 }
-                Ln.d("Looping resources over");
             }
             // Set page to count value if first call after call to reset()
             if (count > 1) {
@@ -98,7 +91,6 @@ public class PostsPager extends ResourcePager<Post> {
 
             page++;
         } catch (ParseException e) {
-            Ln.d("ParseException " + e);
         } catch (Exception e) {
             hasMore = false;
             throw e;
@@ -135,9 +127,5 @@ public class PostsPager extends ResourcePager<Post> {
 
     public int getTotalCount() {
         return response.getCount();
-    }
-
-    public void setLatestModifiedDate(String latestModifiedDate) {
-        this.latestModifiedDate = latestModifiedDate;
     }
 }

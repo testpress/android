@@ -1,0 +1,136 @@
+name: Release update
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Release mode: 'all' releases updates for all institutes. 'batch' releases updates for the provided comma-separated list."
+        default: "batch"
+        type: choice
+        options:
+          - "all"
+          - "batch"
+      urls:
+        description: "Batch mode only: comma-separated URLs (example: https://inst1.testpress.in, https://customdomain.com). Can contain a single URL."
+        required: false
+        default: ""
+
+      release_option:
+        description: "Choose the type of release. 'Completed' for a full release or 'Draft' for a pre-release version."
+        default: "completed"
+        type: choice
+        options:
+          - "completed"
+          - "draft"
+
+jobs:
+  release_update:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_ACCESS_KEY: ${{ secrets.GH_ACCESS_KEY }}
+      GITHUB_USERNAME: ${{ secrets.GH_USERNAME }}
+      API_ACCESS_KEY: ${{ secrets.API_ACCESS_KEY }}
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - name: Validate inputs
+        run: |
+          MODE="${{ github.event.inputs.mode }}"
+          URLS="${{ github.event.inputs.urls }}"
+          if [ "$MODE" = "batch" ]; then
+            if [ -z "$(echo "$URLS" | tr -d '[:space:]')" ]; then
+              echo "ERROR: mode=batch requires non-empty 'urls' input (comma-separated)."
+              exit 1
+            fi
+          fi
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: 17
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+
+      - name: Caching Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Setup ruby and fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+          bundler-cache: true
+
+      - name: Cache Zoom SDK files
+        id: zoom-cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ./mobilertc
+            ./commonlib
+          key: zoom_sdk_files
+
+      - name: Setup Zoom SDK
+        if: steps.zoom-cache.outputs.cache-hit != 'true'
+        run: |
+          wget https://media.testpress.in/static/android/zoom_sdk.zip
+          unzip -o ./zoom_sdk.zip
+
+      - name: Extract subdomains
+        if: ${{ github.event.inputs.mode == 'batch' }}
+        uses: ./.github/actions/extract-subdomain
+        with:
+          url: ${{ github.event.inputs.urls }}
+
+      - name: Build and deploy app (all)
+        if: ${{ github.event.inputs.mode == 'all' }}
+        run: |
+          export LC_ALL=en_US.UTF-8
+          export LANG=en_US.UTF-8
+          bundle exec fastlane release_update_to subdomain:all release_option:${{ github.event.inputs.release_option }}
+
+      - name: Build and deploy app (batch)
+        if: ${{ github.event.inputs.mode == 'batch' }}
+        run: |
+          export LC_ALL=en_US.UTF-8
+          export LANG=en_US.UTF-8
+          bundle exec fastlane release_update_batch subdomains:"$SUBDOMAINS" release_option:${{ github.event.inputs.release_option }}
+
+      - name: Store app artifacts
+        if: ${{ github.event.inputs.mode == 'all' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: app
+          retention-days: 7
+          path: |
+            app/build/outputs/apk/release/app-release.apk
+            app/build/outputs/bundle/release/app-release.aab
+            app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Store batch app artifacts
+        if: ${{ always() && github.event.inputs.mode == 'batch' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: batch-app-artifacts
+          retention-days: 7
+          path: |
+            batch_artifacts
+
+      - name: Store batch summary
+        if: ${{ always() && github.event.inputs.mode == 'batch' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: batch-summary
+          retention-days: 7
+          path: |
+            release_update_batch_summary.json

@@ -11,15 +11,14 @@ import android.widget.ImageView;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
 import in.testpress.store.TestpressStore;
-import in.testpress.testpress.Injector;
+import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
+import in.testpress.testpress.databinding.ActivitySplashBinding;
 import in.testpress.testpress.ui.utils.DeeplinkHandler;
 import in.testpress.testpress.util.UpdateAppDialogManager;
 import in.testpress.util.Assert;
@@ -38,7 +37,7 @@ public class SplashScreenActivity extends Activity {
     @Inject
     protected TestpressServiceProvider serviceProvider;
 
-    @InjectView(R.id.splash_image) ImageView splashImage;
+    private ActivitySplashBinding binding;
 
     // Splash screen timer
     private static final int SPLASH_TIME_OUT = 2000;
@@ -46,9 +45,9 @@ public class SplashScreenActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
-        Injector.inject(this);
-        ButterKnife.inject(this);
+        binding = ActivitySplashBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        TestpressApplication.getAppComponent().inject(this);
         UpdateAppDialogManager.monitor(this);
 
         if (isNotificationPresent()) {
@@ -94,7 +93,7 @@ public class SplashScreenActivity extends Activity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        splashImage.setImageResource(R.drawable.splash_screen);
+        binding.splashImage.setImageResource(R.drawable.splash_screen);
     }
 
     @Override

@@ -5,6 +5,7 @@
         <item
             android:id="@+id/bookmarks"
             android:title="Bookmarks"
+            android:visible="false"
             android:icon="@drawable/ic_bookmark_black_24dp"
             app:showAsAction="never"/>
         <item
@@ -17,6 +18,83 @@
             android:title="Analytics"
             android:icon="@drawable/ic_pie_chart_black_24dp"
             app:showAsAction="never"/>
+        <item
+            android:id="@+id/discussions"
+            android:title="Discussions"
+            android:visible="false"
+            android:icon="@drawable/chat_icon"
+            app:showAsAction="never"/>
+        <item
+            android:id="@+id/doubts"
+            android:title="Doubts"
+            android:icon="@drawable/ic_baseline_message_24"
+            android:visible="false"
+            app:showAsAction="never"/>
+        <item
+            android:id="@+id/offline_exam_list"
+            android:title="Offline Exam"
+            android:icon="@drawable/ic_exam"
+            android:visible="false"
+            app:showAsAction="never"/>
+        <item
+            android:id="@+id/student_report"
+            android:title="Your Report"
+            android:icon="@drawable/ic_student_report"
+            android:visible="false"
+            app:showAsAction="never"/>
+        <item
+            android:id="@+id/daily_questions"
+            android:title="Daily Questions"
+            android:icon="@drawable/ic_calendar"
+            android:visible="false"
+            app:showAsAction="never"/>
+        <item
+            android:id="@+id/recorded_lessons"
+            android:icon="@drawable/outline_smart_display_24"
+            android:title="Recorded Lessons"
+            android:visible="false"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/mocks"
+            android:icon="@drawable/testpress_exam_icon"
+            android:title="Mocks"
+            android:visible="false"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/e_books"
+            android:icon="@drawable/testpress_notes_icon"
+            android:title="E-Books"
+            android:visible="false"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/live_lectures"
+            android:title="Live Lectures"
+            app:showAsAction="never">
+            <menu>
+                <item
+                    android:id="@+id/live_lectures_cat"
+                    android:icon="@drawable/testpress_live_conference_icon"
+                    android:title="CAT"
+                    android:visible="false"
+                    app:showAsAction="never" />
+                <item
+                    android:id="@+id/live_lectures_non_cat"
+                    android:icon="@drawable/testpress_live_conference_icon"
+                    android:title="NON-CAT"
+                    android:visible="false"
+                    app:showAsAction="never" />
+                <item
+                    android:id="@+id/live_lectures_gd_watpi"
+                    android:icon="@drawable/testpress_live_conference_icon"
+                    android:title="GD WATPI"
+                    android:visible="false"
+                    app:showAsAction="never" />
+            </menu>
+        </item>
+    </group>
+
+    <group
+        android:id="@+id/account_group">
         <item
             android:id="@+id/profile"
             android:title="Profile"
@@ -38,9 +116,15 @@
             android:title="Log in"
             app:showAsAction="never"/>
     </group>
-    <group
-        android:id="@+id/group_feature">
 
+    <group
+        android:id="@+id/app_branding_group">
+
+        <item
+            android:id="@+id/privacy_policy"
+            android:icon="@drawable/policy_48px"
+            android:title="Privacy Policy"
+            app:showAsAction="always"/>
         <item
             android:id="@+id/rate_us"
             android:icon="@drawable/ic_rate_review_black_24dp"
@@ -50,6 +134,11 @@
             android:id="@+id/share"
             android:icon="@drawable/ic_share_white_24dp"
             android:title="Share"
+            app:showAsAction="always"/>
+        <item
+            android:id="@+id/version_info"
+            android:icon="@drawable/outline_info_24"
+            android:title="Version:1.0.0"
             app:showAsAction="always"/>
     </group>
 </menu>

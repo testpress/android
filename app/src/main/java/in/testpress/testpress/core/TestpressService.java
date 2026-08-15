@@ -153,10 +153,9 @@ public class TestpressService {
         return getDevicesService().register(credentials);
     }
 
-    public TestpressApiResponse<Post> getPosts(String urlFrag, Map<String, String> queryParams,
-                                               String latestModifiedDate) {
+    public TestpressApiResponse<Post> getPosts(String urlFrag, Map<String, String> queryParams) {
 
-        return getPostService().getPosts(urlFrag, queryParams, latestModifiedDate);
+        return getPostService().getPosts(urlFrag, queryParams);
     }
 
     public TestpressApiResponse<Forum> getForums(String urlFrag, Map<String, String> queryParams,

@@ -17,7 +17,6 @@ import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.models.Post;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.util.FormatDate;
-import in.testpress.testpress.util.Ln;
 import in.testpress.util.ViewUtils;
 
 public class PostsListAdapter extends BaseAdapter {
@@ -53,7 +52,6 @@ public class PostsListAdapter extends BaseAdapter {
     public Post getItem(int position) {
         if (this.filter != -1)
             return postDao.queryBuilder().where(PostDao.Properties.CategoryId.eq(this.filter), PostDao.Properties.Is_active.eq(true)).orderDesc(PostDao.Properties.Published).listLazy().get(position);
-        Ln.d("PostsListAdapter getItem at position " + position + " item - " + postDao.queryBuilder().where(PostDao.Properties.Is_active.eq(true)).orderDesc(PostDao.Properties.Published).listLazy().get(position).getTitle());
         return postDao.queryBuilder().where(PostDao.Properties.Is_active.eq(true)).orderDesc(PostDao.Properties.Published).listLazy().get(position);
     }
 
@@ -61,7 +59,6 @@ public class PostsListAdapter extends BaseAdapter {
     public long getItemId(int position) {
         if (this.filter != -1)
             return postDao.queryBuilder().where(PostDao.Properties.CategoryId.eq(this.filter), PostDao.Properties.Is_active.eq(true)).orderDesc(PostDao.Properties.Published).listLazy().get(position).getId();
-        Ln.d("PostsListAdapter getItemId at position " + position + " item - " + postDao.queryBuilder().where(PostDao.Properties.Is_active.eq(true)).orderDesc(PostDao.Properties.Published).listLazy().get(position).getId());
         return postDao.queryBuilder().where(PostDao.Properties.Is_active.eq(true)).orderDesc(PostDao.Properties.Published).listLazy().get(position).getId();
     }
 
@@ -69,8 +66,6 @@ public class PostsListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final Post post = getItem(position);
-        Ln.d("PostsListAdapter getView at position " + position);
-        Ln.d("PostsListAdapter getView post = " + post.getTitle());
         if(convertView == null) {
             convertView = activity.getLayoutInflater().inflate(layout, null);
         }

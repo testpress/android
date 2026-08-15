@@ -12,6 +12,9 @@ module Fastlane
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = true
         response = http.request(request)
+        unless response.is_a?(Net::HTTPSuccess)
+          UI.user_error!("App config validation failed for '#{params[:subdomain]}': HTTP #{response.code} - #{response.body}")
+        end
         return JSON.parse(response.body)
       end
 

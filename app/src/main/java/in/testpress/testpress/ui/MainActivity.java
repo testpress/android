@@ -2,7 +2,7 @@ package in.testpress.testpress.ui;
 import in.testpress.RequestCode;
 import in.testpress.course.fragments.OfflineDownloadsTabsFragment;
 import in.testpress.course.repository.OfflineAttachmentsRepository;
-import in.testpress.course.services.OfflineAttachmentDownloadManager;
+import in.testpress.course.services.NewOfflineAttachmentDownloadManager;
 import in.testpress.course.ui.AvailableCourseListFragment;
 import in.testpress.course.ui.CourseListFragment;
 
@@ -20,6 +20,8 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.activity.OnBackPressedCallback;
+import androidx.appcompat.widget.Toolbar;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
@@ -58,6 +60,7 @@ import in.testpress.course.TestpressCourse;
 import in.testpress.course.fragments.DownloadsFragment;
 import in.testpress.course.repository.VideoWatchDataRepository;
 import in.testpress.course.ui.MyCoursesFragment;
+import in.testpress.fragments.WebViewFragment;
 import in.testpress.database.OfflineVideoDao;
 import in.testpress.database.TestpressDatabase;
 import in.testpress.database.dao.OfflineAttachmentsDao;
@@ -155,6 +158,27 @@ public class MainActivity extends TestpressFragmentActivity {
         }
         setupEasterEgg();
         initOfflineAttachmentDownloadManager();
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (shouldHandleWebViewBackPress()) {
+                    handleWebViewBackPress();
+                    return;
+                }
+
+                if (courseListFragment != null && viewPager.getCurrentItem() == 1) {
+                    if (courseListFragment.onBackPress()) {
+                        viewPager.setCurrentItem(0);
+                    }
+                } else if (viewPager.getCurrentItem() != 0) {
+                    viewPager.setCurrentItem(0);
+                } else {
+                    setEnabled(false);
+                    getOnBackPressedDispatcher().onBackPressed();
+                    setEnabled(true);
+                }
+            }
+        });
     }
 
     private void bindViews() {
@@ -172,17 +196,26 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
 
-    @Override
-    public void onBackPressed() {
-        if (courseListFragment != null && viewPager.getCurrentItem() == 1) {
-            if (courseListFragment.onBackPress()) {
-                viewPager.setCurrentItem(0);
-            }
-        } else if (viewPager.getCurrentItem() != 0) {
-            viewPager.setCurrentItem(0);
-        } else {
-            super.onBackPressed();
+
+    private boolean shouldHandleWebViewBackPress() {
+        WebViewFragment webView = getCurrentWebViewFragment();
+        return webView != null && webView.canGoBack();
+    }
+
+    private void handleWebViewBackPress() {
+        WebViewFragment webView = getCurrentWebViewFragment();
+        if (webView != null) {
+            webView.goBack();
         }
+    }
+
+    @Nullable
+    private WebViewFragment getCurrentWebViewFragment() {
+        Fragment fragment = mMenuItemFragments.get(viewPager.getCurrentItem());
+        if (fragment instanceof WebViewFragment) {
+            return (WebViewFragment) fragment;
+        }
+        return null;
     }
 
     @Override
@@ -249,8 +282,8 @@ public class MainActivity extends TestpressFragmentActivity {
     private void initOfflineAttachmentDownloadManager() {
         OfflineAttachmentsDao offlineAttachmentDao = TestpressDatabase.Companion.invoke(this).offlineAttachmentDao();
         OfflineAttachmentsRepository offlineAttachmentsRepository =new OfflineAttachmentsRepository(offlineAttachmentDao);
-        OfflineAttachmentDownloadManager.Companion.init(offlineAttachmentsRepository);
-        OfflineAttachmentDownloadManager.Companion.getInstance().restartDownloadProgressTracking(this);
+        NewOfflineAttachmentDownloadManager.Companion.init(offlineAttachmentsRepository);
+        NewOfflineAttachmentDownloadManager.Companion.getInstance().restartDownloadProgressTracking(this);
     }
 
     private void setUpNavigationDrawer() {
@@ -279,6 +312,7 @@ public class MainActivity extends TestpressFragmentActivity {
         showDiscussionsButtonBasedOnInstituteSettings(navigationView.getMenu());
         showBookmarkButtonBasedOnInstituteSettings(navigationView.getMenu());
         showCustomOptions(navigationView.getMenu());
+        showDailyQuestionsBasedOnInstituteSettings(navigationView.getMenu());
         updateMenuItemNames(navigationView.getMenu());
         final HandleMainMenu handleMainMenu = new HandleMainMenu(MainActivity.this, serviceProvider);
         navigationView.setNavigationItemSelectedListener(
@@ -351,6 +385,15 @@ public class MainActivity extends TestpressFragmentActivity {
                     : getString(R.string.bookmarks);
             menu.findItem(R.id.bookmarks).setTitle(BookmarksLabel);
             menu.findItem(R.id.bookmarks).setVisible(Boolean.TRUE.equals(mInstituteSettings.getBookmarksEnabled()));
+        }
+    }
+
+    private void showDailyQuestionsBasedOnInstituteSettings(Menu menu) {
+        if (mInstituteSettings != null && menu != null) {
+            MenuItem dailyQuestionsItem = menu.findItem(R.id.daily_questions);
+            if (dailyQuestionsItem != null) {
+                dailyQuestionsItem.setVisible(Boolean.TRUE.equals(mInstituteSettings.getQotdEnabled()));
+            }
         }
     }
 
@@ -438,8 +481,15 @@ public class MainActivity extends TestpressFragmentActivity {
         // Show courses list if game front end is enabled, otherwise hide bottom bar
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             //noinspection ConstantConditions
-            addMenuItem(R.string.learn, R.drawable.learn,
-                    TestpressCourse.getMyCoursesFragment(this, TestpressSdk.getTestpressSession(this)));
+            addMenuItem(R.string.learn, R.drawable.learn, new MyCoursesFragment());
+
+            if (Boolean.TRUE.equals(!mInstituteSettings.getDisableStoreInApp())){
+                if (isEPratibhaApp()) {
+                    addEPratibhaWebViewFragment();
+                } else {
+                    addMenuItem(R.string.store, R.drawable.home_store_image, new AvailableCourseListFragment());
+                }
+            }
 
             if (mInstituteSettings.getCoursesEnableGamification()) {
                 //noinspection ConstantConditions
@@ -488,6 +538,19 @@ public class MainActivity extends TestpressFragmentActivity {
         viewPager.setVisibility(View.VISIBLE);
         onItemSelected(mSelectedItem);
         progressBarLayout.setVisibility(View.GONE);
+    }
+
+    private void addEPratibhaWebViewFragment() {
+        String[] credentials = CommonUtils.getUserCredentials(this);
+        WebViewFragment webViewFragment = new WebViewFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(WebViewFragment.URL_TO_OPEN, Constants.Http.EPRATIBHA_SSO_URL + "?email=" + credentials[0] + "&pass=" + credentials[1]);
+        bundle.putBoolean(WebViewFragment.SHOW_LOADING_BETWEEN_PAGES, true);
+        bundle.putBoolean(WebViewFragment.IS_AUTHENTICATION_REQUIRED, false);
+        bundle.putBoolean(WebViewFragment.ALLOW_NON_INSTITUTE_URL_IN_WEB_VIEW, true);
+        bundle.putBoolean(WebViewFragment.ENABLE_SWIPE_REFRESH, true);
+        webViewFragment.setArguments(bundle);
+        addMenuItem(R.string.store, R.drawable.home_store_image, webViewFragment);
     }
 
     private void onItemSelected(int position) {
@@ -772,6 +835,10 @@ public class MainActivity extends TestpressFragmentActivity {
 
     private Boolean isVerandaLearningApp(){
         return getApplicationContext().getPackageName().equals("com.verandalearning");
+    }
+
+    private Boolean isEPratibhaApp() {
+        return getApplicationContext().getPackageName().equals("net.epratibha.www");
     }
 
     private Boolean hasAgreedTermsAndConditions(){

@@ -20,6 +20,7 @@ import android.view.View
 import android.webkit.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
+import androidx.activity.OnBackPressedCallback
 import java.io.IOException
 import javax.inject.Inject
 
@@ -57,6 +58,17 @@ class TermsAndConditionActivity : BaseToolBarActivity() {
         setContentView(R.layout.terms_and_condition_activity)
         bindViews()
         supportActionBar?.title = getString(R.string.terms_and_conditions)
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (webView.canGoBack()) {
+                    progressBar.visibility = View.VISIBLE
+                    webView.visibility = View.GONE
+                    webView.goBack()
+                } else {
+                    finishAffinity()
+                }
+            }
+        })
     }
 
     private fun bindViews() {
@@ -126,16 +138,6 @@ class TermsAndConditionActivity : BaseToolBarActivity() {
                 progressBar.visibility = View.GONE
                 super.onPageFinished(view, url)
             }
-        }
-    }
-
-    override fun onBackPressed() {
-        if (webView.canGoBack()){
-            progressBar.visibility = View.VISIBLE
-            webView.visibility = View.GONE
-            webView.goBack()
-        } else {
-            finishAffinity()
         }
     }
 

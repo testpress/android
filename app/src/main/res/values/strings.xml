@@ -85,6 +85,7 @@
     <string name="login_with_facebook">Login with Facebook</string>
     <string name="login_with_google">Login with Google</string>
     <string name="google_sign_in_wrong_hash">Google sign in error, please contact the administrator to check key hashes.</string>
+    <string name="google_signin_not_configured">Google Sign-In is not configured for this application.</string>
 
     <string name="logout">Log Out</string>
     <string name="logout_confirm_message">Are you sure you want to log out?</string>
@@ -165,6 +166,8 @@
     <string name="password_mismatch_error">Passwords don\'t match</string>
     <string name="PARALLEL_LOGIN_RESTRICTION_ERROR_CODE">parallel_login_restriction</string>
     <string name="MAX_LOGIN_EXCEEDED_ERROR_CODE">max_login_exceeded</string>
+    <string name="DEVICE_ALREADY_BOUND_ERROR_CODE">device_already_bound</string>
+    <string name="UNAUTHORIZED_DEVICE_ERROR_CODE">unauthorized_device</string>
     <string name="no_data_available">No data available</string>
     <string name="try_after_some_time">Please try after some time</string>
     <string name="open_drawer">Open Navigation Drawer</string>
@@ -183,4 +186,9 @@
         <item quantity="one">1 Chapter</item>
         <item quantity="other">%d Chapters</item>
     </plurals>
+    <string name="testpress_login_with_different_account">Login with different account</string>
+    <string name="capture_photo">Capture photo</string>
+    <string name="close_camera">Close camera</string>
+    <string name="camera_permission_denied">Camera permissions not granted by the user.</string>
+    <string name="image_creation_failed">Failed to create image file.</string>
 </resources>

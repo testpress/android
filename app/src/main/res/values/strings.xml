@@ -63,6 +63,7 @@
 
     <string name="all_posts">All Posts</string>
     <string name="all_discussions">All Discussions</string>
+    <string name="live_classes">Live Classes</string>
     <string name="categories">Categories</string>
     <string name="title_activity_reset_password_verification">ResetPasswordVerificationActivity
     </string>

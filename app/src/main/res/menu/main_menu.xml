@@ -41,6 +41,12 @@
             android:visible="false"
             app:showAsAction="never"/>
         <item
+            android:id="@+id/live_classes"
+            android:title="Live Classes"
+            android:icon="@drawable/testpress_live_conference_icon"
+            android:visible="false"
+            app:showAsAction="never"/>
+        <item
             android:id="@+id/offline_exam_list"
             android:title="Offline Exam"
             android:icon="@drawable/ic_exam"

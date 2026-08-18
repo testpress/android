@@ -482,6 +482,7 @@ public class MainActivity extends TestpressFragmentActivity {
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             //noinspection ConstantConditions
             addMenuItem(R.string.learn, R.drawable.learn, new MyCoursesFragment());
+            addMenuItem(R.string.live_classes, R.drawable.ic_video_white, new Fragment());
 
             if (Boolean.TRUE.equals(!mInstituteSettings.getDisableStoreInApp())){
                 if (isEPratibhaApp()) {
@@ -509,6 +510,13 @@ public class MainActivity extends TestpressFragmentActivity {
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (mMenuItemTitleIds.get(position) == R.string.live_classes) {
+                    Intent intent = new Intent(MainActivity.this, SSOWebViewRedirectActivity.class);
+                    intent.putExtra(SSOWebViewRedirectActivity.EXTRA_TITLE, getString(R.string.live_classes));
+                    intent.putExtra(SSOWebViewRedirectActivity.EXTRA_NEXT_PATH, "/events/live-classes-list/?testpress_app=android");
+                    startActivity(intent);
+                    return;
+                }
                 viewPager.setCurrentItem(position);
             }
         });

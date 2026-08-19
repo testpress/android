@@ -84,6 +84,7 @@ import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.models.Update;
 import in.testpress.testpress.ui.fragments.DashboardFragment;
 import in.testpress.testpress.ui.utils.HandleMainMenu;
+import in.testpress.testpress.ui.utils.LiveClassesWebViewHandler;
 import in.testpress.testpress.util.AppChecker;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
@@ -535,7 +536,7 @@ public class MainActivity extends TestpressFragmentActivity {
                 if (position < mMenuItemTitleIds.size() && mMenuItemTitleIds.get(position) == R.string.live_classes) {
                     Fragment fragment = mMenuItemFragments.get(position);
                     if (fragment instanceof WebViewFragment) {
-                        in.testpress.testpress.ui.utils.LiveClassesWebViewHandler.reload(
+                        LiveClassesWebViewHandler.reload(
                                 MainActivity.this,
                                 (WebViewFragment) fragment,
                                 serviceProvider
@@ -570,7 +571,7 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     private void addLiveClassesWebViewFragment() {
-        in.testpress.testpress.ui.utils.LiveClassesWebViewHandler.addLiveClassesWebViewFragment(
+        LiveClassesWebViewHandler.addLiveClassesWebViewFragment(
                 this,
                 serviceProvider,
                 testpressService,

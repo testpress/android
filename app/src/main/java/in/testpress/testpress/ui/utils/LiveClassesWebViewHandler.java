@@ -5,8 +5,6 @@ import android.net.Uri;
 import android.text.TextUtils;
 import java.util.List;
 
-import androidx.fragment.app.Fragment;
-
 import in.testpress.fragments.WebViewFragment;
 import in.testpress.core.TestpressSession;
 import in.testpress.core.TestpressSdk;
@@ -22,13 +20,15 @@ import in.testpress.testpress.util.SafeAsyncTask;
 
 public class LiveClassesWebViewHandler {
 
+    private static final String LIVE_CLASSES_PATH = "/events/live-classes-list/?testpress_app=android";
+
     public static void addLiveClassesWebViewFragment(
             final MainActivity activity,
             final TestpressServiceProvider serviceProvider,
             final TestpressService testpressService,
             final LogoutService logoutService
     ) {
-        final String initialUrl = BuildConfig.BASE_URL + "/events/live-classes-list/?testpress_app=android";
+        final String initialUrl = BuildConfig.BASE_URL + LIVE_CLASSES_PATH;
         final WebViewFragment webViewFragment = new WebViewFragment();
         final Bundle bundle = new Bundle();
         bundle.putString(WebViewFragment.URL_TO_OPEN, initialUrl);
@@ -72,27 +72,7 @@ public class LiveClassesWebViewHandler {
             public void onPageFinished(String url) {}
         });
 
-        new SafeAsyncTask<SsoUrl>() {
-            @Override
-            public SsoUrl call() throws Exception {
-                return serviceProvider.getService(activity).getSsoUrl();
-            }
-
-            @Override
-            protected void onSuccess(SsoUrl ssoUrl) throws Exception {
-                super.onSuccess(ssoUrl);
-                if (ssoUrl != null && ssoUrl.getSsoUrl() != null) {
-                    String fullSsoUrl = BuildConfig.WHITE_LABELED_HOST_URL + ssoUrl.getSsoUrl() + "&next=/events/live-classes-list/?testpress_app=android";
-                    bundle.putString(WebViewFragment.URL_TO_OPEN, fullSsoUrl);
-                    if (webViewFragment.isAdded() && webViewFragment.getWebView() != null) {
-                        webViewFragment.getWebView().loadUrl(fullSsoUrl);
-                    }
-                }
-            }
-
-            @Override
-            protected void onException(Exception e) throws RuntimeException {}
-        }.execute();
+        fetchSsoUrlAndLoad(activity, webViewFragment, serviceProvider, false);
 
         activity.addMenuItem(R.string.live_classes, R.drawable.ic_video_white, webViewFragment);
     }
@@ -108,7 +88,11 @@ public class LiveClassesWebViewHandler {
                 Uri uri = Uri.parse(currentUrl);
                 String host = uri.getHost();
                 String path = uri.getPath();
-                if (host != null && (BuildConfig.BASE_URL.contains(host) || BuildConfig.WHITE_LABELED_HOST_URL.contains(host))) {
+
+                String baseHost = Uri.parse(BuildConfig.BASE_URL).getHost();
+                String whiteLabelHost = Uri.parse(BuildConfig.WHITE_LABELED_HOST_URL).getHost();
+
+                if (host != null && (host.equals(baseHost) || host.equals(whiteLabelHost))) {
                     if (path != null && !path.contains("/login") && !path.contains("/logout")) {
                         return;
                     }
@@ -120,6 +104,15 @@ public class LiveClassesWebViewHandler {
             webViewFragment.showLoading();
         }
 
+        fetchSsoUrlAndLoad(activity, webViewFragment, serviceProvider, true);
+    }
+
+    private static void fetchSsoUrlAndLoad(
+            final MainActivity activity,
+            final WebViewFragment webViewFragment,
+            final TestpressServiceProvider serviceProvider,
+            final boolean showLoaderOnError
+    ) {
         new SafeAsyncTask<SsoUrl>() {
             @Override
             public SsoUrl call() throws Exception {
@@ -130,7 +123,7 @@ public class LiveClassesWebViewHandler {
             protected void onSuccess(SsoUrl ssoUrl) throws Exception {
                 super.onSuccess(ssoUrl);
                 if (ssoUrl != null && ssoUrl.getSsoUrl() != null) {
-                    String fullSsoUrl = BuildConfig.WHITE_LABELED_HOST_URL + ssoUrl.getSsoUrl() + "&next=/events/live-classes-list/?testpress_app=android";
+                    String fullSsoUrl = BuildConfig.WHITE_LABELED_HOST_URL + ssoUrl.getSsoUrl() + "&next=" + LIVE_CLASSES_PATH;
                     if (webViewFragment.getArguments() != null) {
                         webViewFragment.getArguments().putString(WebViewFragment.URL_TO_OPEN, fullSsoUrl);
                     }
@@ -138,7 +131,7 @@ public class LiveClassesWebViewHandler {
                         webViewFragment.getWebView().loadUrl(fullSsoUrl);
                     }
                 } else {
-                    if (webViewFragment.isAdded()) {
+                    if (showLoaderOnError && webViewFragment.isAdded()) {
                         webViewFragment.hideLoading();
                     }
                 }
@@ -146,7 +139,7 @@ public class LiveClassesWebViewHandler {
 
             @Override
             protected void onException(Exception e) throws RuntimeException {
-                if (webViewFragment.isAdded()) {
+                if (showLoaderOnError && webViewFragment.isAdded()) {
                     webViewFragment.hideLoading();
                 }
             }

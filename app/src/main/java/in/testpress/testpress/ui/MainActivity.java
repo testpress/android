@@ -80,6 +80,7 @@ import in.testpress.testpress.models.CheckPermission;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
+import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.models.Update;
 import in.testpress.testpress.ui.fragments.DashboardFragment;
 import in.testpress.testpress.ui.utils.HandleMainMenu;
@@ -559,10 +560,10 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     private void addLiveClassesWebViewFragment() {
-        String url = BuildConfig.BASE_URL + "/events/live-classes-list/?testpress_app=android";
-        WebViewFragment webViewFragment = new WebViewFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(WebViewFragment.URL_TO_OPEN, url);
+        final String initialUrl = BuildConfig.BASE_URL + "/events/live-classes-list/?testpress_app=android";
+        final WebViewFragment webViewFragment = new WebViewFragment();
+        final Bundle bundle = new Bundle();
+        bundle.putString(WebViewFragment.URL_TO_OPEN, initialUrl);
         bundle.putBoolean(WebViewFragment.SHOW_LOADING_BETWEEN_PAGES, true);
         bundle.putBoolean(WebViewFragment.IS_AUTHENTICATION_REQUIRED, true);
         bundle.putBoolean(WebViewFragment.ENABLE_SWIPE_REFRESH, true);
@@ -599,6 +600,26 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             public void onPageFinished(String url) {}
         });
+
+        new SafeAsyncTask<SsoUrl>() {
+            @Override
+            public SsoUrl call() throws Exception {
+                return serviceProvider.getService(MainActivity.this).getSsoUrl();
+            }
+
+            @Override
+            protected void onSuccess(SsoUrl ssoUrl) throws Exception {
+                super.onSuccess(ssoUrl);
+                if (ssoUrl != null && ssoUrl.getSsoUrl() != null) {
+                    String fullSsoUrl = BuildConfig.WHITE_LABELED_HOST_URL + ssoUrl.getSsoUrl() + "&next=/events/live-classes-list/?testpress_app=android";
+                    bundle.putString(WebViewFragment.URL_TO_OPEN, fullSsoUrl);
+                    if (webViewFragment.getWebView() != null) {
+                        webViewFragment.getWebView().loadUrl(fullSsoUrl);
+                    }
+                }
+            }
+        }.execute();
+
         addMenuItem(R.string.live_classes, R.drawable.ic_video_white, webViewFragment);
     }
 

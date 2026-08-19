@@ -11,16 +11,13 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
+import androidx.activity.OnBackPressedCallback;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -66,7 +63,7 @@ public class WebViewActivity extends BaseToolBarActivity {
     private ProgressBar pb_loading;
     private SwipeRefreshLayout swipeContainer;
     WebView webView;
-    private String mCapturedMessage;
+    private Uri mCapturedImageUri;
     private ValueCallback<Uri> mUploadMessage;
     private ValueCallback<Uri[]> mUploadMessages;
     private String url;
@@ -86,19 +83,8 @@ public class WebViewActivity extends BaseToolBarActivity {
             if (resultCode == Activity.RESULT_OK) {
                 if (requestCode == FILE_CHOOSER_RESULT_CODE) {
 
-                    if (null == mUploadMessages) {
-                        return;
-                    }
-                    if (intent == null) {
-                        //Capture Photo if no image available
-                        if (mCapturedMessage != null) {
-                            results = new Uri[]{Uri.parse(mCapturedMessage)};
-                        }
-                    } else {
-                        String dataString = intent.getDataString();
-                        if (dataString != null) {
-                            results = new Uri[]{Uri.parse(dataString)};
-                        }
+                    if (intent != null && intent.getData() != null) {
+                        results = new Uri[]{intent.getData()};
                     }
                 }
             }
@@ -220,7 +206,7 @@ public class WebViewActivity extends BaseToolBarActivity {
                 Intent i = new Intent(Intent.ACTION_GET_CONTENT);
                 i.addCategory(Intent.CATEGORY_OPENABLE);
                 i.setType("*/*");
-                WebViewActivity.this.startActivityForResult(Intent.createChooser(i, "File Chooser"), FILE_CHOOSER_RESULT_CODE);
+                WebViewActivity.this.startActivityForResult(i, FILE_CHOOSER_RESULT_CODE);
             }
 
             // For Android 3.0+, above method not supported in some android 3+ versions, in such case we use this
@@ -230,9 +216,7 @@ public class WebViewActivity extends BaseToolBarActivity {
                 Intent i = new Intent(Intent.ACTION_GET_CONTENT);
                 i.addCategory(Intent.CATEGORY_OPENABLE);
                 i.setType("*/*");
-                WebViewActivity.this.startActivityForResult(
-                        Intent.createChooser(i, "File Browser"),
-                        FILE_CHOOSER_RESULT_CODE);
+                WebViewActivity.this.startActivityForResult(i, FILE_CHOOSER_RESULT_CODE);
             }
 
             //For Android 4.1+
@@ -242,7 +226,7 @@ public class WebViewActivity extends BaseToolBarActivity {
                 Intent i = new Intent(Intent.ACTION_GET_CONTENT);
                 i.addCategory(Intent.CATEGORY_OPENABLE);
                 i.setType("*/*");
-                WebViewActivity.this.startActivityForResult(Intent.createChooser(i, "File Chooser"), WebViewActivity.FILE_CHOOSER_RESULT_CODE);
+                WebViewActivity.this.startActivityForResult(i, WebViewActivity.FILE_CHOOSER_RESULT_CODE);
             }
 
             @Override
@@ -260,43 +244,31 @@ public class WebViewActivity extends BaseToolBarActivity {
                 }
 
                 mUploadMessages = filePathCallback;
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (takePictureIntent.resolveActivity(WebViewActivity.this.getPackageManager()) != null) {
 
-                    File photoFile = null;
-
-                    try {
-                        photoFile = createImageFile();
-                        takePictureIntent.putExtra("PhotoPath", mCapturedMessage);
-                    } catch (IOException ex) {
-                        Log.e(TAG, "Image file creation failed", ex);
-                    }
-                    if (photoFile != null) {
-                        mCapturedMessage = "file:" + photoFile.getAbsolutePath();
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-                    } else {
-                        takePictureIntent = null;
-                    }
-                }
-
-                Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
-                contentSelectionIntent.setType("*/*");
-                Intent[] intentArray;
-
-                if (takePictureIntent != null) {
-                    intentArray = new Intent[]{takePictureIntent};
+                if (fileChooserParams.isCaptureEnabled()) {
+                    Intent takePictureIntent = new Intent(WebViewActivity.this, InAppCameraActivity.class);
+                    startActivityForResult(takePictureIntent, FILE_CHOOSER_RESULT_CODE);
                 } else {
-                    intentArray = new Intent[0];
+                    Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                    contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
+                    contentSelectionIntent.setType("*/*");
+                    startActivityForResult(contentSelectionIntent, FILE_CHOOSER_RESULT_CODE);
                 }
-
-                Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
-                chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
-                chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser");
-                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
-                startActivityForResult(chooserIntent, FILE_CHOOSER_RESULT_CODE);
 
                 return true;
+            }
+        });
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (getIntent().getBooleanExtra(ENABLE_BACK, false) && webView.canGoBack()) {
+                    reload = true;
+                    webView.goBack();
+                } else if (webView.canGoBack()) {
+                    webView.goBack();
+                } else {
+                    finish();
+                }
             }
         });
     }
@@ -340,35 +312,7 @@ public class WebViewActivity extends BaseToolBarActivity {
         this.url = url;
     }
 
-    // Create an image file
-    private File createImageFile() throws IOException {
 
-        @SuppressLint("SimpleDateFormat") String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "img_" + timeStamp + "_";
-        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        return File.createTempFile(imageFileName, ".jpg", storageDir);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
-
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
-
-            switch (keyCode) {
-                case KeyEvent.KEYCODE_BACK:
-
-                    if (webView.canGoBack()) {
-                        webView.goBack();
-                    } else {
-                        finish();
-                    }
-
-                    return true;
-            }
-        }
-
-        return super.onKeyDown(keyCode, event);
-    }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -400,16 +344,6 @@ public class WebViewActivity extends BaseToolBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (getIntent().getBooleanExtra(ENABLE_BACK, false) && webView.canGoBack()) {
-            reload = true;
-            webView.goBack();
-        } else {
-            super.onBackPressed();
-        }
     }
 
     public void logout() {

@@ -33,7 +33,7 @@ public abstract class BaseToolBarActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             } else {
-                onBackPressed();
+                getOnBackPressedDispatcher().onBackPressed();
             }
             return true;
         }

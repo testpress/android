@@ -2,7 +2,7 @@ package in.testpress.testpress.ui;
 import in.testpress.RequestCode;
 import in.testpress.course.fragments.OfflineDownloadsTabsFragment;
 import in.testpress.course.repository.OfflineAttachmentsRepository;
-import in.testpress.course.services.OfflineAttachmentDownloadManager;
+import in.testpress.course.services.NewOfflineAttachmentDownloadManager;
 import in.testpress.course.ui.AvailableCourseListFragment;
 import in.testpress.course.ui.CourseListFragment;
 
@@ -20,6 +20,8 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.activity.OnBackPressedCallback;
+import androidx.appcompat.widget.Toolbar;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
@@ -158,6 +160,27 @@ public class MainActivity extends TestpressFragmentActivity {
         }
         setupEasterEgg();
         initOfflineAttachmentDownloadManager();
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (shouldHandleWebViewBackPress()) {
+                    handleWebViewBackPress();
+                    return;
+                }
+
+                if (courseListFragment != null && viewPager.getCurrentItem() == 1) {
+                    if (courseListFragment.onBackPress()) {
+                        viewPager.setCurrentItem(0);
+                    }
+                } else if (viewPager.getCurrentItem() != 0) {
+                    viewPager.setCurrentItem(0);
+                } else {
+                    setEnabled(false);
+                    getOnBackPressedDispatcher().onBackPressed();
+                    setEnabled(true);
+                }
+            }
+        });
     }
 
     private void bindViews() {
@@ -175,23 +198,6 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
 
-    @Override
-    public void onBackPressed() {
-        if (shouldHandleWebViewBackPress()) {
-            handleWebViewBackPress();
-            return;
-        }
-
-        if (courseListFragment != null && viewPager.getCurrentItem() == 1) {
-            if (courseListFragment.onBackPress()) {
-                viewPager.setCurrentItem(0);
-            }
-        } else if (viewPager.getCurrentItem() != 0) {
-            viewPager.setCurrentItem(0);
-        } else {
-            super.onBackPressed();
-        }
-    }
 
     private boolean shouldHandleWebViewBackPress() {
         WebViewFragment webView = getCurrentWebViewFragment();
@@ -278,8 +284,8 @@ public class MainActivity extends TestpressFragmentActivity {
     private void initOfflineAttachmentDownloadManager() {
         OfflineAttachmentsDao offlineAttachmentDao = TestpressDatabase.Companion.invoke(this).offlineAttachmentDao();
         OfflineAttachmentsRepository offlineAttachmentsRepository =new OfflineAttachmentsRepository(offlineAttachmentDao);
-        OfflineAttachmentDownloadManager.Companion.init(offlineAttachmentsRepository);
-        OfflineAttachmentDownloadManager.Companion.getInstance().restartDownloadProgressTracking(this);
+        NewOfflineAttachmentDownloadManager.Companion.init(offlineAttachmentsRepository);
+        NewOfflineAttachmentDownloadManager.Companion.getInstance().restartDownloadProgressTracking(this);
     }
 
     private void setUpNavigationDrawer() {
@@ -308,6 +314,7 @@ public class MainActivity extends TestpressFragmentActivity {
         showDiscussionsButtonBasedOnInstituteSettings(navigationView.getMenu());
         showBookmarkButtonBasedOnInstituteSettings(navigationView.getMenu());
         showCustomOptions(navigationView.getMenu());
+        showDailyQuestionsBasedOnInstituteSettings(navigationView.getMenu());
         updateMenuItemNames(navigationView.getMenu());
         final HandleMainMenu handleMainMenu = new HandleMainMenu(MainActivity.this, serviceProvider);
         navigationView.setNavigationItemSelectedListener(
@@ -379,6 +386,15 @@ public class MainActivity extends TestpressFragmentActivity {
                     : getString(R.string.bookmarks);
             menu.findItem(R.id.bookmarks).setTitle(BookmarksLabel);
             menu.findItem(R.id.bookmarks).setVisible(Boolean.TRUE.equals(mInstituteSettings.getBookmarksEnabled()));
+        }
+    }
+
+    private void showDailyQuestionsBasedOnInstituteSettings(Menu menu) {
+        if (mInstituteSettings != null && menu != null) {
+            MenuItem dailyQuestionsItem = menu.findItem(R.id.daily_questions);
+            if (dailyQuestionsItem != null) {
+                dailyQuestionsItem.setVisible(Boolean.TRUE.equals(mInstituteSettings.getQotdEnabled()));
+            }
         }
     }
 

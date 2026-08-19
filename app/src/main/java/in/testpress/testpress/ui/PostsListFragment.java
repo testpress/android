@@ -111,8 +111,7 @@ public class PostsListFragment extends Fragment implements
         TestpressApplication.getAppComponent().inject(this);
         mTopLevelSpinnerAdapter = new ExploreSpinnerAdapter(getActivity().getLayoutInflater(),
                 getActivity().getResources(), true);
-        mTopLevelSpinnerAdapter.addItem("", getString(R.string.all_posts), false, 0);
-        mTopLevelSpinnerAdapter.addHeader(getString(R.string.categories));
+        initializeSpinnerAdapter();
         Toolbar toolbar;
         if (getActivity() instanceof MainActivity) {
             toolbar = ((MainActivity) (getActivity())).getActionBarToolbar();
@@ -236,7 +235,11 @@ public class PostsListFragment extends Fragment implements
             }
 
             protected void onSuccess(final List<Category> categories) throws Exception {
+                if (getActivity() == null) {
+                    return;
+                }
                 categoryDao.insertOrReplaceInTx(categories);
+                initializeSpinnerAdapter();
                 for (final Category category : categories) {
                     mTopLevelSpinnerAdapter.addItem("" + category.getId(), category.getName(), true,
                             Color.parseColor("#" + category.getColor()));
@@ -268,6 +271,12 @@ public class PostsListFragment extends Fragment implements
             }
 
         }.execute();
+    }
+
+    private void initializeSpinnerAdapter() {
+        mTopLevelSpinnerAdapter.clear();
+        mTopLevelSpinnerAdapter.addItem("", getString(R.string.all_posts), false, 0);
+        mTopLevelSpinnerAdapter.addHeader(getString(R.string.categories));
     }
 
     @SuppressLint("StaticFieldLeak")

@@ -1,0 +1,60 @@
+name: Cleanup old artifacts
+
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+    inputs:
+      days_to_keep:
+        description: "Delete artifacts older than this many days"
+        required: false
+        default: "7"
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete old artifacts
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const daysToKeep = Number(core.getInput('days_to_keep') || '7');
+
+            if (!Number.isInteger(daysToKeep) || daysToKeep < 1) {
+              throw new Error('days_to_keep must be a positive integer');
+            }
+
+            const cutoff = new Date(Date.now() - daysToKeep * 24 * 60 * 60 * 1000);
+            let deletedCount = 0;
+            let keptCount = 0;
+
+            for await (const response of github.paginate.iterator(
+              github.rest.actions.listArtifactsForRepo,
+              {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                per_page: 100,
+              }
+            )) {
+              for (const artifact of response.data) {
+                if (new Date(artifact.created_at) >= cutoff) {
+                  keptCount += 1;
+                  continue;
+                }
+
+                await github.rest.actions.deleteArtifact({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  artifact_id: artifact.id,
+                });
+                deletedCount += 1;
+                core.info(`Deleted artifact ${artifact.name} (${artifact.id}) from ${artifact.created_at}`);
+              }
+            }
+
+            core.info(`Deleted ${deletedCount} artifact(s). Kept ${keptCount} artifact(s).`);
+

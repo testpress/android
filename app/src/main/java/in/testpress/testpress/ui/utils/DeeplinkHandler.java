@@ -241,6 +241,7 @@ public class DeeplinkHandler {
                 WHITE_LABELED_HOST_URL + "/discussions/new/" + discussionSlug,
                 true,
                 false,
+                true,
                 WebViewWithSSOActivity.class
         ), 1000);
     }

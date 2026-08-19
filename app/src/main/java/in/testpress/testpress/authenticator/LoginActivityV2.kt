@@ -29,6 +29,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -71,6 +72,17 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
         initializeViewModel()
         fetchInstituteSettings()
         initializeGoogleSignIn()
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (supportFragmentManager.backStackEntryCount == 1) {
+                    finish()
+                } else {
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                    isEnabled = true
+                }
+            }
+        })
     }
 
     private fun initializeViewModel() {
@@ -102,11 +114,15 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
     }
 
     private fun initializeGoogleSignIn() {
+        val serverClientId = getString(R.string.server_client_id)
+        if (serverClientId.isBlank()) {
+            return
+        }
         val googleSignInOptions = GoogleSignInOptions.Builder(
             GoogleSignInOptions.DEFAULT_SIGN_IN
         )
             .requestEmail()
-            .requestIdToken(getString(R.string.server_client_id))
+            .requestIdToken(serverClientId)
             .build()
         googleApiClient = GoogleSignIn.getClient(this, googleSignInOptions)
     }
@@ -120,7 +136,11 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
     }
 
     override fun signInWithGoogle() {
-        handleGoogleSignIn.launch(googleApiClient.signInIntent)
+        if (::googleApiClient.isInitialized) {
+            handleGoogleSignIn.launch(googleApiClient.signInIntent)
+        } else {
+            UIUtils.showAlert(this, getString(R.string.google_signin_not_configured))
+        }
     }
 
     override fun goToOTPVerification(phoneNumber: String, countryCode: String) {
@@ -185,13 +205,6 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
     }
 
 
-    override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount == 1) {
-            finish()
-        } else {
-            super.onBackPressed()
-        }
-    }
 
     private fun googleSignInAuthentication(result: GoogleSignInResult) {
         val userId = result.signInAccount!!.getId()

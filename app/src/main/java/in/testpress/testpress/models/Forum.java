@@ -545,7 +545,6 @@ public class Forum {
     public Boolean hasAnswer() {
         return Boolean.TRUE.equals(hasAnswer);
     }
-
     // KEEP METHODS END
 
 }

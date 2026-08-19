@@ -31,7 +31,11 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 
+import android.net.Uri;
 import android.os.Handler;
+import android.text.TextUtils;
+import java.util.List;
+import in.testpress.core.TestpressSession;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -482,7 +486,7 @@ public class MainActivity extends TestpressFragmentActivity {
         if (isUserAuthenticated && mInstituteSettings.getShowGameFrontend()) {
             //noinspection ConstantConditions
             addMenuItem(R.string.learn, R.drawable.learn, new MyCoursesFragment());
-            addMenuItem(R.string.live_classes, R.drawable.ic_video_white, new Fragment());
+            addLiveClassesWebViewFragment();
 
             if (Boolean.TRUE.equals(!mInstituteSettings.getDisableStoreInApp())){
                 if (isEPratibhaApp()) {
@@ -510,13 +514,6 @@ public class MainActivity extends TestpressFragmentActivity {
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (mMenuItemTitleIds.get(position) == R.string.live_classes) {
-                    Intent intent = new Intent(MainActivity.this, SSOWebViewRedirectActivity.class);
-                    intent.putExtra(SSOWebViewRedirectActivity.EXTRA_TITLE, getString(R.string.live_classes));
-                    intent.putExtra(SSOWebViewRedirectActivity.EXTRA_NEXT_PATH, "/events/live-classes-list/?testpress_app=android");
-                    startActivity(intent);
-                    return;
-                }
                 viewPager.setCurrentItem(position);
             }
         });
@@ -559,6 +556,50 @@ public class MainActivity extends TestpressFragmentActivity {
         bundle.putBoolean(WebViewFragment.ENABLE_SWIPE_REFRESH, true);
         webViewFragment.setArguments(bundle);
         addMenuItem(R.string.store, R.drawable.home_store_image, webViewFragment);
+    }
+
+    private void addLiveClassesWebViewFragment() {
+        String url = BuildConfig.BASE_URL + "/events/live-classes-list/?testpress_app=android";
+        WebViewFragment webViewFragment = new WebViewFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(WebViewFragment.URL_TO_OPEN, url);
+        bundle.putBoolean(WebViewFragment.SHOW_LOADING_BETWEEN_PAGES, true);
+        bundle.putBoolean(WebViewFragment.IS_AUTHENTICATION_REQUIRED, true);
+        bundle.putBoolean(WebViewFragment.ENABLE_SWIPE_REFRESH, true);
+        webViewFragment.setArguments(bundle);
+        webViewFragment.setListener(new WebViewFragment.Listener() {
+            @Override
+            public void onWebViewInitializationSuccess() {}
+
+            @Override
+            public boolean shouldOverrideUrlLoading(String url) {
+                if (url != null) {
+                    Uri uri = Uri.parse(url);
+                    String path = uri.getPath();
+                    if (path != null && (path.contains("/live-classes/") || path.contains("/events/live-classes") || path.contains("/contents/"))) {
+                        List<String> segments = uri.getPathSegments();
+                        if (segments != null && !segments.isEmpty()) {
+                            String lastSegment = segments.get(segments.size() - 1);
+                            if (TextUtils.isDigitsOnly(lastSegment)) {
+                                TestpressSession session = TestpressSdk.getTestpressSession(MainActivity.this);
+                                if (session != null) {
+                                    TestpressCourse.showContentDetail(MainActivity.this, lastSegment, session);
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            public void onPageStarted(String url) {}
+
+            @Override
+            public void onPageFinished(String url) {}
+        });
+        addMenuItem(R.string.live_classes, R.drawable.ic_video_white, webViewFragment);
     }
 
     private void onItemSelected(int position) {

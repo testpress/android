@@ -84,6 +84,7 @@ import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.models.Update;
 import in.testpress.testpress.ui.fragments.DashboardFragment;
 import in.testpress.testpress.ui.utils.HandleMainMenu;
+import in.testpress.testpress.ui.utils.LiveClassesWebViewHandler;
 import in.testpress.testpress.util.AppChecker;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.testpress.util.GCMPreference;
@@ -532,6 +533,16 @@ public class MainActivity extends TestpressFragmentActivity {
                     serviceProvider.logout(MainActivity.this, testpressService, serviceProvider,
                             logoutService);
                 }
+                if (position < mMenuItemTitleIds.size() && mMenuItemTitleIds.get(position) == R.string.live_classes) {
+                    Fragment fragment = mMenuItemFragments.get(position);
+                    if (fragment instanceof WebViewFragment) {
+                        LiveClassesWebViewHandler.reload(
+                                MainActivity.this,
+                                (WebViewFragment) fragment,
+                                serviceProvider
+                        );
+                    }
+                }
                 invalidateOptionsMenu();
             }
 
@@ -560,67 +571,12 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     private void addLiveClassesWebViewFragment() {
-        final String initialUrl = BuildConfig.BASE_URL + "/events/live-classes-list/?testpress_app=android";
-        final WebViewFragment webViewFragment = new WebViewFragment();
-        final Bundle bundle = new Bundle();
-        bundle.putString(WebViewFragment.URL_TO_OPEN, initialUrl);
-        bundle.putBoolean(WebViewFragment.SHOW_LOADING_BETWEEN_PAGES, true);
-        bundle.putBoolean(WebViewFragment.IS_AUTHENTICATION_REQUIRED, true);
-        bundle.putBoolean(WebViewFragment.ENABLE_SWIPE_REFRESH, true);
-        webViewFragment.setArguments(bundle);
-        webViewFragment.setListener(new WebViewFragment.Listener() {
-            @Override
-            public void onWebViewInitializationSuccess() {}
-
-            @Override
-            public boolean shouldOverrideUrlLoading(String url) {
-                if (url != null) {
-                    Uri uri = Uri.parse(url);
-                    String path = uri.getPath();
-                    if (path != null && (path.contains("/live-classes/") || path.contains("/events/live-classes") || path.contains("/contents/"))) {
-                        List<String> segments = uri.getPathSegments();
-                        if (segments != null && !segments.isEmpty()) {
-                            String lastSegment = segments.get(segments.size() - 1);
-                            if (TextUtils.isDigitsOnly(lastSegment)) {
-                                TestpressSession session = TestpressSdk.getTestpressSession(MainActivity.this);
-                                if (session != null) {
-                                    TestpressCourse.showContentDetail(MainActivity.this, lastSegment, session);
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            public void onPageStarted(String url) {}
-
-            @Override
-            public void onPageFinished(String url) {}
-        });
-
-        new SafeAsyncTask<SsoUrl>() {
-            @Override
-            public SsoUrl call() throws Exception {
-                return serviceProvider.getService(MainActivity.this).getSsoUrl();
-            }
-
-            @Override
-            protected void onSuccess(SsoUrl ssoUrl) throws Exception {
-                super.onSuccess(ssoUrl);
-                if (ssoUrl != null && ssoUrl.getSsoUrl() != null) {
-                    String fullSsoUrl = BuildConfig.WHITE_LABELED_HOST_URL + ssoUrl.getSsoUrl() + "&next=/events/live-classes-list/?testpress_app=android";
-                    bundle.putString(WebViewFragment.URL_TO_OPEN, fullSsoUrl);
-                    if (webViewFragment.getWebView() != null) {
-                        webViewFragment.getWebView().loadUrl(fullSsoUrl);
-                    }
-                }
-            }
-        }.execute();
-
-        addMenuItem(R.string.live_classes, R.drawable.ic_video_white, webViewFragment);
+        LiveClassesWebViewHandler.addLiveClassesWebViewFragment(
+                this,
+                serviceProvider,
+                testpressService,
+                logoutService
+        );
     }
 
     private void onItemSelected(int position) {

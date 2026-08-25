@@ -21,6 +21,14 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 Build customized app for an institute
 
+### release_update_batch
+
+```sh
+[bundle exec] fastlane release_update_batch
+```
+
+Release updates for a comma-separated batch of subdomains (always continues on error)
+
 ### release_update_to
 
 ```sh
@@ -68,6 +76,14 @@ Generate Android App Bundle
 ```
 
 Deploying the app to play store
+
+### generate_debug_apk
+
+```sh
+[bundle exec] fastlane generate_debug_apk
+```
+
+
 
 ----
 

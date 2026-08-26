@@ -70,6 +70,7 @@ import in.testpress.testpress.events.UnAuthorizedErrorEvent;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
+import in.testpress.testpress.util.AppChecker;
 import in.testpress.testpress.models.PostDao;
 import in.testpress.testpress.ui.DeviceNotAllowedActivity;
 import in.testpress.testpress.ui.MainActivity;
@@ -453,7 +454,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         ViewUtils.setGone(socialLoginLayout, !instituteSettings.getFacebookLoginEnabled() &&
                 !instituteSettings.getGoogleLoginEnabled());
         boolean allowSignup = instituteSettings.getAllowSignup() != null && instituteSettings.getAllowSignup();
-        if (Arrays.asList(Constants.DISALLOWED_SIGNUP_SUBDOMAINS).contains(getString(R.string.testpress_site_subdomain))) {
+        if (AppChecker.INSTANCE.isSignupDisabledForSubdomain(this)) {
             allowSignup = false;
         }
         ViewUtils.setGone(signUpButton, !allowSignup);

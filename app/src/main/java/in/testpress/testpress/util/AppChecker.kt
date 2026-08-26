@@ -19,9 +19,6 @@ object AppChecker {
         return context.getString(R.string.testpress_site_subdomain) == "catking"
     }
 
-    /**
-     * Checks if signups should be disabled for the current subdomain (e.g., xandylearning).
-     */
     fun isSignupDisabledForSubdomain(context: Context): Boolean {
         return Constants.DISALLOWED_SIGNUP_SUBDOMAINS.contains(context.getString(R.string.testpress_site_subdomain))
     }

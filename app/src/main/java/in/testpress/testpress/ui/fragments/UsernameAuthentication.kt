@@ -188,7 +188,7 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
     }
 
     private fun showOrHideButtons() {
-        if (!instituteSettings.allowSignup) {
+        if (!instituteSettings.allowSignup || Constants.DISALLOWED_SIGNUP_SUBDOMAINS.contains(getString(R.string.testpress_site_subdomain))) {
             binding.signUp.visibility = View.GONE
         }
         ViewUtils.setGone(binding.phoneLogin, 3 !in instituteSettings.allowedLoginMethods)

@@ -46,11 +46,13 @@ import com.squareup.otto.Subscribe;
 
 import java.io.IOException;
 import java.security.PublicKey;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
+import in.testpress.testpress.core.Constants;
 import in.testpress.core.TestpressCallback;
 import in.testpress.core.TestpressException;
 import in.testpress.core.TestpressSDKDatabase;
@@ -450,7 +452,11 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         ViewUtils.setGone(googleLoginButton, !instituteSettings.getGoogleLoginEnabled());
         ViewUtils.setGone(socialLoginLayout, !instituteSettings.getFacebookLoginEnabled() &&
                 !instituteSettings.getGoogleLoginEnabled());
-        ViewUtils.setGone(signUpButton, !instituteSettings.getAllowSignup());
+        boolean allowSignup = instituteSettings.getAllowSignup() != null && instituteSettings.getAllowSignup();
+        if (Arrays.asList(Constants.DISALLOWED_SIGNUP_SUBDOMAINS).contains(getString(R.string.testpress_site_subdomain))) {
+            allowSignup = false;
+        }
+        ViewUtils.setGone(signUpButton, !allowSignup);
     }
 
 

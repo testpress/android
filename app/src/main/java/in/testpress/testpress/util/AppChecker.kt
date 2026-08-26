@@ -1,7 +1,8 @@
 package `in`.testpress.testpress.util
 
-import `in`.testpress.testpress.R
 import android.content.Context
+import `in`.testpress.testpress.R
+import `in`.testpress.testpress.core.Constants
 import `in`.testpress.ui.WebViewWithSSOActivity
 
 object AppChecker {
@@ -16,5 +17,9 @@ object AppChecker {
 
     fun isCatkingApp(context: Context): Boolean {
         return context.getString(R.string.testpress_site_subdomain) == "catking"
+    }
+
+    fun isSignupDisabledForSubdomain(context: Context): Boolean {
+        return Constants.DISALLOWED_SIGNUP_SUBDOMAINS.contains(context.getString(R.string.testpress_site_subdomain))
     }
 }

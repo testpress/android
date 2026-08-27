@@ -319,22 +319,8 @@ class ExamResultFragment : Fragment() {
 
     private fun createHeaderTextView(context: Context, key: String): TextView {
         return TextView(context).apply {
-            text = ExamResultTableHelper.getColumnDisplayName(key)
-            textSize = 13f
-            includeFontPadding = false
-            typeface = android.graphics.Typeface.DEFAULT_BOLD
-            setTextColor(ContextCompat.getColor(context, R.color.primary))
-            
-            val widthPx = ExamResultTableHelper.getColumnWidth(context, key)
-            layoutParams = LinearLayout.LayoutParams(widthPx, ViewGroup.LayoutParams.WRAP_CONTENT)
-            
-            val horizontalPadding = (6 * context.resources.displayMetrics.density).toInt()
-            setPadding(horizontalPadding, 0, horizontalPadding, 0)
-            
-            gravity = when (key) {
-                "date", "examname", "remarks" -> android.view.Gravity.CENTER_VERTICAL
-                else -> android.view.Gravity.CENTER
-            }
+            text = ExamResultTableHelper.getColumnDisplayName(context, key)
+            ExamResultTableHelper.configureTextView(this, key, isHeader = true)
         }
     }
 

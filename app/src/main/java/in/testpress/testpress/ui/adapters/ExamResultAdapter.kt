@@ -35,6 +35,7 @@ class ExamResultAdapter : ListAdapter<Map<String, String?>, ExamResultAdapter.Re
     }
 
     class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private var lastActiveColumns: List<String> = emptyList()
 
         fun bind(result: Map<String, String?>, activeColumns: List<String>, position: Int) {
             itemView.setBackgroundColor(
@@ -47,8 +48,9 @@ class ExamResultAdapter : ListAdapter<Map<String, String?>, ExamResultAdapter.Re
 
             val container = itemView as LinearLayout
 
-            // Rebuild cells if the child count doesn't match activeColumns count
-            if (container.childCount != activeColumns.size) {
+            // Rebuild cells if the active columns set has changed
+            if (lastActiveColumns != activeColumns) {
+                lastActiveColumns = activeColumns
                 container.removeAllViews()
                 activeColumns.forEach { col ->
                     val textView = createCellTextView(container.context, col)
@@ -70,48 +72,7 @@ class ExamResultAdapter : ListAdapter<Map<String, String?>, ExamResultAdapter.Re
 
         private fun createCellTextView(context: Context, key: String): TextView {
             return TextView(context).apply {
-                textSize = 13f
-                includeFontPadding = false
-                
-                val widthPx = ExamResultTableHelper.getColumnWidth(context, key)
-                layoutParams = LinearLayout.LayoutParams(widthPx, ViewGroup.LayoutParams.WRAP_CONTENT)
-
-                val horizontalPadding = (6 * context.resources.displayMetrics.density).toInt()
-                setPadding(horizontalPadding, 0, horizontalPadding, 0)
-
-                when (key) {
-                    "date", "examname" -> {
-                        gravity = android.view.Gravity.CENTER_VERTICAL
-                        if (key == "date") {
-                            typeface = android.graphics.Typeface.DEFAULT_BOLD
-                            setTextColor(ContextCompat.getColor(context, R.color.primary))
-                        } else {
-                            setTextColor(ContextCompat.getColor(context, R.color.exam_result_cell_text))
-                        }
-                    }
-                    "grade" -> {
-                        gravity = android.view.Gravity.CENTER
-                        typeface = android.graphics.Typeface.DEFAULT_BOLD
-                        setTextColor(ContextCompat.getColor(context, R.color.primary))
-                    }
-                    "rank" -> {
-                        gravity = android.view.Gravity.CENTER
-                        typeface = android.graphics.Typeface.DEFAULT_BOLD
-                        setTextColor(ContextCompat.getColor(context, R.color.exam_result_cell_text))
-                    }
-                    "omrsheet" -> {
-                        gravity = android.view.Gravity.CENTER
-                        setTextColor(ContextCompat.getColor(context, R.color.primary))
-                    }
-                    "remarks" -> {
-                        gravity = android.view.Gravity.CENTER_VERTICAL
-                        setTextColor(ContextCompat.getColor(context, R.color.exam_result_cell_text))
-                    }
-                    else -> {
-                        gravity = android.view.Gravity.CENTER
-                        setTextColor(ContextCompat.getColor(context, R.color.exam_result_cell_text))
-                    }
-                }
+                ExamResultTableHelper.configureTextView(this, key, isHeader = false)
             }
         }
 

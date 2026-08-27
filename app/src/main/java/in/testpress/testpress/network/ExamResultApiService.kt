@@ -1,6 +1,5 @@
 package `in`.testpress.testpress.network
 
-import android.annotation.SuppressLint
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
@@ -14,21 +13,14 @@ import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 import java.lang.reflect.Type
-import java.security.SecureRandom
-import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManager
-import javax.net.ssl.X509TrustManager
 
 private const val EXAM_RESULT_BASE_URL = "https://admissions.brilliantpala.org/studentexamapi/"
 const val EXAM_RESULT_API_TOKEN = "8ee49eb9f9e3477aa36d209657024cab"
 
 object ExamType {
     const val MODEL = "Model"
-    const val WEEKLY = "Weekly"
 }
-
 
 interface ExamResultApiService {
 
@@ -50,29 +42,17 @@ object ExamResultApiClient {
             .registerTypeAdapter(String::class.java, AnyToStringDeserializer())
             .create()
 
-        Retrofit.Builder()
-            .baseUrl(EXAM_RESULT_BASE_URL)
-            .client(buildTrustingOkHttpClient())
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .build()
-            .create(ExamResultApiService::class.java)
-    }
-
-    @SuppressLint("CustomX509TrustManager", "TrustAllX509TrustManager")
-    private fun buildTrustingOkHttpClient(): OkHttpClient {
-        val trustAll = arrayOf<TrustManager>(object : X509TrustManager {
-            override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
-            override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
-            override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
-        })
-        val sslContext = SSLContext.getInstance("TLS")
-        sslContext.init(null, trustAll, SecureRandom())
-        return OkHttpClient.Builder()
-            .sslSocketFactory(sslContext.socketFactory, trustAll[0] as X509TrustManager)
-            .hostnameVerifier { _, _ -> true }
+        val okHttpClient = OkHttpClient.Builder()
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .build()
+
+        Retrofit.Builder()
+            .baseUrl(EXAM_RESULT_BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+            .create(ExamResultApiService::class.java)
     }
 
     private class AnyToStringDeserializer : JsonDeserializer<String?> {

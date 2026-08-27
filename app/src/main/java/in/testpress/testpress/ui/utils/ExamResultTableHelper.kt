@@ -1,6 +1,10 @@
 package `in`.testpress.testpress.ui.utils
 
 import android.content.Context
+import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import `in`.testpress.testpress.R
 
 object ExamResultTableHelper {
@@ -43,7 +47,16 @@ object ExamResultTableHelper {
         return (dpVal * density).toInt()
     }
 
-    fun getColumnDisplayName(key: String): String {
+    fun getColumnDisplayName(context: Context, key: String): String {
+        val resId = context.resources.getIdentifier(
+            "exam_results_col_$key",
+            "string",
+            context.packageName
+        )
+        if (resId != 0) {
+            return context.getString(resId)
+        }
+        
         return when (key) {
             "date" -> "Date"
             "examname" -> "Exam Name"
@@ -69,6 +82,61 @@ object ExamResultTableHelper {
             "remarks" -> "Remarks"
             "omrsheet" -> "OMR"
             else -> key.replaceFirstChar { it.uppercase() }
+        }
+    }
+
+    fun configureTextView(textView: TextView, key: String, isHeader: Boolean) {
+        val context = textView.context
+        textView.textSize = 13f
+        textView.includeFontPadding = false
+        
+        val widthPx = getColumnWidth(context, key)
+        textView.layoutParams = LinearLayout.LayoutParams(widthPx, ViewGroup.LayoutParams.WRAP_CONTENT)
+        
+        val horizontalPadding = (6 * context.resources.displayMetrics.density).toInt()
+        textView.setPadding(horizontalPadding, 0, horizontalPadding, 0)
+        
+        if (isHeader) {
+            textView.typeface = android.graphics.Typeface.DEFAULT_BOLD
+            textView.setTextColor(ContextCompat.getColor(context, R.color.primary))
+            textView.gravity = when (key) {
+                "date", "examname", "remarks" -> android.view.Gravity.CENTER_VERTICAL
+                else -> android.view.Gravity.CENTER
+            }
+        } else {
+            when (key) {
+                "date", "examname" -> {
+                    textView.gravity = android.view.Gravity.CENTER_VERTICAL
+                    if (key == "date") {
+                        textView.typeface = android.graphics.Typeface.DEFAULT_BOLD
+                        textView.setTextColor(ContextCompat.getColor(context, R.color.primary))
+                    } else {
+                        textView.setTextColor(ContextCompat.getColor(context, R.color.exam_result_cell_text))
+                    }
+                }
+                "grade" -> {
+                    textView.gravity = android.view.Gravity.CENTER
+                    textView.typeface = android.graphics.Typeface.DEFAULT_BOLD
+                    textView.setTextColor(ContextCompat.getColor(context, R.color.primary))
+                }
+                "rank" -> {
+                    textView.gravity = android.view.Gravity.CENTER
+                    textView.typeface = android.graphics.Typeface.DEFAULT_BOLD
+                    textView.setTextColor(ContextCompat.getColor(context, R.color.exam_result_cell_text))
+                }
+                "omrsheet" -> {
+                    textView.gravity = android.view.Gravity.CENTER
+                    textView.setTextColor(ContextCompat.getColor(context, R.color.primary))
+                }
+                "remarks" -> {
+                    textView.gravity = android.view.Gravity.CENTER_VERTICAL
+                    textView.setTextColor(ContextCompat.getColor(context, R.color.exam_result_cell_text))
+                }
+                else -> {
+                    textView.gravity = android.view.Gravity.CENTER
+                    textView.setTextColor(ContextCompat.getColor(context, R.color.exam_result_cell_text))
+                }
+            }
         }
     }
 

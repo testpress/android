@@ -1,17 +1,28 @@
 package `in`.testpress.testpress.ui.adapters
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import `in`.testpress.testpress.R
-import `in`.testpress.testpress.models.pojo.ExamResult
+import `in`.testpress.testpress.ui.utils.ExamResultTableHelper
 
+class ExamResultAdapter : ListAdapter<Map<String, String?>, ExamResultAdapter.ResultViewHolder>(DIFF_CALLBACK) {
 
-class ExamResultAdapter : ListAdapter<ExamResult, ExamResultAdapter.ResultViewHolder>(DIFF_CALLBACK) {
+    private var activeColumns: List<String> = emptyList()
+
+    fun updateColumnsAndList(columns: List<String>, list: List<Map<String, String?>>) {
+        this.activeColumns = columns
+        submitList(list)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResultViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -20,31 +31,12 @@ class ExamResultAdapter : ListAdapter<ExamResult, ExamResultAdapter.ResultViewHo
     }
 
     override fun onBindViewHolder(holder: ResultViewHolder, position: Int) {
-        holder.bind(getItem(position), position)
+        holder.bind(getItem(position), activeColumns, position)
     }
 
     class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        private val tvDate: TextView = itemView.findViewById(R.id.tv_date)
-        private val tvExamName: TextView = itemView.findViewById(R.id.tv_exam_name)
-        private val tvPhysics: TextView = itemView.findViewById(R.id.tv_physics)
-        private val tvChemistry: TextView = itemView.findViewById(R.id.tv_chemistry)
-        private val tvBiology: TextView = itemView.findViewById(R.id.tv_biology)
-        private val tvMaths: TextView = itemView.findViewById(R.id.tv_maths)
-        private val tvAptitude: TextView = itemView.findViewById(R.id.tv_aptitude)
-        private val tvDrawing: TextView = itemView.findViewById(R.id.tv_drawing)
-        private val tvP1: TextView = itemView.findViewById(R.id.tv_p1)
-        private val tvP2: TextView = itemView.findViewById(R.id.tv_p2)
-        private val tvTotal: TextView = itemView.findViewById(R.id.tv_total)
-        private val tvMax: TextView = itemView.findViewById(R.id.tv_max)
-        private val tvHighest: TextView = itemView.findViewById(R.id.tv_highest)
-        private val tvPercent: TextView = itemView.findViewById(R.id.tv_percent)
-        private val tvGrade: TextView = itemView.findViewById(R.id.tv_grade)
-        private val tvRank: TextView = itemView.findViewById(R.id.tv_rank)
-        private val tvAppeared: TextView = itemView.findViewById(R.id.tv_appeared)
-        private val tvOmr: TextView = itemView.findViewById(R.id.tv_omr)
-
-        fun bind(result: ExamResult, position: Int) {
+        fun bind(result: Map<String, String?>, activeColumns: List<String>, position: Int) {
             itemView.setBackgroundColor(
                 if (position % 2 == 0) {
                     itemView.context.getColor(android.R.color.white)
@@ -53,56 +45,113 @@ class ExamResultAdapter : ListAdapter<ExamResult, ExamResultAdapter.ResultViewHo
                 }
             )
 
-            tvDate.text = result.date.orDash()
-            tvExamName.text = result.examName.orDash()
-            tvPhysics.text = result.physics.formatScore()
-            tvChemistry.text = result.chemistry.formatScore()
-            tvBiology.text = result.biology.formatScore()
-            tvMaths.text = result.maths.formatScore()
-            tvAptitude.text = result.aptitude.formatScore()
-            tvDrawing.text = result.drawing.formatScore()
-            tvP1.text = result.p1.formatScore()
-            tvP2.text = result.p2.formatScore()
-            tvTotal.text = result.totalMarks.formatScore()
-            tvMax.text = result.maxMarks.formatScore()
-            tvHighest.text = result.highestMarks.formatScore()
-            tvPercent.text = result.percent.formatPercent()
-            tvGrade.text = result.grade.orDash()
-            tvRank.text = result.rank.orDash()
-            tvAppeared.text = result.stuAppeared.orDash()
-            tvOmr.text = if (!result.omrSheet.isNullOrBlank()) "📄" else "-"
-        }
+            val container = itemView as LinearLayout
 
-        private fun String?.formatScore(): String {
-            if (isNullOrBlank()) return "-"
-            return try {
-                val d = toDouble()
-                if (d == d.toLong().toDouble()) d.toLong().toString() else this
-            } catch (e: NumberFormatException) {
-                this
+            // Rebuild cells if the child count doesn't match activeColumns count
+            if (container.childCount != activeColumns.size) {
+                container.removeAllViews()
+                activeColumns.forEach { col ->
+                    val textView = createCellTextView(container.context, col)
+                    container.addView(textView)
+                }
+            }
+
+            // Update content for each active cell
+            for (i in activeColumns.indices) {
+                val key = activeColumns[i]
+                val textView = container.getChildAt(i) as TextView
+                val rawValue = result[key]
+
+                textView.text = formatValue(key, rawValue)
+                textView.setOnClickListener(null)
+                textView.isClickable = false
             }
         }
 
-        private fun String?.formatPercent(): String {
-            if (isNullOrBlank()) return "-"
-            return try {
-                val d = toDouble()
-                if (d == d.toLong().toDouble()) "${d.toLong()}%" else "$this%"
-            } catch (e: NumberFormatException) {
-                "$this%"
+        private fun createCellTextView(context: Context, key: String): TextView {
+            return TextView(context).apply {
+                textSize = 13f
+                includeFontPadding = false
+                
+                val widthPx = ExamResultTableHelper.getColumnWidth(context, key)
+                layoutParams = LinearLayout.LayoutParams(widthPx, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+                val horizontalPadding = (6 * context.resources.displayMetrics.density).toInt()
+                setPadding(horizontalPadding, 0, horizontalPadding, 0)
+
+                when (key) {
+                    "date", "examname" -> {
+                        gravity = android.view.Gravity.CENTER_VERTICAL
+                        if (key == "date") {
+                            typeface = android.graphics.Typeface.DEFAULT_BOLD
+                            setTextColor(ContextCompat.getColor(context, R.color.primary))
+                        } else {
+                            setTextColor(ContextCompat.getColor(context, R.color.exam_result_cell_text))
+                        }
+                    }
+                    "grade" -> {
+                        gravity = android.view.Gravity.CENTER
+                        typeface = android.graphics.Typeface.DEFAULT_BOLD
+                        setTextColor(ContextCompat.getColor(context, R.color.primary))
+                    }
+                    "rank" -> {
+                        gravity = android.view.Gravity.CENTER
+                        typeface = android.graphics.Typeface.DEFAULT_BOLD
+                        setTextColor(ContextCompat.getColor(context, R.color.exam_result_cell_text))
+                    }
+                    "omrsheet" -> {
+                        gravity = android.view.Gravity.CENTER
+                        setTextColor(ContextCompat.getColor(context, R.color.primary))
+                    }
+                    "remarks" -> {
+                        gravity = android.view.Gravity.CENTER_VERTICAL
+                        setTextColor(ContextCompat.getColor(context, R.color.exam_result_cell_text))
+                    }
+                    else -> {
+                        gravity = android.view.Gravity.CENTER
+                        setTextColor(ContextCompat.getColor(context, R.color.exam_result_cell_text))
+                    }
+                }
             }
         }
 
-        private fun String?.orDash(): String = if (isNullOrBlank()) "-" else this
+        private fun formatValue(key: String, value: String?): String {
+            if (value.isNullOrBlank()) return "-"
+            val trimmed = value.trim()
+            if (trimmed == "-") return "-"
+
+            return when (key) {
+                "physics", "chemistry", "biology", "maths", "aptitude", "drawing", "p1", "p2", "totalmarks", "maxmarks", "highestmarks", "outof" -> {
+                    try {
+                        val d = trimmed.toDouble()
+                        if (d == d.toLong().toDouble()) d.toLong().toString() else trimmed
+                    } catch (e: NumberFormatException) {
+                        trimmed
+                    }
+                }
+                "percent" -> {
+                    try {
+                        val d = trimmed.toDouble()
+                        val suffix = if (d == d.toLong().toDouble()) d.toLong().toString() else trimmed
+                        "$suffix%"
+                    } catch (e: NumberFormatException) {
+                        "$trimmed%"
+                    }
+                }
+                "omrsheet" -> {
+                    if (trimmed.isNotBlank()) "📄" else "-"
+                }
+                else -> trimmed
+            }
+        }
     }
 
-
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ExamResult>() {
-            override fun areItemsTheSame(old: ExamResult, new: ExamResult): Boolean =
-                old.date == new.date && old.examName == new.examName
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Map<String, String?>>() {
+            override fun areItemsTheSame(old: Map<String, String?>, new: Map<String, String?>): Boolean =
+                old["date"] == new["date"] && old["examname"] == new["examname"]
 
-            override fun areContentsTheSame(old: ExamResult, new: ExamResult): Boolean =
+            override fun areContentsTheSame(old: Map<String, String?>, new: Map<String, String?>): Boolean =
                 old == new
         }
     }

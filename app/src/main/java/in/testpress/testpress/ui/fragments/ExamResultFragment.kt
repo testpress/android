@@ -1,10 +1,12 @@
 package `in`.testpress.testpress.ui.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import `in`.testpress.testpress.ui.utils.ExamResultTableHelper
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
@@ -47,6 +49,8 @@ class ExamResultFragment : Fragment() {
     private lateinit var btnNext: TextView
     private lateinit var pageNumbersContainer: LinearLayout
     private lateinit var paginationBar: LinearLayout
+    private var tabSelectedListener: TabLayout.OnTabSelectedListener? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -118,17 +122,16 @@ class ExamResultFragment : Fragment() {
     }
 
     private fun setupTabs() {
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.exam_results_model_tab))
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.exam_results_weekly_tab))
-
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        tabSelectedListener = object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                val examType = if (tab.position == 0) ExamType.MODEL else ExamType.WEEKLY
-                viewModel.changeExamType(examType)
+                val types = viewModel.examTypes.value ?: emptyList()
+                val selectedType = types.getOrNull(tab.position) ?: return
+                viewModel.changeExamType(selectedType)
             }
             override fun onTabUnselected(tab: TabLayout.Tab) {}
             override fun onTabReselected(tab: TabLayout.Tab) {}
-        })
+        }
+        tabSelectedListener?.let { tabLayout.addOnTabSelectedListener(it) }
     }
 
     private fun setupPagination() {
@@ -144,13 +147,17 @@ class ExamResultFragment : Fragment() {
         }
 
         viewModel.results.observe(viewLifecycleOwner) { results ->
-            adapter.submitList(results)
+            val activeColumns = ExamResultTableHelper.determineActiveColumns(results)
+            populateHeader(activeColumns)
+            adapter.updateColumnsAndList(activeColumns, results)
+
             if (results.isEmpty() && viewModel.isLoading.value != true) {
                 showEmptyState(getString(R.string.no_results))
             } else {
                 emptyContainer.visibility = View.GONE
             }
         }
+
 
         viewModel.error.observe(viewLifecycleOwner) { error ->
             if (!error.isNullOrBlank()) {
@@ -165,6 +172,49 @@ class ExamResultFragment : Fragment() {
         viewModel.totalPages.observe(viewLifecycleOwner) { _ ->
             refreshPaginationBar()
         }
+
+        viewModel.examTypes.observe(viewLifecycleOwner) { examTypes ->
+            if (examTypes.isNullOrEmpty()) return@observe
+
+            tabSelectedListener?.let { tabLayout.removeOnTabSelectedListener(it) }
+
+            val currentTabCount = tabLayout.tabCount
+            var needsRecreation = currentTabCount != examTypes.size
+            if (!needsRecreation) {
+                for (i in 0 until currentTabCount) {
+                    if (tabLayout.getTabAt(i)?.text != examTypes[i]) {
+                        needsRecreation = true
+                        break
+                    }
+                }
+            }
+
+            if (needsRecreation) {
+                tabLayout.removeAllTabs()
+                examTypes.forEach { type ->
+                    tabLayout.addTab(tabLayout.newTab().setText(type))
+                }
+            }
+
+            val activeType = viewModel.examType.value
+            val activeIndex = examTypes.indexOf(activeType)
+            if (activeIndex != -1 && tabLayout.selectedTabPosition != activeIndex) {
+                tabLayout.getTabAt(activeIndex)?.select()
+            }
+
+            tabSelectedListener?.let { tabLayout.addOnTabSelectedListener(it) }
+        }
+
+        viewModel.examType.observe(viewLifecycleOwner) { activeType ->
+            val types = viewModel.examTypes.value ?: return@observe
+            val activeIndex = types.indexOf(activeType)
+            if (activeIndex != -1 && tabLayout.selectedTabPosition != activeIndex) {
+                tabSelectedListener?.let { tabLayout.removeOnTabSelectedListener(it) }
+                tabLayout.getTabAt(activeIndex)?.select()
+                tabSelectedListener?.let { tabLayout.addOnTabSelectedListener(it) }
+            }
+        }
+
     }
 
     private fun refreshPaginationBar() {
@@ -255,6 +305,36 @@ class ExamResultFragment : Fragment() {
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).also { it.setMargins(4, 0, 4, 0) }
             setTextColor(ContextCompat.getColor(requireContext(), R.color.exam_result_cell_text))
+        }
+    }
+
+    private fun populateHeader(activeColumns: List<String>) {
+        val container = view?.findViewById<LinearLayout>(R.id.header_container) ?: return
+        container.removeAllViews()
+        activeColumns.forEach { col ->
+            val textView = createHeaderTextView(container.context, col)
+            container.addView(textView)
+        }
+    }
+
+    private fun createHeaderTextView(context: Context, key: String): TextView {
+        return TextView(context).apply {
+            text = ExamResultTableHelper.getColumnDisplayName(key)
+            textSize = 13f
+            includeFontPadding = false
+            typeface = android.graphics.Typeface.DEFAULT_BOLD
+            setTextColor(ContextCompat.getColor(context, R.color.primary))
+            
+            val widthPx = ExamResultTableHelper.getColumnWidth(context, key)
+            layoutParams = LinearLayout.LayoutParams(widthPx, ViewGroup.LayoutParams.WRAP_CONTENT)
+            
+            val horizontalPadding = (6 * context.resources.displayMetrics.density).toInt()
+            setPadding(horizontalPadding, 0, horizontalPadding, 0)
+            
+            gravity = when (key) {
+                "date", "examname", "remarks" -> android.view.Gravity.CENTER_VERTICAL
+                else -> android.view.Gravity.CENTER
+            }
         }
     }
 

@@ -21,7 +21,7 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
-private const val EXAM_RESULT_BASE_URL = "https://65.108.62.51/"
+private const val EXAM_RESULT_BASE_URL = "https://admissions.brilliantpala.org/studentexamapi/"
 const val EXAM_RESULT_API_TOKEN = "8ee49eb9f9e3477aa36d209657024cab"
 
 object ExamType {

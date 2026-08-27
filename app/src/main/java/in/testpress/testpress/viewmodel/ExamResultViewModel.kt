@@ -3,7 +3,6 @@ package `in`.testpress.testpress.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import `in`.testpress.testpress.models.pojo.ExamResult
 import `in`.testpress.testpress.network.ExamType
 import `in`.testpress.testpress.repository.ExamResultRepository
 import `in`.testpress.testpress.repository.ExamResultState
@@ -14,8 +13,8 @@ class ExamResultViewModel : ViewModel() {
 
     private val repository = ExamResultRepository()
 
-    private val _results = MutableLiveData<List<ExamResult>>()
-    val results: LiveData<List<ExamResult>> = _results
+    private val _results = MutableLiveData<List<Map<String, String?>>>()
+    val results: LiveData<List<Map<String, String?>>> = _results
 
     private val _isLoading = MutableLiveData<Boolean>(false)
     val isLoading: LiveData<Boolean> = _isLoading
@@ -31,6 +30,9 @@ class ExamResultViewModel : ViewModel() {
 
     private val _examType = MutableLiveData<String>(ExamType.MODEL)
     val examType: LiveData<String> = _examType
+
+    private val _examTypes = MutableLiveData<List<String>>(emptyList())
+    val examTypes: LiveData<List<String>> = _examTypes
 
 
     private var studentNo: String = ""
@@ -118,6 +120,13 @@ class ExamResultViewModel : ViewModel() {
                                 .coerceAtLeast(1)
                         } else 1
                         _totalPages.value = pages
+
+                        state.response.examTypes?.let {
+                            if (_examTypes.value != it) {
+                                _examTypes.value = it
+                            }
+                        }
+
                     }
                     is ExamResultState.Error -> {
                         _isLoading.value = false

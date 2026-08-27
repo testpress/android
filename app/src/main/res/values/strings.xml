@@ -199,8 +199,29 @@
     
     <!-- ── Exam Results ──────────────────────────────────────────────────────── -->
     <string name="exam_results">Results</string>
-    <string name="exam_results_model_tab">Model Exam</string>
-    <string name="exam_results_weekly_tab">Weekly Exam</string>
+    <string name="exam_results_col_date">Date</string>
+    <string name="exam_results_col_examname">Exam Name</string>
+    <string name="exam_results_col_rollno">Roll No</string>
+    <string name="exam_results_col_physics">PHY</string>
+    <string name="exam_results_col_chemistry">CHE</string>
+    <string name="exam_results_col_biology">BIO</string>
+    <string name="exam_results_col_maths">MAT</string>
+    <string name="exam_results_col_aptitude">APT</string>
+    <string name="exam_results_col_drawing">DRW</string>
+    <string name="exam_results_col_p1">P-I</string>
+    <string name="exam_results_col_p2">P-II</string>
+    <string name="exam_results_col_totalmarks">Total</string>
+    <string name="exam_results_col_maxmarks">Max</string>
+    <string name="exam_results_col_highestmarks">Highest</string>
+    <string name="exam_results_col_percent">%</string>
+    <string name="exam_results_col_grade">Grade</string>
+    <string name="exam_results_col_rank">Rank</string>
+    <string name="exam_results_col_stu_appeared">Appeared</string>
+    <string name="exam_results_col_outof">Out Of</string>
+    <string name="exam_results_col_estatus">Status</string>
+    <string name="exam_results_col_scholarearn">Scholarship</string>
+    <string name="exam_results_col_remarks">Remarks</string>
+    <string name="exam_results_col_omrsheet">OMR</string>
     <string name="exam_results_previous">&#8249; Previous</string>
     <string name="exam_results_next">Next &#8250;</string>
     <string name="no_results">No results found</string>

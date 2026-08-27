@@ -11,8 +11,9 @@ data class ExamResultResponse(
     @SerializedName("total_count") val totalCount: Int = 0,
     @SerializedName("current_page") val currentPage: Int = 1,
     @SerializedName("limit") val limit: Int = 10,
-    @SerializedName("data") val data: List<ExamResult>? = null,
-    @SerializedName("message") val message: String? = null
+    @SerializedName("data") val data: List<Map<String, String?>>? = null,
+    @SerializedName("message") val message: String? = null,
+    @SerializedName("exam_types") val examTypes: List<String>? = null
 ) {
     val isSuccess: Boolean get() = status == "success"
 }

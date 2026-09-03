@@ -17,6 +17,7 @@ open class RegisterRepository(val testpressService: TestpressService) {
         object : SafeAsyncTask<Boolean>() {
             override fun call(): Boolean {
                 registrationSuccessResponse = testpressService.register(userDetails.username,
+                        userDetails.firstName,
                         userDetails.email,
                         userDetails.password,
                         userDetails.phoneNumber,

@@ -6,7 +6,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
 ext {
-    testpressSDK = '1.4.302'
+    testpressSDK = '1.4.304'
 }
 
 def jsonFile = file('src/main/assets/config.json')

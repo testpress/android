@@ -98,7 +98,7 @@ public class HandleMainMenu {
         menuActions.put(R.id.doubts, () -> {
             Intent intent = new Intent(activity, SSOWebViewRedirectActivity.class);
             intent.putExtra(SSOWebViewRedirectActivity.EXTRA_TITLE, "Doubts");
-            intent.putExtra(SSOWebViewRedirectActivity.EXTRA_NEXT_PATH, "/tickets/mobile/");
+            intent.putExtra(SSOWebViewRedirectActivity.EXTRA_NEXT_PATH, "/tickets/mobile/?testpress_app=android");
             activity.startActivity(intent);
         });
         menuActions.put(R.id.live_classes, this::launchLiveClassesActivity);
@@ -258,7 +258,7 @@ public class HandleMainMenu {
     private void launchDiscussionActivity(String title) {
         Intent intent = new Intent(activity, SSOWebViewRedirectActivity.class);
         intent.putExtra(SSOWebViewRedirectActivity.EXTRA_TITLE, title);
-        intent.putExtra(SSOWebViewRedirectActivity.EXTRA_NEXT_PATH, "/discussions/new");
+        intent.putExtra(SSOWebViewRedirectActivity.EXTRA_NEXT_PATH, "/discussions/new?testpress_app=android");
         intent.putExtra(SSOWebViewRedirectActivity.EXTRA_ALLOW_EXTERNAL, true);
         activity.startActivity(intent);
     }

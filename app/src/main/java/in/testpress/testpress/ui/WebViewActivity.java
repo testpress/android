@@ -182,7 +182,7 @@ public class WebViewActivity extends BaseToolBarActivity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (allowExternalLink || isInstituteURL(url)) {
-                    view.loadUrl(url);
+                    view.loadUrl(appendAppQueryParam(url));
                 } else {
                     openInExternal(url);
                 }
@@ -193,7 +193,7 @@ public class WebViewActivity extends BaseToolBarActivity {
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(webView, url);
                 pb_loading.setVisibility(View.GONE);
-                hideWebSidebar(view);
+                hideWebSidebar(view, url);
             }
         });
 
@@ -313,28 +313,38 @@ public class WebViewActivity extends BaseToolBarActivity {
         });
     }
 
-    public void setUrl(String url) {
+    public String appendAppQueryParam(String url) {
         if (url != null && isInstituteURL(url) && !url.contains("testpress_app=")) {
             try {
                 Uri uri = Uri.parse(url);
-                url = uri.buildUpon().appendQueryParameter("testpress_app", "android").build().toString();
+                return uri.buildUpon().appendQueryParameter("testpress_app", "android").build().toString();
             } catch (Exception e) {
-                // Ignore parsing errors and keep original url
+                Log.w(TAG, "Failed to append testpress_app parameter to url: " + url, e);
             }
         }
-        this.url = url;
+        return url;
     }
 
-    private void hideWebSidebar(WebView view) {
-        String css = "header, aside, nav, .sidebar { display: none !important; } " +
-                     "main { padding-left: 0 !important; margin-top: 0 !important; }";
-        String js = "javascript:(function() { " +
-                    "var style = document.createElement('style'); " +
-                    "style.type = 'text/css'; " +
-                    "style.appendChild(document.createTextNode('" + css + "')); " +
-                    "document.head.appendChild(style); " +
+    public void setUrl(String url) {
+        this.url = appendAppQueryParam(url);
+    }
+
+    private void hideWebSidebar(WebView view, String url) {
+        if (url == null || !isInstituteURL(url)) {
+            return;
+        }
+        String js = "(function() { " +
+                    "   var css = '@media (min-width: 1024px) { header, aside, nav, .sidebar { display: none !important; } main { padding-left: 0 !important; margin-top: 0 !important; } }';" +
+                    "   var style = document.createElement('style'); " +
+                    "   style.type = 'text/css'; " +
+                    "   style.appendChild(document.createTextNode(css)); " +
+                    "   document.head.appendChild(style); " +
                     "})()";
-        view.loadUrl(js);
+        if (Build.VERSION.SDK_INT >= 19) {
+            view.evaluateJavascript(js, null);
+        } else {
+            view.loadUrl("javascript:" + js);
+        }
     }
 
 

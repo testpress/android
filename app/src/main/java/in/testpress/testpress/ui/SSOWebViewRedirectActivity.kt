@@ -80,6 +80,7 @@ class SSOWebViewRedirectActivity: TestpressFragmentActivity(), EmptyViewListener
         if (!nextPath.contains("testpress_app=")) {
             nextPath = if (nextPath.contains("?")) "$nextPath&testpress_app=android" else "$nextPath?testpress_app=android"
         }
+        val encodedNextPath = android.net.Uri.encode(nextPath)
         val allowExternal = intent.getBooleanExtra(EXTRA_ALLOW_EXTERNAL, false)
         webviewIntent.putExtra(WebViewActivity.ACTIVITY_TITLE, title)
         webviewIntent.putExtra(WebViewActivity.ENABLE_BACK, true)
@@ -87,7 +88,7 @@ class SSOWebViewRedirectActivity: TestpressFragmentActivity(), EmptyViewListener
         webviewIntent.putExtra(WebViewActivity.ALLOW_EXTERNAL_LINK, allowExternal)
         webviewIntent.putExtra(
             WebViewActivity.URL_TO_OPEN,
-            BuildConfig.WHITE_LABELED_HOST_URL + ssoLink?.ssoUrl + "&next=" + nextPath
+            BuildConfig.WHITE_LABELED_HOST_URL + ssoLink?.ssoUrl + "&next=" + encodedNextPath
         )
         startActivity(webviewIntent)
         finish()

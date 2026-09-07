@@ -76,7 +76,10 @@ class SSOWebViewRedirectActivity: TestpressFragmentActivity(), EmptyViewListener
         val webviewIntent = Intent(this@SSOWebViewRedirectActivity, WebViewActivity::class.java)
         webviewIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP;
         val title = intent.getStringExtra(EXTRA_TITLE) ?: "Doubts"
-        val nextPath = intent.getStringExtra(EXTRA_NEXT_PATH) ?: "/tickets/mobile/"
+        var nextPath = intent.getStringExtra(EXTRA_NEXT_PATH) ?: "/tickets/mobile/"
+        if (!nextPath.contains("testpress_app=")) {
+            nextPath = if (nextPath.contains("?")) "$nextPath&testpress_app=android" else "$nextPath?testpress_app=android"
+        }
         val allowExternal = intent.getBooleanExtra(EXTRA_ALLOW_EXTERNAL, false)
         webviewIntent.putExtra(WebViewActivity.ACTIVITY_TITLE, title)
         webviewIntent.putExtra(WebViewActivity.ENABLE_BACK, true)

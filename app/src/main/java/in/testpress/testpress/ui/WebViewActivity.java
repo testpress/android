@@ -151,6 +151,10 @@ public class WebViewActivity extends BaseToolBarActivity {
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setAllowFileAccess(true);
+        String userAgent = webSettings.getUserAgentString();
+        if (userAgent != null && !userAgent.contains("TestpressAndroidApp")) {
+            webSettings.setUserAgentString(userAgent + " TestpressAndroidApp/wv");
+        }
 
         if (Build.VERSION.SDK_INT >= 21) {
             webSettings.setMixedContentMode(0);
@@ -189,6 +193,7 @@ public class WebViewActivity extends BaseToolBarActivity {
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(webView, url);
                 pb_loading.setVisibility(View.GONE);
+                hideWebSidebar(view);
             }
         });
 
@@ -309,7 +314,27 @@ public class WebViewActivity extends BaseToolBarActivity {
     }
 
     public void setUrl(String url) {
+        if (url != null && isInstituteURL(url) && !url.contains("testpress_app=")) {
+            try {
+                Uri uri = Uri.parse(url);
+                url = uri.buildUpon().appendQueryParameter("testpress_app", "android").build().toString();
+            } catch (Exception e) {
+                // Ignore parsing errors and keep original url
+            }
+        }
         this.url = url;
+    }
+
+    private void hideWebSidebar(WebView view) {
+        String css = "header, aside, nav, .sidebar { display: none !important; } " +
+                     "main { padding-left: 0 !important; margin-top: 0 !important; }";
+        String js = "javascript:(function() { " +
+                    "var style = document.createElement('style'); " +
+                    "style.type = 'text/css'; " +
+                    "style.appendChild(document.createTextNode('" + css + "')); " +
+                    "document.head.appendChild(style); " +
+                    "})()";
+        view.loadUrl(js);
     }
 
 

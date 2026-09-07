@@ -67,6 +67,7 @@ abstract class RegistrationBaseFragment: Fragment() {
 
     private fun hideErrorMessageOnTextChange() {
         val editTextMap = Hashtable<EditText, TextView>()
+        editTextMap[binding.editTextFirstName!!] = binding.firstNameErrorText!!
         editTextMap[binding.editTextUsername] = binding.usernameErrorText
         editTextMap[binding.editTextPassword] = binding.passwordErrorText
         editTextMap[binding.editTextConfirmPassword] = binding.confirmPasswordErrorText

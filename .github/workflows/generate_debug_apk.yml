@@ -73,7 +73,15 @@ jobs:
 
       - name: Replace host_url in build.gradle
         run: |
-          sed -i "/def host_url/c\def host_url = '\${{ github.event.inputs.domain }}'" app/build.gradle
+          echo "Raw domain input:"
+          echo "${{ github.event.inputs.domain }}" | od -c
+
+          clean_domain=$(echo "${{ github.event.inputs.domain }}" | tr -d '\n\r')
+
+          echo "Sanitized domain input:"
+          echo "${clean_domain}" | od -c
+
+          sed -i "/def host_url/c\def host_url = '${clean_domain}'" app/build.gradle
 
       - name: Build and distribute app
         run: |

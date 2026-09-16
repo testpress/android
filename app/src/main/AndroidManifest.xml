@@ -242,6 +242,11 @@
             android:theme="@style/TestpressWebViewTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Web View" />
+
+        <activity
+            android:name=".ui.StudentReportWebViewActivity"
+            android:theme="@style/TestpressWebViewTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
             
         <activity android:name=".ui.InAppCameraActivity"
             android:theme="@style/AppTheme"

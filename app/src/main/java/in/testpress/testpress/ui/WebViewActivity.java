@@ -156,6 +156,9 @@ public class WebViewActivity extends BaseToolBarActivity {
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setAllowFileAccess(true);
+        webSettings.setSupportZoom(true);
+        webSettings.setBuiltInZoomControls(true);
+        webSettings.setDisplayZoomControls(false);
         String userAgent = webSettings.getUserAgentString();
         if (userAgent != null && !userAgent.contains("TestpressAndroidApp")) {
             webSettings.setUserAgentString(userAgent + " TestpressAndroidApp/wv");

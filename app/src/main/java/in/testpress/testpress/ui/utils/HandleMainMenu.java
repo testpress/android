@@ -34,6 +34,7 @@ import in.testpress.testpress.util.UIUtils;
 import in.testpress.ui.UserDevicesActivity;
 import in.testpress.testpress.ui.QotdActivity;
 import in.testpress.testpress.ui.ProctoredExamWebViewActivity;
+import in.testpress.testpress.ui.StudentReportWebViewActivity;
 import in.testpress.ui.WebViewWithSSOActivity;
 
 import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;
@@ -92,7 +93,7 @@ public class HandleMainMenu {
         menuActions.put(R.id.doubts, () -> {
             Intent intent = new Intent(activity, SSOWebViewRedirectActivity.class);
             intent.putExtra(SSOWebViewRedirectActivity.EXTRA_TITLE, "Doubts");
-            intent.putExtra(SSOWebViewRedirectActivity.EXTRA_NEXT_PATH, "/tickets/mobile/");
+            intent.putExtra(SSOWebViewRedirectActivity.EXTRA_NEXT_PATH, "/tickets/mobile/?testpress_app=android");
             activity.startActivity(intent);
         });
         menuActions.put(R.id.offline_exam_list, this::launchOfflineExamListActivity);
@@ -207,7 +208,7 @@ public class HandleMainMenu {
                         WHITE_LABELED_HOST_URL + URL_STUDENT_REPORT_FLAG,
                         true,
                         false,
-                        WebViewWithSSOActivity.class
+                        StudentReportWebViewActivity.class
                 )
         );
     }
@@ -246,7 +247,7 @@ public class HandleMainMenu {
     private void launchDiscussionActivity(String title) {
         Intent intent = new Intent(activity, SSOWebViewRedirectActivity.class);
         intent.putExtra(SSOWebViewRedirectActivity.EXTRA_TITLE, title);
-        intent.putExtra(SSOWebViewRedirectActivity.EXTRA_NEXT_PATH, "/discussions/new");
+        intent.putExtra(SSOWebViewRedirectActivity.EXTRA_NEXT_PATH, "/discussions/new?testpress_app=android");
         intent.putExtra(SSOWebViewRedirectActivity.EXTRA_ALLOW_EXTERNAL, true);
         activity.startActivity(intent);
     }

@@ -75,6 +75,8 @@ import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.CheckPermission;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
+import in.testpress.testpress.models.UnreadMessagesCount;
+import android.widget.TextView;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.Update;
 import in.testpress.testpress.ui.fragments.DashboardFragment;
@@ -289,11 +291,25 @@ public class MainActivity extends TestpressFragmentActivity {
     private void setUpNavigationDrawer() {
         getSupportActionBar().setHomeButtonEnabled(true);
         drawerToggle = setupDrawerToggle();
-        drawerToggle.setDrawerIndicatorEnabled(true);
+        drawerToggle.setDrawerIndicatorEnabled(false);
         drawerToggle.setHomeAsUpIndicator(R.drawable.ic_menu);
-        drawerToggle.syncState();
-
+        drawerToggle.setToolbarNavigationClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (drawer.isDrawerOpen(GravityCompat.START)) {
+                    drawer.closeDrawer(GravityCompat.START);
+                } else {
+                    drawer.openDrawer(GravityCompat.START);
+                }
+            }
+        });
         drawer.addDrawerListener(drawerToggle);
+        drawer.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                fetchUnreadMessagesCount();
+            }
+        });
         setupDrawerContent(navigationView);
     }
 
@@ -313,6 +329,7 @@ public class MainActivity extends TestpressFragmentActivity {
         showBookmarkButtonBasedOnInstituteSettings(navigationView.getMenu());
         showCustomOptions(navigationView.getMenu());
         showDailyQuestionsBasedOnInstituteSettings(navigationView.getMenu());
+        showChatWithUsBasedOnInstituteSettings(navigationView.getMenu());
         updateMenuItemNames(navigationView.getMenu());
         final HandleMainMenu handleMainMenu = new HandleMainMenu(MainActivity.this, serviceProvider);
         navigationView.setNavigationItemSelectedListener(
@@ -386,6 +403,70 @@ public class MainActivity extends TestpressFragmentActivity {
             menu.findItem(R.id.bookmarks).setVisible(Boolean.TRUE.equals(mInstituteSettings.getBookmarksEnabled()));
         }
     }
+
+
+    private void showChatWithUsBasedOnInstituteSettings(Menu menu) {
+        if (mInstituteSettings != null && menu != null) {
+            MenuItem chatItem = menu.findItem(R.id.chat_with_us);
+            if (chatItem != null) {
+                chatItem.setVisible(Boolean.TRUE.equals(mInstituteSettings.getMessagesEnabled()));
+            }
+        }
+        fetchUnreadMessagesCount();
+    }
+
+    private void fetchUnreadMessagesCount() {
+        if (!isUserAuthenticated || mInstituteSettings == null || !Boolean.TRUE.equals(mInstituteSettings.getMessagesEnabled())) {
+            updateUnreadMessagesBadge(0);
+            return;
+        }
+        new SafeAsyncTask<UnreadMessagesCount>() {
+            @Override
+            public UnreadMessagesCount call() throws Exception {
+                return serviceProvider.getService(MainActivity.this).getUnreadMessagesCount();
+            }
+
+            @Override
+            protected void onException(final Exception exception) throws RuntimeException {
+                // Silently ignore
+            }
+
+            @Override
+            protected void onSuccess(final UnreadMessagesCount count) {
+                if (count != null) {
+                    updateUnreadMessagesBadge(count.getUnreadCount());
+                }
+            }
+        }.execute();
+    }
+
+    private void updateUnreadMessagesBadge(int unreadCount) {
+        if (navigationView != null) {
+            MenuItem chatItem = navigationView.getMenu().findItem(R.id.chat_with_us);
+            if (chatItem != null) {
+                View actionView = chatItem.getActionView();
+                if (actionView != null) {
+                    TextView badgeView = actionView.findViewById(R.id.menu_badge);
+                    if (badgeView != null) {
+                        if (unreadCount > 0) {
+                            badgeView.setVisibility(View.VISIBLE);
+                            badgeView.setText(String.valueOf(unreadCount));
+                        } else {
+                            badgeView.setVisibility(View.GONE);
+                        }
+                    }
+                }
+            }
+        }
+        int menuIcon = (unreadCount > 0) ? R.drawable.ic_menu_badge : R.drawable.ic_menu;
+        if (getActionBarToolbar() != null) {
+            getActionBarToolbar().setNavigationIcon(menuIcon);
+        }
+        if (drawerToggle != null) {
+            drawerToggle.setHomeAsUpIndicator(menuIcon);
+        }
+    }
+
 
     private void showDailyQuestionsBasedOnInstituteSettings(Menu menu) {
         if (mInstituteSettings != null && menu != null) {
@@ -741,6 +822,7 @@ public class MainActivity extends TestpressFragmentActivity {
         if (navigationView != null) {
             hideMenuItemsForUnauthenticatedUser(navigationView.getMenu());
         }
+        fetchUnreadMessagesCount();
         if (isUserAuthenticated && mInstituteSettings != null && mInstituteSettings.getForceStudentData()) {
             checkForForceUserData();
         } else {

@@ -114,6 +114,7 @@ public class TestpressDaoGenerator {
         instituteSettings.addBooleanProperty("requireQuestionReportDescription");
         instituteSettings.addIntProperty("questionReportDescriptionMinLength");
         instituteSettings.addBooleanProperty("qotdEnabled");
+        instituteSettings.addBooleanProperty("messagesEnabled");
         instituteSettings.addStringProperty("customForgotPasswordUrl");
 
         Entity rssFeed = schema.addEntity("RssItem");

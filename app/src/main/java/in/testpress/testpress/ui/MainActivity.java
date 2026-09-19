@@ -76,7 +76,6 @@ import in.testpress.testpress.models.CheckPermission;
 import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.UnreadMessagesCount;
-import android.widget.TextView;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.models.Update;
 import in.testpress.testpress.ui.fragments.DashboardFragment;
@@ -293,6 +292,7 @@ public class MainActivity extends TestpressFragmentActivity {
         drawerToggle = setupDrawerToggle();
         drawerToggle.setDrawerIndicatorEnabled(false);
         drawerToggle.setHomeAsUpIndicator(R.drawable.ic_menu);
+        drawerToggle.syncState();
         drawerToggle.setToolbarNavigationClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -415,11 +415,17 @@ public class MainActivity extends TestpressFragmentActivity {
         fetchUnreadMessagesCount();
     }
 
+    private boolean isFetchingUnreadMessagesCount = false;
+
     private void fetchUnreadMessagesCount() {
+        if (isFetchingUnreadMessagesCount) {
+            return;
+        }
         if (!isUserAuthenticated || mInstituteSettings == null || !Boolean.TRUE.equals(mInstituteSettings.getMessagesEnabled())) {
             updateUnreadMessagesBadge(0);
             return;
         }
+        isFetchingUnreadMessagesCount = true;
         new SafeAsyncTask<UnreadMessagesCount>() {
             @Override
             public UnreadMessagesCount call() throws Exception {
@@ -428,11 +434,12 @@ public class MainActivity extends TestpressFragmentActivity {
 
             @Override
             protected void onException(final Exception exception) throws RuntimeException {
-                // Silently ignore
+                isFetchingUnreadMessagesCount = false;
             }
 
             @Override
             protected void onSuccess(final UnreadMessagesCount count) {
+                isFetchingUnreadMessagesCount = false;
                 if (count != null) {
                     updateUnreadMessagesBadge(count.getUnreadCount());
                 }

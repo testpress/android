@@ -33,11 +33,8 @@ import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.ui.UserDevicesActivity;
 import in.testpress.testpress.ui.QotdActivity;
-<<<<<<< Updated upstream
-import in.testpress.testpress.ui.StudentReportWebViewActivity;
-=======
 import in.testpress.testpress.ui.StudentMessagingActivity;
->>>>>>> Stashed changes
+import in.testpress.testpress.ui.StudentReportWebViewActivity;
 import in.testpress.ui.WebViewWithSSOActivity;
 
 import static in.testpress.exam.api.TestpressExamApiClient.SUBJECT_ANALYTICS_PATH;

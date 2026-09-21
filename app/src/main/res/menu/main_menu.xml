@@ -128,7 +128,7 @@
             app:actionLayout="@layout/menu_badge_layout"
             app:showAsAction="always"/>
         <item
-            android:id="@+id/privacy_policy" 
+            android:id="@+id/privacy_policy"
             android:icon="@drawable/policy_48px"
             android:title="Privacy Policy"
             app:showAsAction="always"/>

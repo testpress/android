@@ -7,11 +7,16 @@
 
     <TextView
         android:id="@+id/menu_badge"
-        android:layout_width="20dp"
+        android:layout_width="wrap_content"
         android:layout_height="20dp"
+        android:minWidth="20dp"
         android:layout_gravity="center_vertical|end"
         android:background="@drawable/badge_circle"
         android:gravity="center"
+        android:paddingLeft="4dp"
+        android:paddingTop="1dp"
+        android:paddingRight="4dp"
+        android:paddingBottom="1dp"
         android:textColor="@android:color/white"
         android:textSize="11sp"
         android:textStyle="bold"

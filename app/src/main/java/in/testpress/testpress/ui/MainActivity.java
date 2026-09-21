@@ -440,7 +440,7 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             protected void onSuccess(final UnreadMessagesCount count) {
                 isFetchingUnreadMessagesCount = false;
-                if (count != null) {
+                if (count != null && "SUCCESS".equalsIgnoreCase(count.getStatus())) {
                     updateUnreadMessagesBadge(count.getUnreadCount());
                 }
             }
@@ -457,7 +457,7 @@ public class MainActivity extends TestpressFragmentActivity {
                     if (badgeView != null) {
                         if (unreadCount > 0) {
                             badgeView.setVisibility(View.VISIBLE);
-                            badgeView.setText(String.valueOf(unreadCount));
+                            badgeView.setText(unreadCount > 99 ? "99+" : String.valueOf(unreadCount));
                         } else {
                             badgeView.setVisibility(View.GONE);
                         }

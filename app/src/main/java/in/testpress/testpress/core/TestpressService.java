@@ -29,14 +29,14 @@ import in.testpress.testpress.models.ResetPassword;
 import in.testpress.testpress.models.RssFeed;
 import in.testpress.testpress.models.SsoUrl;
 import in.testpress.testpress.models.TestpressApiResponse;
+import in.testpress.testpress.models.UnreadMessagesCount;
 import in.testpress.testpress.models.Update;
 import in.testpress.testpress.models.pojo.DashboardResponse;
 import in.testpress.testpress.network.CheckPermissionService;
-import in.testpress.testpress.network.UnreadMessagesCountService;
-import in.testpress.testpress.models.UnreadMessagesCount;
 import in.testpress.testpress.network.RssConverterFactory;
 import in.testpress.testpress.network.RssFeedService;
 import in.testpress.testpress.network.SsoUrlService;
+import in.testpress.testpress.network.UnreadMessagesCountService;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 

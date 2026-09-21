@@ -2,7 +2,7 @@ package in.testpress.testpress.models;
 
 public class UnreadMessagesCount {
     private String status;
-    private int unread_count;
+    private int unreadCount;
 
     public String getStatus() {
         return status;
@@ -13,10 +13,10 @@ public class UnreadMessagesCount {
     }
 
     public int getUnreadCount() {
-        return unread_count;
+        return unreadCount;
     }
 
-    public void setUnreadCount(int unread_count) {
-        this.unread_count = unread_count;
+    public void setUnreadCount(int unreadCount) {
+        this.unreadCount = unreadCount;
     }
 }

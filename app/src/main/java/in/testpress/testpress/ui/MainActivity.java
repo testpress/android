@@ -435,6 +435,7 @@ public class MainActivity extends TestpressFragmentActivity {
             @Override
             protected void onException(final Exception exception) throws RuntimeException {
                 isFetchingUnreadMessagesCount = false;
+                updateUnreadMessagesBadge(0);
             }
 
             @Override
@@ -442,6 +443,8 @@ public class MainActivity extends TestpressFragmentActivity {
                 isFetchingUnreadMessagesCount = false;
                 if (count != null && "SUCCESS".equalsIgnoreCase(count.getStatus())) {
                     updateUnreadMessagesBadge(count.getUnreadCount());
+                } else {
+                    updateUnreadMessagesBadge(0);
                 }
             }
         }.execute();

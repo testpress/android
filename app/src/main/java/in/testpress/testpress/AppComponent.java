@@ -16,6 +16,7 @@ import in.testpress.testpress.ui.DocumentsListActivity;
 import in.testpress.testpress.ui.DocumentsListFragment;
 import in.testpress.testpress.ui.SSOWebViewRedirectActivity;
 import in.testpress.testpress.ui.QotdActivity;
+import in.testpress.testpress.ui.StudentMessagingActivity;
 import in.testpress.testpress.ui.DrupalRssListActivity;
 import in.testpress.testpress.ui.DrupalRssListFragment;
 import in.testpress.testpress.ui.EnforceDataActivity;
@@ -65,6 +66,7 @@ public interface AppComponent {
     void inject(DashboardFragment dashboardFragment);
     void inject(SSOWebViewRedirectActivity redirectActivity);
     void inject(QotdActivity qotdActivity);
+    void inject(StudentMessagingActivity studentMessagingActivity);
     void inject(LoginActivityV2 loginActivityV2);
     void inject(UsernameAuthentication usernameAuthentication);
     void inject(PhoneAuthenticationFragment phoneAuthenticationFragment);

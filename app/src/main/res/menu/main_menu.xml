@@ -121,6 +121,13 @@
         android:id="@+id/app_branding_group">
 
         <item
+            android:id="@+id/chat_with_us"
+            android:title="@string/chat_with_us"
+            android:icon="@drawable/chat_icon"
+            android:visible="false"
+            app:actionLayout="@layout/menu_badge_layout"
+            app:showAsAction="always"/>
+        <item
             android:id="@+id/privacy_policy"
             android:icon="@drawable/policy_48px"
             android:title="Privacy Policy"

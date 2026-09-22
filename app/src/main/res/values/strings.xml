@@ -190,4 +190,5 @@
     <string name="close_camera">Close camera</string>
     <string name="camera_permission_denied">Camera permissions not granted by the user.</string>
     <string name="image_creation_failed">Failed to create image file.</string>
+    <string name="chat_with_us">Chat with Us</string>
 </resources>

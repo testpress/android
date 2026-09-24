@@ -13,7 +13,6 @@ import `in`.testpress.testpress.models.SsoUrl
 import `in`.testpress.testpress.util.SafeAsyncTask
 import android.net.Uri
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.View
 import android.webkit.WebSettings
 import androidx.appcompat.widget.Toolbar
@@ -115,7 +114,4 @@ class StudentMessagingActivity : TestpressFragmentActivity(), EmptyViewListener 
         fetchSsoLink()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return super.onOptionsItemSelected(item)
-    }
 }

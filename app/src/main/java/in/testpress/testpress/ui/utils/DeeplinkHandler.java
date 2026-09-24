@@ -22,6 +22,7 @@ import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.PostActivity;
 import in.testpress.testpress.ui.PostsListActivity;
 import in.testpress.testpress.ui.ProfileDetailsActivity;
+import in.testpress.testpress.ui.StudentMessagingActivity;
 import in.testpress.testpress.util.CommonUtils;
 import in.testpress.ui.WebViewWithSSOActivity;
 import in.testpress.util.Assert;
@@ -90,6 +91,9 @@ public class DeeplinkHandler {
                     break;
                 case "documents":
                     gotoActivity(DocumentsListActivity.class, true);
+                    break;
+                case "messages":
+                    gotoActivity(StudentMessagingActivity.class, true);
                     break;
                 case "login":
                     gotoActivity(MainActivity.class, true);

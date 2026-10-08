@@ -27,6 +27,7 @@ open class RegisterViewModel(
 
     var isUserDataValid = MutableLiveData<Boolean>()
 
+    val firstName = MutableLiveData<String>()
     val username = MutableLiveData<String>()
     val email = MutableLiveData<String>()
     val phoneNumber = MutableLiveData<String>()
@@ -50,6 +51,7 @@ open class RegisterViewModel(
     private fun getUserDetails(): UserDetails {
         return UserDetails(
                 username = username.value!!,
+                firstName = firstName.value!!,
                 email = email.value!!,
                 password = password.value!!,
                 phoneNumber = phoneNumber.value!!,
@@ -60,6 +62,10 @@ open class RegisterViewModel(
     fun handleErrorResponse(e: Exception?) {
         if ((e is RetrofitError)) {
             val registrationErrorDetails = e.getBodyAs(RegistrationErrorDetails::class.java) as RegistrationErrorDetails
+            if (registrationErrorDetails.firstName.isNullOrEmpty().not()) {
+                setErrorText(binding.firstNameErrorText!!, registrationErrorDetails.firstName[0])
+                binding.editTextFirstName!!.requestFocus()
+            }
             if (registrationErrorDetails.username.isNullOrEmpty().not()) {
                 setErrorText(binding.usernameErrorText, registrationErrorDetails.username[0])
                 binding.editTextUsername.requestFocus()

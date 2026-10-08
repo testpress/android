@@ -8,6 +8,7 @@ import java.util.Map;
 public class RegistrationErrorDetails {
 
     private List<String> username = new ArrayList<String>();
+    private List<String> firstName = new ArrayList<String>();
     private List<String> email = new ArrayList<String>();
     private List<String> password = new ArrayList<String>();
     private List<String> phone = new ArrayList<String>();
@@ -30,6 +31,15 @@ public class RegistrationErrorDetails {
     public void setUsername(List<String> username) {
         this.username = username;
     }
+
+    public List<String> getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(List<String> firstName) {
+        this.firstName = firstName;
+    }
+
 
     /**
      *

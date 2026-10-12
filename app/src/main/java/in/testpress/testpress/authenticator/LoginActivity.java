@@ -288,8 +288,13 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
                 public void onSuccess(LoginResult loginResult) {
                     loginLayout.setVisibility(View.GONE);
                     username = loginResult.getAccessToken().getUserId();
-                    authenticate(loginResult.getAccessToken().getUserId(),
-                            loginResult.getAccessToken().getToken(), TestpressSdk.Provider.FACEBOOK);
+                    if (instituteSettings.isDeviceBindingEnabled()) {
+                        showDeviceBindingConfirmation(loginResult.getAccessToken().getUserId(),
+                                loginResult.getAccessToken().getToken(), TestpressSdk.Provider.FACEBOOK);
+                    } else {
+                        authenticate(loginResult.getAccessToken().getUserId(),
+                                loginResult.getAccessToken().getToken(), TestpressSdk.Provider.FACEBOOK);
+                    }
                 }
 
                 @Override
@@ -412,7 +417,8 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
                         .setCoursesGamificationEnabled(instituteSettings.getCoursesEnableGamification())
                         .setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled())
                         .setAndroidSentryDns(instituteSettings.getAndroidSentryDns())
-                        .setAccessCodeEnabled(false);
+                        .setAccessCodeEnabled(false)
+                        .setDeviceBindingMode(instituteSettings.getDeviceBindingMode());
 
         TestpressSdk.initialize(this, settings, userId, accessToken, provider,
                 new TestpressCallback<TestpressSession>() {
@@ -443,6 +449,20 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
                         }
                     }
                 });
+    }
+
+    private void showDeviceBindingConfirmation(final String username, final String password) {
+        showDeviceBindingConfirmation(username, password, TestpressSdk.Provider.TESTPRESS);
+    }
+
+    private void showDeviceBindingConfirmation(final String userId, final String accessToken, final TestpressSdk.Provider provider) {
+        new MaterialDialog.Builder(this)
+                .title(R.string.device_binding_login_confirm_title)
+                .content(R.string.device_binding_login_confirm_message)
+                .positiveText(R.string.ok)
+                .negativeText(R.string.cancel)
+                .onPositive((dialog, which) -> authenticate(userId, accessToken, provider))
+                .show();
     }
 
     private void updateInstituteSpecificFields() {
@@ -492,7 +512,11 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
         password = passwordText.getText().toString();
 
-        authenticate(username, password, TestpressSdk.Provider.TESTPRESS);
+        if (instituteSettings.isDeviceBindingEnabled()) {
+            showDeviceBindingConfirmation(username, password);
+        } else {
+            authenticate(username, password, TestpressSdk.Provider.TESTPRESS);
+        }
     }
 
     /**
@@ -688,13 +712,35 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         }
     }
 
+    private MaterialDialog googleConfirmationDialog;
+
     private void googleSignIn() {
         if (googleApiClient != null) {
-            Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-            startActivityForResult(signInIntent, REQUEST_CODE_GOOGLE_SIGN_IN);
+            InstituteSettings settings = instituteSettings != null ? instituteSettings : InstituteSettings.getInstance();
+            boolean bindingEnabled = settings != null && settings.isDeviceBindingEnabled();
+            if (bindingEnabled) {
+                if (googleConfirmationDialog != null && googleConfirmationDialog.isShowing()) {
+                    return;
+                }
+                googleConfirmationDialog = new MaterialDialog.Builder(this)
+                        .title(R.string.device_binding_login_confirm_title)
+                        .content(R.string.device_binding_login_confirm_message)
+                        .positiveText(R.string.ok)
+                        .negativeText(R.string.cancel)
+                        .onPositive((dialog, which) -> launchGoogleSignIn())
+                        .dismissListener(dialog -> googleConfirmationDialog = null)
+                        .show();
+            } else {
+                launchGoogleSignIn();
+            }
         } else {
             showAlert(getString(R.string.google_signin_not_configured));
         }
+    }
+
+    private void launchGoogleSignIn() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+        startActivityForResult(signInIntent, REQUEST_CODE_GOOGLE_SIGN_IN);
     }
 
     private void initWebView() {

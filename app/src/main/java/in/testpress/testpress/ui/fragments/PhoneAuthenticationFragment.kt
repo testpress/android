@@ -26,6 +26,7 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.gms.auth.api.credentials.*
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import javax.inject.Inject
@@ -126,7 +127,14 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
             if (binding.phoneNumber.isEmpty()) {
                 binding.phoneNumber.error = "Please enter your mobile number"
             } else {
-                requestOTP(binding.phoneNumber.text.toString(), binding.countryCode.selectedCountryCode)
+                if (instituteSettings.isDeviceBindingEnabled()) {
+                    showDeviceBindingConfirmation(
+                        getString(R.string.device_binding_otp_confirm_title),
+                        getString(R.string.device_binding_otp_confirm_message)
+                    ) { requestOTP(binding.phoneNumber.text.toString(), binding.countryCode.selectedCountryCode) }
+                } else {
+                    requestOTP(binding.phoneNumber.text.toString(), binding.countryCode.selectedCountryCode)
+                }
             }
         }
 
@@ -158,6 +166,16 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
                 else -> {}
             }
         })
+    }
+
+    private fun showDeviceBindingConfirmation(title: String, message: String, onConfirm: () -> Unit) {
+        MaterialDialog.Builder(requireContext())
+            .title(title)
+            .content(message)
+            .positiveText(R.string.ok)
+            .negativeText(R.string.cancel)
+            .onPositive { _, _ -> onConfirm() }
+            .show()
     }
 
     private fun autoFillPhoneNumber(intent: Intent) {

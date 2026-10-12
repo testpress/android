@@ -16,8 +16,10 @@ import `in`.testpress.testpress.R
 import `in`.testpress.testpress.TestpressServiceProvider
 import `in`.testpress.testpress.authenticator.LogoutService
 import `in`.testpress.testpress.core.TestpressService
+import `in`.testpress.testpress.models.InstituteSettings
 import `in`.testpress.ui.AbstractWebViewActivity
 import `in`.testpress.util.BaseJavaScriptInterface
+import com.afollestad.materialdialogs.MaterialDialog
 import javax.inject.Inject
 
 class EnforceDataActivity : AbstractWebViewActivity() {
@@ -67,6 +69,25 @@ class EnforceDataActivity : AbstractWebViewActivity() {
     }
 
     fun logout() {
+        val instituteSettings = InstituteSettings.getInstance()
+        if (instituteSettings != null && instituteSettings.isDeviceBindingEnabled()) {
+            showDeviceBindingLogoutWarning()
+        } else {
+            showRegularLogoutConfirmation()
+        }
+    }
+
+    private fun showDeviceBindingLogoutWarning() {
+        MaterialDialog.Builder(this)
+            .title(R.string.device_binding_logout_warning_title)
+            .content(R.string.device_binding_logout_warning_message)
+            .positiveText(R.string.ok)
+            .negativeText(R.string.cancel)
+            .onPositive { _, _ -> showRegularLogoutConfirmation() }
+            .show()
+    }
+
+    private fun showRegularLogoutConfirmation() {
         AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
             .setTitle(R.string.logout)
             .setMessage(R.string.logout_confirm_message)

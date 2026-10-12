@@ -259,7 +259,11 @@ public class CodeVerificationActivity extends AppCompatActivity {
                 if(password == null){
                     gotoLoginScreen();
                 } else {
-                    autoLogin();
+                    if (instituteSettings != null && instituteSettings.isDeviceBindingEnabled()) {
+                        showDeviceBindingConfirmation();
+                    } else {
+                        autoLogin();
+                    }
                 }
             }
         }.execute();
@@ -274,7 +278,9 @@ public class CodeVerificationActivity extends AppCompatActivity {
                         .setCoursesFrontend(instituteSettings.getShowGameFrontend())
                         .setCoursesGamificationEnabled(instituteSettings.getCoursesEnableGamification())
                         .setAndroidSentryDns(instituteSettings.getAndroidSentryDns())
-                        .setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled()).setAccessCodeEnabled(false);
+                        .setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled())
+                        .setAccessCodeEnabled(false)
+                        .setDeviceBindingMode(instituteSettings.getDeviceBindingMode());
 
         TestpressSdk.initialize(this, settings, username, password, TestpressSdk.Provider.TESTPRESS,
                 new TestpressCallback<TestpressSession>() {
@@ -351,6 +357,16 @@ public class CodeVerificationActivity extends AppCompatActivity {
                         finish();
                     }
                 })
+                .show();
+    }
+
+    private void showDeviceBindingConfirmation() {
+        new MaterialDialog.Builder(this)
+                .title(R.string.device_binding_signup_confirm_title)
+                .content(R.string.device_binding_signup_confirm_message)
+                .positiveText(R.string.ok)
+                .negativeText(R.string.cancel)
+                .onPositive((dialog, which) -> autoLogin())
                 .show();
     }
 

@@ -35,6 +35,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -137,10 +138,19 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
 
     override fun signInWithGoogle() {
         if (::googleApiClient.isInitialized) {
-            handleGoogleSignIn.launch(googleApiClient.signInIntent)
+            showDeviceBindingConfirmation(
+                getString(R.string.device_binding_login_confirm_title),
+                getString(R.string.device_binding_login_confirm_message)
+            ) {
+                launchGoogleSignIn()
+            }
         } else {
             UIUtils.showAlert(this, getString(R.string.google_signin_not_configured))
         }
+    }
+
+    private fun launchGoogleSignIn() {
+        handleGoogleSignIn.launch(googleApiClient.signInIntent)
     }
 
     override fun goToOTPVerification(phoneNumber: String, countryCode: String) {
@@ -216,32 +226,61 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
             result.signInAccount!!.email
         }
         if (userId != null && accessToken != null) {
-            TestpressSdk.initialize(this, settings, userId, accessToken, TestpressSdk.Provider.GOOGLE,
-                object : TestpressCallback<TestpressSession?>() {
-                    override fun onSuccess(response: TestpressSession?) {
-                        val authToken = response?.token
-                        if (authToken != null) {
-                            if (username != null) {
-                                onLoginSuccess(username,"", authToken)
-                            }
-                        }
-                    }
-
-                    override fun onException(e: TestpressException) {
-                        if (e.isNetworkError) {
-                            UIUtils.showAlert(this@LoginActivityV2, getString(R.string.no_internet_try_again))
-                        } else if (e.isClientError) {
-                            if (e.message?.isNotEmpty() == true) {
-                                UIUtils.showAlert(this@LoginActivityV2, e.message!!)
-                            } else {
-                                UIUtils.showAlert(this@LoginActivityV2,getString(R.string.invalid_username_or_password))
-                            }
-                        } else {
-                            UIUtils.showAlert(this@LoginActivityV2,getString(R.string.something_went_wrong_please_try_after))
-                        }
-                    }
-                })
+            proceedWithGoogleSignIn(userId, accessToken, settings, username)
         }
+    }
+
+    private fun proceedWithGoogleSignIn(userId: String, accessToken: String, settings: `in`.testpress.models.InstituteSettings, username: String?) {
+        TestpressSdk.initialize(this, settings, userId, accessToken, TestpressSdk.Provider.GOOGLE,
+            object : TestpressCallback<TestpressSession?>() {
+                override fun onSuccess(response: TestpressSession?) {
+                    val authToken = response?.token
+                    if (authToken != null) {
+                        if (username != null) {
+                            onLoginSuccess(username,"", authToken)
+                        }
+                    }
+                }
+
+                override fun onException(e: TestpressException) {
+                    if (e.isNetworkError) {
+                        UIUtils.showAlert(this@LoginActivityV2, getString(R.string.no_internet_try_again))
+                    } else if (e.isClientError) {
+                        if (e.message?.isNotEmpty() == true) {
+                            UIUtils.showAlert(this@LoginActivityV2, e.message!!)
+                        } else {
+                            UIUtils.showAlert(this@LoginActivityV2,getString(R.string.invalid_username_or_password))
+                        }
+                    } else {
+                        UIUtils.showAlert(this@LoginActivityV2,getString(R.string.something_went_wrong_please_try_after))
+                    }
+                }
+            })
+    }
+
+    private var confirmationDialog: MaterialDialog? = null
+
+    private fun showDeviceBindingConfirmation(title: String, message: String, onConfirm: () -> Unit) {
+        if (isDeviceBindingEnabled()) {
+            if (confirmationDialog?.isShowing == true) {
+                return
+            }
+            confirmationDialog = MaterialDialog.Builder(this)
+                .title(title)
+                .content(message)
+                .positiveText(R.string.ok)
+                .negativeText(R.string.cancel)
+                .onPositive { _, _ -> onConfirm() }
+                .dismissListener { confirmationDialog = null }
+                .show()
+        } else {
+            onConfirm()
+        }
+    }
+
+    private fun isDeviceBindingEnabled(): Boolean {
+        val settings = if (::instituteSettings.isInitialized) instituteSettings else InstituteSettings.getInstance()
+        return settings?.isDeviceBindingEnabled() == true
     }
 
     private fun getInstituteSettings(): `in`.testpress.models.InstituteSettings {
@@ -253,6 +292,7 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
             .setCommentsVotingEnabled(instituteSettings.commentsVotingEnabled)
             .setAndroidSentryDns(instituteSettings.androidSentryDns)
             .setAccessCodeEnabled(false)
+            .setDeviceBindingMode(instituteSettings.deviceBindingMode)
         return settings
     }
 

@@ -32,8 +32,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat.getSystemService
 import android.view.inputmethod.InputMethodManager
+import com.afollestad.materialdialogs.MaterialDialog
 import javax.inject.Inject
 
 
@@ -204,9 +207,14 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
     }
 
     private fun signIn() {
-        authenticate(
-            binding.username.text.toString(), binding.password.text.toString(),
-        )
+        if (instituteSettings.isDeviceBindingEnabled()) {
+            showDeviceBindingConfirmation(
+                getString(R.string.device_binding_login_confirm_title),
+                getString(R.string.device_binding_login_confirm_message)
+            ) { authenticate(binding.username.text.toString(), binding.password.text.toString()) }
+        } else {
+            authenticate(binding.username.text.toString(), binding.password.text.toString())
+        }
     }
 
     private fun authenticate(userId: String, accessToken: String) {
@@ -218,6 +226,7 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
             .setCommentsVotingEnabled(instituteSettings.commentsVotingEnabled)
             .setAndroidSentryDns(instituteSettings.androidSentryDns)
             .setAccessCodeEnabled(false)
+            .setDeviceBindingMode(instituteSettings.deviceBindingMode)
         TestpressSdk.initialize(requireContext(), settings, userId, accessToken, TestpressSdk.Provider.TESTPRESS,
             object : TestpressCallback<TestpressSession?>() {
                 override fun onSuccess(response: TestpressSession?) {
@@ -241,6 +250,16 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
                     }
                 }
             })
+    }
+
+    private fun showDeviceBindingConfirmation(title: String, message: String, onConfirm: () -> Unit) {
+        MaterialDialog.Builder(requireContext())
+            .title(title)
+            .content(message)
+            .positiveText(R.string.ok)
+            .negativeText(R.string.cancel)
+            .onPositive { _, _ -> onConfirm() }
+            .show()
     }
 
     override fun onDestroyView() {

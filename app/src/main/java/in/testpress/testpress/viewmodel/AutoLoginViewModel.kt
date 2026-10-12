@@ -22,6 +22,7 @@ class AutoLoginViewModel: ViewModel() {
                 .setCommentsVotingEnabled(instituteSettings.commentsVotingEnabled)
                 .setAndroidSentryDns(instituteSettings.androidSentryDns)
                 .setAccessCodeEnabled(false)
+                .setDeviceBindingMode(instituteSettings.deviceBindingMode)
 
         testPressSessionRepository.initialize(context,settings,username, password, testPressService)
     }

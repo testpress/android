@@ -1,6 +1,7 @@
 package `in`.testpress.testpress.ui.fragments
 
 import `in`.testpress.enums.Status
+import `in`.testpress.testpress.R
 import `in`.testpress.testpress.authenticator.LoginActivity
 import `in`.testpress.testpress.models.InstituteSettings
 import `in`.testpress.testpress.ui.MainActivity
@@ -10,6 +11,7 @@ import android.content.Intent
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.afollestad.materialdialogs.MaterialDialog
 
 open class AutoLoginFragment: RegistrationBaseFragment() {
 
@@ -52,6 +54,19 @@ open class AutoLoginFragment: RegistrationBaseFragment() {
     private fun autoLogin() {
         ProgressUtil.progressDialog.dismiss()
         instituteSettings = viewModel.instituteSettings
+        if (instituteSettings.isDeviceBindingEnabled()) {
+            showDeviceBindingConfirmation(
+                getString(R.string.device_binding_signup_confirm_title),
+                getString(R.string.device_binding_signup_confirm_message)
+            ) {
+                proceedWithAutoLogin()
+            }
+        } else {
+            proceedWithAutoLogin()
+        }
+    }
+
+    private fun proceedWithAutoLogin() {
         autoLoginViewModel.initializeTestPressSession(
             activity,
             instituteSettings,
@@ -59,6 +74,16 @@ open class AutoLoginFragment: RegistrationBaseFragment() {
             binding.editTextPassword.text.toString(),
             activity.testPressService
         )
+    }
+
+    private fun showDeviceBindingConfirmation(title: String, message: String, onConfirm: () -> Unit) {
+        MaterialDialog.Builder(requireContext())
+            .title(title)
+            .content(message)
+            .positiveText(R.string.ok)
+            .negativeText(R.string.cancel)
+            .onPositive { _, _ -> onConfirm() }
+            .show()
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)

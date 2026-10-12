@@ -74,6 +74,7 @@ import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.CheckPermission;
 import in.testpress.testpress.models.DaoSession;
+import com.afollestad.materialdialogs.MaterialDialog;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.UnreadMessagesCount;
 import in.testpress.testpress.models.InstituteSettingsDao;
@@ -795,6 +796,28 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     public void logout() {
+        InstituteSettings settings = mInstituteSettings != null ? mInstituteSettings : InstituteSettings.getInstance();
+        boolean bindingEnabled = settings != null && settings.isDeviceBindingEnabled();
+        if (bindingEnabled) {
+            new MaterialDialog.Builder(this)
+                    .title(R.string.device_binding_logout_warning_title)
+                    .content(R.string.device_binding_logout_warning_message)
+                    .positiveText(R.string.ok)
+                    .negativeText(R.string.cancel)
+                    .onPositive((dialog, which) -> performLogout())
+                    .show();
+        } else {
+            showRegularLogoutConfirmation();
+        }
+    }
+
+    private void performLogout() {
+        setTermsAndConditionNotAgreed();
+        serviceProvider.logout(MainActivity.this, testpressService,
+                serviceProvider, logoutService);
+    }
+
+    private void showRegularLogoutConfirmation() {
         new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
                 .setTitle(R.string.logout)
                 .setMessage(R.string.logout_confirm_message)
@@ -803,9 +826,7 @@ public class MainActivity extends TestpressFragmentActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.dismiss();
-                                setTermsAndConditionNotAgreed();
-                                serviceProvider.logout(MainActivity.this, testpressService,
-                                        serviceProvider, logoutService);
+                                performLogout();
                             }
                         })
                 .setNegativeButton(R.string.cancel, null)

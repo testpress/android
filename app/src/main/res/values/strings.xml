@@ -43,6 +43,7 @@
     <string name="device_binding_logout_warning_title">Device Binding Notice</string>
     <string name="device_binding_logout_warning_message">Logging out will not remove the device binding. This device will remain bound to your account.</string>
     <string name="please_enter_mobile_number">Please enter your mobile number</string>
+    <string name="error_sending_otp">Error occurred while sending OTP. Please try again.</string>
 
     <!-- AuthenticatorActivity -->
     <string name="label_username">Username</string>

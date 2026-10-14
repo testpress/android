@@ -8,6 +8,7 @@ import `in`.testpress.testpress.core.Constants.Http
 import `in`.testpress.testpress.core.TestpressService
 import `in`.testpress.testpress.databinding.PhoneLoginLayoutBinding
 import `in`.testpress.testpress.models.InstituteSettings
+import `in`.testpress.testpress.authenticator.LoginActivityV2
 import `in`.testpress.testpress.repository.InstituteRepository
 import `in`.testpress.testpress.ui.WebViewActivity
 import `in`.testpress.testpress.util.UIUtils
@@ -37,7 +38,9 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
     lateinit var viewModel: LoginViewModel
     @Inject
     lateinit var testPressService: TestpressService
-    private val instituteSettings = InstituteSettings.getInstance()
+    private val instituteSettings: InstituteSettings?
+        get() = (activity as? LoginActivityV2)?.getLoadedInstituteSettings()
+            ?: InstituteSettings.getInstance()
     private var confirmationDialog: AlertDialog? = null
     private var _binding: PhoneLoginLayoutBinding? = null
     private val binding get() = _binding!!
@@ -111,13 +114,15 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
     }
 
     private fun showOrHideButtons() {
-        ViewUtils.setGone(binding.userNameLogin, 1 !in instituteSettings.allowedLoginMethods)
-        ViewUtils.setGone(binding.facebookSignIn, !instituteSettings.facebookLoginEnabled)
-        ViewUtils.setGone(binding.googleSignIn, !instituteSettings.googleLoginEnabled)
-        ViewUtils.setGone(
-            binding.socialLoginLayout, !instituteSettings.facebookLoginEnabled &&
-                    !instituteSettings.googleLoginEnabled
-        )
+        instituteSettings?.let { settings ->
+            ViewUtils.setGone(binding.userNameLogin, 1 !in settings.allowedLoginMethods)
+            ViewUtils.setGone(binding.facebookSignIn, !settings.facebookLoginEnabled)
+            ViewUtils.setGone(binding.googleSignIn, !settings.googleLoginEnabled)
+            ViewUtils.setGone(
+                binding.socialLoginLayout, !settings.facebookLoginEnabled &&
+                        !settings.googleLoginEnabled
+            )
+        }
     }
 
     private fun setOnClickListeners() {
@@ -157,7 +162,6 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
     }
 
     private fun requestOTP(phoneNumber: String, countryCode: String) {
-        if (!isAdded || view == null) return
         viewModel.requestOTP(phoneNumber, countryCode).observe(viewLifecycleOwner, { resource ->
             if (!isAdded || view == null) return@observe
             when (resource.status) {
@@ -169,7 +173,7 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
                     if (resource.data?.detail != null) {
                         UIUtils.showAlert(context, resource.data?.detail!!)
                     } else {
-                        UIUtils.showAlert(context, "Error occurred while sending OTP. Please try again.")
+                        UIUtils.showAlert(context, getString(R.string.error_sending_otp))
                     }
                 }
                 else -> {}

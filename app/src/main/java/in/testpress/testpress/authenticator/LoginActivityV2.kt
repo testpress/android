@@ -138,12 +138,16 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
         replaceFragment(PhoneAuthenticationFragment())
     }
 
+    fun getLoadedInstituteSettings(): InstituteSettings? {
+        return if (::instituteSettings.isInitialized) instituteSettings else null
+    }
+
     override fun signInWithGoogle() {
         if (::googleApiClient.isInitialized) {
             if (confirmationDialog?.isShowing == true) return
             confirmationDialog = DeviceBindingDialogs.confirmIfBindingEnabled(
                 this,
-                if (::instituteSettings.isInitialized) instituteSettings else null,
+                getLoadedInstituteSettings(),
                 onProceed = { launchGoogleSignIn() }
             )
         } else {

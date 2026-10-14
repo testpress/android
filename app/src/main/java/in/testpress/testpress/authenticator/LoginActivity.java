@@ -303,9 +303,7 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
                                 username = userId;
                                 authenticate(userId, token, TestpressSdk.Provider.FACEBOOK);
                             },
-                            () -> {
-                                LoginManager.getInstance().logOut();
-                            }
+                            LoginManager.getInstance()::logOut
                     );
                 }
 

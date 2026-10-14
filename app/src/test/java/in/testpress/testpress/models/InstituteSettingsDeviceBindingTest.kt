@@ -1,7 +1,6 @@
 package `in`.testpress.testpress.models
 
-import com.google.gson.FieldNamingPolicy
-import com.google.gson.GsonBuilder
+import `in`.testpress.testpress.TestpressModule
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -13,9 +12,7 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class InstituteSettingsDeviceBindingTest {
 
-    private val gson = GsonBuilder()
-        .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-        .create()
+    private val gson = TestpressModule().provideGson()
 
     @Test
     fun isDeviceBindingEnabledReturnsTrueFor1Mobile1Desktop() {
@@ -121,7 +118,7 @@ class InstituteSettingsDeviceBindingTest {
     }
 
     @Test
-    fun gsonDeserializesDeviceBindingModeFieldFromApiJson() {
+    fun appProductionParserDeserializesDeviceBindingModeFieldFromApiJson() {
         val json = """{"device_binding_mode": "1_mobile_1_desktop"}"""
         val settings = gson.fromJson(json, InstituteSettings::class.java)
 
@@ -130,7 +127,7 @@ class InstituteSettingsDeviceBindingTest {
     }
 
     @Test
-    fun gsonDeserializesMissingDeviceBindingModeAsNull() {
+    fun appProductionParserDeserializesMissingDeviceBindingModeAsNull() {
         val json = """{"allow_signup": true}"""
         val settings = gson.fromJson(json, InstituteSettings::class.java)
 

@@ -54,7 +54,7 @@ public class TestpressModule {
     }
 
     @Provides
-    Gson provideGson() {
+    public Gson provideGson() {
         /**
          * GSON instance to use for all request  with date format set up for proper parsing.
          * <p/>

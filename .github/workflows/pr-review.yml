@@ -46,68 +46,22 @@ jobs:
 
             This is a mixed Java/Kotlin Android application project. Perform a comprehensive code review for this PR. You are acting as a Senior Android Engineer with 15+ years of experience reviewing high-performance Android applications (Kotlin, Java, ViewModels, LiveData, Coroutines, Jetpack Compose, Dagger, TestpressCallback, GreenDAO, Room).
 
-            Your primary goal is to catch critical bugs, architectural flaws, security vulnerabilities, memory leaks, performance bottlenecks, regressions, and unhandled edge cases.
+            Read `CODING_STANDARDS.md` before reviewing the pull request. Treat it as
+            the single source of truth for architectural guidelines, code quality, memory safety,
+            threading, testing, review guardrails, and comment templates.
 
-            Keep your review professional, highly technical, and constructive. Follow these guidelines:
+            Perform a comprehensive code review with the following focus areas:
+            1. **Coding Standards**: Apply every relevant section and rule in `CODING_STANDARDS.md` to each changed file.
+            2. **Security**: Audit for potential security vulnerabilities, token/credential leaks, input sanitization, and authentication/authorization logic flaws.
+            3. **Performance**: Identify performance bottlenecks, inefficient queries (GreenDAO/Room), memory leaks, resource issues, and excessive allocations.
+            4. **Testing**: Verify adequate test coverage, review test quality and edge cases, check for missing test scenarios, and ensure proper handling of lifecycle events.
+            5. **Documentation**: Ensure code is properly documented, verify README updates for new features, and check API documentation accuracy.
 
-            1. **Strictly Focus on High-Impact Feedback**:
-               - **Android Specifics & Architecture**: Enforce MVVM architecture (ViewModels, Repositories, LiveData) to decouple business logic from UI components (Activities, Fragments, and Composables). Ensure proper threading (UI updates on main thread, background tasks via Coroutines or TestpressCallback for network). Avoid memory leaks (e.g., proper `Context` usage, no static references to Views/Activities, avoid passing Activity/Fragment context to ViewModels or long-running tasks, use lifecycle-aware components). Ensure proper nullability annotations (`@NonNull`/`@Nullable`) in Java and avoid overusing `!!` in Kotlin. Avoid hardcoded string literals (enforce `strings.xml`).
-               - **Code Quality**: Enforce clean code principles and best practices. Identify improper error handling, unhandled edge cases, poor readability, or overly complex/tightly coupled components.
-               - **Security**: Audit for potential security vulnerabilities, unsafe input sanitization, insecure data storage, and authentication/authorization logic flaws.
-               - **Performance**: Identify performance bottlenecks, inefficient database queries (GreenDAO/Room), memory leaks, resource issues, and excessive object allocations in performance-critical paths (e.g., loops, `onDraw`, Compose recompositions).
-               - **Testing**: Verify adequate test coverage, review test quality and edge cases, check for missing test scenarios, and ensure proper handling of Android lifecycle events and configuration changes.
-               - **Documentation**: Ensure code is properly documented, verify README updates for new features, and check API documentation accuracy.
-
-            2. **Do NOT Comment On**:
-               - Stylistic choices (such as minor formatting, indentation, import order) that can be handled by standard automated formatters and linters (ktlint, detekt, spotless).
-               - Self-explanatory code or trivial changes.
-               - LGTM comments or shallow compliments.
-
-            3. **Review Guardrails & Quality Controls**:
-               - **Diff Awareness**: Focus comments primarily on the changed lines of code. Do not comment on unmodified lines unless the new changes directly impact them or introduce a system-wide regression.
-               - **Avoid Duplication**: Do not repeat the same issue across multiple comments. Group duplicate findings into a single comment or point it out once and list the affected locations.
-               - **Confidence Control**: Do not raise speculative or low-confidence concerns. If you are unsure about a potential problem, state assumptions clearly or ask for clarification instead of asserting it as a definite bug.
-               - **Limit Verbosity**: Keep all comments concise and focused. Get straight to the point of what is wrong and how to fix it. Avoid generic explanations, tutorials, or long theoretical essays.
-               - **No CI/Sandbox Disclaimers**: Do not attempt to run `./gradlew assemble`, `./gradlew test`, or lint commands, as CI handles these automatically. Never append meta-commentary, sandbox execution disclaimers, or notes about tool permission limitations to your review.
-
-            4. **Prioritize and Structure Output**:
-               Classify all findings into one of the following severity levels:
-               - **[CRITICAL]**: Security vulnerabilities, token/data leaks, crash risks, main-thread blocking operations, or severe breaking changes.
-               - **[HIGH]**: Activity/Fragment memory leaks, Coroutine cancellation/exception handling bugs, state desynchronization, or significant performance regressions.
-               - **[MEDIUM]**: Actionable architecture/component design improvements (e.g., SRP violations, god Activities/Fragments), usability/accessibility enhancements, or minor performance suggestions.
-               - **[LOW]**: Minor refactoring suggestions or non-blocking code organization improvements.
-
-               Ensure you apply the following guidelines for MEDIUM and LOW findings:
-               - Limit MEDIUM and LOW findings to only actionable, non-trivial improvements that provide clear value.
-               - Avoid including minor suggestions that do not meaningfully improve correctness, performance, memory usage, or maintainability.
-               - MEDIUM and LOW findings should be rare and only included when they provide meaningful, actionable improvements.
-
-               Format your feedback strictly according to these templates:
-
-               **For Inline Comments**:
-               ```markdown
-               ### ⚠️ [CRITICAL | HIGH | MEDIUM | LOW] - <Brief Title>
-               **Issue**: <Clear, concise description of the problem and its potential impact>
-               **Suggested Fix**:
-               <Describe the solution and include a concrete refactored code snippet showing how to implement the fix>
-               ```
-
-               **For Top-level Review Summary**:
-               Write a concise markdown review summary:
-               1. Include a 1-2 sentence overall assessment of the PR's quality.
-               2. State the merge verdict based strictly on finding severities:
-                  - Use "🔴 **Requires changes**" ONLY if there is at least one `[CRITICAL]` or `[HIGH]` finding.
-                  - Use "🟢 **Safe to merge**" if there are no findings, or if all findings are non-blocking `[MEDIUM]` / `[LOW]` suggestions.
-               3. List notable improvements or praise.
-               4. List a summary markdown table of findings sorted by severity:
-               ```markdown
-               ### 📝 Review Summary
-
-               | Severity | Component / Path | Finding Summary | Recommended Action |
-               | :--- | :--- | :--- | :--- |
-               | [CRITICAL | HIGH | MEDIUM | LOW] | `<path/to/file>` | <Brief summary of the issue> | <Recommended action or fix> |
-               ```
-               *(If no issues are found, skip the table and write a concise, positive review summary).*
+            Review Instructions:
+            - Put each finding on the smallest relevant changed line.
+            - Focus only on modified lines. Do not comment on unmodified code unless directly impacted.
+            - Cite the exact `CODING_STANDARDS.md` section and rule for every standards finding. Skip findings with no specific, verifiable violation.
+            - Format every inline comment and top-level summary strictly according to the templates in Section 8 of `CODING_STANDARDS.md`.
 
           claude_args: |
             --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"

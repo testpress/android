@@ -70,6 +70,48 @@ class DeviceBindingDialogsTest {
     }
 
     @Test
+    fun confirmIfBindingEnabledCallsOnProceedDirectlyWhenDesktopAppOnly() {
+        var proceedCalled = false
+        var cancelCalled = false
+        val settings = InstituteSettings().apply {
+            deviceBindingMode = InstituteSettings.DEVICE_BINDING_DESKTOP_APP_ONLY
+        }
+
+        val result = DeviceBindingDialogs.confirmIfBindingEnabled(
+            mockContext,
+            settings,
+            onProceed = { proceedCalled = true },
+            onCancel = { cancelCalled = true }
+        )
+
+        assertNull(result)
+        assertTrue(proceedCalled)
+        assertFalse(cancelCalled)
+        assertEquals(0, dialogBuildCount)
+    }
+
+    @Test
+    fun confirmIfBindingEnabledCallsOnProceedDirectlyWhenBindingOff() {
+        var proceedCalled = false
+        var cancelCalled = false
+        val settings = InstituteSettings().apply {
+            deviceBindingMode = InstituteSettings.DEVICE_BINDING_OFF
+        }
+
+        val result = DeviceBindingDialogs.confirmIfBindingEnabled(
+            mockContext,
+            settings,
+            onProceed = { proceedCalled = true },
+            onCancel = { cancelCalled = true }
+        )
+
+        assertNull(result)
+        assertTrue(proceedCalled)
+        assertFalse(cancelCalled)
+        assertEquals(0, dialogBuildCount)
+    }
+
+    @Test
     fun confirmIfBindingEnabledCallsOnProceedDirectlyWhenSettingsNull() {
         var proceedCalled = false
         var cancelCalled = false

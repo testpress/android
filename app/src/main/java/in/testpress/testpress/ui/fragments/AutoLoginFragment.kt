@@ -64,7 +64,11 @@ open class AutoLoginFragment: RegistrationBaseFragment() {
         confirmationDialog = DeviceBindingDialogs.confirmIfBindingEnabled(
             requireContext(),
             instituteSettings,
-            onProceed = { proceedWithAutoLogin(username, password) }
+            onProceed = {
+                if (isAdded && view != null) {
+                    proceedWithAutoLogin(username, password)
+                }
+            }
         )
     }
 

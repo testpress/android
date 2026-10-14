@@ -302,6 +302,9 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
                                 loginLayout.setVisibility(View.GONE);
                                 username = userId;
                                 authenticate(userId, token, TestpressSdk.Provider.FACEBOOK);
+                            },
+                            () -> {
+                                LoginManager.getInstance().logOut();
                             }
                     );
                 }

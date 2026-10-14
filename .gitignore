@@ -62,4 +62,3 @@ gen-external-apklibs
 *.hprof
 
 fastlane/report.xml
-.kotlin/

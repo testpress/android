@@ -549,7 +549,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         if (customForgotPasswordUrl != null) {
             stmt.bindString(71, customForgotPasswordUrl);
         }
-
+ 
         String deviceBindingMode = entity.getDeviceBindingMode();
         if (deviceBindingMode != null) {
             stmt.bindString(72, deviceBindingMode);

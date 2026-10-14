@@ -22,7 +22,7 @@ import android.webkit.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.activity.OnBackPressedCallback
-import com.afollestad.materialdialogs.MaterialDialog
+import `in`.testpress.testpress.util.DeviceBindingDialogs
 import java.io.IOException
 import javax.inject.Inject
 
@@ -156,40 +156,22 @@ class TermsAndConditionActivity : BaseToolBarActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    private var logoutDialog: AlertDialog? = null
+
     fun logout() {
-        val instituteSettings = InstituteSettings.getInstance()
-        if (instituteSettings != null && instituteSettings.isDeviceBindingEnabled()) {
-            showDeviceBindingLogoutWarning()
-        } else {
-            showRegularLogoutConfirmation()
-        }
+        if (logoutDialog?.isShowing == true) return
+        logoutDialog = DeviceBindingDialogs.handleLogout(
+            this,
+            InstituteSettings.getInstance(),
+            onProceedToLogout = { performLogout() }
+        )
     }
 
-    private fun showDeviceBindingLogoutWarning() {
-        MaterialDialog.Builder(this)
-            .title(R.string.device_binding_logout_warning_title)
-            .content(R.string.device_binding_logout_warning_message)
-            .positiveText(R.string.ok)
-            .negativeText(R.string.cancel)
-            .onPositive { _, _ -> showRegularLogoutConfirmation() }
-            .show()
-    }
-
-    private fun showRegularLogoutConfirmation() {
-        AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
-            .setTitle(R.string.logout)
-            .setMessage(R.string.logout_confirm_message)
-            .setPositiveButton(
-                R.string.ok
-            ) { dialogInterface, i ->
-                dialogInterface.dismiss()
-                serviceProvider.logout(
-                    this@TermsAndConditionActivity, testpressService,
-                    serviceProvider, logoutService
-                )
-            }
-            .setNegativeButton(R.string.cancel, null)
-            .show()
+    private fun performLogout() {
+        serviceProvider.logout(
+            this@TermsAndConditionActivity, testpressService,
+            serviceProvider, logoutService
+        )
     }
 
     fun setEmptyText(title: Int, description: Int, left: Int) {
@@ -197,6 +179,12 @@ class TermsAndConditionActivity : BaseToolBarActivity() {
         emptyTitleView.setText(title)
         emptyTitleView.setCompoundDrawablesWithIntrinsicBounds(left, 0, 0, 0)
         emptyDescView.setText(description)
+    }
+
+    override fun onDestroy() {
+        logoutDialog?.dismiss()
+        logoutDialog = null
+        super.onDestroy()
     }
 
 }

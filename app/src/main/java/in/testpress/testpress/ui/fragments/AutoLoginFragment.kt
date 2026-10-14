@@ -9,13 +9,17 @@ import `in`.testpress.testpress.util.ProgressUtil
 import `in`.testpress.testpress.viewmodel.AutoLoginViewModel
 import android.content.Intent
 import androidx.annotation.VisibleForTesting
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.afollestad.materialdialogs.MaterialDialog
+import `in`.testpress.testpress.util.DeviceBindingDialogs
 
 open class AutoLoginFragment: RegistrationBaseFragment() {
 
     private lateinit var instituteSettings: InstituteSettings
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    var confirmationDialog: AlertDialog? = null
 
     private val autoLoginViewModel by lazy {
         ViewModelProvider(this).get(AutoLoginViewModel::class.java)
@@ -54,36 +58,24 @@ open class AutoLoginFragment: RegistrationBaseFragment() {
     private fun autoLogin() {
         ProgressUtil.progressDialog.dismiss()
         instituteSettings = viewModel.instituteSettings
-        if (instituteSettings.isDeviceBindingEnabled()) {
-            showDeviceBindingConfirmation(
-                getString(R.string.device_binding_signup_confirm_title),
-                getString(R.string.device_binding_signup_confirm_message)
-            ) {
-                proceedWithAutoLogin()
-            }
-        } else {
-            proceedWithAutoLogin()
-        }
-    }
-
-    private fun proceedWithAutoLogin() {
-        autoLoginViewModel.initializeTestPressSession(
-            activity,
+        val username = binding.editTextUsername.text.toString()
+        val password = binding.editTextPassword.text.toString()
+        if (confirmationDialog?.isShowing == true) return
+        confirmationDialog = DeviceBindingDialogs.confirmIfBindingEnabled(
+            requireContext(),
             instituteSettings,
-            binding.editTextUsername.text.toString(),
-            binding.editTextPassword.text.toString(),
-            activity.testPressService
+            onProceed = { proceedWithAutoLogin(username, password) }
         )
     }
 
-    private fun showDeviceBindingConfirmation(title: String, message: String, onConfirm: () -> Unit) {
-        MaterialDialog.Builder(requireContext())
-            .title(title)
-            .content(message)
-            .positiveText(R.string.ok)
-            .negativeText(R.string.cancel)
-            .onPositive { _, _ -> onConfirm() }
-            .show()
+    private fun proceedWithAutoLogin(username: String, password: String) {
+        autoLoginViewModel.initializeTestPressSession(
+            activity,
+            instituteSettings,
+            username,
+            password,
+            activity.testPressService
+        )
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
@@ -94,5 +86,11 @@ open class AutoLoginFragment: RegistrationBaseFragment() {
 
     private fun navigateToLoginActivity() {
         startActivity(Intent(activity, LoginActivity::class.java))
+    }
+
+    override fun onDestroyView() {
+        confirmationDialog?.dismiss()
+        confirmationDialog = null
+        super.onDestroyView()
     }
 }

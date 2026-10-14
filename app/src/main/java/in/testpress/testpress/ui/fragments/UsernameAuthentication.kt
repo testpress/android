@@ -31,18 +31,18 @@ import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat.getSystemService
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import com.afollestad.materialdialogs.MaterialDialog
+import `in`.testpress.testpress.util.DeviceBindingDialogs
 import javax.inject.Inject
 
 
 class UsernameAuthentication : BaseAuthenticationFragment() {
     lateinit var accountManager: AccountManager
     private val instituteSettings = InstituteSettings.getInstance()
+    private var confirmationDialog: AlertDialog? = null
 
     @Inject
     lateinit var testPressService: TestpressService
@@ -207,14 +207,14 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
     }
 
     private fun signIn() {
-        if (instituteSettings.isDeviceBindingEnabled()) {
-            showDeviceBindingConfirmation(
-                getString(R.string.device_binding_login_confirm_title),
-                getString(R.string.device_binding_login_confirm_message)
-            ) { authenticate(binding.username.text.toString(), binding.password.text.toString()) }
-        } else {
-            authenticate(binding.username.text.toString(), binding.password.text.toString())
-        }
+        if (confirmationDialog?.isShowing == true) return
+        val username = binding.username.text.toString()
+        val password = binding.password.text.toString()
+        confirmationDialog = DeviceBindingDialogs.confirmIfBindingEnabled(
+            requireContext(),
+            instituteSettings,
+            onProceed = { authenticate(username, password) }
+        )
     }
 
     private fun authenticate(userId: String, accessToken: String) {
@@ -232,7 +232,7 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
                 override fun onSuccess(response: TestpressSession?) {
                     val authToken = response?.token
                     if (authToken != null) {
-                        loginNavigation?.onLoginSuccess(binding.username.text.toString(),binding.password.text.toString(), authToken)
+                        loginNavigation?.onLoginSuccess(userId, accessToken, authToken)
                     }
                 }
 
@@ -252,17 +252,9 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
             })
     }
 
-    private fun showDeviceBindingConfirmation(title: String, message: String, onConfirm: () -> Unit) {
-        MaterialDialog.Builder(requireContext())
-            .title(title)
-            .content(message)
-            .positiveText(R.string.ok)
-            .negativeText(R.string.cancel)
-            .onPositive { _, _ -> onConfirm() }
-            .show()
-    }
-
     override fun onDestroyView() {
+        confirmationDialog?.dismiss()
+        confirmationDialog = null
         super.onDestroyView()
         _binding = null
     }

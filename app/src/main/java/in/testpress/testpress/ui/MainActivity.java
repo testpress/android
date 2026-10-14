@@ -74,7 +74,6 @@ import in.testpress.testpress.core.Constants;
 import in.testpress.testpress.core.TestpressService;
 import in.testpress.testpress.models.CheckPermission;
 import in.testpress.testpress.models.DaoSession;
-import com.afollestad.materialdialogs.MaterialDialog;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.UnreadMessagesCount;
 import in.testpress.testpress.models.InstituteSettingsDao;
@@ -83,6 +82,7 @@ import in.testpress.testpress.ui.fragments.DashboardFragment;
 import in.testpress.testpress.ui.utils.HandleMainMenu;
 import in.testpress.testpress.util.AppChecker;
 import in.testpress.testpress.util.CommonUtils;
+import in.testpress.testpress.util.DeviceBindingDialogs;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.SalesforceSdkInitializer;
@@ -133,6 +133,7 @@ public class MainActivity extends TestpressFragmentActivity {
     private boolean isInitScreenCalledOnce;
     private CourseListFragment courseListFragment;
     int touchCountToEnableScreenShot = 0;
+    private AlertDialog logoutDialog;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -796,41 +797,20 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     public void logout() {
-        InstituteSettings settings = mInstituteSettings != null ? mInstituteSettings : InstituteSettings.getInstance();
-        boolean bindingEnabled = settings != null && settings.isDeviceBindingEnabled();
-        if (bindingEnabled) {
-            new MaterialDialog.Builder(this)
-                    .title(R.string.device_binding_logout_warning_title)
-                    .content(R.string.device_binding_logout_warning_message)
-                    .positiveText(R.string.ok)
-                    .negativeText(R.string.cancel)
-                    .onPositive((dialog, which) -> performLogout())
-                    .show();
-        } else {
-            showRegularLogoutConfirmation();
+        if (logoutDialog != null && logoutDialog.isShowing()) {
+            return;
         }
+        logoutDialog = DeviceBindingDialogs.handleLogout(
+                this,
+                mInstituteSettings,
+                this::performLogout
+        );
     }
 
     private void performLogout() {
         setTermsAndConditionNotAgreed();
         serviceProvider.logout(MainActivity.this, testpressService,
                 serviceProvider, logoutService);
-    }
-
-    private void showRegularLogoutConfirmation() {
-        new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
-                .setTitle(R.string.logout)
-                .setMessage(R.string.logout_confirm_message)
-                .setPositiveButton(R.string.ok,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                                performLogout();
-                            }
-                        })
-                .setNegativeButton(R.string.cancel, null)
-                .show();
     }
 
     @Override
@@ -994,5 +974,14 @@ public class MainActivity extends TestpressFragmentActivity {
         if (Boolean.TRUE.equals(mInstituteSettings.getSalesforceSdkEnabled())) {
             SalesforceSdkInitializer.notificationPermissionGranted();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (logoutDialog != null) {
+            logoutDialog.dismiss();
+            logoutDialog = null;
+        }
+        super.onDestroy();
     }
 }

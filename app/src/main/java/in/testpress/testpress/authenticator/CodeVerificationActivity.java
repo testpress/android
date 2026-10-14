@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.Settings;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.activity.OnBackPressedCallback;
 import android.text.Editable;
@@ -54,6 +55,7 @@ import in.testpress.testpress.models.RegistrationErrorDetails;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.PostActivity;
 import in.testpress.testpress.ui.TextWatcherAdapter;
+import in.testpress.testpress.util.DeviceBindingDialogs;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.SafeAsyncTask;
@@ -73,6 +75,7 @@ public class CodeVerificationActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private TextView countText;
     private LinearLayout smsReceivingLayout;
+    private AlertDialog confirmationDialog;
 
     private String username;
     private String password;
@@ -259,11 +262,14 @@ public class CodeVerificationActivity extends AppCompatActivity {
                 if(password == null){
                     gotoLoginScreen();
                 } else {
-                    if (instituteSettings != null && instituteSettings.isDeviceBindingEnabled()) {
-                        showDeviceBindingConfirmation();
-                    } else {
-                        autoLogin();
+                    if (confirmationDialog != null && confirmationDialog.isShowing()) {
+                        return;
                     }
+                    confirmationDialog = DeviceBindingDialogs.confirmIfBindingEnabled(
+                            CodeVerificationActivity.this,
+                            instituteSettings,
+                            CodeVerificationActivity.this::autoLogin
+                    );
                 }
             }
         }.execute();
@@ -360,16 +366,6 @@ public class CodeVerificationActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void showDeviceBindingConfirmation() {
-        new MaterialDialog.Builder(this)
-                .title(R.string.device_binding_signup_confirm_title)
-                .content(R.string.device_binding_signup_confirm_message)
-                .positiveText(R.string.ok)
-                .negativeText(R.string.cancel)
-                .onPositive((dialog, which) -> autoLogin())
-                .show();
-    }
-
     private void fetchInstituteSettingLocalDB() {
         DaoSession daoSession = ((TestpressApplication) getApplicationContext()).getDaoSession();
         instituteSettingsDao = daoSession.getInstituteSettingsDao();
@@ -408,6 +404,15 @@ public class CodeVerificationActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
             }
         }.execute();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (confirmationDialog != null) {
+            confirmationDialog.dismiss();
+            confirmationDialog = null;
+        }
+        super.onDestroy();
     }
 
 }

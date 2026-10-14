@@ -6,7 +6,6 @@ import in.testpress.util.IntegerList;
 
 // KEEP INCLUDES - put your custom includes here
 import android.content.Context;
-import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -93,6 +92,7 @@ public class InstituteSettings {
     private Boolean qotdEnabled;
     private Boolean messagesEnabled;
     private String customForgotPasswordUrl;
+    private String deviceBindingMode;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
@@ -104,7 +104,7 @@ public class InstituteSettings {
         this.baseUrl = baseUrl;
     }
 
-    public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, Boolean facebookLoginEnabled, Boolean googleLoginEnabled, boolean commentsVotingEnabled, Boolean bookmarksEnabled, Boolean forumEnabled, String forumLabel, Boolean twilioEnabled, Boolean allow_profile_edit, String learnLabel, String leaderboardLabel, String dashboardLabel, String bookmarksLabel, String loginLabel, String loginPasswordLabel, String aboutUs, Boolean disableStudentAnalytics, Boolean customRegistrationEnabled, Boolean enableParallelLoginRestriction, Integer maxParallelLogins, Integer lockoutLimit, String cooloffTime, String appToolbarLogo, String appShareLink, String serverTime, Boolean allowScreenshotInApp, String androidSentryDns, Boolean leaderboardEnabled, String threatsAndTargetsLabel, Boolean isVideoDownloadEnabled, Boolean isHelpdeskEnabled, IntegerList allowedLoginMethods, Boolean showShareButton, String facebookAppId, Integer maxAllowedDownloadedVideos, Boolean disableForgotPassword, Boolean disableStudentReport, Boolean enableCustomTest, String currentPaymentApp, String customRegistrationUrl, Boolean disableStoreInApp, Boolean salesforceSdkEnabled, String salesforceMcApplicationId, String salesforceMcAccessToken, String salesforceFcmSenderId, String salesforceMarketingCloudUrl, String videoWatermarkType, String videoWatermarkPosition, Boolean useNewDiscountFeat, Boolean requireQuestionReportDescription, Integer questionReportDescriptionMinLength, Boolean qotdEnabled, Boolean messagesEnabled, String customForgotPasswordUrl) {
+    public InstituteSettings(String baseUrl, String verificationMethod, Boolean allowSignup, Boolean forceStudentData, Boolean removeTpBranding, String url, Boolean showGameFrontend, Boolean coursesEnabled, Boolean coursesEnableGamification, String coursesLabel, Boolean postsEnabled, String postsLabel, Boolean storeEnabled, String storeLabel, Boolean documentsEnabled, String documentsLabel, Boolean resultsEnabled, Boolean dashboardEnabled, Boolean facebookLoginEnabled, Boolean googleLoginEnabled, boolean commentsVotingEnabled, Boolean bookmarksEnabled, Boolean forumEnabled, String forumLabel, Boolean twilioEnabled, Boolean allow_profile_edit, String learnLabel, String leaderboardLabel, String dashboardLabel, String bookmarksLabel, String loginLabel, String loginPasswordLabel, String aboutUs, Boolean disableStudentAnalytics, Boolean customRegistrationEnabled, Boolean enableParallelLoginRestriction, Integer maxParallelLogins, Integer lockoutLimit, String cooloffTime, String appToolbarLogo, String appShareLink, String serverTime, Boolean allowScreenshotInApp, String androidSentryDns, Boolean leaderboardEnabled, String threatsAndTargetsLabel, Boolean isVideoDownloadEnabled, Boolean isHelpdeskEnabled, IntegerList allowedLoginMethods, Boolean showShareButton, String facebookAppId, Integer maxAllowedDownloadedVideos, Boolean disableForgotPassword, Boolean disableStudentReport, Boolean enableCustomTest, String currentPaymentApp, String customRegistrationUrl, Boolean disableStoreInApp, Boolean salesforceSdkEnabled, String salesforceMcApplicationId, String salesforceMcAccessToken, String salesforceFcmSenderId, String salesforceMarketingCloudUrl, String videoWatermarkType, String videoWatermarkPosition, Boolean useNewDiscountFeat, Boolean requireQuestionReportDescription, Integer questionReportDescriptionMinLength, Boolean qotdEnabled, Boolean messagesEnabled, String customForgotPasswordUrl, String deviceBindingMode) {
         this.baseUrl = baseUrl;
         this.verificationMethod = verificationMethod;
         this.allowSignup = allowSignup;
@@ -176,6 +176,7 @@ public class InstituteSettings {
         this.qotdEnabled = qotdEnabled;
         this.messagesEnabled = messagesEnabled;
         this.customForgotPasswordUrl = customForgotPasswordUrl;
+        this.deviceBindingMode = deviceBindingMode;
     }
 
     public String getBaseUrl() {
@@ -746,6 +747,14 @@ public class InstituteSettings {
         this.customForgotPasswordUrl = customForgotPasswordUrl;
     }
 
+    public String getDeviceBindingMode() {
+        return deviceBindingMode;
+    }
+
+    public void setDeviceBindingMode(String deviceBindingMode) {
+        this.deviceBindingMode = deviceBindingMode;
+    }
+
     // KEEP METHODS - put your custom methods here
     public long serverTime() {
         if (serverTime != null) {
@@ -797,6 +806,34 @@ public class InstituteSettings {
 
     public boolean hasCustomForgotPasswordUrl() {
         return customForgotPasswordUrl != null && !customForgotPasswordUrl.isEmpty();
+    }
+
+    public static final String DEVICE_BINDING_1_MOBILE_1_DESKTOP = "1_mobile_1_desktop";
+    public static final String DEVICE_BINDING_MOBILE_APP_ONLY = "mobile_app_only";
+    public static final String DEVICE_BINDING_DESKTOP_APP_ONLY = "desktop_app_only";
+    public static final String DEVICE_BINDING_ENABLED = "enabled";
+    public static final String DEVICE_BINDING_OFF = "off";
+
+    /**
+     * Checks whether device binding is enabled for the mobile application.
+     * Modes that enforce binding on mobile devices include "1_mobile_1_desktop",
+     * "mobile_app_only", and "enabled".
+     *
+     * Modes such as "desktop_app_only", "off", null, empty, or unknown values do
+     * not enforce binding on mobile, and thus return false.
+     */
+    public boolean isDeviceBindingEnabled() {
+        String mode = getDeviceBindingMode();
+        if (mode == null) {
+            return false;
+        }
+        String trimmedMode = mode.trim();
+        if (trimmedMode.isEmpty() || DEVICE_BINDING_OFF.equalsIgnoreCase(trimmedMode)) {
+            return false;
+        }
+        return DEVICE_BINDING_1_MOBILE_1_DESKTOP.equalsIgnoreCase(trimmedMode)
+                || DEVICE_BINDING_MOBILE_APP_ONLY.equalsIgnoreCase(trimmedMode)
+                || DEVICE_BINDING_ENABLED.equalsIgnoreCase(trimmedMode);
     }
     // KEEP METHODS END
 

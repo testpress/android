@@ -823,31 +823,6 @@ public class InstituteSettings {
         String mode = deviceBindingMode == null ? "" : deviceBindingMode.trim();
         return DEVICE_BINDING_1_MOBILE_1_DESKTOP.equalsIgnoreCase(mode)
                 || DEVICE_BINDING_MOBILE_APP_ONLY.equalsIgnoreCase(mode);
-    public String getDeviceBindingMode() {
-        if (deviceBindingMode != null) {
-            return deviceBindingMode;
-        }
-        try {
-            Context context = TestpressApplication.getInstance();
-            if (context != null) {
-                return context.getSharedPreferences("testpress_device_binding", Context.MODE_PRIVATE)
-                        .getString("device_binding_mode", null);
-            }
-        } catch (Exception ignored) {}
-        return null;
-    }
-
-    public void setDeviceBindingMode(String deviceBindingMode) {
-        this.deviceBindingMode = deviceBindingMode;
-        try {
-            Context context = TestpressApplication.getInstance();
-            if (context != null && deviceBindingMode != null) {
-                context.getSharedPreferences("testpress_device_binding", Context.MODE_PRIVATE)
-                        .edit()
-                        .putString("device_binding_mode", deviceBindingMode)
-                        .apply();
-            }
-        } catch (Exception ignored) {}
     }
     // KEEP METHODS END
 

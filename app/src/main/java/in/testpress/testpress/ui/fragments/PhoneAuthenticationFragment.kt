@@ -104,7 +104,7 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
         binding.phoneNumber.setOnEditorActionListener { _, actionId, _ ->
             when(actionId) {
                 EditorInfo.IME_ACTION_DONE -> {
-                    requestOTP(binding.phoneNumber.text.toString(), binding.countryCode.selectedCountryCode)
+                    binding.verifyOtp.performClick()
                     true
                 }
                 else -> false
@@ -162,6 +162,7 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
     }
 
     private fun requestOTP(phoneNumber: String, countryCode: String) {
+        if (!isAdded || view == null) return
         viewModel.requestOTP(phoneNumber, countryCode).observe(viewLifecycleOwner, { resource ->
             if (!isAdded || view == null) return@observe
             when (resource.status) {

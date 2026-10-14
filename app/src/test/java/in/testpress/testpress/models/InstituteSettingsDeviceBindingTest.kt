@@ -115,6 +115,11 @@ class InstituteSettingsDeviceBindingTest {
             deviceBindingMode = "unknown_mode_value"
         }
         assertFalse(settings.isDeviceBindingEnabled)
+
+        val futureModeSettings = InstituteSettings().apply {
+            deviceBindingMode = "future_mode"
+        }
+        assertFalse(futureModeSettings.isDeviceBindingEnabled)
     }
 
     @Test

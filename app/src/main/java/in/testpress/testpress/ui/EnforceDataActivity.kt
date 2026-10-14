@@ -19,7 +19,7 @@ import `in`.testpress.testpress.core.TestpressService
 import `in`.testpress.testpress.models.InstituteSettings
 import `in`.testpress.ui.AbstractWebViewActivity
 import `in`.testpress.util.BaseJavaScriptInterface
-import com.afollestad.materialdialogs.MaterialDialog
+import `in`.testpress.testpress.util.DeviceBindingDialogs
 import javax.inject.Inject
 
 class EnforceDataActivity : AbstractWebViewActivity() {
@@ -68,42 +68,30 @@ class EnforceDataActivity : AbstractWebViewActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    private var logoutDialog: AlertDialog? = null
+
     fun logout() {
-        val instituteSettings = InstituteSettings.getInstance()
-        if (instituteSettings != null && instituteSettings.isDeviceBindingEnabled()) {
-            showDeviceBindingLogoutWarning()
-        } else {
-            showRegularLogoutConfirmation()
-        }
+        if (logoutDialog?.isShowing == true) return
+        logoutDialog = DeviceBindingDialogs.handleLogout(
+            this,
+            InstituteSettings.getInstance(),
+            onProceedToLogout = { performLogout() }
+        )
     }
 
-    private fun showDeviceBindingLogoutWarning() {
-        MaterialDialog.Builder(this)
-            .title(R.string.device_binding_logout_warning_title)
-            .content(R.string.device_binding_logout_warning_message)
-            .positiveText(R.string.ok)
-            .negativeText(R.string.cancel)
-            .onPositive { _, _ -> showRegularLogoutConfirmation() }
-            .show()
+    private fun performLogout() {
+        serviceProvider.logout(
+            this@EnforceDataActivity,
+            testpressService,
+            serviceProvider,
+            logoutService
+        )
     }
 
-    private fun showRegularLogoutConfirmation() {
-        AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
-            .setTitle(R.string.logout)
-            .setMessage(R.string.logout_confirm_message)
-            .setPositiveButton(
-                R.string.ok
-            ) { dialogInterface, i ->
-                dialogInterface.dismiss()
-                serviceProvider.logout(
-                    this@EnforceDataActivity,
-                    testpressService,
-                    serviceProvider,
-                    logoutService
-                )
-            }
-            .setNegativeButton(R.string.cancel, null)
-            .show()
+    override fun onDestroy() {
+        logoutDialog?.dismiss()
+        logoutDialog = null
+        super.onDestroy()
     }
 
     inner class JavaScriptInterface : BaseJavaScriptInterface(this) {

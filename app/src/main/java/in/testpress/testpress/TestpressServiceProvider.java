@@ -124,7 +124,7 @@ public class TestpressServiceProvider {
                         .setScreenshotDisabled(!instituteSettings.getAllowScreenshotInApp())
                         .setDisplayUserEmailOnVideo(DISPLAY_USERNAME_ON_VIDEO)
                         .setAccessCodeEnabled(false)
-                    .setDeviceBindingMode(instituteSettings.getDeviceBindingMode())
+                        .setDeviceBindingMode(instituteSettings.getDeviceBindingMode())
                         .setEnableParallelLoginRestriction(instituteSettings.getEnableParallelLoginRestriction())
                         .setMaxParallelLogins(instituteSettings.getMaxParallelLogins())
                         .setLockoutLimit(instituteSettings.getLockoutLimit())

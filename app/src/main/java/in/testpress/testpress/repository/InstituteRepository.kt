@@ -29,18 +29,11 @@ class InstituteRepository(val context: Context, val testpressService: TestpressS
             override fun saveNetworkResponseToDB(item: InstituteSettings) {
                 val instituteSettingsDao = TestpressApplication.getDaoSession().instituteSettingsDao
                 item.baseUrl = BuildConfig.BASE_URL
-                item.deviceBindingMode?.let { mode ->
-                    context.getSharedPreferences("testpress_device_binding", Context.MODE_PRIVATE)
-                        .edit()
-                        .putString("device_binding_mode", mode)
-                        .apply()
-                }
                 instituteSettingsDao.insertOrReplace(item)
             }
 
             override fun shouldFetch(data: InstituteSettings?): Boolean {
-                val current = InstituteSettings.getInstance()
-                return forceRefresh || current == null || current.deviceBindingMode == null
+                return forceRefresh || InstituteSettings.getInstance() == null
             }
 
             override fun loadFromDb(): LiveData<InstituteSettings> {

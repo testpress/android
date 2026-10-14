@@ -24,9 +24,10 @@ import android.view.inputmethod.EditorInfo
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.afollestad.materialdialogs.MaterialDialog
+import `in`.testpress.testpress.util.DeviceBindingDialogs
 import com.google.android.gms.auth.api.credentials.*
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import javax.inject.Inject
@@ -37,6 +38,7 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
     @Inject
     lateinit var testPressService: TestpressService
     private val instituteSettings = InstituteSettings.getInstance()
+    private var confirmationDialog: AlertDialog? = null
     private var _binding: PhoneLoginLayoutBinding? = null
     private val binding get() = _binding!!
 
@@ -125,16 +127,16 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
 
         binding.verifyOtp.setOnClickListener {
             if (binding.phoneNumber.isEmpty()) {
-                binding.phoneNumber.error = "Please enter your mobile number"
+                binding.phoneNumber.error = getString(R.string.please_enter_mobile_number)
             } else {
-                if (instituteSettings.isDeviceBindingEnabled()) {
-                    showDeviceBindingConfirmation(
-                        getString(R.string.device_binding_otp_confirm_title),
-                        getString(R.string.device_binding_otp_confirm_message)
-                    ) { requestOTP(binding.phoneNumber.text.toString(), binding.countryCode.selectedCountryCode) }
-                } else {
-                    requestOTP(binding.phoneNumber.text.toString(), binding.countryCode.selectedCountryCode)
-                }
+                if (confirmationDialog?.isShowing == true) return@setOnClickListener
+                val phoneNumber = binding.phoneNumber.text.toString()
+                val countryCode = binding.countryCode.selectedCountryCode
+                confirmationDialog = DeviceBindingDialogs.confirmIfBindingEnabled(
+                    requireContext(),
+                    instituteSettings,
+                    onProceed = { requestOTP(phoneNumber, countryCode) }
+                )
             }
         }
 
@@ -168,16 +170,6 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
         })
     }
 
-    private fun showDeviceBindingConfirmation(title: String, message: String, onConfirm: () -> Unit) {
-        MaterialDialog.Builder(requireContext())
-            .title(title)
-            .content(message)
-            .positiveText(R.string.ok)
-            .negativeText(R.string.cancel)
-            .onPositive { _, _ -> onConfirm() }
-            .show()
-    }
-
     private fun autoFillPhoneNumber(intent: Intent) {
         val phoneNumberUtil = PhoneNumberUtil.createInstance(requireContext())
         val phoneNo = intent.getParcelableExtra<Credential>(Credential.EXTRA_KEY)?.id
@@ -189,6 +181,8 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
     }
 
     override fun onDestroyView() {
+        confirmationDialog?.dismiss()
+        confirmationDialog = null
         super.onDestroyView()
         _binding = null
     }

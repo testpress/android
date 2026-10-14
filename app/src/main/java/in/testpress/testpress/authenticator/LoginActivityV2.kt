@@ -31,11 +31,12 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.afollestad.materialdialogs.MaterialDialog
+import `in`.testpress.testpress.util.DeviceBindingDialogs
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -50,6 +51,7 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
     lateinit var googleApiClient: GoogleSignInClient
     lateinit var instituteSettings: InstituteSettings
     lateinit var accountManager: AccountManager
+    private var confirmationDialog: AlertDialog? = null
 
     val handleGoogleSignIn = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         it?.data?.let { intent ->
@@ -138,12 +140,12 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
 
     override fun signInWithGoogle() {
         if (::googleApiClient.isInitialized) {
-            showDeviceBindingConfirmation(
-                getString(R.string.device_binding_login_confirm_title),
-                getString(R.string.device_binding_login_confirm_message)
-            ) {
-                launchGoogleSignIn()
-            }
+            if (confirmationDialog?.isShowing == true) return
+            confirmationDialog = DeviceBindingDialogs.confirmIfBindingEnabled(
+                this,
+                if (::instituteSettings.isInitialized) instituteSettings else null,
+                onProceed = { launchGoogleSignIn() }
+            )
         } else {
             UIUtils.showAlert(this, getString(R.string.google_signin_not_configured))
         }
@@ -258,31 +260,6 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
             })
     }
 
-    private var confirmationDialog: MaterialDialog? = null
-
-    private fun showDeviceBindingConfirmation(title: String, message: String, onConfirm: () -> Unit) {
-        if (isDeviceBindingEnabled()) {
-            if (confirmationDialog?.isShowing == true) {
-                return
-            }
-            confirmationDialog = MaterialDialog.Builder(this)
-                .title(title)
-                .content(message)
-                .positiveText(R.string.ok)
-                .negativeText(R.string.cancel)
-                .onPositive { _, _ -> onConfirm() }
-                .dismissListener { confirmationDialog = null }
-                .show()
-        } else {
-            onConfirm()
-        }
-    }
-
-    private fun isDeviceBindingEnabled(): Boolean {
-        val settings = if (::instituteSettings.isInitialized) instituteSettings else InstituteSettings.getInstance()
-        return settings?.isDeviceBindingEnabled() == true
-    }
-
     private fun getInstituteSettings(): `in`.testpress.models.InstituteSettings {
         val settings = `in`.testpress.models.InstituteSettings(instituteSettings.baseUrl)
             .setWhiteLabeledHostUrl(BuildConfig.WHITE_LABELED_HOST_URL)
@@ -303,6 +280,12 @@ class LoginActivityV2: ActionBarAccountAuthenticatorActivity(), LoginNavigationI
 
     private fun hasAgreedTermsAndConditions(): Boolean {
         return getSharedPreferences(TERMS_AND_CONDITIONS, MODE_PRIVATE).getBoolean(TERMS_AND_CONDITIONS, false)
+    }
+
+    override fun onDestroy() {
+        confirmationDialog?.dismiss()
+        confirmationDialog = null
+        super.onDestroy()
     }
 }
 

@@ -95,6 +95,10 @@ public class InstituteSettings {
     private String deviceBindingMode;
 
     // KEEP FIELDS - put your custom fields here
+    public static final String DEVICE_BINDING_OFF = "off";
+    public static final String DEVICE_BINDING_MOBILE_APP_ONLY = "mobile_app_only";
+    public static final String DEVICE_BINDING_DESKTOP_APP_ONLY = "desktop_app_only";
+    public static final String DEVICE_BINDING_1_MOBILE_1_DESKTOP = "1_mobile_1_desktop";
     // KEEP FIELDS END
 
     public InstituteSettings() {
@@ -808,32 +812,17 @@ public class InstituteSettings {
         return customForgotPasswordUrl != null && !customForgotPasswordUrl.isEmpty();
     }
 
-    public static final String DEVICE_BINDING_1_MOBILE_1_DESKTOP = "1_mobile_1_desktop";
-    public static final String DEVICE_BINDING_MOBILE_APP_ONLY = "mobile_app_only";
-    public static final String DEVICE_BINDING_DESKTOP_APP_ONLY = "desktop_app_only";
-    public static final String DEVICE_BINDING_ENABLED = "enabled";
-    public static final String DEVICE_BINDING_OFF = "off";
-
     /**
      * Checks whether device binding is enabled for the mobile application.
-     * Modes that enforce binding on mobile devices include "1_mobile_1_desktop",
-     * "mobile_app_only", and "enabled".
+     * Modes that enforce binding on mobile devices include "1_mobile_1_desktop" and "mobile_app_only".
      *
-     * Modes such as "desktop_app_only", "off", null, empty, or unknown values do
+     * Modes such as "desktop_app_only", "off", null, empty, whitespace, or unknown values do
      * not enforce binding on mobile, and thus return false.
      */
     public boolean isDeviceBindingEnabled() {
-        String mode = getDeviceBindingMode();
-        if (mode == null) {
-            return false;
-        }
-        String trimmedMode = mode.trim();
-        if (trimmedMode.isEmpty() || DEVICE_BINDING_OFF.equalsIgnoreCase(trimmedMode)) {
-            return false;
-        }
-        return DEVICE_BINDING_1_MOBILE_1_DESKTOP.equalsIgnoreCase(trimmedMode)
-                || DEVICE_BINDING_MOBILE_APP_ONLY.equalsIgnoreCase(trimmedMode)
-                || DEVICE_BINDING_ENABLED.equalsIgnoreCase(trimmedMode);
+        String mode = deviceBindingMode == null ? "" : deviceBindingMode.trim();
+        return DEVICE_BINDING_1_MOBILE_1_DESKTOP.equalsIgnoreCase(mode)
+                || DEVICE_BINDING_MOBILE_APP_ONLY.equalsIgnoreCase(mode);
     }
     // KEEP METHODS END
 

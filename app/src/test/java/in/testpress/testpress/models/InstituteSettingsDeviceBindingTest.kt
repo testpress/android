@@ -1,6 +1,10 @@
 package `in`.testpress.testpress.models
 
+import com.google.gson.FieldNamingPolicy
+import com.google.gson.GsonBuilder
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -8,6 +12,10 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class InstituteSettingsDeviceBindingTest {
+
+    private val gson = GsonBuilder()
+        .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+        .create()
 
     @Test
     fun isDeviceBindingEnabledReturnsTrueFor1Mobile1Desktop() {
@@ -26,16 +34,16 @@ class InstituteSettingsDeviceBindingTest {
     }
 
     @Test
-    fun isDeviceBindingEnabledReturnsTrueForEnabledCaseInsensitive() {
-        val lowercaseSettings = InstituteSettings().apply {
-            deviceBindingMode = InstituteSettings.DEVICE_BINDING_ENABLED
+    fun isDeviceBindingEnabledReturnsTrueForCaseInsensitiveModes() {
+        val upperMobileAndDesktop = InstituteSettings().apply {
+            deviceBindingMode = "1_MOBILE_1_DESKTOP"
         }
-        assertTrue(lowercaseSettings.isDeviceBindingEnabled)
+        assertTrue(upperMobileAndDesktop.isDeviceBindingEnabled)
 
-        val uppercaseSettings = InstituteSettings().apply {
-            deviceBindingMode = "ENABLED"
+        val upperMobileOnly = InstituteSettings().apply {
+            deviceBindingMode = "MOBILE_APP_ONLY"
         }
-        assertTrue(uppercaseSettings.isDeviceBindingEnabled)
+        assertTrue(upperMobileOnly.isDeviceBindingEnabled)
     }
 
     @Test
@@ -92,10 +100,41 @@ class InstituteSettingsDeviceBindingTest {
     }
 
     @Test
+    fun isDeviceBindingEnabledReturnsFalseForEnabled() {
+        val settings = InstituteSettings().apply {
+            deviceBindingMode = "enabled"
+        }
+        assertFalse(settings.isDeviceBindingEnabled)
+
+        val upperSettings = InstituteSettings().apply {
+            deviceBindingMode = "ENABLED"
+        }
+        assertFalse(upperSettings.isDeviceBindingEnabled)
+    }
+
+    @Test
     fun isDeviceBindingEnabledReturnsFalseForUnknownMode() {
         val settings = InstituteSettings().apply {
             deviceBindingMode = "unknown_mode_value"
         }
+        assertFalse(settings.isDeviceBindingEnabled)
+    }
+
+    @Test
+    fun gsonDeserializesDeviceBindingModeFieldFromApiJson() {
+        val json = """{"device_binding_mode": "1_mobile_1_desktop"}"""
+        val settings = gson.fromJson(json, InstituteSettings::class.java)
+
+        assertEquals("1_mobile_1_desktop", settings.deviceBindingMode)
+        assertTrue(settings.isDeviceBindingEnabled)
+    }
+
+    @Test
+    fun gsonDeserializesMissingDeviceBindingModeAsNull() {
+        val json = """{"allow_signup": true}"""
+        val settings = gson.fromJson(json, InstituteSettings::class.java)
+
+        assertNull(settings.deviceBindingMode)
         assertFalse(settings.isDeviceBindingEnabled)
     }
 }

@@ -7,7 +7,7 @@ import de.greenrobot.daogenerator.Schema;
 
 public class TestpressDaoGenerator {
     public static void main(String args[]) throws Exception {
-        Schema schema = new Schema(49, "in.testpress.testpress.models");
+        Schema schema = new Schema(50, "in.testpress.testpress.models");
 
         Entity post = schema.addEntity("Post");
         post.addLongProperty("id").primaryKey();
@@ -116,6 +116,7 @@ public class TestpressDaoGenerator {
         instituteSettings.addBooleanProperty("qotdEnabled");
         instituteSettings.addBooleanProperty("messagesEnabled");
         instituteSettings.addStringProperty("customForgotPasswordUrl");
+        instituteSettings.addStringProperty("deviceBindingMode");
 
         Entity rssFeed = schema.addEntity("RssItem");
         rssFeed.addLongProperty("id").primaryKey().autoincrement();

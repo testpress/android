@@ -8,8 +8,7 @@ import androidx.appcompat.app.AlertDialog
 
 object DeviceBindingDialogs {
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    var dialogBuilder: (Context, Int, Int, Runnable, Runnable?) -> AlertDialog = { context, titleRes, messageRes, onConfirm, onCancel ->
+    private val defaultDialogBuilder: (Context, Int, Int, Runnable, Runnable?) -> AlertDialog = { context, titleRes, messageRes, onConfirm, onCancel ->
         val dialog = AlertDialog.Builder(context, R.style.AppCompatAlertDialogStyle)
             .setTitle(titleRes)
             .setMessage(messageRes)
@@ -21,9 +20,35 @@ object DeviceBindingDialogs {
                 dialogInterface.dismiss()
                 onCancel?.run()
             }
+            .setOnCancelListener {
+                onCancel?.run()
+            }
             .create()
         dialog.show()
         dialog
+    }
+
+    private var customDialogBuilder: ((Context, Int, Int, Runnable, Runnable?) -> AlertDialog)? = null
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun setDialogBuilderForTesting(builder: ((Context, Int, Int, Runnable, Runnable?) -> AlertDialog)?) {
+        customDialogBuilder = builder
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun resetDialogBuilderForTesting() {
+        customDialogBuilder = null
+    }
+
+    private fun buildAndShowDialog(
+        context: Context,
+        titleRes: Int,
+        messageRes: Int,
+        onConfirm: Runnable,
+        onCancel: Runnable?
+    ): AlertDialog {
+        val builder = customDialogBuilder ?: defaultDialogBuilder
+        return builder(context, titleRes, messageRes, onConfirm, onCancel)
     }
 
     @JvmStatic
@@ -34,8 +59,7 @@ object DeviceBindingDialogs {
         onProceed: Runnable,
         onCancel: Runnable? = null
     ): AlertDialog? {
-        val settings = instituteSettings ?: InstituteSettings.getInstance()
-        return if (settings?.isDeviceBindingEnabled == true) {
+        return if (instituteSettings?.isDeviceBindingEnabled == true) {
             showConfirmation(context, onProceed, onCancel)
         } else {
             onProceed.run()
@@ -50,7 +74,7 @@ object DeviceBindingDialogs {
         onConfirm: Runnable,
         onCancel: Runnable? = null
     ): AlertDialog {
-        return dialogBuilder(
+        return buildAndShowDialog(
             context,
             R.string.device_binding_confirm_title,
             R.string.device_binding_confirm_message,
@@ -67,8 +91,7 @@ object DeviceBindingDialogs {
         onProceedToLogout: Runnable,
         onCancel: Runnable? = null
     ): AlertDialog {
-        val settings = instituteSettings ?: InstituteSettings.getInstance()
-        return if (settings?.isDeviceBindingEnabled == true) {
+        return if (instituteSettings?.isDeviceBindingEnabled == true) {
             showLogoutWarning(context, onConfirm = {
                 showRegularLogoutConfirmation(context, onProceedToLogout, onCancel)
             }, onCancel = onCancel)
@@ -84,7 +107,7 @@ object DeviceBindingDialogs {
         onConfirm: Runnable,
         onCancel: Runnable? = null
     ): AlertDialog {
-        return dialogBuilder(
+        return buildAndShowDialog(
             context,
             R.string.device_binding_logout_warning_title,
             R.string.device_binding_logout_warning_message,
@@ -100,7 +123,7 @@ object DeviceBindingDialogs {
         onConfirm: Runnable,
         onCancel: Runnable? = null
     ): AlertDialog {
-        return dialogBuilder(
+        return buildAndShowDialog(
             context,
             R.string.logout,
             R.string.logout_confirm_message,

@@ -135,7 +135,11 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
                 confirmationDialog = DeviceBindingDialogs.confirmIfBindingEnabled(
                     requireContext(),
                     instituteSettings,
-                    onProceed = { requestOTP(phoneNumber, countryCode) }
+                    onProceed = {
+                        if (isAdded && view != null) {
+                            requestOTP(phoneNumber, countryCode)
+                        }
+                    }
                 )
             }
         }
@@ -153,16 +157,19 @@ class PhoneAuthenticationFragment: BaseAuthenticationFragment() {
     }
 
     private fun requestOTP(phoneNumber: String, countryCode: String) {
+        if (!isAdded || view == null) return
         viewModel.requestOTP(phoneNumber, countryCode).observe(viewLifecycleOwner, { resource ->
+            if (!isAdded || view == null) return@observe
             when (resource.status) {
                 Status.SUCCESS -> {
                     loginNavigation?.goToOTPVerification(phoneNumber, countryCode)
                 }
                 Status.ERROR -> {
+                    val context = context ?: return@observe
                     if (resource.data?.detail != null) {
-                        UIUtils.showAlert(requireContext(),resource.data?.detail!!)
+                        UIUtils.showAlert(context, resource.data?.detail!!)
                     } else {
-                        UIUtils.showAlert(requireContext(),"Error occurred while sending OTP. Please try again.")
+                        UIUtils.showAlert(context, "Error occurred while sending OTP. Please try again.")
                     }
                 }
                 else -> {}

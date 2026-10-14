@@ -27,8 +27,6 @@ class DeviceBindingDialogsTest {
     private var capturedOnCancel: Runnable? = null
     private var dialogBuildCount = 0
 
-    private val originalDialogBuilder = DeviceBindingDialogs.dialogBuilder
-
     @Before
     fun setUp() {
         dialogBuildCount = 0
@@ -37,7 +35,7 @@ class DeviceBindingDialogsTest {
         capturedOnConfirm = null
         capturedOnCancel = null
 
-        DeviceBindingDialogs.dialogBuilder = { _, title, message, onConfirm, onCancel ->
+        DeviceBindingDialogs.setDialogBuilderForTesting { _, title, message, onConfirm, onCancel ->
             dialogBuildCount++
             capturedTitleRes = title
             capturedMessageRes = message
@@ -49,7 +47,7 @@ class DeviceBindingDialogsTest {
 
     @After
     fun tearDown() {
-        DeviceBindingDialogs.dialogBuilder = originalDialogBuilder
+        DeviceBindingDialogs.resetDialogBuilderForTesting()
     }
 
     @Test
@@ -206,5 +204,89 @@ class DeviceBindingDialogsTest {
         assertEquals(1, dialogBuildCount)
         assertFalse(proceedToLogoutCalled)
         assertTrue(cancelCalled)
+    }
+
+    @Test
+    fun initialOtpRequestMustPassThroughConfirmationAndResendDoesNotRepeatDialog() {
+        var otpRequestedCount = 0
+        var cancelCalled = false
+        val settings = InstituteSettings().apply {
+            deviceBindingMode = InstituteSettings.DEVICE_BINDING_1_MOBILE_1_DESKTOP
+        }
+
+        // 1. Initial OTP request via confirmIfBindingEnabled (PhoneAuthenticationFragment flow)
+        val dialog = DeviceBindingDialogs.confirmIfBindingEnabled(
+            mockContext,
+            settings,
+            onProceed = { otpRequestedCount++ },
+            onCancel = { cancelCalled = true }
+        )
+
+        assertEquals(mockDialog, dialog)
+        assertEquals(1, dialogBuildCount)
+        // Must NOT have requested OTP yet before confirmation
+        assertEquals(0, otpRequestedCount)
+
+        // 2. User confirms device binding dialog
+        capturedOnConfirm?.run()
+        assertEquals(1, otpRequestedCount)
+        assertFalse(cancelCalled)
+
+        // 3. User taps Resend OTP (OTPVerificationFragment flow)
+        // Resend OTP directly requests OTP without re-prompting device binding confirmation
+        val resendOtp = { otpRequestedCount++ }
+        resendOtp.invoke()
+
+        // OTP count incremented to 2, but dialog count remains 1 (no new dialog shown)
+        assertEquals(2, otpRequestedCount)
+        assertEquals(1, dialogBuildCount)
+    }
+
+    @Test
+    fun initialOtpRequestWhenCancelledDoesNotTriggerOtpRequest() {
+        var otpRequested = false
+        var cancelCalled = false
+        val settings = InstituteSettings().apply {
+            deviceBindingMode = InstituteSettings.DEVICE_BINDING_MOBILE_APP_ONLY
+        }
+
+        DeviceBindingDialogs.confirmIfBindingEnabled(
+            mockContext,
+            settings,
+            onProceed = { otpRequested = true },
+            onCancel = { cancelCalled = true }
+        )
+
+        assertEquals(1, dialogBuildCount)
+        capturedOnCancel?.run()
+
+        assertFalse(otpRequested)
+        assertTrue(cancelCalled)
+    }
+
+    @Test
+    fun codeVerificationActivityAutoLoginFlowGatedByDeviceBindingConfirmation() {
+        var autoLoginCalled = false
+        var cancelCalled = false
+        val settings = InstituteSettings().apply {
+            deviceBindingMode = InstituteSettings.DEVICE_BINDING_1_MOBILE_1_DESKTOP
+        }
+
+        // Simulating CodeVerificationActivity.onSuccess after SMS code verification
+        val dialog = DeviceBindingDialogs.confirmIfBindingEnabled(
+            mockContext,
+            settings,
+            onProceed = { autoLoginCalled = true },
+            onCancel = { cancelCalled = true }
+        )
+
+        assertEquals(mockDialog, dialog)
+        assertEquals(1, dialogBuildCount)
+        assertFalse(autoLoginCalled)
+
+        // Confirming triggers autoLogin
+        capturedOnConfirm?.run()
+        assertTrue(autoLoginCalled)
+        assertFalse(cancelCalled)
     }
 }

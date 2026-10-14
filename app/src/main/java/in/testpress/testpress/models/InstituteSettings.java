@@ -773,24 +773,14 @@ public class InstituteSettings {
     }
 
     public static InstituteSettings getInstance() {
-        try {
-            if (TestpressApplication.getDaoSession() == null) {
-                return null;
-            }
-            InstituteSettingsDao instituteSettingsDao = TestpressApplication.getDaoSession().getInstituteSettingsDao();
-            if (instituteSettingsDao == null) {
-                return null;
-            }
-            List<InstituteSettings> instituteSettingList = instituteSettingsDao.queryBuilder()
-                    .where(InstituteSettingsDao.Properties.BaseUrl.eq(BuildConfig.BASE_URL))
-                    .list();
-            if (instituteSettingList.size() == 0) {
-                return null;
-            }
-            return instituteSettingList.get(0);
-        } catch (Exception e) {
+        InstituteSettingsDao instituteSettingsDao = TestpressApplication.getDaoSession().getInstituteSettingsDao();
+        List<InstituteSettings> instituteSettingList = instituteSettingsDao.queryBuilder()
+                .where(InstituteSettingsDao.Properties.BaseUrl.eq(BuildConfig.BASE_URL))
+                .list();
+        if (instituteSettingList.size() == 0) {
             return null;
         }
+        return instituteSettingList.get(0);
     }
 
     public VerificationMethod getVerificationType() {

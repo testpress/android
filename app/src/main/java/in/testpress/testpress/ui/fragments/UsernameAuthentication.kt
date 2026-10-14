@@ -213,7 +213,11 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
         confirmationDialog = DeviceBindingDialogs.confirmIfBindingEnabled(
             requireContext(),
             instituteSettings,
-            onProceed = { authenticate(username, password) }
+            onProceed = {
+                if (isAdded && view != null) {
+                    authenticate(username, password)
+                }
+            }
         )
     }
 

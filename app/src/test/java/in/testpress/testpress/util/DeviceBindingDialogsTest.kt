@@ -255,7 +255,7 @@ class DeviceBindingDialogsTest {
             deviceBindingMode = InstituteSettings.DEVICE_BINDING_1_MOBILE_1_DESKTOP
         }
 
-        val returnedDialog = DeviceBindingDialogs.handleLogout(
+        DeviceBindingDialogs.handleLogout(
             mockContext,
             settings,
             onProceedToLogout = {},
@@ -263,7 +263,7 @@ class DeviceBindingDialogsTest {
         )
 
         // First dialog is warning and onDialogShown receives it
-        assertEquals(returnedDialog, currentDialog)
+        assertEquals(mockDialog, currentDialog)
         assertEquals(R.string.device_binding_logout_warning_title, capturedTitleRes)
 
         // Confirming warning triggers confirmation dialog and onDialogShown receives it

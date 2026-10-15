@@ -72,7 +72,7 @@ class EnforceDataActivity : AbstractWebViewActivity() {
 
     fun logout() {
         if (logoutDialog?.isShowing == true) return
-        logoutDialog = DeviceBindingDialogs.handleLogout(
+        DeviceBindingDialogs.handleLogout(
             this,
             InstituteSettings.getInstance(),
             onProceedToLogout = { performLogout() },

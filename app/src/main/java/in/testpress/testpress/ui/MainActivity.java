@@ -799,7 +799,7 @@ public class MainActivity extends TestpressFragmentActivity {
         if (logoutDialog != null && logoutDialog.isShowing()) {
             return;
         }
-        logoutDialog = DeviceBindingDialogs.handleLogout(
+        DeviceBindingDialogs.handleLogout(
                 this,
                 mInstituteSettings,
                 this::performLogout,

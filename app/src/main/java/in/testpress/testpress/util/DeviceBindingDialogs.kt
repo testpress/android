@@ -74,31 +74,19 @@ object DeviceBindingDialogs {
         context: Context,
         instituteSettings: InstituteSettings?,
         onProceedToLogout: Runnable,
-        onCancel: Runnable? = null,
-        onDialogShown: Consumer<AlertDialog>? = null
-    ): AlertDialog {
-        return if (instituteSettings?.isDeviceBindingEnabled == true) {
+        onDialogShown: Consumer<AlertDialog>? = null,
+        onCancel: Runnable? = null
+    ) {
+        if (instituteSettings?.isDeviceBindingEnabled == true) {
             val warningDialog = showLogoutWarning(context, onConfirm = {
                 val confirmDialog = showRegularLogoutConfirmation(context, onProceedToLogout, onCancel)
                 onDialogShown?.accept(confirmDialog)
             }, onCancel = onCancel)
             onDialogShown?.accept(warningDialog)
-            warningDialog
         } else {
             val confirmDialog = showRegularLogoutConfirmation(context, onProceedToLogout, onCancel)
             onDialogShown?.accept(confirmDialog)
-            confirmDialog
         }
-    }
-
-    @JvmStatic
-    fun handleLogout(
-        context: Context,
-        instituteSettings: InstituteSettings?,
-        onProceedToLogout: Runnable,
-        onDialogShown: Consumer<AlertDialog>
-    ): AlertDialog {
-        return handleLogout(context, instituteSettings, onProceedToLogout, null, onDialogShown)
     }
 
     private fun showLogoutWarning(

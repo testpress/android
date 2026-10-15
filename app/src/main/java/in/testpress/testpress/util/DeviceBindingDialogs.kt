@@ -5,39 +5,15 @@ import `in`.testpress.testpress.models.InstituteSettings
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
+import java.util.function.Consumer
 
 object DeviceBindingDialogs {
-
-    private val defaultDialogBuilder: (Context, Int, Int, Runnable, Runnable?) -> AlertDialog = { context, titleRes, messageRes, onConfirm, onCancel ->
-        val dialog = AlertDialog.Builder(context, R.style.AppCompatAlertDialogStyle)
-            .setTitle(titleRes)
-            .setMessage(messageRes)
-            .setPositiveButton(R.string.ok) { dialogInterface, _ ->
-                dialogInterface.dismiss()
-                onConfirm.run()
-            }
-            .setNegativeButton(R.string.cancel) { dialogInterface, _ ->
-                dialogInterface.dismiss()
-                onCancel?.run()
-            }
-            .setOnCancelListener {
-                onCancel?.run()
-            }
-            .create()
-        dialog.show()
-        dialog
-    }
 
     private var customDialogBuilder: ((Context, Int, Int, Runnable, Runnable?) -> AlertDialog)? = null
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     fun setDialogBuilderForTesting(builder: ((Context, Int, Int, Runnable, Runnable?) -> AlertDialog)?) {
         customDialogBuilder = builder
-    }
-
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    fun resetDialogBuilderForTesting() {
-        customDialogBuilder = null
     }
 
     private fun buildAndShowDialog(
@@ -47,8 +23,19 @@ object DeviceBindingDialogs {
         onConfirm: Runnable,
         onCancel: Runnable?
     ): AlertDialog {
-        val builder = customDialogBuilder ?: defaultDialogBuilder
-        return builder(context, titleRes, messageRes, onConfirm, onCancel)
+        val custom = customDialogBuilder
+        if (custom != null) {
+            return custom(context, titleRes, messageRes, onConfirm, onCancel)
+        }
+        val dialog = AlertDialog.Builder(context, R.style.AppCompatAlertDialogStyle)
+            .setTitle(titleRes)
+            .setMessage(messageRes)
+            .setPositiveButton(R.string.ok) { _, _ -> onConfirm.run() }
+            .setNegativeButton(R.string.cancel) { _, _ -> onCancel?.run() }
+            .setOnCancelListener { onCancel?.run() }
+            .create()
+        dialog.show()
+        return dialog
     }
 
     @JvmStatic
@@ -67,9 +54,7 @@ object DeviceBindingDialogs {
         }
     }
 
-    @JvmStatic
-    @JvmOverloads
-    fun showConfirmation(
+    private fun showConfirmation(
         context: Context,
         onConfirm: Runnable,
         onCancel: Runnable? = null
@@ -89,20 +74,34 @@ object DeviceBindingDialogs {
         context: Context,
         instituteSettings: InstituteSettings?,
         onProceedToLogout: Runnable,
-        onCancel: Runnable? = null
+        onCancel: Runnable? = null,
+        onDialogShown: Consumer<AlertDialog>? = null
     ): AlertDialog {
         return if (instituteSettings?.isDeviceBindingEnabled == true) {
-            showLogoutWarning(context, onConfirm = {
-                showRegularLogoutConfirmation(context, onProceedToLogout, onCancel)
+            val warningDialog = showLogoutWarning(context, onConfirm = {
+                val confirmDialog = showRegularLogoutConfirmation(context, onProceedToLogout, onCancel)
+                onDialogShown?.accept(confirmDialog)
             }, onCancel = onCancel)
+            onDialogShown?.accept(warningDialog)
+            warningDialog
         } else {
-            showRegularLogoutConfirmation(context, onProceedToLogout, onCancel)
+            val confirmDialog = showRegularLogoutConfirmation(context, onProceedToLogout, onCancel)
+            onDialogShown?.accept(confirmDialog)
+            confirmDialog
         }
     }
 
     @JvmStatic
-    @JvmOverloads
-    fun showLogoutWarning(
+    fun handleLogout(
+        context: Context,
+        instituteSettings: InstituteSettings?,
+        onProceedToLogout: Runnable,
+        onDialogShown: Consumer<AlertDialog>
+    ): AlertDialog {
+        return handleLogout(context, instituteSettings, onProceedToLogout, null, onDialogShown)
+    }
+
+    private fun showLogoutWarning(
         context: Context,
         onConfirm: Runnable,
         onCancel: Runnable? = null
@@ -116,9 +115,7 @@ object DeviceBindingDialogs {
         )
     }
 
-    @JvmStatic
-    @JvmOverloads
-    fun showRegularLogoutConfirmation(
+    private fun showRegularLogoutConfirmation(
         context: Context,
         onConfirm: Runnable,
         onCancel: Runnable? = null

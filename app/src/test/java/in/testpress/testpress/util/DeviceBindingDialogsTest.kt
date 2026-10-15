@@ -47,7 +47,7 @@ class DeviceBindingDialogsTest {
 
     @After
     fun tearDown() {
-        DeviceBindingDialogs.resetDialogBuilderForTesting()
+        DeviceBindingDialogs.setDialogBuilderForTesting(null)
     }
 
     @Test
@@ -200,7 +200,7 @@ class DeviceBindingDialogsTest {
     fun handleLogoutWhenEnabledChainsWarningToRegularConfirmation() {
         var proceedToLogoutCalled = false
         val settings = InstituteSettings().apply {
-            deviceBindingMode = InstituteSettings.DEVICE_BINDING_ENABLED
+            deviceBindingMode = InstituteSettings.DEVICE_BINDING_1_MOBILE_1_DESKTOP
         }
 
         DeviceBindingDialogs.handleLogout(
@@ -232,7 +232,7 @@ class DeviceBindingDialogsTest {
         var proceedToLogoutCalled = false
         var cancelCalled = false
         val settings = InstituteSettings().apply {
-            deviceBindingMode = InstituteSettings.DEVICE_BINDING_ENABLED
+            deviceBindingMode = InstituteSettings.DEVICE_BINDING_1_MOBILE_1_DESKTOP
         }
 
         DeviceBindingDialogs.handleLogout(
@@ -246,6 +246,30 @@ class DeviceBindingDialogsTest {
         assertEquals(1, dialogBuildCount)
         assertFalse(proceedToLogoutCalled)
         assertTrue(cancelCalled)
+    }
+
+    @Test
+    fun handleLogoutUpdatesOnDialogShownForBothWarningAndConfirmation() {
+        var currentDialog: AlertDialog? = null
+        val settings = InstituteSettings().apply {
+            deviceBindingMode = InstituteSettings.DEVICE_BINDING_1_MOBILE_1_DESKTOP
+        }
+
+        val returnedDialog = DeviceBindingDialogs.handleLogout(
+            mockContext,
+            settings,
+            onProceedToLogout = {},
+            onDialogShown = { currentDialog = it }
+        )
+
+        // First dialog is warning and onDialogShown receives it
+        assertEquals(returnedDialog, currentDialog)
+        assertEquals(R.string.device_binding_logout_warning_title, capturedTitleRes)
+
+        // Confirming warning triggers confirmation dialog and onDialogShown receives it
+        capturedOnConfirm?.run()
+        assertEquals(R.string.logout, capturedTitleRes)
+        assertEquals(mockDialog, currentDialog)
     }
 
     @Test

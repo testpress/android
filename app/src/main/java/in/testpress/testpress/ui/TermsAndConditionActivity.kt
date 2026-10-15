@@ -163,11 +163,13 @@ class TermsAndConditionActivity : BaseToolBarActivity() {
         logoutDialog = DeviceBindingDialogs.handleLogout(
             this,
             InstituteSettings.getInstance(),
-            onProceedToLogout = { performLogout() }
+            onProceedToLogout = { performLogout() },
+            onDialogShown = { logoutDialog = it }
         )
     }
 
     private fun performLogout() {
+        if (isFinishing || isDestroyed) return
         serviceProvider.logout(
             this@TermsAndConditionActivity, testpressService,
             serviceProvider, logoutService

@@ -11,7 +11,6 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.OperationCanceledException;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -803,11 +802,15 @@ public class MainActivity extends TestpressFragmentActivity {
         logoutDialog = DeviceBindingDialogs.handleLogout(
                 this,
                 mInstituteSettings,
-                this::performLogout
+                this::performLogout,
+                dialog -> logoutDialog = dialog
         );
     }
 
     private void performLogout() {
+        if (isFinishing() || (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && isDestroyed())) {
+            return;
+        }
         setTermsAndConditionNotAgreed();
         serviceProvider.logout(MainActivity.this, testpressService,
                 serviceProvider, logoutService);

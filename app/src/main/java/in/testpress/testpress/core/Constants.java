@@ -12,6 +12,8 @@ import static in.testpress.testpress.BuildConfig.BASE_URL;
 public final class Constants {
     private Constants() {}
 
+    public static final String[] DISALLOWED_SIGNUP_SUBDOMAINS = {"xandylearning"};
+
     public static final class Http {
         private Http() {}
 

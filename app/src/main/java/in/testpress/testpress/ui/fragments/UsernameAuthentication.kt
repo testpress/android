@@ -16,6 +16,7 @@ import `in`.testpress.testpress.core.TestpressService
 import `in`.testpress.testpress.databinding.UsernameLoginLayoutBinding
 import `in`.testpress.testpress.models.InstituteSettings
 import `in`.testpress.testpress.ui.WebViewActivity
+import `in`.testpress.testpress.util.AppChecker
 import `in`.testpress.testpress.util.UIUtils
 import `in`.testpress.testpress.util.isEmpty
 import `in`.testpress.util.ViewUtils
@@ -188,7 +189,7 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
     }
 
     private fun showOrHideButtons() {
-        if (!instituteSettings.allowSignup) {
+        if (!instituteSettings.allowSignup || AppChecker.isSignupDisabledForSubdomain(requireContext())) {
             binding.signUp.visibility = View.GONE
         }
         ViewUtils.setGone(binding.phoneLogin, 3 !in instituteSettings.allowedLoginMethods)

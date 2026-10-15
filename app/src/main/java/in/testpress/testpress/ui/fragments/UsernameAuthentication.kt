@@ -34,12 +34,17 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.content.ContextCompat.getSystemService
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AlertDialog
+import `in`.testpress.testpress.util.DeviceBindingDialogs
 import javax.inject.Inject
 
 
 class UsernameAuthentication : BaseAuthenticationFragment() {
     lateinit var accountManager: AccountManager
-    private val instituteSettings = InstituteSettings.getInstance()
+    private val instituteSettings: InstituteSettings?
+        get() = (activity as? LoginActivityV2)?.getLoadedInstituteSettings()
+            ?: InstituteSettings.getInstance()
+    private var confirmationDialog: AlertDialog? = null
 
     @Inject
     lateinit var testPressService: TestpressService
@@ -111,9 +116,10 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
 
         binding.forgotPassword.setOnClickListener {
             var openedCustomUrl = false
-            if (instituteSettings != null && instituteSettings.hasCustomForgotPasswordUrl()) {
+            val settings = instituteSettings
+            if (settings != null && settings.hasCustomForgotPasswordUrl()) {
                 try {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(instituteSettings.customForgotPasswordUrl))
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(settings.customForgotPasswordUrl))
                     startActivity(intent)
                     openedCustomUrl = true
                 } catch (e: android.content.ActivityNotFoundException) {
@@ -149,12 +155,13 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
         }
 
         binding.signUp.setOnClickListener {
-            if (instituteSettings.customRegistrationEnabled){
+            val settings = instituteSettings
+            if (settings?.customRegistrationEnabled == true){
                 val intent = Intent(requireContext(), WebViewActivity::class.java)
                 intent.putExtra(WebViewActivity.ACTIVITY_TITLE, "Register")
                 intent.putExtra(WebViewActivity.SHOW_LOGOUT, "false")
                 intent.putExtra(WebViewActivity.ALLOW_EXTERNAL_LINK,true)
-                intent.putExtra(WebViewActivity.URL_TO_OPEN, instituteSettings.customRegistrationUrl)
+                intent.putExtra(WebViewActivity.URL_TO_OPEN, settings.customRegistrationUrl)
                 startActivity(intent)
             } else {
                 val intent = Intent(requireContext(), RegisterActivity::class.java)
@@ -172,58 +179,68 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
     }
 
     private fun updateLabels() {
-        if (UIUtils.getMenuItemName(R.string.label_username, instituteSettings).isNotEmpty()) {
-            binding.username.hint = UIUtils.getMenuItemName(
-                R.string.label_username,
-                instituteSettings
-            )
+        val settings = instituteSettings ?: return
+        val usernameLabel = UIUtils.getMenuItemName(R.string.label_username, settings)
+        if (usernameLabel.isNotEmpty()) {
+            binding.username.hint = usernameLabel
         }
 
-        if (UIUtils.getMenuItemName(R.string.label_password, instituteSettings).isNotEmpty()) {
-            binding.password.hint = UIUtils.getMenuItemName(
-                R.string.label_password,
-                instituteSettings
-            )
+        val passwordLabel = UIUtils.getMenuItemName(R.string.label_password, settings)
+        if (passwordLabel.isNotEmpty()) {
+            binding.password.hint = passwordLabel
         }
     }
 
     private fun showOrHideButtons() {
-        if (!instituteSettings.allowSignup) {
-            binding.signUp.visibility = View.GONE
-        }
-        ViewUtils.setGone(binding.phoneLogin, 3 !in instituteSettings.allowedLoginMethods)
-        ViewUtils.setGone(binding.facebookSignIn, !instituteSettings.facebookLoginEnabled)
-        ViewUtils.setGone(binding.googleSignIn, !instituteSettings.googleLoginEnabled)
-        ViewUtils.setGone(
-            binding.socialLoginLayout, !instituteSettings.facebookLoginEnabled &&
-                    !instituteSettings.googleLoginEnabled
-        )
-        if (instituteSettings.disableForgotPassword != null){
-            ViewUtils.setGone(binding.forgotPassword,instituteSettings.disableForgotPassword)
+        instituteSettings?.let { settings ->
+            if (!settings.allowSignup) {
+                binding.signUp.visibility = View.GONE
+            }
+            ViewUtils.setGone(binding.phoneLogin, 3 !in settings.allowedLoginMethods)
+            ViewUtils.setGone(binding.facebookSignIn, !settings.facebookLoginEnabled)
+            ViewUtils.setGone(binding.googleSignIn, !settings.googleLoginEnabled)
+            ViewUtils.setGone(
+                binding.socialLoginLayout, !settings.facebookLoginEnabled &&
+                        !settings.googleLoginEnabled
+            )
+            if (settings.disableForgotPassword != null){
+                ViewUtils.setGone(binding.forgotPassword, settings.disableForgotPassword)
+            }
         }
     }
 
     private fun signIn() {
-        authenticate(
-            binding.username.text.toString(), binding.password.text.toString(),
+        if (confirmationDialog?.isShowing == true) return
+        val username = binding.username.text.toString()
+        val password = binding.password.text.toString()
+        confirmationDialog = DeviceBindingDialogs.confirmIfBindingEnabled(
+            requireContext(),
+            instituteSettings,
+            onProceed = {
+                if (isAdded && view != null) {
+                    authenticate(username, password)
+                }
+            }
         )
     }
 
-    private fun authenticate(userId: String, accessToken: String) {
-        val settings = `in`.testpress.models.InstituteSettings(instituteSettings.baseUrl)
+    private fun authenticate(username: String, password: String) {
+        val currentSettings = instituteSettings ?: return
+        val settings = `in`.testpress.models.InstituteSettings(currentSettings.baseUrl)
             .setWhiteLabeledHostUrl(BuildConfig.WHITE_LABELED_HOST_URL)
-            .setBookmarksEnabled(instituteSettings.bookmarksEnabled)
-            .setCoursesFrontend(instituteSettings.showGameFrontend)
-            .setCoursesGamificationEnabled(instituteSettings.coursesEnableGamification)
-            .setCommentsVotingEnabled(instituteSettings.commentsVotingEnabled)
-            .setAndroidSentryDns(instituteSettings.androidSentryDns)
+            .setBookmarksEnabled(currentSettings.bookmarksEnabled)
+            .setCoursesFrontend(currentSettings.showGameFrontend)
+            .setCoursesGamificationEnabled(currentSettings.coursesEnableGamification)
+            .setCommentsVotingEnabled(currentSettings.commentsVotingEnabled)
+            .setAndroidSentryDns(currentSettings.androidSentryDns)
             .setAccessCodeEnabled(false)
-        TestpressSdk.initialize(requireContext(), settings, userId, accessToken, TestpressSdk.Provider.TESTPRESS,
+            .setDeviceBindingMode(currentSettings.deviceBindingMode)
+        TestpressSdk.initialize(requireContext(), settings, username, password, TestpressSdk.Provider.TESTPRESS,
             object : TestpressCallback<TestpressSession?>() {
                 override fun onSuccess(response: TestpressSession?) {
                     val authToken = response?.token
                     if (authToken != null) {
-                        loginNavigation?.onLoginSuccess(binding.username.text.toString(),binding.password.text.toString(), authToken)
+                        loginNavigation?.onLoginSuccess(username, password, authToken)
                     }
                 }
 
@@ -244,6 +261,8 @@ class UsernameAuthentication : BaseAuthenticationFragment() {
     }
 
     override fun onDestroyView() {
+        confirmationDialog?.dismiss()
+        confirmationDialog = null
         super.onDestroyView()
         _binding = null
     }

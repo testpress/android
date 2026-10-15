@@ -16,8 +16,10 @@ import `in`.testpress.testpress.R
 import `in`.testpress.testpress.TestpressServiceProvider
 import `in`.testpress.testpress.authenticator.LogoutService
 import `in`.testpress.testpress.core.TestpressService
+import `in`.testpress.testpress.models.InstituteSettings
 import `in`.testpress.ui.AbstractWebViewActivity
 import `in`.testpress.util.BaseJavaScriptInterface
+import `in`.testpress.testpress.util.DeviceBindingDialogs
 import javax.inject.Inject
 
 class EnforceDataActivity : AbstractWebViewActivity() {
@@ -66,23 +68,32 @@ class EnforceDataActivity : AbstractWebViewActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    private var logoutDialog: AlertDialog? = null
+
     fun logout() {
-        AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
-            .setTitle(R.string.logout)
-            .setMessage(R.string.logout_confirm_message)
-            .setPositiveButton(
-                R.string.ok
-            ) { dialogInterface, i ->
-                dialogInterface.dismiss()
-                serviceProvider.logout(
-                    this@EnforceDataActivity,
-                    testpressService,
-                    serviceProvider,
-                    logoutService
-                )
-            }
-            .setNegativeButton(R.string.cancel, null)
-            .show()
+        if (logoutDialog?.isShowing == true) return
+        DeviceBindingDialogs.handleLogout(
+            this,
+            InstituteSettings.getInstance(),
+            onProceedToLogout = { performLogout() },
+            onDialogShown = { logoutDialog = it }
+        )
+    }
+
+    private fun performLogout() {
+        if (isFinishing || isDestroyed) return
+        serviceProvider.logout(
+            this@EnforceDataActivity,
+            testpressService,
+            serviceProvider,
+            logoutService
+        )
+    }
+
+    override fun onDestroy() {
+        logoutDialog?.dismiss()
+        logoutDialog = null
+        super.onDestroy()
     }
 
     inner class JavaScriptInterface : BaseJavaScriptInterface(this) {

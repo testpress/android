@@ -38,6 +38,12 @@
     <string name="max_login_limit_exceeded_error">Your account has been locked as it has exceeded maximum devices it can be used.</string>
     <string name="account_unlock_info">Your account will automatically get unlocked within </string>
     <string name="error_loading_courses">Loading courses failed</string>
+    <string name="device_binding_confirm_title">Confirm Device Binding</string>
+    <string name="device_binding_confirm_message">This device will be bound to your account. You cannot use another device unless an administrator resets the binding.</string>
+    <string name="device_binding_logout_warning_title">Device Binding Notice</string>
+    <string name="device_binding_logout_warning_message">Logging out will not remove the device binding. This device will remain bound to your account.</string>
+    <string name="please_enter_mobile_number">Please enter your mobile number</string>
+    <string name="error_sending_otp">Error occurred while sending OTP. Please try again.</string>
 
     <!-- AuthenticatorActivity -->
     <string name="label_username">Username</string>

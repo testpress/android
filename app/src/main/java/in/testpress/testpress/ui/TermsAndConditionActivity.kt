@@ -9,6 +9,7 @@ import `in`.testpress.testpress.R
 import `in`.testpress.testpress.TestpressServiceProvider
 import `in`.testpress.testpress.authenticator.LogoutService
 import `in`.testpress.testpress.core.TestpressService
+import `in`.testpress.testpress.models.InstituteSettings
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -21,6 +22,7 @@ import android.webkit.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.activity.OnBackPressedCallback
+import `in`.testpress.testpress.util.DeviceBindingDialogs
 import java.io.IOException
 import javax.inject.Inject
 
@@ -154,21 +156,24 @@ class TermsAndConditionActivity : BaseToolBarActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    private var logoutDialog: AlertDialog? = null
+
     fun logout() {
-        AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
-            .setTitle(R.string.logout)
-            .setMessage(R.string.logout_confirm_message)
-            .setPositiveButton(
-                R.string.ok
-            ) { dialogInterface, i ->
-                dialogInterface.dismiss()
-                serviceProvider.logout(
-                    this@TermsAndConditionActivity, testpressService,
-                    serviceProvider, logoutService
-                )
-            }
-            .setNegativeButton(R.string.cancel, null)
-            .show()
+        if (logoutDialog?.isShowing == true) return
+        DeviceBindingDialogs.handleLogout(
+            this,
+            InstituteSettings.getInstance(),
+            onProceedToLogout = { performLogout() },
+            onDialogShown = { logoutDialog = it }
+        )
+    }
+
+    private fun performLogout() {
+        if (isFinishing || isDestroyed) return
+        serviceProvider.logout(
+            this@TermsAndConditionActivity, testpressService,
+            serviceProvider, logoutService
+        )
     }
 
     fun setEmptyText(title: Int, description: Int, left: Int) {
@@ -176,6 +181,12 @@ class TermsAndConditionActivity : BaseToolBarActivity() {
         emptyTitleView.setText(title)
         emptyTitleView.setCompoundDrawablesWithIntrinsicBounds(left, 0, 0, 0)
         emptyDescView.setText(description)
+    }
+
+    override fun onDestroy() {
+        logoutDialog?.dismiss()
+        logoutDialog = null
+        super.onDestroy()
     }
 
 }

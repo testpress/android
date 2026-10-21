@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
@@ -43,6 +44,7 @@ import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
 
+import in.testpress.fragments.WebViewFragmentKt;
 import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.TestpressApplication;
 import in.testpress.testpress.R;
@@ -160,8 +162,8 @@ public class WebViewActivity extends BaseToolBarActivity {
         webSettings.setBuiltInZoomControls(true);
         webSettings.setDisplayZoomControls(false);
         String userAgent = webSettings.getUserAgentString();
-        if (userAgent != null && !userAgent.contains("TestpressAndroidApp")) {
-            webSettings.setUserAgentString(userAgent + " TestpressAndroidApp/wv");
+        if (userAgent != null) {
+            webSettings.setUserAgentString(appendCustomUserAgent(userAgent));
         }
 
         if (Build.VERSION.SDK_INT >= 21) {
@@ -322,6 +324,15 @@ public class WebViewActivity extends BaseToolBarActivity {
         } catch (Exception e){
             Toast.makeText(getApplicationContext(),"No suitable app was found to open this URL. Please install any browser app",Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @NonNull
+    static String appendCustomUserAgent(@NonNull String userAgent) {
+        String customUserAgent = WebViewFragmentKt.CUSTOM_USER_AGENT;
+        if (userAgent.contains(customUserAgent.trim())) {
+            return userAgent;
+        }
+        return userAgent + customUserAgent;
     }
 
     private void parseIntent() {

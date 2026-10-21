@@ -37,6 +37,7 @@ import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.UIUtils;
 import in.testpress.ui.UserDevicesActivity;
 import in.testpress.testpress.ui.QotdActivity;
+import in.testpress.testpress.ui.StudentMessagingActivity;
 import in.testpress.testpress.ui.StudentReportWebViewActivity;
 import in.testpress.ui.WebViewWithSSOActivity;
 
@@ -126,6 +127,7 @@ public class HandleMainMenu {
         menuActions.put(R.id.exam_results, this::launchExamResultActivity);
         menuActions.put(R.id.daily_questions, this::openDailyQuestions);
         menuActions.put(R.id.custom_test, this::launchCustomTestActivity);
+        menuActions.put(R.id.chat_with_us, this::openStudentMessaging);
         menuActions.put(R.id.recorded_lessons, () -> openCakingExternalURL("Recorded Lessons", "/external_site/?endpoint=recorded_lectures"));
         menuActions.put(R.id.mocks, () -> openCakingExternalURL("Mocks", "/external_site/?endpoint=mocks"));
         menuActions.put(R.id.e_books, () -> openCakingExternalURL("E-Books", "/external_site/?endpoint=e-books"));
@@ -223,6 +225,11 @@ public class HandleMainMenu {
                         StudentReportWebViewActivity.class
                 )
         );
+    }
+
+    private void openStudentMessaging() {
+        Intent intent = new Intent(activity, StudentMessagingActivity.class);
+        activity.startActivity(intent);
     }
 
     private void openDailyQuestions() {

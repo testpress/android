@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
@@ -295,7 +296,8 @@ public class WebViewActivity extends BaseToolBarActivity {
         }
     }
 
-    static String appendCustomUserAgent(String userAgent) {
+    @NonNull
+    static String appendCustomUserAgent(@NonNull String userAgent) {
         String customUserAgent = WebViewFragmentKt.CUSTOM_USER_AGENT;
         if (userAgent.contains(customUserAgent.trim())) {
             return userAgent;

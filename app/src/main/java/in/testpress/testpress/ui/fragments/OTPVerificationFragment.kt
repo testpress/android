@@ -109,6 +109,8 @@ class OTPVerificationFragment: BaseAuthenticationFragment() {
         }
 
         binding.resentOtp.setOnClickListener {
+            // Resend OTP intentionally does not prompt for device binding confirmation again,
+            // as the confirmation is already completed during the initial OTP request.
             viewModel.requestOTP(phoneNumber, countryCode).observe(viewLifecycleOwner, { resource ->
                 when(resource.status) {
                     Status.SUCCESS -> {

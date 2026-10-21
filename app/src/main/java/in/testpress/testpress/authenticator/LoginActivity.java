@@ -11,6 +11,7 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
@@ -75,6 +76,7 @@ import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.PostActivity;
 import in.testpress.testpress.ui.WebViewActivity;
 import in.testpress.testpress.util.CommonUtils;
+import in.testpress.testpress.util.DeviceBindingDialogs;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.InternetConnectivityChecker;
 import in.testpress.testpress.util.SafeAsyncTask;
@@ -144,6 +146,8 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
     private String authToken;
     private String authTokenType;
     private InternetConnectivityChecker internetConnectivityChecker = new InternetConnectivityChecker(this);
+    private AlertDialog confirmationDialog;
+    private AlertDialog googleConfirmationDialog;
     /**
      * If set we are just checking that the user knows their credentials; this
      * doesn't cause the user's password to be changed on the device.
@@ -292,10 +296,21 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
             fbLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
                 @Override
                 public void onSuccess(LoginResult loginResult) {
-                    loginLayout.setVisibility(View.GONE);
-                    username = loginResult.getAccessToken().getUserId();
-                    authenticate(loginResult.getAccessToken().getUserId(),
-                            loginResult.getAccessToken().getToken(), TestpressSdk.Provider.FACEBOOK);
+                    if (confirmationDialog != null && confirmationDialog.isShowing()) {
+                        return;
+                    }
+                    final String userId = loginResult.getAccessToken().getUserId();
+                    final String token = loginResult.getAccessToken().getToken();
+                    confirmationDialog = DeviceBindingDialogs.confirmIfBindingEnabled(
+                            LoginActivity.this,
+                            instituteSettings,
+                            () -> {
+                                loginLayout.setVisibility(View.GONE);
+                                username = userId;
+                                authenticate(userId, token, TestpressSdk.Provider.FACEBOOK);
+                            },
+                            LoginManager.getInstance()::logOut
+                    );
                 }
 
                 @Override
@@ -419,7 +434,8 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
                         .setCoursesGamificationEnabled(instituteSettings.getCoursesEnableGamification())
                         .setCommentsVotingEnabled(instituteSettings.getCommentsVotingEnabled())
                         .setAndroidSentryDns(instituteSettings.getAndroidSentryDns())
-                        .setAccessCodeEnabled(false);
+                        .setAccessCodeEnabled(false)
+                        .setDeviceBindingMode(instituteSettings.getDeviceBindingMode());
 
         TestpressSdk.initialize(this, settings, userId, accessToken, provider,
                 new TestpressCallback<TestpressSession>() {
@@ -498,8 +514,17 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         }
 
         password = passwordText.getText().toString();
+        final String currentUsername = username;
+        final String currentPassword = password;
 
-        authenticate(username, password, TestpressSdk.Provider.TESTPRESS);
+        if (confirmationDialog != null && confirmationDialog.isShowing()) {
+            return;
+        }
+        confirmationDialog = DeviceBindingDialogs.confirmIfBindingEnabled(
+                LoginActivity.this,
+                instituteSettings,
+                () -> authenticate(currentUsername, currentPassword, TestpressSdk.Provider.TESTPRESS)
+        );
     }
 
     /**
@@ -678,11 +703,22 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
 
     private void googleSignIn() {
         if (googleApiClient != null) {
-            Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-            startActivityForResult(signInIntent, REQUEST_CODE_GOOGLE_SIGN_IN);
+            if (googleConfirmationDialog != null && googleConfirmationDialog.isShowing()) {
+                return;
+            }
+            googleConfirmationDialog = DeviceBindingDialogs.confirmIfBindingEnabled(
+                    LoginActivity.this,
+                    instituteSettings,
+                    this::launchGoogleSignIn
+            );
         } else {
             showAlert(getString(R.string.google_signin_not_configured));
         }
+    }
+
+    private void launchGoogleSignIn() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+        startActivityForResult(signInIntent, REQUEST_CODE_GOOGLE_SIGN_IN);
     }
 
     private void initWebView() {
@@ -733,4 +769,16 @@ public class LoginActivity extends ActionBarAccountAuthenticatorActivity {
         emptyDescView.setText(description);
     }
 
+    @Override
+    protected void onDestroy() {
+        if (confirmationDialog != null) {
+            confirmationDialog.dismiss();
+            confirmationDialog = null;
+        }
+        if (googleConfirmationDialog != null) {
+            googleConfirmationDialog.dismiss();
+            googleConfirmationDialog = null;
+        }
+        super.onDestroy();
+    }
 }

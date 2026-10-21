@@ -86,6 +86,8 @@ public final class Constants {
 
         public static final String CHECK_PERMISSION_URL =  "/api/v2.3/me/check_permission/";
 
+        public static final String URL_UNREAD_MESSAGES_COUNT = "/messages/unread-count/";
+
         /**
          * Handle Success & Failure of payments
          */

@@ -163,6 +163,10 @@
             android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity
+            android:name=".ui.StudentMessagingActivity"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity
             android:name=".ui.QotdActivity"
             android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboardHidden|screenSize" />

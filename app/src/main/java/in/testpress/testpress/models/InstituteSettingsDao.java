@@ -97,6 +97,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         public final static Property QotdEnabled = new Property(68, Boolean.class, "qotdEnabled", false, "QOTD_ENABLED");
         public final static Property MessagesEnabled = new Property(69, Boolean.class, "messagesEnabled", false, "MESSAGES_ENABLED");
         public final static Property CustomForgotPasswordUrl = new Property(70, String.class, "customForgotPasswordUrl", false, "CUSTOM_FORGOT_PASSWORD_URL");
+        public final static Property DeviceBindingMode = new Property(71, String.class, "deviceBindingMode", false, "DEVICE_BINDING_MODE");
     };
 
     private final IntegerListConverter allowedLoginMethodsConverter = new IntegerListConverter();
@@ -183,7 +184,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
                 "\"QUESTION_REPORT_DESCRIPTION_MIN_LENGTH\" INTEGER," + // 67: questionReportDescriptionMinLength
                 "\"QOTD_ENABLED\" INTEGER," + // 68: qotdEnabled
                 "\"MESSAGES_ENABLED\" INTEGER," + // 69: messagesEnabled
-                "\"CUSTOM_FORGOT_PASSWORD_URL\" TEXT);"); // 70: customForgotPasswordUrl
+                "\"CUSTOM_FORGOT_PASSWORD_URL\" TEXT," + // 70: customForgotPasswordUrl
+                "\"DEVICE_BINDING_MODE\" TEXT);"); // 71: deviceBindingMode
     }
 
     /** Drops the underlying database table. */
@@ -547,6 +549,11 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         if (customForgotPasswordUrl != null) {
             stmt.bindString(71, customForgotPasswordUrl);
         }
+
+        String deviceBindingMode = entity.getDeviceBindingMode();
+        if (deviceBindingMode != null) {
+            stmt.bindString(72, deviceBindingMode);
+        }
     }
 
     /** @inheritdoc */
@@ -629,7 +636,8 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
             cursor.isNull(offset + 67) ? null : cursor.getInt(offset + 67), // questionReportDescriptionMinLength
             cursor.isNull(offset + 68) ? null : cursor.getShort(offset + 68) != 0, // qotdEnabled
             cursor.isNull(offset + 69) ? null : cursor.getShort(offset + 69) != 0, // messagesEnabled
-            cursor.isNull(offset + 70) ? null : cursor.getString(offset + 70) // customForgotPasswordUrl
+            cursor.isNull(offset + 70) ? null : cursor.getString(offset + 70), // customForgotPasswordUrl
+            cursor.isNull(offset + 71) ? null : cursor.getString(offset + 71) // deviceBindingMode
         );
         return entity;
     }
@@ -708,6 +716,7 @@ public class InstituteSettingsDao extends AbstractDao<InstituteSettings, String>
         entity.setQotdEnabled(cursor.isNull(offset + 68) ? null : cursor.getShort(offset + 68) != 0);
         entity.setMessagesEnabled(cursor.isNull(offset + 69) ? null : cursor.getShort(offset + 69) != 0);
         entity.setCustomForgotPasswordUrl(cursor.isNull(offset + 70) ? null : cursor.getString(offset + 70));
+        entity.setDeviceBindingMode(cursor.isNull(offset + 71) ? null : cursor.getString(offset + 71));
      }
     
     /** @inheritdoc */

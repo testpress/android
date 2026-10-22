@@ -11,7 +11,6 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.OperationCanceledException;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -88,6 +87,7 @@ import in.testpress.testpress.ui.utils.HandleMainMenu;
 import in.testpress.testpress.ui.utils.LiveClassesWebViewHandler;
 import in.testpress.testpress.util.AppChecker;
 import in.testpress.testpress.util.CommonUtils;
+import in.testpress.testpress.util.DeviceBindingDialogs;
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.SafeAsyncTask;
 import in.testpress.testpress.util.SalesforceSdkInitializer;
@@ -138,6 +138,7 @@ public class MainActivity extends TestpressFragmentActivity {
     private boolean isInitScreenCalledOnce;
     private CourseListFragment courseListFragment;
     int touchCountToEnableScreenShot = 0;
+    private AlertDialog logoutDialog;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -822,21 +823,24 @@ public class MainActivity extends TestpressFragmentActivity {
     }
 
     public void logout() {
-        new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
-                .setTitle(R.string.logout)
-                .setMessage(R.string.logout_confirm_message)
-                .setPositiveButton(R.string.ok,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                                setTermsAndConditionNotAgreed();
-                                serviceProvider.logout(MainActivity.this, testpressService,
-                                        serviceProvider, logoutService);
-                            }
-                        })
-                .setNegativeButton(R.string.cancel, null)
-                .show();
+        if (logoutDialog != null && logoutDialog.isShowing()) {
+            return;
+        }
+        DeviceBindingDialogs.handleLogout(
+                this,
+                mInstituteSettings,
+                this::performLogout,
+                dialog -> logoutDialog = dialog
+        );
+    }
+
+    private void performLogout() {
+        if (isFinishing() || (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && isDestroyed())) {
+            return;
+        }
+        setTermsAndConditionNotAgreed();
+        serviceProvider.logout(MainActivity.this, testpressService,
+                serviceProvider, logoutService);
     }
 
     @Override
@@ -1000,5 +1004,14 @@ public class MainActivity extends TestpressFragmentActivity {
         if (Boolean.TRUE.equals(mInstituteSettings.getSalesforceSdkEnabled())) {
             SalesforceSdkInitializer.notificationPermissionGranted();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (logoutDialog != null) {
+            logoutDialog.dismiss();
+            logoutDialog = null;
+        }
+        super.onDestroy();
     }
 }

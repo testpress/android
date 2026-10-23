@@ -1407,6 +1407,7 @@
                                         android:textStyle="bold" />
 
                                     <TextView
+                                        android:id="@+id/th_roll_no"
                                         android:layout_width="@dimen/pa_col_roll_no_width"
                                         android:layout_height="wrap_content"
                                         android:fontFamily="sans-serif-medium"
@@ -1418,7 +1419,8 @@
                                         android:text="@string/pa_history_th_roll_no"
                                         android:textColor="@color/pa_table_header_text"
                                         android:textSize="12sp"
-                                        android:textStyle="bold" />
+                                        android:textStyle="bold"
+                                        android:visibility="gone" />
 
                                     <TextView
                                         android:layout_width="@dimen/pa_col_subject_width"
@@ -1617,6 +1619,7 @@
                                         android:textStyle="bold" />
 
                                     <TextView
+                                        android:id="@+id/th_out_of"
                                         android:layout_width="@dimen/pa_col_out_of_width"
                                         android:layout_height="wrap_content"
                                         android:fontFamily="sans-serif-medium"
@@ -1628,9 +1631,11 @@
                                         android:text="@string/pa_history_th_out_of"
                                         android:textColor="@color/pa_table_header_text"
                                         android:textSize="12sp"
-                                        android:textStyle="bold" />
+                                        android:textStyle="bold"
+                                        android:visibility="gone" />
 
                                     <TextView
+                                        android:id="@+id/th_status"
                                         android:layout_width="@dimen/pa_col_status_width"
                                         android:layout_height="wrap_content"
                                         android:fontFamily="sans-serif-medium"
@@ -1642,9 +1647,11 @@
                                         android:text="@string/pa_history_th_status"
                                         android:textColor="@color/pa_table_header_text"
                                         android:textSize="12sp"
-                                        android:textStyle="bold" />
+                                        android:textStyle="bold"
+                                        android:visibility="gone" />
 
                                     <TextView
+                                        android:id="@+id/th_scholar_earn"
                                         android:layout_width="@dimen/pa_col_scholarship_width"
                                         android:layout_height="wrap_content"
                                         android:fontFamily="sans-serif-medium"
@@ -1656,9 +1663,11 @@
                                         android:text="@string/pa_history_th_scholarship"
                                         android:textColor="@color/pa_table_header_text"
                                         android:textSize="12sp"
-                                        android:textStyle="bold" />
+                                        android:textStyle="bold"
+                                        android:visibility="gone" />
 
                                     <TextView
+                                        android:id="@+id/th_remarks"
                                         android:layout_width="@dimen/pa_col_remarks_width"
                                         android:layout_height="wrap_content"
                                         android:fontFamily="sans-serif-medium"
@@ -1670,7 +1679,8 @@
                                         android:text="@string/pa_history_th_remarks"
                                         android:textColor="@color/pa_table_header_text"
                                         android:textSize="12sp"
-                                        android:textStyle="bold" />
+                                        android:textStyle="bold"
+                                        android:visibility="gone" />
 
                                     <TextView
                                         android:layout_width="@dimen/pa_col_appeared_width"

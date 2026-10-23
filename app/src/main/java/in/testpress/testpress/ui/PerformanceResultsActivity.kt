@@ -66,6 +66,7 @@ class PerformanceResultsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPerformanceResultsBinding
     private lateinit var viewModel: PerformanceAnalysisViewModel
     private var tabSelectedListener: TabLayout.OnTabSelectedListener? = null
+    private var currentTabType: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -128,7 +129,9 @@ class PerformanceResultsActivity : AppCompatActivity() {
             getString(R.string.performance_tab_weekly),
             getString(R.string.performance_tab_screening_test)
         )
-        populateTabs(defaultTypes, defaultTypes.firstOrNull())
+        currentTabType = defaultTypes.firstOrNull()
+        updateHistoryHeaderVisibility(isScreeningType(currentTabType))
+        populateTabs(defaultTypes, currentTabType)
 
         tabSelectedListener = object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
@@ -167,6 +170,8 @@ class PerformanceResultsActivity : AppCompatActivity() {
         }
 
         val activeType = selectedType ?: types.firstOrNull()
+        currentTabType = activeType
+        updateHistoryHeaderVisibility(isScreeningType(activeType))
         val activeIndex = types.indexOf(activeType).takeIf { it >= 0 } ?: 0
         binding.testTabs.getTabAt(activeIndex)?.select()
         reorderSectionsForTab()
@@ -175,7 +180,9 @@ class PerformanceResultsActivity : AppCompatActivity() {
     }
 
     private fun onTabTypeSelected(type: String) {
-        val isScreening = type.equals(getString(R.string.performance_tab_screening_test), ignoreCase = true)
+        currentTabType = type
+        val isScreening = isScreeningType(type)
+        updateHistoryHeaderVisibility(isScreening)
 
         binding.paStats.visibility = if (isScreening) View.GONE else View.VISIBLE
         binding.trendCard.visibility = if (isScreening) View.GONE else View.VISIBLE
@@ -186,6 +193,27 @@ class PerformanceResultsActivity : AppCompatActivity() {
 
         reorderSectionsForTab()
         requestFilters(type)
+    }
+
+    private fun isScreeningType(type: String?): Boolean {
+        if (type == null) return false
+        return type.equals(getString(R.string.performance_tab_screening_test), ignoreCase = true)
+            || type.contains("screen", ignoreCase = true)
+    }
+
+    private fun isScreeningTab(): Boolean {
+        val selectedType = currentTabType
+            ?: binding.testTabs.getTabAt(binding.testTabs.selectedTabPosition)?.text?.toString()
+        return isScreeningType(selectedType)
+    }
+
+    private fun updateHistoryHeaderVisibility(isScreening: Boolean) {
+        val visibility = if (isScreening) View.VISIBLE else View.GONE
+        binding.thRollNo.visibility = visibility
+        binding.thOutOf.visibility = visibility
+        binding.thStatus.visibility = visibility
+        binding.thScholarEarn.visibility = visibility
+        binding.thRemarks.visibility = visibility
     }
 
     private fun reorderSectionsForTab() {
@@ -818,6 +846,10 @@ class PerformanceResultsActivity : AppCompatActivity() {
     }
 
     private fun bindHistory(history: PerformanceHistoryData?) {
+        val isScreening = isScreeningTab()
+        updateHistoryHeaderVisibility(isScreening)
+        val screeningVisibility = if (isScreening) View.VISIBLE else View.GONE
+
         binding.historyProgress.visibility = View.GONE
         if (history == null || history.data.isEmpty()) {
             binding.paTableScroll.visibility = View.GONE
@@ -851,6 +883,7 @@ class PerformanceResultsActivity : AppCompatActivity() {
             rowBinding.tvDate.text = row.date?.takeIf { it.isNotBlank() } ?: emptyDash
             rowBinding.tvExam.text = row.examName?.takeIf { it.isNotBlank() } ?: emptyDash
             rowBinding.tvRollNo.text = row.rollNo?.takeIf { it.isNotBlank() } ?: emptyDash
+            rowBinding.tvRollNo.visibility = screeningVisibility
 
             rowBinding.tvPhy.text = row.physics?.raw?.takeIf { it.isNotBlank() } ?: emptyDash
             rowBinding.tvChe.text = row.chemistry?.raw?.takeIf { it.isNotBlank() } ?: emptyDash
@@ -879,9 +912,13 @@ class PerformanceResultsActivity : AppCompatActivity() {
             rowBinding.tvOutOf.text = row.outOf?.toDoubleOrNull()?.let { PerformanceFormatter.formatNumber(it) }
                 ?: row.outOf?.takeIf { it.isNotBlank() }
                 ?: emptyDash
+            rowBinding.tvOutOf.visibility = screeningVisibility
             rowBinding.tvStatus.text = row.eStatus?.takeIf { it.isNotBlank() } ?: emptyDash
+            rowBinding.tvStatus.visibility = screeningVisibility
             rowBinding.tvScholarEarn.text = row.scholarEarn?.takeIf { it.isNotBlank() } ?: emptyDash
+            rowBinding.tvScholarEarn.visibility = screeningVisibility
             rowBinding.tvRemarks.text = row.remarks?.takeIf { it.isNotBlank() } ?: emptyDash
+            rowBinding.tvRemarks.visibility = screeningVisibility
             rowBinding.tvAppeared.text = row.appeared?.let { PerformanceFormatter.formatIntegerWithCommas(it) } ?: emptyDash
             val hasOmr = (!row.omrUrl.isNullOrBlank() && row.omrUrl != "-") ||
                 (!row.omr.isNullOrBlank() && row.omr != "-")

@@ -45,7 +45,8 @@
         android:paddingEnd="@dimen/pa_table_cell_padding_h"
         android:paddingBottom="@dimen/pa_table_cell_padding_v"
         android:textColor="@color/pa_table_cell_text"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        android:visibility="gone" />
 
     <!-- 4. PHY -->
     <TextView
@@ -255,7 +256,8 @@
         android:paddingEnd="@dimen/pa_table_cell_padding_h"
         android:paddingBottom="@dimen/pa_table_cell_padding_v"
         android:textColor="@color/pa_table_cell_text"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        android:visibility="gone" />
 
     <!-- 19. Status -->
     <TextView
@@ -268,7 +270,8 @@
         android:paddingEnd="@dimen/pa_table_cell_padding_h"
         android:paddingBottom="@dimen/pa_table_cell_padding_v"
         android:textColor="@color/pa_table_cell_text"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        android:visibility="gone" />
 
     <!-- 20. Scholarship Earned -->
     <TextView
@@ -281,7 +284,8 @@
         android:paddingEnd="@dimen/pa_table_cell_padding_h"
         android:paddingBottom="@dimen/pa_table_cell_padding_v"
         android:textColor="@color/pa_table_cell_text"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        android:visibility="gone" />
 
     <!-- 21. Remarks -->
     <TextView
@@ -294,7 +298,8 @@
         android:paddingEnd="@dimen/pa_table_cell_padding_h"
         android:paddingBottom="@dimen/pa_table_cell_padding_v"
         android:textColor="@color/pa_table_cell_text"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        android:visibility="gone" />
 
 
     <!-- 22. Appeared -->

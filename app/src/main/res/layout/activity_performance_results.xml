@@ -1,0 +1,2198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/exam_result_screen_bg"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar_actionbar" />
+
+    <LinearLayout
+        android:id="@+id/pa_head_tabs_center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingStart="@dimen/pa_head_tabs_padding_horizontal"
+        android:paddingEnd="@dimen/pa_head_tabs_padding_horizontal"
+        android:paddingTop="@dimen/pa_head_tabs_padding_vertical"
+        android:paddingBottom="@dimen/pa_head_tabs_padding_vertical">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/test_tabs"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/pa_pill_tabs_height"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/pa_pill_tabs_container_bg"
+            android:contentDescription="@string/performance_tab_test_type"
+            android:padding="@dimen/pa_pill_tabs_container_padding"
+            app:tabBackground="@android:color/transparent"
+            app:tabIndicator="@drawable/pa_pill_tab_indicator"
+            app:tabIndicatorAnimationMode="linear"
+            app:tabIndicatorColor="@color/primary"
+            app:tabIndicatorFullWidth="true"
+            app:tabIndicatorGravity="stretch"
+            app:tabGravity="center"
+            app:tabMode="auto"
+            app:tabMinWidth="0dp"
+            app:tabPaddingStart="@dimen/pa_pill_tab_padding_horizontal"
+            app:tabPaddingEnd="@dimen/pa_pill_tab_padding_horizontal"
+            app:tabPaddingTop="0dp"
+            app:tabPaddingBottom="0dp"
+            app:tabRippleColor="@android:color/transparent"
+            app:tabSelectedTextColor="@color/white"
+            app:tabTextColor="@color/pa_pill_tab_unselected_text"
+            app:tabTextAppearance="@style/PaPillTabText" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+        <LinearLayout
+            android:id="@+id/pa_content_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <!-- ── Performance Stats Section (Non-Screening) ────────────── -->
+            <LinearLayout
+                android:id="@+id/pa_stats"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="@dimen/pa_stats_margin_bottom">
+
+                <!-- Row 1: Total Exams & Best Score -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:baselineAligned="false">
+
+                    <!-- Stat 1: Total Exams -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="@dimen/pa_stat_card_gap"
+                        app:cardBackgroundColor="@color/pa_stat_card_bg"
+                        app:cardCornerRadius="@dimen/pa_stat_card_radius"
+                        app:cardElevation="@dimen/pa_stat_card_elevation"
+                        app:strokeColor="@color/pa_stat_card_border"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="@dimen/pa_stat_card_padding">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="@string/pa_stat_total_exams"
+                                    android:textColor="@color/pa_stat_top_label"
+                                    android:textSize="@dimen/pa_stat_top_text_size"
+                                    android:fontFamily="sans-serif-medium" />
+
+                                <ImageView
+                                    android:layout_width="@dimen/pa_stat_icon_size"
+                                    android:layout_height="@dimen/pa_stat_icon_size"
+                                    android:contentDescription="@null"
+                                    android:src="@drawable/ic_pa_total_exams" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/stat_total"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/pa_stat_val_margin_top"
+                                android:text="@string/pa_stat_empty_val"
+                                android:textColor="@color/pa_stat_val_text"
+                                android:textSize="@dimen/pa_stat_val_text_size"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/stat_total_note"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/pa_stat_note_margin_top"
+                                android:text="@string/pa_stat_total_exams_note"
+                                android:textColor="@color/pa_stat_note_text"
+                                android:textSize="@dimen/pa_stat_note_text_size" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Stat 2: Best Score -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/pa_stat_card_bg"
+                        app:cardCornerRadius="@dimen/pa_stat_card_radius"
+                        app:cardElevation="@dimen/pa_stat_card_elevation"
+                        app:strokeColor="@color/pa_stat_card_border"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="@dimen/pa_stat_card_padding">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="@string/pa_stat_best_score"
+                                    android:textColor="@color/pa_stat_top_label"
+                                    android:textSize="@dimen/pa_stat_top_text_size"
+                                    android:fontFamily="sans-serif-medium" />
+
+                                <ImageView
+                                    android:layout_width="@dimen/pa_stat_icon_size"
+                                    android:layout_height="@dimen/pa_stat_icon_size"
+                                    android:contentDescription="@null"
+                                    android:src="@drawable/ic_pa_best_score" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/stat_best"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/pa_stat_val_margin_top"
+                                android:text="@string/pa_stat_empty_val"
+                                android:textColor="@color/pa_stat_val_text"
+                                android:textSize="@dimen/pa_stat_val_text_size"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/stat_best_note"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/pa_stat_note_margin_top"
+                                android:text="@string/pa_stat_empty_val"
+                                android:textColor="@color/pa_stat_note_text"
+                                android:textSize="@dimen/pa_stat_note_text_size" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+                <!-- Row 2: Average Score & Best Rank -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/pa_stat_card_gap"
+                    android:orientation="horizontal"
+                    android:baselineAligned="false">
+
+                    <!-- Stat 3: Average Score -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="@dimen/pa_stat_card_gap"
+                        app:cardBackgroundColor="@color/pa_stat_card_bg"
+                        app:cardCornerRadius="@dimen/pa_stat_card_radius"
+                        app:cardElevation="@dimen/pa_stat_card_elevation"
+                        app:strokeColor="@color/pa_stat_card_border"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="@dimen/pa_stat_card_padding">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="@string/pa_stat_avg_score"
+                                    android:textColor="@color/pa_stat_top_label"
+                                    android:textSize="@dimen/pa_stat_top_text_size"
+                                    android:fontFamily="sans-serif-medium" />
+
+                                <ImageView
+                                    android:layout_width="@dimen/pa_stat_icon_size"
+                                    android:layout_height="@dimen/pa_stat_icon_size"
+                                    android:contentDescription="@null"
+                                    android:src="@drawable/ic_pa_avg_score" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/stat_avg"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/pa_stat_val_margin_top"
+                                android:text="@string/pa_stat_empty_val"
+                                android:textColor="@color/pa_stat_val_text"
+                                android:textSize="@dimen/pa_stat_val_text_size"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/stat_avg_note"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/pa_stat_note_margin_top"
+                                android:text="@string/pa_stat_empty_val"
+                                android:textColor="@color/pa_stat_note_text"
+                                android:textSize="@dimen/pa_stat_note_text_size" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Stat 4: Best Rank -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/pa_stat_card_bg"
+                        app:cardCornerRadius="@dimen/pa_stat_card_radius"
+                        app:cardElevation="@dimen/pa_stat_card_elevation"
+                        app:strokeColor="@color/pa_stat_card_border"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="@dimen/pa_stat_card_padding">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="@string/pa_stat_best_rank"
+                                    android:textColor="@color/pa_stat_top_label"
+                                    android:textSize="@dimen/pa_stat_top_text_size"
+                                    android:fontFamily="sans-serif-medium" />
+
+                                <ImageView
+                                    android:layout_width="@dimen/pa_stat_icon_size"
+                                    android:layout_height="@dimen/pa_stat_icon_size"
+                                    android:contentDescription="@null"
+                                    android:src="@drawable/ic_pa_best_rank" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/stat_rank"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/pa_stat_val_margin_top"
+                                android:text="@string/pa_stat_empty_val"
+                                android:textColor="@color/pa_stat_val_text"
+                                android:textSize="@dimen/pa_stat_val_text_size"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/stat_rank_note"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/pa_stat_note_margin_top"
+                                android:text="@string/pa_stat_empty_val"
+                                android:textColor="@color/pa_stat_note_text"
+                                android:textSize="@dimen/pa_stat_note_text_size" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- ── Trend Card (Non-Screening) ──────────────────────────── -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/trend_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardBackgroundColor="@color/pa_stat_card_bg"
+                app:cardCornerRadius="@dimen/pa_stat_card_radius"
+                app:cardElevation="@dimen/pa_stat_card_elevation"
+                app:strokeColor="@color/pa_stat_card_border"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/pa_stat_card_padding">
+
+                    <!-- Header: Title, Subtitle, Legend & Filters -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/trend_card_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/pa_trend_title"
+                            android:textColor="@color/pa_stat_val_text"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/trend_card_sub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/pa_trend_subtitle"
+                            android:textColor="@color/pa_stat_top_label"
+                            android:textSize="@dimen/pa_stat_top_text_size" />
+
+                        <!-- Legend & Filters Row -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <!-- Legend -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <View
+                                    android:layout_width="@dimen/pa_trend_legend_dot_size"
+                                    android:layout_height="@dimen/pa_trend_legend_dot_size"
+                                    android:background="@drawable/pa_legend_dot_you" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="4dp"
+                                    android:layout_marginEnd="10dp"
+                                    android:text="@string/pa_trend_your_score"
+                                    android:textColor="@color/pa_stat_top_label"
+                                    android:textSize="11sp" />
+
+                                <View
+                                    android:layout_width="@dimen/pa_trend_legend_dot_size"
+                                    android:layout_height="@dimen/pa_trend_legend_dot_size"
+                                    android:background="@drawable/pa_legend_dot_topper" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="4dp"
+                                    android:text="@string/pa_trend_topper_mark"
+                                    android:textColor="@color/pa_stat_top_label"
+                                    android:textSize="11sp" />
+
+                            </LinearLayout>
+
+                            <!-- Filters (Month, Year, Subject) -->
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <Spinner
+                                    android:id="@+id/f_month"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="@dimen/pa_trend_spinner_height"
+                                    android:background="@drawable/pa_spinner_bg"
+                                    android:overlapAnchor="false"
+                                    android:spinnerMode="dropdown" />
+
+                                <Spinner
+                                    android:id="@+id/f_year"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="@dimen/pa_trend_spinner_height"
+                                    android:layout_marginStart="@dimen/pa_trend_filter_gap"
+                                    android:background="@drawable/pa_spinner_bg"
+                                    android:overlapAnchor="false"
+                                    android:spinnerMode="dropdown" />
+
+                                <Spinner
+                                    android:id="@+id/f_subject"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="@dimen/pa_trend_spinner_height"
+                                    android:layout_marginStart="@dimen/pa_trend_filter_gap"
+                                    android:background="@drawable/pa_spinner_bg"
+                                    android:overlapAnchor="false"
+                                    android:spinnerMode="dropdown" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Chart Box -->
+                    <FrameLayout
+                        android:id="@+id/pa_chart_box"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp">
+
+                        <FrameLayout
+                            android:id="@+id/trend_chart_holder"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone">
+
+                            <com.github.testpress.mikephil.charting.charts.LineChart
+                                android:id="@+id/trend_chart"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/pa_trend_chart_height" />
+
+                        </FrameLayout>
+
+                        <TextView
+                            android:id="@+id/trend_empty"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:padding="@dimen/pa_trend_empty_padding"
+                            android:text="@string/pa_trend_empty"
+                            android:textColor="@color/pa_stat_note_text"
+                            android:textSize="13sp" />
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ── Rank Analysis Card ────────────────────────────────── -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/rank_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/pa_stats_margin_horizontal"
+                android:layout_marginEnd="@dimen/pa_stats_margin_horizontal"
+                android:layout_marginBottom="@dimen/pa_stats_margin_bottom"
+                app:cardBackgroundColor="@color/pa_stat_card_bg"
+                app:cardCornerRadius="@dimen/pa_stat_card_radius"
+                app:cardElevation="@dimen/pa_stat_card_elevation"
+                app:strokeColor="@color/pa_stat_card_border"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/pa_stat_card_padding">
+
+                    <!-- Header: Title & Subtitle -->
+                    <TextView
+                        android:id="@+id/rank_card_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/pa_rank_title"
+                        android:textColor="@color/pa_stat_val_text"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/rank_card_sub"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/pa_rank_subtitle"
+                        android:textColor="@color/pa_stat_top_label"
+                        android:textSize="@dimen/pa_stat_top_text_size" />
+
+                    <!-- Rank Grid (Tile 1 & Tile 2 side-by-side) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:orientation="horizontal"
+                        android:baselineAligned="false">
+
+                        <!-- Tile 1: Percentile -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="4dp"
+                            android:background="@drawable/pa_rank_tile_bg"
+                            android:orientation="vertical"
+                            android:padding="@dimen/pa_rank_tile_padding">
+
+                            <FrameLayout
+                                android:layout_width="@dimen/pa_rank_icon_box_size"
+                                android:layout_height="@dimen/pa_rank_icon_box_size"
+                                android:background="@drawable/pa_rank_icon_percent_bg">
+
+                                <ImageView
+                                    android:layout_width="@dimen/pa_rank_icon_size"
+                                    android:layout_height="@dimen/pa_rank_icon_size"
+                                    android:layout_gravity="center"
+                                    android:contentDescription="@null"
+                                    android:src="@drawable/ic_pa_rank_percent" />
+
+                            </FrameLayout>
+
+                            <TextView
+                                android:id="@+id/rank_percentile"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="@string/pa_stat_empty_val"
+                                android:textColor="@color/pa_stat_val_text"
+                                android:textSize="@dimen/pa_rank_val_text_size"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/pa_rank_percentile_label"
+                                android:textColor="@color/pa_stat_top_label"
+                                android:textSize="@dimen/pa_rank_label_text_size" />
+
+                        </LinearLayout>
+
+                        <!-- Tile 2: Rank Position & Appeared -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="4dp"
+                            android:background="@drawable/pa_rank_tile_bg"
+                            android:orientation="vertical"
+                            android:padding="@dimen/pa_rank_tile_padding">
+
+                            <FrameLayout
+                                android:layout_width="@dimen/pa_rank_icon_box_size"
+                                android:layout_height="@dimen/pa_rank_icon_box_size"
+                                android:background="@drawable/pa_rank_icon_people_bg">
+
+                                <ImageView
+                                    android:layout_width="@dimen/pa_rank_icon_size"
+                                    android:layout_height="@dimen/pa_rank_icon_size"
+                                    android:layout_gravity="center"
+                                    android:contentDescription="@null"
+                                    android:src="@drawable/ic_pa_rank_people" />
+
+                            </FrameLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:gravity="bottom"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/rank_position"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/pa_stat_empty_val"
+                                    android:textColor="@color/pa_stat_val_text"
+                                    android:textSize="@dimen/pa_rank_val_text_size"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/rank_appeared"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/pa_stat_top_label"
+                                    android:textSize="13sp" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/rank_label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/pa_rank_label"
+                                android:textColor="@color/pa_stat_top_label"
+                                android:textSize="@dimen/pa_rank_label_text_size" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Tile 3: Insight (Full Width) -->
+                    <LinearLayout
+                        android:id="@+id/pa_rank_insight"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pa_rank_insight_margin_top"
+                        android:background="@drawable/pa_rank_tile_bg"
+                        android:orientation="vertical"
+                        android:padding="@dimen/pa_rank_insight_padding">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:contentDescription="@null"
+                                android:src="@drawable/ic_pa_rank_insight" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="6dp"
+                                android:text="@string/pa_rank_insight_title"
+                                android:textColor="@color/pa_rank_insight_title"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/rank_insight"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:textColor="@color/pa_rank_insight_text"
+                            android:textSize="12sp"
+                            android:lineSpacingExtra="2dp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ── Topper Comparison Leaderboard Card ───────────────── -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/topper_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/pa_stats_margin_horizontal"
+                android:layout_marginEnd="@dimen/pa_stats_margin_horizontal"
+                android:layout_marginBottom="@dimen/pa_stats_margin_bottom"
+                app:cardBackgroundColor="@color/pa_stat_card_bg"
+                app:cardCornerRadius="@dimen/pa_stat_card_radius"
+                app:cardElevation="@dimen/pa_stat_card_elevation"
+                app:strokeColor="@color/pa_stat_card_border"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/pa_stat_card_padding">
+
+                    <!-- Header: Title, Subtitle & Filters -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/topper_card_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/pa_topper_title"
+                            android:textColor="@color/pa_stat_val_text"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/topper_card_sub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/pa_topper_subtitle"
+                            android:textColor="@color/pa_stat_top_label"
+                            android:textSize="@dimen/pa_stat_top_text_size" />
+
+                        <!-- Filters (Month, Year, Limit, Subject) -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <Spinner
+                                android:id="@+id/l_month"
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/pa_trend_spinner_height"
+                                android:background="@drawable/pa_spinner_bg"
+                                android:overlapAnchor="false"
+                                android:spinnerMode="dropdown" />
+
+                            <Spinner
+                                android:id="@+id/l_year"
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/pa_trend_spinner_height"
+                                android:layout_marginStart="@dimen/pa_trend_filter_gap"
+                                android:background="@drawable/pa_spinner_bg"
+                                android:overlapAnchor="false"
+                                android:spinnerMode="dropdown" />
+
+                            <Spinner
+                                android:id="@+id/l_limit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/pa_trend_spinner_height"
+                                android:layout_marginStart="@dimen/pa_trend_filter_gap"
+                                android:background="@drawable/pa_spinner_bg"
+                                android:overlapAnchor="false"
+                                android:spinnerMode="dropdown" />
+
+                            <Spinner
+                                android:id="@+id/l_subject"
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/pa_trend_spinner_height"
+                                android:layout_marginStart="@dimen/pa_trend_filter_gap"
+                                android:background="@drawable/pa_spinner_bg"
+                                android:overlapAnchor="false"
+                                android:spinnerMode="dropdown" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Table & Scroll Container -->
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp">
+
+                        <HorizontalScrollView
+                            android:id="@+id/topper_table_scroll"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:scrollbars="horizontal">
+
+                            <TableLayout
+                                android:id="@+id/topper_table"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:divider="@drawable/pa_table_row_divider"
+                                android:showDividers="middle|end">
+
+                                <!-- Header Row -->
+                                <TableRow
+                                    android:id="@+id/topper_header_row"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@color/pa_table_header_bg"
+                                    android:gravity="center_vertical"
+                                    android:minHeight="40dp">
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_topper_date_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center_vertical"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_topper_th_date"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_topper_score_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_topper_th_your_score"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_topper_topper_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_topper_th_topper_score"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_topper_sub_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_topper_th_phy"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_topper_sub_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_topper_th_che"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/comparison_subject_head"
+                                        android:layout_width="@dimen/pa_col_topper_sub_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_topper_th_bio"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_topper_outof_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_topper_th_out_of"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_topper_gap_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_topper_th_gap"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_topper_grade_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_topper_th_grade"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_topper_rank_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_topper_th_your_rank"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_topper_appeared_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_topper_th_appeared"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_topper_progress_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center_vertical"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_topper_th_progress"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                </TableRow>
+
+                            </TableLayout>
+
+                        </HorizontalScrollView>
+
+                        <TextView
+                            android:id="@+id/topper_empty"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:padding="@dimen/pa_trend_empty_padding"
+                            android:text="@string/pa_topper_empty"
+                            android:textColor="@color/pa_stat_note_text"
+                            android:textSize="13sp"
+                            android:visibility="gone" />
+
+                        <ProgressBar
+                            android:id="@+id/topper_progress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:visibility="gone" />
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ── Subject-Wise Performance Comparison Card ────────── -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/subject_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/pa_stats_margin_horizontal"
+                android:layout_marginEnd="@dimen/pa_stats_margin_horizontal"
+                android:layout_marginBottom="@dimen/pa_stats_margin_bottom"
+                app:cardBackgroundColor="@color/pa_stat_card_bg"
+                app:cardCornerRadius="@dimen/pa_stat_card_radius"
+                app:cardElevation="@dimen/pa_stat_card_elevation"
+                app:strokeColor="@color/pa_stat_card_border"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/pa_stat_card_padding">
+
+                    <!-- Header: Title, Subtitle & Filters -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/pa_subject_card_title"
+                            android:textColor="@color/pa_stat_val_text"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/pa_subject_card_sub"
+                            android:textColor="@color/pa_stat_top_label"
+                            android:textSize="@dimen/pa_stat_top_text_size" />
+
+                        <!-- Filters Row: sMonth, sYear, sLimit, sSubject -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <Spinner
+                                android:id="@+id/s_month"
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/pa_trend_spinner_height"
+                                android:background="@drawable/pa_spinner_bg"
+                                android:overlapAnchor="false"
+                                android:spinnerMode="dropdown" />
+
+                            <Spinner
+                                android:id="@+id/s_year"
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/pa_trend_spinner_height"
+                                android:layout_marginStart="@dimen/pa_trend_filter_gap"
+                                android:background="@drawable/pa_spinner_bg"
+                                android:overlapAnchor="false"
+                                android:spinnerMode="dropdown" />
+
+                            <Spinner
+                                android:id="@+id/s_limit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/pa_trend_spinner_height"
+                                android:layout_marginStart="@dimen/pa_trend_filter_gap"
+                                android:background="@drawable/pa_spinner_bg"
+                                android:overlapAnchor="false"
+                                android:spinnerMode="dropdown" />
+
+                            <Spinner
+                                android:id="@+id/s_subject"
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/pa_trend_spinner_height"
+                                android:layout_marginStart="@dimen/pa_trend_filter_gap"
+                                android:background="@drawable/pa_spinner_bg"
+                                android:overlapAnchor="false"
+                                android:spinnerMode="dropdown" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Table & Scroll Container -->
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp">
+
+                        <HorizontalScrollView
+                            android:id="@+id/subject_table_scroll"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:scrollbars="horizontal">
+
+                            <TableLayout
+                                android:id="@+id/subject_table"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:divider="@drawable/pa_table_row_divider"
+                                android:showDividers="middle|end" />
+
+                        </HorizontalScrollView>
+
+                        <TextView
+                            android:id="@+id/subject_empty"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:padding="@dimen/pa_trend_empty_padding"
+                            android:text="@string/pa_subject_empty"
+                            android:textColor="@color/pa_stat_note_text"
+                            android:textSize="13sp"
+                            android:visibility="gone" />
+
+                        <ProgressBar
+                            android:id="@+id/subject_progress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:visibility="gone" />
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ── Focus Areas & Improvement Plan Card ────────────────── -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/focus_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/pa_stats_margin_horizontal"
+                android:layout_marginEnd="@dimen/pa_stats_margin_horizontal"
+                android:layout_marginBottom="@dimen/pa_stats_margin_bottom"
+                app:cardBackgroundColor="@color/pa_stat_card_bg"
+                app:cardCornerRadius="@dimen/pa_stat_card_radius"
+                app:cardElevation="@dimen/pa_stat_card_elevation"
+                app:strokeColor="@color/pa_stat_card_border"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/pa_stat_card_padding">
+
+                    <!-- Header: Title, Subtitle & Legend -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/pa_focus_title"
+                            android:textColor="@color/pa_stat_val_text"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/pa_focus_subtitle"
+                            android:textColor="@color/pa_stat_top_label"
+                            android:textSize="@dimen/pa_stat_top_text_size" />
+
+                        <!-- Legend: Your Score / Top Score -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <View
+                                android:layout_width="8dp"
+                                android:layout_height="8dp"
+                                android:background="@drawable/pa_legend_dot_you" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:text="@string/pa_focus_legend_you"
+                                android:textColor="@color/pa_stat_top_label"
+                                android:textSize="11sp" />
+
+                            <View
+                                android:layout_width="8dp"
+                                android:layout_height="8dp"
+                                android:layout_marginStart="14dp"
+                                android:background="@drawable/pa_legend_dot_topper" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:text="@string/pa_focus_legend_top"
+                                android:textColor="@color/pa_stat_top_label"
+                                android:textSize="11sp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Focus Grid Container -->
+                    <LinearLayout
+                        android:id="@+id/focus_grid"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:orientation="vertical" />
+
+                    <!-- Empty State -->
+                    <TextView
+                        android:id="@+id/focus_empty"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="@dimen/pa_trend_empty_padding"
+                        android:text="@string/pa_focus_empty"
+                        android:textColor="@color/pa_stat_note_text"
+                        android:textSize="13sp"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ── History Card ──────────────────────────────────────── -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/history_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/pa_stats_margin_horizontal"
+                android:layout_marginEnd="@dimen/pa_stats_margin_horizontal"
+                android:layout_marginBottom="@dimen/pa_stats_margin_bottom"
+                app:cardBackgroundColor="@color/pa_stat_card_bg"
+                app:cardCornerRadius="@dimen/pa_stat_card_radius"
+                app:cardElevation="@dimen/pa_stat_card_elevation"
+                app:strokeColor="@color/pa_stat_card_border"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/pa_stat_card_padding">
+
+                    <!-- Header: Title, Subtitle & Filters -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/history_card_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/pa_history_title"
+                            android:textColor="@color/pa_stat_val_text"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/history_card_sub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/pa_history_subtitle"
+                            android:textColor="@color/pa_stat_top_label"
+                            android:textSize="@dimen/pa_stat_top_text_size" />
+
+                        <!-- Filters (Month, Year, Subject) -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <Spinner
+                                android:id="@+id/h_month"
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/pa_trend_spinner_height"
+                                android:background="@drawable/pa_spinner_bg"
+                                android:overlapAnchor="false"
+                                android:spinnerMode="dropdown" />
+
+                            <Spinner
+                                android:id="@+id/h_year"
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/pa_trend_spinner_height"
+                                android:layout_marginStart="@dimen/pa_trend_filter_gap"
+                                android:background="@drawable/pa_spinner_bg"
+                                android:overlapAnchor="false"
+                                android:spinnerMode="dropdown" />
+
+                            <Spinner
+                                android:id="@+id/h_subject"
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/pa_trend_spinner_height"
+                                android:layout_marginStart="@dimen/pa_trend_filter_gap"
+                                android:background="@drawable/pa_spinner_bg"
+                                android:overlapAnchor="false"
+                                android:spinnerMode="dropdown" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Table & Scroll Container -->
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp">
+
+                        <HorizontalScrollView
+                            android:id="@+id/pa_table_scroll"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:scrollbars="horizontal">
+
+                            <TableLayout
+                                android:id="@+id/history_table"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:divider="@drawable/pa_table_row_divider"
+                                android:showDividers="middle|end">
+
+                                <!-- Header Row -->
+                                <TableRow
+                                    android:id="@+id/history_header_row"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@color/pa_table_header_bg"
+                                    android:gravity="center_vertical"
+                                    android:minHeight="40dp">
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_date_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center_vertical"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_date"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_exam_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center_vertical"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_exam"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/th_roll_no"
+                                        android:layout_width="@dimen/pa_col_roll_no_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_roll_no"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold"
+                                        android:visibility="gone" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_subject_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_phy"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_subject_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_che"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_subject_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_bio"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_subject_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_mat"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_subject_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_apt"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_subject_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_drw"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_subject_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_p1"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_subject_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_p2"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_total_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_total"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_max_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_max"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_highest_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_highest"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_percent_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_percent"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_grade_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_grade"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_rank_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_rank"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/th_out_of"
+                                        android:layout_width="@dimen/pa_col_out_of_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_out_of"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold"
+                                        android:visibility="gone" />
+
+                                    <TextView
+                                        android:id="@+id/th_status"
+                                        android:layout_width="@dimen/pa_col_status_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_status"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold"
+                                        android:visibility="gone" />
+
+                                    <TextView
+                                        android:id="@+id/th_scholar_earn"
+                                        android:layout_width="@dimen/pa_col_scholarship_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_scholarship"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold"
+                                        android:visibility="gone" />
+
+                                    <TextView
+                                        android:id="@+id/th_remarks"
+                                        android:layout_width="@dimen/pa_col_remarks_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_remarks"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold"
+                                        android:visibility="gone" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_appeared_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_appeared"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_omr_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_omr"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_result_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_result"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                </TableRow>
+
+                            </TableLayout>
+
+                        </HorizontalScrollView>
+
+                        <TextView
+                            android:id="@+id/history_empty"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:padding="@dimen/pa_trend_empty_padding"
+                            android:text="@string/pa_history_empty"
+                            android:textColor="@color/pa_stat_note_text"
+                            android:textSize="13sp"
+                            android:visibility="gone" />
+
+                        <ProgressBar
+                            android:id="@+id/history_progress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:visibility="gone" />
+
+                    </FrameLayout>
+
+                    <!-- Footer: Info & Pager -->
+                    <LinearLayout
+                        android:id="@+id/history_foot"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/history_info"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/pa_history_info_empty"
+                            android:textColor="@color/pa_stat_top_label"
+                            android:textSize="12sp" />
+
+                        <LinearLayout
+                            android:id="@+id/history_pager"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/btn_history_prev"
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/pa_pager_btn_height"
+                                android:background="@drawable/pa_pager_btn_bg"
+                                android:enabled="false"
+                                android:gravity="center"
+                                android:paddingStart="@dimen/pa_pager_btn_padding_h"
+                                android:paddingEnd="@dimen/pa_pager_btn_padding_h"
+                                android:text="@string/pa_history_prev"
+                                android:textColor="@color/pa_pager_btn_text"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/tv_history_page"
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/pa_pager_btn_height"
+                                android:layout_marginStart="4dp"
+                                android:layout_marginEnd="4dp"
+                                android:background="@drawable/pa_pager_btn_active_bg"
+                                android:gravity="center"
+                                android:minWidth="@dimen/pa_pager_btn_min_width"
+                                android:paddingStart="10dp"
+                                android:paddingEnd="10dp"
+                                android:text="1"
+                                android:textColor="@color/white"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/btn_history_next"
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/pa_pager_btn_height"
+                                android:background="@drawable/pa_pager_btn_bg"
+                                android:enabled="false"
+                                android:gravity="center"
+                                android:paddingStart="@dimen/pa_pager_btn_padding_h"
+                                android:paddingEnd="@dimen/pa_pager_btn_padding_h"
+                                android:text="@string/pa_history_next"
+                                android:textColor="@color/pa_pager_btn_text"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+        <!-- Result Details Modal Overlay (pa-omr-modal) -->
+        <FrameLayout
+            android:id="@+id/notifymessage_modal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone">
+
+            <!-- Backdrop -->
+            <View
+                android:id="@+id/modal_backdrop"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/pa_modal_scrim" />
+
+            <!-- Dialog Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="16dp"
+                app:strokeColor="@color/pa_modal_cancelled_border"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Modal Header -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/pa_modal_header_bg"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_pa_rank_insight"
+                            app:tint="@color/pa_stat_best_icon_stroke" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/result_modal_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/pa_modal_title"
+                                android:textColor="@color/white"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/result_modal_sub"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/pa_modal_subtitle"
+                                android:textColor="@color/pa_stat_top_label"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/result_modal_close_btn"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="@color/pa_modal_header_bg"
+                            android:gravity="center"
+                            android:text="✕"
+                            android:textColor="@color/white"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                    <!-- Modal Body -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/pa_modal_body_bg"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <!-- Row 1: Right Answers, Wrong Answers, Total Answered -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <!-- Right Answers -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                app:cardBackgroundColor="@color/white"
+                                app:cardCornerRadius="10dp"
+                                app:cardElevation="0dp"
+                                app:strokeColor="@color/pa_modal_right_border"
+                                app:strokeWidth="1dp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:orientation="vertical"
+                                    android:padding="10dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/pa_modal_right_answers"
+                                        android:textColor="@color/pa_modal_right_label"
+                                        android:textSize="10sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/tv_right_answers"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="-"
+                                        android:textColor="@color/pa_modal_right_text"
+                                        android:textSize="20sp"
+                                        android:textStyle="bold" />
+
+                                </LinearLayout>
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <!-- Wrong Answers -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_weight="1"
+                                app:cardBackgroundColor="@color/white"
+                                app:cardCornerRadius="10dp"
+                                app:cardElevation="0dp"
+                                app:strokeColor="@color/pa_modal_wrong_border"
+                                app:strokeWidth="1dp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:orientation="vertical"
+                                    android:padding="10dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/pa_modal_wrong_answers"
+                                        android:textColor="@color/pa_modal_wrong_label"
+                                        android:textSize="10sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/tv_wrong_answers"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="-"
+                                        android:textColor="@color/pa_modal_wrong_text"
+                                        android:textSize="20sp"
+                                        android:textStyle="bold" />
+
+                                </LinearLayout>
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <!-- Total Answered -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_weight="1"
+                                app:cardBackgroundColor="@color/white"
+                                app:cardCornerRadius="10dp"
+                                app:cardElevation="0dp"
+                                app:strokeColor="@color/pa_modal_answered_border"
+                                app:strokeWidth="1dp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:orientation="vertical"
+                                    android:padding="10dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/pa_modal_total_answered"
+                                        android:textColor="@color/pa_modal_answered_label"
+                                        android:textSize="10sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/tv_answered"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="-"
+                                        android:textColor="@color/pa_modal_answered_text"
+                                        android:textSize="20sp"
+                                        android:textStyle="bold" />
+
+                                </LinearLayout>
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                        </LinearLayout>
+
+                        <!-- Row 2: Unanswered, Cancelled -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:orientation="horizontal">
+
+                            <!-- Unanswered -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                app:cardBackgroundColor="@color/white"
+                                app:cardCornerRadius="10dp"
+                                app:cardElevation="0dp"
+                                app:strokeColor="@color/pa_modal_unanswered_border"
+                                app:strokeWidth="1dp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:orientation="vertical"
+                                    android:padding="10dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/pa_modal_unanswered"
+                                        android:textColor="@color/pa_modal_unanswered_label"
+                                        android:textSize="10sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/tv_unanswered"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="-"
+                                        android:textColor="@color/pa_modal_unanswered_text"
+                                        android:textSize="20sp"
+                                        android:textStyle="bold" />
+
+                                </LinearLayout>
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <!-- Cancelled -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_weight="1"
+                                app:cardBackgroundColor="@color/white"
+                                app:cardCornerRadius="10dp"
+                                app:cardElevation="0dp"
+                                app:strokeColor="@color/pa_modal_cancelled_border"
+                                app:strokeWidth="1dp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:orientation="vertical"
+                                    android:padding="10dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/pa_modal_cancelled"
+                                        android:textColor="@color/pa_modal_cancelled_label"
+                                        android:textSize="10sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/tv_cancelled"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="-"
+                                        android:textColor="@color/pa_modal_cancelled_text"
+                                        android:textSize="20sp"
+                                        android:textStyle="bold" />
+
+                                </LinearLayout>
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                        </LinearLayout>
+
+                        <!-- Incorrect Question Numbers -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            app:cardBackgroundColor="@color/white"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="0dp"
+                            app:strokeColor="@color/pa_modal_cancelled_border"
+                            app:strokeWidth="1dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="14dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/pa_modal_incorrect_title"
+                                    android:textColor="@color/pa_stat_val_text"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tv_incorrect_questions"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:background="@drawable/pa_gap_high_bg"
+                                    android:padding="10dp"
+                                    android:text="-"
+                                    android:textColor="@color/pa_modal_incorrect_text"
+                                    android:textSize="13sp" />
+
+                            </LinearLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </FrameLayout>
+
+    </FrameLayout>
+
+</LinearLayout>

@@ -74,4 +74,103 @@
     <color name="exam_result_tab_text">#666666</color>
     <color name="exam_result_pagination_border">#C5CAE9</color>
 
+    <!-- ── Performance Results Screen ──────────────────────────────────────── -->
+    <color name="pa_pill_tabs_bg">#E5E9F2</color>
+    <color name="pa_pill_tab_unselected_text">#555770</color>
+    <color name="pa_stat_card_bg">#FFFFFF</color>
+    <color name="pa_stat_card_border">#E2E8F0</color>
+    <color name="pa_stat_top_label">#64748B</color>
+    <color name="pa_stat_val_text">#0F172A</color>
+    <color name="pa_stat_note_text">#94A3B8</color>
+    <color name="pa_stat_icon_stroke">#94A3B8</color>
+    <color name="pa_stat_best_icon_stroke">#2563EB</color>
+    <color name="pa_trend_you">#2563EB</color>
+    <color name="pa_trend_topper">#10B981</color>
+    <color name="pa_trend_grid_line">#E2E8F0</color>
+
+    <!-- ── Performance Results History Table ───────────────────────────────── -->
+    <color name="pa_table_header_bg">#F8FAFC</color>
+    <color name="pa_table_header_text">#64748B</color>
+    <color name="pa_table_cell_text">#1E293B</color>
+    <color name="pa_table_cell_strong">#0F172A</color>
+    <color name="pa_table_row_alt">#F8FAFC</color>
+    <color name="pa_table_divider">#F1F5F9</color>
+    <color name="pa_table_header_divider">#E2E8F0</color>
+    <color name="pa_badge_success_bg">#DCFCE7</color>
+    <color name="pa_badge_success_text">#166534</color>
+    <color name="pa_badge_neutral_bg">#F1F5F9</color>
+    <color name="pa_badge_neutral_text">#64748B</color>
+    <color name="pa_scholarship_text">#16A34A</color>
+    <color name="pa_pager_btn_border">#E2E8F0</color>
+    <color name="pa_pager_btn_text">#334155</color>
+    <color name="pa_pager_btn_disabled_text">#CBD5E1</color>
+
+    <!-- ── Performance Results Rank Analysis ───────────────────────────────── -->
+    <color name="pa_rank_tile_bg">#F8FAFC</color>
+    <color name="pa_rank_tile_border">#E2E8F0</color>
+    <color name="pa_rank_percent_icon">#2563EB</color>
+    <color name="pa_rank_percent_icon_bg">#EFF6FF</color>
+    <color name="pa_rank_people_icon">#059669</color>
+    <color name="pa_rank_people_icon_bg">#ECFDF5</color>
+    <color name="pa_rank_insight_bg">#F8FAFC</color>
+    <color name="pa_rank_insight_border">#E2E8F0</color>
+    <color name="pa_rank_insight_icon">#059669</color>
+    <color name="pa_rank_insight_title">#0F172A</color>
+    <color name="pa_rank_insight_text">#334155</color>
+
+    <!-- ── Performance Results Topper Comparison ───────────────────────────── -->
+    <color name="pa_gap_high_bg">#FEE2E2</color>
+    <color name="pa_gap_high_text">#DC2626</color>
+    <color name="pa_gap_low_bg">#DCFCE7</color>
+    <color name="pa_gap_low_text">#166534</color>
+    <color name="pa_progress_bar_bg">#F1F5F9</color>
+    <color name="pa_progress_bar_fill">#10B981</color>
+    <color name="pa_progress_bar_fill_high">#10B981</color>
+    <color name="pa_progress_bar_fill_mid">#F59E0B</color>
+
+    <!-- ── Performance Results Exam Result Details Modal ───────────────────── -->
+    <color name="pa_modal_header_bg">#1E293B</color>
+    <color name="pa_modal_body_bg">#F8FAFC</color>
+    <color name="pa_modal_right_border">#DCFCE7</color>
+    <color name="pa_modal_right_text">#16A34A</color>
+    <color name="pa_modal_right_label">#15803D</color>
+    <color name="pa_modal_wrong_border">#FEE2E2</color>
+    <color name="pa_modal_wrong_text">#EF4444</color>
+    <color name="pa_modal_wrong_label">#B91C1C</color>
+    <color name="pa_modal_answered_border">#DBEAFE</color>
+    <color name="pa_modal_answered_text">#2563EB</color>
+    <color name="pa_modal_answered_label">#1D4ED8</color>
+    <color name="pa_modal_unanswered_border">#FEF3C7</color>
+    <color name="pa_modal_unanswered_text">#F59E0B</color>
+    <color name="pa_modal_unanswered_label">#B45309</color>
+    <color name="pa_modal_cancelled_border">#E2E8F0</color>
+    <color name="pa_modal_cancelled_text">#64748B</color>
+    <color name="pa_modal_cancelled_label">#475569</color>
+    <color name="pa_modal_incorrect_bg">#FFF1F2</color>
+    <color name="pa_modal_incorrect_border">#FECDD3</color>
+    <color name="pa_modal_incorrect_text">#334155</color>
+    <color name="pa_modal_scrim">#80000000</color>
+
+    <!-- ── Performance Focus & Chart Colors ─────────────────────────────────── -->
+    <color name="pa_chart_grid">#F1F5F9</color>
+    <color name="pa_chart_label">#94A3B8</color>
+    <color name="pa_chart_topper_gray">#94A3B8</color>
+    <color name="pa_focus_high_priority">#EF4444</color>
+    <color name="pa_focus_high_badge_bg">#FEE2E2</color>
+    <color name="pa_focus_high_badge_text">#DC2626</color>
+    <color name="pa_focus_high_note_bg">#FEF2F2</color>
+    <color name="pa_focus_high_note_border">#FECACA</color>
+    <color name="pa_focus_high_note_text">#B91C1C</color>
+    <color name="pa_focus_low_priority">#10B981</color>
+    <color name="pa_focus_low_badge_bg">#DCFCE7</color>
+    <color name="pa_focus_low_badge_text">#166534</color>
+    <color name="pa_focus_low_note_bg">#F0FDF4</color>
+    <color name="pa_focus_low_note_border">#BBF7D0</color>
+    <color name="pa_focus_low_note_text">#15803D</color>
+    <color name="pa_focus_medium_priority">#F59E0B</color>
+    <color name="pa_focus_medium_badge_bg">#FEF3C7</color>
+    <color name="pa_focus_medium_badge_text">#D97706</color>
+    <color name="pa_focus_medium_note_bg">#FFFBEB</color>
+    <color name="pa_focus_medium_note_border">#FDE68A</color>
+    <color name="pa_focus_medium_note_text">#B45309</color>
 </resources>

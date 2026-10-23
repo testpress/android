@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:minHeight="44dp">
+
+    <!-- 1. Exam Date -->
+    <TextView
+        android:id="@+id/tv_date"
+        android:layout_width="@dimen/pa_col_topper_date_width"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/pa_table_cell_padding_h"
+        android:paddingTop="@dimen/pa_table_cell_padding_v"
+        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+        android:textColor="@color/pa_table_cell_text"
+        android:textSize="12sp" />
+
+    <!-- 2. Your Score -->
+    <TextView
+        android:id="@+id/tv_score"
+        android:layout_width="@dimen/pa_col_topper_score_width"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingStart="@dimen/pa_table_cell_padding_h"
+        android:paddingTop="@dimen/pa_table_cell_padding_v"
+        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+        android:textColor="@color/pa_table_cell_strong"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <!-- 3. Topper Score -->
+    <TextView
+        android:id="@+id/tv_topper"
+        android:layout_width="@dimen/pa_col_topper_topper_width"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingStart="@dimen/pa_table_cell_padding_h"
+        android:paddingTop="@dimen/pa_table_cell_padding_v"
+        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+        android:textColor="@color/pa_table_cell_text"
+        android:textSize="12sp" />
+
+    <!-- 4. Phy -->
+    <TextView
+        android:id="@+id/tv_phy"
+        android:layout_width="@dimen/pa_col_topper_sub_width"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingStart="@dimen/pa_table_cell_padding_h"
+        android:paddingTop="@dimen/pa_table_cell_padding_v"
+        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+        android:textColor="@color/pa_table_cell_text"
+        android:textSize="12sp" />
+
+    <!-- 5. Che -->
+    <TextView
+        android:id="@+id/tv_che"
+        android:layout_width="@dimen/pa_col_topper_sub_width"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingStart="@dimen/pa_table_cell_padding_h"
+        android:paddingTop="@dimen/pa_table_cell_padding_v"
+        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+        android:textColor="@color/pa_table_cell_text"
+        android:textSize="12sp" />
+
+    <!-- 6. Comparison Subject (Bio / etc.) -->
+    <TextView
+        android:id="@+id/tv_comparison_sub"
+        android:layout_width="@dimen/pa_col_topper_sub_width"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingStart="@dimen/pa_table_cell_padding_h"
+        android:paddingTop="@dimen/pa_table_cell_padding_v"
+        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+        android:textColor="@color/pa_table_cell_text"
+        android:textSize="12sp" />
+
+    <!-- 7. Out of Score -->
+    <TextView
+        android:id="@+id/tv_out_of"
+        android:layout_width="@dimen/pa_col_topper_outof_width"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingStart="@dimen/pa_table_cell_padding_h"
+        android:paddingTop="@dimen/pa_table_cell_padding_v"
+        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+        android:textColor="@color/pa_table_cell_text"
+        android:textSize="12sp" />
+
+    <!-- 8. Gap -->
+    <FrameLayout
+        android:id="@+id/layout_gap"
+        android:layout_width="@dimen/pa_col_topper_gap_width"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:paddingStart="@dimen/pa_table_cell_padding_h"
+        android:paddingTop="@dimen/pa_table_cell_padding_v"
+        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+        android:paddingBottom="@dimen/pa_table_cell_padding_v">
+
+        <TextView
+            android:id="@+id/tv_gap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/pa_gap_high_bg"
+            android:gravity="center"
+            android:paddingStart="6dp"
+            android:paddingTop="2dp"
+            android:paddingEnd="6dp"
+            android:paddingBottom="2dp"
+            android:textColor="@color/pa_gap_high_text"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+    </FrameLayout>
+
+    <!-- 9. Grade -->
+    <FrameLayout
+        android:id="@+id/layout_grade"
+        android:layout_width="@dimen/pa_col_topper_grade_width"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:paddingStart="@dimen/pa_table_cell_padding_h"
+        android:paddingTop="@dimen/pa_table_cell_padding_v"
+        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+        android:paddingBottom="@dimen/pa_table_cell_padding_v">
+
+        <TextView
+            android:id="@+id/tv_grade"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/pa_badge_success_bg"
+            android:gravity="center"
+            android:paddingStart="@dimen/pa_badge_padding_h"
+            android:paddingTop="@dimen/pa_badge_padding_v"
+            android:paddingEnd="@dimen/pa_badge_padding_h"
+            android:paddingBottom="@dimen/pa_badge_padding_v"
+            android:textColor="@color/pa_badge_success_text"
+            android:textSize="11sp" />
+
+    </FrameLayout>
+
+    <!-- 10. Your Rank -->
+    <TextView
+        android:id="@+id/tv_rank"
+        android:layout_width="@dimen/pa_col_topper_rank_width"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingStart="@dimen/pa_table_cell_padding_h"
+        android:paddingTop="@dimen/pa_table_cell_padding_v"
+        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+        android:textColor="@color/pa_table_cell_text"
+        android:textSize="12sp" />
+
+    <!-- 11. Total Appeared -->
+    <TextView
+        android:id="@+id/tv_appeared"
+        android:layout_width="@dimen/pa_col_topper_appeared_width"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingStart="@dimen/pa_table_cell_padding_h"
+        android:paddingTop="@dimen/pa_table_cell_padding_v"
+        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+        android:textColor="@color/pa_table_cell_text"
+        android:textSize="12sp" />
+
+    <!-- 12. Progress vs Topper -->
+    <LinearLayout
+        android:id="@+id/layout_progress"
+        android:layout_width="@dimen/pa_col_topper_progress_width"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/pa_table_cell_padding_h"
+        android:paddingTop="@dimen/pa_table_cell_padding_v"
+        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+        android:paddingBottom="@dimen/pa_table_cell_padding_v">
+
+        <ProgressBar
+            android:id="@+id/pb_progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pa_topper_progress_bar_height"
+            android:max="100"
+            android:progressDrawable="@drawable/pa_topper_progress_bar" />
+
+        <TextView
+            android:id="@+id/tv_progress_caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/pa_stat_top_label"
+            android:textSize="11sp" />
+
+    </LinearLayout>
+
+</TableRow>

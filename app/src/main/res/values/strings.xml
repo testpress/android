@@ -233,4 +233,203 @@
     <string name="no_results">No results found</string>
     <string name="error_loading_results">Failed to load exam results. Please try again.</string>
     <string name="chat_with_us">Chat with Us</string>
+
+    <string name="performance_results_title">Results</string>
+    <string name="performance_results_common_filters">Common filters</string>
+    <string name="performance_results_type_hint">Exam type (optional)</string>
+    <string name="performance_results_year_hint">Year (optional, e.g. 2025 or all)</string>
+    <string name="performance_results_month_hint">Month (optional, 1–12)</string>
+    <string name="performance_results_subject_hint">Subject (optional)</string>
+    <string name="performance_results_limit_hint">Limit (optional, 1–100)</string>
+    <string name="performance_results_page_hint">Page (optional)</string>
+    <string name="performance_results_length_hint">Length (optional, 1–100)</string>
+    <string name="performance_results_filters_title">Filters</string>
+    <string name="performance_results_filters_button">Load filters</string>
+    <string name="performance_results_overview_title">Overview</string>
+    <string name="performance_results_overview_button">Load overview</string>
+    <string name="performance_results_dashboard_title">Dashboard</string>
+    <string name="performance_results_dashboard_button">Load dashboard</string>
+    <string name="performance_results_leaderboard_title">Leaderboard</string>
+    <string name="performance_results_leaderboard_button">Load leaderboard</string>
+    <string name="performance_results_subjectboard_title">Subject Board</string>
+    <string name="performance_results_subjectboard_button">Load subject board</string>
+    <string name="performance_results_history_title">History</string>
+    <string name="performance_results_history_button">Load history</string>
+    <string name="performance_results_no_student">No signed-in student found.</string>
+    <string name="performance_results_invalid_filters">Enter valid numeric values for year, month, limit, page, and length.</string>
+    <string name="performance_results_student_name">Student: %1$s</string>
+    <string name="performance_results_default_type">Default type: %1$s</string>
+    <string name="performance_results_types">Types: %1$s</string>
+    <string name="performance_results_years">Years: %1$s</string>
+    <string name="performance_results_selected_year">Selected year: %1$s</string>
+    <string name="performance_results_subjects">Subjects: %1$s</string>
+    <string name="performance_results_months">Months: %1$s</string>
+    <string name="performance_results_page_size">Page size: %1$d</string>
+    <string name="performance_results_empty_value">-</string>
+    <string name="performance_tab_test_type">Test type</string>
+    <string name="performance_tab_model">Model</string>
+    <string name="performance_tab_weekly">Weekly</string>
+    <string name="performance_tab_screening_test">Screening Test</string>
+
+    <!-- ── Performance Results Stats Section ───────────────────────────────── -->
+    <string name="pa_stat_total_exams">Total Exams</string>
+    <string name="pa_stat_total_exams_note">All mock attempts recorded</string>
+    <string name="pa_stat_best_score">Best Score</string>
+    <string name="pa_stat_best_score_note_format">Achieved on %1$s</string>
+    <string name="pa_stat_avg_score">Average Score</string>
+    <string name="pa_stat_avg_score_note_format">%1$s%% mean performance</string>
+    <string name="pa_stat_best_rank">Best Rank</string>
+    <string name="pa_stat_best_rank_note_format">Out of %1$s candidates</string>
+    <string name="pa_stat_empty_val">-</string>
+    <string name="pa_stat_best_score_format">%1$s/%2$s</string>
+
+    <!-- ── Performance Results Trend Card ──────────────────────────────────── -->
+    <string name="pa_trend_title">Score Trajectory Trend</string>
+    <string name="pa_trend_subtitle">Y-axis: percentage of marks (0 - 100%)</string>
+    <string name="pa_trend_your_score">Your Score</string>
+    <string name="pa_trend_topper_mark">Topper Mark</string>
+    <string name="pa_trend_filter_month">Month</string>
+    <string name="pa_trend_filter_all_years">All Years</string>
+    <string name="pa_trend_filter_subject">Subject</string>
+    <string name="pa_trend_empty">No result data available for the selected filters.</string>
+
+    <!-- Months -->
+    <string name="month_jan">Jan</string>
+    <string name="month_feb">Feb</string>
+    <string name="month_mar">Mar</string>
+    <string name="month_apr">Apr</string>
+    <string name="month_may">May</string>
+    <string name="month_jun">Jun</string>
+    <string name="month_jul">Jul</string>
+    <string name="month_aug">Aug</string>
+    <string name="month_sep">Sep</string>
+    <string name="month_oct">Oct</string>
+    <string name="month_nov">Nov</string>
+    <string name="month_dec">Dec</string>
+
+    <!-- ── Performance Results History Card ────────────────────────────────── -->
+    <string name="pa_history_title">Exam History</string>
+    <string name="pa_history_subtitle">Detailed results by exam date</string>
+    <string name="pa_history_empty">No result data available for the selected filters.</string>
+    <string name="pa_history_info_format">Showing %1$d-%2$d of %3$d</string>
+    <string name="pa_history_info_empty">Showing 0 of 0</string>
+    <string name="pa_history_prev">Previous</string>
+    <string name="pa_history_next">Next</string>
+    <string name="pa_history_th_date">Date</string>
+    <string name="pa_history_th_exam">Exam</string>
+    <string name="pa_history_th_roll_no">Roll No</string>
+    <string name="pa_history_th_phy">PHY</string>
+    <string name="pa_history_th_che">CHE</string>
+    <string name="pa_history_th_bio">BIO</string>
+    <string name="pa_history_th_mat">Mat</string>
+    <string name="pa_history_th_apt">APT</string>
+    <string name="pa_history_th_drw">DRW</string>
+    <string name="pa_history_th_p1">P-I</string>
+    <string name="pa_history_th_p2">P-II</string>
+    <string name="pa_history_th_total">Total</string>
+    <string name="pa_history_th_max">Max</string>
+    <string name="pa_history_th_highest">Highest</string>
+    <string name="pa_history_th_percent">%</string>
+    <string name="pa_history_th_grade">Grade</string>
+    <string name="pa_history_th_rank">Rank</string>
+    <string name="pa_history_th_out_of">Out Of</string>
+    <string name="pa_history_th_status">Status</string>
+    <string name="pa_history_th_scholarship">Scholarship Earned</string>
+    <string name="pa_history_th_remarks">Remarks</string>
+    <string name="pa_history_th_appeared">Appeared</string>
+    <string name="pa_history_th_omr">OMR</string>
+    <string name="pa_history_th_result">Result</string>
+
+    <!-- ── Performance Results Rank Analysis ───────────────────────────────── -->
+    <string name="pa_rank_title">Rank Analysis</string>
+    <string name="pa_rank_subtitle">Contextual breakdown of your standing among all participants</string>
+    <string name="pa_rank_percentile_format">Top %1$s%%</string>
+    <string name="pa_rank_percentile_label">Current Percentile Standing</string>
+    <string name="pa_rank_position_format">%1$s</string>
+    <string name="pa_rank_appeared_format"> / %1$s</string>
+    <string name="pa_rank_label">Ranked among all valid participants</string>
+    <string name="pa_rank_insight_title">Insight</string>
+    <string name="pa_rank_insight_format">Your best valid position is %1$s among %2$s participants, placing you ahead of %3$s%% of the group.</string>
+
+    <!-- ── Performance Results Topper Comparison ───────────────────────────── -->
+    <string name="pa_topper_title">Topper Comparison Leaderboard</string>
+    <string name="pa_topper_subtitle">Student vs Topper by exam date</string>
+    <string name="pa_topper_empty">No topper comparison data available for the selected filters.</string>
+    <string name="pa_topper_th_date">Exam Date</string>
+    <string name="pa_topper_th_your_score">Your Score</string>
+    <string name="pa_topper_th_topper_score">Topper Score</string>
+    <string name="pa_topper_th_phy">Phy</string>
+    <string name="pa_topper_th_che">Che</string>
+    <string name="pa_topper_th_bio">Bio</string>
+    <string name="pa_topper_th_out_of">Out of Score</string>
+    <string name="pa_topper_th_gap">Gap</string>
+    <string name="pa_topper_th_grade">Grade</string>
+    <string name="pa_topper_th_your_rank">Your Rank</string>
+    <string name="pa_topper_th_appeared">Total Appeared</string>
+    <string name="pa_topper_th_progress">Progress vs Topper</string>
+    <string name="pa_topper_progress_format">%1$s%% progress · %2$s%% gap</string>
+    <string name="pa_limit_last_5">Last 5</string>
+    <string name="pa_limit_last_10">Last 10</string>
+    <string name="pa_limit_last_20">Last 20</string>
+    <string name="pa_limit_all">All</string>
+
+    <!-- ── Performance Results Subject-Wise Performance Comparison ────────── -->
+    <string name="pa_subject_card_title">Subject-Wise Performance Comparison</string>
+    <string name="pa_subject_card_sub">Detailed subject marks breakdown vs toppers</string>
+    <string name="pa_subject_empty">No subject data available.</string>
+    <string name="pa_subject_th_exam_date">Exam Date</string>
+    <string name="pa_subject_th_exam_type">Exam Type</string>
+    <string name="pa_subject_th_your_marks">Subject-wise Marks (Your Marks)</string>
+    <string name="pa_subject_th_topper_marks">Subject-wise Marks (Topper Mark)</string>
+    <string name="pa_subject_th_your_rank">Your Rank</string>
+    <string name="pa_subject_th_total_appeared">Total Appeared</string>
+    <string name="pa_subject_th_grade">Grade</string>
+    <string name="pa_subject_th_gap">Gap</string>
+
+    <!-- ── Performance Results Focus Areas ─────────────────────────────────── -->
+    <string name="pa_focus_title">Focus Areas &amp; Improvement Plan</string>
+    <string name="pa_focus_subtitle">Prioritised subjects based on score trends and gap to target</string>
+    <string name="pa_focus_legend_you">Your Score</string>
+    <string name="pa_focus_legend_top">Top Score</string>
+    <string name="pa_focus_empty">No subject data available for the selected filters.</string>
+    <string name="pa_focus_priority_high">High Priority</string>
+    <string name="pa_focus_priority_medium">Medium Priority</string>
+    <string name="pa_focus_priority_low">Low Priority</string>
+    <string name="pa_focus_avg_format">Average: %1$s / %2$s</string>
+    <string name="pa_focus_topper_format">Topper: %1$s (%2$s%%)</string>
+
+    <!-- ── Performance Results Exam Result Details Modal ───────────────────── -->
+    <string name="pa_modal_title">Exam Result Details</string>
+    <string name="pa_modal_subtitle">Correct / Incorrect Answer Breakdown</string>
+    <string name="pa_modal_right_answers">Right Answers</string>
+    <string name="pa_modal_wrong_answers">Wrong Answers</string>
+    <string name="pa_modal_total_answered">Total Answered</string>
+    <string name="pa_modal_unanswered">Unanswered</string>
+    <string name="pa_modal_cancelled">Cancelled</string>
+    <string name="pa_modal_incorrect_title">Incorrect Question Numbers</string>
+    <string name="pa_history_view_result">View</string>
+
+    <!-- ── Performance Results Errors ──────────────────────────────────────── -->
+    <string name="pa_error_generic">Something went wrong. Please try again.</string>
+    <string name="pa_error_network">Network connection error. Please check your internet connection.</string>
+    <string name="pa_error_server">Server error occurred (%1$d). Please try again later.</string>
+    <string name="pa_error_empty_response">Empty response received from server.</string>
+    <string name="pa_error_no_data">No performance data returned from server.</string>
+    <string name="pa_error_student_not_found">No performance data found for this student.</string>
+    <string name="pa_error_unauthorized">Authentication failed. Please log in again.</string>
+    <string name="pa_error_forbidden">This account is not permitted to access performance data.</string>
+    <string name="pa_error_rate_limited">Too many requests. Please try again shortly.</string>
+    <string name="pa_error_not_configured">Performance Analysis service is not available.</string>
+    <string name="pa_error_missing_api_key">Performance Analysis API key is not configured.</string>
+
+    <!-- ── Performance Results Additional Focus & OMR Strings ──────────────── -->
+    <string name="pa_focus_score_format">Score %1$s/%2$s (%3$s%%)</string>
+    <string name="pa_focus_score_percent_only">Score (%1$s%%)</string>
+    <string name="pa_focus_topper_score_format"><![CDATA[Topper Score %1$s/%2$s (<b>%3$s%%</b>)]]></string>
+    <string name="pa_focus_topper_score_percent_only"><![CDATA[Topper Score (<b>%1$s%%</b>)]]></string>
+    <string name="pa_focus_score_trend_exams_format">Score Trend (%1$d Exams)</string>
+    <string name="pa_focus_topper_series">Topper</string>
+    <string name="pa_focus_you_series">You</string>
+    <string name="pa_omr_error_toast">Could not open OMR sheet</string>
+    <string name="pa_omr_icon_symbol">📄</string>
 </resources>

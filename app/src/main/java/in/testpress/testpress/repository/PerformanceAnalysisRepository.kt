@@ -1,6 +1,9 @@
 package `in`.testpress.testpress.repository
 
+import android.content.Context
+import androidx.annotation.StringRes
 import com.google.gson.Gson
+import `in`.testpress.testpress.R
 import `in`.testpress.testpress.models.pojo.PerformanceApiErrorResponse
 import `in`.testpress.testpress.models.pojo.PerformanceApiResponse
 import `in`.testpress.testpress.models.pojo.PerformanceDashboardData
@@ -11,22 +14,44 @@ import `in`.testpress.testpress.models.pojo.PerformanceHistoryData
 import `in`.testpress.testpress.models.pojo.PerformanceLeaderboardData
 import `in`.testpress.testpress.models.pojo.PerformanceOverviewData
 import `in`.testpress.testpress.models.pojo.PerformanceSubjectBoardData
-import `in`.testpress.testpress.network.PerformanceAnalysisApiClient
 import `in`.testpress.testpress.network.PerformanceAnalysisApiService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.concurrent.ConcurrentHashMap
 
+enum class PerformanceErrorType {
+    NETWORK,
+    HTTP,
+    EMPTY_RESPONSE,
+    EMPTY_DATA,
+    MISSING_API_KEY,
+    STUDENT_NOT_FOUND,
+    UNAUTHORIZED,
+    FORBIDDEN,
+    RATE_LIMITED,
+    NOT_CONFIGURED,
+    UNKNOWN
+}
+
 sealed class PerformanceApiState<out T> {
     object Loading : PerformanceApiState<Nothing>()
     data class Success<T>(val data: T) : PerformanceApiState<T>()
     data class Error(
-        val message: String,
+        val errorType: PerformanceErrorType = PerformanceErrorType.UNKNOWN,
+        @get:StringRes val messageRes: Int? = null,
+        val message: String? = null,
         val code: String? = null,
         val httpCode: Int? = null,
-        val retryAfterSeconds: Long? = null
-    ) : PerformanceApiState<Nothing>()
+        val retryAfterSeconds: Long? = null,
+        val cause: Throwable? = null
+    ) : PerformanceApiState<Nothing>() {
+        fun getDisplayMessage(context: Context): String {
+            return messageRes?.let { context.getString(it) }
+                ?: message
+                ?: context.getString(R.string.pa_error_generic)
+        }
+    }
 }
 
 enum class PerformanceEndpoint {
@@ -39,9 +64,9 @@ enum class PerformanceEndpoint {
 }
 
 class PerformanceAnalysisRepository(
-    private val service: PerformanceAnalysisApiService = PerformanceAnalysisApiClient.service,
-    private val apiKey: String = PerformanceAnalysisApiClient.apiKey,
-    private val gson: Gson = PerformanceAnalysisApiClient.gson
+    private val service: PerformanceAnalysisApiService,
+    private val apiKey: String,
+    private val gson: Gson
 ) {
 
     private val pendingCalls = ConcurrentHashMap<PerformanceEndpoint, Call<*>>()
@@ -117,7 +142,8 @@ class PerformanceAnalysisRepository(
         if (apiKey.isBlank()) {
             onResult(
                 PerformanceApiState.Error(
-                    message = "Performance Analysis API key is not configured.",
+                    errorType = PerformanceErrorType.MISSING_API_KEY,
+                    messageRes = R.string.pa_error_missing_api_key,
                     code = "missing_api_key"
                 )
             )
@@ -148,20 +174,23 @@ class PerformanceAnalysisRepository(
                 when {
                     body == null -> onResult(
                         PerformanceApiState.Error(
-                            message = "Empty response from server.",
+                            errorType = PerformanceErrorType.EMPTY_RESPONSE,
+                            messageRes = R.string.pa_error_empty_response,
                             httpCode = response.code()
                         )
                     )
                     !body.isSuccess -> onResult(
                         PerformanceApiState.Error(
-                            message = body.message ?: "Request failed.",
+                            errorType = PerformanceErrorType.HTTP,
+                            message = body.message,
                             code = body.code,
                             httpCode = response.code()
                         )
                     )
                     body.data == null -> onResult(
                         PerformanceApiState.Error(
-                            message = "Response did not contain data.",
+                            errorType = PerformanceErrorType.EMPTY_DATA,
+                            messageRes = R.string.pa_error_no_data,
                             httpCode = response.code()
                         )
                     )
@@ -174,7 +203,9 @@ class PerformanceAnalysisRepository(
                 if (call.isCanceled) return
                 onResult(
                     PerformanceApiState.Error(
-                        message = t.message ?: "Network error."
+                        errorType = PerformanceErrorType.NETWORK,
+                        messageRes = R.string.pa_error_network,
+                        cause = t
                     )
                 )
             }
@@ -189,16 +220,26 @@ class PerformanceAnalysisRepository(
             runCatching { gson.fromJson(it, PerformanceApiErrorResponse::class.java) }.getOrNull()
         }
         val code = error?.code ?: defaultErrorCode(response.code())
-        val message = when (code) {
-            "student_not_found" -> "No performance data found for this student."
-            "unauthorized" -> "Authentication failed."
-            "forbidden" -> "This account is not permitted to access performance data."
-            "rate_limited" -> "Too many requests. Please try again shortly."
-            "not_configured" -> "Performance Analysis service is not available."
-            else -> error?.message ?: "Request failed (HTTP ${response.code()})."
+        val errorType = when (code) {
+            "student_not_found" -> PerformanceErrorType.STUDENT_NOT_FOUND
+            "unauthorized" -> PerformanceErrorType.UNAUTHORIZED
+            "forbidden" -> PerformanceErrorType.FORBIDDEN
+            "rate_limited" -> PerformanceErrorType.RATE_LIMITED
+            "not_configured" -> PerformanceErrorType.NOT_CONFIGURED
+            else -> PerformanceErrorType.HTTP
+        }
+        val messageRes = when (errorType) {
+            PerformanceErrorType.STUDENT_NOT_FOUND -> R.string.pa_error_student_not_found
+            PerformanceErrorType.UNAUTHORIZED -> R.string.pa_error_unauthorized
+            PerformanceErrorType.FORBIDDEN -> R.string.pa_error_forbidden
+            PerformanceErrorType.RATE_LIMITED -> R.string.pa_error_rate_limited
+            PerformanceErrorType.NOT_CONFIGURED -> R.string.pa_error_not_configured
+            else -> if (error?.message.isNullOrBlank()) R.string.pa_error_server else null
         }
         return PerformanceApiState.Error(
-            message = message,
+            errorType = errorType,
+            messageRes = messageRes,
+            message = error?.message,
             code = code,
             httpCode = response.code(),
             retryAfterSeconds = response.headers()["Retry-After"]?.toLongOrNull()

@@ -4,27 +4,23 @@ import android.accounts.Account
 import android.accounts.AccountManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.RectF
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.view.Gravity
 import android.view.MotionEvent
-import androidx.core.text.HtmlCompat
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import com.google.android.material.card.MaterialCardView
+import androidx.core.text.HtmlCompat
 import androidx.lifecycle.ViewModelProvider
 import com.github.testpress.mikephil.charting.charts.LineChart
 import com.github.testpress.mikephil.charting.components.AxisBase
@@ -34,64 +30,55 @@ import com.github.testpress.mikephil.charting.data.LineData
 import com.github.testpress.mikephil.charting.data.LineDataSet
 import com.github.testpress.mikephil.charting.formatter.AxisValueFormatter
 import com.github.testpress.mikephil.charting.interfaces.datasets.ILineDataSet
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.tabs.TabLayout
 import `in`.testpress.testpress.BuildConfig
 import `in`.testpress.testpress.BuildConfig.APPLICATION_ID
 import `in`.testpress.testpress.R
-import `in`.testpress.testpress.util.UIUtils
 import `in`.testpress.testpress.databinding.ActivityPerformanceResultsBinding
 import `in`.testpress.testpress.databinding.ItemPaHistoryRowBinding
 import `in`.testpress.testpress.databinding.ItemPaTopperRowBinding
-import `in`.testpress.testpress.models.pojo.PerformanceDataRequest
 import `in`.testpress.testpress.models.pojo.PerformanceFiltersData
-import `in`.testpress.testpress.models.pojo.PerformanceFiltersRequest
+import `in`.testpress.testpress.models.pojo.PerformanceFocus
 import `in`.testpress.testpress.models.pojo.PerformanceHistoryData
 import `in`.testpress.testpress.models.pojo.PerformanceHistoryRow
 import `in`.testpress.testpress.models.pojo.PerformanceLeaderboardData
-import `in`.testpress.testpress.models.pojo.PerformanceLeaderboardRow
 import `in`.testpress.testpress.models.pojo.PerformanceRank
+import `in`.testpress.testpress.models.pojo.PerformanceSubjectBoardData
 import `in`.testpress.testpress.models.pojo.PerformanceSummary
 import `in`.testpress.testpress.models.pojo.PerformanceTrend
-import `in`.testpress.testpress.network.PerformanceAnalysisApiClient
+import `in`.testpress.testpress.TestpressApplication
+import `in`.testpress.testpress.repository.PerformanceAnalysisRepository
 import `in`.testpress.testpress.repository.PerformanceApiState
-import android.view.ViewGroup
-import android.graphics.Typeface
-import android.view.Gravity
-import android.widget.FrameLayout
-import android.widget.TableRow
-import `in`.testpress.testpress.models.pojo.PerformanceFocus
-import `in`.testpress.testpress.models.pojo.PerformanceFocusPoint
-import `in`.testpress.testpress.models.pojo.PerformanceSubjectBoardData
-import `in`.testpress.testpress.models.pojo.PerformanceSubjectBoardRow
-import `in`.testpress.testpress.models.pojo.PerformanceSubjectColumn
-import java.text.NumberFormat
-import java.util.Locale
+import `in`.testpress.testpress.ui.utils.PerformanceFormatter
+import `in`.testpress.testpress.ui.utils.PerformanceSubjectTableHelper
+import `in`.testpress.testpress.ui.view.DonutProgressView
+import `in`.testpress.testpress.util.UIUtils
 import `in`.testpress.testpress.viewmodel.PerformanceAnalysisViewModel
+import `in`.testpress.testpress.viewmodel.PerformanceViewModelFactory
+import javax.inject.Inject
 
 class PerformanceResultsActivity : AppCompatActivity() {
 
+    @Inject
+    lateinit var repository: PerformanceAnalysisRepository
+
     private lateinit var binding: ActivityPerformanceResultsBinding
     private lateinit var viewModel: PerformanceAnalysisViewModel
-    private var studentNo: String = ""
     private var tabSelectedListener: TabLayout.OnTabSelectedListener? = null
-    private var cachedFiltersData: PerformanceFiltersData? = null
-    private var selectedAcademicYear: Int? = null
-    private var currentHistoryPage = 1
-    private var totalHistoryPages = 1
-    private var historyPageSize = 5
-    private var historySubjectKeys = listOf<String>()
-    private var leaderboardSubjectKeys = listOf<String>()
-    private var subjectBoardSubjectKeys = listOf<String>()
-    private var trendSubjectKeys = listOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        TestpressApplication.getAppComponent().inject(this)
         binding = ActivityPerformanceResultsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setupToolbar()
-        studentNo = getStudentNo()
-        viewModel = ViewModelProvider(this)[PerformanceAnalysisViewModel::class.java]
+        viewModel = ViewModelProvider(
+            this,
+            PerformanceViewModelFactory(repository)
+        )[PerformanceAnalysisViewModel::class.java]
+        viewModel.setStudent(getStudentNo())
 
         setupTestTabs()
         setupTrendChart()
@@ -108,7 +95,7 @@ class PerformanceResultsActivity : AppCompatActivity() {
             binding.notifymessageModal.visibility = View.GONE
         }
 
-        if (studentNo.isNotBlank()) {
+        if (viewModel.studentNo.isNotBlank()) {
             requestFilters()
         } else {
             Toast.makeText(this, R.string.performance_results_no_student, Toast.LENGTH_SHORT).show()
@@ -218,13 +205,8 @@ class PerformanceResultsActivity : AppCompatActivity() {
     private fun observeStates() {
         viewModel.filtersState.observe(this) { state ->
             if (state is PerformanceApiState.Success) {
-                cachedFiltersData = state.data
-                selectedAcademicYear = state.data.year?.numeric?.toInt()
-                    ?: state.data.year?.raw?.toIntOrNull()
-                    ?: state.data.years.firstOrNull()
-                if (state.data.pageSize > 0) {
-                    historyPageSize = state.data.pageSize
-                }
+                viewModel.onFiltersLoaded(state.data)
+
                 val currentTab = binding.testTabs.getTabAt(binding.testTabs.selectedTabPosition)?.text?.toString()
                 val activeType = state.data.type?.takeIf { it.isNotBlank() } ?: currentTab
                 if (state.data.types.isNotEmpty()) {
@@ -309,25 +291,12 @@ class PerformanceResultsActivity : AppCompatActivity() {
     private fun requestFilters(type: String? = null) {
         if (!requireStudent()) return
         val selectedType = type ?: binding.testTabs.getTabAt(binding.testTabs.selectedTabPosition)?.text?.toString()
-        selectedAcademicYear = null
-        viewModel.loadFilters(PerformanceFiltersRequest(studentNo = studentNo, type = selectedType))
+        viewModel.requestFilters(selectedType)
     }
 
     private fun requestOverview() {
         if (!requireStudent()) return
-        val selectedType = cachedFiltersData?.type
-            ?: binding.testTabs.getTabAt(binding.testTabs.selectedTabPosition)?.text?.toString()
-        val activeYear = selectedAcademicYear
-            ?: cachedFiltersData?.year?.numeric?.toInt()
-            ?: cachedFiltersData?.year?.raw?.toIntOrNull()
-            ?: cachedFiltersData?.years?.firstOrNull()
-        viewModel.loadOverview(
-            PerformanceDataRequest(
-                studentNo = studentNo,
-                type = selectedType,
-                year = activeYear
-            )
-        )
+        viewModel.requestOverview()
     }
 
     private fun bindStats(summary: PerformanceSummary?) {
@@ -350,8 +319,8 @@ class PerformanceResultsActivity : AppCompatActivity() {
         binding.statBest.text = if (summary.bestScore != null && summary.bestMax != null) {
             getString(
                 R.string.pa_stat_best_score_format,
-                formatNumber(summary.bestScore),
-                formatNumber(summary.bestMax)
+                PerformanceFormatter.formatNumber(summary.bestScore),
+                PerformanceFormatter.formatNumber(summary.bestMax)
             )
         } else {
             empty
@@ -360,14 +329,14 @@ class PerformanceResultsActivity : AppCompatActivity() {
             getString(R.string.pa_stat_best_score_note_format, it)
         } ?: empty
 
-        binding.statAvg.text = summary.avgScore?.let { formatNumber(it) } ?: empty
+        binding.statAvg.text = summary.avgScore?.let { PerformanceFormatter.formatNumber(it) } ?: empty
         binding.statAvgNote.text = summary.avgPercent?.let {
-            getString(R.string.pa_stat_avg_score_note_format, formatDecimal(it))
+            getString(R.string.pa_stat_avg_score_note_format, PerformanceFormatter.formatDecimal(it))
         } ?: empty
 
-        binding.statRank.text = summary.bestRank?.let { formatIntegerWithCommas(it) } ?: empty
+        binding.statRank.text = summary.bestRank?.let { PerformanceFormatter.formatIntegerWithCommas(it) } ?: empty
         binding.statRankNote.text = summary.bestRankOutOf?.let {
-            getString(R.string.pa_stat_best_rank_note_format, formatIntegerWithCommas(it))
+            getString(R.string.pa_stat_best_rank_note_format, PerformanceFormatter.formatIntegerWithCommas(it))
         } ?: empty
     }
 
@@ -382,42 +351,28 @@ class PerformanceResultsActivity : AppCompatActivity() {
         }
 
         binding.rankPercentile.text = rank.percentile?.let {
-            getString(R.string.pa_rank_percentile_format, formatDecimal(it))
+            getString(R.string.pa_rank_percentile_format, PerformanceFormatter.formatDecimal(it))
         } ?: empty
 
         binding.rankPosition.text = rank.bestRank?.let {
-            formatIntegerWithCommas(it)
+            PerformanceFormatter.formatIntegerWithCommas(it)
         } ?: empty
 
         binding.rankAppeared.text = rank.appeared?.let {
-            getString(R.string.pa_rank_appeared_format, formatIntegerWithCommas(it))
+            getString(R.string.pa_rank_appeared_format, PerformanceFormatter.formatIntegerWithCommas(it))
         } ?: ""
 
         if (rank.bestRank != null && rank.appeared != null && rank.percentile != null) {
             binding.rankInsight.text = getString(
                 R.string.pa_rank_insight_format,
-                formatIntegerWithCommas(rank.bestRank),
-                formatIntegerWithCommas(rank.appeared),
-                formatDecimal(rank.percentile)
+                PerformanceFormatter.formatIntegerWithCommas(rank.bestRank),
+                PerformanceFormatter.formatIntegerWithCommas(rank.appeared),
+                PerformanceFormatter.formatDecimal(rank.percentile)
             )
         } else {
             binding.rankInsight.text = empty
         }
     }
-
-    private fun formatNumber(value: Double): String {
-        return if (value % 1.0 == 0.0) {
-            value.toLong().toString()
-        } else {
-            String.format(Locale.getDefault(), "%.1f", value)
-        }
-    }
-
-    private fun formatDecimal(value: Double): String =
-        String.format(Locale.getDefault(), "%.1f", value)
-
-    private fun formatIntegerWithCommas(value: Int): String =
-        NumberFormat.getNumberInstance(Locale.getDefault()).format(value)
 
     // ── Trend Chart ──────────────────────────────────────────────────────
 
@@ -487,20 +442,15 @@ class PerformanceResultsActivity : AppCompatActivity() {
     }
 
     private fun populateTrendSpinners(data: PerformanceFiltersData) {
-        // Month spinner
         val monthItems = mutableListOf(getString(R.string.pa_trend_filter_month))
-        data.months.forEach { monthItems.add(getMonthName(it)) }
+        data.months.forEach { monthItems.add(PerformanceFormatter.getMonthName(this, it)) }
         setSpinnerAdapter(binding.fMonth, monthItems)
 
-        // Year spinner
         val yearItems = mutableListOf(getString(R.string.pa_trend_filter_all_years))
         data.years.forEach { yearItems.add(it.toString()) }
         setSpinnerAdapter(binding.fYear, yearItems)
 
-        val defaultYear = data.year?.numeric?.toInt()
-            ?: data.year?.raw?.toIntOrNull()
-            ?: selectedAcademicYear
-            ?: data.years.firstOrNull()
+        val defaultYear = viewModel.selectedAcademicYear ?: data.years.firstOrNull()
         if (defaultYear != null) {
             val yearPos = data.years.indexOf(defaultYear)
             if (yearPos != -1) {
@@ -508,39 +458,18 @@ class PerformanceResultsActivity : AppCompatActivity() {
             }
         }
 
-        // Subject spinner
-        val subjectKeys = mutableListOf<String>()
         val subjectItems = mutableListOf(getString(R.string.pa_trend_filter_subject))
-        data.subjects.forEach { (key, label) ->
-            subjectKeys.add(key)
-            subjectItems.add(label)
-        }
-        trendSubjectKeys = subjectKeys
+        data.subjects.forEach { (_, label) -> subjectItems.add(label) }
         setSpinnerAdapter(binding.fSubject, subjectItems)
     }
 
     private fun requestDashboardData() {
         if (!requireStudent()) return
-
-        val selectedMonthPos = binding.fMonth.selectedItemPosition
-        val selectedMonth = if (selectedMonthPos > 0) cachedFiltersData?.months?.getOrNull(selectedMonthPos - 1) else null
-
-        val selectedYearPos = binding.fYear.selectedItemPosition
-        val selectedYear = if (selectedYearPos > 0) cachedFiltersData?.years?.getOrNull(selectedYearPos - 1) else null
-
-        val selectedSubjectPos = binding.fSubject.selectedItemPosition
-        val selectedSubject = if (selectedSubjectPos > 0) trendSubjectKeys.getOrNull(selectedSubjectPos - 1) else "totalmarks"
-
-        val selectedType = binding.testTabs.getTabAt(binding.testTabs.selectedTabPosition)?.text?.toString()
-
-        val request = PerformanceDataRequest(
-            studentNo = studentNo,
-            type = selectedType,
-            year = selectedYear,
-            month = selectedMonth,
-            subject = selectedSubject
+        viewModel.requestDashboard(
+            binding.fMonth.selectedItemPosition,
+            binding.fYear.selectedItemPosition,
+            binding.fSubject.selectedItemPosition
         )
-        viewModel.loadDashboard(request)
     }
 
     private fun setSpinnerAdapter(spinner: Spinner, items: List<String>) {
@@ -603,7 +532,6 @@ class PerformanceResultsActivity : AppCompatActivity() {
         val chart: LineChart = binding.trendChart
         chart.data = LineData(youDataSet, topperDataSet)
 
-        // x-axis labels
         if (trend.labels.isNotEmpty()) {
             chart.xAxis.apply {
                 setGranularity(1f)
@@ -625,24 +553,6 @@ class PerformanceResultsActivity : AppCompatActivity() {
         chart.invalidate()
     }
 
-    private fun getMonthName(month: Int): String {
-        return when (month) {
-            1 -> getString(R.string.month_jan)
-            2 -> getString(R.string.month_feb)
-            3 -> getString(R.string.month_mar)
-            4 -> getString(R.string.month_apr)
-            5 -> getString(R.string.month_may)
-            6 -> getString(R.string.month_jun)
-            7 -> getString(R.string.month_jul)
-            8 -> getString(R.string.month_aug)
-            9 -> getString(R.string.month_sep)
-            10 -> getString(R.string.month_oct)
-            11 -> getString(R.string.month_nov)
-            12 -> getString(R.string.month_dec)
-            else -> month.toString()
-        }
-    }
-
     // ── Topper Comparison Leaderboard ─────────────────────────────────────
 
     private fun setupLeaderboard() {
@@ -653,17 +563,14 @@ class PerformanceResultsActivity : AppCompatActivity() {
     }
 
     private fun populateLeaderboardSpinners(data: PerformanceFiltersData) {
-        // Month spinner
         val monthItems = mutableListOf(getString(R.string.pa_trend_filter_month))
-        data.months.forEach { monthItems.add(getMonthName(it)) }
+        data.months.forEach { monthItems.add(PerformanceFormatter.getMonthName(this, it)) }
         setSpinnerAdapter(binding.lMonth, monthItems)
 
-        // Year spinner
         val yearItems = mutableListOf(getString(R.string.pa_trend_filter_all_years))
         data.years.forEach { yearItems.add(it.toString()) }
         setSpinnerAdapter(binding.lYear, yearItems)
 
-        // Limit spinner
         val limitItems = listOf(
             getString(R.string.pa_limit_last_5),
             getString(R.string.pa_limit_last_10),
@@ -672,49 +579,20 @@ class PerformanceResultsActivity : AppCompatActivity() {
         )
         setSpinnerAdapter(binding.lLimit, limitItems)
 
-        // Subject spinner
-        val subjectKeys = mutableListOf<String>()
         val subjectItems = mutableListOf(getString(R.string.pa_trend_filter_subject))
-        data.subjects.forEach { (key, label) ->
-            subjectKeys.add(key)
-            subjectItems.add(label)
-        }
-        leaderboardSubjectKeys = subjectKeys
+        data.subjects.forEach { (_, label) -> subjectItems.add(label) }
         setSpinnerAdapter(binding.lSubject, subjectItems)
     }
 
     private fun requestLeaderboardData() {
         if (!requireStudent()) return
-
-        val selectedMonthPos = binding.lMonth.selectedItemPosition
-        val selectedMonth = if (selectedMonthPos > 0) cachedFiltersData?.months?.getOrNull(selectedMonthPos - 1) else null
-
-        val selectedYearPos = binding.lYear.selectedItemPosition
-        val selectedYear = if (selectedYearPos > 0) cachedFiltersData?.years?.getOrNull(selectedYearPos - 1) else null
-
-        val selectedLimit = when (binding.lLimit.selectedItemPosition) {
-            0 -> 5
-            1 -> 10
-            2 -> 20
-            3 -> null
-            else -> 5
-        }
-
-        val selectedSubjectPos = binding.lSubject.selectedItemPosition
-        val selectedSubject = if (selectedSubjectPos > 0) leaderboardSubjectKeys.getOrNull(selectedSubjectPos - 1) else "totalmarks"
-
-        val selectedType = binding.testTabs.getTabAt(binding.testTabs.selectedTabPosition)?.text?.toString()
-
-        val request = PerformanceDataRequest(
-            studentNo = studentNo,
-            type = selectedType,
-            year = selectedYear,
-            month = selectedMonth,
-            subject = selectedSubject,
-            limit = selectedLimit
-        )
         binding.topperProgress.visibility = View.VISIBLE
-        viewModel.loadLeaderboard(request)
+        viewModel.requestLeaderboard(
+            binding.lMonth.selectedItemPosition,
+            binding.lYear.selectedItemPosition,
+            binding.lLimit.selectedItemPosition,
+            binding.lSubject.selectedItemPosition
+        )
     }
 
     private fun bindLeaderboard(leaderboard: PerformanceLeaderboardData?) {
@@ -745,19 +623,19 @@ class PerformanceResultsActivity : AppCompatActivity() {
             rowBinding.root.setBackgroundColor(if (index % 2 == 1) altRowColor else defaultRowColor)
 
             rowBinding.tvDate.text = row.date?.takeIf { it.isNotBlank() } ?: emptyDash
-            rowBinding.tvScore.text = row.score?.let { formatNumber(it) } ?: emptyDash
-            rowBinding.tvTopper.text = row.topper?.let { formatNumber(it) } ?: emptyDash
+            rowBinding.tvScore.text = row.score?.let { PerformanceFormatter.formatNumber(it) } ?: emptyDash
+            rowBinding.tvTopper.text = row.topper?.let { PerformanceFormatter.formatNumber(it) } ?: emptyDash
             rowBinding.tvPhy.text = row.physics?.raw?.takeIf { it.isNotBlank() } ?: emptyDash
             rowBinding.tvChe.text = row.chemistry?.raw?.takeIf { it.isNotBlank() } ?: emptyDash
 
             val compValue = row.comparisonSubject?.raw ?: row.biology?.raw
             rowBinding.tvComparisonSub.text = compValue?.takeIf { it.isNotBlank() } ?: emptyDash
 
-            rowBinding.tvOutOf.text = row.outOf?.let { formatNumber(it) } ?: emptyDash
+            rowBinding.tvOutOf.text = row.outOf?.let { PerformanceFormatter.formatNumber(it) } ?: emptyDash
 
             val gap = row.gap
             if (gap != null) {
-                rowBinding.tvGap.text = formatNumber(gap)
+                rowBinding.tvGap.text = PerformanceFormatter.formatNumber(gap)
                 if (gap > 0) {
                     rowBinding.tvGap.setBackgroundResource(R.drawable.pa_gap_high_bg)
                     rowBinding.tvGap.setTextColor(ContextCompat.getColor(this, R.color.pa_gap_high_text))
@@ -780,16 +658,16 @@ class PerformanceResultsActivity : AppCompatActivity() {
             rowBinding.tvGrade.setBackgroundResource(R.drawable.pa_badge_success_bg)
             rowBinding.tvGrade.setTextColor(ContextCompat.getColor(this, R.color.pa_badge_success_text))
 
-            rowBinding.tvRank.text = row.rank?.let { formatIntegerWithCommas(it) } ?: emptyDash
-            rowBinding.tvAppeared.text = row.appeared?.let { formatIntegerWithCommas(it) } ?: emptyDash
+            rowBinding.tvRank.text = row.rank?.let { PerformanceFormatter.formatIntegerWithCommas(it) } ?: emptyDash
+            rowBinding.tvAppeared.text = row.appeared?.let { PerformanceFormatter.formatIntegerWithCommas(it) } ?: emptyDash
 
             val progress = row.progress ?: 0.0
             val gapPercent = row.gapPercent ?: 0.0
             rowBinding.pbProgress.progress = progress.toInt().coerceIn(0, 100)
             rowBinding.tvProgressCaption.text = getString(
                 R.string.pa_topper_progress_format,
-                formatDecimal(progress),
-                formatDecimal(gapPercent)
+                PerformanceFormatter.formatDecimal(progress),
+                PerformanceFormatter.formatDecimal(gapPercent)
             )
 
             binding.topperTable.addView(rowBinding.root)
@@ -806,17 +684,14 @@ class PerformanceResultsActivity : AppCompatActivity() {
     }
 
     private fun populateSubjectBoardSpinners(data: PerformanceFiltersData) {
-        // Month spinner
         val monthItems = mutableListOf(getString(R.string.pa_trend_filter_month))
-        data.months.forEach { monthItems.add(getMonthName(it)) }
+        data.months.forEach { monthItems.add(PerformanceFormatter.getMonthName(this, it)) }
         setSpinnerAdapter(binding.sMonth, monthItems)
 
-        // Year spinner
         val yearItems = mutableListOf(getString(R.string.pa_trend_filter_all_years))
         data.years.forEach { yearItems.add(it.toString()) }
         setSpinnerAdapter(binding.sYear, yearItems)
 
-        // Limit spinner
         val limitItems = listOf(
             getString(R.string.pa_limit_last_5),
             getString(R.string.pa_limit_last_10),
@@ -825,49 +700,20 @@ class PerformanceResultsActivity : AppCompatActivity() {
         )
         setSpinnerAdapter(binding.sLimit, limitItems)
 
-        // Subject spinner
-        val subjectKeys = mutableListOf<String>()
         val subjectItems = mutableListOf(getString(R.string.pa_trend_filter_subject))
-        data.subjects.forEach { (key, label) ->
-            subjectKeys.add(key)
-            subjectItems.add(label)
-        }
-        subjectBoardSubjectKeys = subjectKeys
+        data.subjects.forEach { (_, label) -> subjectItems.add(label) }
         setSpinnerAdapter(binding.sSubject, subjectItems)
     }
 
     private fun requestSubjectBoardData() {
         if (!requireStudent()) return
-
-        val selectedMonthPos = binding.sMonth.selectedItemPosition
-        val selectedMonth = if (selectedMonthPos > 0) cachedFiltersData?.months?.getOrNull(selectedMonthPos - 1) else null
-
-        val selectedYearPos = binding.sYear.selectedItemPosition
-        val selectedYear = if (selectedYearPos > 0) cachedFiltersData?.years?.getOrNull(selectedYearPos - 1) else null
-
-        val selectedLimit = when (binding.sLimit.selectedItemPosition) {
-            0 -> 5
-            1 -> 10
-            2 -> 20
-            3 -> null
-            else -> 5
-        }
-
-        val selectedSubjectPos = binding.sSubject.selectedItemPosition
-        val selectedSubject = if (selectedSubjectPos > 0) subjectBoardSubjectKeys.getOrNull(selectedSubjectPos - 1) else "totalmarks"
-
-        val selectedType = binding.testTabs.getTabAt(binding.testTabs.selectedTabPosition)?.text?.toString()
-
-        val request = PerformanceDataRequest(
-            studentNo = studentNo,
-            type = selectedType,
-            year = selectedYear,
-            month = selectedMonth,
-            subject = selectedSubject,
-            limit = selectedLimit
-        )
         binding.subjectProgress.visibility = View.VISIBLE
-        viewModel.loadSubjectBoard(request)
+        viewModel.requestSubjectBoard(
+            binding.sMonth.selectedItemPosition,
+            binding.sYear.selectedItemPosition,
+            binding.sLimit.selectedItemPosition,
+            binding.sSubject.selectedItemPosition
+        )
     }
 
     private fun bindSubjectBoard(subjectboard: PerformanceSubjectBoardData?) {
@@ -884,13 +730,14 @@ class PerformanceResultsActivity : AppCompatActivity() {
         binding.subjectTable.removeAllViews()
 
         val columns = subjectboard.columns
-        renderSubjectTableHeader(columns)
+        PerformanceSubjectTableHelper.renderSubjectTableHeader(this, binding.subjectTable, columns)
 
         val altRowColor = ContextCompat.getColor(this, R.color.pa_table_row_alt)
         val defaultRowColor = Color.WHITE
 
         subjectboard.data.forEachIndexed { index, row ->
-            val dataRow = createSubjectDataRow(
+            val dataRow = PerformanceSubjectTableHelper.createSubjectDataRow(
+                this,
                 row,
                 columns,
                 if (index % 2 == 1) altRowColor else defaultRowColor
@@ -899,343 +746,54 @@ class PerformanceResultsActivity : AppCompatActivity() {
         }
     }
 
-    private fun renderSubjectTableHeader(columns: List<PerformanceSubjectColumn>) {
-        val subjectCols = if (columns.isNotEmpty()) columns else listOf(PerformanceSubjectColumn(key = "-", label = "-"))
-        val colSpan = subjectCols.size
-
-        val dateWidth = resources.getDimensionPixelSize(R.dimen.pa_col_topper_date_width)
-        val typeWidth = resources.getDimensionPixelSize(R.dimen.pa_col_subject_type_width)
-        val subWidth = resources.getDimensionPixelSize(R.dimen.pa_col_topper_sub_width)
-        val rankWidth = resources.getDimensionPixelSize(R.dimen.pa_col_topper_rank_width)
-        val appearedWidth = resources.getDimensionPixelSize(R.dimen.pa_col_topper_appeared_width)
-        val gradeWidth = resources.getDimensionPixelSize(R.dimen.pa_col_topper_grade_width)
-        val gapWidth = resources.getDimensionPixelSize(R.dimen.pa_col_topper_gap_width)
-        val cellPaddingH = resources.getDimensionPixelSize(R.dimen.pa_table_cell_padding_h)
-        val cellPaddingV = resources.getDimensionPixelSize(R.dimen.pa_table_cell_padding_v)
-        val headerBg = ContextCompat.getColor(this, R.color.pa_table_header_bg)
-        val headerTextColor = ContextCompat.getColor(this, R.color.pa_table_header_text)
-
-        // Header Row 1: Group headers
-        val rowHead1 = TableRow(this).apply {
-            setBackgroundColor(headerBg)
-            gravity = Gravity.CENTER_VERTICAL
-            minimumHeight = resources.getDimensionPixelSize(R.dimen.pa_table_header_sub_min_height)
-        }
-
-        rowHead1.addView(View(this).apply {
-            layoutParams = TableRow.LayoutParams(dateWidth, TableRow.LayoutParams.WRAP_CONTENT)
-        })
-
-        rowHead1.addView(View(this).apply {
-            layoutParams = TableRow.LayoutParams(typeWidth, TableRow.LayoutParams.WRAP_CONTENT)
-        })
-
-        val tvYourGroup = TextView(this).apply {
-            layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT).apply {
-                span = colSpan
-            }
-            gravity = Gravity.CENTER
-            text = getString(R.string.pa_subject_th_your_marks)
-            setTextColor(headerTextColor)
-            textSize = 11f
-            typeface = Typeface.DEFAULT_BOLD
-            setPadding(cellPaddingH, cellPaddingV, cellPaddingH, cellPaddingV)
-        }
-        rowHead1.addView(tvYourGroup)
-
-        val tvTopperGroup = TextView(this).apply {
-            layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT).apply {
-                span = colSpan
-            }
-            gravity = Gravity.CENTER
-            text = getString(R.string.pa_subject_th_topper_marks)
-            setTextColor(headerTextColor)
-            textSize = 11f
-            typeface = Typeface.DEFAULT_BOLD
-            setPadding(cellPaddingH, cellPaddingV, cellPaddingH, cellPaddingV)
-        }
-        rowHead1.addView(tvTopperGroup)
-
-        rowHead1.addView(View(this).apply {
-            layoutParams = TableRow.LayoutParams(rankWidth, TableRow.LayoutParams.WRAP_CONTENT)
-        })
-
-        rowHead1.addView(View(this).apply {
-            layoutParams = TableRow.LayoutParams(appearedWidth, TableRow.LayoutParams.WRAP_CONTENT)
-        })
-
-        rowHead1.addView(View(this).apply {
-            layoutParams = TableRow.LayoutParams(gradeWidth, TableRow.LayoutParams.WRAP_CONTENT)
-        })
-
-        rowHead1.addView(View(this).apply {
-            layoutParams = TableRow.LayoutParams(gapWidth, TableRow.LayoutParams.WRAP_CONTENT)
-        })
-
-        binding.subjectTable.addView(rowHead1)
-
-        // Header Row 2: Sub-headers
-        val rowHead2 = TableRow(this).apply {
-            setBackgroundColor(headerBg)
-            gravity = Gravity.CENTER_VERTICAL
-            minimumHeight = resources.getDimensionPixelSize(R.dimen.pa_table_header_main_min_height)
-        }
-
-        fun createHeaderCell(width: Int, title: String, isStartGravity: Boolean = false): TextView {
-            return TextView(this).apply {
-                layoutParams = TableRow.LayoutParams(width, TableRow.LayoutParams.WRAP_CONTENT)
-                gravity = if (isStartGravity) Gravity.CENTER_VERTICAL else Gravity.CENTER
-                text = title
-                setTextColor(headerTextColor)
-                textSize = 12f
-                typeface = Typeface.DEFAULT_BOLD
-                setPadding(cellPaddingH, cellPaddingV, cellPaddingH, cellPaddingV)
-            }
-        }
-
-        rowHead2.addView(createHeaderCell(dateWidth, getString(R.string.pa_subject_th_exam_date), true))
-        rowHead2.addView(createHeaderCell(typeWidth, getString(R.string.pa_subject_th_exam_type)))
-
-        subjectCols.forEach { col ->
-            rowHead2.addView(createHeaderCell(subWidth, col.label ?: col.key ?: getString(R.string.performance_results_empty_value)))
-        }
-
-        subjectCols.forEach { col ->
-            rowHead2.addView(createHeaderCell(subWidth, col.label ?: col.key ?: getString(R.string.performance_results_empty_value)))
-        }
-
-        rowHead2.addView(createHeaderCell(rankWidth, getString(R.string.pa_subject_th_your_rank)))
-        rowHead2.addView(createHeaderCell(appearedWidth, getString(R.string.pa_subject_th_total_appeared)))
-        rowHead2.addView(createHeaderCell(gradeWidth, getString(R.string.pa_subject_th_grade)))
-        rowHead2.addView(createHeaderCell(gapWidth, getString(R.string.pa_subject_th_gap)))
-
-        binding.subjectTable.addView(rowHead2)
-    }
-
-    private fun createSubjectDataRow(
-        row: PerformanceSubjectBoardRow,
-        columns: List<PerformanceSubjectColumn>,
-        bgColor: Int
-    ): TableRow {
-        val subjectCols = if (columns.isNotEmpty()) columns else listOf(PerformanceSubjectColumn(key = "-", label = "-"))
-        val emptyDash = getString(R.string.performance_results_empty_value)
-
-        val dateWidth = resources.getDimensionPixelSize(R.dimen.pa_col_topper_date_width)
-        val typeWidth = resources.getDimensionPixelSize(R.dimen.pa_col_subject_type_width)
-        val subWidth = resources.getDimensionPixelSize(R.dimen.pa_col_topper_sub_width)
-        val rankWidth = resources.getDimensionPixelSize(R.dimen.pa_col_topper_rank_width)
-        val appearedWidth = resources.getDimensionPixelSize(R.dimen.pa_col_topper_appeared_width)
-        val gradeWidth = resources.getDimensionPixelSize(R.dimen.pa_col_topper_grade_width)
-        val gapWidth = resources.getDimensionPixelSize(R.dimen.pa_col_topper_gap_width)
-        val cellPaddingH = resources.getDimensionPixelSize(R.dimen.pa_table_cell_padding_h)
-        val cellPaddingV = resources.getDimensionPixelSize(R.dimen.pa_table_cell_padding_v)
-
-        val cellTextColor = ContextCompat.getColor(this, R.color.pa_table_cell_text)
-        val cellStrongColor = ContextCompat.getColor(this, R.color.pa_table_cell_strong)
-
-        val rowView = TableRow(this).apply {
-            gravity = Gravity.CENTER_VERTICAL
-            minimumHeight = resources.getDimensionPixelSize(R.dimen.pa_table_row_min_height)
-            setBackgroundColor(bgColor)
-        }
-
-        fun createTextCell(width: Int, textValue: String, isStrong: Boolean = false, isStartGravity: Boolean = false): TextView {
-            return TextView(this).apply {
-                layoutParams = TableRow.LayoutParams(width, TableRow.LayoutParams.WRAP_CONTENT)
-                gravity = if (isStartGravity) Gravity.CENTER_VERTICAL else Gravity.CENTER
-                text = textValue
-                setTextColor(if (isStrong) cellStrongColor else cellTextColor)
-                if (isStrong) typeface = Typeface.DEFAULT_BOLD
-                textSize = 12f
-                setPadding(cellPaddingH, cellPaddingV, cellPaddingH, cellPaddingV)
-            }
-        }
-
-        // 1. Date
-        rowView.addView(createTextCell(dateWidth, row.date?.takeIf { it.isNotBlank() } ?: emptyDash, isStrong = false, isStartGravity = true))
-
-        // 2. Type (Green Badge)
-        val examType = row.type?.takeIf { it.isNotBlank() && it != "-" }
-        if (examType != null) {
-            val typeFrame = FrameLayout(this).apply {
-                layoutParams = TableRow.LayoutParams(typeWidth, TableRow.LayoutParams.WRAP_CONTENT)
-                setPadding(cellPaddingH, cellPaddingV, cellPaddingH, cellPaddingV)
-            }
-            val typeBadge = TextView(this).apply {
-                layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.CENTER)
-                text = examType
-                setBackgroundResource(R.drawable.pa_badge_success_bg)
-                setTextColor(ContextCompat.getColor(this@PerformanceResultsActivity, R.color.pa_badge_success_text))
-                textSize = 11f
-                typeface = Typeface.DEFAULT_BOLD
-                gravity = Gravity.CENTER
-                val badgePadH = resources.getDimensionPixelSize(R.dimen.pa_badge_padding_h)
-                val badgePadV = resources.getDimensionPixelSize(R.dimen.pa_badge_padding_v)
-                setPadding(badgePadH, badgePadV, badgePadH, badgePadV)
-            }
-            typeFrame.addView(typeBadge)
-            rowView.addView(typeFrame)
-        } else {
-            rowView.addView(createTextCell(typeWidth, emptyDash))
-        }
-
-        // 3. Your Marks
-        subjectCols.forEach { col ->
-            val part = col.key?.let { row.parts[it] }
-            val value = part?.your?.raw?.takeIf { it.isNotBlank() }
-                ?: part?.your?.numeric?.let { formatNumber(it) }
-                ?: emptyDash
-            rowView.addView(createTextCell(subWidth, value, isStrong = true))
-        }
-
-        // 4. Topper Marks
-        subjectCols.forEach { col ->
-            val part = col.key?.let { row.parts[it] }
-            val value = part?.topper?.raw?.takeIf { it.isNotBlank() }
-                ?: part?.topper?.numeric?.let { formatNumber(it) }
-                ?: emptyDash
-            rowView.addView(createTextCell(subWidth, value))
-        }
-
-        // 5. Your Rank
-        val rankText = row.rank?.let { formatIntegerWithCommas(it) } ?: emptyDash
-        rowView.addView(createTextCell(rankWidth, rankText))
-
-        // 6. Total Appeared
-        val appearedText = row.appeared?.let { formatIntegerWithCommas(it) } ?: emptyDash
-        rowView.addView(createTextCell(appearedWidth, appearedText))
-
-        // 7. Grade (Badge)
-        val gradeFrame = FrameLayout(this).apply {
-            layoutParams = TableRow.LayoutParams(gradeWidth, TableRow.LayoutParams.WRAP_CONTENT)
-            setPadding(cellPaddingH, cellPaddingV, cellPaddingH, cellPaddingV)
-        }
-        val gradeBadge = TextView(this).apply {
-            layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.CENTER)
-            val grade = row.grade?.takeIf { it.isNotBlank() }
-            text = if (grade != null && grade != "-") grade else emptyDash
-            setBackgroundResource(R.drawable.pa_badge_success_bg)
-            setTextColor(ContextCompat.getColor(this@PerformanceResultsActivity, R.color.pa_badge_success_text))
-            textSize = 11f
-            typeface = Typeface.DEFAULT_BOLD
-            gravity = Gravity.CENTER
-            val badgePadH = resources.getDimensionPixelSize(R.dimen.pa_badge_padding_h)
-            val badgePadV = resources.getDimensionPixelSize(R.dimen.pa_badge_padding_v)
-            setPadding(badgePadH, badgePadV, badgePadH, badgePadV)
-        }
-        gradeFrame.addView(gradeBadge)
-        rowView.addView(gradeFrame)
-
-        // 8. Gap (Badge)
-        val gapFrame = FrameLayout(this).apply {
-            layoutParams = TableRow.LayoutParams(gapWidth, TableRow.LayoutParams.WRAP_CONTENT)
-            setPadding(cellPaddingH, cellPaddingV, cellPaddingH, cellPaddingV)
-        }
-        val gapBadge = TextView(this).apply {
-            layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.CENTER)
-            val gap = row.gap
-            if (gap != null) {
-                text = formatNumber(gap)
-                if (gap > 0) {
-                    setBackgroundResource(R.drawable.pa_gap_high_bg)
-                    setTextColor(ContextCompat.getColor(this@PerformanceResultsActivity, R.color.pa_gap_high_text))
-                } else {
-                    setBackgroundResource(R.drawable.pa_gap_low_bg)
-                    setTextColor(ContextCompat.getColor(this@PerformanceResultsActivity, R.color.pa_gap_low_text))
-                }
-            } else {
-                text = emptyDash
-                setBackgroundResource(R.drawable.pa_badge_neutral_bg)
-                setTextColor(ContextCompat.getColor(this@PerformanceResultsActivity, R.color.pa_badge_neutral_text))
-            }
-            textSize = 11f
-            typeface = Typeface.DEFAULT_BOLD
-            gravity = Gravity.CENTER
-            val gapPadH = (6 * resources.displayMetrics.density).toInt()
-            val gapPadV = (2 * resources.displayMetrics.density).toInt()
-            setPadding(gapPadH, gapPadV, gapPadH, gapPadV)
-        }
-        gapFrame.addView(gapBadge)
-        rowView.addView(gapFrame)
-
-        return rowView
-    }
-
     // ── Exam History ──────────────────────────────────────────────────────
 
     private fun setupHistory() {
         binding.btnHistoryPrev.setOnClickListener {
-            if (currentHistoryPage > 1) {
-                requestHistoryPage(currentHistoryPage - 1)
+            if (viewModel.currentHistoryPage > 1) {
+                requestHistoryPage(viewModel.currentHistoryPage - 1)
             }
         }
         binding.btnHistoryNext.setOnClickListener {
-            if (currentHistoryPage < totalHistoryPages) {
-                requestHistoryPage(currentHistoryPage + 1)
+            if (viewModel.currentHistoryPage < viewModel.totalHistoryPages) {
+                requestHistoryPage(viewModel.currentHistoryPage + 1)
             }
         }
 
         attachUserSelectListener(binding.hMonth) {
-            currentHistoryPage = 1
             requestHistoryPage(1)
         }
         attachUserSelectListener(binding.hYear) {
-            currentHistoryPage = 1
             requestHistoryPage(1)
         }
         attachUserSelectListener(binding.hSubject) {
-            currentHistoryPage = 1
             requestHistoryPage(1)
         }
     }
 
     private fun populateHistorySpinners(data: PerformanceFiltersData) {
-        // Month spinner
         val monthItems = mutableListOf(getString(R.string.pa_trend_filter_month))
-        data.months.forEach { monthItems.add(getMonthName(it)) }
+        data.months.forEach { monthItems.add(PerformanceFormatter.getMonthName(this, it)) }
         setSpinnerAdapter(binding.hMonth, monthItems)
 
-        // Year spinner
         val yearItems = mutableListOf(getString(R.string.pa_trend_filter_all_years))
         data.years.forEach { yearItems.add(it.toString()) }
         setSpinnerAdapter(binding.hYear, yearItems)
 
-        // Subject spinner
-        val subjectKeys = mutableListOf<String>()
         val subjectItems = mutableListOf(getString(R.string.pa_trend_filter_subject))
-        data.subjects.forEach { (key, label) ->
-            subjectKeys.add(key)
-            subjectItems.add(label)
-        }
-        historySubjectKeys = subjectKeys
+        data.subjects.forEach { (_, label) -> subjectItems.add(label) }
         setSpinnerAdapter(binding.hSubject, subjectItems)
     }
 
     private fun requestHistoryPage(page: Int) {
         if (!requireStudent()) return
-
-        val selectedMonthPos = binding.hMonth.selectedItemPosition
-        val selectedMonth = if (selectedMonthPos > 0) cachedFiltersData?.months?.getOrNull(selectedMonthPos - 1) else null
-
-        val selectedYearPos = binding.hYear.selectedItemPosition
-        val selectedYear = if (selectedYearPos > 0) cachedFiltersData?.years?.getOrNull(selectedYearPos - 1) else null
-
-        val selectedSubjectPos = binding.hSubject.selectedItemPosition
-        val selectedSubject = if (selectedSubjectPos > 0) historySubjectKeys.getOrNull(selectedSubjectPos - 1) else "totalmarks"
-
-        val selectedType = binding.testTabs.getTabAt(binding.testTabs.selectedTabPosition)?.text?.toString()
-
-        val request = PerformanceDataRequest(
-            studentNo = studentNo,
-            type = selectedType,
-            year = selectedYear,
-            month = selectedMonth,
-            subject = selectedSubject,
-            page = page,
-            length = historyPageSize
-        )
         binding.historyProgress.visibility = View.VISIBLE
-        viewModel.loadHistory(request)
+        viewModel.requestHistoryPage(
+            page,
+            binding.hMonth.selectedItemPosition,
+            binding.hYear.selectedItemPosition,
+            binding.hSubject.selectedItemPosition
+        )
     }
 
     private fun bindHistory(history: PerformanceHistoryData?) {
@@ -1255,7 +813,6 @@ class PerformanceResultsActivity : AppCompatActivity() {
         binding.historyEmpty.visibility = View.GONE
         binding.paTableScroll.visibility = View.VISIBLE
 
-        // Remove previous data rows, keeping the header row at index 0
         val childCount = binding.historyTable.childCount
         if (childCount > 1) {
             binding.historyTable.removeViews(1, childCount - 1)
@@ -1282,10 +839,10 @@ class PerformanceResultsActivity : AppCompatActivity() {
             rowBinding.tvP1.text = row.p1?.raw?.takeIf { it.isNotBlank() } ?: emptyDash
             rowBinding.tvP2.text = row.p2?.raw?.takeIf { it.isNotBlank() } ?: emptyDash
 
-            rowBinding.tvTotal.text = row.total?.let { formatNumber(it) } ?: emptyDash
-            rowBinding.tvMax.text = row.maxMarks?.let { formatNumber(it) } ?: emptyDash
-            rowBinding.tvHighest.text = row.highest?.let { formatNumber(it) } ?: emptyDash
-            rowBinding.tvPercent.text = row.percent?.let { formatDecimal(it) } ?: emptyDash
+            rowBinding.tvTotal.text = row.total?.let { PerformanceFormatter.formatNumber(it) } ?: emptyDash
+            rowBinding.tvMax.text = row.maxMarks?.let { PerformanceFormatter.formatNumber(it) } ?: emptyDash
+            rowBinding.tvHighest.text = row.highest?.let { PerformanceFormatter.formatNumber(it) } ?: emptyDash
+            rowBinding.tvPercent.text = row.percent?.let { PerformanceFormatter.formatDecimal(it) } ?: emptyDash
 
             val grade = row.grade?.takeIf { it.isNotBlank() }
             if (grade != null && grade != "-") {
@@ -1296,8 +853,8 @@ class PerformanceResultsActivity : AppCompatActivity() {
             rowBinding.tvGrade.setBackgroundResource(R.drawable.pa_badge_success_bg)
             rowBinding.tvGrade.setTextColor(ContextCompat.getColor(this, R.color.pa_badge_success_text))
 
-            rowBinding.tvRank.text = row.rank?.let { formatIntegerWithCommas(it) } ?: emptyDash
-            rowBinding.tvAppeared.text = row.appeared?.let { formatIntegerWithCommas(it) } ?: emptyDash
+            rowBinding.tvRank.text = row.rank?.let { PerformanceFormatter.formatIntegerWithCommas(it) } ?: emptyDash
+            rowBinding.tvAppeared.text = row.appeared?.let { PerformanceFormatter.formatIntegerWithCommas(it) } ?: emptyDash
             val hasOmr = (!row.omrUrl.isNullOrBlank() && row.omrUrl != "-") ||
                 (!row.omr.isNullOrBlank() && row.omr != "-")
             if (hasOmr) {
@@ -1331,18 +888,17 @@ class PerformanceResultsActivity : AppCompatActivity() {
             binding.historyTable.addView(rowBinding.root)
         }
 
-        currentHistoryPage = history.page
-        totalHistoryPages = history.pages.coerceAtLeast(1)
-        binding.tvHistoryPage.text = currentHistoryPage.toString()
+        viewModel.updateHistoryPagination(history)
+        binding.tvHistoryPage.text = viewModel.currentHistoryPage.toString()
 
         val from = history.from ?: if (history.total > 0) ((history.page - 1) * history.length + 1) else 0
         val to = history.to ?: (from + history.data.size - 1).coerceAtMost(history.total)
         binding.historyInfo.text = getString(R.string.pa_history_info_format, from, to, history.total)
 
-        binding.btnHistoryPrev.isEnabled = currentHistoryPage > 1
+        binding.btnHistoryPrev.isEnabled = viewModel.currentHistoryPage > 1
         binding.btnHistoryPrev.alpha = if (binding.btnHistoryPrev.isEnabled) 1.0f else 0.4f
 
-        binding.btnHistoryNext.isEnabled = currentHistoryPage < totalHistoryPages
+        binding.btnHistoryNext.isEnabled = viewModel.currentHistoryPage < viewModel.totalHistoryPages
         binding.btnHistoryNext.alpha = if (binding.btnHistoryNext.isEnabled) 1.0f else 0.4f
     }
 
@@ -1368,45 +924,7 @@ class PerformanceResultsActivity : AppCompatActivity() {
     private fun createFocusCardView(focus: PerformanceFocus): View {
         val density = resources.displayMetrics.density
         val emptyDash = getString(R.string.performance_results_empty_value)
-
-        val priority = focus.priority?.lowercase(Locale.ROOT) ?: "medium"
-        val priorityColor: Int
-        val badgeBgColor: Int
-        val badgeTextColor: Int
-        val noteBgColor: Int
-        val noteBorderColor: Int
-        val noteTextColor: Int
-        val priorityIcon: String
-
-        when (priority) {
-            "high" -> {
-                priorityColor = Color.parseColor("#EF4444")
-                badgeBgColor = Color.parseColor("#FEE2E2")
-                badgeTextColor = Color.parseColor("#DC2626")
-                noteBgColor = Color.parseColor("#FEF2F2")
-                noteBorderColor = Color.parseColor("#FECACA")
-                noteTextColor = Color.parseColor("#B91C1C")
-                priorityIcon = "⚠"
-            }
-            "low" -> {
-                priorityColor = Color.parseColor("#10B981")
-                badgeBgColor = Color.parseColor("#DCFCE7")
-                badgeTextColor = Color.parseColor("#166534")
-                noteBgColor = Color.parseColor("#F0FDF4")
-                noteBorderColor = Color.parseColor("#BBF7D0")
-                noteTextColor = Color.parseColor("#15803D")
-                priorityIcon = "✔"
-            }
-            else -> { // medium
-                priorityColor = Color.parseColor("#F59E0B")
-                badgeBgColor = Color.parseColor("#FEF3C7")
-                badgeTextColor = Color.parseColor("#D97706")
-                noteBgColor = Color.parseColor("#FFFBEB")
-                noteBorderColor = Color.parseColor("#FDE68A")
-                noteTextColor = Color.parseColor("#B45309")
-                priorityIcon = "⚠"
-            }
-        }
+        val style = PerformanceFormatter.getFocusStyle(focus.priority)
 
         val card = MaterialCardView(this).apply {
             layoutParams = LinearLayout.LayoutParams(
@@ -1438,17 +956,16 @@ class PerformanceResultsActivity : AppCompatActivity() {
             )
         }
 
-        // Left: pa-focus-name (Icon + Title + Subtitles)
         val nameCol = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
         }
 
         val tvIcon = TextView(this).apply {
-            text = priorityIcon
+            text = style.priorityIcon
             textSize = 17f
-            typeface = Typeface.DEFAULT_BOLD
-            setTextColor(priorityColor)
+            typeface = android.graphics.Typeface.DEFAULT_BOLD
+            setTextColor(style.priorityColor)
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -1471,16 +988,11 @@ class PerformanceResultsActivity : AppCompatActivity() {
             text = focus.displayName.takeIf { it.isNotBlank() } ?: emptyDash
             setTextColor(ContextCompat.getColor(this@PerformanceResultsActivity, R.color.pa_stat_val_text))
             textSize = 16f
-            typeface = Typeface.DEFAULT_BOLD
+            typeface = android.graphics.Typeface.DEFAULT_BOLD
         }
         titleCol.addView(tvSubject)
 
-        val scoreStr = if (focus.avg != null && focus.avgMax != null) {
-            "Score ${formatNumber(focus.avg)}/${formatNumber(focus.avgMax)} (${formatDecimal(focus.percent ?: 0.0)}%)"
-        } else if (focus.percent != null) {
-            "Score (${formatDecimal(focus.percent)}%)"
-        } else ""
-
+        val scoreStr = PerformanceFormatter.formatFocusScore(this, focus.avg, focus.avgMax, focus.percent)
         if (scoreStr.isNotBlank()) {
             val tvScore = TextView(this).apply {
                 text = scoreStr
@@ -1496,13 +1008,7 @@ class PerformanceResultsActivity : AppCompatActivity() {
             titleCol.addView(tvScore)
         }
 
-        val topperPercentStr = formatDecimal(focus.topperPercent ?: 0.0)
-        val topperScoreHtml = if (focus.topperAvg != null && focus.avgMax != null) {
-            "Topper Score ${formatNumber(focus.topperAvg)}/${formatNumber(focus.avgMax)} (<b>$topperPercentStr%</b>)"
-        } else if (focus.topperPercent != null) {
-            "Topper Score (<b>$topperPercentStr%</b>)"
-        } else ""
-
+        val topperScoreHtml = PerformanceFormatter.formatFocusTopperScoreHtml(this, focus.topperAvg, focus.avgMax, focus.topperPercent)
         if (topperScoreHtml.isNotBlank()) {
             val tvTopper = TextView(this).apply {
                 text = HtmlCompat.fromHtml(topperScoreHtml, HtmlCompat.FROM_HTML_MODE_COMPACT)
@@ -1524,21 +1030,17 @@ class PerformanceResultsActivity : AppCompatActivity() {
         // Right: Priority Badge
         val priorityBadge = TextView(this).apply {
             val label = focus.priorityLabel?.takeIf { it.isNotBlank() }
-                ?: when (priority) {
-                    "high" -> getString(R.string.pa_focus_priority_high)
-                    "low" -> getString(R.string.pa_focus_priority_low)
-                    else -> getString(R.string.pa_focus_priority_medium)
-                }
+                ?: getString(style.defaultPriorityLabelRes)
             text = label
             textSize = 11f
-            typeface = Typeface.DEFAULT_BOLD
+            typeface = android.graphics.Typeface.DEFAULT_BOLD
             gravity = Gravity.CENTER
-            setTextColor(badgeTextColor)
+            setTextColor(style.badgeTextColor)
             val padH = (10 * density).toInt()
             val padV = (4 * density).toInt()
             setPadding(padH, padV, padH, padV)
             background = GradientDrawable().apply {
-                setColor(badgeBgColor)
+                setColor(style.badgeBgColor)
                 cornerRadius = 12 * density
             }
             layoutParams = LinearLayout.LayoutParams(
@@ -1567,15 +1069,15 @@ class PerformanceResultsActivity : AppCompatActivity() {
         val tvNote = TextView(this).apply {
             layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
             text = noteText ?: ""
-            setTextColor(noteTextColor)
+            setTextColor(style.noteTextColor)
             textSize = 12f
-            typeface = Typeface.DEFAULT_BOLD
+            typeface = android.graphics.Typeface.DEFAULT_BOLD
             val padH = (12 * density).toInt()
             val padV = (10 * density).toInt()
             setPadding(padH, padV, padH, padV)
             background = GradientDrawable().apply {
-                setColor(noteBgColor)
-                setStroke((1 * density).toInt(), noteBorderColor)
+                setColor(style.noteBgColor)
+                setStroke((1 * density).toInt(), style.noteBorderColor)
                 cornerRadius = 8 * density
             }
         }
@@ -1588,8 +1090,8 @@ class PerformanceResultsActivity : AppCompatActivity() {
                 marginEnd = (4 * density).toInt()
             }
             progress = (focus.percent ?: 0.0).toFloat()
-            progressColor = priorityColor
-            text = "${formatDecimal(focus.percent ?: 0.0)}%"
+            progressColor = style.priorityColor
+            text = "${PerformanceFormatter.formatDecimal(focus.percent ?: 0.0)}%"
         }
         midRow.addView(donutView)
         container.addView(midRow)
@@ -1598,23 +1100,23 @@ class PerformanceResultsActivity : AppCompatActivity() {
         if (focus.points.isNotEmpty()) {
             val tvChartLbl = TextView(this).apply {
                 layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 ).apply {
-                    topMargin = (16 * density).toInt()
-                    bottomMargin = (4 * density).toInt()
+                    topMargin = (14 * density).toInt()
+                    bottomMargin = (8 * density).toInt()
                 }
-                text = "Score Trend (${focus.points.size} Exams)"
+                text = PerformanceFormatter.formatFocusTrendLabel(this@PerformanceResultsActivity, focus.points.size)
                 setTextColor(ContextCompat.getColor(this@PerformanceResultsActivity, R.color.pa_stat_top_label))
-                textSize = 12f
-                typeface = Typeface.DEFAULT_BOLD
+                textSize = 11f
+                typeface = android.graphics.Typeface.DEFAULT_BOLD
             }
             container.addView(tvChartLbl)
 
             val miniChart = LineChart(this).apply {
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
-                    (100 * density).toInt()
+                    (74 * density).toInt()
                 )
                 setDescription("")
                 legend.isEnabled = false
@@ -1623,17 +1125,16 @@ class PerformanceResultsActivity : AppCompatActivity() {
                 setScaleEnabled(false)
                 setPinchZoom(false)
                 setDrawGridBackground(false)
-                setNoDataText("")
-                setViewPortOffsets(28 * density, 8 * density, 16 * density, 22 * density)
+                setViewPortOffsets(0f, (6 * density), 0f, (16 * density))
 
                 val gridColor = Color.parseColor("#F1F5F9")
                 val labelColor = Color.parseColor("#94A3B8")
 
                 xAxis.apply {
                     position = XAxis.XAxisPosition.BOTTOM
-                    setDrawGridLines(false)
-                    setDrawAxisLine(true)
-                    setAxisLineColor(Color.parseColor("#E2E8F0"))
+                    setDrawGridLines(true)
+                    setGridColor(gridColor)
+                    setDrawAxisLine(false)
                     setTextColor(labelColor)
                     textSize = 9f
                     isGranularityEnabled = true
@@ -1673,7 +1174,7 @@ class PerformanceResultsActivity : AppCompatActivity() {
             val dataSets = mutableListOf<ILineDataSet>()
 
             if (topperEntries.isNotEmpty()) {
-                val topperDs = LineDataSet(topperEntries, "Topper").apply {
+                val topperDs = LineDataSet(topperEntries, getString(R.string.pa_focus_topper_series)).apply {
                     val grayColor = Color.parseColor("#94A3B8")
                     color = grayColor
                     setCircleColor(grayColor)
@@ -1690,9 +1191,9 @@ class PerformanceResultsActivity : AppCompatActivity() {
             }
 
             if (studentEntries.isNotEmpty()) {
-                val studentDs = LineDataSet(studentEntries, "You").apply {
-                    color = priorityColor
-                    setCircleColor(priorityColor)
+                val studentDs = LineDataSet(studentEntries, getString(R.string.pa_focus_you_series)).apply {
+                    color = style.priorityColor
+                    setCircleColor(style.priorityColor)
                     circleRadius = 3f
                     lineWidth = 2f
                     setDrawCircleHole(false)
@@ -1700,7 +1201,7 @@ class PerformanceResultsActivity : AppCompatActivity() {
                     mode = LineDataSet.Mode.CUBIC_BEZIER
                     cubicIntensity = 0.15f
                     setDrawFilled(true)
-                    fillColor = priorityColor
+                    fillColor = style.priorityColor
                     fillAlpha = 20
                 }
                 dataSets.add(studentDs)
@@ -1716,49 +1217,6 @@ class PerformanceResultsActivity : AppCompatActivity() {
 
         card.addView(container)
         return card
-    }
-
-    private class DonutProgressView(context: Context) : View(context) {
-        var progress: Float = 0f
-        var strokeWidthPx: Float = 6.5f * resources.displayMetrics.density
-        var progressColor: Int = Color.parseColor("#F59E0B")
-        var trackColor: Int = Color.parseColor("#F1F5F9")
-        var text: String = ""
-
-        private val trackPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            style = Paint.Style.STROKE
-        }
-        private val progressPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            style = Paint.Style.STROKE
-            strokeCap = Paint.Cap.ROUND
-        }
-        private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            textAlign = Paint.Align.CENTER
-            typeface = Typeface.DEFAULT_BOLD
-        }
-        private val rectF = RectF()
-
-        override fun onDraw(canvas: Canvas) {
-            super.onDraw(canvas)
-            val d = Math.min(width, height).toFloat()
-            if (d <= 0f) return
-            val pad = strokeWidthPx / 2f + 2f
-            rectF.set(pad, pad, d - pad, d - pad)
-
-            trackPaint.color = trackColor
-            trackPaint.strokeWidth = strokeWidthPx
-            canvas.drawArc(rectF, 0f, 360f, false, trackPaint)
-
-            progressPaint.color = progressColor
-            progressPaint.strokeWidth = strokeWidthPx
-            val sweep = (progress / 100f).coerceIn(0f, 1f) * 360f
-            canvas.drawArc(rectF, -90f, sweep, false, progressPaint)
-
-            textPaint.color = progressColor
-            textPaint.textSize = d * 0.22f
-            val yPos = (height / 2f) - ((textPaint.descent() + textPaint.ascent()) / 2f)
-            canvas.drawText(text, width / 2f, yPos, textPaint)
-        }
     }
 
     private fun showExamResultModal(row: PerformanceHistoryRow) {
@@ -1793,7 +1251,7 @@ class PerformanceResultsActivity : AppCompatActivity() {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(fullUrl))
                 startActivity(intent)
             } catch (ex: Exception) {
-                Toast.makeText(this, "Could not open OMR sheet", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, R.string.pa_omr_error_toast, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -1801,7 +1259,7 @@ class PerformanceResultsActivity : AppCompatActivity() {
     // ── Utility ──────────────────────────────────────────────────────────
 
     private fun requireStudent(): Boolean {
-        if (studentNo.isNotBlank()) return true
+        if (viewModel.studentNo.isNotBlank()) return true
         Toast.makeText(this, R.string.performance_results_no_student, Toast.LENGTH_SHORT).show()
         return false
     }

@@ -24,6 +24,7 @@ import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.MainMenuFragment;
 import in.testpress.testpress.ui.OrdersListActivity;
 import in.testpress.testpress.ui.OrdersListFragment;
+import in.testpress.testpress.ui.PerformanceResultsActivity;
 import in.testpress.testpress.ui.PostActivity;
 import in.testpress.testpress.ui.PostsListFragment;
 import in.testpress.testpress.ui.ProfileDetailsActivity;
@@ -78,4 +79,5 @@ public interface AppComponent {
     void inject(BaseAuthenticatedActivity baseAuthenticatedActivity);
     void inject(TestpressActivity testpressActivity);
     void inject(DeviceNotAllowedActivity deviceNotAllowedActivity);
+    void inject(PerformanceResultsActivity performanceResultsActivity);
 }

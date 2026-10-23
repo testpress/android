@@ -408,4 +408,27 @@
     <string name="pa_modal_cancelled">Cancelled</string>
     <string name="pa_modal_incorrect_title">Incorrect Question Numbers</string>
     <string name="pa_history_view_result">View</string>
+
+    <!-- ── Performance Results Errors ──────────────────────────────────────── -->
+    <string name="pa_error_generic">Something went wrong. Please try again.</string>
+    <string name="pa_error_network">Network connection error. Please check your internet connection.</string>
+    <string name="pa_error_server">Server error occurred (%1$d). Please try again later.</string>
+    <string name="pa_error_empty_response">Empty response received from server.</string>
+    <string name="pa_error_no_data">No performance data returned from server.</string>
+    <string name="pa_error_student_not_found">No performance data found for this student.</string>
+    <string name="pa_error_unauthorized">Authentication failed. Please log in again.</string>
+    <string name="pa_error_forbidden">This account is not permitted to access performance data.</string>
+    <string name="pa_error_rate_limited">Too many requests. Please try again shortly.</string>
+    <string name="pa_error_not_configured">Performance Analysis service is not available.</string>
+    <string name="pa_error_missing_api_key">Performance Analysis API key is not configured.</string>
+
+    <!-- ── Performance Results Additional Focus & OMR Strings ──────────────── -->
+    <string name="pa_focus_score_format">Score %1$s/%2$s (%3$s%%)</string>
+    <string name="pa_focus_score_percent_only">Score (%1$s%%)</string>
+    <string name="pa_focus_topper_score_format"><![CDATA[Topper Score %1$s/%2$s (<b>%3$s%%</b>)]]></string>
+    <string name="pa_focus_topper_score_percent_only"><![CDATA[Topper Score (<b>%1$s%%</b>)]]></string>
+    <string name="pa_focus_score_trend_exams_format">Score Trend (%1$d Exams)</string>
+    <string name="pa_focus_topper_series">Topper</string>
+    <string name="pa_focus_you_series">You</string>
+    <string name="pa_omr_error_toast">Could not open OMR sheet</string>
 </resources>

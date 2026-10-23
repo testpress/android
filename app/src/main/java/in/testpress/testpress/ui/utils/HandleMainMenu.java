@@ -30,6 +30,7 @@ import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.ui.SSOWebViewRedirectActivity;
 import in.testpress.testpress.ui.ExamResultActivity;
 import in.testpress.testpress.ui.MainActivity;
+import in.testpress.testpress.ui.PerformanceResultsActivity;
 import in.testpress.testpress.ui.PostsListActivity;
 import in.testpress.testpress.ui.ProfileDetailsActivity;
 import in.testpress.testpress.util.CommonUtils;
@@ -124,7 +125,7 @@ public class HandleMainMenu {
             activity.startActivity(intent);
         });
         menuActions.put(R.id.student_report, this::launchStudentReportActivity);
-        menuActions.put(R.id.exam_results, this::launchExamResultActivity);
+        menuActions.put(R.id.exam_results, this::launchPerformanceResultsActivity);
         menuActions.put(R.id.daily_questions, this::openDailyQuestions);
         menuActions.put(R.id.custom_test, this::launchCustomTestActivity);
         menuActions.put(R.id.chat_with_us, this::openStudentMessaging);
@@ -284,6 +285,11 @@ public class HandleMainMenu {
 
     private void launchExamResultActivity() {
         Intent intent = new Intent(activity, ExamResultActivity.class);
+        activity.startActivity(intent);
+    }
+
+    private void launchPerformanceResultsActivity() {
+        Intent intent = new Intent(activity, PerformanceResultsActivity.class);
         activity.startActivity(intent);
     }
 

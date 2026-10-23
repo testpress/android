@@ -266,6 +266,13 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/exam_results"/>
 
+        <activity
+            android:name=".ui.PerformanceResultsActivity"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
+            android:label="@string/performance_results_title"/>
+
     </application>
 
 </manifest>

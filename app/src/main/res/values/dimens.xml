@@ -61,4 +61,97 @@
     <!-- Approximate sum of all columns — used as minWidth on row containers -->
     <dimen name="exam_result_min_row_width">1150dp</dimen>
 
+    <!-- ── Performance Results Pill Tabs ───────────────────────────────────── -->
+    <dimen name="pa_head_tabs_padding_horizontal">16dp</dimen>
+    <dimen name="pa_head_tabs_padding_vertical">12dp</dimen>
+    <dimen name="pa_pill_tabs_height">44dp</dimen>
+    <dimen name="pa_pill_tabs_container_padding">4dp</dimen>
+    <dimen name="pa_pill_tabs_container_radius">22dp</dimen>
+    <dimen name="pa_pill_tab_indicator_radius">18dp</dimen>
+    <dimen name="pa_pill_tab_padding_horizontal">18dp</dimen>
+    <dimen name="pa_pill_tab_text_size">13sp</dimen>
+
+    <!-- ── Performance Results Stats Section ───────────────────────────────── -->
+    <dimen name="pa_stats_margin_horizontal">12dp</dimen>
+    <dimen name="pa_stats_margin_top">4dp</dimen>
+    <dimen name="pa_stats_margin_bottom">12dp</dimen>
+    <dimen name="pa_stat_card_padding">12dp</dimen>
+    <dimen name="pa_stat_card_radius">10dp</dimen>
+    <dimen name="pa_stat_card_elevation">1dp</dimen>
+    <dimen name="pa_stat_card_gap">8dp</dimen>
+    <dimen name="pa_stat_top_text_size">12sp</dimen>
+    <dimen name="pa_stat_val_text_size">20sp</dimen>
+    <dimen name="pa_stat_note_text_size">11sp</dimen>
+    <dimen name="pa_stat_icon_size">16dp</dimen>
+    <dimen name="pa_stat_val_margin_top">6dp</dimen>
+    <dimen name="pa_stat_note_margin_top">2dp</dimen>
+
+    <!-- ── Performance Results Trend Card ──────────────────────────────────── -->
+    <dimen name="pa_trend_chart_height">200dp</dimen>
+    <dimen name="pa_trend_filter_gap">6dp</dimen>
+    <dimen name="pa_trend_legend_dot_size">8dp</dimen>
+    <dimen name="pa_trend_spinner_height">32dp</dimen>
+    <dimen name="pa_spinner_radius">6dp</dimen>
+    <dimen name="pa_spinner_icon_margin_end">6dp</dimen>
+    <dimen name="pa_spinner_padding_start">8dp</dimen>
+    <dimen name="pa_spinner_padding_end">20dp</dimen>
+    <dimen name="pa_spinner_text_size">11sp</dimen>
+    <dimen name="pa_trend_empty_padding">32dp</dimen>
+
+    <!-- ── Performance Results History Card ────────────────────────────────── -->
+    <dimen name="pa_col_date_width">100dp</dimen>
+    <dimen name="pa_col_exam_width">240dp</dimen>
+    <dimen name="pa_col_roll_no_width">90dp</dimen>
+    <dimen name="pa_col_subject_width">64dp</dimen>
+    <dimen name="pa_col_total_width">68dp</dimen>
+    <dimen name="pa_col_max_width">64dp</dimen>
+    <dimen name="pa_col_highest_width">68dp</dimen>
+    <dimen name="pa_col_percent_width">64dp</dimen>
+    <dimen name="pa_col_grade_width">64dp</dimen>
+    <dimen name="pa_col_rank_width">68dp</dimen>
+    <dimen name="pa_col_out_of_width">68dp</dimen>
+    <dimen name="pa_col_status_width">200dp</dimen>
+    <dimen name="pa_col_scholarship_width">150dp</dimen>
+    <dimen name="pa_col_remarks_width">150dp</dimen>
+    <dimen name="pa_col_appeared_width">80dp</dimen>
+    <dimen name="pa_col_omr_width">64dp</dimen>
+    <dimen name="pa_col_result_width">64dp</dimen>
+    <dimen name="pa_table_cell_padding_h">12dp</dimen>
+    <dimen name="pa_table_cell_padding_v">10dp</dimen>
+    <dimen name="pa_badge_padding_h">8dp</dimen>
+    <dimen name="pa_badge_padding_v">3dp</dimen>
+    <dimen name="pa_pager_btn_height">32dp</dimen>
+    <dimen name="pa_pager_btn_min_width">32dp</dimen>
+    <dimen name="pa_pager_btn_padding_h">12dp</dimen>
+
+    <!-- ── Performance Results Rank Analysis ───────────────────────────────── -->
+    <dimen name="pa_rank_tile_padding">12dp</dimen>
+    <dimen name="pa_rank_tile_radius">8dp</dimen>
+    <dimen name="pa_rank_icon_box_size">36dp</dimen>
+    <dimen name="pa_rank_icon_box_radius">8dp</dimen>
+    <dimen name="pa_rank_icon_size">20dp</dimen>
+    <dimen name="pa_rank_val_text_size">18sp</dimen>
+    <dimen name="pa_rank_label_text_size">12sp</dimen>
+    <dimen name="pa_rank_insight_margin_top">10dp</dimen>
+    <dimen name="pa_rank_insight_padding">12dp</dimen>
+
+    <!-- ── Performance Results Topper Comparison ───────────────────────────── -->
+    <dimen name="pa_col_topper_date_width">100dp</dimen>
+    <dimen name="pa_col_topper_score_width">72dp</dimen>
+    <dimen name="pa_col_topper_topper_width">76dp</dimen>
+    <dimen name="pa_col_topper_sub_width">56dp</dimen>
+    <dimen name="pa_col_topper_outof_width">76dp</dimen>
+    <dimen name="pa_col_topper_gap_width">60dp</dimen>
+    <dimen name="pa_col_topper_grade_width">60dp</dimen>
+    <dimen name="pa_col_topper_rank_width">72dp</dimen>
+    <dimen name="pa_col_topper_appeared_width">84dp</dimen>
+    <dimen name="pa_col_topper_progress_width">170dp</dimen>
+    <dimen name="pa_topper_progress_bar_height">6dp</dimen>
+
+    <!-- ── Performance Results Subject-Wise Performance Comparison ────────── -->
+    <dimen name="pa_col_subject_type_width">92dp</dimen>
+    <dimen name="pa_table_row_min_height">44dp</dimen>
+    <dimen name="pa_table_header_sub_min_height">32dp</dimen>
+    <dimen name="pa_table_header_main_min_height">40dp</dimen>
+
 </resources>

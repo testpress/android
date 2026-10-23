@@ -850,6 +850,7 @@ class PerformanceResultsActivity : AppCompatActivity() {
 
             rowBinding.tvDate.text = row.date?.takeIf { it.isNotBlank() } ?: emptyDash
             rowBinding.tvExam.text = row.examName?.takeIf { it.isNotBlank() } ?: emptyDash
+            rowBinding.tvRollNo.text = row.rollNo?.takeIf { it.isNotBlank() } ?: emptyDash
 
             rowBinding.tvPhy.text = row.physics?.raw?.takeIf { it.isNotBlank() } ?: emptyDash
             rowBinding.tvChe.text = row.chemistry?.raw?.takeIf { it.isNotBlank() } ?: emptyDash
@@ -875,6 +876,12 @@ class PerformanceResultsActivity : AppCompatActivity() {
             rowBinding.tvGrade.setTextColor(ContextCompat.getColor(this, R.color.pa_badge_success_text))
 
             rowBinding.tvRank.text = row.rank?.let { PerformanceFormatter.formatIntegerWithCommas(it) } ?: emptyDash
+            rowBinding.tvOutOf.text = row.outOf?.toDoubleOrNull()?.let { PerformanceFormatter.formatNumber(it) }
+                ?: row.outOf?.takeIf { it.isNotBlank() }
+                ?: emptyDash
+            rowBinding.tvStatus.text = row.eStatus?.takeIf { it.isNotBlank() } ?: emptyDash
+            rowBinding.tvScholarEarn.text = row.scholarEarn?.takeIf { it.isNotBlank() } ?: emptyDash
+            rowBinding.tvRemarks.text = row.remarks?.takeIf { it.isNotBlank() } ?: emptyDash
             rowBinding.tvAppeared.text = row.appeared?.let { PerformanceFormatter.formatIntegerWithCommas(it) } ?: emptyDash
             val hasOmr = (!row.omrUrl.isNullOrBlank() && row.omrUrl != "-") ||
                 (!row.omr.isNullOrBlank() && row.omr != "-")

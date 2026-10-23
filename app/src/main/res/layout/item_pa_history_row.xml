@@ -34,7 +34,20 @@
         android:textColor="@color/pa_table_cell_text"
         android:textSize="12sp" />
 
-    <!-- 3. PHY -->
+    <!-- 3. Roll No -->
+    <TextView
+        android:id="@+id/tv_roll_no"
+        android:layout_width="@dimen/pa_col_roll_no_width"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingStart="@dimen/pa_table_cell_padding_h"
+        android:paddingTop="@dimen/pa_table_cell_padding_v"
+        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+        android:textColor="@color/pa_table_cell_text"
+        android:textSize="12sp" />
+
+    <!-- 4. PHY -->
     <TextView
         android:id="@+id/tv_phy"
         android:layout_width="@dimen/pa_col_subject_width"
@@ -222,6 +235,58 @@
     <TextView
         android:id="@+id/tv_rank"
         android:layout_width="@dimen/pa_col_rank_width"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingStart="@dimen/pa_table_cell_padding_h"
+        android:paddingTop="@dimen/pa_table_cell_padding_v"
+        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+        android:textColor="@color/pa_table_cell_text"
+        android:textSize="12sp" />
+
+    <!-- 18. Out Of -->
+    <TextView
+        android:id="@+id/tv_out_of"
+        android:layout_width="@dimen/pa_col_out_of_width"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingStart="@dimen/pa_table_cell_padding_h"
+        android:paddingTop="@dimen/pa_table_cell_padding_v"
+        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+        android:textColor="@color/pa_table_cell_text"
+        android:textSize="12sp" />
+
+    <!-- 19. Status -->
+    <TextView
+        android:id="@+id/tv_status"
+        android:layout_width="@dimen/pa_col_status_width"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingStart="@dimen/pa_table_cell_padding_h"
+        android:paddingTop="@dimen/pa_table_cell_padding_v"
+        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+        android:textColor="@color/pa_table_cell_text"
+        android:textSize="12sp" />
+
+    <!-- 20. Scholarship Earned -->
+    <TextView
+        android:id="@+id/tv_scholar_earn"
+        android:layout_width="@dimen/pa_col_scholarship_width"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingStart="@dimen/pa_table_cell_padding_h"
+        android:paddingTop="@dimen/pa_table_cell_padding_v"
+        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+        android:textColor="@color/pa_table_cell_text"
+        android:textSize="12sp" />
+
+    <!-- 21. Remarks -->
+    <TextView
+        android:id="@+id/tv_remarks"
+        android:layout_width="@dimen/pa_col_remarks_width"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:paddingStart="@dimen/pa_table_cell_padding_h"

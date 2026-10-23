@@ -1407,6 +1407,20 @@
                                         android:textStyle="bold" />
 
                                     <TextView
+                                        android:layout_width="@dimen/pa_col_roll_no_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_roll_no"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
                                         android:layout_width="@dimen/pa_col_subject_width"
                                         android:layout_height="wrap_content"
                                         android:fontFamily="sans-serif-medium"
@@ -1598,6 +1612,62 @@
                                         android:paddingEnd="@dimen/pa_table_cell_padding_h"
                                         android:paddingBottom="@dimen/pa_table_cell_padding_v"
                                         android:text="@string/pa_history_th_rank"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_out_of_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_out_of"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_status_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_status"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_scholarship_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_scholarship"
+                                        android:textColor="@color/pa_table_header_text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="@dimen/pa_col_remarks_width"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:paddingStart="@dimen/pa_table_cell_padding_h"
+                                        android:paddingTop="@dimen/pa_table_cell_padding_v"
+                                        android:paddingEnd="@dimen/pa_table_cell_padding_h"
+                                        android:paddingBottom="@dimen/pa_table_cell_padding_v"
+                                        android:text="@string/pa_history_th_remarks"
                                         android:textColor="@color/pa_table_header_text"
                                         android:textSize="12sp"
                                         android:textStyle="bold" />

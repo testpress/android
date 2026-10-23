@@ -28,7 +28,6 @@ import in.testpress.testpress.models.DaoSession;
 import in.testpress.testpress.models.InstituteSettings;
 import in.testpress.testpress.models.InstituteSettingsDao;
 import in.testpress.testpress.ui.SSOWebViewRedirectActivity;
-import in.testpress.testpress.ui.ExamResultActivity;
 import in.testpress.testpress.ui.MainActivity;
 import in.testpress.testpress.ui.PerformanceResultsActivity;
 import in.testpress.testpress.ui.PostsListActivity;
@@ -281,11 +280,6 @@ public class HandleMainMenu {
 
     private void launchOfflineExamListActivity() {
         activity.startActivity(new Intent(activity, OfflineExamListActivity.class));
-    }
-
-    private void launchExamResultActivity() {
-        Intent intent = new Intent(activity, ExamResultActivity.class);
-        activity.startActivity(intent);
     }
 
     private void launchPerformanceResultsActivity() {

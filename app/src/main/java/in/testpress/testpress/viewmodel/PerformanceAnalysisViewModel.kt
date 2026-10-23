@@ -207,15 +207,22 @@ class PerformanceAnalysisViewModel(
             month = selectedMonth,
             subject = selectedSubject,
             page = page,
-            limit = historyPageSize
+            limit = historyPageSize,
+            length = historyPageSize
         )
         repository.fetchHistory(request) { _historyState.value = it }
     }
 
     fun updateHistoryPagination(history: PerformanceHistoryData?) {
+        if (history != null && history.length > 0) {
+            historyPageSize = history.length
+        }
         val total = history?.total ?: 0
         val pageSize = if (historyPageSize > 0) historyPageSize else 5
-        totalHistoryPages = if (total > 0) {
+        val serverPages = history?.pages ?: 0
+        totalHistoryPages = if (serverPages > 0) {
+            serverPages
+        } else if (total > 0) {
             ((total + pageSize - 1) / pageSize).coerceAtLeast(1)
         } else {
             1

@@ -150,4 +150,27 @@
     <color name="pa_modal_incorrect_border">#FECDD3</color>
     <color name="pa_modal_incorrect_text">#334155</color>
     <color name="pa_modal_scrim">#80000000</color>
+
+    <!-- ── Performance Focus & Chart Colors ─────────────────────────────────── -->
+    <color name="pa_chart_grid">#F1F5F9</color>
+    <color name="pa_chart_label">#94A3B8</color>
+    <color name="pa_chart_topper_gray">#94A3B8</color>
+    <color name="pa_focus_high_priority">#EF4444</color>
+    <color name="pa_focus_high_badge_bg">#FEE2E2</color>
+    <color name="pa_focus_high_badge_text">#DC2626</color>
+    <color name="pa_focus_high_note_bg">#FEF2F2</color>
+    <color name="pa_focus_high_note_border">#FECACA</color>
+    <color name="pa_focus_high_note_text">#B91C1C</color>
+    <color name="pa_focus_low_priority">#10B981</color>
+    <color name="pa_focus_low_badge_bg">#DCFCE7</color>
+    <color name="pa_focus_low_badge_text">#166534</color>
+    <color name="pa_focus_low_note_bg">#F0FDF4</color>
+    <color name="pa_focus_low_note_border">#BBF7D0</color>
+    <color name="pa_focus_low_note_text">#15803D</color>
+    <color name="pa_focus_medium_priority">#F59E0B</color>
+    <color name="pa_focus_medium_badge_bg">#FEF3C7</color>
+    <color name="pa_focus_medium_badge_text">#D97706</color>
+    <color name="pa_focus_medium_note_bg">#FFFBEB</color>
+    <color name="pa_focus_medium_note_border">#FDE68A</color>
+    <color name="pa_focus_medium_note_text">#B45309</color>
 </resources>

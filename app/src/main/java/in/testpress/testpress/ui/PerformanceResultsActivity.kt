@@ -50,9 +50,9 @@ import `in`.testpress.testpress.models.pojo.PerformanceTrend
 import `in`.testpress.testpress.TestpressApplication
 import `in`.testpress.testpress.repository.PerformanceAnalysisRepository
 import `in`.testpress.testpress.repository.PerformanceApiState
+import `in`.testpress.testpress.ui.utils.PerformanceFocusCardHelper
 import `in`.testpress.testpress.ui.utils.PerformanceFormatter
 import `in`.testpress.testpress.ui.utils.PerformanceSubjectTableHelper
-import `in`.testpress.testpress.ui.view.DonutProgressView
 import `in`.testpress.testpress.util.UIUtils
 import `in`.testpress.testpress.viewmodel.PerformanceAnalysisViewModel
 import `in`.testpress.testpress.viewmodel.PerformanceViewModelFactory
@@ -204,38 +204,56 @@ class PerformanceResultsActivity : AppCompatActivity() {
 
     private fun observeStates() {
         viewModel.filtersState.observe(this) { state ->
-            if (state is PerformanceApiState.Success) {
-                viewModel.onFiltersLoaded(state.data)
+            when (state) {
+                is PerformanceApiState.Success -> {
+                    viewModel.onFiltersLoaded(state.data)
 
-                val currentTab = binding.testTabs.getTabAt(binding.testTabs.selectedTabPosition)?.text?.toString()
-                val activeType = state.data.type?.takeIf { it.isNotBlank() } ?: currentTab
-                if (state.data.types.isNotEmpty()) {
-                    populateTabs(state.data.types, activeType)
+                    val currentTab = binding.testTabs.getTabAt(binding.testTabs.selectedTabPosition)?.text?.toString()
+                    val activeType = state.data.type?.takeIf { it.isNotBlank() } ?: currentTab
+                    if (state.data.types.isNotEmpty()) {
+                        populateTabs(state.data.types, activeType)
+                    }
+                    populateTrendSpinners(state.data)
+                    populateLeaderboardSpinners(state.data)
+                    populateSubjectBoardSpinners(state.data)
+                    populateHistorySpinners(state.data)
+                    requestOverview()
                 }
-                populateTrendSpinners(state.data)
-                populateLeaderboardSpinners(state.data)
-                populateSubjectBoardSpinners(state.data)
-                populateHistorySpinners(state.data)
-                requestOverview()
+                is PerformanceApiState.Error -> {
+                    Toast.makeText(this, state.getDisplayMessage(this), Toast.LENGTH_SHORT).show()
+                }
+                else -> Unit
             }
         }
         viewModel.overviewState.observe(this) { state ->
-            if (state is PerformanceApiState.Success) {
-                bindStats(state.data.dashboard?.summary)
-                bindTrendChart(state.data.dashboard?.trend)
-                bindRank(state.data.dashboard?.rank)
-                bindLeaderboard(state.data.leaderboard)
-                bindSubjectBoard(state.data.subjectboard)
-                bindFocus(state.data.dashboard?.focus ?: emptyList())
-                bindHistory(state.data.history)
+            when (state) {
+                is PerformanceApiState.Success -> {
+                    bindStats(state.data.dashboard?.summary)
+                    bindTrendChart(state.data.dashboard?.trend)
+                    bindRank(state.data.dashboard?.rank)
+                    bindLeaderboard(state.data.leaderboard)
+                    bindSubjectBoard(state.data.subjectboard)
+                    bindFocus(state.data.dashboard?.focus ?: emptyList())
+                    bindHistory(state.data.history)
+                }
+                is PerformanceApiState.Error -> {
+                    Toast.makeText(this, state.getDisplayMessage(this), Toast.LENGTH_SHORT).show()
+                }
+                else -> Unit
             }
         }
         viewModel.dashboardState.observe(this) { state ->
-            if (state is PerformanceApiState.Success) {
-                bindStats(state.data.summary)
-                bindTrendChart(state.data.trend)
-                bindRank(state.data.rank)
-                bindFocus(state.data.focus)
+            when (state) {
+                is PerformanceApiState.Success -> {
+                    bindStats(state.data.summary)
+                    bindTrendChart(state.data.trend)
+                    bindRank(state.data.rank)
+                    bindFocus(state.data.focus)
+                }
+                is PerformanceApiState.Error -> {
+                    Toast.makeText(this, state.getDisplayMessage(this), Toast.LENGTH_SHORT).show()
+                }
+                else -> Unit
             }
         }
         viewModel.leaderboardState.observe(this) { state ->
@@ -250,6 +268,7 @@ class PerformanceResultsActivity : AppCompatActivity() {
                 is PerformanceApiState.Error -> {
                     binding.topperProgress.visibility = View.GONE
                     bindLeaderboard(null)
+                    Toast.makeText(this, state.getDisplayMessage(this), Toast.LENGTH_SHORT).show()
                 }
                 null -> Unit
             }
@@ -266,6 +285,7 @@ class PerformanceResultsActivity : AppCompatActivity() {
                 is PerformanceApiState.Error -> {
                     binding.subjectProgress.visibility = View.GONE
                     bindSubjectBoard(null)
+                    Toast.makeText(this, state.getDisplayMessage(this), Toast.LENGTH_SHORT).show()
                 }
                 null -> Unit
             }
@@ -282,6 +302,7 @@ class PerformanceResultsActivity : AppCompatActivity() {
                 is PerformanceApiState.Error -> {
                     binding.historyProgress.visibility = View.GONE
                     bindHistory(null)
+                    Toast.makeText(this, state.getDisplayMessage(this), Toast.LENGTH_SHORT).show()
                 }
                 null -> Unit
             }
@@ -858,7 +879,7 @@ class PerformanceResultsActivity : AppCompatActivity() {
             val hasOmr = (!row.omrUrl.isNullOrBlank() && row.omrUrl != "-") ||
                 (!row.omr.isNullOrBlank() && row.omr != "-")
             if (hasOmr) {
-                rowBinding.tvOmr.text = "📄"
+                rowBinding.tvOmr.text = getString(R.string.pa_omr_icon_symbol)
                 rowBinding.tvOmr.setTextColor(ContextCompat.getColor(this, R.color.primary))
             } else {
                 rowBinding.tvOmr.text = emptyDash
@@ -916,307 +937,9 @@ class PerformanceResultsActivity : AppCompatActivity() {
         binding.focusGrid.removeAllViews()
 
         focusList.forEach { focus ->
-            val cardView = createFocusCardView(focus)
+            val cardView = PerformanceFocusCardHelper.createFocusCardView(this, focus)
             binding.focusGrid.addView(cardView)
         }
-    }
-
-    private fun createFocusCardView(focus: PerformanceFocus): View {
-        val density = resources.displayMetrics.density
-        val emptyDash = getString(R.string.performance_results_empty_value)
-        val style = PerformanceFormatter.getFocusStyle(focus.priority)
-
-        val card = MaterialCardView(this).apply {
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                bottomMargin = (14 * density).toInt()
-            }
-            radius = 12 * density
-            cardElevation = 0f
-            strokeWidth = (1 * density).toInt()
-            strokeColor = ContextCompat.getColor(this@PerformanceResultsActivity, R.color.pa_stat_card_border)
-            setCardBackgroundColor(Color.WHITE)
-        }
-
-        val container = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            val pad = (16 * density).toInt()
-            setPadding(pad, pad, pad, pad)
-        }
-
-        // ── 1. pa-focus-top ──────────────────────────────────
-        val topRow = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.TOP
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-        }
-
-        val nameCol = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-        }
-
-        val tvIcon = TextView(this).apply {
-            text = style.priorityIcon
-            textSize = 17f
-            typeface = android.graphics.Typeface.DEFAULT_BOLD
-            setTextColor(style.priorityColor)
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                marginEnd = (8 * density).toInt()
-                topMargin = (1 * density).toInt()
-            }
-        }
-        nameCol.addView(tvIcon)
-
-        val titleCol = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-        }
-
-        val tvSubject = TextView(this).apply {
-            text = focus.displayName.takeIf { it.isNotBlank() } ?: emptyDash
-            setTextColor(ContextCompat.getColor(this@PerformanceResultsActivity, R.color.pa_stat_val_text))
-            textSize = 16f
-            typeface = android.graphics.Typeface.DEFAULT_BOLD
-        }
-        titleCol.addView(tvSubject)
-
-        val scoreStr = PerformanceFormatter.formatFocusScore(this, focus.avg, focus.avgMax, focus.percent)
-        if (scoreStr.isNotBlank()) {
-            val tvScore = TextView(this).apply {
-                text = scoreStr
-                setTextColor(ContextCompat.getColor(this@PerformanceResultsActivity, R.color.pa_stat_top_label))
-                textSize = 12f
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply {
-                    topMargin = (2 * density).toInt()
-                }
-            }
-            titleCol.addView(tvScore)
-        }
-
-        val topperScoreHtml = PerformanceFormatter.formatFocusTopperScoreHtml(this, focus.topperAvg, focus.avgMax, focus.topperPercent)
-        if (topperScoreHtml.isNotBlank()) {
-            val tvTopper = TextView(this).apply {
-                text = HtmlCompat.fromHtml(topperScoreHtml, HtmlCompat.FROM_HTML_MODE_COMPACT)
-                setTextColor(ContextCompat.getColor(this@PerformanceResultsActivity, R.color.pa_stat_top_label))
-                textSize = 12f
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply {
-                    topMargin = (2 * density).toInt()
-                }
-            }
-            titleCol.addView(tvTopper)
-        }
-
-        nameCol.addView(titleCol)
-        topRow.addView(nameCol)
-
-        // Right: Priority Badge
-        val priorityBadge = TextView(this).apply {
-            val label = focus.priorityLabel?.takeIf { it.isNotBlank() }
-                ?: getString(style.defaultPriorityLabelRes)
-            text = label
-            textSize = 11f
-            typeface = android.graphics.Typeface.DEFAULT_BOLD
-            gravity = Gravity.CENTER
-            setTextColor(style.badgeTextColor)
-            val padH = (10 * density).toInt()
-            val padV = (4 * density).toInt()
-            setPadding(padH, padV, padH, padV)
-            background = GradientDrawable().apply {
-                setColor(style.badgeBgColor)
-                cornerRadius = 12 * density
-            }
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                marginStart = (8 * density).toInt()
-            }
-        }
-        topRow.addView(priorityBadge)
-        container.addView(topRow)
-
-        // ── 2. pa-focus-mid ──────────────────────────────────
-        val midRow = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                topMargin = (14 * density).toInt()
-            }
-        }
-
-        val noteText = focus.note?.takeIf { it.isNotBlank() }
-        val tvNote = TextView(this).apply {
-            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-            text = noteText ?: ""
-            setTextColor(style.noteTextColor)
-            textSize = 12f
-            typeface = android.graphics.Typeface.DEFAULT_BOLD
-            val padH = (12 * density).toInt()
-            val padV = (10 * density).toInt()
-            setPadding(padH, padV, padH, padV)
-            background = GradientDrawable().apply {
-                setColor(style.noteBgColor)
-                setStroke((1 * density).toInt(), style.noteBorderColor)
-                cornerRadius = 8 * density
-            }
-        }
-        midRow.addView(tvNote)
-
-        val donutView = DonutProgressView(this).apply {
-            val size = (64 * density).toInt()
-            layoutParams = LinearLayout.LayoutParams(size, size).apply {
-                marginStart = (12 * density).toInt()
-                marginEnd = (4 * density).toInt()
-            }
-            progress = (focus.percent ?: 0.0).toFloat()
-            progressColor = style.priorityColor
-            text = "${PerformanceFormatter.formatDecimal(focus.percent ?: 0.0)}%"
-        }
-        midRow.addView(donutView)
-        container.addView(midRow)
-
-        // ── 3. pa-focus-chartlbl & pa-focus-chart ────────────
-        if (focus.points.isNotEmpty()) {
-            val tvChartLbl = TextView(this).apply {
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply {
-                    topMargin = (14 * density).toInt()
-                    bottomMargin = (8 * density).toInt()
-                }
-                text = PerformanceFormatter.formatFocusTrendLabel(this@PerformanceResultsActivity, focus.points.size)
-                setTextColor(ContextCompat.getColor(this@PerformanceResultsActivity, R.color.pa_stat_top_label))
-                textSize = 11f
-                typeface = android.graphics.Typeface.DEFAULT_BOLD
-            }
-            container.addView(tvChartLbl)
-
-            val miniChart = LineChart(this).apply {
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    (74 * density).toInt()
-                )
-                setDescription("")
-                legend.isEnabled = false
-                setTouchEnabled(false)
-                isDragEnabled = false
-                setScaleEnabled(false)
-                setPinchZoom(false)
-                setDrawGridBackground(false)
-                setViewPortOffsets(0f, (6 * density), 0f, (16 * density))
-
-                val gridColor = Color.parseColor("#F1F5F9")
-                val labelColor = Color.parseColor("#94A3B8")
-
-                xAxis.apply {
-                    position = XAxis.XAxisPosition.BOTTOM
-                    setDrawGridLines(true)
-                    setGridColor(gridColor)
-                    setDrawAxisLine(false)
-                    setTextColor(labelColor)
-                    textSize = 9f
-                    isGranularityEnabled = true
-                    granularity = 1f
-                    setAvoidFirstLastClipping(true)
-                    setValueFormatter(object : AxisValueFormatter {
-                        override fun getFormattedValue(value: Float, axis: AxisBase?): String {
-                            val idx = Math.round(value)
-                            return if (idx in focus.points.indices) focus.points[idx].label ?: "" else ""
-                        }
-                        override fun getDecimalDigits(): Int = 0
-                    })
-                    setLabelCount(focus.points.size.coerceAtLeast(1), false)
-                }
-
-                axisLeft.apply {
-                    setAxisMinValue(0f)
-                    setAxisMaxValue(100f)
-                    setDrawGridLines(true)
-                    setGridColor(gridColor)
-                    setDrawAxisLine(false)
-                    setTextColor(labelColor)
-                    textSize = 9f
-                    setLabelCount(3, false)
-                }
-
-                axisRight.isEnabled = false
-            }
-
-            val studentEntries = focus.points.mapIndexedNotNull { i, pt ->
-                pt.value?.let { Entry(i.toFloat(), it.toFloat()) }
-            }
-            val topperEntries = focus.points.mapIndexedNotNull { i, pt ->
-                pt.topper?.let { Entry(i.toFloat(), it.toFloat()) }
-            }
-
-            val dataSets = mutableListOf<ILineDataSet>()
-
-            if (topperEntries.isNotEmpty()) {
-                val topperDs = LineDataSet(topperEntries, getString(R.string.pa_focus_topper_series)).apply {
-                    val grayColor = Color.parseColor("#94A3B8")
-                    color = grayColor
-                    setCircleColor(grayColor)
-                    circleRadius = 2.5f
-                    lineWidth = 1.5f
-                    enableDashedLine(8f, 6f, 0f)
-                    setDrawCircleHole(false)
-                    setDrawValues(false)
-                    mode = LineDataSet.Mode.CUBIC_BEZIER
-                    cubicIntensity = 0.15f
-                    setDrawFilled(false)
-                }
-                dataSets.add(topperDs)
-            }
-
-            if (studentEntries.isNotEmpty()) {
-                val studentDs = LineDataSet(studentEntries, getString(R.string.pa_focus_you_series)).apply {
-                    color = style.priorityColor
-                    setCircleColor(style.priorityColor)
-                    circleRadius = 3f
-                    lineWidth = 2f
-                    setDrawCircleHole(false)
-                    setDrawValues(false)
-                    mode = LineDataSet.Mode.CUBIC_BEZIER
-                    cubicIntensity = 0.15f
-                    setDrawFilled(true)
-                    fillColor = style.priorityColor
-                    fillAlpha = 20
-                }
-                dataSets.add(studentDs)
-            }
-
-            if (dataSets.isNotEmpty()) {
-                miniChart.data = LineData(dataSets)
-                miniChart.invalidate()
-            }
-
-            container.addView(miniChart)
-        }
-
-        card.addView(container)
-        return card
     }
 
     private fun showExamResultModal(row: PerformanceHistoryRow) {

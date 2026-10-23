@@ -8,6 +8,8 @@ import android.graphics.RectF
 import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
+import `in`.testpress.testpress.R
 
 class DonutProgressView @JvmOverloads constructor(
     context: Context,
@@ -27,13 +29,13 @@ class DonutProgressView @JvmOverloads constructor(
             invalidate()
         }
 
-    var progressColor: Int = Color.parseColor("#F59E0B")
+    var progressColor: Int = ContextCompat.getColor(context, R.color.pa_focus_medium_priority)
         set(value) {
             field = value
             invalidate()
         }
 
-    var trackColor: Int = Color.parseColor("#F1F5F9")
+    var trackColor: Int = ContextCompat.getColor(context, R.color.pa_chart_grid)
         set(value) {
             field = value
             invalidate()

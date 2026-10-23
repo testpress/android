@@ -431,4 +431,5 @@
     <string name="pa_focus_topper_series">Topper</string>
     <string name="pa_focus_you_series">You</string>
     <string name="pa_omr_error_toast">Could not open OMR sheet</string>
+    <string name="pa_omr_icon_symbol">📄</string>
 </resources>

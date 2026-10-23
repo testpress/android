@@ -1,7 +1,7 @@
 package `in`.testpress.testpress.ui.utils
 
 import android.content.Context
-import android.graphics.Color
+import androidx.core.content.ContextCompat
 import `in`.testpress.testpress.R
 import java.text.NumberFormat
 import java.util.Locale
@@ -93,35 +93,35 @@ object PerformanceFormatter {
         return context.getString(R.string.pa_focus_score_trend_exams_format, examCount)
     }
 
-    fun getFocusStyle(priority: String?): FocusStyle {
+    fun getFocusStyle(context: Context, priority: String?): FocusStyle {
         return when (priority?.lowercase(Locale.ROOT)) {
             "high" -> FocusStyle(
-                priorityColor = Color.parseColor("#EF4444"),
-                badgeBgColor = Color.parseColor("#FEE2E2"),
-                badgeTextColor = Color.parseColor("#DC2626"),
-                noteBgColor = Color.parseColor("#FEF2F2"),
-                noteBorderColor = Color.parseColor("#FECACA"),
-                noteTextColor = Color.parseColor("#B91C1C"),
+                priorityColor = ContextCompat.getColor(context, R.color.pa_focus_high_priority),
+                badgeBgColor = ContextCompat.getColor(context, R.color.pa_focus_high_badge_bg),
+                badgeTextColor = ContextCompat.getColor(context, R.color.pa_focus_high_badge_text),
+                noteBgColor = ContextCompat.getColor(context, R.color.pa_focus_high_note_bg),
+                noteBorderColor = ContextCompat.getColor(context, R.color.pa_focus_high_note_border),
+                noteTextColor = ContextCompat.getColor(context, R.color.pa_focus_high_note_text),
                 priorityIcon = "⚠",
                 defaultPriorityLabelRes = R.string.pa_focus_priority_high
             )
             "low" -> FocusStyle(
-                priorityColor = Color.parseColor("#10B981"),
-                badgeBgColor = Color.parseColor("#DCFCE7"),
-                badgeTextColor = Color.parseColor("#166534"),
-                noteBgColor = Color.parseColor("#F0FDF4"),
-                noteBorderColor = Color.parseColor("#BBF7D0"),
-                noteTextColor = Color.parseColor("#15803D"),
+                priorityColor = ContextCompat.getColor(context, R.color.pa_focus_low_priority),
+                badgeBgColor = ContextCompat.getColor(context, R.color.pa_focus_low_badge_bg),
+                badgeTextColor = ContextCompat.getColor(context, R.color.pa_focus_low_badge_text),
+                noteBgColor = ContextCompat.getColor(context, R.color.pa_focus_low_note_bg),
+                noteBorderColor = ContextCompat.getColor(context, R.color.pa_focus_low_note_border),
+                noteTextColor = ContextCompat.getColor(context, R.color.pa_focus_low_note_text),
                 priorityIcon = "✔",
                 defaultPriorityLabelRes = R.string.pa_focus_priority_low
             )
             else -> FocusStyle( // medium
-                priorityColor = Color.parseColor("#F59E0B"),
-                badgeBgColor = Color.parseColor("#FEF3C7"),
-                badgeTextColor = Color.parseColor("#D97706"),
-                noteBgColor = Color.parseColor("#FFFBEB"),
-                noteBorderColor = Color.parseColor("#FDE68A"),
-                noteTextColor = Color.parseColor("#B45309"),
+                priorityColor = ContextCompat.getColor(context, R.color.pa_focus_medium_priority),
+                badgeBgColor = ContextCompat.getColor(context, R.color.pa_focus_medium_badge_bg),
+                badgeTextColor = ContextCompat.getColor(context, R.color.pa_focus_medium_badge_text),
+                noteBgColor = ContextCompat.getColor(context, R.color.pa_focus_medium_note_bg),
+                noteBorderColor = ContextCompat.getColor(context, R.color.pa_focus_medium_note_border),
+                noteTextColor = ContextCompat.getColor(context, R.color.pa_focus_medium_note_text),
                 priorityIcon = "⚠",
                 defaultPriorityLabelRes = R.string.pa_focus_priority_medium
             )

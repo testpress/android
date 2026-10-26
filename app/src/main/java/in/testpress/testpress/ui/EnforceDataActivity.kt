@@ -4,10 +4,8 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.app.Activity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
@@ -32,6 +30,7 @@ import javax.inject.Inject
 class EnforceDataActivity : AbstractWebViewActivity() {
 
     private lateinit var completionViewModel: ForceDataViewModel
+    private var isLoggingOut = false
 
     @Inject
     lateinit var serviceProvider: TestpressServiceProvider
@@ -52,14 +51,18 @@ class EnforceDataActivity : AbstractWebViewActivity() {
             }
         })[ForceDataViewModel::class.java]
         completionViewModel.state.observe(this) { state ->
+            if (isLoggingOut) return@observe
+            title = getString(if (state == ForceDataViewModel.State.CHECKING)
+                R.string.please_wait else R.string.mandatory_update_title)
             when (state) {
                 ForceDataViewModel.State.COMPLETE -> {
                     setResult(Activity.RESULT_OK)
                     finish()
                 }
-                ForceDataViewModel.State.INCOMPLETE -> Toast.makeText(
-                    this, R.string.mandatory_update_pending, Toast.LENGTH_LONG
-                ).show()
+                ForceDataViewModel.State.INCOMPLETE -> {
+                    Toast.makeText(this, R.string.mandatory_update_pending, Toast.LENGTH_LONG).show()
+                    completionViewModel.consumeIncompleteMessage()
+                }
                 else -> Unit
             }
         }
@@ -85,16 +88,11 @@ class EnforceDataActivity : AbstractWebViewActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.logout, menu)
-        menu.add(0, R.id.check_mandatory_status, 0, R.string.check_mandatory_status)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
-        if (id == R.id.check_mandatory_status) {
-            verifyCompletion()
-            return true
-        }
         if (id == R.id.logout) {
             logout()
             return true
@@ -105,9 +103,13 @@ class EnforceDataActivity : AbstractWebViewActivity() {
     private var logoutDialog: AlertDialog? = null
 
     private fun verifyCompletion() {
-        if (isFinishing || isDestroyed) return
+        if (isFinishing || isDestroyed || isLoggingOut) return
         val token = TestpressSdk.getTestpressSession(applicationContext)?.token
-        if (token != null) completionViewModel.verifyCompletion(token)
+        if (token.isNullOrBlank()) {
+            Toast.makeText(this, R.string.mandatory_update_session_missing, Toast.LENGTH_LONG).show()
+            return
+        }
+        completionViewModel.verifyCompletion(token)
     }
 
     fun logout() {
@@ -122,6 +124,8 @@ class EnforceDataActivity : AbstractWebViewActivity() {
 
     private fun performLogout() {
         if (isFinishing || isDestroyed) return
+        isLoggingOut = true
+        completionViewModel.cancelVerification()
         serviceProvider.logout(
             this@EnforceDataActivity,
             testpressService,

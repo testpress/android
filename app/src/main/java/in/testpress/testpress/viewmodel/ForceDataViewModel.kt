@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.util.Log
 import `in`.testpress.testpress.repository.ForceDataRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -16,6 +17,14 @@ class ForceDataViewModel(private val repository: ForceDataRepository) : ViewMode
     private val mutableState = MutableLiveData<State>()
     val state: LiveData<State> = mutableState
     private var checkJob: Job? = null
+
+    fun consumeIncompleteMessage() {
+        if (mutableState.value == State.INCOMPLETE) mutableState.value = null
+    }
+
+    fun cancelVerification() {
+        checkJob?.cancel()
+    }
 
     fun verifyCompletion(token: String) {
         if (checkJob?.isActive == true || mutableState.value == State.COMPLETE) return
@@ -30,7 +39,7 @@ class ForceDataViewModel(private val repository: ForceDataRepository) : ViewMode
                 } catch (exception: CancellationException) {
                     throw exception
                 } catch (exception: Exception) {
-                    // A failed request must never grant dashboard access.
+                    Log.w("ForceDataViewModel", "Unable to verify mandatory details", exception)
                 }
                 if (attempt < 2) delay(3000)
             }

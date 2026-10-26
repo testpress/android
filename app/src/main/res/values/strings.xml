@@ -2,7 +2,8 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyEllipsis">
     <string name="mandatory_update_pending">Your details are still being verified. Please stay on this form and try again shortly.</string>
-    <string name="check_mandatory_status">Check status</string>
+    <string name="mandatory_update_title">Mandatory Update</string>
+    <string name="mandatory_update_session_missing">Your session is unavailable. Please log out and sign in again.</string>
 
     <string name="rss_posts">Whats New</string>
 

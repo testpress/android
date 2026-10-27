@@ -234,6 +234,11 @@ public class MainActivity extends TestpressFragmentActivity {
             if (resultCode == RESULT_OK) {
                 skipNextForceDataCheck = true;
                 showMainActivityContents();
+                for (Fragment fragment : mMenuItemFragments) {
+                    if (fragment instanceof DashboardFragment && fragment.getView() != null) {
+                        ((DashboardFragment) fragment).refresh();
+                    }
+                }
             }
             return;
         }

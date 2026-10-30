@@ -110,7 +110,7 @@ class PerformanceAnalysisViewModel(
 
     fun requestOverview() {
         if (studentNo.isBlank()) return
-        val activeType = cachedFiltersData?.type ?: selectedTabType
+        val activeType = selectedTabType ?: cachedFiltersData?.type
         val activeYear = selectedAcademicYear
             ?: cachedFiltersData?.year?.numeric?.toInt()
             ?: cachedFiltersData?.year?.raw?.toIntOrNull()

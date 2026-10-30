@@ -235,12 +235,6 @@ class PerformanceResultsActivity : AppCompatActivity() {
             when (state) {
                 is PerformanceApiState.Success -> {
                     viewModel.onFiltersLoaded(state.data)
-
-                    val currentTab = binding.testTabs.getTabAt(binding.testTabs.selectedTabPosition)?.text?.toString()
-                    val activeType = state.data.type?.takeIf { it.isNotBlank() } ?: currentTab
-                    if (state.data.types.isNotEmpty()) {
-                        populateTabs(state.data.types, activeType)
-                    }
                     populateTrendSpinners(state.data)
                     populateLeaderboardSpinners(state.data)
                     populateSubjectBoardSpinners(state.data)

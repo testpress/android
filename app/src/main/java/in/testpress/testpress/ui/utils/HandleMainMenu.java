@@ -95,6 +95,7 @@ public class HandleMainMenu {
             intent.putExtra(SSOWebViewRedirectActivity.EXTRA_NEXT_PATH, "/tickets/mobile/?testpress_app=android");
             activity.startActivity(intent);
         });
+        menuActions.put(R.id.live_classes, this::launchLiveClassesActivity);
         menuActions.put(R.id.offline_exam_list, this::launchOfflineExamListActivity);
         menuActions.put(R.id.discussions, () -> {
             String label = instituteSettings.getForumLabel();
@@ -240,6 +241,13 @@ public class HandleMainMenu {
         intent.putExtra(SSOWebViewRedirectActivity.EXTRA_TITLE, title);
         intent.putExtra(SSOWebViewRedirectActivity.EXTRA_NEXT_PATH, "/discussions/new?testpress_app=android");
         intent.putExtra(SSOWebViewRedirectActivity.EXTRA_ALLOW_EXTERNAL, true);
+        activity.startActivity(intent);
+    }
+
+    private void launchLiveClassesActivity() {
+        Intent intent = new Intent(activity, SSOWebViewRedirectActivity.class);
+        intent.putExtra(SSOWebViewRedirectActivity.EXTRA_TITLE, activity.getString(R.string.live_classes));
+        intent.putExtra(SSOWebViewRedirectActivity.EXTRA_NEXT_PATH, "/events/live-classes-list/?testpress_app=android");
         activity.startActivity(intent);
     }
 

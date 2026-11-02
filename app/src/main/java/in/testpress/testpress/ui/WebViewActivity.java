@@ -36,9 +36,14 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
+import android.text.TextUtils;
+import in.testpress.core.TestpressSdk;
+import in.testpress.core.TestpressSession;
+import in.testpress.course.TestpressCourse;
 import in.testpress.fragments.WebViewFragmentKt;
 import in.testpress.testpress.BuildConfig;
 import in.testpress.testpress.TestpressApplication;
@@ -186,6 +191,9 @@ public class WebViewActivity extends BaseToolBarActivity {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (handleNativeContentDetailRedirect(url)) {
+                    return true;
+                }
                 if (allowExternalLink || isInstituteURL(url)) {
                     view.loadUrl(appendAppQueryParam(url));
                 } else {
@@ -281,6 +289,28 @@ public class WebViewActivity extends BaseToolBarActivity {
                 }
             }
         });
+    }
+
+    private boolean handleNativeContentDetailRedirect(String url) {
+        if (url == null) {
+            return false;
+        }
+        Uri uri = Uri.parse(url);
+        String path = uri.getPath();
+        if (path != null && (path.contains("/live-classes/") || path.contains("/events/live-classes") || path.contains("/contents/"))) {
+            List<String> segments = uri.getPathSegments();
+            if (segments != null && !segments.isEmpty()) {
+                String lastSegment = segments.get(segments.size() - 1);
+                if (TextUtils.isDigitsOnly(lastSegment)) {
+                    TestpressSession session = TestpressSdk.getTestpressSession(WebViewActivity.this);
+                    if (session != null) {
+                        TestpressCourse.showContentDetail(WebViewActivity.this, lastSegment, session);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private Boolean isInstituteURL(String url){

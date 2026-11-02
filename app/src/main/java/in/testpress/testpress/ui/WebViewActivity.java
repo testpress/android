@@ -297,7 +297,7 @@ public class WebViewActivity extends BaseToolBarActivity {
         }
         Uri uri = Uri.parse(url);
         String path = uri.getPath();
-        if (path != null && (path.contains("/live-classes/") || path.contains("/events/live-classes") || path.contains("/contents/"))) {
+        if (path != null && path.contains("/contents/")) {
             List<String> segments = uri.getPathSegments();
             if (segments != null && !segments.isEmpty()) {
                 String lastSegment = segments.get(segments.size() - 1);

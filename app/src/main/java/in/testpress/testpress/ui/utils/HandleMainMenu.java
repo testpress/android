@@ -248,6 +248,7 @@ public class HandleMainMenu {
         Intent intent = new Intent(activity, SSOWebViewRedirectActivity.class);
         intent.putExtra(SSOWebViewRedirectActivity.EXTRA_TITLE, activity.getString(R.string.live_classes));
         intent.putExtra(SSOWebViewRedirectActivity.EXTRA_NEXT_PATH, "/events/live-classes-list/?testpress_app=android");
+        intent.putExtra(SSOWebViewRedirectActivity.EXTRA_ALLOW_EXTERNAL, true);
         activity.startActivity(intent);
     }
 

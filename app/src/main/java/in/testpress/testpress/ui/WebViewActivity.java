@@ -157,10 +157,17 @@ public class WebViewActivity extends BaseToolBarActivity {
 
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
+        webSettings.setDomStorageEnabled(true);
+        webSettings.setDatabaseEnabled(true);
         webSettings.setAllowFileAccess(true);
+        webSettings.setAllowContentAccess(true);
+        webSettings.setMediaPlaybackRequiresUserGesture(false);
+        webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         webSettings.setSupportZoom(true);
         webSettings.setBuiltInZoomControls(true);
         webSettings.setDisplayZoomControls(false);
+        webSettings.setUseWideViewPort(true);
+        webSettings.setLoadWithOverviewMode(true);
         String userAgent = webSettings.getUserAgentString();
         if (userAgent != null) {
             webSettings.setUserAgentString(appendCustomUserAgent(userAgent));
@@ -212,7 +219,9 @@ public class WebViewActivity extends BaseToolBarActivity {
 
         CookieManager cookieManager = CookieManager.getInstance();
         cookieManager.setAcceptCookie(true);
-        cookieManager.removeAllCookie();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            cookieManager.setAcceptThirdPartyCookies(webView, true);
+        }
 
         webView.loadUrl(url);
         webView.setWebChromeClient(new WebChromeClient() {

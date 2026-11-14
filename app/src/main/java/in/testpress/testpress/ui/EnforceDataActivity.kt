@@ -2,15 +2,20 @@ package `in`.testpress.testpress.ui
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.app.Activity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import `in`.testpress.core.TestpressSdk
+import `in`.testpress.testpress.repository.ForceDataRepository
+import `in`.testpress.testpress.viewmodel.ForceDataViewModel
+import android.widget.Toast
 import `in`.testpress.testpress.TestpressApplication
 import `in`.testpress.testpress.R
 import `in`.testpress.testpress.TestpressServiceProvider
@@ -24,16 +29,43 @@ import javax.inject.Inject
 
 class EnforceDataActivity : AbstractWebViewActivity() {
 
+    private lateinit var completionViewModel: ForceDataViewModel
+    private var isLoggingOut = false
+
     @Inject
     lateinit var serviceProvider: TestpressServiceProvider
     @Inject
     lateinit var testpressService: TestpressService
     @Inject
     lateinit var logoutService: LogoutService
+    @Inject
+    lateinit var forceDataRepository: ForceDataRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         TestpressApplication.getAppComponent().inject(this)
+        completionViewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                @Suppress("UNCHECKED_CAST")
+                return ForceDataViewModel(forceDataRepository) as T
+            }
+        })[ForceDataViewModel::class.java]
+        completionViewModel.state.observe(this) { state ->
+            if (isLoggingOut) return@observe
+            title = getString(if (state == ForceDataViewModel.State.CHECKING)
+                R.string.please_wait else R.string.mandatory_update_title)
+            when (state) {
+                ForceDataViewModel.State.COMPLETE -> {
+                    setResult(Activity.RESULT_OK)
+                    finish()
+                }
+                ForceDataViewModel.State.INCOMPLETE -> {
+                    Toast.makeText(this, R.string.mandatory_update_pending, Toast.LENGTH_LONG).show()
+                    completionViewModel.consumeIncompleteMessage()
+                }
+                else -> Unit
+            }
+        }
         if(!isPermissionGranted(Manifest.permission.CAMERA)){
             askCameraPermission()
         }
@@ -70,6 +102,16 @@ class EnforceDataActivity : AbstractWebViewActivity() {
 
     private var logoutDialog: AlertDialog? = null
 
+    private fun verifyCompletion() {
+        if (isFinishing || isDestroyed || isLoggingOut) return
+        val token = TestpressSdk.getTestpressSession(applicationContext)?.token
+        if (token.isNullOrBlank()) {
+            Toast.makeText(this, R.string.mandatory_update_session_missing, Toast.LENGTH_LONG).show()
+            return
+        }
+        completionViewModel.verifyCompletion(token)
+    }
+
     fun logout() {
         if (logoutDialog?.isShowing == true) return
         DeviceBindingDialogs.handleLogout(
@@ -82,6 +124,8 @@ class EnforceDataActivity : AbstractWebViewActivity() {
 
     private fun performLogout() {
         if (isFinishing || isDestroyed) return
+        isLoggingOut = true
+        completionViewModel.cancelVerification()
         serviceProvider.logout(
             this@EnforceDataActivity,
             testpressService,
@@ -100,7 +144,9 @@ class EnforceDataActivity : AbstractWebViewActivity() {
 
         @JavascriptInterface
         fun onSubmit() {
-            finish()
+            runOnUiThread {
+                verifyCompletion()
+            }
         }
 
     }

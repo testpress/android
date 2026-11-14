@@ -114,6 +114,8 @@ import static in.testpress.store.TestpressStore.STORE_REQUEST_CODE;
 public class MainActivity extends TestpressFragmentActivity {
 
     private static final String SELECTED_ITEM = "selectedItem";
+    private static final int FORCE_DATA_REQUEST = 1001;
+    private static final String FORCE_DATA_OPEN = "forceDataOpen";
 
     @Inject
     protected TestpressServiceProvider serviceProvider;
@@ -143,6 +145,9 @@ public class MainActivity extends TestpressFragmentActivity {
     private InstituteSettings mInstituteSettings;
     private InstituteSettingsDao instituteSettingsDao;
     private boolean isUserAuthenticated;
+    private boolean isForceDataActivityOpen;
+    private boolean isForceDataCheckInProgress;
+    private boolean skipNextForceDataCheck;
     public String ssoUrl;
     private boolean isInitScreenCalledOnce;
     private CourseListFragment courseListFragment;
@@ -158,6 +163,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
         if (savedInstanceState != null) {
             mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM);
+            isForceDataActivityOpen = savedInstanceState.getBoolean(FORCE_DATA_OPEN);
         }
         viewPager.setVisibility(View.GONE);
         viewPager.setSwipeEnabled(false);
@@ -239,8 +245,20 @@ public class MainActivity extends TestpressFragmentActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (!isProductPurchaseSuccessful(requestCode, resultCode))
+        if (requestCode == FORCE_DATA_REQUEST) {
+            isForceDataActivityOpen = false;
+            if (resultCode == RESULT_OK) {
+                skipNextForceDataCheck = true;
+                showMainActivityContents();
+                for (Fragment fragment : mMenuItemFragments) {
+                    if (fragment instanceof DashboardFragment && fragment.getView() != null) {
+                        ((DashboardFragment) fragment).refresh();
+                    }
+                }
+            }
             return;
+        }
+        if (!isProductPurchaseSuccessful(requestCode, resultCode)) return;
         try {
             for (int i = 0; i < mMenuItemFragments.size(); i++) {
                 Fragment fragment = mMenuItemFragments.get(i);
@@ -882,6 +900,7 @@ public class MainActivity extends TestpressFragmentActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt(SELECTED_ITEM, mSelectedItem);
+        outState.putBoolean(FORCE_DATA_OPEN, isForceDataActivityOpen);
         super.onSaveInstanceState(outState);
     }
 
@@ -900,25 +919,45 @@ public class MainActivity extends TestpressFragmentActivity {
             hideMenuItemsForUnauthenticatedUser(navigationView.getMenu());
         }
         fetchUnreadMessagesCount();
+        if (skipNextForceDataCheck) {
+            skipNextForceDataCheck = false;
+            return;
+        }
         if (isUserAuthenticated && mInstituteSettings != null && mInstituteSettings.getForceStudentData()) {
-            checkForForceUserData();
+            if (!isForceDataActivityOpen) {
+                checkForForceUserData();
+            } else {
+                hideMainActivityContents();
+            }
         } else {
             showMainActivityContents();
         }
     }
 
-    public void openEnforceDataActivity() {
-        this.startActivity(
+    public void openEnforceDataActivity(){
+        if (isForceDataActivityOpen) {
+            return;
+        }
+        isForceDataActivityOpen = true;
+        hideMainActivityContents();
+        this.startActivityForResult(
                 EnforceDataActivity.Companion.createIntent(
                         this,
                         "Mandatory Update",
                         WHITE_LABELED_HOST_URL + "/settings/force/mobile/",
                         true,
                         false,
-                        EnforceDataActivity.class));
+                        EnforceDataActivity.class
+                ),
+                FORCE_DATA_REQUEST
+        );
     }
 
     public void checkForForceUserData() {
+        if (isForceDataCheckInProgress || isForceDataActivityOpen) {
+            return;
+        }
+        isForceDataCheckInProgress = true;
         new SafeAsyncTask<CheckPermission>() {
             @Override
             public CheckPermission call() throws Exception {
@@ -927,6 +966,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
             @Override
             protected void onException(final Exception exception) throws RuntimeException {
+                isForceDataCheckInProgress = false;
                 if (exception.getCause() instanceof IOException) {
                     // If it's an internet error, do nothing here.
                     // Raising the error would prevent the user from accessing the app
@@ -947,6 +987,7 @@ public class MainActivity extends TestpressFragmentActivity {
 
             @Override
             protected void onSuccess(final CheckPermission checkPermission) {
+                isForceDataCheckInProgress = false;
                 progressBarLayout.setVisibility(View.GONE);
 
                 if (!checkPermission.getIsDataCollected()) {

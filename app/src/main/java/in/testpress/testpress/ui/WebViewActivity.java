@@ -61,6 +61,7 @@ public class WebViewActivity extends BaseToolBarActivity {
     public static final String SHOW_LOGOUT = "SHOW_LOGOUT";
     public static final String SHOW_LOADING = "SHOW_LOADING";
     public static final String ALLOW_EXTERNAL_LINK = "ALLOW_EXTERNAL_LINK";
+    public static final String ENABLE_SWIPE_REFRESH = "ENABLE_SWIPE_REFRESH";
     private final static int FILE_CHOOSER_RESULT_CODE = 1;
 
     @Inject protected TestpressServiceProvider serviceProvider;
@@ -348,13 +349,16 @@ public class WebViewActivity extends BaseToolBarActivity {
 
     private void initializeSwipeToRefresh() {
         swipeContainer = this.findViewById(R.id.swipe_container);
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                webView.reload();
-                swipeContainer.setRefreshing(false);
-            }
-        });
+        if (swipeContainer != null) {
+            swipeContainer.setEnabled(getIntent().getBooleanExtra(ENABLE_SWIPE_REFRESH, false));
+            swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    webView.reload();
+                    swipeContainer.setRefreshing(false);
+                }
+            });
+        }
     }
 
     public String appendAppQueryParam(String url) {

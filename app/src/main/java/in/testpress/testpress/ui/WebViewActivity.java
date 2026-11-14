@@ -350,7 +350,7 @@ public class WebViewActivity extends BaseToolBarActivity {
     private void initializeSwipeToRefresh() {
         swipeContainer = this.findViewById(R.id.swipe_container);
         if (swipeContainer != null) {
-            swipeContainer.setEnabled(getIntent().getBooleanExtra(ENABLE_SWIPE_REFRESH, false));
+            swipeContainer.setEnabled(getIntent().getBooleanExtra(ENABLE_SWIPE_REFRESH, true));
             swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {

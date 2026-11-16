@@ -379,8 +379,9 @@ public class WebViewActivity extends BaseToolBarActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.testpress, menu);
         if (showLogout) {
             getMenuInflater().inflate(R.menu.logout, menu);
         }
@@ -388,11 +389,23 @@ public class WebViewActivity extends BaseToolBarActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.logout) {
             logout();
+            return true;
+        } else if (id == R.id.refresh) {
+            if (swipeContainer != null) {
+                swipeContainer.setRefreshing(false);
+            }
+            if (webView != null) {
+                if (webView.getUrl() != null) {
+                    webView.reload();
+                } else if (url != null) {
+                    webView.loadUrl(url);
+                }
+            }
             return true;
         }
 

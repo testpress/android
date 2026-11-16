@@ -56,7 +56,6 @@ public class WebViewActivity extends BaseToolBarActivity {
     public static final String SHOW_LOGOUT = "SHOW_LOGOUT";
     public static final String SHOW_LOADING = "SHOW_LOADING";
     public static final String ALLOW_EXTERNAL_LINK = "ALLOW_EXTERNAL_LINK";
-    public static final String ENABLE_SWIPE_REFRESH = "ENABLE_SWIPE_REFRESH";
     private final static int FILE_CHOOSER_RESULT_CODE = 1;
 
     @Inject protected TestpressServiceProvider serviceProvider;
@@ -74,7 +73,6 @@ public class WebViewActivity extends BaseToolBarActivity {
     private boolean showLoading = true;
     private boolean reload = false;
     private boolean allowExternalLink = false;
-    private boolean isSwipeRefreshEnabled = true;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -93,7 +91,7 @@ public class WebViewActivity extends BaseToolBarActivity {
                 }
             }
             if (requestCode == FILE_CHOOSER_RESULT_CODE && results == null) {
-                setSwipeRefreshEnabled(isSwipeRefreshEnabled);
+                setSwipeRefreshEnabled(true);
             }
             if (mUploadMessages != null) {
                 mUploadMessages.onReceiveValue(results);
@@ -104,7 +102,7 @@ public class WebViewActivity extends BaseToolBarActivity {
             if (requestCode == FILE_CHOOSER_RESULT_CODE) {
                 Uri result = intent == null || resultCode != RESULT_OK ? null : intent.getData();
                 if (result == null) {
-                    setSwipeRefreshEnabled(isSwipeRefreshEnabled);
+                    setSwipeRefreshEnabled(true);
                 }
                 if (mUploadMessage != null) {
                     mUploadMessage.onReceiveValue(result);
@@ -193,7 +191,7 @@ public class WebViewActivity extends BaseToolBarActivity {
                 if (showLoading) {
                     pb_loading.setVisibility(View.VISIBLE);
                 }
-                setSwipeRefreshEnabled(isSwipeRefreshEnabled);
+                setSwipeRefreshEnabled(true);
             }
 
             @Override
@@ -211,7 +209,7 @@ public class WebViewActivity extends BaseToolBarActivity {
                 super.onPageFinished(webView, url);
                 pb_loading.setVisibility(View.GONE);
                 hideWebSidebar(view, url);
-                setSwipeRefreshEnabled(isSwipeRefreshEnabled);
+                setSwipeRefreshEnabled(true);
             }
         });
 
@@ -334,8 +332,6 @@ public class WebViewActivity extends BaseToolBarActivity {
     private void initializeSwipeToRefresh() {
         swipeContainer = this.findViewById(R.id.swipe_container);
         if (swipeContainer != null) {
-            isSwipeRefreshEnabled = getIntent().getBooleanExtra(ENABLE_SWIPE_REFRESH, true);
-            setSwipeRefreshEnabled(isSwipeRefreshEnabled);
             swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {

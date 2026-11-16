@@ -74,6 +74,7 @@ public class WebViewActivity extends BaseToolBarActivity {
     private boolean showLoading = true;
     private boolean reload = false;
     private boolean allowExternalLink = false;
+    private boolean isSwipeRefreshEnabled = true;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -91,6 +92,11 @@ public class WebViewActivity extends BaseToolBarActivity {
                     }
                 }
             }
+            if (requestCode == FILE_CHOOSER_RESULT_CODE && results == null) {
+                if (swipeContainer != null) {
+                    swipeContainer.setEnabled(isSwipeRefreshEnabled);
+                }
+            }
             mUploadMessages.onReceiveValue(results);
             mUploadMessages = null;
         } else {
@@ -98,6 +104,9 @@ public class WebViewActivity extends BaseToolBarActivity {
             if (requestCode == FILE_CHOOSER_RESULT_CODE) {
                 if (null == mUploadMessage) return;
                 Uri result = intent == null || resultCode != RESULT_OK ? null : intent.getData();
+                if (result == null && swipeContainer != null) {
+                    swipeContainer.setEnabled(isSwipeRefreshEnabled);
+                }
                 mUploadMessage.onReceiveValue(result);
                 mUploadMessage = null;
             }
@@ -183,6 +192,9 @@ public class WebViewActivity extends BaseToolBarActivity {
                 if (showLoading) {
                     pb_loading.setVisibility(View.VISIBLE);
                 }
+                if (swipeContainer != null) {
+                    swipeContainer.setEnabled(isSwipeRefreshEnabled);
+                }
             }
 
             @Override
@@ -200,6 +212,9 @@ public class WebViewActivity extends BaseToolBarActivity {
                 super.onPageFinished(webView, url);
                 pb_loading.setVisibility(View.GONE);
                 hideWebSidebar(view, url);
+                if (swipeContainer != null) {
+                    swipeContainer.setEnabled(isSwipeRefreshEnabled);
+                }
             }
         });
 
@@ -212,7 +227,9 @@ public class WebViewActivity extends BaseToolBarActivity {
 
             //For Android 3.0+
             public void openFileChooser(ValueCallback<Uri> uploadMsg) {
-
+                if (swipeContainer != null) {
+                    swipeContainer.setEnabled(false);
+                }
                 mUploadMessage = uploadMsg;
                 Intent i = new Intent(Intent.ACTION_GET_CONTENT);
                 i.addCategory(Intent.CATEGORY_OPENABLE);
@@ -222,7 +239,9 @@ public class WebViewActivity extends BaseToolBarActivity {
 
             // For Android 3.0+, above method not supported in some android 3+ versions, in such case we use this
             public void openFileChooser(ValueCallback uploadMsg, String acceptType) {
-
+                if (swipeContainer != null) {
+                    swipeContainer.setEnabled(false);
+                }
                 mUploadMessage = uploadMsg;
                 Intent i = new Intent(Intent.ACTION_GET_CONTENT);
                 i.addCategory(Intent.CATEGORY_OPENABLE);
@@ -232,7 +251,9 @@ public class WebViewActivity extends BaseToolBarActivity {
 
             //For Android 4.1+
             public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
-
+                if (swipeContainer != null) {
+                    swipeContainer.setEnabled(false);
+                }
                 mUploadMessage = uploadMsg;
                 Intent i = new Intent(Intent.ACTION_GET_CONTENT);
                 i.addCategory(Intent.CATEGORY_OPENABLE);
@@ -249,6 +270,10 @@ public class WebViewActivity extends BaseToolBarActivity {
             public boolean onShowFileChooser(
                     WebView webView, ValueCallback<Uri[]> filePathCallback,
                     WebChromeClient.FileChooserParams fileChooserParams) {
+
+                if (swipeContainer != null) {
+                    swipeContainer.setEnabled(false);
+                }
 
                 if (mUploadMessages != null) {
                     mUploadMessages.onReceiveValue(null);
@@ -320,7 +345,8 @@ public class WebViewActivity extends BaseToolBarActivity {
     private void initializeSwipeToRefresh() {
         swipeContainer = this.findViewById(R.id.swipe_container);
         if (swipeContainer != null) {
-            swipeContainer.setEnabled(getIntent().getBooleanExtra(ENABLE_SWIPE_REFRESH, true));
+            isSwipeRefreshEnabled = getIntent().getBooleanExtra(ENABLE_SWIPE_REFRESH, true);
+            swipeContainer.setEnabled(isSwipeRefreshEnabled);
             swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
@@ -379,9 +405,8 @@ public class WebViewActivity extends BaseToolBarActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.testpress, menu);
         if (showLogout) {
             getMenuInflater().inflate(R.menu.logout, menu);
         }
@@ -389,23 +414,11 @@ public class WebViewActivity extends BaseToolBarActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.logout) {
             logout();
-            return true;
-        } else if (id == R.id.refresh) {
-            if (swipeContainer != null) {
-                swipeContainer.setRefreshing(false);
-            }
-            if (webView != null) {
-                if (webView.getUrl() != null) {
-                    webView.reload();
-                } else if (url != null) {
-                    webView.loadUrl(url);
-                }
-            }
             return true;
         }
 

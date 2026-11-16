@@ -82,11 +82,7 @@ class SSOWebViewRedirectActivity: TestpressFragmentActivity(), EmptyViewListener
         }
         val encodedNextPath = android.net.Uri.encode(nextPath)
         val allowExternal = intent.getBooleanExtra(EXTRA_ALLOW_EXTERNAL, false)
-        val enableSwipeRefresh = if (intent.hasExtra(EXTRA_ENABLE_SWIPE_REFRESH)) {
-            intent.getBooleanExtra(EXTRA_ENABLE_SWIPE_REFRESH, true)
-        } else {
-            !nextPath.contains("/tickets/")
-        }
+        val enableSwipeRefresh = intent.getBooleanExtra(EXTRA_ENABLE_SWIPE_REFRESH, true)
         webviewIntent.putExtra(WebViewActivity.ACTIVITY_TITLE, title)
         webviewIntent.putExtra(WebViewActivity.ENABLE_BACK, true)
         webviewIntent.putExtra(WebViewActivity.SHOW_LOADING, false)

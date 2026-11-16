@@ -12,16 +12,22 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.view.WindowManager;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.google.android.exoplayer2.offline.DownloadService;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import in.testpress.core.TestpressCallback;
 import in.testpress.core.TestpressException;
@@ -30,6 +36,7 @@ import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.course.services.VideoDownloadService;
 import in.testpress.database.TestpressDatabase;
+import in.testpress.network.RetrofitCall;
 import in.testpress.network.TestpressApiClient;
 import in.testpress.testpress.authenticator.ApiKeyProvider;
 import in.testpress.testpress.authenticator.LogoutService;
@@ -54,6 +61,8 @@ import static in.testpress.testpress.BuildConfig.ZOOM_CUSTOM_MEETING_UI_ENABLED;
 import static in.testpress.testpress.util.PreferenceManager.setDashboardData;
 
 public class TestpressServiceProvider {
+    private static final long SERVER_LOGOUT_TIMEOUT_MS = 10000L;
+
     private RestAdapter.Builder restAdapter;
     private ApiKeyProvider keyProvider;
     String authToken;
@@ -173,23 +182,28 @@ public class TestpressServiceProvider {
         return new TestpressService(restAdapter, authToken);
     }
 
-    public void logout(final Activity activity, final TestpressService testpressService,
-                       final TestpressServiceProvider serviceProvider,
-                       final LogoutService logoutService) {
+    public void logout(@NonNull final Activity activity,
+                       @Nullable final TestpressService testpressService,
+                       @NonNull final TestpressServiceProvider serviceProvider,
+                       @NonNull final LogoutService logoutService) {
         if (isActivityDestroyed(activity)) {
             return;
         }
 
+        final Context appContext = activity.getApplicationContext();
+        final WeakReference<Activity> activityRef = new WeakReference<>(activity);
         final ProgressDialog progressDialog = showProgressDialog(activity);
-        performServerLogout(activity, new Runnable() {
+        final WeakReference<ProgressDialog> progressDialogRef = new WeakReference<>(progressDialog);
+
+        performServerLogout(appContext, new Runnable() {
             @Override
             public void run() {
-                performLocalCleanupAndAccountRemoval(activity, testpressService, serviceProvider, logoutService, progressDialog);
+                performLocalCleanupAndAccountRemoval(appContext, testpressService, serviceProvider, logoutService, activityRef, progressDialogRef);
             }
         });
     }
 
-    private void performServerLogout(final Context context, final Runnable onComplete) {
+    private void performServerLogout(@NonNull final Context context, @NonNull final Runnable onComplete) {
         TestpressSession session = TestpressSdk.getTestpressSession(context);
         if (session == null) {
             onComplete.run();
@@ -198,6 +212,7 @@ public class TestpressServiceProvider {
 
         final Handler handler = new Handler(Looper.getMainLooper());
         final AtomicBoolean hasProceeded = new AtomicBoolean(false);
+        final AtomicReference<RetrofitCall<Void>> callRef = new AtomicReference<>();
 
         final Runnable proceedOnce = new Runnable() {
             @Override
@@ -211,14 +226,20 @@ public class TestpressServiceProvider {
         final Runnable timeoutRunnable = new Runnable() {
             @Override
             public void run() {
+                RetrofitCall<Void> call = callRef.get();
+                if (call != null) {
+                    call.cancel();
+                }
                 proceedOnce.run();
             }
         };
 
-        handler.postDelayed(timeoutRunnable, 3000);
+        handler.postDelayed(timeoutRunnable, SERVER_LOGOUT_TIMEOUT_MS);
 
         try {
-            new TestpressApiClient(context, session).logout().enqueue(new TestpressCallback<Void>() {
+            RetrofitCall<Void> logoutCall = new TestpressApiClient(context, session).logout();
+            callRef.set(logoutCall);
+            logoutCall.enqueue(new TestpressCallback<Void>() {
                 @Override
                 public void onSuccess(Void result) {
                     handler.removeCallbacks(timeoutRunnable);
@@ -237,45 +258,51 @@ public class TestpressServiceProvider {
         }
     }
 
-    private void performLocalCleanupAndAccountRemoval(final Activity activity,
-                                                      final TestpressService testpressService,
-                                                      final TestpressServiceProvider serviceProvider,
-                                                      final LogoutService logoutService,
-                                                      final ProgressDialog progressDialog) {
-        clearLocalSessionData(activity, serviceProvider);
+    private void performLocalCleanupAndAccountRemoval(@NonNull final Context appContext,
+                                                      @Nullable final TestpressService testpressService,
+                                                      @NonNull final TestpressServiceProvider serviceProvider,
+                                                      @NonNull final LogoutService logoutService,
+                                                      @NonNull final WeakReference<Activity> activityRef,
+                                                      @NonNull final WeakReference<ProgressDialog> progressDialogRef) {
+        clearLocalSessionData(appContext, serviceProvider);
 
         logoutService.logout(new Runnable() {
             @Override
             public void run() {
-                registerAnonymousDeviceAndNavigate(activity, testpressService, serviceProvider, progressDialog);
+                registerAnonymousDeviceAndNavigate(appContext, testpressService, serviceProvider, activityRef, progressDialogRef);
             }
         });
     }
 
-    private void registerAnonymousDeviceAndNavigate(final Activity activity,
-                                                    final TestpressService testpressService,
-                                                    final TestpressServiceProvider serviceProvider,
-                                                    final ProgressDialog progressDialog) {
+    private void registerAnonymousDeviceAndNavigate(@NonNull final Context appContext,
+                                                    @Nullable final TestpressService testpressService,
+                                                    @NonNull final TestpressServiceProvider serviceProvider,
+                                                    @NonNull final WeakReference<Activity> activityRef,
+                                                    @NonNull final WeakReference<ProgressDialog> progressDialogRef) {
         if (testpressService != null) {
             testpressService.invalidateAuthToken();
         }
-        CommonUtils.registerDevice(activity, testpressService, serviceProvider);
 
-        dismissDialogSafely(progressDialog);
-        navigateToMainActivity(activity);
+        Activity activity = activityRef.get();
+        if (activity != null && !isActivityDestroyed(activity)) {
+            CommonUtils.registerDevice(activity, testpressService, serviceProvider);
+        }
+
+        dismissDialogSafely(progressDialogRef);
+        navigateToMainActivity(appContext, activityRef);
     }
 
-    private void clearLocalSessionData(final Activity activity,
-                                       final TestpressServiceProvider serviceProvider) {
-        serviceProvider.invalidateAuthToken(activity);
-        SharedPreferences preferences = activity.getSharedPreferences(Constants.GCM_PREFERENCE_NAME,
+    private void clearLocalSessionData(@NonNull final Context appContext,
+                                       @NonNull final TestpressServiceProvider serviceProvider) {
+        serviceProvider.invalidateAuthToken(appContext);
+        SharedPreferences preferences = appContext.getSharedPreferences(Constants.GCM_PREFERENCE_NAME,
                 Context.MODE_PRIVATE);
-        setDashboardData(activity, "{}");
+        setDashboardData(appContext, "{}");
         preferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
-        TestpressApplication.clearDatabase(activity);
+        TestpressApplication.clearDatabase(appContext);
     }
 
-    private ProgressDialog showProgressDialog(final Activity activity) {
+    private ProgressDialog showProgressDialog(@NonNull final Activity activity) {
         ProgressDialog progressDialog = new ProgressDialog(activity, R.style.AppCompatAlertDialogStyle);
         progressDialog.setTitle(R.string.label_logging_out);
         progressDialog.setMessage(activity.getString(R.string.please_wait));
@@ -283,37 +310,45 @@ public class TestpressServiceProvider {
         UIUtils.setIndeterminateDrawable(activity, progressDialog, 4);
         try {
             progressDialog.show();
-        } catch (Exception ignored) {
+        } catch (WindowManager.BadTokenException | IllegalStateException ignored) {
         }
         return progressDialog;
     }
 
-    private void dismissDialogSafely(final ProgressDialog progressDialog) {
-        try {
-            if (progressDialog != null && progressDialog.isShowing()) {
-                progressDialog.dismiss();
-            }
-        } catch (Exception ignored) {
-        }
-    }
-
-    private void navigateToMainActivity(final Activity activity) {
-        if (isActivityDestroyed(activity)) {
+    private void dismissDialogSafely(@Nullable final WeakReference<ProgressDialog> progressDialogRef) {
+        if (progressDialogRef == null) {
             return;
         }
-
-        Intent intent;
-        if (activity.getClass() == MainActivity.class) {
-            intent = activity.getIntent();
-        } else {
-            intent = new Intent(activity, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        ProgressDialog progressDialog = progressDialogRef.get();
+        if (progressDialog != null && progressDialog.isShowing()) {
+            try {
+                progressDialog.dismiss();
+            } catch (IllegalArgumentException ignored) {
+            }
         }
-        activity.finish();
-        activity.startActivity(intent);
     }
 
-    private boolean isActivityDestroyed(final Activity activity) {
+    private void navigateToMainActivity(@NonNull final Context appContext,
+                                       @NonNull final WeakReference<Activity> activityRef) {
+        Activity activity = activityRef.get();
+        Intent intent;
+        if (activity != null && !isActivityDestroyed(activity)) {
+            if (activity.getClass() == MainActivity.class) {
+                intent = activity.getIntent();
+            } else {
+                intent = new Intent(activity, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            }
+            activity.finish();
+            activity.startActivity(intent);
+        } else {
+            intent = new Intent(appContext, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            appContext.startActivity(intent);
+        }
+    }
+
+    private boolean isActivityDestroyed(@Nullable final Activity activity) {
         return activity == null || activity.isFinishing() ||
                 (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && activity.isDestroyed());
     }

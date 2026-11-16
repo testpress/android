@@ -166,6 +166,7 @@ public class MainActivity extends TestpressFragmentActivity {
         }
         setupEasterEgg();
         initOfflineAttachmentDownloadManager();
+        TestpressServiceProvider.retryPendingLogout(this);
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {

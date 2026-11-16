@@ -67,39 +67,58 @@ public class CommonUtils {
         public abstract void onSuccess(TestpressService testpressService);
     }
 
-    public static boolean isUserAuthenticated(final Activity activity) {
-        AccountManager manager = (AccountManager) activity.getSystemService(ACCOUNT_SERVICE);
+    public static boolean isUserAuthenticated(final Context context) {
+        AccountManager manager = (AccountManager) context.getSystemService(ACCOUNT_SERVICE);
         Account[] account = manager.getAccountsByType(APPLICATION_ID);
         return account.length > 0;
     }
 
-    public static void registerDevice(final Activity activity, TestpressService testpressService,
-                               TestpressServiceProvider serviceProvider) {
-        if (isUserAuthenticated(activity)) {
-            getAuth(activity, serviceProvider, new CheckAuthCallBack() {
-                @Override
-                public void onSuccess(TestpressService testpressService) {
-                    registerDevice(activity, testpressService);
-                }
-            });
+    public static boolean isUserAuthenticated(final Activity activity) {
+        return isUserAuthenticated((Context) activity);
+    }
+
+    public static void registerDevice(final Context context, TestpressService testpressService,
+                                      TestpressServiceProvider serviceProvider) {
+        if (isUserAuthenticated(context)) {
+            if (context instanceof Activity) {
+                final Activity activity = (Activity) context;
+                getAuth(activity, serviceProvider, new CheckAuthCallBack() {
+                    @Override
+                    public void onSuccess(TestpressService testpressService) {
+                        registerDevice(context, testpressService);
+                    }
+                });
+            }
         } else {
-            registerDevice(activity, testpressService);
+            if (testpressService == null && serviceProvider != null) {
+                testpressService = serviceProvider.getAnonymousService();
+            }
+            if (testpressService != null) {
+                registerDevice(context, testpressService);
+            }
         }
     }
 
-    public static void registerDevice(final Activity activity,
+    public static void registerDevice(final Activity activity, TestpressService testpressService,
+                                      TestpressServiceProvider serviceProvider) {
+        registerDevice((Context) activity, testpressService, serviceProvider);
+    }
+
+    public static void registerDevice(final Context context,
                                       final String token,
                                       final TestpressService testpressService) {
 
+        TestpressServiceProvider.retryPendingLogout(context);
+
         final SharedPreferences preferences =
-                activity.getSharedPreferences(GCM_PREFERENCE_NAME, MODE_PRIVATE);
+                context.getSharedPreferences(GCM_PREFERENCE_NAME, MODE_PRIVATE);
 
         new SafeAsyncTask<Device>() {
             @SuppressLint("HardwareIds")
             @Override
             public Device call() throws Exception {
                 return testpressService.registerDevice(token, Settings.Secure.getString(
-                        activity.getContentResolver(), ANDROID_ID));
+                        context.getContentResolver(), ANDROID_ID));
             }
 
             @Override
@@ -115,6 +134,12 @@ public class CommonUtils {
     }
 
     public static void registerDevice(final Activity activity,
+                                      final String token,
+                                      final TestpressService testpressService) {
+        registerDevice((Context) activity, token, testpressService);
+    }
+
+    public static void registerDevice(final Context context,
                                       final TestpressService testpressService) {
 
         FirebaseMessaging.getInstance().getToken()
@@ -127,9 +152,14 @@ public class CommonUtils {
                         }
                         // Get new FCM registration token
                         String token = task.getResult();
-                        registerDevice(activity, token, testpressService);
+                        registerDevice(context, token, testpressService);
                     }
                 });
+    }
+
+    public static void registerDevice(final Activity activity,
+                                      final TestpressService testpressService) {
+        registerDevice((Context) activity, testpressService);
     }
 
     public static <T> Exception getException(Loader<List<T>> loader) {

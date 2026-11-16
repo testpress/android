@@ -61,9 +61,7 @@ import static in.testpress.testpress.BuildConfig.ZOOM_CUSTOM_MEETING_UI_ENABLED;
 import static in.testpress.testpress.util.PreferenceManager.setDashboardData;
 
 public class TestpressServiceProvider {
-    private static final long SERVER_LOGOUT_TIMEOUT_MS = 10000L;
-    private static final String KEY_PENDING_LOGOUT_SESSION = "pending_logout_session";
-    private static final AtomicBoolean isRetryingPendingLogout = new AtomicBoolean(false);
+    private static final long SERVER_LOGOUT_TIMEOUT_MS = 3000L;
 
     private RestAdapter.Builder restAdapter;
     private ApiKeyProvider keyProvider;
@@ -184,11 +182,6 @@ public class TestpressServiceProvider {
         return new TestpressService(restAdapter, authToken);
     }
 
-    @NonNull
-    public TestpressService getAnonymousService() {
-        return new TestpressService(restAdapter, null);
-    }
-
     public void logout(@NonNull final Activity activity,
                        @Nullable final TestpressService testpressService,
                        @NonNull final TestpressServiceProvider serviceProvider,
@@ -233,7 +226,6 @@ public class TestpressServiceProvider {
         final Runnable timeoutRunnable = new Runnable() {
             @Override
             public void run() {
-                savePendingLogout(context, session);
                 RetrofitCall<Void> call = callRef.get();
                 if (call != null) {
                     call.cancel();
@@ -250,23 +242,23 @@ public class TestpressServiceProvider {
             logoutCall.enqueue(new TestpressCallback<Void>() {
                 @Override
                 public void onSuccess(Void result) {
-                    clearPendingLogout(context);
+                    if (hasProceeded.get()) {
+                        return;
+                    }
                     handler.removeCallbacks(timeoutRunnable);
                     proceedOnce.run();
                 }
 
                 @Override
                 public void onException(TestpressException exception) {
-                    if (exception.isNetworkError() || exception.isServerError()) {
-                        savePendingLogout(context, session);
-                    } else {
-                        clearPendingLogout(context);
+                    if (hasProceeded.get()) {
+                        return;
                     }
                     handler.removeCallbacks(timeoutRunnable);
                     proceedOnce.run();
                 }
             });
-        } catch (IllegalArgumentException | IllegalStateException ignored) {
+        } catch (IllegalArgumentException | IllegalStateException e) {
             handler.removeCallbacks(timeoutRunnable);
             proceedOnce.run();
         }
@@ -289,79 +281,21 @@ public class TestpressServiceProvider {
     }
 
     private void registerAnonymousDeviceAndNavigate(@NonNull final Context appContext,
-                                                    @Nullable TestpressService testpressService,
+                                                    @Nullable final TestpressService testpressService,
                                                     @NonNull final TestpressServiceProvider serviceProvider,
                                                     @NonNull final WeakReference<Activity> activityRef,
                                                     @NonNull final WeakReference<ProgressDialog> progressDialogRef) {
         if (testpressService != null) {
             testpressService.invalidateAuthToken();
-        } else {
-            testpressService = serviceProvider.getAnonymousService();
         }
 
-        CommonUtils.registerDevice(appContext, testpressService, serviceProvider);
+        Activity activity = activityRef.get();
+        if (activity != null && !isActivityDestroyed(activity)) {
+            CommonUtils.registerDevice(activity, testpressService, serviceProvider);
+        }
 
         dismissDialogSafely(progressDialogRef);
         navigateToMainActivity(appContext, activityRef);
-    }
-
-    public static void retryPendingLogout(@NonNull final Context context) {
-        final Context appContext = context.getApplicationContext();
-        SharedPreferences pref = appContext.getSharedPreferences(Constants.GCM_PREFERENCE_NAME,
-                Context.MODE_PRIVATE);
-        String sessionJson = pref.getString(KEY_PENDING_LOGOUT_SESSION, null);
-        if (sessionJson == null || sessionJson.isEmpty()) {
-            return;
-        }
-
-        if (!isRetryingPendingLogout.compareAndSet(false, true)) {
-            return;
-        }
-
-        final TestpressSession pendingSession = TestpressSession.deserialize(sessionJson);
-        if (pendingSession == null || pendingSession.getToken() == null || pendingSession.getToken().isEmpty()) {
-            clearPendingLogout(appContext);
-            isRetryingPendingLogout.set(false);
-            return;
-        }
-
-        try {
-            new TestpressApiClient(appContext, pendingSession).logout().enqueue(new TestpressCallback<Void>() {
-                @Override
-                public void onSuccess(Void result) {
-                    clearPendingLogout(appContext);
-                    isRetryingPendingLogout.set(false);
-                }
-
-                @Override
-                public void onException(TestpressException exception) {
-                    if (exception.isUnauthenticated() || exception.isClientError()) {
-                        clearPendingLogout(appContext);
-                    }
-                    isRetryingPendingLogout.set(false);
-                }
-            });
-        } catch (IllegalArgumentException | IllegalStateException ignored) {
-            clearPendingLogout(appContext);
-            isRetryingPendingLogout.set(false);
-        } catch (Exception ignored) {
-            isRetryingPendingLogout.set(false);
-        }
-    }
-
-    private static void savePendingLogout(@NonNull final Context context, @NonNull final TestpressSession session) {
-        if (session.getToken() == null || session.getToken().isEmpty()) {
-            return;
-        }
-        SharedPreferences pref = context.getSharedPreferences(Constants.GCM_PREFERENCE_NAME,
-                Context.MODE_PRIVATE);
-        pref.edit().putString(KEY_PENDING_LOGOUT_SESSION, TestpressSession.serialize(session)).apply();
-    }
-
-    private static void clearPendingLogout(@NonNull final Context context) {
-        SharedPreferences pref = context.getSharedPreferences(Constants.GCM_PREFERENCE_NAME,
-                Context.MODE_PRIVATE);
-        pref.edit().remove(KEY_PENDING_LOGOUT_SESSION).apply();
     }
 
     private void clearLocalSessionData(@NonNull final Context appContext,

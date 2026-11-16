@@ -93,6 +93,7 @@ public class HandleMainMenu {
             Intent intent = new Intent(activity, SSOWebViewRedirectActivity.class);
             intent.putExtra(SSOWebViewRedirectActivity.EXTRA_TITLE, "Doubts");
             intent.putExtra(SSOWebViewRedirectActivity.EXTRA_NEXT_PATH, "/tickets/mobile/?testpress_app=android");
+            intent.putExtra(SSOWebViewRedirectActivity.EXTRA_ENABLE_SWIPE_REFRESH, false);
             activity.startActivity(intent);
         });
         menuActions.put(R.id.offline_exam_list, this::launchOfflineExamListActivity);

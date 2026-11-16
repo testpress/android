@@ -8,6 +8,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 
 import com.facebook.FacebookSdk;
@@ -18,12 +21,16 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import in.testpress.core.TestpressCallback;
+import in.testpress.core.TestpressException;
 import in.testpress.core.TestpressSDKDatabase;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.course.services.VideoDownloadService;
 import in.testpress.database.TestpressDatabase;
+import in.testpress.network.TestpressApiClient;
 import in.testpress.testpress.authenticator.ApiKeyProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
@@ -166,38 +173,148 @@ public class TestpressServiceProvider {
         return new TestpressService(restAdapter, authToken);
     }
 
-    public void logout(final Activity activity, TestpressService testpressService,
-                       TestpressServiceProvider serviceProvider,
-                       LogoutService logoutService) {
-        final ProgressDialog progressDialog = new ProgressDialog(activity,
-                R.style.AppCompatAlertDialogStyle);
+    public void logout(final Activity activity, final TestpressService testpressService,
+                       final TestpressServiceProvider serviceProvider,
+                       final LogoutService logoutService) {
+        if (isActivityDestroyed(activity)) {
+            return;
+        }
 
-        progressDialog.setTitle(R.string.label_logging_out);
-        progressDialog.setMessage(activity.getString(R.string.please_wait));
-        progressDialog.setCancelable(false);
-        UIUtils.setIndeterminateDrawable(activity, progressDialog, 4);
-        progressDialog.show();
+        final ProgressDialog progressDialog = showProgressDialog(activity);
+        performServerLogout(activity, new Runnable() {
+            @Override
+            public void run() {
+                performLocalCleanupAndAccountRemoval(activity, testpressService, serviceProvider, logoutService, progressDialog);
+            }
+        });
+    }
+
+    private void performServerLogout(final Context context, final Runnable onComplete) {
+        TestpressSession session = TestpressSdk.getTestpressSession(context);
+        if (session == null) {
+            onComplete.run();
+            return;
+        }
+
+        final Handler handler = new Handler(Looper.getMainLooper());
+        final AtomicBoolean hasProceeded = new AtomicBoolean(false);
+
+        final Runnable proceedOnce = new Runnable() {
+            @Override
+            public void run() {
+                if (hasProceeded.compareAndSet(false, true)) {
+                    onComplete.run();
+                }
+            }
+        };
+
+        final Runnable timeoutRunnable = new Runnable() {
+            @Override
+            public void run() {
+                proceedOnce.run();
+            }
+        };
+
+        handler.postDelayed(timeoutRunnable, 3000);
+
+        try {
+            new TestpressApiClient(context, session).logout().enqueue(new TestpressCallback<Void>() {
+                @Override
+                public void onSuccess(Void result) {
+                    handler.removeCallbacks(timeoutRunnable);
+                    proceedOnce.run();
+                }
+
+                @Override
+                public void onException(TestpressException exception) {
+                    handler.removeCallbacks(timeoutRunnable);
+                    proceedOnce.run();
+                }
+            });
+        } catch (Exception e) {
+            handler.removeCallbacks(timeoutRunnable);
+            proceedOnce.run();
+        }
+    }
+
+    private void performLocalCleanupAndAccountRemoval(final Activity activity,
+                                                      final TestpressService testpressService,
+                                                      final TestpressServiceProvider serviceProvider,
+                                                      final LogoutService logoutService,
+                                                      final ProgressDialog progressDialog) {
+        clearLocalSessionData(activity, serviceProvider);
+
+        logoutService.logout(new Runnable() {
+            @Override
+            public void run() {
+                registerAnonymousDeviceAndNavigate(activity, testpressService, serviceProvider, progressDialog);
+            }
+        });
+    }
+
+    private void registerAnonymousDeviceAndNavigate(final Activity activity,
+                                                    final TestpressService testpressService,
+                                                    final TestpressServiceProvider serviceProvider,
+                                                    final ProgressDialog progressDialog) {
+        if (testpressService != null) {
+            testpressService.invalidateAuthToken();
+        }
+        CommonUtils.registerDevice(activity, testpressService, serviceProvider);
+
+        dismissDialogSafely(progressDialog);
+        navigateToMainActivity(activity);
+    }
+
+    private void clearLocalSessionData(final Activity activity,
+                                       final TestpressServiceProvider serviceProvider) {
         serviceProvider.invalidateAuthToken(activity);
         SharedPreferences preferences = activity.getSharedPreferences(Constants.GCM_PREFERENCE_NAME,
                 Context.MODE_PRIVATE);
         setDashboardData(activity, "{}");
         preferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
-        CommonUtils.registerDevice(activity, testpressService, serviceProvider);
         TestpressApplication.clearDatabase(activity);
-        logoutService.logout(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent;
-                if(activity.getClass() == MainActivity.class) {
-                    intent = activity.getIntent();
-                } else {
-                    intent = new Intent(activity, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                }
+    }
+
+    private ProgressDialog showProgressDialog(final Activity activity) {
+        ProgressDialog progressDialog = new ProgressDialog(activity, R.style.AppCompatAlertDialogStyle);
+        progressDialog.setTitle(R.string.label_logging_out);
+        progressDialog.setMessage(activity.getString(R.string.please_wait));
+        progressDialog.setCancelable(false);
+        UIUtils.setIndeterminateDrawable(activity, progressDialog, 4);
+        try {
+            progressDialog.show();
+        } catch (Exception ignored) {
+        }
+        return progressDialog;
+    }
+
+    private void dismissDialogSafely(final ProgressDialog progressDialog) {
+        try {
+            if (progressDialog != null && progressDialog.isShowing()) {
                 progressDialog.dismiss();
-                activity.finish();
-                activity.startActivity(intent);
             }
-        });
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void navigateToMainActivity(final Activity activity) {
+        if (isActivityDestroyed(activity)) {
+            return;
+        }
+
+        Intent intent;
+        if (activity.getClass() == MainActivity.class) {
+            intent = activity.getIntent();
+        } else {
+            intent = new Intent(activity, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        }
+        activity.finish();
+        activity.startActivity(intent);
+    }
+
+    private boolean isActivityDestroyed(final Activity activity) {
+        return activity == null || activity.isFinishing() ||
+                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && activity.isDestroyed());
     }
 }

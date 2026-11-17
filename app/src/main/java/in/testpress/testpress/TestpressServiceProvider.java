@@ -62,16 +62,23 @@ import static in.testpress.testpress.util.PreferenceManager.setDashboardData;
 
 public class TestpressServiceProvider {
     private static final String TAG = "TestpressServiceProvider";
-    // Bounded timeout for server logout: 5 seconds allows in-flight server logout requests
-    // to complete on mobile / cellular connections without indefinitely freezing the user interface.
-    // If the network is completely offline or the server takes longer than 5 seconds, the call
+    // Bounded timeout for server logout: 6 seconds allows in-flight server logout requests
+    // to complete on mobile / cellular or throttled connections without indefinitely freezing the user interface.
+    // If the network is completely offline or the server takes longer than 6 seconds, the call
     // is cancelled and local teardown proceeds so the user is never trapped in the app.
-    // Known limitation: on very high latency or dropped networks, if the server never processes
-    // the logout, the session on the server may remain active until expiry. This trade-off is preferred
-    // over storing plaintext credentials or trapping the user in a hanging UI.
+    //
+    // Known limitation / architectural trade-off:
+    // On high-latency or throttled networks where logout takes longer than 6 seconds, the call is
+    // cancelled and local session credentials are wiped. Because offline pending logout persistence was
+    // intentionally omitted to avoid storing unencrypted auth tokens in plaintext SharedPreferences, the
+    // server session may remain active until natural expiry if the server did not process the cancelled call.
+    // If the user immediately attempts to re-login under Parallel Login Restriction, they could encounter
+    // a lockout until that session expires. This trade-off is preferred over storing plaintext credentials
+    // or leaving the user trapped in a non-cancellable hanging UI.
+    //
     // When local session data is cleared, GCMPreference.SENT_TOKEN_TO_SERVER is reset to false,
     // ensuring that MainActivity re-registers the push token anonymously upon next app launch.
-    private static final long SERVER_LOGOUT_TIMEOUT_MS = 5000L;
+    private static final long SERVER_LOGOUT_TIMEOUT_MS = 6000L;
     private static final Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
 
     private RestAdapter.Builder restAdapter;

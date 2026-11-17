@@ -9,6 +9,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.inject.Inject;
 
 import in.testpress.testpress.util.SafeAsyncTask;
@@ -40,10 +42,17 @@ public class LogoutService {
 
         private final Context taskContext;
         private final Runnable onSuccess;
+        private final AtomicBoolean hasRunCallback = new AtomicBoolean(false);
 
         protected LogoutTask(@NonNull final Context context, @Nullable final Runnable onSuccess) {
             this.taskContext = context;
             this.onSuccess = onSuccess;
+        }
+
+        private void runCallbackOnce() {
+            if (onSuccess != null && hasRunCallback.compareAndSet(false, true)) {
+                onSuccess.run();
+            }
         }
 
         @Override
@@ -71,9 +80,7 @@ public class LogoutService {
         @Override
         protected void onSuccess(final Boolean accountWasRemoved) throws Exception {
             super.onSuccess(accountWasRemoved);
-            if (onSuccess != null) {
-                onSuccess.run();
-            }
+            runCallbackOnce();
         }
 
         @Override
@@ -86,9 +93,9 @@ public class LogoutService {
             // Leaving the dialog displayed indefinitely traps the user in an unresponsive UI.
             // Local credentials were already wiped before account removal was attempted,
             // so navigation proceeds cleanly and anonymous device registration is triggered.
-            if (onSuccess != null) {
-                onSuccess.run();
-            }
+            // Guarded by runCallbackOnce (AtomicBoolean) so if onSuccess.run() throws, SafeAsyncTask's
+            // exception routing into onException does not trigger the callback a second time.
+            runCallbackOnce();
         }
     }
 }

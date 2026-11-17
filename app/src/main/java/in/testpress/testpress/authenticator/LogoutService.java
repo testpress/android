@@ -4,6 +4,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerFuture;
 import android.content.Context;
+import android.util.Log;
 
 import javax.inject.Inject;
 
@@ -25,6 +26,8 @@ public class LogoutService {
         this.context = context;
         this.accountManager = accountManager;
     }
+
+    private static final String TAG = "LogoutService";
 
     public void logout(final Runnable onSuccess) {
         new LogoutTask(context, onSuccess).execute();
@@ -51,7 +54,11 @@ public class LogoutService {
                     final AccountManagerFuture<Boolean> removeAccountFuture
                             = accountManagerWithContext.removeAccount(accounts[0], null, null);
 
-                    return removeAccountFuture.getResult();
+                    Boolean result = removeAccountFuture.getResult();
+                    if (!Boolean.TRUE.equals(result)) {
+                        Log.w(TAG, "AccountManager.removeAccount returned false");
+                    }
+                    return result;
                 }
             } else {
 
@@ -71,7 +78,10 @@ public class LogoutService {
         @Override
         protected void onException(final Exception e) throws RuntimeException {
             super.onException(e);
-
+            Log.w(TAG, "AccountManager.removeAccount failed with exception", e);
+            if (onSuccess != null) {
+                onSuccess.run();
+            }
         }
     }
 }

@@ -8,10 +8,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
@@ -61,7 +61,11 @@ import static in.testpress.testpress.BuildConfig.ZOOM_CUSTOM_MEETING_UI_ENABLED;
 import static in.testpress.testpress.util.PreferenceManager.setDashboardData;
 
 public class TestpressServiceProvider {
+    private static final String TAG = "TestpressServiceProvider";
+    // Bounded timeout for server logout: prioritizes user experience so poor network conditions
+    // never freeze the UI indefinitely, while still allowing in-flight requests on normal connections.
     private static final long SERVER_LOGOUT_TIMEOUT_MS = 3000L;
+    private static final Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
 
     private RestAdapter.Builder restAdapter;
     private ApiKeyProvider keyProvider;
@@ -186,12 +190,20 @@ public class TestpressServiceProvider {
                        @Nullable final TestpressService testpressService,
                        @NonNull final TestpressServiceProvider serviceProvider,
                        @NonNull final LogoutService logoutService) {
+        final Context appContext = activity.getApplicationContext();
+        final WeakReference<Activity> activityRef = new WeakReference<>(activity);
+
         if (isActivityDestroyed(activity)) {
+            Log.w(TAG, "logout called with finishing or destroyed Activity; proceeding with background teardown without dialog");
+            performServerLogout(appContext, new Runnable() {
+                @Override
+                public void run() {
+                    performLocalCleanupAndAccountRemoval(appContext, testpressService, serviceProvider, logoutService, activityRef, null);
+                }
+            });
             return;
         }
 
-        final Context appContext = activity.getApplicationContext();
-        final WeakReference<Activity> activityRef = new WeakReference<>(activity);
         final ProgressDialog progressDialog = showProgressDialog(activity);
         final WeakReference<ProgressDialog> progressDialogRef = new WeakReference<>(progressDialog);
 
@@ -210,7 +222,6 @@ public class TestpressServiceProvider {
             return;
         }
 
-        final Handler handler = new Handler(Looper.getMainLooper());
         final AtomicBoolean hasProceeded = new AtomicBoolean(false);
         final AtomicReference<RetrofitCall<Void>> callRef = new AtomicReference<>();
 
@@ -218,7 +229,11 @@ public class TestpressServiceProvider {
             @Override
             public void run() {
                 if (hasProceeded.compareAndSet(false, true)) {
-                    onComplete.run();
+                    if (Looper.myLooper() == Looper.getMainLooper()) {
+                        onComplete.run();
+                    } else {
+                        MAIN_HANDLER.post(onComplete);
+                    }
                 }
             }
         };
@@ -226,6 +241,7 @@ public class TestpressServiceProvider {
         final Runnable timeoutRunnable = new Runnable() {
             @Override
             public void run() {
+                Log.w(TAG, "Server logout timed out after " + SERVER_LOGOUT_TIMEOUT_MS + "ms, cancelling in-flight call");
                 RetrofitCall<Void> call = callRef.get();
                 if (call != null) {
                     call.cancel();
@@ -234,7 +250,7 @@ public class TestpressServiceProvider {
             }
         };
 
-        handler.postDelayed(timeoutRunnable, SERVER_LOGOUT_TIMEOUT_MS);
+        MAIN_HANDLER.postDelayed(timeoutRunnable, SERVER_LOGOUT_TIMEOUT_MS);
 
         try {
             RetrofitCall<Void> logoutCall = new TestpressApiClient(context, session).logout();
@@ -242,24 +258,20 @@ public class TestpressServiceProvider {
             logoutCall.enqueue(new TestpressCallback<Void>() {
                 @Override
                 public void onSuccess(Void result) {
-                    if (hasProceeded.get()) {
-                        return;
-                    }
-                    handler.removeCallbacks(timeoutRunnable);
+                    MAIN_HANDLER.removeCallbacks(timeoutRunnable);
                     proceedOnce.run();
                 }
 
                 @Override
                 public void onException(TestpressException exception) {
-                    if (hasProceeded.get()) {
-                        return;
-                    }
-                    handler.removeCallbacks(timeoutRunnable);
+                    Log.w(TAG, "Server logout failed with exception", exception);
+                    MAIN_HANDLER.removeCallbacks(timeoutRunnable);
                     proceedOnce.run();
                 }
             });
         } catch (IllegalArgumentException | IllegalStateException e) {
-            handler.removeCallbacks(timeoutRunnable);
+            Log.w(TAG, "Failed to initiate server logout", e);
+            MAIN_HANDLER.removeCallbacks(timeoutRunnable);
             proceedOnce.run();
         }
     }
@@ -269,7 +281,7 @@ public class TestpressServiceProvider {
                                                       @NonNull final TestpressServiceProvider serviceProvider,
                                                       @NonNull final LogoutService logoutService,
                                                       @NonNull final WeakReference<Activity> activityRef,
-                                                      @NonNull final WeakReference<ProgressDialog> progressDialogRef) {
+                                                      @Nullable final WeakReference<ProgressDialog> progressDialogRef) {
         clearLocalSessionData(appContext, serviceProvider);
 
         logoutService.logout(new Runnable() {
@@ -284,14 +296,19 @@ public class TestpressServiceProvider {
                                                     @Nullable final TestpressService testpressService,
                                                     @NonNull final TestpressServiceProvider serviceProvider,
                                                     @NonNull final WeakReference<Activity> activityRef,
-                                                    @NonNull final WeakReference<ProgressDialog> progressDialogRef) {
+                                                    @Nullable final WeakReference<ProgressDialog> progressDialogRef) {
         if (testpressService != null) {
             testpressService.invalidateAuthToken();
         }
 
         Activity activity = activityRef.get();
         if (activity != null && !isActivityDestroyed(activity)) {
-            CommonUtils.registerDevice(activity, testpressService, serviceProvider);
+            TestpressService serviceToRegister = testpressService != null
+                    ? testpressService
+                    : new TestpressService(serviceProvider.restAdapter, null);
+            CommonUtils.registerDevice(activity, serviceToRegister, serviceProvider);
+        } else {
+            Log.w(TAG, "Activity was destroyed before anonymous device registration; deferred to next launch");
         }
 
         dismissDialogSafely(progressDialogRef);
@@ -316,7 +333,8 @@ public class TestpressServiceProvider {
         UIUtils.setIndeterminateDrawable(activity, progressDialog, 4);
         try {
             progressDialog.show();
-        } catch (WindowManager.BadTokenException | IllegalStateException ignored) {
+        } catch (WindowManager.BadTokenException | IllegalStateException e) {
+            Log.w(TAG, "Could not show progress dialog, window token or activity state is invalid", e);
         }
         return progressDialog;
     }
@@ -329,7 +347,10 @@ public class TestpressServiceProvider {
         if (progressDialog != null && progressDialog.isShowing()) {
             try {
                 progressDialog.dismiss();
-            } catch (IllegalArgumentException ignored) {
+            } catch (IllegalArgumentException e) {
+                Log.w(TAG, "Failed to dismiss progress dialog because Activity window was already detached", e);
+            } finally {
+                progressDialogRef.clear();
             }
         }
     }
@@ -355,7 +376,6 @@ public class TestpressServiceProvider {
     }
 
     private boolean isActivityDestroyed(@Nullable final Activity activity) {
-        return activity == null || activity.isFinishing() ||
-                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && activity.isDestroyed());
+        return activity == null || activity.isFinishing() || activity.isDestroyed();
     }
 }

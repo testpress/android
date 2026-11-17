@@ -62,9 +62,16 @@ import static in.testpress.testpress.util.PreferenceManager.setDashboardData;
 
 public class TestpressServiceProvider {
     private static final String TAG = "TestpressServiceProvider";
-    // Bounded timeout for server logout: prioritizes user experience so poor network conditions
-    // never freeze the UI indefinitely, while still allowing in-flight requests on normal connections.
-    private static final long SERVER_LOGOUT_TIMEOUT_MS = 3000L;
+    // Bounded timeout for server logout: 5 seconds allows in-flight server logout requests
+    // to complete on mobile / cellular connections without indefinitely freezing the user interface.
+    // If the network is completely offline or the server takes longer than 5 seconds, the call
+    // is cancelled and local teardown proceeds so the user is never trapped in the app.
+    // Known limitation: on very high latency or dropped networks, if the server never processes
+    // the logout, the session on the server may remain active until expiry. This trade-off is preferred
+    // over storing plaintext credentials or trapping the user in a hanging UI.
+    // When local session data is cleared, GCMPreference.SENT_TOKEN_TO_SERVER is reset to false,
+    // ensuring that MainActivity re-registers the push token anonymously upon next app launch.
+    private static final long SERVER_LOGOUT_TIMEOUT_MS = 5000L;
     private static final Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
 
     private RestAdapter.Builder restAdapter;
@@ -192,25 +199,18 @@ public class TestpressServiceProvider {
                        @NonNull final LogoutService logoutService) {
         final Context appContext = activity.getApplicationContext();
         final WeakReference<Activity> activityRef = new WeakReference<>(activity);
-
-        if (isActivityDestroyed(activity)) {
-            Log.w(TAG, "logout called with finishing or destroyed Activity; proceeding with background teardown without dialog");
-            performServerLogout(appContext, new Runnable() {
-                @Override
-                public void run() {
-                    performLocalCleanupAndAccountRemoval(appContext, testpressService, serviceProvider, logoutService, activityRef, null);
-                }
-            });
-            return;
+        final ProgressDialog progressDialog = isActivityDestroyed(activity) ? null : showProgressDialog(activity);
+        final WeakReference<ProgressDialog> progressDialogRef = progressDialog != null ? new WeakReference<>(progressDialog) : null;
+        if (progressDialog == null) {
+            Log.w(TAG, "logout called with finishing or destroyed Activity; proceeding with teardown without dialog");
         }
 
-        final ProgressDialog progressDialog = showProgressDialog(activity);
-        final WeakReference<ProgressDialog> progressDialogRef = new WeakReference<>(progressDialog);
+        final LogoutContext logoutContext = new LogoutContext(appContext, testpressService, serviceProvider, logoutService, activityRef, progressDialogRef);
 
         performServerLogout(appContext, new Runnable() {
             @Override
             public void run() {
-                performLocalCleanupAndAccountRemoval(appContext, testpressService, serviceProvider, logoutService, activityRef, progressDialogRef);
+                performLocalCleanupAndAccountRemoval(logoutContext);
             }
         });
     }
@@ -276,43 +276,29 @@ public class TestpressServiceProvider {
         }
     }
 
-    private void performLocalCleanupAndAccountRemoval(@NonNull final Context appContext,
-                                                      @Nullable final TestpressService testpressService,
-                                                      @NonNull final TestpressServiceProvider serviceProvider,
-                                                      @NonNull final LogoutService logoutService,
-                                                      @NonNull final WeakReference<Activity> activityRef,
-                                                      @Nullable final WeakReference<ProgressDialog> progressDialogRef) {
-        clearLocalSessionData(appContext, serviceProvider);
+    private void performLocalCleanupAndAccountRemoval(@NonNull final LogoutContext params) {
+        clearLocalSessionData(params.appContext, params.serviceProvider);
 
-        logoutService.logout(new Runnable() {
+        params.logoutService.logout(new Runnable() {
             @Override
             public void run() {
-                registerAnonymousDeviceAndNavigate(appContext, testpressService, serviceProvider, activityRef, progressDialogRef);
+                registerAnonymousDeviceAndNavigate(params);
             }
         });
     }
 
-    private void registerAnonymousDeviceAndNavigate(@NonNull final Context appContext,
-                                                    @Nullable final TestpressService testpressService,
-                                                    @NonNull final TestpressServiceProvider serviceProvider,
-                                                    @NonNull final WeakReference<Activity> activityRef,
-                                                    @Nullable final WeakReference<ProgressDialog> progressDialogRef) {
-        if (testpressService != null) {
-            testpressService.invalidateAuthToken();
+    private void registerAnonymousDeviceAndNavigate(@NonNull final LogoutContext params) {
+        if (params.testpressService != null) {
+            params.testpressService.invalidateAuthToken();
         }
 
-        Activity activity = activityRef.get();
-        if (activity != null && !isActivityDestroyed(activity)) {
-            TestpressService serviceToRegister = testpressService != null
-                    ? testpressService
-                    : new TestpressService(serviceProvider.restAdapter, null);
-            CommonUtils.registerDevice(activity, serviceToRegister, serviceProvider);
-        } else {
-            Log.w(TAG, "Activity was destroyed before anonymous device registration; deferred to next launch");
-        }
+        TestpressService serviceToRegister = params.testpressService != null
+                ? params.testpressService
+                : new TestpressService(params.serviceProvider.restAdapter, null);
+        CommonUtils.registerDevice(params.appContext, serviceToRegister, params.serviceProvider);
 
-        dismissDialogSafely(progressDialogRef);
-        navigateToMainActivity(appContext, activityRef);
+        dismissDialogSafely(params.progressDialogRef);
+        navigateToMainActivity(params.appContext, params.activityRef);
     }
 
     private void clearLocalSessionData(@NonNull final Context appContext,
@@ -343,15 +329,15 @@ public class TestpressServiceProvider {
         if (progressDialogRef == null) {
             return;
         }
-        ProgressDialog progressDialog = progressDialogRef.get();
-        if (progressDialog != null && progressDialog.isShowing()) {
-            try {
+        try {
+            ProgressDialog progressDialog = progressDialogRef.get();
+            if (progressDialog != null && progressDialog.isShowing()) {
                 progressDialog.dismiss();
-            } catch (IllegalArgumentException e) {
-                Log.w(TAG, "Failed to dismiss progress dialog because Activity window was already detached", e);
-            } finally {
-                progressDialogRef.clear();
             }
+        } catch (IllegalArgumentException e) {
+            Log.w(TAG, "Failed to dismiss progress dialog because Activity window was already detached", e);
+        } finally {
+            progressDialogRef.clear();
         }
     }
 
@@ -377,5 +363,28 @@ public class TestpressServiceProvider {
 
     private boolean isActivityDestroyed(@Nullable final Activity activity) {
         return activity == null || activity.isFinishing() || activity.isDestroyed();
+    }
+
+    private static class LogoutContext {
+        @NonNull final Context appContext;
+        @Nullable final TestpressService testpressService;
+        @NonNull final TestpressServiceProvider serviceProvider;
+        @NonNull final LogoutService logoutService;
+        @NonNull final WeakReference<Activity> activityRef;
+        @Nullable final WeakReference<ProgressDialog> progressDialogRef;
+
+        LogoutContext(@NonNull final Context appContext,
+                      @Nullable final TestpressService testpressService,
+                      @NonNull final TestpressServiceProvider serviceProvider,
+                      @NonNull final LogoutService logoutService,
+                      @NonNull final WeakReference<Activity> activityRef,
+                      @Nullable final WeakReference<ProgressDialog> progressDialogRef) {
+            this.appContext = appContext;
+            this.testpressService = testpressService;
+            this.serviceProvider = serviceProvider;
+            this.logoutService = logoutService;
+            this.activityRef = activityRef;
+            this.progressDialogRef = progressDialogRef;
+        }
     }
 }

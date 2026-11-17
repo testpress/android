@@ -8,22 +8,36 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.WindowManager;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.google.android.exoplayer2.offline.DownloadService;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
+import in.testpress.core.TestpressCallback;
+import in.testpress.core.TestpressException;
 import in.testpress.core.TestpressSDKDatabase;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.course.services.VideoDownloadService;
 import in.testpress.database.TestpressDatabase;
+import in.testpress.network.RetrofitCall;
+import in.testpress.network.TestpressApiClient;
 import in.testpress.testpress.authenticator.ApiKeyProvider;
 import in.testpress.testpress.authenticator.LogoutService;
 import in.testpress.testpress.core.Constants;
@@ -47,6 +61,26 @@ import static in.testpress.testpress.BuildConfig.ZOOM_CUSTOM_MEETING_UI_ENABLED;
 import static in.testpress.testpress.util.PreferenceManager.setDashboardData;
 
 public class TestpressServiceProvider {
+    private static final String TAG = "TestpressServiceProvider";
+    // Bounded timeout for server logout: 6 seconds allows in-flight server logout requests
+    // to complete on mobile / cellular or throttled connections without indefinitely freezing the user interface.
+    // If the network is completely offline or the server takes longer than 6 seconds, the call
+    // is cancelled and local teardown proceeds so the user is never trapped in the app.
+    //
+    // Known limitation / architectural trade-off:
+    // On high-latency or throttled networks where logout takes longer than 6 seconds, the call is
+    // cancelled and local session credentials are wiped. Because offline pending logout persistence was
+    // intentionally omitted to avoid storing unencrypted auth tokens in plaintext SharedPreferences, the
+    // server session may remain active until natural expiry if the server did not process the cancelled call.
+    // If the user immediately attempts to re-login under Parallel Login Restriction, they could encounter
+    // a lockout until that session expires. This trade-off is preferred over storing plaintext credentials
+    // or leaving the user trapped in a non-cancellable hanging UI.
+    //
+    // When local session data is cleared, GCMPreference.SENT_TOKEN_TO_SERVER is reset to false,
+    // ensuring that MainActivity re-registers the push token anonymously upon next app launch.
+    private static final long SERVER_LOGOUT_TIMEOUT_MS = 6000L;
+    private static final Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
+
     private RestAdapter.Builder restAdapter;
     private ApiKeyProvider keyProvider;
     String authToken;
@@ -166,38 +200,198 @@ public class TestpressServiceProvider {
         return new TestpressService(restAdapter, authToken);
     }
 
-    public void logout(final Activity activity, TestpressService testpressService,
-                       TestpressServiceProvider serviceProvider,
-                       LogoutService logoutService) {
-        final ProgressDialog progressDialog = new ProgressDialog(activity,
-                R.style.AppCompatAlertDialogStyle);
+    public void logout(@NonNull final Activity activity,
+                       @Nullable final TestpressService testpressService,
+                       @NonNull final TestpressServiceProvider serviceProvider,
+                       @NonNull final LogoutService logoutService) {
+        final Context appContext = activity.getApplicationContext();
+        final WeakReference<Activity> activityRef = new WeakReference<>(activity);
+        final ProgressDialog progressDialog = isActivityDestroyed(activity) ? null : showProgressDialog(activity);
+        final WeakReference<ProgressDialog> progressDialogRef = progressDialog != null ? new WeakReference<>(progressDialog) : null;
+        if (progressDialog == null) {
+            Log.w(TAG, "logout called with finishing or destroyed Activity; proceeding with teardown without dialog");
+        }
 
+        final LogoutContext logoutContext = new LogoutContext(appContext, testpressService, serviceProvider, logoutService, activityRef, progressDialogRef);
+
+        performServerLogout(appContext, new Runnable() {
+            @Override
+            public void run() {
+                performLocalCleanupAndAccountRemoval(logoutContext);
+            }
+        });
+    }
+
+    private void performServerLogout(@NonNull final Context context, @NonNull final Runnable onComplete) {
+        TestpressSession session = TestpressSdk.getTestpressSession(context);
+        if (session == null) {
+            onComplete.run();
+            return;
+        }
+
+        final AtomicBoolean hasProceeded = new AtomicBoolean(false);
+        final AtomicReference<RetrofitCall<Void>> callRef = new AtomicReference<>();
+
+        final Runnable proceedOnce = new Runnable() {
+            @Override
+            public void run() {
+                if (hasProceeded.compareAndSet(false, true)) {
+                    if (Looper.myLooper() == Looper.getMainLooper()) {
+                        onComplete.run();
+                    } else {
+                        MAIN_HANDLER.post(onComplete);
+                    }
+                }
+            }
+        };
+
+        final Runnable timeoutRunnable = new Runnable() {
+            @Override
+            public void run() {
+                Log.w(TAG, "Server logout timed out after " + SERVER_LOGOUT_TIMEOUT_MS + "ms, cancelling in-flight call");
+                RetrofitCall<Void> call = callRef.get();
+                if (call != null) {
+                    call.cancel();
+                }
+                proceedOnce.run();
+            }
+        };
+
+        MAIN_HANDLER.postDelayed(timeoutRunnable, SERVER_LOGOUT_TIMEOUT_MS);
+
+        try {
+            RetrofitCall<Void> logoutCall = new TestpressApiClient(context, session).logout();
+            callRef.set(logoutCall);
+            logoutCall.enqueue(new TestpressCallback<Void>() {
+                @Override
+                public void onSuccess(Void result) {
+                    MAIN_HANDLER.removeCallbacks(timeoutRunnable);
+                    proceedOnce.run();
+                }
+
+                @Override
+                public void onException(TestpressException exception) {
+                    Log.w(TAG, "Server logout failed with exception", exception);
+                    MAIN_HANDLER.removeCallbacks(timeoutRunnable);
+                    proceedOnce.run();
+                }
+            });
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            Log.w(TAG, "Failed to initiate server logout", e);
+            MAIN_HANDLER.removeCallbacks(timeoutRunnable);
+            proceedOnce.run();
+        }
+    }
+
+    private void performLocalCleanupAndAccountRemoval(@NonNull final LogoutContext params) {
+        clearLocalSessionData(params.appContext, params.serviceProvider);
+
+        params.logoutService.logout(new Runnable() {
+            @Override
+            public void run() {
+                registerAnonymousDeviceAndNavigate(params);
+            }
+        });
+    }
+
+    private void registerAnonymousDeviceAndNavigate(@NonNull final LogoutContext params) {
+        if (params.testpressService != null) {
+            params.testpressService.invalidateAuthToken();
+        }
+
+        TestpressService serviceToRegister = params.testpressService != null
+                ? params.testpressService
+                : new TestpressService(params.serviceProvider.restAdapter, null);
+        CommonUtils.registerDevice(params.appContext, serviceToRegister, params.serviceProvider);
+
+        dismissDialogSafely(params.progressDialogRef);
+        navigateToMainActivity(params.appContext, params.activityRef);
+    }
+
+    private void clearLocalSessionData(@NonNull final Context appContext,
+                                       @NonNull final TestpressServiceProvider serviceProvider) {
+        serviceProvider.invalidateAuthToken(appContext);
+        SharedPreferences preferences = appContext.getSharedPreferences(Constants.GCM_PREFERENCE_NAME,
+                Context.MODE_PRIVATE);
+        setDashboardData(appContext, "{}");
+        preferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
+        TestpressApplication.clearDatabase(appContext);
+    }
+
+    private ProgressDialog showProgressDialog(@NonNull final Activity activity) {
+        ProgressDialog progressDialog = new ProgressDialog(activity, R.style.AppCompatAlertDialogStyle);
         progressDialog.setTitle(R.string.label_logging_out);
         progressDialog.setMessage(activity.getString(R.string.please_wait));
         progressDialog.setCancelable(false);
         UIUtils.setIndeterminateDrawable(activity, progressDialog, 4);
-        progressDialog.show();
-        serviceProvider.invalidateAuthToken(activity);
-        SharedPreferences preferences = activity.getSharedPreferences(Constants.GCM_PREFERENCE_NAME,
-                Context.MODE_PRIVATE);
-        setDashboardData(activity, "{}");
-        preferences.edit().putBoolean(GCMPreference.SENT_TOKEN_TO_SERVER, false).apply();
-        CommonUtils.registerDevice(activity, testpressService, serviceProvider);
-        TestpressApplication.clearDatabase(activity);
-        logoutService.logout(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent;
-                if(activity.getClass() == MainActivity.class) {
-                    intent = activity.getIntent();
-                } else {
-                    intent = new Intent(activity, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                }
+        try {
+            progressDialog.show();
+        } catch (WindowManager.BadTokenException | IllegalStateException e) {
+            Log.w(TAG, "Could not show progress dialog, window token or activity state is invalid", e);
+        }
+        return progressDialog;
+    }
+
+    private void dismissDialogSafely(@Nullable final WeakReference<ProgressDialog> progressDialogRef) {
+        if (progressDialogRef == null) {
+            return;
+        }
+        try {
+            ProgressDialog progressDialog = progressDialogRef.get();
+            if (progressDialog != null && progressDialog.isShowing()) {
                 progressDialog.dismiss();
-                activity.finish();
-                activity.startActivity(intent);
             }
-        });
+        } catch (IllegalArgumentException e) {
+            Log.w(TAG, "Failed to dismiss progress dialog because Activity window was already detached", e);
+        } finally {
+            progressDialogRef.clear();
+        }
+    }
+
+    private void navigateToMainActivity(@NonNull final Context appContext,
+                                       @NonNull final WeakReference<Activity> activityRef) {
+        Activity activity = activityRef.get();
+        Intent intent;
+        if (activity != null && !isActivityDestroyed(activity)) {
+            if (activity.getClass() == MainActivity.class) {
+                intent = activity.getIntent();
+            } else {
+                intent = new Intent(activity, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            }
+            activity.finish();
+            activity.startActivity(intent);
+        } else {
+            intent = new Intent(appContext, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            appContext.startActivity(intent);
+        }
+    }
+
+    private boolean isActivityDestroyed(@Nullable final Activity activity) {
+        return activity == null || activity.isFinishing() || activity.isDestroyed();
+    }
+
+    private static class LogoutContext {
+        @NonNull final Context appContext;
+        @Nullable final TestpressService testpressService;
+        @NonNull final TestpressServiceProvider serviceProvider;
+        @NonNull final LogoutService logoutService;
+        @NonNull final WeakReference<Activity> activityRef;
+        @Nullable final WeakReference<ProgressDialog> progressDialogRef;
+
+        LogoutContext(@NonNull final Context appContext,
+                      @Nullable final TestpressService testpressService,
+                      @NonNull final TestpressServiceProvider serviceProvider,
+                      @NonNull final LogoutService logoutService,
+                      @NonNull final WeakReference<Activity> activityRef,
+                      @Nullable final WeakReference<ProgressDialog> progressDialogRef) {
+            this.appContext = appContext;
+            this.testpressService = testpressService;
+            this.serviceProvider = serviceProvider;
+            this.logoutService = logoutService;
+            this.activityRef = activityRef;
+            this.progressDialogRef = progressDialogRef;
+        }
     }
 }

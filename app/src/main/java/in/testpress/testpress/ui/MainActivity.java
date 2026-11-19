@@ -371,6 +371,7 @@ public class MainActivity extends TestpressFragmentActivity {
             menu.findItem(R.id.login_activity).setVisible(false);
             menu.findItem(R.id.analytics).setVisible(false);
             menu.findItem(R.id.profile).setVisible(false);
+            menu.findItem(R.id.live_classes).setVisible(false);
         } else {
             menu.findItem(R.id.logout).setVisible(true);
             if (mInstituteSettings != null) {
@@ -380,6 +381,7 @@ public class MainActivity extends TestpressFragmentActivity {
             menu.findItem(R.id.analytics).setVisible(true);
             menu.findItem(R.id.profile).setVisible(true);
             menu.findItem(R.id.login).setVisible(false);
+            menu.findItem(R.id.live_classes).setVisible(true);
             if (mInstituteSettings != null){
                 menu.findItem(R.id.student_report).setVisible(mInstituteSettings.isStudentReportEnabled());
             }

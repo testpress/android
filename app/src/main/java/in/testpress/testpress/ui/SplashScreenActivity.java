@@ -86,6 +86,8 @@ public class SplashScreenActivity extends Activity {
         if (url == null || url.trim().isEmpty()) {
             url = getIntent().getExtras().getString("short_url");
         }
+        getIntent().removeExtra("destination_url");
+        getIntent().removeExtra("short_url");
         Uri uri = NotificationHelper.normalizeUrl(url);
         if (uri != null) {
             final DeeplinkHandler deeplinkHandler = new DeeplinkHandler(this, serviceProvider);
@@ -122,8 +124,6 @@ public class SplashScreenActivity extends Activity {
                     // User pressed goto home button.
                     gotoHome();
                 }
-            } else if (isNotificationPresent()) {
-                openNotification();
             } else {
                 // Result code OK will come if attempted an exam & back press
                 gotoHome();

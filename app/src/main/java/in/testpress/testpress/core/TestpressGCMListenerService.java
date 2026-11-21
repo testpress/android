@@ -1,10 +1,16 @@
 package in.testpress.testpress.core;
 
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import in.testpress.testpress.util.GCMPreference;
 import in.testpress.testpress.util.NotificationHelper;
@@ -25,11 +31,41 @@ public class TestpressGCMListenerService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         String message = remoteMessage.getData().get("summary");
         String title = remoteMessage.getData().get("title");
-        String url = remoteMessage.getData().get("short_url");
+        String url = remoteMessage.getData().get("destination_url");
+        if (url == null || url.trim().isEmpty()) {
+            url = remoteMessage.getData().get("short_url");
+        }
         Log.d(TAG, "Message: " + message);
 
         if (title != null && message != null && url != null) {
-            NotificationHelper.addNotification(this, title, message, url);
+            String imageUrl = remoteMessage.getData().get("image_url");
+            Bitmap bitmap = downloadBitmap(imageUrl);
+            NotificationHelper.addNotification(this, title, message, url, bitmap);
+        }
+    }
+
+    private Bitmap downloadBitmap(String imageUrl) {
+        if (imageUrl == null || !imageUrl.startsWith("https://")) {
+            return null;
+        }
+        HttpURLConnection connection = null;
+        try {
+            URL url = new URL(imageUrl);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setConnectTimeout(3000);
+            connection.setReadTimeout(3000);
+            try (InputStream input = connection.getInputStream()) {
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 2;
+                return BitmapFactory.decodeStream(input, null, options);
+            }
+        } catch (Exception | OutOfMemoryError e) {
+            Log.w(TAG, "Image download failed: " + e.getMessage());
+            return null;
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
         }
     }
 

@@ -248,23 +248,35 @@ public class DeeplinkHandler {
         if (pathSegments.size() == 2) {
             String productIdentifier = pathSegments.get(1);
             ProductDao productDao = TestpressSDKDatabase.getProductDao(activity);
-            List<Product> products;
+            List<Product> products = null;
+            Integer productId = null;
+
             if (TextUtils.isDigitsOnly(productIdentifier)) {
-                products = productDao.queryBuilder()
-                        .where(ProductDao.Properties.Id.eq(Long.parseLong(productIdentifier)))
-                        .list();
-            } else {
+                try {
+                    long id = Long.parseLong(productIdentifier);
+                    products = productDao.queryBuilder()
+                            .where(ProductDao.Properties.Id.eq(id))
+                            .list();
+                    if (id <= Integer.MAX_VALUE) {
+                        productId = (int) id;
+                    }
+                } catch (NumberFormatException ignored) {
+                }
+            }
+
+            if (products == null) {
                 products = productDao.queryBuilder()
                         .where(ProductDao.Properties.Slug.eq(productIdentifier))
                         .list();
             }
+
             if (!products.isEmpty()) {
                 Product product = products.get(0);
                 openProductScreen(product.getCourseIds(), product.getSlug(), testpressSession);
                 return;
             }
-            if (TextUtils.isDigitsOnly(productIdentifier)) {
-                int productId = Integer.parseInt(productIdentifier);
+
+            if (productId != null) {
                 TestpressSdk.setTestpressSession(activity.getApplicationContext(), testpressSession);
                 new StoreApiClient(activity).getProductDetailV3(productId)
                         .enqueue(new TestpressCallback<NetworkProduct>() {
@@ -287,6 +299,7 @@ public class DeeplinkHandler {
                         });
                 return;
             }
+
             openProductScreen(null, productIdentifier, testpressSession);
         } else {
             TestpressStore.show(activity, testpressSession);

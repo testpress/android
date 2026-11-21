@@ -3,6 +3,7 @@ package in.testpress.testpress.ui.utils;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.TextUtils;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
 import in.testpress.exam.TestpressExam;
 import in.testpress.store.TestpressStore;
+import in.testpress.store.ui.ProductDetailsActivityV2;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LoginActivity;
 import in.testpress.testpress.authenticator.ResetPasswordActivity;
@@ -43,7 +45,17 @@ public class DeeplinkHandler {
     }
 
     public void handleDeepLinkUrl(Uri uri, boolean fromSplashScreen) {
-        if (uri != null && uri.getPathSegments().size() > 0) {
+        if (uri == null) {
+            gotoHome();
+            return;
+        }
+        if (fromSplashScreen && uri.getScheme() != null && (uri.getScheme().equalsIgnoreCase("http") || uri.getScheme().equalsIgnoreCase("https"))) {
+            if (!isAppHost(uri)) {
+                gotoHome();
+                return;
+            }
+        }
+        if (uri.getPathSegments().size() > 0) {
             List<String> pathSegments = uri.getPathSegments();
             switch (pathSegments.get(0)) {
                 case "p":
@@ -146,47 +158,54 @@ public class DeeplinkHandler {
     }
 
     private void authenticateUserAndOpen(final Uri uri) {
-        final List<String> pathSegments = uri.getPathSegments();
+        if (TestpressSdk.hasActiveSession(activity)) {
+            openDeepLink(uri, TestpressSdk.getTestpressSession(activity));
+            return;
+        }
         CommonUtils.getAuth(activity, serviceProvider,
                 new CommonUtils.CheckAuthCallBack() {
                     @Override
                     public void onSuccess(TestpressService testpressService) {
                         TestpressSession testpressSession = TestpressSdk.getTestpressSession(activity);
                         Assert.assertNotNull("TestpressSession must not be null.", testpressSession);
-
-                        switch (pathSegments.get(0)) {
-                            case "exams":
-                                if (pathSegments.size() == 2) {
-                                    if (pathSegments.get(1).equals("available") ||
-                                            pathSegments.get(1).equals("upcoming") ||
-                                            pathSegments.get(1).equals("history")) {
-                                        TestpressExam.show(activity, testpressSession);
-                                        activity.finish();
-                                    }
-                                    else {
-                                        gotoHome();
-                                    }
-                                }
-                                break;
-                            case "analytics":
-                                TestpressExam.showAnalytics(activity, SUBJECT_ANALYTICS_PATH,
-                                        testpressSession);
-                                break;
-                            case "chapters":
-                                deepLinkToChapter(uri, testpressSession);
-                                break;
-                            case "products":
-                                deepLinkToProduct(uri, testpressSession);
-                                break;
-                            case "discussions":
-                                deepLinkToDiscussions(uri);
-                                break;
-                            case "courses":
-                                deepLinkToCourse(uri, testpressSession);
-                                break;
-                        }
+                        openDeepLink(uri, testpressSession);
                     }
                 });
+    }
+
+    private void openDeepLink(final Uri uri, TestpressSession testpressSession) {
+        final List<String> pathSegments = uri.getPathSegments();
+        switch (pathSegments.get(0)) {
+            case "exams":
+                if (pathSegments.size() == 2) {
+                    if (pathSegments.get(1).equals("available") ||
+                            pathSegments.get(1).equals("upcoming") ||
+                            pathSegments.get(1).equals("history")) {
+                        TestpressExam.show(activity, testpressSession);
+                        activity.finish();
+                    }
+                    else {
+                        gotoHome();
+                    }
+                }
+                break;
+            case "analytics":
+                TestpressExam.showAnalytics(activity, SUBJECT_ANALYTICS_PATH,
+                        testpressSession);
+                break;
+            case "chapters":
+                deepLinkToChapter(uri, testpressSession);
+                break;
+            case "products":
+                deepLinkToProduct(uri, testpressSession);
+                break;
+            case "discussions":
+                deepLinkToDiscussions(uri);
+                break;
+            case "courses":
+                deepLinkToCourse(uri, testpressSession);
+                break;
+        }
     }
 
     private void deepLinkToChapter(Uri uri, TestpressSession testpressSession) {
@@ -219,8 +238,18 @@ public class DeeplinkHandler {
     private void deepLinkToProduct(Uri uri, TestpressSession testpressSession) {
         final List<String> pathSegments = uri.getPathSegments();
         if (pathSegments.size() == 2) {
-            String productSlug = uri.getLastPathSegment();
-            assert productSlug != null;
+            String productSlug = pathSegments.get(1);
+            if (TextUtils.isDigitsOnly(productSlug)) {
+                try {
+                    int productId = Integer.parseInt(productSlug);
+                    TestpressSdk.setTestpressSession(activity.getApplicationContext(), testpressSession);
+                    Intent intent = new Intent(activity, ProductDetailsActivityV2.class);
+                    intent.putExtra(ProductDetailsActivityV2.PRODUCT_ID, productId);
+                    activity.startActivityForResult(intent, TestpressStore.STORE_REQUEST_CODE);
+                    return;
+                } catch (NumberFormatException ignored) {
+                }
+            }
             TestpressStore.showProduct(activity, productSlug, testpressSession);
         } else {
             TestpressStore.show(activity, testpressSession);
@@ -267,6 +296,24 @@ public class DeeplinkHandler {
         intent.putExtra(Constants.IS_DEEP_LINK, true);
         activity.startActivity(intent);
         activity.finish();
+    }
+
+    private boolean isAppHost(Uri uri) {
+        if (uri == null || uri.getHost() == null) {
+            return false;
+        }
+        String host = uri.getHost().toLowerCase();
+        Uri baseUri = Uri.parse(BASE_URL);
+        if (baseUri.getHost() != null && host.equalsIgnoreCase(baseUri.getHost())) {
+            return true;
+        }
+        if (WHITE_LABELED_HOST_URL != null && !WHITE_LABELED_HOST_URL.isEmpty()) {
+            Uri whiteLabeledUri = Uri.parse(WHITE_LABELED_HOST_URL);
+            if (whiteLabeledUri.getHost() != null && host.equalsIgnoreCase(whiteLabeledUri.getHost())) {
+                return true;
+            }
+        }
+        return host.endsWith(".testpress.in") || host.equals("testpress.in");
     }
 
     private void gotoHome() {

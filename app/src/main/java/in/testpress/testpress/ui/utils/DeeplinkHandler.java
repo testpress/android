@@ -5,14 +5,22 @@ import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import in.testpress.core.TestpressCallback;
+import in.testpress.core.TestpressException;
+import in.testpress.core.TestpressSDKDatabase;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
+import in.testpress.course.ui.CoursePreviewActivity;
 import in.testpress.exam.TestpressExam;
+import in.testpress.models.greendao.Product;
+import in.testpress.models.greendao.ProductDao;
 import in.testpress.store.TestpressStore;
-import in.testpress.store.ui.ProductDetailsActivityV2;
+import in.testpress.store.data.model.NetworkProduct;
+import in.testpress.store.network.StoreApiClient;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LoginActivity;
 import in.testpress.testpress.authenticator.ResetPasswordActivity;
@@ -235,24 +243,71 @@ public class DeeplinkHandler {
         }
     }
 
-    private void deepLinkToProduct(Uri uri, TestpressSession testpressSession) {
+    private void deepLinkToProduct(Uri uri, final TestpressSession testpressSession) {
         final List<String> pathSegments = uri.getPathSegments();
         if (pathSegments.size() == 2) {
-            String productSlug = pathSegments.get(1);
-            if (TextUtils.isDigitsOnly(productSlug)) {
+            String productIdentifier = pathSegments.get(1);
+            ProductDao productDao = TestpressSDKDatabase.getProductDao(activity);
+            List<Product> products;
+            if (TextUtils.isDigitsOnly(productIdentifier)) {
+                products = productDao.queryBuilder()
+                        .where(ProductDao.Properties.Id.eq(Long.parseLong(productIdentifier)))
+                        .list();
+            } else {
+                products = productDao.queryBuilder()
+                        .where(ProductDao.Properties.Slug.eq(productIdentifier))
+                        .list();
+            }
+            if (!products.isEmpty()) {
+                showProductDetail(products.get(0), testpressSession);
+                return;
+            }
+            if (TextUtils.isDigitsOnly(productIdentifier)) {
                 try {
-                    int productId = Integer.parseInt(productSlug);
+                    int productId = Integer.parseInt(productIdentifier);
                     TestpressSdk.setTestpressSession(activity.getApplicationContext(), testpressSession);
-                    Intent intent = new Intent(activity, ProductDetailsActivityV2.class);
-                    intent.putExtra(ProductDetailsActivityV2.PRODUCT_ID, productId);
-                    activity.startActivityForResult(intent, TestpressStore.STORE_REQUEST_CODE);
+                    new StoreApiClient(activity).getProductDetailV3(productId)
+                            .enqueue(new TestpressCallback<NetworkProduct>() {
+                                @Override
+                                public void onSuccess(NetworkProduct networkProduct) {
+                                    if (activity == null || activity.isFinishing() || activity.isDestroyed()) {
+                                        return;
+                                    }
+                                    ProductDao productDao = TestpressSDKDatabase.getProductDao(activity);
+                                    List<Product> products = productDao.queryBuilder()
+                                            .where(ProductDao.Properties.Slug.eq(networkProduct.getSlug()))
+                                            .list();
+                                    if (!products.isEmpty()) {
+                                        showProductDetail(products.get(0), testpressSession);
+                                    } else {
+                                        TestpressStore.showProduct(activity, networkProduct.getSlug(), testpressSession);
+                                    }
+                                }
+
+                                @Override
+                                public void onException(TestpressException exception) {
+                                    TestpressStore.show(activity, testpressSession);
+                                }
+                            });
                     return;
                 } catch (NumberFormatException ignored) {
                 }
             }
-            TestpressStore.showProduct(activity, productSlug, testpressSession);
+            TestpressStore.showProduct(activity, productIdentifier, testpressSession);
         } else {
             TestpressStore.show(activity, testpressSession);
+        }
+    }
+
+    private void showProductDetail(Product product, TestpressSession testpressSession) {
+        TestpressSdk.setTestpressSession(activity.getApplicationContext(), testpressSession);
+        if (product.getCourseIds() != null && product.getCourseIds().size() >= 1) {
+            activity.startActivityForResult(
+                    CoursePreviewActivity.createIntent(new ArrayList<>(product.getCourseIds()), activity, product.getSlug()),
+                    TestpressStore.STORE_REQUEST_CODE
+            );
+        } else {
+            TestpressStore.showProduct(activity, product.getSlug(), testpressSession);
         }
     }
 

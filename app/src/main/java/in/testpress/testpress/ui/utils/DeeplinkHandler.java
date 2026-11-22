@@ -15,6 +15,7 @@ import in.testpress.core.TestpressSDKDatabase;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
+import in.testpress.course.ui.AvailableCoursesListActivity;
 import in.testpress.course.ui.CoursePreviewActivity;
 import in.testpress.exam.TestpressExam;
 import in.testpress.models.greendao.Product;
@@ -216,6 +217,10 @@ public class DeeplinkHandler {
                             case "products":
                                 deepLinkToProduct(uri, testpressSession);
                                 break;
+                            case "store":
+                            case "market":
+                                openStore();
+                                break;
                             case "discussions":
                                 deepLinkToDiscussions(uri);
                                 break;
@@ -258,25 +263,15 @@ public class DeeplinkHandler {
         final List<String> pathSegments = uri.getPathSegments();
         if (pathSegments.size() == 2) {
             String productIdentifier = pathSegments.get(1);
+            ProductDao productDao = TestpressSDKDatabase.getProductDao(activity);
+            Product product = findProduct(productDao, productIdentifier);
+            if (product != null) {
+                openProductScreen(product.getCourseIds(), product.getSlug(), testpressSession);
+                return;
+            }
             if (TextUtils.isDigitsOnly(productIdentifier)) {
                 try {
                     long id = Long.parseLong(productIdentifier);
-                    ProductDao productDao = TestpressSDKDatabase.getProductDao(activity);
-                    List<Product> products = productDao.queryBuilder()
-                            .where(ProductDao.Properties.Id.eq(id))
-                            .list();
-                    if (!products.isEmpty()) {
-                        Product product = products.get(0);
-                        if (product.getCourseIds() != null && !product.getCourseIds().isEmpty()) {
-                            activity.startActivityForResult(
-                                    CoursePreviewActivity.createIntent(new ArrayList<>(product.getCourseIds()), activity, product.getSlug()),
-                                    TestpressStore.STORE_REQUEST_CODE
-                            );
-                        } else {
-                            TestpressStore.showProduct(activity, product.getSlug(), testpressSession);
-                        }
-                        return;
-                    }
                     if (id <= Integer.MAX_VALUE) {
                         int productId = (int) id;
                         TestpressSdk.setTestpressSession(activity.getApplicationContext(), testpressSession);
@@ -288,15 +283,18 @@ public class DeeplinkHandler {
                                             return;
                                         }
                                         if (networkProduct != null && networkProduct.getSlug() != null) {
-                                            TestpressStore.showProduct(activity, networkProduct.getSlug(), testpressSession);
+                                            ProductDao dao = TestpressSDKDatabase.getProductDao(activity);
+                                            Product cachedProduct = findProduct(dao, networkProduct.getSlug());
+                                            List<Integer> courseIds = cachedProduct != null ? cachedProduct.getCourseIds() : null;
+                                            openProductScreen(courseIds, networkProduct.getSlug(), testpressSession);
                                         } else {
-                                            TestpressStore.show(activity, testpressSession);
+                                            openStore();
                                         }
                                     }
 
                                     @Override
                                     public void onException(TestpressException exception) {
-                                        TestpressStore.show(activity, testpressSession);
+                                        openStore();
                                     }
                                 });
                         return;
@@ -304,10 +302,45 @@ public class DeeplinkHandler {
                 } catch (NumberFormatException ignored) {
                 }
             }
-            TestpressStore.showProduct(activity, productIdentifier, testpressSession);
+            openProductScreen(null, productIdentifier, testpressSession);
         } else {
-            TestpressStore.show(activity, testpressSession);
+            openStore();
         }
+    }
+
+    private Product findProduct(ProductDao productDao, String identifier) {
+        if (TextUtils.isDigitsOnly(identifier)) {
+            try {
+                long id = Long.parseLong(identifier);
+                List<Product> products = productDao.queryBuilder()
+                        .where(ProductDao.Properties.Id.eq(id))
+                        .list();
+                if (!products.isEmpty()) {
+                    return products.get(0);
+                }
+            } catch (NumberFormatException ignored) {
+            }
+        }
+        List<Product> products = productDao.queryBuilder()
+                .where(ProductDao.Properties.Slug.eq(identifier))
+                .list();
+        return products.isEmpty() ? null : products.get(0);
+    }
+
+    private void openProductScreen(List<Integer> courseIds, String productSlug, TestpressSession testpressSession) {
+        if (courseIds != null && !courseIds.isEmpty()) {
+            activity.startActivityForResult(
+                    CoursePreviewActivity.createIntent(new ArrayList<>(courseIds), activity, productSlug),
+                    TestpressStore.STORE_REQUEST_CODE
+            );
+        } else {
+            TestpressStore.showProduct(activity, productSlug, testpressSession);
+        }
+    }
+
+    private void openStore() {
+        Intent intent = new Intent(activity, AvailableCoursesListActivity.class);
+        activity.startActivityForResult(intent, TestpressStore.STORE_REQUEST_CODE);
     }
 
     private void deepLinkToDiscussions(Uri uri) {

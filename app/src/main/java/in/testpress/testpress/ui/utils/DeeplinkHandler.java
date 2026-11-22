@@ -1,6 +1,7 @@
 package in.testpress.testpress.ui.utils;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -53,7 +54,31 @@ public class DeeplinkHandler {
     }
 
     public void handleDeepLinkUrl(Uri uri, boolean fromSplashScreen) {
-        if (uri != null && uri.getPathSegments().size() > 0) {
+        if (uri == null) {
+            gotoHome();
+            return;
+        }
+
+        String scheme = uri.getScheme();
+        String host = uri.getHost();
+        String baseHost = Uri.parse(BASE_URL).getHost();
+
+        if (("http".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme))
+                && host != null
+                && baseHost != null
+                && !host.equalsIgnoreCase(baseHost)) {
+            try {
+                activity.startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                if (fromSplashScreen) {
+                    activity.finish();
+                }
+            } catch (ActivityNotFoundException e) {
+                gotoHome();
+            }
+            return;
+        }
+
+        if (uri.getPathSegments().size() > 0) {
             List<String> pathSegments = uri.getPathSegments();
             switch (pathSegments.get(0)) {
                 case "p":

@@ -62,13 +62,16 @@ public class DeeplinkHandler {
         String scheme = uri.getScheme();
         String host = uri.getHost();
         String baseHost = Uri.parse(BASE_URL).getHost();
+        String whiteLabeledHost = Uri.parse(WHITE_LABELED_HOST_URL).getHost();
+
+        boolean isAppHost = host != null && ((baseHost != null && host.equalsIgnoreCase(baseHost))
+                || (whiteLabeledHost != null && host.equalsIgnoreCase(whiteLabeledHost)));
 
         if (("http".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme))
                 && host != null
-                && baseHost != null
-                && !host.equalsIgnoreCase(baseHost)) {
+                && !isAppHost) {
             try {
-                activity.startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                CommonUtils.openUrlInBrowser(activity, uri);
                 if (fromSplashScreen) {
                     activity.finish();
                 }

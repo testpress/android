@@ -280,46 +280,73 @@ public class DeeplinkHandler {
     }
 
     public enum ProductRoutingDestination {
-        COURSE_PREVIEW,
-        STORE_SHOW_PRODUCT,
-        FETCH_PRODUCT_DETAIL,
+        OPEN_COURSE_PREVIEW,
+        OPEN_LEGACY_PRODUCT,
+        FETCH_PRODUCT_V3,
         OPEN_STORE
     }
 
     public static class ProductRoutingDecision {
         public final ProductRoutingDestination destination;
-        public final Integer productId;
-        public final String slug;
+        public final Integer numericProductId;
+        public final String productSlug;
+        public final List<Integer> courseIds;
 
-        public ProductRoutingDecision(ProductRoutingDestination destination, Integer productId, String slug) {
+        public ProductRoutingDecision(ProductRoutingDestination destination, Integer numericProductId, String productSlug, List<Integer> courseIds) {
             this.destination = destination;
-            this.productId = productId;
-            this.slug = slug;
+            this.numericProductId = numericProductId;
+            this.productSlug = productSlug;
+            this.courseIds = courseIds;
         }
     }
 
-    public static ProductRoutingDecision decideProductRouting(List<String> pathSegments, boolean isCached, List<Integer> cachedCourseIds) {
-        if (pathSegments == null || pathSegments.size() != 2) {
-            return new ProductRoutingDecision(ProductRoutingDestination.OPEN_STORE, null, null);
+    public static ProductRoutingDecision decideProductRouting(String productIdentifier, Product cachedProduct) {
+        if (productIdentifier == null || productIdentifier.trim().isEmpty()) {
+            return new ProductRoutingDecision(ProductRoutingDestination.OPEN_STORE, null, null, null);
         }
-        String productIdentifier = pathSegments.get(1);
-        if (isCached) {
-            if (cachedCourseIds != null && !cachedCourseIds.isEmpty()) {
-                return new ProductRoutingDecision(ProductRoutingDestination.COURSE_PREVIEW, null, productIdentifier);
+        if (cachedProduct != null) {
+            List<Integer> courseIds = cachedProduct.getCourseIds();
+            String slug = cachedProduct.getSlug() != null ? cachedProduct.getSlug() : productIdentifier;
+            if (courseIds != null && !courseIds.isEmpty()) {
+                return new ProductRoutingDecision(ProductRoutingDestination.OPEN_COURSE_PREVIEW, null, slug, courseIds);
             } else {
-                return new ProductRoutingDecision(ProductRoutingDestination.STORE_SHOW_PRODUCT, null, productIdentifier);
+                return new ProductRoutingDecision(ProductRoutingDestination.OPEN_LEGACY_PRODUCT, null, slug, null);
             }
         }
         if (isDigitsOnly(productIdentifier)) {
             try {
                 long id = Long.parseLong(productIdentifier);
                 if (id <= Integer.MAX_VALUE) {
-                    return new ProductRoutingDecision(ProductRoutingDestination.FETCH_PRODUCT_DETAIL, (int) id, null);
+                    return new ProductRoutingDecision(ProductRoutingDestination.FETCH_PRODUCT_V3, (int) id, null, null);
                 }
             } catch (NumberFormatException ignored) {
             }
         }
-        return new ProductRoutingDecision(ProductRoutingDestination.STORE_SHOW_PRODUCT, null, productIdentifier);
+        return new ProductRoutingDecision(ProductRoutingDestination.OPEN_LEGACY_PRODUCT, null, productIdentifier, null);
+    }
+
+    public static ProductRoutingDecision decideProductRouting(List<String> pathSegments, boolean isCached, List<Integer> cachedCourseIds) {
+        if (pathSegments == null || pathSegments.size() != 2) {
+            return new ProductRoutingDecision(ProductRoutingDestination.OPEN_STORE, null, null, null);
+        }
+        String productIdentifier = pathSegments.get(1);
+        if (isCached) {
+            if (cachedCourseIds != null && !cachedCourseIds.isEmpty()) {
+                return new ProductRoutingDecision(ProductRoutingDestination.OPEN_COURSE_PREVIEW, null, productIdentifier, cachedCourseIds);
+            } else {
+                return new ProductRoutingDecision(ProductRoutingDestination.OPEN_LEGACY_PRODUCT, null, productIdentifier, null);
+            }
+        }
+        if (isDigitsOnly(productIdentifier)) {
+            try {
+                long id = Long.parseLong(productIdentifier);
+                if (id <= Integer.MAX_VALUE) {
+                    return new ProductRoutingDecision(ProductRoutingDestination.FETCH_PRODUCT_V3, (int) id, null, null);
+                }
+            } catch (NumberFormatException ignored) {
+            }
+        }
+        return new ProductRoutingDecision(ProductRoutingDestination.OPEN_LEGACY_PRODUCT, null, productIdentifier, null);
     }
 
     public static boolean isDigitsOnly(CharSequence str) {
@@ -336,50 +363,54 @@ public class DeeplinkHandler {
 
     private void deepLinkToProduct(Uri uri, final TestpressSession testpressSession) {
         final List<String> pathSegments = uri.getPathSegments();
-        if (pathSegments.size() == 2) {
-            String productIdentifier = pathSegments.get(1);
-            ProductDao productDao = TestpressSDKDatabase.getProductDao(activity);
-            Product product = findProduct(productDao, productIdentifier);
-            if (product != null) {
-                openProductScreen(product.getCourseIds(), product.getSlug(), testpressSession);
-                return;
-            }
-            if (isDigitsOnly(productIdentifier)) {
-                try {
-                    long id = Long.parseLong(productIdentifier);
-                    if (id <= Integer.MAX_VALUE) {
-                        int productId = (int) id;
-                        TestpressSdk.setTestpressSession(activity.getApplicationContext(), testpressSession);
-                        new StoreApiClient(activity).getProductDetailV3(productId)
-                                .enqueue(new TestpressCallback<NetworkProduct>() {
-                                    @Override
-                                    public void onSuccess(NetworkProduct networkProduct) {
-                                        if (activity.isFinishing() || activity.isDestroyed()) {
-                                            return;
-                                        }
-                                        if (networkProduct != null && networkProduct.getSlug() != null) {
-                                            ProductDao dao = TestpressSDKDatabase.getProductDao(activity);
-                                            Product cachedProduct = findProduct(dao, networkProduct.getSlug());
-                                            List<Integer> courseIds = cachedProduct != null ? cachedProduct.getCourseIds() : null;
-                                            openProductScreen(courseIds, networkProduct.getSlug(), testpressSession);
-                                        } else {
-                                            openStore();
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onException(TestpressException exception) {
-                                        openStore();
-                                    }
-                                });
-                        return;
-                    }
-                } catch (NumberFormatException ignored) {
-                }
-            }
-            openProductScreen(null, productIdentifier, testpressSession);
-        } else {
+        if (pathSegments.size() != 2) {
             openStore();
+            return;
+        }
+        String productIdentifier = pathSegments.get(1);
+        ProductDao productDao = TestpressSDKDatabase.getProductDao(activity);
+        Product cachedProduct = findProduct(productDao, productIdentifier);
+        ProductRoutingDecision decision = decideProductRouting(productIdentifier, cachedProduct);
+
+        switch (decision.destination) {
+            case OPEN_COURSE_PREVIEW:
+                activity.startActivityForResult(
+                        CoursePreviewActivity.createIntent(new ArrayList<>(decision.courseIds), activity, decision.productSlug),
+                        TestpressStore.STORE_REQUEST_CODE
+                );
+                break;
+            case OPEN_LEGACY_PRODUCT:
+                TestpressStore.showProduct(activity, decision.productSlug, testpressSession);
+                break;
+            case FETCH_PRODUCT_V3:
+                TestpressSdk.setTestpressSession(activity.getApplicationContext(), testpressSession);
+                new StoreApiClient(activity).getProductDetailV3(decision.numericProductId)
+                        .enqueue(new TestpressCallback<NetworkProduct>() {
+                            @Override
+                            public void onSuccess(NetworkProduct networkProduct) {
+                                if (activity.isFinishing() || activity.isDestroyed()) {
+                                    return;
+                                }
+                                if (networkProduct != null && networkProduct.getSlug() != null) {
+                                    ProductDao dao = TestpressSDKDatabase.getProductDao(activity);
+                                    Product product = findProduct(dao, networkProduct.getSlug());
+                                    List<Integer> courseIds = product != null ? product.getCourseIds() : null;
+                                    openProductScreen(courseIds, networkProduct.getSlug(), testpressSession);
+                                } else {
+                                    openStore();
+                                }
+                            }
+
+                            @Override
+                            public void onException(TestpressException exception) {
+                                openStore();
+                            }
+                        });
+                break;
+            case OPEN_STORE:
+            default:
+                openStore();
+                break;
         }
     }
 

@@ -86,8 +86,9 @@ class DeeplinkHandlerTest {
             true,
             listOf(101, 102)
         )
-        assertEquals(ProductRoutingDestination.COURSE_PREVIEW, decision.destination)
-        assertEquals("my-slug", decision.slug)
+        assertEquals(ProductRoutingDestination.OPEN_COURSE_PREVIEW, decision.destination)
+        assertEquals("my-slug", decision.productSlug)
+        assertEquals(listOf(101, 102), decision.courseIds)
     }
 
     @Test
@@ -97,16 +98,16 @@ class DeeplinkHandlerTest {
             true,
             emptyList()
         )
-        assertEquals(ProductRoutingDestination.STORE_SHOW_PRODUCT, decisionEmptyCourses.destination)
-        assertEquals("my-slug", decisionEmptyCourses.slug)
+        assertEquals(ProductRoutingDestination.OPEN_LEGACY_PRODUCT, decisionEmptyCourses.destination)
+        assertEquals("my-slug", decisionEmptyCourses.productSlug)
 
         val decisionNullCourses = DeeplinkHandler.decideProductRouting(
             listOf("products", "my-slug"),
             true,
             null
         )
-        assertEquals(ProductRoutingDestination.STORE_SHOW_PRODUCT, decisionNullCourses.destination)
-        assertEquals("my-slug", decisionNullCourses.slug)
+        assertEquals(ProductRoutingDestination.OPEN_LEGACY_PRODUCT, decisionNullCourses.destination)
+        assertEquals("my-slug", decisionNullCourses.productSlug)
     }
 
     @Test
@@ -116,8 +117,8 @@ class DeeplinkHandlerTest {
             false,
             null
         )
-        assertEquals(ProductRoutingDestination.FETCH_PRODUCT_DETAIL, decision.destination)
-        assertEquals(Integer.valueOf(42), decision.productId)
+        assertEquals(ProductRoutingDestination.FETCH_PRODUCT_V3, decision.destination)
+        assertEquals(Integer.valueOf(42), decision.numericProductId)
     }
 
     @Test
@@ -128,8 +129,8 @@ class DeeplinkHandlerTest {
             false,
             null
         )
-        assertEquals(ProductRoutingDestination.STORE_SHOW_PRODUCT, decision.destination)
-        assertEquals("99999999999999999999", decision.slug)
+        assertEquals(ProductRoutingDestination.OPEN_LEGACY_PRODUCT, decision.destination)
+        assertEquals("99999999999999999999", decision.productSlug)
     }
 
     @Test
@@ -139,7 +140,7 @@ class DeeplinkHandlerTest {
             false,
             null
         )
-        assertEquals(ProductRoutingDestination.STORE_SHOW_PRODUCT, decision.destination)
-        assertEquals("physics-course", decision.slug)
+        assertEquals(ProductRoutingDestination.OPEN_LEGACY_PRODUCT, decision.destination)
+        assertEquals("physics-course", decision.productSlug)
     }
 }

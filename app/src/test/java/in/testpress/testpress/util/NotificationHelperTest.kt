@@ -44,6 +44,14 @@ class NotificationHelperTest {
         assertNull(NotificationHelper.normalizeUrl(null))
         assertNull(NotificationHelper.normalizeUrl(""))
         assertNull(NotificationHelper.normalizeUrl("   "))
+        assertNull(NotificationHelper.normalizeUrl("\t\n"))
+    }
+
+    @Test
+    fun resolveSummaryUri_returnsNullForNullOrEmpty() {
+        assertNull(NotificationHelper.resolveSummaryUri(null))
+        assertNull(NotificationHelper.resolveSummaryUri(""))
+        assertNull(NotificationHelper.resolveSummaryUri("   "))
     }
 
     @Test

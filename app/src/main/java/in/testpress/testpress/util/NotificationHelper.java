@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.RingtoneManager;
@@ -44,6 +45,7 @@ public class NotificationHelper extends ContextWrapper {
 
     private static final int POSTS_NOTIFICATION_GROUP_SUMMARY_ID = 0;
     private static final int CONTENTS_NOTIFICATION_GROUP_SUMMARY_ID = 1;
+    private static final int SUMMARY_REQUEST_CODE_BASE = 10000;
 
     public static final String POSTS_CHANNEL = "posts";
     public static final String CONTENTS_CHANNEL = "contents";
@@ -86,54 +88,139 @@ public class NotificationHelper extends ContextWrapper {
     }
 
     public static void addNotification(Context context, String title, String content, String url) {
+        addNotification(context, title, content, url, null);
+    }
+
+    public static void addNotification(Context context, String title, String content, String url, Bitmap image) {
         if (sHelper == null) {
             sHelper = new NotificationHelper(context);
         }
-        sHelper.addNotification(title, content, url);
+        sHelper.addNotification(title, content, url, image);
     }
 
     public void addNotification(String title, String content, String url) {
-        String channelId = "";
-        String groupUrlPath = null;
-        Uri uri = null;
-        try {
-            uri = Uri.parse(url);
-            if (uri.getHost() == null) {
-                uri = Uri.parse(BASE_URL + url);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        addNotification(title, content, url, null);
+    }
+
+    public static String buildFullUrl(String url) {
+        if (url == null || url.trim().isEmpty()) {
+            return null;
         }
-        if (uri != null && uri.getPathSegments().size() > 0) {
-            List<String> pathSegments = uri.getPathSegments();
-            switch (pathSegments.get(0)) {
+        url = url.trim();
+        if (url.startsWith("http://") || url.startsWith("https://")) {
+            return url;
+        }
+        return BASE_URL + (url.startsWith("/") ? url : "/" + url);
+    }
+
+    public static Uri normalizeUrl(String url) {
+        String fullUrl = buildFullUrl(url);
+        if (fullUrl == null) {
+            return null;
+        }
+        try {
+            return Uri.parse(fullUrl);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static String resolveSummaryUrl(String urlPath) {
+        if (urlPath == null || urlPath.trim().isEmpty()) {
+            return null;
+        }
+        return buildFullUrl(urlPath);
+    }
+
+    public static Uri resolveSummaryUri(String urlPath) {
+        return (urlPath != null) ? normalizeUrl(urlPath) : null;
+    }
+
+    public static class NotificationRouting {
+        public final String channelId;
+        public final String groupUrlPath;
+
+        public NotificationRouting(String channelId, String groupUrlPath) {
+            this.channelId = channelId;
+            this.groupUrlPath = groupUrlPath;
+        }
+    }
+
+    public static NotificationRouting getNotificationRouting(String url) {
+        String firstSegment = getFirstPathSegment(url);
+        if (firstSegment != null) {
+            switch (firstSegment) {
                 case "exams":
                 case "chapters":
-                    channelId = CONTENTS_CHANNEL;
-                    groupUrlPath = "/learn/";
-                    break;
+                    return new NotificationRouting(CONTENTS_CHANNEL, "/learn/");
                 case "p":
-                    channelId = POSTS_CHANNEL;
-                    groupUrlPath = "/posts/";
-                    break;
+                    return new NotificationRouting(POSTS_CHANNEL, "/posts/");
                 default:
-                    channelId = POSTS_CHANNEL;
-                    break;
+                    return new NotificationRouting(POSTS_CHANNEL, null);
             }
         }
+        return new NotificationRouting(POSTS_CHANNEL, null);
+    }
 
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+    public static String getFirstPathSegment(String url) {
+        if (url == null) {
+            return null;
+        }
+        String path = url.trim();
+        int schemeEnd = path.indexOf("://");
+        if (schemeEnd != -1) {
+            path = path.substring(schemeEnd + 3);
+            int slashIndex = path.indexOf('/');
+            if (slashIndex == -1) {
+                return null;
+            }
+            path = path.substring(slashIndex);
+        }
+        int queryIndex = path.indexOf('?');
+        if (queryIndex != -1) {
+            path = path.substring(0, queryIndex);
+        }
+        int fragmentIndex = path.indexOf('#');
+        if (fragmentIndex != -1) {
+            path = path.substring(0, fragmentIndex);
+        }
+        while (path.startsWith("/")) {
+            path = path.substring(1);
+        }
+        if (path.isEmpty()) {
+            return null;
+        }
+        int nextSlash = path.indexOf('/');
+        return nextSlash != -1 ? path.substring(0, nextSlash) : path;
+    }
+
+    public void addNotification(String title, String content, String url, Bitmap image) {
+        Uri uri = normalizeUrl(url);
+        NotificationRouting routing = getNotificationRouting(url);
+        String channelId = routing.channelId;
+        String groupUrlPath = routing.groupUrlPath;
+
+        int notificationId = getNewNotificationId();
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
                 .setSmallIcon(getSmallIcon())
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
                 .setContentTitle(title)
                 .setContentText(content)
-                .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText(content))
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setColor(ContextCompat.getColor(getApplicationContext(), R.color.primary))
-                .setContentIntent(getPendingIntent(uri));
+                .setContentIntent(getPendingIntent(uri, notificationId, false));
+
+        if (image != null) {
+            builder.setStyle(new NotificationCompat.BigPictureStyle()
+                    .bigPicture(image)
+                    .setBigContentTitle(title)
+                    .setSummaryText(content));
+        } else {
+            builder.setStyle(new NotificationCompat.BigTextStyle()
+                    .bigText(content));
+        }
 
         if (Build.VERSION.SDK_INT >= 16) {
             builder.setPriority(Notification.PRIORITY_HIGH);
@@ -150,7 +237,7 @@ public class NotificationHelper extends ContextWrapper {
             builder.setGroup(POSTS_NOTIFICATION_GROUP);
         }
 
-        manager.notify(getNewNotificationId(), builder.build());
+        manager.notify(notificationId, builder.build());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && channelId.equals(POSTS_CHANNEL)) {
             updateNotificationSummary(POSTS_CHANNEL, POSTS_NOTIFICATION_GROUP,
@@ -164,18 +251,23 @@ public class NotificationHelper extends ContextWrapper {
         }
     }
 
-    private PendingIntent getPendingIntent(Uri uri) {
+    private PendingIntent getPendingIntent(Uri uri, int notificationId, boolean isSummary) {
         Intent intent = new Intent(this, SplashScreenActivity.class);
-        intent.setData(uri);
+        if (uri != null) {
+            intent.setData(uri);
+            intent.putExtra("destination_url", uri.toString());
+            intent.putExtra("short_url", uri.toString());
+        }
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        return PendingIntent.getActivity(this, 0, intent, this.getPendingIntentFlags());
+        return PendingIntent.getActivity(this, notificationId, intent, this.getPendingIntentFlags(isSummary));
     }
 
-    private int getPendingIntentFlags(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            return PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_ONE_SHOT;
+    private int getPendingIntentFlags(boolean isSummary) {
+        int baseFlag = isSummary ? PendingIntent.FLAG_UPDATE_CURRENT : PendingIntent.FLAG_ONE_SHOT;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return PendingIntent.FLAG_IMMUTABLE | baseFlag;
         } else {
-            return PendingIntent.FLAG_ONE_SHOT;
+            return baseFlag;
         }
     }
 
@@ -185,12 +277,7 @@ public class NotificationHelper extends ContextWrapper {
 
         int numberOfNotifications = getNumberOfNotifications(groupKey, groupSummaryId);
         if (numberOfNotifications > notificationsThreshold) {
-            Uri uri = null;
-            try {
-                uri = Uri.parse(BASE_URL + urlPath);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            Uri uri = resolveSummaryUri(urlPath);
             String title = getString(R.string.notification_summary_content, numberOfNotifications);
             inboxStyle.setBigContentTitle(title);
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
@@ -200,7 +287,7 @@ public class NotificationHelper extends ContextWrapper {
                     .setContentTitle(title)
                     .setContentText(getString(R.string.tap_to_open))
                     .setAutoCancel(true)
-                    .setContentIntent(getPendingIntent(uri))
+                    .setContentIntent(getPendingIntent(uri, SUMMARY_REQUEST_CODE_BASE + groupSummaryId, true))
                     .setStyle(inboxStyle)
                     .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
                     .setGroup(groupKey)

@@ -210,7 +210,7 @@ public class NotificationHelper extends ContextWrapper {
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setColor(ContextCompat.getColor(getApplicationContext(), R.color.primary))
-                .setContentIntent(getPendingIntent(uri, notificationId));
+                .setContentIntent(getPendingIntent(uri, notificationId, false));
 
         if (image != null) {
             builder.setStyle(new NotificationCompat.BigPictureStyle()
@@ -252,10 +252,14 @@ public class NotificationHelper extends ContextWrapper {
     }
 
     private PendingIntent getPendingIntent(Uri uri) {
-        return getPendingIntent(uri, 0);
+        return getPendingIntent(uri, 0, false);
     }
 
     private PendingIntent getPendingIntent(Uri uri, int notificationId) {
+        return getPendingIntent(uri, notificationId, false);
+    }
+
+    private PendingIntent getPendingIntent(Uri uri, int notificationId, boolean isSummary) {
         Intent intent = new Intent(this, SplashScreenActivity.class);
         if (uri != null) {
             intent.setData(uri);
@@ -263,14 +267,15 @@ public class NotificationHelper extends ContextWrapper {
             intent.putExtra("short_url", uri.toString());
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        return PendingIntent.getActivity(this, notificationId, intent, this.getPendingIntentFlags());
+        return PendingIntent.getActivity(this, notificationId, intent, this.getPendingIntentFlags(isSummary));
     }
 
-    private int getPendingIntentFlags(){
+    private int getPendingIntentFlags(boolean isSummary) {
+        int baseFlag = isSummary ? PendingIntent.FLAG_UPDATE_CURRENT : PendingIntent.FLAG_ONE_SHOT;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT;
+            return PendingIntent.FLAG_IMMUTABLE | baseFlag;
         } else {
-            return PendingIntent.FLAG_UPDATE_CURRENT;
+            return baseFlag;
         }
     }
 
@@ -290,7 +295,7 @@ public class NotificationHelper extends ContextWrapper {
                     .setContentTitle(title)
                     .setContentText(getString(R.string.tap_to_open))
                     .setAutoCancel(true)
-                    .setContentIntent(getPendingIntent(uri, SUMMARY_REQUEST_CODE_BASE + groupSummaryId))
+                    .setContentIntent(getPendingIntent(uri, SUMMARY_REQUEST_CODE_BASE + groupSummaryId, true))
                     .setStyle(inboxStyle)
                     .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
                     .setGroup(groupKey)

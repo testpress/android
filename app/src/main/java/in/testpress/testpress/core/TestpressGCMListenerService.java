@@ -8,6 +8,7 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -55,9 +56,29 @@ public class TestpressGCMListenerService extends FirebaseMessagingService {
             connection.setConnectTimeout(3000);
             connection.setReadTimeout(3000);
             try (InputStream input = connection.getInputStream()) {
+                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                byte[] data = new byte[8192];
+                int nRead;
+                int totalBytes = 0;
+                final int maxBytes = 5 * 1024 * 1024; // 5 MB cap
+                while ((nRead = input.read(data, 0, data.length)) != -1) {
+                    totalBytes += nRead;
+                    if (totalBytes > maxBytes) {
+                        return null;
+                    }
+                    buffer.write(data, 0, nRead);
+                }
+                byte[] imageBytes = buffer.toByteArray();
+
                 BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inSampleSize = 2;
-                return BitmapFactory.decodeStream(input, null, options);
+                options.inJustDecodeBounds = true;
+                BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length, options);
+
+                int maxDimension = Math.max(options.outWidth, options.outHeight);
+                options.inSampleSize = Math.max(1, Integer.highestOneBit(maxDimension / 1024));
+                options.inJustDecodeBounds = false;
+
+                return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length, options);
             }
         } catch (Exception | OutOfMemoryError e) {
             Log.w(TAG, "Image download failed: " + e.getMessage());

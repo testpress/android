@@ -125,29 +125,80 @@ public class NotificationHelper extends ContextWrapper {
         }
     }
 
-    public void addNotification(String title, String content, String url, Bitmap image) {
-        String channelId = "";
-        String groupUrlPath = null;
-        Uri uri = normalizeUrl(url);
-        if (uri != null && uri.getPathSegments().size() > 0) {
-            List<String> pathSegments = uri.getPathSegments();
-            switch (pathSegments.get(0)) {
+    public static String resolveSummaryUrl(String urlPath) {
+        if (urlPath == null || urlPath.trim().isEmpty()) {
+            return null;
+        }
+        return buildFullUrl(urlPath);
+    }
+
+    public static Uri resolveSummaryUri(String urlPath) {
+        return (urlPath != null) ? normalizeUrl(urlPath) : null;
+    }
+
+    public static class NotificationRouting {
+        public final String channelId;
+        public final String groupUrlPath;
+
+        public NotificationRouting(String channelId, String groupUrlPath) {
+            this.channelId = channelId;
+            this.groupUrlPath = groupUrlPath;
+        }
+    }
+
+    public static NotificationRouting getNotificationRouting(String url) {
+        String firstSegment = getFirstPathSegment(url);
+        if (firstSegment != null) {
+            switch (firstSegment) {
                 case "exams":
                 case "chapters":
-                    channelId = CONTENTS_CHANNEL;
-                    groupUrlPath = "/learn/";
-                    break;
+                    return new NotificationRouting(CONTENTS_CHANNEL, "/learn/");
                 case "p":
-                    channelId = POSTS_CHANNEL;
-                    groupUrlPath = "/posts/";
-                    break;
+                    return new NotificationRouting(POSTS_CHANNEL, "/posts/");
                 default:
-                    channelId = POSTS_CHANNEL;
-                    break;
+                    return new NotificationRouting(POSTS_CHANNEL, null);
             }
-        } else {
-            channelId = POSTS_CHANNEL;
         }
+        return new NotificationRouting(POSTS_CHANNEL, null);
+    }
+
+    public static String getFirstPathSegment(String url) {
+        if (url == null) {
+            return null;
+        }
+        String path = url.trim();
+        int schemeEnd = path.indexOf("://");
+        if (schemeEnd != -1) {
+            path = path.substring(schemeEnd + 3);
+            int slashIndex = path.indexOf('/');
+            if (slashIndex == -1) {
+                return null;
+            }
+            path = path.substring(slashIndex);
+        }
+        int queryIndex = path.indexOf('?');
+        if (queryIndex != -1) {
+            path = path.substring(0, queryIndex);
+        }
+        int fragmentIndex = path.indexOf('#');
+        if (fragmentIndex != -1) {
+            path = path.substring(0, fragmentIndex);
+        }
+        while (path.startsWith("/")) {
+            path = path.substring(1);
+        }
+        if (path.isEmpty()) {
+            return null;
+        }
+        int nextSlash = path.indexOf('/');
+        return nextSlash != -1 ? path.substring(0, nextSlash) : path;
+    }
+
+    public void addNotification(String title, String content, String url, Bitmap image) {
+        Uri uri = normalizeUrl(url);
+        NotificationRouting routing = getNotificationRouting(url);
+        String channelId = routing.channelId;
+        String groupUrlPath = routing.groupUrlPath;
 
         int notificationId = getNewNotificationId();
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -229,12 +280,7 @@ public class NotificationHelper extends ContextWrapper {
 
         int numberOfNotifications = getNumberOfNotifications(groupKey, groupSummaryId);
         if (numberOfNotifications > notificationsThreshold) {
-            Uri uri = null;
-            try {
-                uri = Uri.parse(BASE_URL + urlPath);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            Uri uri = resolveSummaryUri(urlPath);
             String title = getString(R.string.notification_summary_content, numberOfNotifications);
             inboxStyle.setBigContentTitle(title);
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)

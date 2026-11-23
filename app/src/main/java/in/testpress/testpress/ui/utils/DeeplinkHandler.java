@@ -62,11 +62,7 @@ public class DeeplinkHandler {
 
         String scheme = uri.getScheme();
         String host = uri.getHost();
-        String baseHost = Uri.parse(BASE_URL).getHost();
-        String whiteLabeledHost = Uri.parse(WHITE_LABELED_HOST_URL).getHost();
-
-        boolean isAppHost = host != null && ((baseHost != null && host.equalsIgnoreCase(baseHost))
-                || (whiteLabeledHost != null && host.equalsIgnoreCase(whiteLabeledHost)));
+        boolean isAppHost = isAppHost(host);
 
         if (("http".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme))
                 && host != null
@@ -259,6 +255,85 @@ public class DeeplinkHandler {
         }
     }
 
+    public static boolean isAppHost(String host) {
+        if (host == null || host.trim().isEmpty()) {
+            return false;
+        }
+        String baseHost = extractHost(BASE_URL);
+        String whiteLabeledHost = extractHost(WHITE_LABELED_HOST_URL);
+        return (baseHost != null && host.equalsIgnoreCase(baseHost))
+                || (whiteLabeledHost != null && host.equalsIgnoreCase(whiteLabeledHost));
+    }
+
+    public static String extractHost(String url) {
+        if (url == null || url.trim().isEmpty()) {
+            return null;
+        }
+        String trimmed = url.trim();
+        int schemeIndex = trimmed.indexOf("://");
+        String afterScheme = (schemeIndex != -1) ? trimmed.substring(schemeIndex + 3) : trimmed;
+        int slashIndex = afterScheme.indexOf('/');
+        String hostAndPort = (slashIndex != -1) ? afterScheme.substring(0, slashIndex) : afterScheme;
+        int colonIndex = hostAndPort.indexOf(':');
+        String host = (colonIndex != -1) ? hostAndPort.substring(0, colonIndex) : hostAndPort;
+        return host.isEmpty() ? null : host;
+    }
+
+    public enum ProductRoutingDestination {
+        COURSE_PREVIEW,
+        STORE_SHOW_PRODUCT,
+        FETCH_PRODUCT_DETAIL,
+        OPEN_STORE
+    }
+
+    public static class ProductRoutingDecision {
+        public final ProductRoutingDestination destination;
+        public final Integer productId;
+        public final String slug;
+
+        public ProductRoutingDecision(ProductRoutingDestination destination, Integer productId, String slug) {
+            this.destination = destination;
+            this.productId = productId;
+            this.slug = slug;
+        }
+    }
+
+    public static ProductRoutingDecision decideProductRouting(List<String> pathSegments, boolean isCached, List<Integer> cachedCourseIds) {
+        if (pathSegments == null || pathSegments.size() != 2) {
+            return new ProductRoutingDecision(ProductRoutingDestination.OPEN_STORE, null, null);
+        }
+        String productIdentifier = pathSegments.get(1);
+        if (isCached) {
+            if (cachedCourseIds != null && !cachedCourseIds.isEmpty()) {
+                return new ProductRoutingDecision(ProductRoutingDestination.COURSE_PREVIEW, null, productIdentifier);
+            } else {
+                return new ProductRoutingDecision(ProductRoutingDestination.STORE_SHOW_PRODUCT, null, productIdentifier);
+            }
+        }
+        if (isDigitsOnly(productIdentifier)) {
+            try {
+                long id = Long.parseLong(productIdentifier);
+                if (id <= Integer.MAX_VALUE) {
+                    return new ProductRoutingDecision(ProductRoutingDestination.FETCH_PRODUCT_DETAIL, (int) id, null);
+                }
+            } catch (NumberFormatException ignored) {
+            }
+        }
+        return new ProductRoutingDecision(ProductRoutingDestination.STORE_SHOW_PRODUCT, null, productIdentifier);
+    }
+
+    public static boolean isDigitsOnly(CharSequence str) {
+        if (str == null || str.length() == 0) {
+            return false;
+        }
+        for (int i = 0; i < str.length(); i++) {
+            if (!Character.isDigit(str.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private void deepLinkToProduct(Uri uri, final TestpressSession testpressSession) {
         final List<String> pathSegments = uri.getPathSegments();
         if (pathSegments.size() == 2) {
@@ -269,7 +344,7 @@ public class DeeplinkHandler {
                 openProductScreen(product.getCourseIds(), product.getSlug(), testpressSession);
                 return;
             }
-            if (TextUtils.isDigitsOnly(productIdentifier)) {
+            if (isDigitsOnly(productIdentifier)) {
                 try {
                     long id = Long.parseLong(productIdentifier);
                     if (id <= Integer.MAX_VALUE) {
@@ -309,7 +384,7 @@ public class DeeplinkHandler {
     }
 
     private Product findProduct(ProductDao productDao, String identifier) {
-        if (TextUtils.isDigitsOnly(identifier)) {
+        if (isDigitsOnly(identifier)) {
             try {
                 long id = Long.parseLong(identifier);
                 List<Product> products = productDao.queryBuilder()

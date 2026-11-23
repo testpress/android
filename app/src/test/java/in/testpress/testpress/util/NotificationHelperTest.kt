@@ -126,4 +126,24 @@ class NotificationHelperTest {
         assertEquals(NotificationHelper.POSTS_CHANNEL, hostOnlyRouting.channelId)
         assertNull(hostOnlyRouting.groupUrlPath)
     }
+
+    @Test
+    fun getFirstPathSegment_extractsFirstSegmentCorrectly() {
+        assertNull(NotificationHelper.getFirstPathSegment(null))
+        assertNull(NotificationHelper.getFirstPathSegment(""))
+        assertNull(NotificationHelper.getFirstPathSegment("   "))
+        assertNull(NotificationHelper.getFirstPathSegment("/"))
+        assertNull(NotificationHelper.getFirstPathSegment("///"))
+        assertNull(NotificationHelper.getFirstPathSegment("https://testpress.in"))
+        assertNull(NotificationHelper.getFirstPathSegment("https://testpress.in/"))
+
+        assertEquals("exams", NotificationHelper.getFirstPathSegment("exams"))
+        assertEquals("exams", NotificationHelper.getFirstPathSegment("/exams"))
+        assertEquals("exams", NotificationHelper.getFirstPathSegment("/exams/"))
+        assertEquals("exams", NotificationHelper.getFirstPathSegment("/exams/123/"))
+        assertEquals("exams", NotificationHelper.getFirstPathSegment("https://testpress.in/exams/123/"))
+        assertEquals("exams", NotificationHelper.getFirstPathSegment("http://testpress.in/exams?param=1#fragment"))
+        assertEquals("p", NotificationHelper.getFirstPathSegment("/p/456"))
+        assertEquals("products", NotificationHelper.getFirstPathSegment("products/slug-123"))
+    }
 }

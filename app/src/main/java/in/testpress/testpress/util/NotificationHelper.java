@@ -251,14 +251,6 @@ public class NotificationHelper extends ContextWrapper {
         }
     }
 
-    private PendingIntent getPendingIntent(Uri uri) {
-        return getPendingIntent(uri, 0, false);
-    }
-
-    private PendingIntent getPendingIntent(Uri uri, int notificationId) {
-        return getPendingIntent(uri, notificationId, false);
-    }
-
     private PendingIntent getPendingIntent(Uri uri, int notificationId, boolean isSummary) {
         Intent intent = new Intent(this, SplashScreenActivity.class);
         if (uri != null) {

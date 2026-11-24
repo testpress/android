@@ -1,16 +1,28 @@
 package in.testpress.testpress.ui.utils;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.TextUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import in.testpress.core.TestpressCallback;
+import in.testpress.core.TestpressException;
+import in.testpress.core.TestpressSDKDatabase;
 import in.testpress.core.TestpressSdk;
 import in.testpress.core.TestpressSession;
 import in.testpress.course.TestpressCourse;
+import in.testpress.course.ui.AvailableCoursesListActivity;
+import in.testpress.course.ui.CoursePreviewActivity;
 import in.testpress.exam.TestpressExam;
+import in.testpress.models.greendao.Product;
+import in.testpress.models.greendao.ProductDao;
 import in.testpress.store.TestpressStore;
+import in.testpress.store.data.model.NetworkProduct;
+import in.testpress.store.network.StoreApiClient;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.authenticator.LoginActivity;
 import in.testpress.testpress.authenticator.ResetPasswordActivity;
@@ -43,7 +55,30 @@ public class DeeplinkHandler {
     }
 
     public void handleDeepLinkUrl(Uri uri, boolean fromSplashScreen) {
-        if (uri != null && uri.getPathSegments().size() > 0) {
+        if (uri == null) {
+            gotoHome();
+            return;
+        }
+
+        String scheme = uri.getScheme();
+        String host = uri.getHost();
+        boolean isAppHost = isAppHost(host);
+
+        if (("http".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme))
+                && host != null
+                && !isAppHost) {
+            try {
+                CommonUtils.openUrlInBrowser(activity, uri);
+                if (fromSplashScreen) {
+                    activity.finish();
+                }
+            } catch (ActivityNotFoundException e) {
+                gotoHome();
+            }
+            return;
+        }
+
+        if (uri.getPathSegments().size() > 0) {
             List<String> pathSegments = uri.getPathSegments();
             switch (pathSegments.get(0)) {
                 case "p":
@@ -178,6 +213,10 @@ public class DeeplinkHandler {
                             case "products":
                                 deepLinkToProduct(uri, testpressSession);
                                 break;
+                            case "store":
+                            case "market":
+                                openStore();
+                                break;
                             case "discussions":
                                 deepLinkToDiscussions(uri);
                                 break;
@@ -216,15 +255,198 @@ public class DeeplinkHandler {
         }
     }
 
-    private void deepLinkToProduct(Uri uri, TestpressSession testpressSession) {
-        final List<String> pathSegments = uri.getPathSegments();
-        if (pathSegments.size() == 2) {
-            String productSlug = uri.getLastPathSegment();
-            assert productSlug != null;
-            TestpressStore.showProduct(activity, productSlug, testpressSession);
-        } else {
-            TestpressStore.show(activity, testpressSession);
+    public static boolean isAppHost(String host) {
+        if (host == null || host.trim().isEmpty()) {
+            return false;
         }
+        String baseHost = extractHost(BASE_URL);
+        String whiteLabeledHost = extractHost(WHITE_LABELED_HOST_URL);
+        return (baseHost != null && host.equalsIgnoreCase(baseHost))
+                || (whiteLabeledHost != null && host.equalsIgnoreCase(whiteLabeledHost));
+    }
+
+    public static String extractHost(String url) {
+        if (url == null || url.trim().isEmpty()) {
+            return null;
+        }
+        String trimmed = url.trim();
+        int schemeIndex = trimmed.indexOf("://");
+        String afterScheme = (schemeIndex != -1) ? trimmed.substring(schemeIndex + 3) : trimmed;
+        int slashIndex = afterScheme.indexOf('/');
+        String hostAndPort = (slashIndex != -1) ? afterScheme.substring(0, slashIndex) : afterScheme;
+        int colonIndex = hostAndPort.indexOf(':');
+        String host = (colonIndex != -1) ? hostAndPort.substring(0, colonIndex) : hostAndPort;
+        return host.isEmpty() ? null : host;
+    }
+
+    public enum ProductRoutingDestination {
+        OPEN_COURSE_PREVIEW,
+        OPEN_LEGACY_PRODUCT,
+        FETCH_PRODUCT_V3,
+        OPEN_STORE
+    }
+
+    public static class ProductRoutingDecision {
+        public final ProductRoutingDestination destination;
+        public final Integer numericProductId;
+        public final String productSlug;
+        public final List<Integer> courseIds;
+
+        public ProductRoutingDecision(ProductRoutingDestination destination, Integer numericProductId, String productSlug, List<Integer> courseIds) {
+            this.destination = destination;
+            this.numericProductId = numericProductId;
+            this.productSlug = productSlug;
+            this.courseIds = courseIds;
+        }
+    }
+
+    public static ProductRoutingDecision decideProductRouting(String productIdentifier, Product cachedProduct) {
+        if (productIdentifier == null || productIdentifier.trim().isEmpty()) {
+            return new ProductRoutingDecision(ProductRoutingDestination.OPEN_STORE, null, null, null);
+        }
+        if (cachedProduct != null) {
+            List<Integer> courseIds = cachedProduct.getCourseIds();
+            String slug = cachedProduct.getSlug() != null ? cachedProduct.getSlug() : productIdentifier;
+            if (courseIds != null && !courseIds.isEmpty()) {
+                return new ProductRoutingDecision(ProductRoutingDestination.OPEN_COURSE_PREVIEW, null, slug, courseIds);
+            } else {
+                return new ProductRoutingDecision(ProductRoutingDestination.OPEN_LEGACY_PRODUCT, null, slug, null);
+            }
+        }
+        if (isDigitsOnly(productIdentifier)) {
+            try {
+                long id = Long.parseLong(productIdentifier);
+                if (id <= Integer.MAX_VALUE) {
+                    return new ProductRoutingDecision(ProductRoutingDestination.FETCH_PRODUCT_V3, (int) id, null, null);
+                }
+            } catch (NumberFormatException ignored) {
+            }
+        }
+        return new ProductRoutingDecision(ProductRoutingDestination.OPEN_LEGACY_PRODUCT, null, productIdentifier, null);
+    }
+
+    public static ProductRoutingDecision decideProductRouting(List<String> pathSegments, boolean isCached, List<Integer> cachedCourseIds) {
+        if (pathSegments == null || pathSegments.size() != 2) {
+            return new ProductRoutingDecision(ProductRoutingDestination.OPEN_STORE, null, null, null);
+        }
+        String productIdentifier = pathSegments.get(1);
+        if (isCached) {
+            if (cachedCourseIds != null && !cachedCourseIds.isEmpty()) {
+                return new ProductRoutingDecision(ProductRoutingDestination.OPEN_COURSE_PREVIEW, null, productIdentifier, cachedCourseIds);
+            } else {
+                return new ProductRoutingDecision(ProductRoutingDestination.OPEN_LEGACY_PRODUCT, null, productIdentifier, null);
+            }
+        }
+        if (isDigitsOnly(productIdentifier)) {
+            try {
+                long id = Long.parseLong(productIdentifier);
+                if (id <= Integer.MAX_VALUE) {
+                    return new ProductRoutingDecision(ProductRoutingDestination.FETCH_PRODUCT_V3, (int) id, null, null);
+                }
+            } catch (NumberFormatException ignored) {
+            }
+        }
+        return new ProductRoutingDecision(ProductRoutingDestination.OPEN_LEGACY_PRODUCT, null, productIdentifier, null);
+    }
+
+    public static boolean isDigitsOnly(CharSequence str) {
+        if (str == null || str.length() == 0) {
+            return false;
+        }
+        for (int i = 0; i < str.length(); i++) {
+            if (!Character.isDigit(str.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void deepLinkToProduct(Uri uri, final TestpressSession testpressSession) {
+        final List<String> pathSegments = uri.getPathSegments();
+        if (pathSegments.size() != 2) {
+            openStore();
+            return;
+        }
+        String productIdentifier = pathSegments.get(1);
+        ProductDao productDao = TestpressSDKDatabase.getProductDao(activity);
+        Product cachedProduct = findProduct(productDao, productIdentifier);
+        ProductRoutingDecision decision = decideProductRouting(productIdentifier, cachedProduct);
+
+        switch (decision.destination) {
+            case OPEN_COURSE_PREVIEW:
+                activity.startActivityForResult(
+                        CoursePreviewActivity.createIntent(new ArrayList<>(decision.courseIds), activity, decision.productSlug),
+                        TestpressStore.STORE_REQUEST_CODE
+                );
+                break;
+            case OPEN_LEGACY_PRODUCT:
+                TestpressStore.showProduct(activity, decision.productSlug, testpressSession);
+                break;
+            case FETCH_PRODUCT_V3:
+                TestpressSdk.setTestpressSession(activity.getApplicationContext(), testpressSession);
+                new StoreApiClient(activity).getProductDetailV3(decision.numericProductId)
+                        .enqueue(new TestpressCallback<NetworkProduct>() {
+                            @Override
+                            public void onSuccess(NetworkProduct networkProduct) {
+                                if (activity.isFinishing() || activity.isDestroyed()) {
+                                    return;
+                                }
+                                if (networkProduct != null && networkProduct.getSlug() != null) {
+                                    ProductDao dao = TestpressSDKDatabase.getProductDao(activity);
+                                    Product product = findProduct(dao, networkProduct.getSlug());
+                                    List<Integer> courseIds = product != null ? product.getCourseIds() : null;
+                                    openProductScreen(courseIds, networkProduct.getSlug(), testpressSession);
+                                } else {
+                                    openStore();
+                                }
+                            }
+
+                            @Override
+                            public void onException(TestpressException exception) {
+                                openStore();
+                            }
+                        });
+                break;
+            case OPEN_STORE:
+            default:
+                openStore();
+                break;
+        }
+    }
+
+    private Product findProduct(ProductDao productDao, String identifier) {
+        if (isDigitsOnly(identifier)) {
+            try {
+                long id = Long.parseLong(identifier);
+                List<Product> products = productDao.queryBuilder()
+                        .where(ProductDao.Properties.Id.eq(id))
+                        .list();
+                if (!products.isEmpty()) {
+                    return products.get(0);
+                }
+            } catch (NumberFormatException ignored) {
+            }
+        }
+        List<Product> products = productDao.queryBuilder()
+                .where(ProductDao.Properties.Slug.eq(identifier))
+                .list();
+        return products.isEmpty() ? null : products.get(0);
+    }
+
+    private void openProductScreen(List<Integer> courseIds, String productSlug, TestpressSession testpressSession) {
+        if (courseIds != null && !courseIds.isEmpty()) {
+            activity.startActivityForResult(
+                    CoursePreviewActivity.createIntent(new ArrayList<>(courseIds), activity, productSlug),
+                    TestpressStore.STORE_REQUEST_CODE
+            );
+        } else {
+            TestpressStore.showProduct(activity, productSlug, testpressSession);
+        }
+    }
+
+    private void openStore() {
+        Intent intent = new Intent(activity, AvailableCoursesListActivity.class);
+        activity.startActivityForResult(intent, TestpressStore.STORE_REQUEST_CODE);
     }
 
     private void deepLinkToDiscussions(Uri uri) {

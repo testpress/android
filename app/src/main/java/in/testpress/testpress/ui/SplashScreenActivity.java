@@ -20,6 +20,7 @@ import in.testpress.testpress.R;
 import in.testpress.testpress.TestpressServiceProvider;
 import in.testpress.testpress.databinding.ActivitySplashBinding;
 import in.testpress.testpress.ui.utils.DeeplinkHandler;
+import in.testpress.testpress.util.NotificationHelper;
 import in.testpress.testpress.util.UpdateAppDialogManager;
 import in.testpress.util.Assert;
 
@@ -65,21 +66,34 @@ public class SplashScreenActivity extends Activity {
         }, SPLASH_TIME_OUT);
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        if (isNotificationPresent()) {
+            openNotification();
+        }
+    }
+
     private boolean isNotificationPresent() {
-        return getIntent().getExtras() != null && getIntent().getExtras().getString("short_url") != null;
+        return getIntent().getExtras() != null &&
+                (getIntent().getExtras().getString("destination_url") != null ||
+                 getIntent().getExtras().getString("short_url") != null);
     }
 
     private void openNotification() {
-        String url = getIntent().getExtras().getString("short_url");
-        try {
-            Uri uri = Uri.parse(url);
-            if (uri.getHost() == null) {
-                uri = Uri.parse(BASE_URL + url);
-            }
+        String url = getIntent().getExtras().getString("destination_url");
+        if (url == null || url.trim().isEmpty()) {
+            url = getIntent().getExtras().getString("short_url");
+        }
+        getIntent().removeExtra("destination_url");
+        getIntent().removeExtra("short_url");
+        Uri uri = NotificationHelper.normalizeUrl(url);
+        if (uri != null) {
             final DeeplinkHandler deeplinkHandler = new DeeplinkHandler(this, serviceProvider);
             deeplinkHandler.handleDeepLinkUrl(uri, true);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
+            gotoHome();
         }
     }
 

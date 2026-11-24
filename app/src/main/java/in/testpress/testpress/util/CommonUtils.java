@@ -146,8 +146,11 @@ public class CommonUtils {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                 Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-        activity.startActivity(intent);
-        setDeepLinkingState(PackageManager.COMPONENT_ENABLED_STATE_ENABLED, activity);
+        try {
+            activity.startActivity(intent);
+        } finally {
+            setDeepLinkingState(PackageManager.COMPONENT_ENABLED_STATE_ENABLED, activity);
+        }
     }
 
     private static void setDeepLinkingState(int state, Context context) {

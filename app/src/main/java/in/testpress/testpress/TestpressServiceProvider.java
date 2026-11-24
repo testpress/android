@@ -54,6 +54,7 @@ public class TestpressServiceProvider {
     public TestpressServiceProvider(RestAdapter.Builder restAdapter, ApiKeyProvider keyProvider) {
         this.restAdapter = restAdapter;
         this.keyProvider = keyProvider;
+        TestpressSdk.setUseInAppAttachmentDownload(true);
     }
 
     public void invalidateAuthToken(Context context) {

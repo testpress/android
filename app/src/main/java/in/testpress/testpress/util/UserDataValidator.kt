@@ -23,6 +23,9 @@ class UserDataValidator(
     }
 
     private fun showErrorWhenNotValid() {
+        if (isEmpty(binding.editTextFirstName!!)) {
+            showError(binding.firstNameErrorText!!, binding.editTextFirstName!!)
+        }
         if (isEmpty(binding.editTextUsername)) {
             showError(binding.usernameErrorText, binding.editTextUsername)
         } else if (isUsernameNotValid()) {
